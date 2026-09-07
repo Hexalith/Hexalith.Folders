@@ -49,6 +49,10 @@ $requiredSnapshotPaths = @(
     '/repos/{owner}/{repo}',
     '/repos/{owner}/{repo}/branches/{branch}',
     '/repos/{owner}/{repo}/branch_protections/{name}'
+    '/repos/{owner}/{repo}/contents'
+    '/repos/{owner}/{repo}/contents/{filepath}'
+    '/repos/{owner}/{repo}/git/refs/{ref}'
+    '/repos/{owner}/{repo}/commits'
 )
 
 $requiredInputs = @(
@@ -108,7 +112,7 @@ function Write-NightlyDriftReport {
         classification_fixture_path = $classificationFixturePath
         sanitized_report_path = $sanitizedReportRelativePath
         test_project = $testProjectPath
-        expected_test_count = 7
+        expected_test_count = 8
         live_provider_drift = [ordered]@{
             status = 'reference_pending_story_7_8'
             owner = 'folders-provider-maintainers'
@@ -163,7 +167,8 @@ function Get-ManifestIntegrityHash {
         $Entry.reviewer,
         $Entry.datedSource,
         $Entry.sourceArtifactSha256,
-        $Entry.snapshotSha256
+        $Entry.snapshotSha256,
+        $Entry.expectedOperationCount
     ) -join '|'
 
     $bytes = [Text.Encoding]::UTF8.GetBytes($payload)
@@ -186,7 +191,7 @@ function Assert-ManifestIntegrity {
     }
 
     foreach ($entry in $Manifest.entries) {
-        foreach ($field in @('version', 'versionFamily', 'supportClass', 'sourceUrl', 'snapshotPath', 'expectedApiCompatibilityPosture', 'owner', 'reviewer', 'datedSource', 'sourceArtifactSha256', 'snapshotSha256', 'integrityHash')) {
+        foreach ($field in @('version', 'versionFamily', 'supportClass', 'sourceUrl', 'snapshotPath', 'expectedApiCompatibilityPosture', 'owner', 'reviewer', 'datedSource', 'sourceArtifactSha256', 'snapshotSha256', 'expectedOperationCount', 'integrityHash')) {
             if ([string]::IsNullOrWhiteSpace([string]$entry.$field)) {
                 Fail-Gate -Category 'forgejo-manifest-integrity' -Reason "missing-manifest-field field=$field"
             }
@@ -232,6 +237,11 @@ function Assert-SnapshotCoverage {
             if (-not ($snapshot.paths.PSObject.Properties.Name -contains $path)) {
                 Fail-Gate -Category 'forgejo-snapshot-coverage' -Reason "missing-provider-operation-path version=$($entry.version) path=$path"
             }
+        }
+
+        $operationCount = @($snapshot.paths.PSObject.Properties | ForEach-Object { $_.Value.PSObject.Properties }).Count
+        if ($operationCount -ne [int]$entry.expectedOperationCount) {
+            Fail-Gate -Category 'forgejo-snapshot-coverage' -Reason "used-operation-count-drift version=$($entry.version)"
         }
     }
 }
@@ -341,8 +351,8 @@ function Invoke-XunitInProcessFallback {
     $runnerExitCode = $LASTEXITCODE
     $runnerOutput | ForEach-Object { Write-Host $_ }
 
-    if ((Get-ExecutedTestCount -Output $runnerOutput) -ne 7) {
-        Fail-Gate -Category 'forgejo-drift-classification' -Reason 'zero-or-partial-test-selection expected=7'
+    if ((Get-ExecutedTestCount -Output $runnerOutput) -ne 8) {
+        Fail-Gate -Category 'forgejo-drift-classification' -Reason 'zero-or-partial-test-selection expected=8'
     }
 
     if ($runnerExitCode -ne 0) {
@@ -361,7 +371,7 @@ function Invoke-DotNet {
     $output = & dotnet @Arguments 2>&1
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
-        if ($Category -eq 'forgejo-drift-classification' -and (($output -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied')) {
+        if ($Category -eq 'forgejo-drift-classification' -and (($output -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied|Testing with VSTest target is no longer supported')) {
             Invoke-XunitInProcessFallback
             return
         }
@@ -420,8 +430,8 @@ try {
         $executedTests = [int]$trx.TestRun.ResultSummary.Counters.total
     }
 
-    if (-not $usedXunitFallback -and (Test-Path $trxPath) -and $executedTests -ne 7) {
-        Fail-Gate -Category 'forgejo-drift-classification' -Reason "zero-or-partial-test-selection expected=7 actual=$executedTests"
+    if (-not $usedXunitFallback -and (Test-Path $trxPath) -and $executedTests -ne 8) {
+        Fail-Gate -Category 'forgejo-drift-classification' -Reason "zero-or-partial-test-selection expected=8 actual=$executedTests"
     }
 
     Add-Result -Category 'forgejo-drift-classification' -Status 'passed' -Severity 'none' -ExitCode 0

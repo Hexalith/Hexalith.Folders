@@ -4,20 +4,39 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Hexalith.Folders.Providers.Abstractions;
+using LibGit2Sharp.Handlers;
 
 namespace Hexalith.Folders.Providers.Forgejo;
 
-internal sealed class ForgejoHttpApiClient : IForgejoApiClient
+internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
 {
     private const int MaximumJsonResponseBytes = 256 * 1024;
     private static readonly TimeSpan ResponseBodyTimeout = TimeSpan.FromSeconds(30);
     private readonly HttpClient _client;
+    private readonly ForgejoAuthorizationHeader? _authorizationHeader;
     private readonly Uri _authorizedBaseUri;
+    private readonly Action? _beforeReceivePackDispatch;
+    private readonly CertificateCheckHandler? _certificateCheck;
+    private readonly ForgejoSmartHttpGitTransportTestHooks? _transportTestHooks;
 
-    public ForgejoHttpApiClient(HttpClient client, Uri authorizedBaseUri)
+    public ForgejoHttpApiClient(
+        HttpClient client,
+        Uri authorizedBaseUri,
+        CertificateCheckHandler? certificateCheck = null,
+        Action? beforeReceivePackDispatch = null,
+        ForgejoSmartHttpGitTransportTestHooks? transportTestHooks = null)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _authorizedBaseUri = authorizedBaseUri ?? throw new ArgumentNullException(nameof(authorizedBaseUri));
+        _certificateCheck = certificateCheck;
+        _beforeReceivePackDispatch = beforeReceivePackDispatch;
+        _transportTestHooks = transportTestHooks;
+        AuthenticationHeaderValue? authorization = client.DefaultRequestHeaders.Authorization;
+        _authorizationHeader = authorization is not null
+            && string.Equals(authorization.Scheme, "Bearer", StringComparison.OrdinalIgnoreCase)
+            && !string.IsNullOrWhiteSpace(authorization.Parameter)
+                ? new ForgejoAuthorizationHeader("Bearer", authorization.Parameter)
+                : null;
     }
 
     public ValueTask DisposeAsync()
@@ -32,6 +51,11 @@ internal sealed class ForgejoHttpApiClient : IForgejoApiClient
     {
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
+
+        if (!ForgejoSmartHttpGitTransport.IsPinnedNativeProfileAvailable())
+        {
+            return ForgejoReadinessResult.Failure(ForgejoApiFailureCondition.NativeRuntimeUnavailable);
+        }
 
         HttpResponseMessage response;
         try
@@ -387,15 +411,27 @@ internal sealed class ForgejoHttpApiClient : IForgejoApiClient
     private static async Task<JsonDocument?> ReadJsonDocumentAsync(
         HttpResponseMessage response,
         CancellationToken cancellationToken)
+        => await ReadJsonDocumentAsync(
+            response,
+            MaximumJsonResponseBytes,
+            ResponseBodyTimeout,
+            cancellationToken).ConfigureAwait(false);
+
+    private static async Task<JsonDocument?> ReadJsonDocumentAsync(
+        HttpResponseMessage response,
+        int maximumResponseBytes,
+        TimeSpan responseBodyTimeout,
+        CancellationToken cancellationToken)
     {
         if (!IsJson(response.Content.Headers.ContentType)
-            || response.Content.Headers.ContentLength is > MaximumJsonResponseBytes)
+            || response.Content.Headers.ContentLength is long contentLength
+                && contentLength > maximumResponseBytes)
         {
             return null;
         }
 
         using CancellationTokenSource responseBodyCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        responseBodyCancellation.CancelAfter(ResponseBodyTimeout);
+        responseBodyCancellation.CancelAfter(responseBodyTimeout);
         CancellationToken responseBodyToken = responseBodyCancellation.Token;
         using Stream stream = await response.Content.ReadAsStreamAsync(responseBodyToken).ConfigureAwait(false);
         using MemoryStream buffer = new();
@@ -408,7 +444,7 @@ internal sealed class ForgejoHttpApiClient : IForgejoApiClient
                 break;
             }
 
-            if (buffer.Length + read > MaximumJsonResponseBytes)
+            if (buffer.Length + read > maximumResponseBytes)
             {
                 return null;
             }

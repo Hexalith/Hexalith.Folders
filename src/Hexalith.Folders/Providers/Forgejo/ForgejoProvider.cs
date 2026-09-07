@@ -3,12 +3,14 @@ using Hexalith.Folders.Providers.Abstractions;
 
 namespace Hexalith.Folders.Providers.Forgejo;
 
-public sealed class ForgejoProvider : IGitProvider
+public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAdapter
 {
     private static readonly TimeSpan MaximumAuthorizationAge = TimeSpan.FromMinutes(5);
     private readonly IForgejoCredentialResolver _credentialResolver;
     private readonly IForgejoApiClientFactory _apiClientFactory;
     private readonly IProviderRepositoryTargetResolver _targetResolver;
+    private readonly IProviderOperationSourceResolver _operationSourceResolver;
+    private readonly IProviderOperationOutcomeStore _operationOutcomeStore;
     private readonly TimeProvider _timeProvider;
 
     public ForgejoProvider()
@@ -16,6 +18,8 @@ public sealed class ForgejoProvider : IGitProvider
             new UnconfiguredForgejoCredentialResolver(),
             new ForgejoHttpApiClientFactory(),
             new UnconfiguredProviderRepositoryTargetResolver(),
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
             TimeProvider.System)
     {
     }
@@ -27,6 +31,8 @@ public sealed class ForgejoProvider : IGitProvider
             credentialResolver,
             apiClientFactory,
             new UnconfiguredProviderRepositoryTargetResolver(),
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
             TimeProvider.System)
     {
     }
@@ -35,7 +41,13 @@ public sealed class ForgejoProvider : IGitProvider
         IForgejoCredentialResolver credentialResolver,
         IForgejoApiClientFactory apiClientFactory,
         IProviderRepositoryTargetResolver targetResolver)
-        : this(credentialResolver, apiClientFactory, targetResolver, TimeProvider.System)
+        : this(
+            credentialResolver,
+            apiClientFactory,
+            targetResolver,
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
+            TimeProvider.System)
     {
     }
 
@@ -44,11 +56,30 @@ public sealed class ForgejoProvider : IGitProvider
         IForgejoApiClientFactory apiClientFactory,
         IProviderRepositoryTargetResolver targetResolver,
         TimeProvider timeProvider)
+        : this(
+            credentialResolver,
+            apiClientFactory,
+            targetResolver,
+            new UnconfiguredProviderOperationSourceResolver(),
+            new UnconfiguredProviderOperationOutcomeStore(),
+            timeProvider)
+    {
+    }
+
+    internal ForgejoProvider(
+        IForgejoCredentialResolver credentialResolver,
+        IForgejoApiClientFactory apiClientFactory,
+        IProviderRepositoryTargetResolver targetResolver,
+        IProviderOperationSourceResolver operationSourceResolver,
+        IProviderOperationOutcomeStore? operationOutcomeStore = null,
+        TimeProvider? timeProvider = null)
     {
         _credentialResolver = credentialResolver ?? throw new ArgumentNullException(nameof(credentialResolver));
         _apiClientFactory = apiClientFactory ?? throw new ArgumentNullException(nameof(apiClientFactory));
         _targetResolver = targetResolver ?? throw new ArgumentNullException(nameof(targetResolver));
-        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+        _operationSourceResolver = operationSourceResolver ?? throw new ArgumentNullException(nameof(operationSourceResolver));
+        _operationOutcomeStore = operationOutcomeStore ?? new UnconfiguredProviderOperationOutcomeStore();
+        _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
     public string ProviderFamily => ForgejoProviderConstants.ProviderFamily;
@@ -733,6 +764,7 @@ public sealed class ForgejoProvider : IGitProvider
         "forgejo_ref_operation_unsupported",
         "forgejo_repository_binding_outcome_unknown",
         "forgejo_repository_conflict",
+        "forgejo_repository_archived",
         "forgejo_repository_creation_outcome_unknown",
         "forgejo_repository_missing",
         "forgejo_repository_target_resolution_unavailable",
@@ -1147,7 +1179,8 @@ public sealed class ForgejoProvider : IGitProvider
         string requiredScope)
     {
         DateTimeOffset now = _timeProvider.GetUtcNow();
-        if (authorizationEvidence.CapturedAt == default
+        if (!IsSafeOpaqueValue(authorizationEvidence.Fingerprint)
+            || authorizationEvidence.CapturedAt == default
             || authorizationEvidence.CapturedAt > now)
         {
             return "authorization_evidence_malformed";
@@ -1169,10 +1202,13 @@ public sealed class ForgejoProvider : IGitProvider
             return "target_evidence_stale";
         }
 
-        return targetEvidence.Metadata.TryGetValue("operation_scope", out string? operationScope)
+        return targetEvidence.Metadata is not null
+            && targetEvidence.Metadata.TryGetValue("operation_scope", out string? operationScope)
             && string.Equals(operationScope, requiredScope, StringComparison.Ordinal)
                 ? null
-                : "forgejo_operation_scope_mismatch";
+                : targetEvidence.Metadata is null
+                    ? "target_evidence_malformed"
+                    : "forgejo_operation_scope_mismatch";
     }
 
     private static ProviderCapabilityDiscoveryResult Failure(

@@ -19,7 +19,7 @@ Canonical error interpretation is in [`canonical-error-catalog.md`](canonical-er
 
 The provider boundary is the `IGitProvider` port (`ProviderFamily`, `ProviderKey`,
 `DiscoverCapabilitiesAsync`, `CreateRepositoryAsync`, `ValidateRepositoryBindingAsync`,
-`CompareCapabilityProfiles`). Capability discovery is **N-provider capable**: it is driven by
+`StageFileChangesAsync`, `CommitAsync`, `GetOperationStatusAsync`, and `CompareCapabilityProfiles`). Capability discovery is **N-provider capable**: it is driven by
 `ProviderOperationCatalog`, `ProviderCapabilityProfile`, `ProviderOperationCapability`,
 `ProviderOperationSupport`, and `DefaultProviderCapabilityResolver`, and is **not hardcoded to GitHub plus
 Forgejo**. Any provider that implements `IGitProvider` and reports capability evidence participates on equal
@@ -113,8 +113,9 @@ full provider-ready debt — not a completed live run — separate from Story 3.
 
 ## Forgejo integration behavior, supported versions, and drift
 
-The Forgejo adapter (`ForgejoProvider`) uses a **typed HTTP** client (`ForgejoHttpApiClient`,
-`IForgejoApiClient` / `IForgejoApiClientFactory`) rather than a third-party SDK. Credentials are resolved by
+The Forgejo adapter (`ForgejoProvider`) uses a **typed HTTP and smart-HTTPS** client (`ForgejoHttpApiClient`,
+`IForgejoApiClient` / `IForgejoApiClientFactory`). REST handles readiness, create, bind, and status; centrally
+pinned LibGit2Sharp `0.32.0` with bundled libgit2 `1.8.6` handles staging and commit. Credentials are resolved by
 `DaprBackedForgejoCredentialResolver` and validated by `ForgejoCredentialModeValidator`;
 `ForgejoReadinessMapper` and `ForgejoFailureMapper` map `ForgejoApiFailureCondition` outcomes into the same
 stable `ProviderFailureCategory` vocabulary.
@@ -139,14 +140,47 @@ target resolution, credential lookup, client construction, or HTTP access. Produ
 configured credential resolver, managed HTTP factory, and target resolver through one Forgejo singleton; the
 default target resolver intentionally fails closed until an authoritative policy source is composed.
 
+The same production singleton executes the provider port's file, commit, and status operations. Stage and
+commit each revalidate the durable reservation after acquiring the native gate, recheck `/version`, validate
+the SHA-1 smart-HTTP advertisement, and perform one exact-head upload-pack fetch in a fresh private bare
+repository. Staging constructs and records the real tree without creating a commit or moving a ref. Commit
+re-resolves the caller-ordered changes, reconstructs the same tree, creates one commit with the expected head
+as its sole parent, records the commit identity, and performs one non-force receive-pack update with that
+expected old SHA. Success requires one final REST observation of the exact full ref at the intended commit.
+The adapter never invokes Forgejo's combined `/contents` write.
+
+The native profile accepts only regular `100644` entries at touched paths, exact Forgejo versions `15.0.7`
+and `16.0.3`, SHA-1 object identities, classic smart HTTPS, and receive-pack `report-status`. It uses in-memory
+bearer custom headers and a private bare repository with no checkout, hooks, ambient Git configuration,
+submodules, LFS, SSH, dumb HTTP, force, or redirects. Advertisements, transfer, temporary disk, and wall time
+are bounded. Authentication, authorization, expected-old conflict, policy rejection, arbitrary rejection,
+unsupported protocol/object format, native-load failure, limits, and transport ambiguity are classified
+separately; only an expected-old mismatch becomes a provider conflict.
+
+Status performs only read-only REST observations: exact `/version`, then the exact ref. The intended commit,
+unchanged expected head, or another identity yields confirmed, not-applied, or conflicting. When the exact ref
+returns 404, one repository-visibility read distinguishes a visible repository with a deleted ref from
+concealed, denied, missing, or unavailable evidence. The caller owns checks 1 through 5 in one 15-minute
+window. Only unavailable or not-applied evidence on checks 1-4 is retryable; the fifth check, expiry, conflict,
+or exact-version drift requires reconciliation. Public results retain only metadata-safe categories, reason
+codes, opaque references, and domain-separated fingerprints.
+
 Forgejo classifies drift explicitly: `ForgejoApiFailureCondition.VersionIncompatible` and
 `SchemaDriftBreaking` both map to `ReconciliationRequired`, and a cross-origin redirect maps to
 `ProviderReadinessFailed`. **An unsupported or failing provider version cannot report ready** — readiness
 validation fails closed rather than guessing. Forgejo additionally distinguishes a missing repository and a
 missing branch/path (both `ProviderValidationFailed`) and an unsupported capability
-(`UnsupportedProviderCapability`), distinctions the GitHub mapper does not draw.
+(`UnsupportedProviderCapability`), distinctions the GitHub mapper does not draw. The retained bulk-contents
+shape documents why that operation is inadmissible; runtime file/commit code contains no REST contents write.
 
 ### Opt-in Forgejo deployment evidence
+
+The self-contained compatibility smoke is `pwsh ./tests/tools/run-forgejo-smart-http-alpine-smoke.ps1`.
+It requires Docker and OpenSSL, creates disposable TLS Forgejo `16.0.3` and `15.0.7` instances, builds for
+`linux-musl-x64`, and runs inside `mcr.microsoft.com/dotnet/aspnet:10.0-alpine`. The test refetches the received
+pack and proves its sole parent, exact tree and bytes, deletion, and unchanged paths; it also advances the ref
+after receive advertisement and proves the losing expected-old update has no effect. The runner removes its
+containers, network, certificate, and token on completion.
 
 The live Forgejo lane is operator-triggered and must never be added to PR or scheduled CI. It requires a
 disposable, explicitly approved HTTPS installation running `16.0.3` or `15.0.7`, an organization in which the
@@ -200,7 +234,7 @@ dimension and never claims parity where only provider-specific evidence exists.
 
 | Dimension | GitHub | Forgejo |
 |---|---|---|
-| Supported operations | Octokit-backed catalog evidence | Typed-HTTP catalog evidence |
+| Supported operations | Octokit-backed catalog evidence | Typed-HTTP REST plus pinned LibGit2Sharp smart-HTTPS evidence |
 | Branch/ref behavior | Branch-protection conflict via Octokit | Branch/path and protection distinctions via typed HTTP |
 | File limits | Reported as capability `Limits` metadata | Reported as capability `Limits` metadata |
 | Credential mode | App-installation / user-delegated / service-account references | User-delegated / service-account references |
@@ -208,7 +242,7 @@ dimension and never claims parity where only provider-specific evidence exists.
 | Rate-limit posture | Primary and secondary rate limits both retryable | Single rate-limit condition, retryable |
 | Readiness behavior | Fails closed on unavailable evidence | Fails closed; unsupported version cannot be ready |
 | Repository create/bind | Concrete Octokit path; equivalent only by authorized canonical identity; target-policy source remains fail-closed | Concrete typed-HTTP path; one create mutation, canonical identity, exact bind/ref policy; target-policy source remains fail-closed |
-| File/commit/status behavior | Mapped through `GitHubFailureMapper` | Mapped through `ForgejoFailureMapper` |
+| File/commit/status behavior | Git Data staging, explicit commit/ref update, exact-ref status | Read-only-fetch tree staging, one expected-old non-force receive-pack, REST exact-ref status |
 | Unknown outcome handling | Timeout/transport map to `unknown_provider_outcome` | Timeout/cancellation/transport map to `unknown_provider_outcome` |
 | Drift evidence | Not applicable (hosted API) | Version-incompatible and schema-drift map to `reconciliation_required` |
 

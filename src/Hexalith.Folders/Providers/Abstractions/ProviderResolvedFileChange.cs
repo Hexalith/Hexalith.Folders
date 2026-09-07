@@ -5,7 +5,8 @@ internal sealed record ProviderResolvedFileChange(
     ProviderFileChangeKind Kind,
     string Path,
     ReadOnlyMemory<byte> Content,
-    ProviderFileContentType ContentType)
+    ProviderFileContentType ContentType,
+    string? SourceObjectId = null)
 {
     public override string ToString() => nameof(ProviderResolvedFileChange);
 }

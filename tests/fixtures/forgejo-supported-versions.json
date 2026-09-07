@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "forgejo-used-operation-counts-v1",
+  "versions": [
+    {
+      "version": "16.0.3",
+      "expectedOperationCount": 9
+    },
+    {
+      "version": "15.0.7",
+      "expectedOperationCount": 9
+    }
+  ]
+}

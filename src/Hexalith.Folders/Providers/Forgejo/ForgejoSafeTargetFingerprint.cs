@@ -190,6 +190,113 @@ internal static class ForgejoSafeTargetFingerprint
         return true;
     }
 
+    public static bool TryCreate(
+        ProviderFileMutationRequest request,
+        ProviderCredentialMode credentialMode,
+        Uri canonicalBaseUri,
+        string snapshotVersion,
+        out ProviderTargetEvidence safeTargetEvidence,
+        out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return TryCreateOperationTarget(
+            request.TargetEvidence,
+            credentialMode,
+            canonicalBaseUri,
+            snapshotVersion,
+            ProviderOperationCatalog.FileMutationSupport,
+            [
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.FolderId,
+                request.DelegatedTaskId,
+                request.ProviderBindingRef,
+                request.RepositoryBindingId,
+                request.AuthorizationEvidence.Fingerprint,
+                request.LockEvidence.Fingerprint,
+                request.RefPolicyEvidence.Fingerprint,
+                request.FilePolicyEvidence.Fingerprint,
+                request.SafeResolvedTargetFingerprint,
+                request.SafeChangeSetFingerprint,
+                request.IdempotencyKey,
+                request.IdempotencyAdmission.IntentFingerprint,
+            ],
+            out safeTargetEvidence,
+            out failureReason);
+    }
+
+    public static bool TryCreate(
+        ProviderCommitRequest request,
+        ProviderCredentialMode credentialMode,
+        Uri canonicalBaseUri,
+        string snapshotVersion,
+        out ProviderTargetEvidence safeTargetEvidence,
+        out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return TryCreateOperationTarget(
+            request.TargetEvidence,
+            credentialMode,
+            canonicalBaseUri,
+            snapshotVersion,
+            ProviderOperationCatalog.CommitSupport,
+            [
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.FolderId,
+                request.DelegatedTaskId,
+                request.ProviderBindingRef,
+                request.RepositoryBindingId,
+                request.AuthorizationEvidence.Fingerprint,
+                request.LockEvidence.Fingerprint,
+                request.RefPolicyEvidence.Fingerprint,
+                request.SafeResolvedTargetFingerprint,
+                request.SafeStagedChangeSetFingerprint,
+                request.SafeCommitMessageFingerprint,
+                request.SafeExpectedHeadFingerprint,
+                request.IdempotencyKey,
+                request.IdempotencyAdmission.IntentFingerprint,
+            ],
+            out safeTargetEvidence,
+            out failureReason);
+    }
+
+    public static bool TryCreate(
+        ProviderOperationStatusRequest request,
+        ProviderCredentialMode credentialMode,
+        Uri canonicalBaseUri,
+        string snapshotVersion,
+        out ProviderTargetEvidence safeTargetEvidence,
+        out string? failureReason)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return TryCreateOperationTarget(
+            request.TargetEvidence,
+            credentialMode,
+            canonicalBaseUri,
+            snapshotVersion,
+            ProviderOperationCatalog.StatusQuery,
+            [
+                request.ManagedTenantId,
+                request.OrganizationId,
+                request.FolderId,
+                request.DelegatedTaskId,
+                request.ProviderBindingRef,
+                request.RepositoryBindingId,
+                request.AuthorizationEvidence.Fingerprint,
+                request.LockEvidence.Fingerprint,
+                request.RefPolicyEvidence.Fingerprint,
+                request.OperationReference,
+                request.SafeResolvedTargetFingerprint,
+                request.SafeFullRefFingerprint,
+                request.SafeExpectedHeadFingerprint,
+                request.SafeIntendedCommitFingerprint,
+                request.SafeCheckWindowFingerprint,
+            ],
+            out safeTargetEvidence,
+            out failureReason);
+    }
+
     public static bool TryValidateMetadata(ProviderTargetEvidence targetEvidence, out string? failureReason)
     {
         ArgumentNullException.ThrowIfNull(targetEvidence);
@@ -201,6 +308,77 @@ internal static class ForgejoSafeTargetFingerprint
             return false;
         }
 
+        return true;
+    }
+
+    private static bool TryCreateOperationTarget(
+        ProviderTargetEvidence targetEvidence,
+        ProviderCredentialMode credentialMode,
+        Uri canonicalBaseUri,
+        string snapshotVersion,
+        string operationScope,
+        IReadOnlyList<string> fingerprintFields,
+        out ProviderTargetEvidence safeTargetEvidence,
+        out string? failureReason)
+    {
+        safeTargetEvidence = targetEvidence;
+        failureReason = null;
+        if (targetEvidence is null
+            || targetEvidence.Metadata is null
+            || !string.Equals(targetEvidence.Product, "forgejo", StringComparison.Ordinal)
+            || !string.Equals(targetEvidence.ProductVersion, snapshotVersion, StringComparison.Ordinal)
+            || !string.Equals(targetEvidence.ApiSurfaceVersion, ForgejoProviderConstants.ApiSurfaceVersion, StringComparison.Ordinal)
+            || !targetEvidence.Metadata.TryGetValue("operation_scope", out string? declaredScope)
+            || !string.Equals(declaredScope, operationScope, StringComparison.Ordinal)
+            || targetEvidence.Metadata.Keys.Any(static key => UnsafeKeys.Contains(key)))
+        {
+            failureReason = "unsafe_forgejo_target_metadata";
+            return false;
+        }
+
+        List<string?> fields =
+        [
+            .. fingerprintFields,
+            credentialMode.ToString(),
+            ForgejoProviderConstants.ApiSurfaceVersion,
+            snapshotVersion,
+            CanonicalOrigin(canonicalBaseUri),
+        ];
+        foreach (KeyValuePair<string, string> pair in targetEvidence.Metadata.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+        {
+            if (!IsSafeMetadataKey(pair.Key)
+                || (!string.Equals(pair.Key, "authorized_base_url", StringComparison.Ordinal)
+                    && !IsSafeMetadataValue(pair.Value)))
+            {
+                failureReason = "unsafe_forgejo_target_metadata";
+                return false;
+            }
+
+            if (!string.Equals(pair.Key, "authorized_base_url", StringComparison.Ordinal))
+            {
+                fields.Add(pair.Key);
+                fields.Add(pair.Value);
+            }
+        }
+
+        string safeTargetFingerprint = ForgejoProviderSafeOperationEvidence.Create(
+            "hxf-forgejo:v1:operation-target",
+            [.. fields]);
+        safeTargetEvidence = new ProviderTargetEvidence(
+            "forgejo",
+            snapshotVersion,
+            ForgejoProviderConstants.ApiSurfaceVersion,
+            "forgejo-target-evidence-v3",
+            targetEvidence.IsStale,
+            targetEvidence.ObservedAt,
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["safe_target_fingerprint"] = safeTargetFingerprint,
+                ["target_fingerprint_version"] = "forgejo-target-v3",
+                ["operation_scope"] = operationScope,
+                ["api_surface_version"] = ForgejoProviderConstants.ApiSurfaceVersion,
+                ["snapshot_version"] = snapshotVersion,
+            });
         return true;
     }
 
@@ -318,6 +496,10 @@ internal static class ForgejoSafeTargetFingerprint
             && !value.Contains("token", StringComparison.OrdinalIgnoreCase)
             && !value.Contains("password", StringComparison.OrdinalIgnoreCase)
             && !value.Contains("diff --git", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsSafeMetadataKey(string? value)
+        => value is { Length: > 0 and <= 128 }
+            && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-');
 
     private static void AppendField(IncrementalHash hash, string? value)
     {

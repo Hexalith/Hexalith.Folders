@@ -15,11 +15,14 @@ public sealed class DefaultProviderCapabilityResolver(IEnumerable<IGitProvider> 
 
         bool canonicalGitHubIdentity = string.Equals(providerFamily, GitHubProviderConstants.ProviderFamily, StringComparison.Ordinal)
             && string.Equals(providerKey, GitHubProviderConstants.ProviderKey, StringComparison.Ordinal);
+        IGitProvider[] matchingProviders = _providers
+            .Where(p => string.Equals(p.ProviderFamily, providerFamily, StringComparison.Ordinal)
+                && string.Equals(p.ProviderKey, providerKey, StringComparison.Ordinal))
+            .ToArray();
         IGitProvider? provider = canonicalGitHubIdentity
             ? _providers.LastOrDefault(static provider => provider is GitHubProvider)
-            : _providers.FirstOrDefault(p =>
-                string.Equals(p.ProviderFamily, providerFamily, StringComparison.Ordinal)
-                && string.Equals(p.ProviderKey, providerKey, StringComparison.Ordinal));
+            : matchingProviders.LastOrDefault(static provider => provider is ICanonicalProviderAdapter)
+                ?? matchingProviders.FirstOrDefault();
 
         return Task.FromResult(provider);
     }

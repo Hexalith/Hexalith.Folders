@@ -90,10 +90,30 @@ public sealed class ForgejoDependencyGuardTests
     {
         string root = FindRepositoryRoot();
         string projectFile = File.ReadAllText(Path.Combine(root, "src", "Hexalith.Folders", "Hexalith.Folders.csproj"));
+        string centralPackages = File.ReadAllText(Path.Combine(root, "Directory.Packages.props"));
 
         projectFile.ShouldNotContain("Forgejo", Case.Sensitive);
         projectFile.ShouldNotContain("Gitea", Case.Sensitive);
         projectFile.ShouldNotContain("Version=", Case.Sensitive);
+        projectFile.ShouldContain("<PackageReference Include=\"LibGit2Sharp\" />", Case.Sensitive);
+        centralPackages.ShouldContain("<PackageVersion Include=\"LibGit2Sharp\" Version=\"0.32.0\" />", Case.Sensitive);
+        ForgejoSmartHttpGitTransport.IsPinnedNativeProfileAvailable().ShouldBeTrue();
+    }
+
+    [Fact]
+    public void ForgejoOperationTransportDoesNotDispatchTheInadmissibleRestContentsWrite()
+    {
+        string root = FindRepositoryRoot();
+        string operationClient = File.ReadAllText(Path.Combine(
+            root,
+            "src",
+            "Hexalith.Folders",
+            "Providers",
+            "Forgejo",
+            "ForgejoHttpApiClient.Operations.cs"));
+
+        operationClient.ShouldNotContain("HttpMethod.Post", Case.Sensitive);
+        operationClient.ShouldNotContain("/contents", Case.Sensitive);
     }
 
     [Fact]
@@ -119,6 +139,7 @@ public sealed class ForgejoDependencyGuardTests
         ServiceCollection services = new();
         CountingForgejoCredentialResolver credentialResolver = new();
         CountingForgejoApiClientFactory apiClientFactory = new();
+        services.AddSingleton<TimeProvider>(new ForgejoFixedTimeProvider(DateTimeOffset.Parse("2026-08-26T00:01:00+00:00")));
         services.AddSingleton<IForgejoCredentialResolver>(credentialResolver);
         services.AddSingleton<IForgejoApiClientFactory>(apiClientFactory);
         services.AddFoldersProviderReadiness();
@@ -143,6 +164,7 @@ public sealed class ForgejoDependencyGuardTests
         CountingForgejoCredentialResolver credentialResolver = new();
         CountingForgejoApiClientFactory apiClientFactory = new();
         CountingForgejoTargetResolver targetResolver = new();
+        services.AddSingleton<TimeProvider>(new ForgejoFixedTimeProvider(DateTimeOffset.Parse("2026-08-26T00:01:00+00:00")));
         services.AddSingleton<IForgejoCredentialResolver>(credentialResolver);
         services.AddSingleton<IForgejoApiClientFactory>(apiClientFactory);
         services.AddSingleton<IProviderRepositoryTargetResolver>(targetResolver);

@@ -12,4 +12,5 @@ internal sealed record ForgejoSupportedVersionEntry(
     string DatedSource,
     string SourceArtifactSha256,
     string SnapshotSha256,
+    int ExpectedOperationCount,
     string IntegrityHash);

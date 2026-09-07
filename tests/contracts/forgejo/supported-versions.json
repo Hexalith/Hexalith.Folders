@@ -15,8 +15,9 @@
       "reviewer": "folders-provider-maintainers",
       "datedSource": "2026-08-26",
       "sourceArtifactSha256": "sha256:5047480080ab408814b3a1b13db5fb17aac084831556be17b6e28321afb2c332",
-      "snapshotSha256": "sha256:57f33450842ec7333acb7195f51d3e3ab35ff0f1234846fc7ba99a196d2370f9",
-      "integrityHash": "sha256:51a0f06778162e9559c1b6ec0d07459aca6d90ef64d496654e805c3170bd1d44"
+      "snapshotSha256": "sha256:fbdfd151ab27ab269a10a97a80d89f81513e7cc24512d730ed63db99fe8301b8",
+      "expectedOperationCount": 9,
+      "integrityHash": "sha256:25651192cf84359dd57ff6fbfabef9fe735895fbb8105ac58c08cbe134b765c1"
     },
     {
       "version": "15.0.7",
@@ -29,8 +30,9 @@
       "reviewer": "folders-provider-maintainers",
       "datedSource": "2026-08-26",
       "sourceArtifactSha256": "sha256:718e520e48dcdcb6796b11ecfd6b524f2d762edd8debfbba912846a06578a5d2",
-      "snapshotSha256": "sha256:534bdc6e7c4ad2f84a349b889eb8a8d4f31e947fb03fa9b162c2cee9179a3dd8",
-      "integrityHash": "sha256:49038093b5439e0331b6003f94c0ec49e7326f2ca520a06c2e73c91da05718c6"
+      "snapshotSha256": "sha256:03ce2724a696818ebb25bdf67bb1041ec213500779cbd018783b306d26294150",
+      "expectedOperationCount": 9,
+      "integrityHash": "sha256:1038a51a2ea831b8e66eef23d0bf3fd12066dfb473dcf98b7a40f2f0d14381ba"
     }
   ],
   "retiredEvidence": [

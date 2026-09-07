@@ -15,7 +15,7 @@ namespace Hexalith.Folders.Tests.Providers.Forgejo;
 
 public sealed class ForgejoProviderReadinessValidationServiceTests
 {
-    private static readonly DateTimeOffset Now = new(2026, 5, 26, 10, 0, 0, TimeSpan.Zero);
+    private static readonly DateTimeOffset Now = new(2026, 5, 24, 6, 0, 0, TimeSpan.Zero);
 
     [Fact]
     public async Task ValidateAsyncShouldBuildForgejoDiscoveryFromAuthorizedBindingMetadata()
@@ -25,7 +25,10 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         ForgejoProvider provider = new(
             RecordingForgejoCredentialResolver.Success("forgejo-token-1234567890"),
-            new RecordingForgejoApiClientFactory(apiClient));
+            new RecordingForgejoApiClientFactory(apiClient),
+            new UnconfiguredProviderRepositoryTargetResolver(),
+            new UnconfiguredProviderOperationSourceResolver(),
+            timeProvider: new ForgejoFixedTimeProvider(Now));
         RecordingProviderCapabilityResolver resolver = new(provider);
         ProviderReadinessValidationService service = Service(
             new RecordingProviderReadinessBindingReader(Binding()),
@@ -38,14 +41,14 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
             TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(ProviderReadinessResultCode.Allowed);
-        result.Status.ShouldBe("degraded");
-        result.Evidence.ShouldNotBeNull().FileOperations.ShouldBe("temporarily_unavailable");
+        result.Status.ShouldBe("ready", result.ReasonCode);
+        result.Evidence.ShouldNotBeNull().FileOperations.ShouldBe("supported");
         result.CapabilityProfileRef.ShouldNotBeNullOrWhiteSpace();
         apiClient.LastRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("16.0.3");
         apiClient.LastRequest.ShouldNotBeNull().CredentialMode.ShouldBe(ProviderCredentialMode.UserDelegatedReference);
         ProviderCapabilityDiscoveryRequest storedAttempt = capabilityEvidence.Attempts.ShouldHaveSingleItem();
         storedAttempt.CredentialModeRequirements.ShouldBe([ProviderCredentialMode.UserDelegatedReference]);
-        storedAttempt.TargetEvidence.Metadata["operation_scope"].ShouldBe(ProviderOperationCatalog.RepositoryCreation);
+        storedAttempt.TargetEvidence.Metadata["operation_scope"].ShouldBe("readiness");
         string attemptJson = JsonSerializer.Serialize(capabilityEvidence.Attempts);
         attemptJson.ShouldNotContain("https://forgejo.example.test", Case.Sensitive);
         readinessStore.LastStored.ShouldNotBeNull().DiagnosticJson.ShouldNotContain("https://forgejo.example.test", Case.Sensitive);
@@ -97,7 +100,7 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
                     ["authorized_base_url"] = "https://forgejo.example.test",
                     ["snapshot_version"] = "16.0.3",
                     ["safe_target_fingerprint"] = "safe-target-a",
-                    ["operation_scope"] = ProviderOperationCatalog.RepositoryCreation,
+                    ["operation_scope"] = "readiness",
                 }),
             CorrelationId: "binding-corr-a",
             TaskId: "binding-task-a",

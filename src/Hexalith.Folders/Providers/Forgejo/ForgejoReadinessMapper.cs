@@ -19,22 +19,56 @@ internal static class ForgejoReadinessMapper
                 permissions.SupportsBranchRefInspection ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
                 limits: new Dictionary<string, string>(StringComparer.Ordinal)
                 {
+                    ["maximum_branch_name_characters"] = "100",
                     ["ref_model"] = "git_refs",
                     ["pagination"] = permissions.SupportsPagination ? "link_header" : "unknown",
                 },
                 failureCategory: permissions.SupportsBranchRefInspection ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
             ProviderCapabilityOperationRow.WithDetails(
                 ProviderOperationCatalog.FileMutationSupport,
-                permissions.SupportsFileMutation ? ProviderOperationSupport.Partial : ProviderOperationSupport.Unavailable,
+                permissions.SupportsFileMutation ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                limits: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["maximum_aggregate_content_bytes"] = "10485760",
+                    ["maximum_change_count"] = "100",
+                    ["maximum_file_bytes"] = "1048576",
+                    ["maximum_path_characters"] = "500",
+                },
                 constraints: new Dictionary<string, string>(StringComparer.Ordinal)
                 {
-                    ["contents_api"] = permissions.SupportsContentsApi ? "supported" : "unavailable",
+                    ["contents_api"] = "read_only_only",
                     ["diff_storage"] = "not_persisted",
+                    ["git_object_format"] = "sha1",
+                    ["libgit2_version"] = "1.8.6",
+                    ["libgit2sharp_version"] = "0.32.0",
+                    ["staging"] = "smart_https_fetch_and_local_bare_tree",
                     ["scope_posture"] = permissions.RequiredScopePosture,
                 },
                 failureCategory: permissions.SupportsFileMutation ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
-            Operation(ProviderOperationCatalog.CommitSupport, permissions.SupportsCommit),
-            Operation(ProviderOperationCatalog.StatusQuery, permissions.SupportsStatus),
+            ProviderCapabilityOperationRow.WithDetails(
+                ProviderOperationCatalog.CommitSupport,
+                permissions.SupportsCommit ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["compare_and_swap"] = "receive_pack_expected_old",
+                    ["force"] = "disabled",
+                    ["new_branch"] = "disabled",
+                    ["transport"] = "smart_https_receive_pack",
+                },
+                failureCategory: permissions.SupportsCommit ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
+            ProviderCapabilityOperationRow.WithDetails(
+                ProviderOperationCatalog.StatusQuery,
+                permissions.SupportsStatus ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                limits: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["maximum_check_count"] = "5",
+                    ["reconciliation_window_seconds"] = "900",
+                },
+                constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["evidence"] = "version_and_exact_rest_ref",
+                },
+                failureCategory: permissions.SupportsStatus ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
             ProviderCapabilityOperationRow.Unsupported(ProviderOperationCatalog.CleanupExpiration),
         ];
     }
@@ -72,7 +106,9 @@ internal static class ForgejoReadinessMapper
             ["authorization_freshness"] = request.AuthorizationEvidence.FreshnessClass.ToLowerInvariant(),
             ["safe_target_fingerprint"] = safeTargetFingerprint,
             ["capability_profile_schema"] = ForgejoProviderConstants.CapabilityProfileSchemaVersion,
-            ["repository_create_bind_port"] = "capability_only_until_provider_port_expands",
+            ["file_commit_transport"] = "libgit2sharp_smart_https",
+            ["status_transport"] = "forgejo_rest_ref_read",
+            ["repository_create_bind_port"] = "production_http_adapter",
         };
 
     private static ProviderCapabilityOperationRow Operation(string operationId, bool supported)

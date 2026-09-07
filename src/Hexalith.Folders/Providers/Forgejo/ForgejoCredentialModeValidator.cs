@@ -5,11 +5,16 @@ namespace Hexalith.Folders.Providers.Forgejo;
 internal static class ForgejoCredentialModeValidator
 {
     public static bool TryGetSupportedMode(
-        IReadOnlyList<ProviderCredentialMode> credentialModes,
+        IReadOnlyList<ProviderCredentialMode>? credentialModes,
         out ProviderCredentialMode mode,
         out string? failureReason)
     {
-        ArgumentNullException.ThrowIfNull(credentialModes);
+        if (credentialModes is null)
+        {
+            mode = ProviderCredentialMode.None;
+            failureReason = "missing_forgejo_credential_mode";
+            return false;
+        }
 
         ProviderCredentialMode[] distinctModes = credentialModes
             .Where(static x => x != ProviderCredentialMode.None)

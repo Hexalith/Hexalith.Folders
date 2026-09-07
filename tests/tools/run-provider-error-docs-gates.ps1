@@ -164,7 +164,7 @@ try {
 
     $testOutput = dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter $testFilter --results-directory $reportDirectory --logger "trx;LogFileName=$trxName" 2>&1
     if ($LASTEXITCODE -ne 0) {
-        if (($testOutput -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied') {
+        if (($testOutput -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied|Testing with VSTest target is no longer supported') {
             Invoke-XunitInProcessFallback
         }
         else {

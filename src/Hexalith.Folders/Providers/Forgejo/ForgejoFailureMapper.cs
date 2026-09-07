@@ -11,6 +11,7 @@ internal static class ForgejoFailureMapper
             ["existing_equivalent"] = ProviderFailureCategory.None.ToCategoryCode(),
             ["validation"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
             ["cancellation_before_dispatch"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["reservation_invalidated"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["observation_cancelled"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
             ["authentication"] = ProviderFailureCategory.ProviderAuthenticationRequired.ToCategoryCode(),
             ["permission"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
@@ -21,6 +22,8 @@ internal static class ForgejoFailureMapper
             ["missing_branch_or_path"] = ProviderFailureCategory.ProviderValidationFailed.ToCategoryCode(),
             ["conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["default_branch_conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
+            ["ref_head_conflict"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
+            ["repository_archived"] = ProviderFailureCategory.ProviderConflict.ToCategoryCode(),
             ["unsupported_ref"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
             ["redirect_cross_origin"] = ProviderFailureCategory.ProviderReadinessFailed.ToCategoryCode(),
             ["rate_limited"] = ProviderFailureCategory.ProviderRateLimited.ToCategoryCode(),
@@ -32,7 +35,72 @@ internal static class ForgejoFailureMapper
             ["timeout_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["cancellation_mutation"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
             ["ambiguous_mutation_response"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["outcome_recording_failed"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["response_limit_exceeded"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["status_evidence_conflicting"] = ProviderFailureCategory.ReconciliationRequired.ToCategoryCode(),
             ["unexpected_transport"] = ProviderFailureCategory.UnknownProviderOutcome.ToCategoryCode(),
+            ["object_format_unsupported"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
+            ["smart_http_unsupported"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
+            ["native_runtime_unavailable"] = ProviderFailureCategory.UnsupportedProviderCapability.ToCategoryCode(),
+            ["transfer_limit_exceeded"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["temporary_disk_limit_exceeded"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["temporary_repository_cleanup_failed"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+            ["operation_timed_out"] = ProviderFailureCategory.ProviderTransientFailure.ToCategoryCode(),
+            ["remote_policy_rejected"] = ProviderFailureCategory.ProviderPermissionInsufficient.ToCategoryCode(),
+            ["remote_rejected"] = ProviderFailureCategory.ProviderFailureKnown.ToCategoryCode(),
+        };
+
+    public static (ProviderFailureCategory Category, string ReasonCode) ToProviderOperationFailure(
+        ForgejoApiFailureCondition condition)
+        => condition switch
+        {
+            ForgejoApiFailureCondition.ValidationFailure => (ProviderFailureCategory.ProviderValidationFailed, "forgejo_validation_failed"),
+            ForgejoApiFailureCondition.CancellationBeforeDispatch => (ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_cancelled_before_dispatch"),
+            ForgejoApiFailureCondition.ReservationInvalidated => (ProviderFailureCategory.ProviderConflict, "forgejo_operation_reservation_invalidated"),
+            ForgejoApiFailureCondition.ObservationCancelled => (ProviderFailureCategory.ProviderUnavailable, "forgejo_status_evidence_unavailable"),
+            ForgejoApiFailureCondition.AuthenticationRequired => (ProviderFailureCategory.ProviderAuthenticationRequired, "forgejo_authentication_required"),
+            ForgejoApiFailureCondition.PermissionInsufficient or ForgejoApiFailureCondition.ContentsPermissionInsufficient
+                => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_permission_insufficient"),
+            ForgejoApiFailureCondition.AdministrationPermissionInsufficient
+                => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_administration_permission_insufficient"),
+            ForgejoApiFailureCondition.NotFoundOrHidden => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_resource_hidden_or_missing"),
+            ForgejoApiFailureCondition.MissingRepository or ForgejoApiFailureCondition.MissingBranchOrPath
+                => (ProviderFailureCategory.ProviderConflict, "forgejo_ref_head_conflict"),
+            ForgejoApiFailureCondition.RepositoryConflict or ForgejoApiFailureCondition.RefHeadConflict
+                => (ProviderFailureCategory.ProviderConflict, "forgejo_ref_head_conflict"),
+            ForgejoApiFailureCondition.DefaultBranchConflict or ForgejoApiFailureCondition.BranchProtectionConflict
+                => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.RepositoryArchived
+                => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_archived"),
+            ForgejoApiFailureCondition.UnsupportedRefOperation or ForgejoApiFailureCondition.UnsupportedCapability
+                => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_capability_unsupported"),
+            ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
+            // The HTTP seam converts a rate limit observed after the write boundary into
+            // AmbiguousMutationResponse. A remaining RateLimit is therefore a conclusive
+            // pre-dispatch observation and is safe to record as a known retryable failure.
+            ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),
+            ForgejoApiFailureCondition.ServerUnavailable => (ProviderFailureCategory.ProviderUnavailable, "forgejo_server_unavailable"),
+            ForgejoApiFailureCondition.VersionIncompatible or ForgejoApiFailureCondition.SchemaDriftBreaking
+                => (ProviderFailureCategory.ReconciliationRequired, "forgejo_version_incompatible"),
+            ForgejoApiFailureCondition.StatusEvidenceConflicting
+                => (ProviderFailureCategory.ReconciliationRequired, "forgejo_status_evidence_conflicting"),
+            ForgejoApiFailureCondition.TimeoutDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
+            ForgejoApiFailureCondition.CancellationDuringMutation => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
+            ForgejoApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
+            ForgejoApiFailureCondition.OutcomeRecordingFailed => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_outcome_recording_failed"),
+            ForgejoApiFailureCondition.ResponseLimitExceeded => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_response_limit_exceeded"),
+            ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
+            ForgejoApiFailureCondition.UnexpectedTransportFailure => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_transport_outcome_unknown"),
+            ForgejoApiFailureCondition.ObjectFormatUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_object_format_unsupported"),
+            ForgejoApiFailureCondition.SmartHttpUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_smart_http_unsupported"),
+            ForgejoApiFailureCondition.NativeRuntimeUnavailable => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_native_runtime_unavailable"),
+            ForgejoApiFailureCondition.TransferLimitExceeded => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_transfer_limit_exceeded"),
+            ForgejoApiFailureCondition.TemporaryDiskLimitExceeded => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_disk_limit_exceeded"),
+            ForgejoApiFailureCondition.TemporaryRepositoryCleanupFailed => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_temporary_repository_cleanup_failed"),
+            ForgejoApiFailureCondition.OperationTimedOut => (ProviderFailureCategory.ProviderTransientFailure, "forgejo_operation_timed_out"),
+            ForgejoApiFailureCondition.RemotePolicyRejected => (ProviderFailureCategory.ProviderPermissionInsufficient, "forgejo_remote_policy_rejected"),
+            ForgejoApiFailureCondition.RemoteRejected => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_remote_rejected"),
+            _ => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_commit_outcome_unknown"),
         };
 
     public static ProviderCapabilityDiscoveryResult ToProviderFailure(
@@ -58,6 +126,7 @@ internal static class ForgejoFailureMapper
             ForgejoApiFailureCondition.ExistingEquivalent => (ProviderFailureCategory.None, "forgejo_existing_equivalent"),
             ForgejoApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_default_branch_conflict"),
             ForgejoApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.RepositoryArchived => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_archived"),
             ForgejoApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ref_operation_unsupported"),
             ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
             ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),
@@ -67,6 +136,9 @@ internal static class ForgejoFailureMapper
             ForgejoApiFailureCondition.AmbiguousMutationResponse => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_mutation_outcome_unknown"),
             ForgejoApiFailureCondition.MalformedResponse => (ProviderFailureCategory.ProviderFailureKnown, "forgejo_malformed_response"),
             ForgejoApiFailureCondition.UnsupportedCapability => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_capability_unsupported"),
+            ForgejoApiFailureCondition.ObjectFormatUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_object_format_unsupported"),
+            ForgejoApiFailureCondition.SmartHttpUnsupported => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_smart_http_unsupported"),
+            ForgejoApiFailureCondition.NativeRuntimeUnavailable => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_native_runtime_unavailable"),
             ForgejoApiFailureCondition.VersionIncompatible => (ProviderFailureCategory.ReconciliationRequired, "forgejo_version_incompatible"),
             ForgejoApiFailureCondition.SchemaDriftBreaking => (ProviderFailureCategory.ReconciliationRequired, "forgejo_schema_drift_breaking"),
             ForgejoApiFailureCondition.UnexpectedTransportFailure => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_transport_outcome_unknown"),
@@ -115,6 +187,7 @@ internal static class ForgejoFailureMapper
             ForgejoApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_conflict"),
             ForgejoApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_default_branch_conflict"),
             ForgejoApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.RepositoryArchived => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_archived"),
             ForgejoApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ref_operation_unsupported"),
             ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
             ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),
@@ -173,6 +246,7 @@ internal static class ForgejoFailureMapper
             ForgejoApiFailureCondition.RepositoryConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_conflict"),
             ForgejoApiFailureCondition.DefaultBranchConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_default_branch_conflict"),
             ForgejoApiFailureCondition.BranchProtectionConflict => (ProviderFailureCategory.ProviderConflict, "forgejo_branch_protection_conflict"),
+            ForgejoApiFailureCondition.RepositoryArchived => (ProviderFailureCategory.ProviderConflict, "forgejo_repository_archived"),
             ForgejoApiFailureCondition.UnsupportedRefOperation => (ProviderFailureCategory.UnsupportedProviderCapability, "forgejo_ref_operation_unsupported"),
             ForgejoApiFailureCondition.RedirectCrossOrigin => (ProviderFailureCategory.ProviderReadinessFailed, "forgejo_cross_origin_redirect_rejected"),
             ForgejoApiFailureCondition.RateLimit => (ProviderFailureCategory.ProviderRateLimited, "forgejo_rate_limited"),

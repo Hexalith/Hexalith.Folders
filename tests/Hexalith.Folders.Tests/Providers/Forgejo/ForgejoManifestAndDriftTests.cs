@@ -17,6 +17,10 @@ public sealed class ForgejoManifestAndDriftTests
         "/repos/{owner}/{repo}",
         "/repos/{owner}/{repo}/branches/{branch}",
         "/repos/{owner}/{repo}/branch_protections/{name}",
+        "/repos/{owner}/{repo}/contents",
+        "/repos/{owner}/{repo}/contents/{filepath}",
+        "/repos/{owner}/{repo}/git/refs/{ref}",
+        "/repos/{owner}/{repo}/commits",
     ];
 
     [Fact]
@@ -44,6 +48,7 @@ public sealed class ForgejoManifestAndDriftTests
             entry.DatedSource.ShouldBe("2026-08-26");
             entry.SourceArtifactSha256.ShouldStartWith("sha256:");
             entry.SnapshotSha256.ShouldBe(ComputeFileHash(Path.Combine(root, entry.SnapshotPath)));
+            entry.ExpectedOperationCount.ShouldBe(9);
             entry.IntegrityHash.ShouldBe(ComputeIntegrityHash(entry));
             File.Exists(Path.Combine(root, entry.SnapshotPath)).ShouldBeTrue(entry.SnapshotPath);
         }
@@ -63,8 +68,9 @@ public sealed class ForgejoManifestAndDriftTests
             JsonElement review = snapshot.RootElement.GetProperty("x-hexalith-review");
             review.GetProperty("source").GetString().ShouldBe(entry.SourceUrl);
             $"sha256:{review.GetProperty("sourceArtifactSha256").GetString()}".ShouldBe(entry.SourceArtifactSha256);
-            review.GetProperty("scope").GetString().ShouldBe("repository-create-bind-branch-protection");
+            review.GetProperty("scope").GetString().ShouldBe("repository-create-bind-branch-protection-file-commit-status");
             JsonElement paths = snapshot.RootElement.GetProperty("paths");
+            paths.EnumerateObject().Sum(static path => path.Value.EnumerateObject().Count()).ShouldBe(entry.ExpectedOperationCount);
 
             foreach (string requiredPath in RequiredSnapshotPaths)
             {
@@ -78,7 +84,7 @@ public sealed class ForgejoManifestAndDriftTests
     [Fact]
     public void OperationCoverageMatrixMapsProviderOperationsToPinnedForgejoPaths()
     {
-        Dictionary<string, string[]> coverage = new(StringComparer.Ordinal)
+        Dictionary<string, string[]> restCoverage = new(StringComparer.Ordinal)
         {
             [ProviderOperationCatalog.ReadinessValidation] = ["/version"],
             [ProviderOperationCatalog.ProviderSupportEvidence] = ["/version"],
@@ -89,12 +95,64 @@ public sealed class ForgejoManifestAndDriftTests
                 "/repos/{owner}/{repo}/branches/{branch}",
                 "/repos/{owner}/{repo}/branch_protections/{name}",
             ],
+            [ProviderOperationCatalog.StatusQuery] =
+            [
+                "/version",
+                "/repos/{owner}/{repo}",
+                "/repos/{owner}/{repo}/git/refs/{ref}",
+            ],
+        };
+        Dictionary<string, string[]> smartHttpCoverage = new(StringComparer.Ordinal)
+        {
+            [ProviderOperationCatalog.FileMutationSupport] = ["git-upload-pack"],
+            [ProviderOperationCatalog.CommitSupport] = ["git-upload-pack", "git-receive-pack"],
         };
 
-        coverage.Keys.ShouldContain(ProviderOperationCatalog.RepositoryCreation);
-        coverage.Keys.ShouldContain(ProviderOperationCatalog.RepositoryBinding);
-        coverage.Keys.ShouldContain(ProviderOperationCatalog.BranchRefInspection);
-        coverage.Values.SelectMany(static paths => paths).ShouldAllBe(path => RequiredSnapshotPaths.Contains(path, StringComparer.Ordinal));
+        restCoverage.Keys.ShouldContain(ProviderOperationCatalog.RepositoryCreation);
+        restCoverage.Keys.ShouldContain(ProviderOperationCatalog.RepositoryBinding);
+        restCoverage.Keys.ShouldContain(ProviderOperationCatalog.BranchRefInspection);
+        restCoverage[ProviderOperationCatalog.StatusQuery].ShouldContain("/version");
+        restCoverage[ProviderOperationCatalog.StatusQuery].ShouldContain("/repos/{owner}/{repo}/git/refs/{ref}");
+        restCoverage.Values.SelectMany(static paths => paths).ShouldAllBe(path => RequiredSnapshotPaths.Contains(path, StringComparer.Ordinal));
+        smartHttpCoverage.Keys.ShouldBe(
+            [ProviderOperationCatalog.FileMutationSupport, ProviderOperationCatalog.CommitSupport],
+            ignoreOrder: true);
+    }
+
+    [Fact]
+    public void UsedOperationCountFixtureMatchesManifestCatalogAndSnapshots()
+    {
+        string root = FindRepositoryRoot();
+        ForgejoVersionManifest manifest = LoadManifest(root);
+        using JsonDocument fixture = JsonDocument.Parse(File.ReadAllText(
+            Path.Combine(root, "tests", "fixtures", "forgejo-supported-versions.json")));
+
+        fixture.RootElement.GetProperty("schemaVersion").GetString().ShouldBe("forgejo-used-operation-counts-v1");
+        Dictionary<string, int> expected = fixture.RootElement.GetProperty("versions").EnumerateArray()
+            .ToDictionary(
+                static entry => entry.GetProperty("version").GetString()!,
+                static entry => entry.GetProperty("expectedOperationCount").GetInt32(),
+                StringComparer.Ordinal);
+
+        expected.Keys.ShouldBe(manifest.Entries.Select(static entry => entry.Version), ignoreOrder: true);
+        foreach (ForgejoVersionManifestEntry entry in manifest.Entries)
+        {
+            expected[entry.Version].ShouldBe(entry.ExpectedOperationCount);
+            ForgejoSupportedVersionCatalog.TryFind(entry.Version, out ForgejoSupportedVersionEntry catalogEntry).ShouldBeTrue();
+            catalogEntry.ExpectedOperationCount.ShouldBe(entry.ExpectedOperationCount);
+        }
+    }
+
+    [Theory]
+    [InlineData("16.0.3+gitea-1.22.0", "16.0.3")]
+    [InlineData("15.0.7+gitea-1.22.0", "15.0.7")]
+    public void OfficialForgejoBuildMetadataResolvesOnlyToTheExactPinnedRelease(
+        string productVersion,
+        string expectedVersion)
+    {
+        ForgejoSupportedVersionCatalog.TryFind(productVersion, out ForgejoSupportedVersionEntry entry).ShouldBeTrue();
+        entry.Version.ShouldBe(expectedVersion);
+        ForgejoSupportedVersionCatalog.TryFind($"{expectedVersion}.1+gitea-1.22.0", out _).ShouldBeFalse();
     }
 
     [Fact]
@@ -277,7 +335,8 @@ public sealed class ForgejoManifestAndDriftTests
             entry.Reviewer,
             entry.DatedSource,
             entry.SourceArtifactSha256,
-            entry.SnapshotSha256);
+            entry.SnapshotSha256,
+            entry.ExpectedOperationCount);
         byte[] bytes = Encoding.UTF8.GetBytes(payload);
         return $"sha256:{Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant()}";
     }
@@ -346,6 +405,59 @@ public sealed class ForgejoManifestAndDriftTests
         branch.GetProperty("effective_branch_protection_name").GetProperty("type").GetString().ShouldBe("string");
         root.GetProperty("definitions").GetProperty("BranchProtection").GetProperty("properties")
             .GetProperty("rule_name").GetProperty("type").GetString().ShouldBe("string");
+
+        JsonElement changeFiles = paths.GetProperty("/repos/{owner}/{repo}/contents").GetProperty("post");
+        changeFiles.GetProperty("operationId").GetString().ShouldBe("repoChangeFiles");
+        changeFiles.GetProperty("parameters").EnumerateArray()
+            .Single(static parameter => parameter.GetProperty("name").GetString() == "body")
+            .GetProperty("schema").GetProperty("$ref").GetString().ShouldBe("#/definitions/ChangeFilesOptions");
+        changeFiles.GetProperty("responses").GetProperty("201").GetProperty("$ref").GetString().ShouldBe("#/responses/FilesResponse");
+
+        JsonElement changeOperation = root.GetProperty("definitions").GetProperty("ChangeFileOperation");
+        changeOperation.GetProperty("required").EnumerateArray().Select(static value => value.GetString())
+            .ShouldBe(["operation", "path"], ignoreOrder: false);
+        JsonElement changeProperties = changeOperation.GetProperty("properties");
+        changeProperties.GetProperty("content").GetProperty("type").GetString().ShouldBe("string");
+        changeProperties.GetProperty("sha").GetProperty("type").GetString().ShouldBe("string");
+
+        JsonElement changeOptions = root.GetProperty("definitions").GetProperty("ChangeFilesOptions").GetProperty("properties");
+        changeOptions.GetProperty("branch").GetProperty("type").GetString().ShouldBe("string");
+        changeOptions.GetProperty("files").GetProperty("items").GetProperty("$ref").GetString().ShouldBe("#/definitions/ChangeFileOperation");
+        changeOptions.GetProperty("message").GetProperty("type").GetString().ShouldBe("string");
+        changeOptions.TryGetProperty("new_branch", out _).ShouldBeTrue();
+        bool expectsForceProperty = root.GetProperty("info").GetProperty("version").GetString()!.StartsWith("16.", StringComparison.Ordinal);
+        changeOptions.TryGetProperty("force_overwrite_new_branch", out _).ShouldBe(expectsForceProperty);
+
+        AssertGetOperation(
+            paths,
+            "/repos/{owner}/{repo}/git/refs/{ref}",
+            "repoListGitRefs",
+            ["owner", "repo", "ref"],
+            "#/responses/ReferenceList");
+        AssertGetOperation(
+            paths,
+            "/repos/{owner}/{repo}/commits",
+            "repoGetAllCommits",
+            ["owner", "repo", "sha", "path", "stat", "verification", "files", "page", "limit", "not"],
+            "#/responses/CommitList");
+        AssertGetOperation(
+            paths,
+            "/repos/{owner}/{repo}/contents/{filepath}",
+            "repoGetContents",
+            ["owner", "repo", "filepath", "ref"],
+            "#/responses/ContentsResponse");
+
+        JsonElement reference = root.GetProperty("definitions").GetProperty("Reference").GetProperty("properties");
+        reference.GetProperty("ref").GetProperty("type").GetString().ShouldBe("string");
+        reference.GetProperty("object").GetProperty("$ref").GetString().ShouldBe("#/definitions/GitObject");
+        JsonElement affectedFile = root.GetProperty("definitions").GetProperty("CommitAffectedFiles").GetProperty("properties");
+        affectedFile.GetProperty("filename").GetProperty("type").GetString().ShouldBe("string");
+        affectedFile.GetProperty("status").GetProperty("type").GetString().ShouldBe("string");
+        JsonElement content = root.GetProperty("definitions").GetProperty("ContentsResponse").GetProperty("properties");
+        content.GetProperty("path").GetProperty("type").GetString().ShouldBe("string");
+        content.GetProperty("sha").GetProperty("type").GetString().ShouldBe("string");
+        content.GetProperty("encoding").GetProperty("type").GetString().ShouldBe("string");
+        content.GetProperty("content").GetProperty("type").GetString().ShouldBe("string");
     }
 
     private static void AssertGetOperation(
@@ -407,5 +519,6 @@ public sealed class ForgejoManifestAndDriftTests
         string DatedSource,
         string SourceArtifactSha256,
         string SnapshotSha256,
+        int ExpectedOperationCount,
         string IntegrityHash);
 }

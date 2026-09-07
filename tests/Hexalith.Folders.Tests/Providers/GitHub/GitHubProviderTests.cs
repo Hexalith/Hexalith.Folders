@@ -1186,7 +1186,8 @@ public sealed partial class GitHubProviderTests
             prior,
             priorFailureCategory,
             priorReasonCode,
-            PriorRetryable: priorRetryable);
+            PriorRetryable: priorRetryable,
+            PriorCanonicalRepositoryId: prior == ProviderPriorOutcomeDisposition.Success ? "101" : null);
     }
 
     [Fact]
@@ -1456,7 +1457,7 @@ public sealed partial class GitHubProviderTests
     }
 
     [Fact]
-    public async Task FreshRepositoryCreationCarryingPriorEvidenceStillExecutesInsteadOfReplaying()
+    public async Task FreshRepositoryCreationCarryingPriorEvidenceRejectsBeforeProviderAccess()
     {
         RecordingProviderRepositoryTargetResolver targetResolver = RecordingProviderRepositoryTargetResolver.Success();
         RecordingGitHubCredentialResolver credentialResolver = RecordingGitHubCredentialResolver.Success("token-sentinel");
@@ -1467,10 +1468,12 @@ public sealed partial class GitHubProviderTests
             CreationRequest(ProviderIdempotencyDisposition.Fresh, PriorOutcomeFingerprint),
             TestContext.Current.CancellationToken);
 
-        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.IsSuccess.ShouldBeFalse();
         result.EquivalentExisting.ShouldBeFalse();
-        targetResolver.CreationCalls.ShouldBe(1);
-        apiClient.RepositoryCreationCalls.ShouldBe(1);
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+        result.ReasonCode.ShouldBe("github_mutation_intent_malformed");
+        targetResolver.CreationCalls.ShouldBe(0);
+        apiClient.RepositoryCreationCalls.ShouldBe(0);
     }
     private static ProviderRepositoryCreationRequest CreationRequest(
         ProviderIdempotencyDisposition disposition = ProviderIdempotencyDisposition.Fresh,

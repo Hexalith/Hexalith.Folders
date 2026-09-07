@@ -1858,7 +1858,7 @@ public sealed partial class GitHubProviderTests
             SafeResolvedTargetFingerprint = GitHubOperationSourceBindings.ResolvedTarget(request, source.Target),
             SafeFullRefFingerprint = GitHubOperationSourceBindings.FullRef(request, source.Target.FullRef),
             SafeExpectedHeadFingerprint = GitHubOperationSourceBindings.ExpectedHead(request, source.Target.ExpectedHeadSha),
-            SafeIntendedCommitFingerprint = GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha),
+            SafeIntendedCommitFingerprint = GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha!),
             SafeCheckWindowFingerprint = GitHubOperationSourceBindings.CheckWindow(request),
         };
     }
@@ -1872,7 +1872,7 @@ public sealed partial class GitHubProviderTests
             SafeResolvedTargetFingerprint = GitHubOperationSourceBindings.ResolvedTarget(request, source.Target),
             SafeFullRefFingerprint = GitHubOperationSourceBindings.FullRef(request, source.Target.FullRef),
             SafeExpectedHeadFingerprint = GitHubOperationSourceBindings.ExpectedHead(request, source.Target.ExpectedHeadSha),
-            SafeIntendedCommitFingerprint = GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha),
+            SafeIntendedCommitFingerprint = GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha!),
         };
         return bound with
         {

@@ -612,7 +612,7 @@ public sealed partial class GitHubProvider
         try
         {
             result = await client.GetOperationStatusAsync(
-                new GitHubOperationStatusRequest(source.Target, source.IntendedCommitSha),
+                new GitHubOperationStatusRequest(source.Target, source.IntendedCommitSha!),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)
@@ -1323,7 +1323,7 @@ public sealed partial class GitHubProvider
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeResolvedTargetFingerprint, GitHubOperationSourceBindings.ResolvedTarget(request, source.Target))
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeFullRefFingerprint, GitHubOperationSourceBindings.FullRef(request, source.Target.FullRef))
             && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeExpectedHeadFingerprint, GitHubOperationSourceBindings.ExpectedHead(request, source.Target.ExpectedHeadSha))
-            && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeIntendedCommitFingerprint, GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha));
+            && GitHubProviderSafeOperationEvidence.FixedTimeEquals(request.SafeIntendedCommitFingerprint, GitHubOperationSourceBindings.IntendedCommit(request, source.IntendedCommitSha!));
     }
 
     private static bool IsFileMutationResultWellFormed(GitHubFileMutationResult result)

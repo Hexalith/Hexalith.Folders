@@ -37,7 +37,11 @@ public sealed class ForgejoProviderTests
         profile.KnownFailureMappings["schema_drift_breaking"].ShouldBe("reconciliation_required");
         profile.Operations.Select(o => o.OperationId).ShouldContain(ProviderOperationCatalog.RepositoryCreation);
         profile.Operations.Select(o => o.OperationId).ShouldContain(ProviderOperationCatalog.RepositoryBinding);
-        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.FileMutationSupport).Support.ShouldBe(ProviderOperationSupport.Partial);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.FileMutationSupport).Support.ShouldBe(ProviderOperationSupport.Supported);
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.FileMutationSupport)
+            .Limits["maximum_path_characters"].ShouldBe("500");
+        profile.Operations.Single(o => o.OperationId == ProviderOperationCatalog.BranchRefInspection)
+            .Limits["maximum_branch_name_characters"].ShouldBe("100");
         profile.RateLimit.Metadata["header_posture"].ShouldBe("forgejo_headers_metadata_only");
 
         credentialResolver.Calls.ShouldBe(1);
@@ -366,6 +370,7 @@ public sealed class ForgejoProviderTests
                     ["clone_url"] = sentinels[3],
                     ["email"] = sentinels[4],
                     ["raw_payload"] = sentinels[5],
+                    ["operation_scope"] = "readiness",
                 },
             },
         };
@@ -467,7 +472,8 @@ public sealed class ForgejoProviderTests
         ForgejoProvider provider = new(
             credentialResolver,
             apiClientFactory,
-            new SuccessfulForgejoTargetResolver(ResolvedTarget(expectedCanonicalRepositoryId: "001")));
+            new SuccessfulForgejoTargetResolver(ResolvedTarget(expectedCanonicalRepositoryId: "001")),
+            TestTimeProvider());
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -710,7 +716,7 @@ public sealed class ForgejoProviderTests
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryCreationRequest request = CreationRequest() with
         {
             IdempotencyAdmission = new ProviderIdempotencyAdmission(
@@ -739,7 +745,7 @@ public sealed class ForgejoProviderTests
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryCreationRequest request = CreationRequest() with
         {
             IdempotencyAdmission = new ProviderIdempotencyAdmission(
@@ -747,7 +753,8 @@ public sealed class ForgejoProviderTests
                 "intent-forgejo-a",
                 PriorSafeOutcomeFingerprint: priorFingerprint,
                 PriorOperationReference: "operation-prior-a",
-                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Success),
+                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Success,
+                PriorCanonicalRepositoryId: "42"),
         };
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
@@ -771,7 +778,7 @@ public sealed class ForgejoProviderTests
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryBindingRequest request = BindingRequest() with
         {
             IdempotencyAdmission = new ProviderIdempotencyAdmission(
@@ -779,8 +786,7 @@ public sealed class ForgejoProviderTests
                 "intent-forgejo-a",
                 PriorReconciliationReference: "reconciliation-prior-a",
                 PriorOperationReference: "operation-prior-a",
-                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Unknown,
-                PriorReasonCode: "forgejo_repository_binding_outcome_unknown"),
+                PriorOutcomeDisposition: ProviderPriorOutcomeDisposition.Unknown),
         };
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
@@ -804,7 +810,7 @@ public sealed class ForgejoProviderTests
         SuccessfulForgejoTargetResolver targetResolver = new();
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClientFactory apiClientFactory = new(RecordingForgejoApiClient.Success());
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryCreationRequest request = CreationRequest() with
         {
             AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
@@ -835,7 +841,7 @@ public sealed class ForgejoProviderTests
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryBindingRequest request = BindingRequest() with
         {
             IdempotencyAdmission = new ProviderIdempotencyAdmission(
@@ -864,7 +870,7 @@ public sealed class ForgejoProviderTests
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
 
         ProviderRepositoryCreationResult creation = await provider.CreateRepositoryAsync(
             CreationRequest() with { RepositoryProfileRef = "profile-opaque-a" },
@@ -911,7 +917,7 @@ public sealed class ForgejoProviderTests
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
         RecordingForgejoApiClientFactory apiClientFactory = new(apiClient);
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryCreationRequest request = CreationRequest() with
         {
             IdempotencyAdmission = new ProviderIdempotencyAdmission(
@@ -948,7 +954,7 @@ public sealed class ForgejoProviderTests
         SuccessfulForgejoTargetResolver targetResolver = new();
         RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("provider-secret");
         RecordingForgejoApiClientFactory apiClientFactory = new(RecordingForgejoApiClient.Success());
-        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver);
+        ForgejoProvider provider = new(credentialResolver, apiClientFactory, targetResolver, TestTimeProvider());
         ProviderRepositoryBindingRequest request = BindingRequest() with
         {
             IdempotencyAdmission = new ProviderIdempotencyAdmission(
@@ -1000,7 +1006,8 @@ public sealed class ForgejoProviderTests
         ForgejoProvider provider = new(
             RecordingForgejoCredentialResolver.Success("provider-secret"),
             new ThrowingForgejoApiClientFactory(new OperationCanceledException("pre-dispatch")),
-            new SuccessfulForgejoTargetResolver());
+            new SuccessfulForgejoTargetResolver(),
+            TestTimeProvider());
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -1017,7 +1024,8 @@ public sealed class ForgejoProviderTests
         ForgejoProvider provider = new(
             RecordingForgejoCredentialResolver.Success("provider-secret"),
             new ThrowingForgejoApiClientFactory(new InvalidOperationException("pre-dispatch")),
-            new SuccessfulForgejoTargetResolver());
+            new SuccessfulForgejoTargetResolver(),
+            TestTimeProvider());
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
             CreationRequest(),
@@ -1034,7 +1042,8 @@ public sealed class ForgejoProviderTests
         ForgejoProvider provider = new(
             RecordingForgejoCredentialResolver.Success("provider-secret"),
             new ThrowingForgejoApiClientFactory(new OperationCanceledException("pre-observation")),
-            new SuccessfulForgejoTargetResolver());
+            new SuccessfulForgejoTargetResolver(),
+            TestTimeProvider());
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -1117,7 +1126,14 @@ public sealed class ForgejoProviderTests
     private static ForgejoProvider CreateProvider(
         IForgejoCredentialResolver credentialResolver,
         IForgejoApiClientFactory apiClientFactory)
-        => new(credentialResolver, apiClientFactory, new SuccessfulForgejoTargetResolver());
+        => new(
+            credentialResolver,
+            apiClientFactory,
+            new SuccessfulForgejoTargetResolver(),
+            TestTimeProvider());
+
+    private static TimeProvider TestTimeProvider()
+        => new ForgejoFixedTimeProvider(DateTimeOffset.Parse("2026-05-24T07:01:00+00:00"));
 
     private static ProviderRepositoryResolvedTarget ResolvedTarget(
         string? expectedCanonicalRepositoryId = null,
@@ -1184,6 +1200,10 @@ public sealed class ForgejoProviderTests
             targetEvidence: evidence) with
         {
             CredentialModeRequirements = [ProviderCredentialMode.UserDelegatedReference],
+            AuthorizationEvidence = new ProviderAuthorizationEvidenceSnapshot(
+                "authz-snapshot-default",
+                DateTimeOffset.Parse("2026-05-24T07:00:00+00:00"),
+                "fresh"),
         };
     }
 

@@ -308,7 +308,10 @@ public static class FoldersServiceCollectionExtensions
             services.AddSingleton(static sp => new ForgejoProvider(
                 sp.GetRequiredService<IForgejoCredentialResolver>(),
                 sp.GetRequiredService<IForgejoApiClientFactory>(),
-                sp.GetRequiredService<IProviderRepositoryTargetResolver>()));
+                sp.GetRequiredService<IProviderRepositoryTargetResolver>(),
+                sp.GetRequiredService<IProviderOperationSourceResolver>(),
+                sp.GetRequiredService<IProviderOperationOutcomeStore>(),
+                sp.GetRequiredService<TimeProvider>()));
         }
 
         services.AddSingleton<IGitProvider>(ResolveForgejoProvider);
