@@ -2797,3 +2797,11 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 
 - “Python YAML/schema assertions” have no schema or script in the File List. Maybe-false (would be medium). Settle from the 2026-07-14 Task 1 command/script; if none existed, `verification_runs` overclaims.
 
+- source_spec: none
+  summary: Remaining contract-completeness leftovers from the Story 12.6 expired-key mapping slice, including the full mutation inventory in docs/contract/idempotency-and-parity-rules.md, generator fail-closed / previous-spine.yaml, and the SafeProblem HTTP 409 title.
+  evidence: Split from Story 12.6 this session so this spec covers only durable EventStore admission on the Folders mutation submit path. These leftovers can merge without touching admission.
+
+- source_spec: none
+  summary: Generated OQ8 production evidence matrix with TimeProvider expiry bounds, concurrency, restart, and persisted tombstone assertions.
+  evidence: Split from Story 12.6 this session. Independently reviewable, but Story 12.1 still blocks closing OQ8; keeping it in this spec would couple admission wiring to a blocked proof gate.
+
