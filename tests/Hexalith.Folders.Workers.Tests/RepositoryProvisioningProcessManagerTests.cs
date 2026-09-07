@@ -35,7 +35,7 @@ public sealed class RepositoryProvisioningProcessManagerTests
         sent.AuthorizationEvidence.Fingerprint.ShouldBe("authz-a");
         sent.CorrelationId.ShouldBe("correlation-a");
         sent.IdempotencyKey.ShouldBe("idempotency-a");
-        sent.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Fresh);
+        sent.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Execute);
         sent.IdempotencyAdmission.IntentFingerprint.ShouldBe("fingerprint-a");
 
         // The profile ref selects owner, name, and visibility at the resolver. It has a default of
@@ -243,6 +243,73 @@ public sealed class RepositoryProvisioningProcessManagerTests
         repository.EventsAppended.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task NullIdempotencyAdmissionShouldReturnContextMismatchWithoutProviderCalls()
+    {
+        RecordingFolderRepository repository = RepositoryWithRequestedBinding();
+        RecordingGitProvider provider = RecordingGitProvider.Success();
+        RecordingProviderResolver resolver = new(provider);
+        RepositoryProvisioningProcessManager manager = new(repository, resolver, new FixedTimeProvider(Now));
+
+        RepositoryProvisioningResult result = await manager.HandleAsync(
+            Requested(),
+            Context() with { IdempotencyAdmission = null },
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(RepositoryProvisioningResultCode.ContextMismatch);
+        resolver.ResolveCalls.ShouldBe(0);
+        provider.CreateRepositoryCalls.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task FingerprintMismatchShouldReturnContextMismatchWithoutProviderCalls()
+    {
+        RecordingFolderRepository repository = RepositoryWithRequestedBinding();
+        RecordingGitProvider provider = RecordingGitProvider.Success();
+        RecordingProviderResolver resolver = new(provider);
+        RepositoryProvisioningProcessManager manager = new(repository, resolver, new FixedTimeProvider(Now));
+
+        RepositoryProvisioningResult result = await manager.HandleAsync(
+            Requested(),
+            Context() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.Execute,
+                    "fingerprint-b"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(RepositoryProvisioningResultCode.ContextMismatch);
+        resolver.ResolveCalls.ShouldBe(0);
+        provider.CreateRepositoryCalls.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task FreshMatchingAdmissionShouldReturnContextMismatchWithoutProviderCalls()
+    {
+        RecordingFolderRepository repository = RepositoryWithRequestedBinding();
+        RecordingGitProvider provider = RecordingGitProvider.Success();
+        RecordingProviderResolver resolver = new(provider);
+        RepositoryProvisioningProcessManager manager = new(repository, resolver, new FixedTimeProvider(Now));
+
+        RepositoryProvisioningResult result = await manager.HandleAsync(
+            Requested(),
+            Context() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.Fresh,
+                    "fingerprint-a"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(RepositoryProvisioningResultCode.ContextMismatch);
+        resolver.ResolveCalls.ShouldBe(0);
+        provider.CreateRepositoryCalls.ShouldBe(0);
+        repository.EventsAppended.ShouldBe(0);
+    }
+
     private static RepositoryProvisioningProcessManager CreateManager(
         RecordingFolderRepository repository,
         RecordingGitProvider provider)
@@ -271,11 +338,11 @@ public sealed class RepositoryProvisioningProcessManagerTests
         RecordingGitProvider provider = RecordingGitProvider.Success();
         RepositoryProvisioningProcessManager manager = CreateManager(repository, provider);
         ProviderIdempotencyAdmission admission = new(
-            ProviderIdempotencyDisposition.Expired,
-            "durable-intent-a");
+            ProviderIdempotencyDisposition.Execute,
+            "fingerprint-forward-a");
 
         await manager.HandleAsync(
-            Requested(),
+            Requested() with { IdempotencyFingerprint = "fingerprint-forward-a" },
             Context() with { IdempotencyAdmission = admission },
             TestContext.Current.CancellationToken);
 
@@ -340,7 +407,10 @@ public sealed class RepositoryProvisioningProcessManagerTests
             AuthorizationEvidence: new ProviderAuthorizationEvidenceSnapshot(
                 "authz-a",
                 Now,
-                "fresh"));
+                "fresh"),
+            IdempotencyAdmission: new ProviderIdempotencyAdmission(
+                ProviderIdempotencyDisposition.Execute,
+                "fingerprint-a"));
 
     private sealed class RecordingGitProvider(ProviderRepositoryCreationResult? result, Exception? exception = null) : IGitProvider
     {

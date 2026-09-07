@@ -329,7 +329,7 @@ public sealed class WorkspaceLockEndpointTests
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.ReleaseWorkspaceLockCommandType);
         submitted.AggregateId.ShouldBe("folder-a");
-        submitted.MessageId.ShouldBe("idempotency-release-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-release-a");
         submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
         submitted.Payload.GetProperty("lockId").GetString().ShouldBe("workspace_lock_a");
         submitted.Payload.GetProperty("releaseReasonCode").GetString().ShouldBe("caller_completed");
@@ -543,7 +543,7 @@ public sealed class WorkspaceLockEndpointTests
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.MutateFilesCommandType);
         submitted.AggregateId.ShouldBe("folder-a");
-        submitted.MessageId.ShouldBe("idempotency-file-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-file-a");
         submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
         submitted.Payload.GetProperty("fileOperationKind").GetString().ShouldBe("add");
         submitted.Payload.GetProperty("pathMetadata").GetProperty("normalizedPath").GetString().ShouldBe("docs/readme.md");
@@ -589,7 +589,7 @@ public sealed class WorkspaceLockEndpointTests
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.MutateFilesCommandType);
         submitted.AggregateId.ShouldBe("folder-a");
-        submitted.MessageId.ShouldBe("idempotency-file-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-file-a");
         submitted.Payload.GetProperty("workspaceId").GetString().ShouldBe("workspace-a");
         submitted.Payload.GetProperty("fileOperationKind").GetString().ShouldBe(fileOperationKind);
         submitted.Payload.GetProperty("transportOperation").GetString().ShouldBe(transportOperation);

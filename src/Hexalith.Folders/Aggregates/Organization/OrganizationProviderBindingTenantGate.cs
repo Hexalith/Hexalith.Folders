@@ -68,13 +68,6 @@ public sealed class OrganizationProviderBindingTenantGate(IOrganizationProviderB
             return OrganizationProviderBindingResult.Rejected(authoritativeCommand, validation.Code);
         }
 
-        if (repository.TryGetIdempotencyFingerprint(streamName, authoritativeCommand.IdempotencyKey, out string? priorFingerprint))
-        {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? OrganizationProviderBindingResult.Rejected(authoritativeCommand, OrganizationProviderBindingResultCode.AlreadyApplied)
-                : OrganizationProviderBindingResult.Rejected(authoritativeCommand, OrganizationProviderBindingResultCode.IdempotencyConflict);
-        }
-
         OrganizationProviderBindingResult result = OrganizationAggregate.Handle(state, authoritativeCommand);
         if (result.Events.Count == 0)
         {

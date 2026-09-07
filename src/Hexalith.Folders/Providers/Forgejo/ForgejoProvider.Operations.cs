@@ -1624,7 +1624,7 @@ public sealed partial class ForgejoProvider
         string safeTargetFingerprint)
         => request.IdempotencyAdmission.Disposition switch
         {
-            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.Fresh or ProviderIdempotencyDisposition.Execute => null,
             ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
             ProviderIdempotencyDisposition.Conflict => FileMutationFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_conflict"),
             _ => FileMutationFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_key_expired"),
@@ -1635,7 +1635,7 @@ public sealed partial class ForgejoProvider
         string safeTargetFingerprint)
         => request.IdempotencyAdmission.Disposition switch
         {
-            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.Fresh or ProviderIdempotencyDisposition.Execute => null,
             ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
             ProviderIdempotencyDisposition.Conflict => CommitFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_conflict"),
             _ => CommitFailure(request, ProviderFailureCategory.ProviderConflict, "idempotency_key_expired"),

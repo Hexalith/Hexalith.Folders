@@ -37,7 +37,7 @@ public sealed class FolderWorkspaceLockReleaseServiceTests
         FolderResult result = await service.ReleaseAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
         repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceLockReleased>();
         repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
@@ -46,7 +46,7 @@ public sealed class FolderWorkspaceLockReleaseServiceTests
     }
 
     [Fact]
-    public async Task IdempotencyLookupUnavailableShouldRejectBeforeAppend()
+    public async Task IdempotencyLookupUnavailableShouldNotBlockAdmittedRelease()
     {
         RecordingFolderRepository repository = LockedRepository();
         repository.IdempotencyUnavailable = true;
@@ -54,9 +54,9 @@ public sealed class FolderWorkspaceLockReleaseServiceTests
 
         FolderResult result = await service.ReleaseAsync(Request(), TestContext.Current.CancellationToken);
 
-        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
-        repository.IdempotencyLookups.ShouldBe(1);
-        repository.AppendsAttempted.ShouldBe(0);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
     }
 
     [Fact]

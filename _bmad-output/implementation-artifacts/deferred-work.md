@@ -2805,3 +2805,15 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: Generated OQ8 production evidence matrix with TimeProvider expiry bounds, concurrency, restart, and persisted tombstone assertions.
   evidence: Split from Story 12.6 this session. Independently reviewable, but Story 12.1 still blocks closing OQ8; keeping it in this spec would couple admission wiring to a blocked proof gate.
 
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-wire-durable-eventstore-admission.md`
+  summary: RepositoryProvisioningProcessManager has no production HandleAsync caller, so worker admission still cannot be populated from EventStore Execute.
+  evidence: Pre-existing; this slice removed the Fresh fallback and fail-closes on null/non-Execute admission, but Folders.Workers still only registers the manager.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-wire-durable-eventstore-admission.md`
+  summary: Admitted mutation services still run readiness/path/Git then AppendIfFingerprintAbsent, so a residual in-memory fingerprint can disagree after EventStore Execute.
+  evidence: TryGetIdempotencyFingerprint was removed; append-time fingerprint remains as a pre-existing dual check. EventStore Replay is what skips a second /process.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-6-wire-durable-eventstore-admission.md`
+  summary: OrganizationAclTenantGate still uses TryGetIdempotencyFingerprint.
+  evidence: Organization ACL is not one of the 13 admitted Folders command types in this slice.
+

@@ -56,7 +56,7 @@ public sealed class ArchiveFolderEndpointTests
 
             gateway.Requests.Count.ShouldBe(1);
             SubmitCommandRequest submitted = gateway.Requests.Single();
-            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
             submitted.Tenant.ShouldBe("tenant-a");
             submitted.Domain.ShouldBe("folders");
             submitted.AggregateId.ShouldBe("folder-a");
@@ -214,6 +214,53 @@ public sealed class ArchiveFolderEndpointTests
             json.ShouldNotContain("idempotency_conflict");
             json.ShouldNotContain("folder folder-a prior fingerprint");
             json.ShouldNotContain("abcdef");
+            gateway.Requests.Count.ShouldBe(1);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("idempotency_admission_unavailable")]
+    [InlineData("idempotency-admission-unavailable")]
+    [InlineData("IdempotencyAdmissionUnavailable")]
+    public async Task ArchiveFolderEndpointShouldMapGatewayAdmissionUnavailableAsRetryableServiceUnavailable(string reasonCode)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Exception = new EventStoreGatewayException(
+                503,
+                "Gateway rejection",
+                type: "https://hexalith.dev/errors/internal-detail",
+                detail: "folder folder-a adapter missing for command type",
+                correlationId: "correlation-gateway",
+                reasonCode: reasonCode),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("idempotency_admission_unavailable");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("idempotency_admission_unavailable");
+            document.RootElement.GetProperty("title").GetString().ShouldBe("Idempotency admission unavailable.");
+            document.RootElement.GetProperty("message").GetString().ShouldBe("Idempotency admission is temporarily unavailable. Retry later.");
+            document.RootElement.GetProperty("retryable").GetBoolean().ShouldBeTrue();
+            document.RootElement.GetProperty("clientAction").GetString().ShouldBe("retry_later");
+            document.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation-gateway");
+            json.ShouldNotContain("idempotency_conflict");
+            json.ShouldNotContain("idempotency_key_expired");
+            json.ShouldNotContain("evidence_unavailable");
+            json.ShouldNotContain("folder folder-a adapter missing");
             gateway.Requests.Count.ShouldBe(1);
         }
         finally

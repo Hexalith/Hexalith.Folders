@@ -54,7 +54,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         FolderResult result = await service.AcquireAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
         WorkspaceLockAcquired acquired = repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceLockAcquired>();
         acquired.LockIntent.ShouldBe("exclusive_write");
@@ -80,7 +80,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
     }
 
     [Fact]
-    public async Task IdempotencyLookupUnavailableShouldRejectBeforeAppend()
+    public async Task IdempotencyLookupUnavailableShouldNotBlockAdmittedLock()
     {
         RecordingFolderRepository repository = ReadyRepository();
         repository.IdempotencyUnavailable = true;
@@ -88,13 +88,13 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
 
         FolderResult result = await service.AcquireAsync(Request(), TestContext.Current.CancellationToken);
 
-        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
-        repository.IdempotencyLookups.ShouldBe(1);
-        repository.AppendsAttempted.ShouldBe(0);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
     }
 
     [Fact]
-    public async Task IdempotencyLookupMatchShouldReturnReplayBeforeAppend()
+    public async Task MatchingResidualLedgerFingerprintShouldReplayAtAppend()
     {
         RecordingFolderRepository repository = ReadyRepository();
         LockWorkspace command = FolderCommandFactory.LockWorkspace();
@@ -105,12 +105,12 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         FolderResult result = await service.AcquireAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.IdempotentReplay);
-        repository.IdempotencyLookups.ShouldBe(1);
-        repository.AppendsAttempted.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
     }
 
     [Fact]
-    public async Task IdempotencyLookupConflictShouldRejectBeforeAppend()
+    public async Task ConflictingResidualLedgerFingerprintShouldRejectAtAppend()
     {
         RecordingFolderRepository repository = ReadyRepository();
         repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-lock-a", "different-fingerprint");
@@ -119,8 +119,8 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         FolderResult result = await service.AcquireAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.IdempotencyLookups.ShouldBe(1);
-        repository.AppendsAttempted.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
     }
 
     [Fact]

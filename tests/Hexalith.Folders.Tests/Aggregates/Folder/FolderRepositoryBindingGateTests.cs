@@ -174,7 +174,7 @@ public sealed class FolderRepositoryBindingGateTests
         result.Code.ShouldBe(FolderResultCode.ProviderReadinessFailed);
         repository.StreamNamesConstructed.ShouldBe(1);
         repository.StreamsLoaded.ShouldBe(1);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(0);
         readiness.Calls.ShouldBe(1);
         readiness.LastRequest.ShouldNotBeNull().RequestedCapability.ShouldBe(ProviderReadinessRequestedCapability.ExistingRepositoryBinding);
@@ -218,7 +218,7 @@ public sealed class FolderRepositoryBindingGateTests
             TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(expectedResult);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(0);
         readiness.Calls.ShouldBe(1);
         readiness.LastRequest.ShouldNotBeNull().RequestedCapability.ShouldBe(ProviderReadinessRequestedCapability.ExistingRepositoryBinding);
@@ -241,12 +241,12 @@ public sealed class FolderRepositoryBindingGateTests
             Request(),
             TestContext.Current.CancellationToken);
 
-        result.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        result.Code.ShouldBe(FolderResultCode.ProviderReadinessFailed);
         repository.StreamNamesConstructed.ShouldBe(1);
         repository.StreamsLoaded.ShouldBe(1);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(0);
-        readiness.Calls.ShouldBe(0);
+        readiness.Calls.ShouldBe(1);
         bindingReader.Calls.ShouldBe(0);
         resolver.Calls.ShouldBe(0);
         resolver.ProviderCalls.ShouldBe(0);
@@ -267,12 +267,12 @@ public sealed class FolderRepositoryBindingGateTests
             TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.IdempotencyLookups.ShouldBe(1);
-        repository.AppendsAttempted.ShouldBe(0);
-        readiness.Calls.ShouldBe(0);
-        bindingReader.Calls.ShouldBe(0);
-        resolver.Calls.ShouldBe(0);
-        resolver.ProviderCalls.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
+        readiness.Calls.ShouldBe(1);
+        bindingReader.Calls.ShouldBe(1);
+        resolver.Calls.ShouldBe(1);
+        resolver.ProviderCalls.ShouldBe(1);
     }
 
     [Theory]
@@ -329,7 +329,7 @@ public sealed class FolderRepositoryBindingGateTests
             TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
         repository.LastAppendedEvents[0].ShouldBeOfType<ExistingRepositoryBindingRequested>();
         repository.LastAppendedEvents[1].ShouldBeOfType<RepositoryBound>();
@@ -341,7 +341,7 @@ public sealed class FolderRepositoryBindingGateTests
         // The admission this service forwards is load-bearing: the GitHub provider short-circuits
         // on it before any target, credential, or client access.
         ProviderRepositoryBindingRequest forwarded = resolver.LastBindingRequest.ShouldNotBeNull();
-        forwarded.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Fresh);
+        forwarded.IdempotencyAdmission.Disposition.ShouldBe(ProviderIdempotencyDisposition.Execute);
         forwarded.IdempotencyAdmission.IntentFingerprint.ShouldBe(BindingFingerprint());
     }
 

@@ -53,7 +53,7 @@ public sealed class CreateFolderEndpointTests
         response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.CreateFolderCommandType);
-        submitted.MessageId.ShouldBe("idempotency-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
         submitted.AggregateId.ShouldStartWith("fld-");
         submitted.Payload.GetProperty("folderId").GetString().ShouldBe(submitted.AggregateId);
         submitted.Payload.GetProperty("folderMetadata").GetProperty("displayName").GetString().ShouldBe("My Folder");

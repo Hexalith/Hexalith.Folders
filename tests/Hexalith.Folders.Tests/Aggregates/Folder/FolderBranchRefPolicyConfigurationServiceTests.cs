@@ -81,7 +81,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
         repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<BranchRefPolicyConfigured>();
         readiness.Calls.ShouldBe(1);

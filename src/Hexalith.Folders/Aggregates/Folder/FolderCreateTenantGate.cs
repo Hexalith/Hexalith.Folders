@@ -83,28 +83,6 @@ public sealed class FolderCreateTenantGate
             authoritativeCommand.ManagedTenantId,
             authoritativeCommand.FolderId);
 
-        FolderIdempotencyLookupResult lookup = _repository.TryGetIdempotencyFingerprint(
-            streamName,
-            authoritativeCommand.IdempotencyKey,
-            out string? priorFingerprint);
-
-        if (lookup == FolderIdempotencyLookupResult.Found)
-        {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay)
-                : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict);
-        }
-
-        if (lookup == FolderIdempotencyLookupResult.Unavailable)
-        {
-            // Load state so an already-existing folder is surfaced as DuplicateFolder
-            // rather than masked by a transient ledger outage; otherwise fail closed.
-            FolderState unavailableState = _repository.Load(streamName);
-            return unavailableState.IsCreated
-                ? FolderResult.Rejected(authoritativeCommand, FolderResultCode.DuplicateFolder)
-                : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyUnavailable);
-        }
-
         FolderState state = _repository.Load(streamName);
         FolderResult result = FolderAggregate.Handle(state, authoritativeCommand, _timeProvider.GetUtcNow());
         if (result.Events.Count == 0)

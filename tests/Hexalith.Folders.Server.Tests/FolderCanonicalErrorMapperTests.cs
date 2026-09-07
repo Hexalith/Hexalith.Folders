@@ -44,4 +44,14 @@ public sealed class FolderCanonicalErrorMapperTests
         FolderCanonicalErrorMapper.RetryableFor(actualCategory).ShouldBe(retryable);
         FolderCanonicalErrorMapper.ClientActionFor(actualCategory, retryable).ShouldBe(clientAction);
     }
+
+    [Fact]
+    public void IdempotencyAdmissionUnavailableShouldMapToRetryableServiceUnavailable()
+    {
+        FolderCanonicalErrorMapper.StatusFor("idempotency_admission_unavailable")
+            .ShouldBe(StatusCodes.Status503ServiceUnavailable);
+        FolderCanonicalErrorMapper.RetryableFor("idempotency_admission_unavailable").ShouldBeTrue();
+        FolderCanonicalErrorMapper.ClientActionFor("idempotency_admission_unavailable", true)
+            .ShouldBe("retry_later");
+    }
 }

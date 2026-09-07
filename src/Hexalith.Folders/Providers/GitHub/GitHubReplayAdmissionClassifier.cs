@@ -22,10 +22,11 @@ internal static class GitHubReplayAdmissionClassifier
 
     /// <summary>
     /// Classifies a non-replay disposition into its shared rejection category and reason code.
-    /// Returns <see langword="null"/> for <see cref="ProviderIdempotencyDisposition.Fresh"/>, which
-    /// means the caller must dispatch. Every other non-replay disposition (conflict, expired, or any
-    /// future undefined value) is a terminal <see cref="ProviderFailureCategory.ProviderConflict"/>
-    /// rejection before source, credential, or provider access.
+    /// Returns <see langword="null"/> for <see cref="ProviderIdempotencyDisposition.Fresh"/> and
+    /// <see cref="ProviderIdempotencyDisposition.Execute"/>, which means the caller must dispatch.
+    /// Every other non-replay disposition (conflict, expired, or any future undefined value) is a
+    /// terminal <see cref="ProviderFailureCategory.ProviderConflict"/> rejection before source,
+    /// credential, or provider access.
     /// </summary>
     /// <param name="disposition">The caller-supplied durable admission disposition.</param>
     /// <returns>
@@ -35,7 +36,8 @@ internal static class GitHubReplayAdmissionClassifier
         ProviderIdempotencyDisposition disposition)
         => disposition switch
         {
-            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.Fresh
+                or ProviderIdempotencyDisposition.Execute => null,
             ProviderIdempotencyDisposition.Conflict => (ProviderFailureCategory.ProviderConflict, "idempotency_conflict"),
             _ => (ProviderFailureCategory.ProviderConflict, "idempotency_key_expired"),
         };

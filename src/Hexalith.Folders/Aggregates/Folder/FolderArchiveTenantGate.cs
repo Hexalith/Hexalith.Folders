@@ -93,23 +93,6 @@ public sealed class FolderArchiveTenantGate(IFolderRepository repository, TimePr
             authoritativeCommand.ManagedTenantId,
             authoritativeCommand.FolderId);
 
-        FolderIdempotencyLookupResult lookup = _repository.TryGetIdempotencyFingerprint(
-            streamName,
-            authoritativeCommand.IdempotencyKey,
-            out string? priorFingerprint);
-
-        if (lookup == FolderIdempotencyLookupResult.Found)
-        {
-            return string.Equals(priorFingerprint, decisionFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotentReplay)
-                : FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyConflict);
-        }
-
-        if (lookup == FolderIdempotencyLookupResult.Unavailable)
-        {
-            return FolderResult.Rejected(authoritativeCommand, FolderResultCode.IdempotencyUnavailable);
-        }
-
         FolderState state = _repository.Load(streamName);
         DateTimeOffset occurredAt = _timeProvider.GetUtcNow();
         FolderResult result = FolderAggregate.Handle(state, authoritativeCommand, occurredAt);

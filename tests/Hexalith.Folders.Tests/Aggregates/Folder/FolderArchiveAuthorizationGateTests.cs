@@ -211,7 +211,6 @@ public sealed class FolderArchiveAuthorizationGateTests
     [InlineData("acl_denied", FolderResultCode.FolderAclDenied, 0, 0)]
     [InlineData("policy_denied", FolderResultCode.ArchivePolicyDenied, 0, 0)]
     [InlineData("policy_unavailable", FolderResultCode.PolicyEvidenceUnavailable, 0, 0)]
-    [InlineData("idempotency_unavailable", FolderResultCode.IdempotencyUnavailable, 1, 1)]
     public void PreObservationArchiveDenialsShouldNotDependOnFolderExistence(
         string scenario,
         FolderResultCode expectedCode,
@@ -248,7 +247,7 @@ public sealed class FolderArchiveAuthorizationGateTests
         result.Code.ShouldBe(FolderResultCode.FolderNotFound);
         result.Events.ShouldBeEmpty();
         repository.StreamNamesConstructed.ShouldBe(1);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.StreamsLoaded.ShouldBe(1);
         repository.AppendsAttempted.ShouldBe(0);
         repository.EventsAppended.ShouldBe(0);

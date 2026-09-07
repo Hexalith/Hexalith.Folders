@@ -35,6 +35,7 @@ public sealed class FolderAccessIdempotencyTests
         gate.Handle(original, TenantEvidence(), AclEvidence());
         if (changed == "folder")
         {
+            SeedFolder(repository, "tenant-a", "folder-b");
             FolderCommandValidationResult validation = FolderCommandValidator.Validate(original);
             repository.RecordIdempotency("tenant-a", "folder-b", "idempotency-access-a", validation.IdempotencyFingerprint!);
         }
@@ -81,7 +82,7 @@ public sealed class FolderAccessIdempotencyTests
     }
 
     [Fact]
-    public void IdempotencyUnavailableShouldFailClosedBeforeLoadOrAppend()
+    public void IdempotencyUnavailableShouldNotBlockAdmittedGrant()
     {
         RecordingFolderRepository repository = SeededRepository();
         repository.IdempotencyUnavailable = true;
@@ -89,9 +90,10 @@ public sealed class FolderAccessIdempotencyTests
 
         FolderResult result = gate.Handle(FolderCommandFactory.GrantAccess(), TenantEvidence(), AclEvidence());
 
-        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
-        repository.AppendsAttempted.ShouldBe(0);
-        repository.EventsAppended.ShouldBe(0);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
+        repository.EventsAppended.ShouldBe(1);
     }
 
     [Fact]

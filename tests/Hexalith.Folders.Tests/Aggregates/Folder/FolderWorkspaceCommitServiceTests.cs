@@ -93,7 +93,7 @@ public sealed class FolderWorkspaceCommitServiceTests
         executionRequest.BranchRefTarget.ShouldBe("branchref_primary");
         executionRequest.CommitMessageClassification.ShouldBe("generated_summary");
         executionRequest.ChangedPathMetadataDigest.ShouldBe("digest_workspace_a");
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
         repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceCommitSucceeded>();
     }
@@ -235,7 +235,7 @@ public sealed class FolderWorkspaceCommitServiceTests
     }
 
     [Fact]
-    public async Task IdempotencyUnavailableShouldNotExecuteCommit()
+    public async Task IdempotencyUnavailableShouldNotBlockAdmittedCommit()
     {
         RecordingFolderRepository repository = StagedRepository();
         repository.IdempotencyUnavailable = true;
@@ -244,9 +244,10 @@ public sealed class FolderWorkspaceCommitServiceTests
 
         FolderResult result = await service.CommitAsync(Request(), TestContext.Current.CancellationToken);
 
-        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
-        executor.Requests.ShouldBeEmpty();
-        repository.AppendsAttempted.ShouldBe(0);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        executor.Requests.Count.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
     }
 
     private static WorkspaceCommitService Service(

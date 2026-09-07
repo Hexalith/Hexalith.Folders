@@ -53,7 +53,7 @@ public sealed class ConfigureProviderBindingEndpointTests
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.ConfigureProviderBindingCommandType);
         submitted.AggregateId.ShouldBe("binding-a");
-        submitted.MessageId.ShouldBe("idempotency-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
         submitted.Payload.GetProperty("providerBindingRef").GetString().ShouldBe("binding-a");
         submitted.Payload.GetProperty("providerFamilyRef").GetString().ShouldBe("github");
         submitted.Payload.GetProperty("capabilityProfileRef").GetString().ShouldBe("profile-a");

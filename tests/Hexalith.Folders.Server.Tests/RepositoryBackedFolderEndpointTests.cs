@@ -38,7 +38,7 @@ public sealed class RepositoryBackedFolderEndpointTests
 
             response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
             SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
-            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
             submitted.Tenant.ShouldBe("tenant-a");
             submitted.Domain.ShouldBe("folders");
             submitted.AggregateId.ShouldBe("folder-a");
@@ -73,7 +73,7 @@ public sealed class RepositoryBackedFolderEndpointTests
             response.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe("task-a");
 
             SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
-            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
             submitted.Tenant.ShouldBe("tenant-a");
             submitted.Domain.ShouldBe("folders");
             submitted.AggregateId.ShouldBe("folder-a");
@@ -142,7 +142,7 @@ public sealed class RepositoryBackedFolderEndpointTests
             response.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe("task-a");
 
             SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
-            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
             submitted.Tenant.ShouldBe("tenant-a");
             submitted.Domain.ShouldBe("folders");
             submitted.AggregateId.ShouldBe("folder-a");
@@ -741,7 +741,7 @@ public sealed class RepositoryBackedFolderEndpointTests
             response.Headers.GetValues("X-Hexalith-Task-Id").Single().ShouldBe("task-a");
 
             SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
-            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
             submitted.Tenant.ShouldBe("tenant-a");
             submitted.Domain.ShouldBe("folders");
             submitted.AggregateId.ShouldBe("folder-a");
@@ -1023,7 +1023,7 @@ public sealed class RepositoryBackedFolderEndpointTests
             document.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
 
             SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
-            submitted.MessageId.ShouldBe("idempotency-a");
+            submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
             submitted.Tenant.ShouldBe("tenant-a");
             submitted.Domain.ShouldBe("folders");
             submitted.AggregateId.ShouldBe("folder-a");

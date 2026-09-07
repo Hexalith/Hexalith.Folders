@@ -31,7 +31,13 @@ public sealed class RepositoryProvisioningProcessManager
         ArgumentNullException.ThrowIfNull(context);
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (!ContextMatchesRequested(requested, context))
+        if (!ContextMatchesRequested(requested, context)
+            || context.IdempotencyAdmission is null
+            || context.IdempotencyAdmission.Disposition != ProviderIdempotencyDisposition.Execute
+            || !string.Equals(
+                context.IdempotencyAdmission.IntentFingerprint,
+                requested.IdempotencyFingerprint,
+                StringComparison.Ordinal))
         {
             return Result(RepositoryProvisioningResultCode.ContextMismatch, "repository_provisioning_context_mismatch", requested, null);
         }
@@ -76,12 +82,7 @@ public sealed class RepositoryProvisioningProcessManager
             context.AuthorizationEvidence,
             requested.CorrelationId,
             requested.IdempotencyKey,
-            // Story 12.6 supplies the durable admission through the context. Until then the
-            // folder ledger's AppendIfFingerprintAbsent remains the dedup authority, so Fresh
-            // preserves today's behaviour exactly rather than inventing expiry here.
-            context.IdempotencyAdmission ?? new ProviderIdempotencyAdmission(
-                ProviderIdempotencyDisposition.Fresh,
-                requested.IdempotencyFingerprint),
+            context.IdempotencyAdmission,
             requested.RepositoryProfileRef);
 
         ProviderRepositoryCreationResult providerResult;

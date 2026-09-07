@@ -16,4 +16,7 @@ public enum ProviderIdempotencyDisposition
 
     /// <summary>The key has expired and must never execute as a new intent.</summary>
     Expired,
+
+    /// <summary>The durable first-write admission that may execute once.</summary>
+    Execute,
 }

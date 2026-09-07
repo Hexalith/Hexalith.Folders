@@ -857,7 +857,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         string safeTargetFingerprint)
         => request.IdempotencyAdmission.Disposition switch
         {
-            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.Fresh or ProviderIdempotencyDisposition.Execute => null,
             ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
             ProviderIdempotencyDisposition.Conflict => ProviderRepositoryCreationResult.Failure(
                 request,
@@ -910,7 +910,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         string safeTargetFingerprint)
         => request.IdempotencyAdmission.Disposition switch
         {
-            ProviderIdempotencyDisposition.Fresh => null,
+            ProviderIdempotencyDisposition.Fresh or ProviderIdempotencyDisposition.Execute => null,
             ProviderIdempotencyDisposition.EquivalentReplay => Replay(request, safeTargetFingerprint, request.IdempotencyAdmission),
             ProviderIdempotencyDisposition.Conflict => ProviderRepositoryBindingResult.Failure(
                 request,

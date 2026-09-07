@@ -58,7 +58,7 @@ public sealed class FolderAclEndpointTests
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.GrantFolderAccessCommandType);
         submitted.AggregateId.ShouldBe("folder-a");
-        submitted.MessageId.ShouldBe("idempotency-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
         System.Text.Json.JsonElement operation = submitted.Payload.GetProperty("operations")[0];
         operation.GetProperty("principalKind").GetString().ShouldBe("user");
         operation.GetProperty("principalId").GetString().ShouldBe("user-a");

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Hexalith.Commons.UniqueIds;
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
@@ -1498,7 +1499,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1508,7 +1509,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -1651,7 +1653,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1661,7 +1663,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -1824,7 +1827,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1834,7 +1837,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -1980,7 +1984,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: providerBindingRef,
@@ -1990,7 +1994,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -2214,7 +2219,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: body.FolderId!,
@@ -2224,7 +2229,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -2350,7 +2356,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2360,7 +2366,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -2486,7 +2493,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2496,7 +2503,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -2630,7 +2638,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2640,7 +2648,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -2773,7 +2782,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2783,7 +2792,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -2917,7 +2927,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2927,7 +2937,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -3073,7 +3084,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -3083,7 +3094,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -3198,7 +3210,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: idempotencyKey,
+                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -3208,7 +3220,8 @@ public static class FoldersDomainServiceEndpoints
                     Extensions: new Dictionary<string, string>
                     {
                         ["taskId"] = taskId,
-                    }),
+                    },
+                    IdempotencyKey: idempotencyKey),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (EventStoreGatewayException ex)
@@ -3746,6 +3759,18 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable
+            && reasonCode == "idempotency_admission_unavailable")
+        {
+            return SafeProblem(
+                StatusCodes.Status503ServiceUnavailable,
+                category: "idempotency_admission_unavailable",
+                code: "idempotency_admission_unavailable",
+                retryable: true,
+                correlationId: safeCorrelationId,
+                taskId: taskId);
+        }
+
         if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "idempotency_conflict")
         {
             return SafeProblem(
@@ -3968,6 +3993,9 @@ public static class FoldersDomainServiceEndpoints
             "idempotency_key_expired" => "idempotency_key_expired",
             "idempotency-key-expired" => "idempotency_key_expired",
             "IdempotencyKeyExpired" => "idempotency_key_expired",
+            "idempotency_admission_unavailable" => "idempotency_admission_unavailable",
+            "idempotency-admission-unavailable" => "idempotency_admission_unavailable",
+            "IdempotencyAdmissionUnavailable" => "idempotency_admission_unavailable",
             // Story 8.3: surface the canonical folder_acl_denied category (403) for an aggregate-gate ACL
             // rejection propagated through the gateway hop. The PascalCase variants are the FolderResultCode
             // names the /process rejection carries; the snake/kebab forms cover the gateway's problem reason.
@@ -5602,7 +5630,9 @@ public static class FoldersDomainServiceEndpoints
                 StatusCodes.Status413PayloadTooLarge => "Response limit exceeded.",
                 StatusCodes.Status416RangeNotSatisfiable => "Range not satisfiable.",
                 StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
-                StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
+                StatusCodes.Status503ServiceUnavailable => category == "idempotency_admission_unavailable"
+                    ? "Idempotency admission unavailable."
+                    : "Read model unavailable.",
                 _ => "Authorization denied.",
             },
             statusCode: statusCode,
@@ -5776,6 +5806,7 @@ public static class FoldersDomainServiceEndpoints
         "provider_failure_known" => "Provider failure was observed with a known final outcome.",
         "idempotency_conflict" => "Idempotency key conflicts with a prior operation.",
         "idempotency_key_expired" => "The supplied idempotency key is no longer reusable. Refresh state, then submit with a new key.",
+        "idempotency_admission_unavailable" => "Idempotency admission is temporarily unavailable. Retry later.",
         "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
         "reconciliation_required" => "Reconciliation is required before this operation can continue.",
         "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",

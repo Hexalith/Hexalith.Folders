@@ -134,9 +134,11 @@ public sealed class AppHostPlatformCompositionConformanceTests
     {
         string program = File.ReadAllText(RepositoryPath(AppHostProgramPath), Encoding.UTF8);
 
-        // AC2: the generated Projects.* metadata types for the runtime EventStore/Tenants projects are no longer
-        // used; the platform helpers (AddHexalithEventStoreGatewayProject / AddHexalithTenantsServer) compose them.
-        program.ShouldNotContain("Projects.Hexalith_EventStore");
+        // AC2: the generated Projects.* metadata types for the platform EventStore/Tenants runtime
+        // projects are no longer used. Folders owns the EventStore command host
+        // (Projects.Hexalith_Folders_EventStore); AddHexalithTenantsServer composes Tenants.
+        program.ShouldContain("Projects.Hexalith_Folders_EventStore");
+        program.ShouldNotContain("AddHexalithEventStoreGatewayProject");
         program.ShouldNotContain("Projects.Hexalith_Tenants");
     }
 
@@ -165,6 +167,8 @@ public sealed class AppHostPlatformCompositionConformanceTests
         program.ShouldContain("AddHexalithMemoriesSearchIndexServer");
         program.ShouldContain("eventStoreResources.StateStore");
         program.ShouldContain("eventStoreResources.PubSub");
+        program.ShouldContain("AddDaprComponent");
+        program.ShouldContain("memories-secretstore");
 
         // AC2: the cross-repo memories runtime project is added by the helper via SuppressBuild project metadata,
         // so Program.cs uses no generated Projects.Hexalith_Memories* type.

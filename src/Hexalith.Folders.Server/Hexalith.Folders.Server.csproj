@@ -15,6 +15,7 @@
     <ProjectReference Include="..\Hexalith.Folders\Hexalith.Folders.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
     <ProjectReference Include="..\Hexalith.Folders.ServiceDefaults\Hexalith.Folders.ServiceDefaults.csproj" />
+    <PackageReference Include="Hexalith.Commons.UniqueIds" />
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Client\Hexalith.EventStore.Client.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Contracts\Hexalith.EventStore.Contracts.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
     <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.DomainService\Hexalith.EventStore.DomainService.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />

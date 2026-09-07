@@ -115,7 +115,7 @@ public sealed class MutationEnvelopeEndpointMatrixTests
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.CommitWorkspaceCommandType);
         submitted.AggregateId.ShouldBe("folder-a");
-        submitted.MessageId.ShouldBe("idempotency-a");
+        submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
         submitted.CorrelationId.ShouldBe("correlation-a");
         submitted.Extensions.ShouldNotBeNull();
         submitted.Extensions["taskId"].ShouldBe("task-a");

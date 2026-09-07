@@ -23,7 +23,7 @@ public sealed class FolderArchiveIdempotencyTests
     }
 
     [Fact]
-    public void SameKeyWithDifferentArchiveReasonShouldRejectAsConflictBeforeLoad()
+    public void SameKeyWithDifferentArchiveReasonShouldRejectAsConflictAtAppend()
     {
         RecordingFolderRepository repository = SeededRepository();
         ArchiveFolder original = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", archiveReasonCode: "caller_requested");
@@ -38,13 +38,14 @@ public sealed class FolderArchiveIdempotencyTests
             PolicyEvidence());
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.StreamsLoaded.ShouldBe(0);
-        repository.AppendsAttempted.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
         repository.EventsAppended.ShouldBe(0);
     }
 
     [Fact]
-    public void SameKeyWithDifferentCorrelationShouldRejectAsConflictBeforeLoad()
+    public void SameKeyWithDifferentCorrelationShouldRejectAsConflictAtAppend()
     {
         RecordingFolderRepository repository = SeededRepository();
         ArchiveFolder original = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a", correlationId: "correlation-a");
@@ -59,13 +60,14 @@ public sealed class FolderArchiveIdempotencyTests
             PolicyEvidence());
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.StreamsLoaded.ShouldBe(0);
-        repository.AppendsAttempted.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
         repository.EventsAppended.ShouldBe(0);
     }
 
     [Fact]
-    public void SameKeyWithDifferentPolicyVersionShouldRejectAsConflictBeforeLoad()
+    public void SameKeyWithDifferentPolicyVersionShouldRejectAsConflictAtAppend()
     {
         RecordingFolderRepository repository = SeededRepository();
         ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
@@ -80,13 +82,14 @@ public sealed class FolderArchiveIdempotencyTests
             PolicyEvidence(policyVersion: "policy-v2"));
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.StreamsLoaded.ShouldBe(0);
-        repository.AppendsAttempted.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
         repository.EventsAppended.ShouldBe(0);
     }
 
     [Fact]
-    public void SameKeyWithDifferentFreshnessWatermarkShouldRejectAsConflictBeforeLoad()
+    public void SameKeyWithDifferentFreshnessWatermarkShouldRejectAsConflictAtAppend()
     {
         RecordingFolderRepository repository = SeededRepository();
         ArchiveFolder command = FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-a");
@@ -101,8 +104,9 @@ public sealed class FolderArchiveIdempotencyTests
             PolicyEvidence());
 
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.StreamsLoaded.ShouldBe(0);
-        repository.AppendsAttempted.ShouldBe(0);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.StreamsLoaded.ShouldBe(1);
+        repository.AppendsAttempted.ShouldBe(1);
         repository.EventsAppended.ShouldBe(0);
     }
 
@@ -201,7 +205,7 @@ public sealed class FolderArchiveIdempotencyTests
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
         result.Events.ShouldBeEmpty();
         repository.StreamNamesConstructed.ShouldBe(1);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.StreamsLoaded.ShouldBe(1);
         repository.AppendsAttempted.ShouldBe(1);
         repository.EventsAppended.ShouldBe(0);

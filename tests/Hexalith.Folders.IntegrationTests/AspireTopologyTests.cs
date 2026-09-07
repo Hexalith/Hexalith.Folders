@@ -169,12 +169,11 @@ public sealed class AspireTopologyTests
         File.Exists(memoriesSecretStorePath).ShouldBeTrue($"Expected the checked-in Memories secret-store YAML at {memoriesSecretStorePath}.");
         File.Exists(memoriesLlmConfigPath).ShouldBeTrue($"Expected the checked-in Memories LLM YAML at {memoriesLlmConfigPath}.");
 
-        HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
-            topology.EventStore.StateStore,
-            topology.EventStore.PubSub,
+        HexalithMemoriesSearchIndexServerResources memories = AddMemoriesSearchIndexServer(
+            builder,
+            topology,
             memoriesSecretStorePath,
-            memoriesLlmConfigPath,
-            serverName: FoldersAspireModule.MemoriesAppId);
+            memoriesLlmConfigPath);
 
         // The memories project carries a Dapr sidecar whose AppId is exactly "memories".
         string[] sidecarAppIds = [.. builder.Resources
@@ -236,18 +235,17 @@ public sealed class AspireTopologyTests
         stateStoreBefore.ShouldBe(1);
         pubSubBefore.ShouldBe(1);
 
-        HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
-            topology.EventStore.StateStore,
-            topology.EventStore.PubSub,
+        HexalithMemoriesSearchIndexServerResources memories = AddMemoriesSearchIndexServer(
+            builder,
+            topology,
             memoriesSecretStorePath,
-            memoriesLlmConfigPath,
-            serverName: FoldersAspireModule.MemoriesAppId);
+            memoriesLlmConfigPath);
 
         // No second statestore/pubsub component is created — the shared singletons are reused verbatim.
         CountComponentsNamed(builder, FoldersAspireModule.StateStoreComponentName).ShouldBe(stateStoreBefore);
         CountComponentsNamed(builder, FoldersAspireModule.PubSubComponentName).ShouldBe(pubSubBefore);
 
-        // The only new Dapr components are the two memories-owned ones.
+        // Consumer-owned secret store plus the helper-owned LLM component.
         string[] componentNames = [.. builder.Resources.OfType<IDaprComponentResource>().Select(static c => c.Name)];
         componentNames.Length.ShouldBe(componentsBefore + 2);
         componentNames.ShouldContain("memories-secretstore");
@@ -280,12 +278,11 @@ public sealed class AspireTopologyTests
         string memoriesSecretStorePath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/secretstore.memories.yaml");
         string memoriesLlmConfigPath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/llm.memories.yaml");
 
-        _ = builder.AddHexalithMemoriesSearchIndexServer(
-            topology.EventStore.StateStore,
-            topology.EventStore.PubSub,
+        _ = AddMemoriesSearchIndexServer(
+            builder,
+            topology,
             memoriesSecretStorePath,
-            memoriesLlmConfigPath,
-            serverName: FoldersAspireModule.MemoriesAppId);
+            memoriesLlmConfigPath);
 
         string[] sidecarAppIds = [.. builder.Resources
             .OfType<ProjectResource>()
@@ -384,12 +381,11 @@ public sealed class AspireTopologyTests
         string memoriesSecretStorePath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/secretstore.memories.yaml");
         string memoriesLlmConfigPath = RepositoryPath("src/Hexalith.Folders.AppHost/DaprComponents/llm.memories.yaml");
 
-        HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
-            topology.EventStore.StateStore,
-            topology.EventStore.PubSub,
+        HexalithMemoriesSearchIndexServerResources memories = AddMemoriesSearchIndexServer(
+            builder,
+            topology,
             memoriesSecretStorePath,
-            memoriesLlmConfigPath,
-            serverName: FoldersAspireModule.MemoriesAppId);
+            memoriesLlmConfigPath);
 
         // Drive the production helper — the exact code path Program.cs uses (AC2/AC4: non-circular coverage).
         IResourceBuilder<ProjectResource> routedMemories = memories.Server.WithFoldersMemoriesSourceRouting();
@@ -478,6 +474,25 @@ public sealed class AspireTopologyTests
             static () => _ = FoldersAspireModule.WithFoldersDomainEventTopicOverride(null!));
 
         exception.ParamName.ShouldBe("eventStore");
+    }
+
+    private static HexalithMemoriesSearchIndexServerResources AddMemoriesSearchIndexServer(
+        IDistributedApplicationBuilder builder,
+        FoldersTopology topology,
+        string memoriesSecretStorePath,
+        string memoriesLlmConfigPath)
+    {
+        IResourceBuilder<IDaprComponentResource> memoriesSecretStore = builder.AddDaprComponent(
+            "memories-secretstore",
+            "secretstores.local.file",
+            new DaprComponentOptions { LocalPath = memoriesSecretStorePath });
+
+        return builder.AddHexalithMemoriesSearchIndexServer(
+            topology.EventStore.StateStore,
+            topology.EventStore.PubSub,
+            memoriesSecretStore,
+            memoriesLlmConfigPath,
+            serverName: FoldersAspireModule.MemoriesAppId);
     }
 
     /// <summary>

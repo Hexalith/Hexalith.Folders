@@ -116,6 +116,49 @@ public sealed class ForgejoProviderTests
     }
 
     [Fact]
+    public async Task AdmitsFreshRepositoryCreationIntentThroughToTheProvider()
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("forgejo-token-1234567890");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        ForgejoProvider provider = CreateProvider(credentialResolver, new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
+            CreationRequest() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.Execute,
+                    "intent-forgejo-a"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        result.EquivalentExisting.ShouldBeFalse();
+        credentialResolver.Calls.ShouldBe(1);
+        apiClient.RepositoryCreationCalls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task AdmitsFreshRepositoryBindingIntentThroughToTheProvider()
+    {
+        RecordingForgejoCredentialResolver credentialResolver = RecordingForgejoCredentialResolver.Success("forgejo-token-1234567890");
+        RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
+        ForgejoProvider provider = CreateProvider(credentialResolver, new RecordingForgejoApiClientFactory(apiClient));
+
+        ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
+            BindingRequest() with
+            {
+                IdempotencyAdmission = new ProviderIdempotencyAdmission(
+                    ProviderIdempotencyDisposition.Execute,
+                    "intent-forgejo-a"),
+            },
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeTrue(result.ReasonCode);
+        credentialResolver.Calls.ShouldBe(1);
+        apiClient.RepositoryBindingCalls.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task MapsForgejoEquivalentExistingRepositoryCreationAsSuccess()
     {
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.RepositoryCreationEquivalentExisting();

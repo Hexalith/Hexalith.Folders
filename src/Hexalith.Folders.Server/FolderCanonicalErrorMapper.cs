@@ -86,6 +86,7 @@ internal static class FolderCanonicalErrorMapper
                 or "read_model_unavailable"
                 or "projection_stale"
                 or "projection_unavailable"
+                or "idempotency_admission_unavailable"
                 or "internal_error" => StatusCodes.Status503ServiceUnavailable,
             _ => StatusCodes.Status403Forbidden,
         };
@@ -98,6 +99,7 @@ internal static class FolderCanonicalErrorMapper
                 or "read_model_unavailable"
                 or "projection_stale"
                 or "projection_unavailable"
+                or "idempotency_admission_unavailable"
                 or "lock_expired"
                 or "query_timeout" => true,
             "unknown_provider_outcome" or "reconciliation_required" => false,
@@ -114,6 +116,7 @@ internal static class FolderCanonicalErrorMapper
             "lock_expired" or "query_timeout" => "retry",
             "lock_not_owned" or "path_policy_denied" or "path_validation_failed" => "revise_request",
             "idempotency_key_expired" => "refresh_state_then_submit_with_new_key",
+            "idempotency_admission_unavailable" => "retry_later",
             "input_limit_exceeded" or "response_limit_exceeded" or "range_unsatisfiable" => "revise_request",
             _ => retryable ? "retry" : "no_action",
         };

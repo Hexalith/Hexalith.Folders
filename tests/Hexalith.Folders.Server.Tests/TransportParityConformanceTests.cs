@@ -171,7 +171,9 @@ public sealed class TransportParityConformanceTests
         }).ConfigureAwait(true);
 
         gateway.Requests.Count.ShouldBe(2, "both calls reach the gateway; idempotency is enforced at the aggregate, not blocked at the endpoint.");
-        gateway.Requests[0].MessageId.ShouldBe(gateway.Requests[1].MessageId);
+        gateway.Requests[0].IdempotencyKey.ShouldBe(gateway.Requests[1].IdempotencyKey);
+        gateway.Requests[0].ShouldBeKeyedUlidEnvelope("idempotency-archive-a");
+        gateway.Requests[1].ShouldBeKeyedUlidEnvelope("idempotency-archive-a");
     }
 
     [Fact]

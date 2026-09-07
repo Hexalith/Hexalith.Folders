@@ -154,7 +154,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         result.Code.ShouldBe(FolderResultCode.Accepted);
         evidence.Requests.ShouldBe(1);
         contentStore.Requests.Count.ShouldBe(1);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
         WorkspaceFileMutationAccepted accepted = repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceFileMutationAccepted>();
         accepted.MediaType.ShouldBe("text/plain");
@@ -254,10 +254,10 @@ public sealed class FolderWorkspaceFileMutationServiceTests
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
         evidence.Requests.ShouldBe(1);
-        repository.IdempotencyLookups.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
         contentStore.Requests.ShouldBeEmpty();
         WorkspaceFileDeleteOperationStoreRequest deleteRequest = deleteStore.Requests.ShouldHaveSingleItem();
-        deleteStore.LookupCountsAtRequest.ShouldHaveSingleItem().ShouldBe(1);
+        deleteStore.LookupCountsAtRequest.ShouldHaveSingleItem().ShouldBe(0);
         deleteRequest.ManagedTenantId.ShouldBe("tenant-a");
         deleteRequest.FolderId.ShouldBe("folder-a");
         deleteRequest.WorkspaceId.ShouldBe("workspace-a");
@@ -364,7 +364,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     }
 
     [Fact]
-    public async Task RemoveIdempotencyUnavailableShouldNotOrderDeleteOrAppend()
+    public async Task RemoveIdempotencyUnavailableShouldNotBlockAdmittedDelete()
     {
         RecordingFolderRepository repository = LockedRepository();
         repository.IdempotencyUnavailable = true;
@@ -374,9 +374,10 @@ public sealed class FolderWorkspaceFileMutationServiceTests
 
         FolderResult result = await service.MutateAsync(Request(fileOperationKind: "remove"), TestContext.Current.CancellationToken);
 
-        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
-        deleteStore.Requests.ShouldBeEmpty();
-        repository.AppendsAttempted.ShouldBe(0);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        deleteStore.Requests.Count.ShouldBe(1);
+        repository.IdempotencyLookups.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
     }
 
     [Theory]

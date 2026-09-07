@@ -1,3 +1,5 @@
+using Aspire.Hosting.ApplicationModel;
+using CommunityToolkit.Aspire.Hosting.Dapr;
 using Hexalith.EventStore.Aspire;
 using Hexalith.Folders.Aspire;
 using Hexalith.Memories.Aspire;
@@ -14,10 +16,10 @@ string pubSubComponentPath = ResolveDaprConfigPath(builder.AppHostDirectory, "pu
 // Shared local security resource used by HTTP services during Aspire orchestration.
 HexalithEventStoreSecurityResources? security = builder.AddHexalithEventStoreSecurity();
 
-// EventStore command gateway, composed gateway-only (no admin server / admin UI) via the platform Aspire
-// helper. The helper owns the eventstore sidecar plus the shared statestore/pubsub Dapr components, sourced
-// from the checked-in DaprComponents YAML so no component is created in Folders code (Epic 9).
-IResourceBuilder<ProjectResource> eventStoreProject = builder.AddHexalithEventStoreGatewayProject(FoldersAspireModule.EventStoreAppId);
+// Folders-owned EventStore command host: platform gateway-only sidecar wiring, plus Folders trusted
+// idempotency adapters registered in Hexalith.Folders.EventStore. Keep AddHexalithEventStore so the
+// helper still owns the eventstore sidecar and the shared statestore/pubsub Dapr components.
+IResourceBuilder<ProjectResource> eventStoreProject = builder.AddProject<Projects.Hexalith_Folders_EventStore>(FoldersAspireModule.EventStoreAppId);
 HexalithEventStoreResources eventStoreResources = builder.AddHexalithEventStore(
     eventStoreProject,
     adminServer: null,
@@ -68,10 +70,15 @@ _ = builder.AddHexalithFolders(
 string memoriesSecretStorePath = ResolveDaprConfigPath(builder.AppHostDirectory, "secretstore.memories.yaml");
 string memoriesLlmConfigPath = ResolveDaprConfigPath(builder.AppHostDirectory, "llm.memories.yaml");
 
+IResourceBuilder<IDaprComponentResource> memoriesSecretStore = builder.AddDaprComponent(
+    "memories-secretstore",
+    "secretstores.local.file",
+    new DaprComponentOptions { LocalPath = memoriesSecretStorePath });
+
 HexalithMemoriesSearchIndexServerResources memories = builder.AddHexalithMemoriesSearchIndexServer(
     eventStoreResources.StateStore,
     eventStoreResources.PubSub,
-    memoriesSecretStorePath,
+    memoriesSecretStore,
     memoriesLlmConfigPath,
     serverName: FoldersAspireModule.MemoriesAppId);
 

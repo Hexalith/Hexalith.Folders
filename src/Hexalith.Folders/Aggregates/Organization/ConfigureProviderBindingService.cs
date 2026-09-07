@@ -106,13 +106,6 @@ public sealed class ConfigureProviderBindingService(
             return result;
         }
 
-        if (_repository.TryGetIdempotencyFingerprint(streamName, command.IdempotencyKey, out string? priorFingerprint))
-        {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.AlreadyApplied)
-                : OrganizationProviderBindingResult.Rejected(command, OrganizationProviderBindingResultCode.IdempotencyConflict);
-        }
-
         OrganizationAclAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,
             command.IdempotencyKey,

@@ -1120,7 +1120,7 @@ public sealed partial class GitHubProviderTests
         GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
 
         ProviderRepositoryCreationResult result = await provider.CreateRepositoryAsync(
-            CreationRequest(ProviderIdempotencyDisposition.Fresh),
+            CreationRequest(ProviderIdempotencyDisposition.Execute),
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.ShouldBeTrue(result.ReasonCode);
@@ -1139,7 +1139,7 @@ public sealed partial class GitHubProviderTests
         GitHubProvider provider = new(credentialResolver, new RecordingGitHubApiClientFactory(apiClient), targetResolver);
 
         ProviderRepositoryBindingResult result = await provider.ValidateRepositoryBindingAsync(
-            BindingRequest(ProviderIdempotencyDisposition.Fresh),
+            BindingRequest(ProviderIdempotencyDisposition.Execute),
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.ShouldBeTrue(result.ReasonCode);

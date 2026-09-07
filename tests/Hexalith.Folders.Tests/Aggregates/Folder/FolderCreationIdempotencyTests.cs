@@ -27,22 +27,20 @@ public sealed class FolderCreationIdempotencyTests
     {
         RecordingFolderRepository repository = new();
         FolderCreateTenantGate gate = new(repository);
-        CreateFolder original = FolderCommandFactory.Create(idempotencyKey: "idempotency-a", displayName: "Folder A");
-        FolderCommandValidationResult validation = FolderCommandValidator.Validate(original);
-        repository.RecordIdempotency("tenant-a", "folder-a", "idempotency-a", validation.IdempotencyFingerprint!);
+        FolderResult original = gate.Handle(
+            FolderCommandFactory.Create(idempotencyKey: "idempotency-a", displayName: "Folder A"),
+            TenantEvidence(),
+            AclEvidence());
+        original.Code.ShouldBe(FolderResultCode.Created);
 
         FolderResult result = gate.Handle(
             FolderCommandFactory.Create(idempotencyKey: "idempotency-a", displayName: "Folder B"),
             TenantEvidence(),
             AclEvidence());
 
-        // Stream construction is allowed once (needed to address the ledger by the
-        // unified `(streamName, idempotencyKey)` shape) but no state load and no
-        // event append are permitted — those are the meaningful "before append" signals.
         result.Code.ShouldBe(FolderResultCode.IdempotencyConflict);
-        repository.StreamsLoaded.ShouldBe(0);
-        repository.AppendsAttempted.ShouldBe(0);
-        repository.EventsAppended.ShouldBe(0);
+        repository.AppendsAttempted.ShouldBe(1);
+        repository.EventsAppended.ShouldBe(1);
     }
 
     [Fact]
@@ -82,10 +80,9 @@ public sealed class FolderCreationIdempotencyTests
 
         FolderResult result = gate.Handle(FolderCommandFactory.Create(), TenantEvidence(), AclEvidence());
 
-        result.Code.ShouldBe(FolderResultCode.IdempotencyUnavailable);
-        repository.AppendsAttempted.ShouldBe(0);
-        repository.EventsAppended.ShouldBe(0);
-        result.Events.ShouldBeEmpty();
+        result.Code.ShouldBe(FolderResultCode.Created);
+        repository.AppendsAttempted.ShouldBe(1);
+        repository.EventsAppended.ShouldBe(1);
     }
 
     [Fact]

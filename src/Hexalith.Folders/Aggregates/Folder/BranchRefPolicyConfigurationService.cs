@@ -101,23 +101,6 @@ public sealed class BranchRefPolicyConfigurationService(
             return aggregateResult;
         }
 
-        FolderIdempotencyLookupResult lookup = _repository.TryGetIdempotencyFingerprint(
-            streamName,
-            command.IdempotencyKey,
-            out string? priorFingerprint);
-
-        if (lookup == FolderIdempotencyLookupResult.Found)
-        {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
-                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
-        }
-
-        if (lookup == FolderIdempotencyLookupResult.Unavailable)
-        {
-            return FolderResult.Rejected(command, FolderResultCode.IdempotencyUnavailable);
-        }
-
         ProviderReadinessValidationResult readiness = await _readinessValidator.ValidateAsync(
             new ProviderReadinessValidationRequest(
                 command.ManagedTenantId,

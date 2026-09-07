@@ -118,23 +118,6 @@ public sealed class RepositoryBindingService(
             return aggregateResult;
         }
 
-        FolderIdempotencyLookupResult lookup = _repository.TryGetIdempotencyFingerprint(
-            streamName,
-            command.IdempotencyKey,
-            out string? priorFingerprint);
-
-        if (lookup == FolderIdempotencyLookupResult.Found)
-        {
-            return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
-                ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
-                : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
-        }
-
-        if (lookup == FolderIdempotencyLookupResult.Unavailable)
-        {
-            return FolderResult.Rejected(command, FolderResultCode.IdempotencyUnavailable);
-        }
-
         ProviderReadinessValidationResult readiness = await _readinessValidator.ValidateAsync(
             new ProviderReadinessValidationRequest(
                 command.ManagedTenantId,
@@ -188,10 +171,8 @@ public sealed class RepositoryBindingService(
                     "fresh"),
                 command.CorrelationId,
                 command.IdempotencyKey,
-                // Fresh until Story 12.6 exposes the durable admission decision; the ledger
-                // check above still owns replay/conflict for this path.
                 new ProviderIdempotencyAdmission(
-                    ProviderIdempotencyDisposition.Fresh,
+                    ProviderIdempotencyDisposition.Execute,
                     validation.IdempotencyFingerprint!)),
             cancellationToken).ConfigureAwait(false);
 
@@ -448,8 +429,16 @@ public sealed class RepositoryBindingService(
                 or ProviderFailureCategory.ProviderTransientFailure => FolderResultCode.ProviderUnavailable,
             ProviderFailureCategory.ProviderAuthenticationRequired
                 or ProviderFailureCategory.ProviderPermissionInsufficient => FolderResultCode.ProviderPermissionInsufficient,
-            ProviderFailureCategory.ProviderConflict => FolderResultCode.RepositoryConflict,
+            ProviderFailureCategory.ProviderConflict => MapProviderConflict(result.ReasonCode),
             _ => FolderResultCode.ProviderReadinessFailed,
+        };
+
+    private static FolderResultCode MapProviderConflict(string reasonCode)
+        => reasonCode switch
+        {
+            "idempotency_conflict" => FolderResultCode.IdempotencyConflict,
+            "idempotency_key_expired" => FolderResultCode.IdempotencyKeyExpired,
+            _ => FolderResultCode.RepositoryConflict,
         };
 
     private static string SafeHash(string value)
