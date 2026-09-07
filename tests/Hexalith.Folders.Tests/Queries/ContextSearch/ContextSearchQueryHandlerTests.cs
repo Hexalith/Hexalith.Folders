@@ -171,6 +171,38 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
+    public async Task AuthorizedSearchShouldKeepStaleBridgeEntries()
+    {
+        RecordingFolderSearchSource source = new()
+        {
+            Hits = [Hit("fv-1")],
+        };
+        ContextSearchQueryHandler handler = Handler(
+            source,
+            new StubBridgeReadModel([Entry("fv-1", SemanticIndexingBridgeStatus.Stale)]));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.Allowed);
+        ContextSearchItem item = result.Items.ShouldHaveSingleItem();
+        item.FileVersionReference.ShouldBe("fv-1");
+        item.IndexingStatus.ShouldBe("stale");
+    }
+
+    [Fact]
+    public async Task ThrowingBridgeShouldDegradeToReadModelUnavailable()
+    {
+        RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
+        ContextSearchQueryHandler handler = Handler(source, new ThrowingBridgeReadModel());
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.ReadModelUnavailable);
+        result.Items.ShouldBeEmpty();
+        source.Requests.ShouldHaveSingleItem();
+    }
+
+    [Fact]
     public async Task AuthorizedSearchWithoutOrganizationShouldFailClosedBeforeSourceObservation()
     {
         RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
@@ -557,6 +589,29 @@ public sealed class ContextSearchQueryHandlerTests
             FolderSearchSourceRequest request,
             CancellationToken cancellationToken = default)
             => throw new InvalidOperationException("memories unreachable");
+    }
+
+    private sealed class ThrowingBridgeReadModel : ISemanticIndexingBridgeReadModel
+    {
+        public bool IsAvailable => true;
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
+            SemanticIndexingFileVersionIdentity identity,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("bridge unavailable");
+
+        public Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
+            string managedTenantId,
+            string folderId,
+            string fileVersionId,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("bridge unavailable");
+
+        public Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
+            string managedTenantId,
+            string folderId,
+            CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("bridge unavailable");
     }
 
     private sealed class StubBridgeReadModel(IReadOnlyList<SemanticIndexingBridgeEntry> entries) : ISemanticIndexingBridgeReadModel

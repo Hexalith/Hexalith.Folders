@@ -3,6 +3,7 @@ using Hexalith.EventStore.Client.Handlers;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
@@ -85,8 +86,9 @@ public static class FoldersServerServiceCollectionExtensions
     /// control (consistent with architecture I-3/S-4). Binds the token/endpoint from configuration and wires the live
     /// <see cref="MemoriesFolderSearchSource"/> as the <see cref="IFolderSearchSource"/>. The live gateway is
     /// registered before the core defaults so the core <c>TryAdd</c> keeps it; it degrades safely when the sidecar or
-    /// Memories is unreachable. The bridge read model stays the fail-safe <c>Unavailable</c> default until a Server-side
-    /// EventStore-backed read model is wired on a DCP-capable lane (the live-boot residual inherited from Epic 9).
+    /// Memories is unreachable. After the core queries register their fail-safe <c>Unavailable</c> <c>TryAdd</c>
+    /// default, this facade replaces the bridge read model with the EventStore-backed store (read-only on Server;
+    /// Workers keep the same type as writer).
     /// </summary>
     public static IServiceCollection AddFoldersContextSearchFacade(this IServiceCollection services)
     {
@@ -123,6 +125,13 @@ public static class FoldersServerServiceCollectionExtensions
         // transient typed MemoriesClient — no captive dependency.
         services.AddScoped<IFolderSearchSource, MemoriesFolderSearchSource>();
         services.AddFoldersContextSearchQueries();
+
+        // Override after AddFoldersContextSearchQueries (TryAddScoped Unavailable). Mirror Workers: RemoveAll then
+        // singleton. Server is read-only — no ISemanticIndexingBridgeWriter registration.
+        services.AddEventStoreReadModelStore();
+        services.RemoveAll<ISemanticIndexingBridgeReadModel>();
+        services.TryAddSingleton<EventStoreSemanticIndexingBridgeStore>();
+        services.TryAddSingleton<ISemanticIndexingBridgeReadModel>(static sp => sp.GetRequiredService<EventStoreSemanticIndexingBridgeStore>());
 
         return services;
     }

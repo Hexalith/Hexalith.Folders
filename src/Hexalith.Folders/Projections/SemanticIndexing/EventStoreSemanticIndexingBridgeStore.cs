@@ -1,25 +1,41 @@
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
-using Hexalith.Folders.Projections.SemanticIndexing;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Hexalith.Folders.Workers.SemanticIndexing;
+namespace Hexalith.Folders.Projections.SemanticIndexing;
 
+/// <summary>
+/// EventStore-backed semantic-indexing bridge over Dapr <c>statestore</c>. Persists only through
+/// <see cref="IReadModelStore"/> and <see cref="ReadModelWritePolicy"/> using today's tenant-prefixed
+/// keys. This is the only <see cref="ISemanticIndexingBridgeReadModel"/> implementation that reports
+/// <see cref="IsAvailable"/> as <see langword="true"/>. Hosts that do not override the core
+/// <c>TryAdd</c> keep <see cref="UnavailableSemanticIndexingBridgeReadModel"/>.
+/// </summary>
 public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBridgeReadModel, ISemanticIndexingBridgeWriter
 {
+    /// <summary>Dapr state-store name used for every bridge read and write.</summary>
     public const string StateStoreName = "statestore";
 
     private readonly ILogger<EventStoreSemanticIndexingBridgeStore> _logger;
     private readonly IReadModelStore _store;
 
+    /// <summary>
+    /// Initializes a new <see cref="EventStoreSemanticIndexingBridgeStore"/> with a null logger.
+    /// </summary>
+    /// <param name="store">The EventStore read-model store.</param>
     public EventStoreSemanticIndexingBridgeStore(IReadModelStore store)
         : this(store, NullLogger<EventStoreSemanticIndexingBridgeStore>.Instance)
     {
     }
 
+    /// <summary>
+    /// Initializes a new <see cref="EventStoreSemanticIndexingBridgeStore"/>.
+    /// </summary>
+    /// <param name="store">The EventStore read-model store.</param>
+    /// <param name="logger">The logger used by <see cref="ReadModelWritePolicy"/>.</param>
     public EventStoreSemanticIndexingBridgeStore(
         IReadModelStore store,
         ILogger<EventStoreSemanticIndexingBridgeStore> logger)
@@ -31,8 +47,10 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public bool IsAvailable => true;
 
+    /// <inheritdoc />
     public async Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
         SemanticIndexingFileVersionIdentity identity,
         CancellationToken cancellationToken = default)
@@ -43,9 +61,13 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             .GetAsync<SemanticIndexingBridgeEntry>(StateStoreName, identity.ReadModelKey, cancellationToken)
             .ConfigureAwait(false);
 
-        return result.Value;
+        return result.Value is { } entry
+            && string.Equals(entry.Identity.ReadModelKey, identity.ReadModelKey, StringComparison.Ordinal)
+            ? entry
+            : null;
     }
 
+    /// <inheritdoc />
     public async Task<SemanticIndexingBridgeEntry?> GetFileVersionByIdAsync(
         string managedTenantId,
         string folderId,
@@ -63,9 +85,15 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
                 cancellationToken)
             .ConfigureAwait(false);
 
-        return result.Value;
+        return result.Value is { } entry
+            && string.Equals(entry.Identity.ManagedTenantId, managedTenantId, StringComparison.Ordinal)
+            && string.Equals(entry.Identity.FolderId, folderId, StringComparison.Ordinal)
+            && string.Equals(entry.Identity.FileVersionId, fileVersionId, StringComparison.Ordinal)
+            ? entry
+            : null;
     }
 
+    /// <inheritdoc />
     public async Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ListFolderAsync(
         string managedTenantId,
         string folderId,
@@ -106,6 +134,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             .ToArray();
     }
 
+    /// <inheritdoc />
     public async Task<IReadOnlyList<SemanticIndexingBridgeEntry>> ApplyFolderEventsAsync(
         IReadOnlyCollection<FolderProjectionEnvelope> envelopes,
         CancellationToken cancellationToken = default)
@@ -154,6 +183,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
         return persisted;
     }
 
+    /// <inheritdoc />
     public async Task<SemanticIndexingBridgeEntry?> RecordIndexingResultAsync(
         SemanticIndexingResultUpdate update,
         CancellationToken cancellationToken = default)
@@ -181,6 +211,7 @@ public sealed class EventStoreSemanticIndexingBridgeStore : ISemanticIndexingBri
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
+    /// <inheritdoc />
     public async Task<SemanticIndexingBridgeEntry?> RecordRemovalEvidenceAsync(
         SemanticIndexingRemovalEvidenceUpdate update,
         CancellationToken cancellationToken = default)

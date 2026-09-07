@@ -200,7 +200,7 @@ development_status:
   10-4-emit-searchindexentryremoved-on-removal-archive-and-prove-en: done
   10-5-expose-an-authorized-folders-query-facade-over-memories: done
   10-6-replace-the-fail-closed-content-materializer-with-a-metadata: done
-  10-7-eventstore-backed-search-bridge-and-deployed-server-registra: backlog
+  10-7-eventstore-backed-search-bridge-and-deployed-server-registra: done
   10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: ready-for-dev
   10-9-authorized-body-content-materialization-c9-gated: backlog
   epic-10-retrospective: done
@@ -285,7 +285,7 @@ action_items:
       under Story 10.7."
     owner: "Amelia / Winston"
     priority: high
-    status: open
+    status: done
   - epic: 10
     action: "Replace or extend the fail-closed content materializer so real folder
       mutation evidence can populate the search index under C4/C9 policy."

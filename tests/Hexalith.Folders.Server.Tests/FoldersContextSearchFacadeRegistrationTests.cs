@@ -1,3 +1,7 @@
+using Dapr.Client;
+
+using Hexalith.Folders;
+using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Server;
 using Hexalith.Memories.Client.Rest;
 
@@ -55,4 +59,47 @@ public sealed class FoldersContextSearchFacadeRegistrationTests
                 ("Memories:BaseAddress", "https://memories.example.test/"),
                 ("DAPR_HTTP_PORT", "3555")).Endpoint
             .ShouldBe(new Uri("https://memories.example.test/"));
+
+    [Fact]
+    public void CoreContextSearchQueriesKeepUnavailableBridgeReadModel()
+    {
+        IConfiguration configuration = new ConfigurationBuilder().Build();
+        using ServiceProvider provider = new ServiceCollection()
+            .AddSingleton(configuration)
+            .AddLogging()
+            .AddFoldersContextSearchQueries()
+            .BuildServiceProvider(new ServiceProviderOptions
+            {
+                ValidateOnBuild = true,
+                ValidateScopes = true,
+            });
+
+        using IServiceScope scope = provider.CreateScope();
+        ISemanticIndexingBridgeReadModel readModel = scope.ServiceProvider
+            .GetRequiredService<ISemanticIndexingBridgeReadModel>();
+        readModel.ShouldBeOfType<UnavailableSemanticIndexingBridgeReadModel>();
+        readModel.IsAvailable.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void FacadeRegistersEventStoreBackedBridgeReadModel()
+    {
+        IConfiguration configuration = new ConfigurationBuilder().Build();
+        ServiceCollection services = new();
+        services.AddSingleton(configuration);
+        services.AddLogging();
+        services.AddDaprClient();
+        services.AddFoldersContextSearchFacade();
+        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateOnBuild = true,
+            ValidateScopes = true,
+        });
+
+        ISemanticIndexingBridgeReadModel readModel = provider.GetRequiredService<ISemanticIndexingBridgeReadModel>();
+        readModel.ShouldBeOfType<EventStoreSemanticIndexingBridgeStore>();
+        readModel.IsAvailable.ShouldBeTrue();
+        provider.GetService<ISemanticIndexingBridgeWriter>().ShouldBeNull();
+        provider.GetRequiredService<EventStoreSemanticIndexingBridgeStore>().ShouldBeSameAs(readModel);
+    }
 }

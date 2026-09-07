@@ -7,6 +7,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
+    <!-- Story 10.7: EventStore-backed search bridge lives in packable Hexalith.Folders so Server can
+         register it without referencing Workers. No Memories package on core. -->
+    <ProjectReference Include="$(HexalithEventStoreRoot)\src\Hexalith.EventStore.Client\Hexalith.EventStore.Client.csproj" Condition="'$(HexalithEventStoreFromSource)' == 'true'" />
+    <PackageReference Include="Hexalith.EventStore.Client" Condition="'$(HexalithEventStoreFromSource)' != 'true'" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapr.Client" />

@@ -2,7 +2,6 @@ using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
 using Hexalith.Folders.Projections.SemanticIndexing;
-using Hexalith.Folders.Workers.SemanticIndexing;
 
 using Shouldly;
 using Xunit;
@@ -52,6 +51,137 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
 
         persisted.ShouldBeEmpty();
         readModelStore.Keys.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task GetFileVersionAsyncShouldReturnNullWhenStoredIdentityReadModelKeyDoesNotMatchLookup()
+    {
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        SemanticIndexingFileVersionIdentity lookup = LookupIdentity();
+        await readModelStore.SaveAsync(
+            StoreName,
+            lookup.ReadModelKey,
+            SwappedIdentityEntry(),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        SemanticIndexingBridgeEntry? loaded = await bridgeStore.GetFileVersionAsync(
+            lookup,
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        loaded.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task GetFileVersionByIdAsyncShouldReturnNullWhenStoredIdentityDoesNotMatchLookup()
+    {
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        SemanticIndexingFileVersionIdentity lookup = LookupIdentity();
+        await readModelStore.SaveAsync(
+            StoreName,
+            lookup.ReadModelKey,
+            SwappedIdentityEntry(),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        SemanticIndexingBridgeEntry? loaded = await bridgeStore.GetFileVersionByIdAsync(
+            lookup.ManagedTenantId,
+            lookup.FolderId,
+            lookup.FileVersionId,
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        loaded.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task ApplyFolderEventsAsyncShouldReloadVersionStatusAndRemovalOnNewInstanceOverSameStore()
+    {
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore writer = new(readModelStore);
+        WorkspaceFileMutationAccepted mutation = Mutation();
+        SemanticIndexingFileVersionIdentity identity = SemanticIndexingFileVersionIdentity.From(mutation);
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> emptyCheckpoint = await writer.ApplyFolderEventsAsync(
+            [
+                new FolderProjectionEnvelope("tenant-a", 1, mutation),
+                new FolderProjectionEnvelope("tenant-a", 2, Archived()),
+            ],
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        SemanticIndexingBridgeEntry archived = emptyCheckpoint.Last();
+        archived.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        archived.ReasonCode.ShouldBe("folder_archived");
+
+        SemanticIndexingBridgeEntry? recorded = await writer.RecordRemovalEvidenceAsync(
+            new SemanticIndexingRemovalEvidenceUpdate(
+                archived.Identity,
+                "memories_accepted",
+                retryable: false,
+                "correlation-removal-restart",
+                "task-removal-restart",
+                "folders://tenant-a/published-restart",
+                "result-fingerprint-removal-restart",
+                archived.Freshness.Watermark,
+                OccurredAt.AddMinutes(3)),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        recorded.ShouldNotBeNull();
+        recorded.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        recorded.ReasonCode.ShouldBe("memories_accepted");
+
+        string[] persistedKeys = readModelStore.Keys.Order(StringComparer.Ordinal).ToArray();
+        persistedKeys.ShouldContain($"statestore:{identity.ReadModelKey}");
+        persistedKeys.ShouldContain("statestore:tenant-a:semantic-indexing:folder:folder-a:file-versions");
+
+        EventStoreSemanticIndexingBridgeStore reloaded = new(readModelStore);
+        SemanticIndexingBridgeEntry version = (await reloaded.GetFileVersionAsync(
+            identity,
+            TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotBeNull();
+        version.Identity.ReadModelKey.ShouldBe(identity.ReadModelKey);
+        version.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        version.ReasonCode.ShouldBe("memories_accepted");
+        version.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-restart");
+        version.Freshness.Watermark.ShouldBe(2);
+
+        SemanticIndexingBridgeEntry listed = (await reloaded.ListFolderAsync(
+            "tenant-a",
+            "folder-a",
+            TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldHaveSingleItem();
+        listed.ShouldBe(version);
+        readModelStore.Keys.Order(StringComparer.Ordinal).ToArray().ShouldBe(persistedKeys);
+    }
+
+    [Fact]
+    public async Task ApplyFolderEventsAsyncShouldBeEquivalentUnderDuplicateDelivery()
+    {
+        InMemoryReadModelStoreDouble readModelStore = new();
+        EventStoreSemanticIndexingBridgeStore bridgeStore = new(readModelStore);
+        FolderProjectionEnvelope[] envelopes =
+        [
+            new FolderProjectionEnvelope("tenant-a", 1, Mutation()),
+            new FolderProjectionEnvelope("tenant-a", 2, Archived()),
+        ];
+
+        await bridgeStore.ApplyFolderEventsAsync(envelopes, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        string[] firstKeys = readModelStore.Keys.Order(StringComparer.Ordinal).ToArray();
+        SemanticIndexingBridgeEntry first = (await bridgeStore.GetFileVersionByIdAsync(
+            "tenant-a",
+            "folder-a",
+            SemanticIndexingFileVersionIdentity.From(Mutation()).FileVersionId,
+            TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotBeNull();
+
+        IReadOnlyList<SemanticIndexingBridgeEntry> secondApply = await bridgeStore.ApplyFolderEventsAsync(
+            envelopes,
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        SemanticIndexingBridgeEntry second = (await bridgeStore.GetFileVersionAsync(
+            first.Identity,
+            TestContext.Current.CancellationToken).ConfigureAwait(true)).ShouldNotBeNull();
+
+        readModelStore.Keys.Order(StringComparer.Ordinal).ToArray().ShouldBe(firstKeys);
+        secondApply.Select(static entry => entry.Identity.ReadModelKey).Distinct(StringComparer.Ordinal)
+            .ShouldBe([first.Identity.ReadModelKey]);
+        second.Identity.ReadModelKey.ShouldBe(first.Identity.ReadModelKey);
+        second.Status.ShouldBe(SemanticIndexingBridgeStatus.Tombstoned);
+        second.ReasonCode.ShouldBe("folder_archived");
+        second.Freshness.Watermark.ShouldBe(first.Freshness.Watermark);
     }
 
     [Fact]
@@ -200,6 +330,37 @@ public sealed class EventStoreSemanticIndexingBridgeStoreTests
         reloaded.Evidence.PublishedEventId.ShouldBe("folders://tenant-a/published-a");
         readModelStore.Keys.ShouldContain($"statestore:{identity.ReadModelKey}");
     }
+
+    private static SemanticIndexingFileVersionIdentity LookupIdentity()
+        => new(
+            "tenant-a",
+            "organization-a",
+            "folder-a",
+            "workspace-a",
+            "operation-a",
+            "path-digest-a",
+            "fv-lookup",
+            "sha256:a",
+            "folders://tenant-a/organizations/organization-a/folders/folder-a/workspaces/workspace-a/file-versions/fv-lookup");
+
+    private static SemanticIndexingBridgeEntry SwappedIdentityEntry()
+        => new(
+            new SemanticIndexingFileVersionIdentity(
+                "tenant-b",
+                "organization-b",
+                "folder-b",
+                "workspace-b",
+                "operation-b",
+                "path-digest-b",
+                "fv-foreign",
+                "sha256:b",
+                "folders://tenant-b/organizations/organization-b/folders/folder-b/workspaces/workspace-b/file-versions/fv-foreign"),
+            SemanticIndexingBridgeStatus.Indexed,
+            "poisoned_identity",
+            retryable: false,
+            "correlation-poisoned",
+            "task-poisoned",
+            OccurredAt);
 
     private static WorkspaceFileMutationAccepted Mutation(
         string fileOperationKind = "add",

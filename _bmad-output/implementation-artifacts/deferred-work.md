@@ -2828,3 +2828,19 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `_bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md`
   summary: Story 12.6 message-ID tests do not prove a new execution identity is generated for every submission independently of the idempotency key.
   evidence: Existing assertions validate identifier shape but not per-submission uniqueness, so reusing an execution ID could remain green; this belongs to the separate durable-admission implementation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+  summary: Folder-scoped archive/commit apply updates every loaded folder-index key without the ListFolderAsync tenant/folder identity filter.
+  evidence: Pre-existing write path in EventStoreSemanticIndexingBridgeStore.ApplyFolderScopedEventAsync; this story only registered the store as a Server read model and does not expose the writer on Server.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+  summary: Tombstoned and removed file-version keys remain in the folder index, so ListFolderAsync keeps doing N+1 loads over a monotonically growing key set.
+  evidence: Pre-existing AddToFolderIndexAsync-only index; remove/archive never prune keys. Not introduced by Server read registration.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+  summary: SemanticIndexingBridgeProjection.Project throws InvalidOperationException embedding the raw read-model key.
+  evidence: Pre-existing write-path exception; Server search/status inject ISemanticIndexingBridgeReadModel and do not call ApplyFolderEventsAsync/Project.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
+  summary: A deserialized SemanticIndexingBridgeFolderIndex with null EntryKeys would NullReferenceException in ListFolderAsync and folder-scoped apply.
+  evidence: Pre-existing nested DTO; writers always construct an empty list. Would only appear if Dapr state were poisoned JSON.
