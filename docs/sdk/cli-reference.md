@@ -15,7 +15,7 @@ Stories 8.1–8.3 — including canonical cross-surface error parity (`idempoten
 All examples are **metadata-only**: identifiers are opaque, synthetic references. Never place secrets, bearer
 tokens, raw file contents, base64 file bytes, diffs, provider payloads, real base addresses, or local absolute
 paths in commands, scripts, logs, or examples. Command and option names are sourced from
-`src/Hexalith.Folders.Cli` (System.CommandLine 2.0.8), not from running the binary.
+`src/Hexalith.Folders.Cli` (System.CommandLine 2.0.11), not from running the binary.
 
 See also: [API & SDK reference](./api-reference.md) · [MCP reference](./mcp-reference.md) ·
 [authentication guidance](./authentication.md) · lifecycle diagrams
@@ -124,7 +124,7 @@ The root `folders` command exposes **7 top-level groups**. Each leaf maps to one
 ### `folders commit`
 
 > **Naming quirk:** the mutating verb is **`create`**, not `commit`. A `commit` child under the `commit` group
-> collides with the parent in the System.CommandLine 2.0.8 token table and crashes the parser for every
+> collides with the parent in the System.CommandLine 2.0.11 token table and crashes the parser for every
 > `commit <subcommand>` invocation, so `commit create` maps to `CommitWorkspace`.
 
 | Command | Operation | Kind |

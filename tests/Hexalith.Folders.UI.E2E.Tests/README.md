@@ -1,21 +1,23 @@
 # Hexalith.Folders UI End-to-End Tests
 
-This project hosts the **Playwright-on-.NET** lane for the read-only operations console. It compiles and is part of the solution today, but contains only a skipped placeholder test until Epic 6 ships the operations console scaffold (story 6-2).
+This project hosts the **Playwright-on-.NET** lane for the read-only operations console. It is the live 63-test blocking lane documented in `docs/operations/e2e-ci-gates.md`.
 
 ## Status
 
-- **Lane:** deferred-active. The project is built and discovered by `dotnet test`, but every test is `[Fact(Skip = "...")]` until UI routes and selectors stabilize.
-- **Blocking prerequisite:** Epic 6, story 6-2 (`scaffold-frontcomposer-hosted-read-only-operations-console`).
-- **Risk if enabled early:** flakiness debt against a moving target. Do not write E2E tests against routes that have not landed in `main`.
+- **Lane:** live and blocking. 63 Playwright tests across Accessibility (23), Responsive (28), Smoke (8), and StateLabels (4).
+- **CI:** required as `e2e-gates` (full lane) and `accessibility-gates` (the 23-test Accessibility subset). See `docs/operations/e2e-ci-gates.md`.
+- **Host:** in-process console host on localhost; provision Chromium with `tests/install-playwright.ps1`. There is no external network, provider, secret, or Dapr dependency.
 
-## When to enable
+## What the lane covers
 
-Replace the placeholder smoke test only after **all** of the following are true:
+The full `Hexalith.Folders.UI.E2E.Tests` surface — all 63 tests across the four namespaces:
 
-1. Story 6-2 has merged a working operations console host into `main`.
-2. The console exposes at least one stable route with documented intent.
-3. The console exposes `data-testid` attributes on the elements being asserted (see Route and Selector Contract below).
-4. A host fixture exists that stands up the console deterministically through `Aspire.Hosting.Testing` or equivalent — no test may target a hand-started `dotnet run` process.
+1. **Accessibility** (23 tests) — the axe-core / WCAG 2.2 AA scan, keyboard / visible-focus, and zoom / reflow assertions (also covered by the focused `accessibility-gates` job; re-run in `e2e-gates` so the full lane is a single honest green).
+2. **Responsive** (28 cases) — viewport / responsive-layout smoke over the read-only console routes.
+3. **Smoke** (8 tests) — route smoke tests asserting the console, folder, provider, audit, and incident routes load and render their page roots against the hermetic backend-less host.
+4. **StateLabels** (4 tests) — operator disposition-label gallery rendering.
+
+Each test drives a real Playwright Chromium browser against an in-process console host bound to localhost.
 
 ## Route and Selector Contract
 
@@ -29,8 +31,8 @@ E2E tests under this project must follow the contract below. Any deviation is a 
 
 ### Routes
 
-- Routes are documented as part of story 6-2 deliverables. Until that doc exists, no route may be hardcoded in tests except through the host fixture's `BaseAddress` plus a path constant defined in this project.
-- Path constants live in a future `Routes/ConsoleRoutes.cs` (do not create until the first real test needs it).
+- No route may be hardcoded in tests except through the host fixture's `BaseAddress` plus a path constant defined in this project.
+- Path constants live in `Routes/ConsoleRoutes.cs`.
 - Tests must not rely on undocumented redirects, default landing pages, or environment-specific routing tables.
 
 ### Network discipline
@@ -77,27 +79,39 @@ Or directly:
 dotnet test tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj
 ```
 
-The placeholder smoke test currently reports as skipped — that is expected.
+CI-equivalent local gate (from the repository root, after provisioning Chromium once):
+
+```powershell
+pwsh ./tests/install-playwright.ps1
+pwsh ./tests/tools/run-e2e-ci-gates.ps1 -SkipBrowserInstall
+```
 
 ## CI posture
 
-- This lane is **not** in the blocking CI gate today. Wiring it in is part of Epic 6 / Epic 7 work, not Epic 1-3.
-- When wired, it must run against an Aspire-managed host, headless Chromium, and a tight burn-in budget (trace + screenshot + video on failure only).
+- This lane is **blocking**. `.github/workflows/ci.yml` runs `e2e-gates` (all 63 tests) and `accessibility-gates` (the 23-test Accessibility subset). Both jobs provision Playwright Chromium. See `docs/operations/e2e-ci-gates.md`.
+- Tests run against an in-process console host and headless Chromium. There is no external network, provider, secret, or Dapr dependency.
 - A failing UI E2E test must never be silently retried more than the Playwright default (typically 2 in CI). Retries hide flake; flake is critical technical debt.
 
 ## Project layout
 
 ```text
 tests/Hexalith.Folders.UI.E2E.Tests/
+├── Accessibility/                       # 23-test WCAG / keyboard / zoom subset
 ├── Fixtures/
+│   ├── AccessibilityConsoleHostFixture.cs
+│   ├── AspireConsoleHostFixture.cs
+│   ├── ConsoleStubFixtures.cs
+│   ├── DenseIdentifierConsoleHostFixture.cs
 │   ├── PlaywrightCollection.cs          # xUnit collection definition
-│   └── PlaywrightFixture.cs             # IPlaywright + IBrowser lifecycle
-├── Smoke/
-│   └── OperationsConsolePlaceholderSmokeTests.cs   # skipped until Epic 6
+│   ├── PlaywrightFixture.cs             # IPlaywright + IBrowser lifecycle
+│   └── PopulatedConsoleHostFixture.cs
+├── Responsive/                          # 28 viewport / layout cases
+├── Routes/
+│   └── ConsoleRoutes.cs                 # path constants for the operations console
+├── Smoke/                               # 8 route-root smoke tests
+├── StateLabels/                         # 4 disposition-label gallery tests
 └── README.md                            # this file
 ```
-
-Add new directories (`Routes/`, `Pages/`, `Accessibility/`, `Hosting/`) when the first real test in that area lands. Do not create empty placeholder folders.
 
 ## Knowledge references
 

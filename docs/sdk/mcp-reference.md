@@ -2,7 +2,7 @@
 
 Status: Story 7.13 consumer reference.
 
-`Hexalith.Folders.Mcp` is a standalone **Model Context Protocol stdio server** (ModelContextProtocol 1.3.0)
+`Hexalith.Folders.Mcp` is a standalone **Model Context Protocol stdio server** (ModelContextProtocol 2.2.0)
 that exposes the canonical Folders surface to MCP clients. It is an executable sidecar (`IsPackable=false`) — a
 process you launch, **not** a NuGet library — and it wraps the typed SDK (`Hexalith.Folders.Client`); it adds
 no behavior absent from the [Contract Spine](./api-reference.md).

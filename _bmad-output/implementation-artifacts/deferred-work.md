@@ -2864,3 +2864,7 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
   summary: Epic 11 context rewrite, untracked spec-11-3, and Builds/FrontComposer gitlink moves are in the same working tree as Story 10.8.
   evidence: Concurrent workspace dirt; not required by the 10.8 frozen intent and not listed in the 10.8 File List.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
+  summary: Pre-existing dirty Builds gitlink moves EventStore 3.102.0 to 3.103.0 with no PR package-mode compile of Hexalith.Folders.EventStore.
+  evidence: Working-tree gitlink 071ef99→35c3d1e predates Story 11.3; tests/ never read HexalithEventStoreVersion; PR baseline package-mode builds only UI.Tests. Settle by a package-mode restore+build of Hexalith.Folders.EventStore against the new pin, or by committing the gitlink on its own story.

@@ -63,7 +63,7 @@ Run one named test with detailed output:
 dotnet test tests\Hexalith.Folders.Testing.Tests\Hexalith.Folders.Testing.Tests.csproj --filter FullyQualifiedName~EventuallyTests --logger "console;verbosity=detailed"
 ```
 
-For integration failures, prefer inspecting the failing request, headers, correlation ID, idempotency key, and generated test artifacts before widening to the whole solution. Browser headed/debug mode is intentionally not part of the default lane; the UI E2E lane (`tests/Hexalith.Folders.UI.E2E.Tests`) is wired but its only test is skipped pending Epic 6 story 6-2.
+For integration failures, prefer inspecting the failing request, headers, correlation ID, idempotency key, and generated test artifacts before widening to the whole solution. Browser headed/debug mode is intentionally not part of the default lane; the UI E2E lane (`tests/Hexalith.Folders.UI.E2E.Tests`) is the live 63-test Playwright lane, blocking in CI as `e2e-gates` and `accessibility-gates`.
 
 ## Architecture
 
@@ -77,7 +77,7 @@ For integration failures, prefer inspecting the failing request, headers, correl
 
 - Prefer unit tests for pure domain rules, state transitions, and input validation.
 - Use integration tests for EventStore, Dapr, Aspire, provider, and REST boundary behavior.
-- Keep browser tests thin and reserve the UI E2E lane (`tests/Hexalith.Folders.UI.E2E.Tests`) for read-only operations-console smoke and accessibility coverage when stable UI routes exist. See that project's `README.md` for the route and selector contract.
+- Keep browser tests thin and reserve the UI E2E lane (`tests/Hexalith.Folders.UI.E2E.Tests`) for the live, blocking 63-test read-only operations-console smoke and accessibility coverage. See that project's `README.md` for the route and selector contract.
 - Use factories with explicit overrides instead of static fixture objects when creating scenario data.
 - Keep assertions visible in test bodies; helpers should arrange, extract, poll, or normalize.
 - Every test that creates external state must own cleanup or use a fixture that does.
@@ -119,9 +119,9 @@ Run the contract spine gate locally:
 
 This gate validates OpenAPI 3.1 contract-spine alignment between `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` and server-generated artifacts, enforcing the parity-oracle outputs as a blocking gate.
 
-## UI End-to-End Lane (deferred until Epic 6)
+## UI End-to-End Lane
 
-`tests/Hexalith.Folders.UI.E2E.Tests` is the Playwright-on-.NET lane for the read-only operations console. The project compiles and is part of the solution, but its only test is `[Fact(Skip = "...")]` until Epic 6 ships stable routes and selectors.
+`tests/Hexalith.Folders.UI.E2E.Tests` is the Playwright-on-.NET lane for the read-only operations console. It runs 63 tests (Accessibility 23, Responsive 28, Smoke 8, StateLabels 4) against an in-process console host. CI blocks on `e2e-gates` (full lane) and `accessibility-gates` (the 23-test Accessibility subset). See `docs/operations/e2e-ci-gates.md`.
 
 Bootstrap (once per machine):
 
@@ -135,7 +135,7 @@ Run the lane locally:
 .\tests\run-tests.ps1 -Mode UiE2E
 ```
 
-Route and selector contract, when-to-enable rules, and forbidden patterns live in `tests/Hexalith.Folders.UI.E2E.Tests/README.md`. Treat it as the source of truth before adding any UI test.
+The route and selector contract lives in `tests/Hexalith.Folders.UI.E2E.Tests/README.md`. Treat it as the source of truth before adding any UI test.
 
 ## Knowledge References
 

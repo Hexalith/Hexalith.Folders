@@ -414,7 +414,7 @@ public sealed partial class ConsumerDocsConformanceTests
             "`@path`",
             "stdin",
             "`commit create`",
-            "System.CommandLine 2.0.8 token table",
+            "System.CommandLine 2.0.11 token table",
         })
         {
             doc.ShouldContain(required, Case.Sensitive);
