@@ -5,7 +5,7 @@ story_key: 10-8-real-produce-index-authorize-hydrate-redact-search-round-trip
 
 # Story 10.8: Real produce/index/authorize/hydrate/redact/search round trip
 
-Status: ready-for-dev
+Status: in-progress
 
 Creation note: Ultimate context engine analysis completed - comprehensive developer guide created.
 
@@ -338,22 +338,39 @@ Do not revert or overwrite the current user-owned changes in Story 10.6, the rea
 
 ### Agent Model Used
 
-GPT-5 Codex
+Cursor Grok 4.6
 
 ### Debug Log References
 
-- To be completed by the implementing agent.
+- Task 0 recorded at baseline `a99644c`. Live DCP/OQ5 not executed.
 
 ### Completion Notes List
 
-- To be completed by the implementing agent.
+- Facade: Indexed-only `IsVisible`; post-auth `IsAvailable` gate before Memories; Stale inverted in unit tests; unavailable and auth-precedence coverage added.
+- CLI `indexing-status` matches MCP (`taskIdRequired: false`, folder + optional freshness). OpenAPI `GetFolderIndexingStatus` `transportParity` includes `cli`.
+- AppHost diagnostics relabeled. FR58 public-REST test exists but fail-closes on governed skip while Task 0 is blocked.
+- Story remains incomplete: no OQ5 artifact, no live DCP pass.
 
 ### File List
 
-- To be completed by the implementing agent.
+- `src/Hexalith.Folders/Queries/ContextSearch/ContextSearchQueryHandler.cs`
+- `tests/Hexalith.Folders.Tests/Queries/ContextSearch/ContextSearchQueryHandlerTests.cs`
+- `src/Hexalith.Folders.Cli/Commands/Context/ContextCommand.cs`
+- `tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs`
+- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
+- `tests/fixtures/parity-contract.yaml` (generator)
+- `tests/Hexalith.Folders.AppHost.Tests/AspireFoldersAppHostFixture.cs`
+- `tests/Hexalith.Folders.AppHost.Tests/FoldersTopologyCrossProcessTests.cs`
+- `tests/Hexalith.Folders.AppHost.Tests/README.md`
+- `tests/Hexalith.Folders.AppHost.Tests/Fr58PublicMutationSearchRoundTripTests.cs`
+- `tests/Hexalith.Folders.IntegrationTests/ContextSearch/ContextSearchFacadeWiringTests.cs`
+- `src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs` (generator; not `HexalithFoldersClient.g.cs`)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`
+- `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
 
 ## Change Log
 
 | Date | Change | Author |
 | --- | --- | --- |
+| 2026-09-08 | Implemented owned 10.8 facade/CLI/parity work; Task 0 fail-closed live DCP/OQ5. Story remains incomplete. | Cursor Grok 4.6 |
 | 2026-07-15 | Created implementation-ready Story 10.8 context from the finalized metadata-only FR58 and approved structural correction. | Administrator (via bmad-create-story) |

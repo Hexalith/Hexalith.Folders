@@ -114,6 +114,13 @@ public sealed class ContextSearchQueryHandler(
             return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
         }
 
+        // Authorization first: never probe bridge health or Memories before the layered allow. After allow,
+        // an unavailable authoritative bridge must fail closed before any index egress (HTTP 503).
+        if (!_bridgeReadModel.IsAvailable)
+        {
+            return SafeResult(ContextSearchResultCode.ReadModelUnavailable, query);
+        }
+
         Stopwatch stopwatch = Stopwatch.StartNew();
 
         FolderSearchSourceResult sourceResult;
@@ -284,7 +291,7 @@ public sealed class ContextSearchQueryHandler(
             : MaxResultCount;
 
     private static bool IsVisible(SemanticIndexingBridgeStatus status)
-        => status is SemanticIndexingBridgeStatus.Indexed or SemanticIndexingBridgeStatus.Stale;
+        => status is SemanticIndexingBridgeStatus.Indexed;
 
     private static ContextSearchItem MapItem(FolderSearchSourceHit hit, SemanticIndexingBridgeEntry entry)
     {

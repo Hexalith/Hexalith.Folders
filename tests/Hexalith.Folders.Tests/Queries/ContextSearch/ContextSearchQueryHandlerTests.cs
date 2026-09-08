@@ -171,7 +171,7 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Fact]
-    public async Task AuthorizedSearchShouldKeepStaleBridgeEntries()
+    public async Task AuthorizedSearchShouldDropStaleBridgeEntries()
     {
         RecordingFolderSearchSource source = new()
         {
@@ -184,9 +184,52 @@ public sealed class ContextSearchQueryHandlerTests
         ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(ContextSearchResultCode.Allowed);
-        ContextSearchItem item = result.Items.ShouldHaveSingleItem();
-        item.FileVersionReference.ShouldBe("fv-1");
-        item.IndexingStatus.ShouldBe("stale");
+        result.Items.ShouldBeEmpty();
+        source.Requests.ShouldHaveSingleItem();
+    }
+
+    [Fact]
+    public async Task UnavailableBridgeAfterAuthorizationShouldFailClosedBeforeMemoriesEgress()
+    {
+        RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
+        ContextSearchQueryHandler handler = Handler(
+            source,
+            new StubBridgeReadModel([Entry("fv-1")], isAvailable: false));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.ReadModelUnavailable);
+        result.Items.ShouldBeEmpty();
+        result.Freshness.Stale.ShouldBeTrue();
+        source.Requests.ShouldBeEmpty();
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("folders://", Case.Sensitive);
+        serialized.ShouldNotContain("snippet", Case.Insensitive);
+        serialized.ShouldNotContain("sourceUri", Case.Insensitive);
+        serialized.ShouldNotContain("normalizedPath", Case.Insensitive);
+        serialized.ShouldNotContain("memories unreachable", Case.Insensitive);
+    }
+
+    [Fact]
+    public async Task AuthorizationDenialShouldWinOverUnavailableBridgeAndSkipMemories()
+    {
+        RecordingFolderSearchSource source = new() { Hits = [Hit("fv-1")] };
+        ContextSearchQueryHandler handler = Handler(
+            source,
+            new StubBridgeReadModel([Entry("fv-1")], isAvailable: false),
+            tenantStore: new CountingTenantAccessProjectionStore(TenantProjection(principals: ["someone-else"])));
+
+        ContextSearchQueryResult result = await handler.HandleAsync(Query(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(ContextSearchResultCode.AuthorizationDenied);
+        result.Items.ShouldBeEmpty();
+        source.Requests.ShouldBeEmpty();
+
+        string serialized = JsonSerializer.Serialize(result);
+        serialized.ShouldNotContain("folders://", Case.Sensitive);
+        serialized.ShouldNotContain("unavailable", Case.Insensitive);
+        serialized.ShouldNotContain("IsAvailable", Case.Sensitive);
     }
 
     [Fact]
@@ -312,6 +355,7 @@ public sealed class ContextSearchQueryHandlerTests
     }
 
     [Theory]
+    [InlineData(SemanticIndexingBridgeStatus.Stale)]
     [InlineData(SemanticIndexingBridgeStatus.Tombstoned)]
     [InlineData(SemanticIndexingBridgeStatus.Skipped)]
     [InlineData(SemanticIndexingBridgeStatus.Failed)]
@@ -614,9 +658,9 @@ public sealed class ContextSearchQueryHandlerTests
             => throw new InvalidOperationException("bridge unavailable");
     }
 
-    private sealed class StubBridgeReadModel(IReadOnlyList<SemanticIndexingBridgeEntry> entries) : ISemanticIndexingBridgeReadModel
+    private sealed class StubBridgeReadModel(IReadOnlyList<SemanticIndexingBridgeEntry> entries, bool isAvailable = true) : ISemanticIndexingBridgeReadModel
     {
-        public bool IsAvailable => true;
+        public bool IsAvailable => isAvailable;
 
         public Task<SemanticIndexingBridgeEntry?> GetFileVersionAsync(
             SemanticIndexingFileVersionIdentity identity,

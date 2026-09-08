@@ -72,8 +72,247 @@ public sealed class ContextSearchFacadeWiringTests
             items[0].GetProperty("fileVersionReference").GetString().ShouldBe("fv-a");
             json.ShouldNotContain("fv-b", Case.Sensitive);
             json.ShouldNotContain("folders://", Case.Sensitive);
+            json.ShouldNotContain("rawCount", Case.Insensitive);
+            json.ShouldNotContain("totalCount", Case.Insensitive);
             AssertNoLeakageCorpusValue(json);
             document.RootElement.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task SearchShouldDropStaleAndTombstonedHitsWhileStatusMayListThem()
+    {
+        FakeFolderSearchSource source = new()
+        {
+            Hits =
+            [
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-live", 2.0),
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-stale", 1.5),
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-removed", 1.0),
+            ],
+            TotalCount = 3,
+        };
+        SeededBridgeReadModel bridge = new();
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-live"));
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-stale", SemanticIndexingBridgeStatus.Stale));
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-removed", SemanticIndexingBridgeStatus.Tombstoned));
+
+        TestHost host = await StartHostAsync(source, bridge).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host, "tenant-a", "user-a");
+            SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
+
+            HttpResponseMessage searchResponse = await host.Client
+                .SendAsync(SearchRequest("folder-a", "workspace-a", "needle", "corr-lifecycle"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string searchJson = await searchResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            searchResponse.StatusCode.ShouldBe(HttpStatusCode.OK, searchJson);
+            using JsonDocument searchDocument = JsonDocument.Parse(searchJson);
+            JsonElement items = searchDocument.RootElement.GetProperty("items");
+            items.GetArrayLength().ShouldBe(1);
+            items[0].GetProperty("fileVersionReference").GetString().ShouldBe("fv-live");
+            searchJson.ShouldNotContain("fv-stale", Case.Sensitive);
+            searchJson.ShouldNotContain("fv-removed", Case.Sensitive);
+            searchJson.ShouldNotContain("rawCount", Case.Insensitive);
+            AssertNoLeakageCorpusValue(searchJson);
+
+            HttpResponseMessage statusResponse = await host.Client
+                .SendAsync(StatusRequest("folder-a", "corr-status"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string statusJson = await statusResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            statusResponse.StatusCode.ShouldBe(HttpStatusCode.OK, statusJson);
+            statusJson.ShouldContain("fv-stale", Case.Sensitive);
+            statusJson.ShouldContain("fv-removed", Case.Sensitive);
+            AssertNoLeakageCorpusValue(statusJson);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchivedDocumentShouldBeAbsentFromSearchWhileStatusRemainsIndexed()
+    {
+        // Folder archive is not a bridge enum: Memories re-sends folders.status=archived and active search
+        // filters it out. The facade only hydrates hits the source returns.
+        FakeFolderSearchSource source = new();
+        SeededBridgeReadModel bridge = new();
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-archived"));
+
+        TestHost host = await StartHostAsync(source, bridge).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host, "tenant-a", "user-a");
+            SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
+
+            HttpResponseMessage searchResponse = await host.Client
+                .SendAsync(SearchRequest("folder-a", "workspace-a", "needle", "corr-archive"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string searchJson = await searchResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            searchResponse.StatusCode.ShouldBe(HttpStatusCode.OK, searchJson);
+            using JsonDocument searchDocument = JsonDocument.Parse(searchJson);
+            searchDocument.RootElement.GetProperty("items").GetArrayLength().ShouldBe(0);
+            searchJson.ShouldNotContain("fv-archived", Case.Sensitive);
+            AssertNoLeakageCorpusValue(searchJson);
+
+            HttpResponseMessage statusResponse = await host.Client
+                .SendAsync(StatusRequest("folder-a", "corr-archive-status"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string statusJson = await statusResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            statusResponse.StatusCode.ShouldBe(HttpStatusCode.OK, statusJson);
+            statusJson.ShouldContain("fv-archived", Case.Sensitive);
+            statusJson.ShouldContain("indexed", Case.Sensitive);
+            AssertNoLeakageCorpusValue(statusJson);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task UnavailableBridgeAfterAuthorizationShouldReturn503WithoutMemoriesEgress()
+    {
+        FakeFolderSearchSource source = new()
+        {
+            Hits = [new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-a", 2.0)],
+            TotalCount = 1,
+        };
+        SeededBridgeReadModel bridge = new() { IsAvailable = false };
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-a"));
+
+        TestHost host = await StartHostAsync(source, bridge).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host, "tenant-a", "user-a");
+            SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
+
+            HttpResponseMessage response = await host.Client
+                .SendAsync(SearchRequest("folder-a", "workspace-a", "needle", "corr-unavail"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable, json);
+            source.Calls.ShouldBe(0);
+            json.ShouldContain("read_model_unavailable");
+            json.ShouldNotContain("fv-a", Case.Sensitive);
+            json.ShouldNotContain("folders://", Case.Sensitive);
+            AssertNoLeakageCorpusValue(json);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task UnauthorizedCallerShouldNotDistinguishUnavailableBridgeFromDenial()
+    {
+        FakeFolderSearchSource source = new();
+        SeededBridgeReadModel unavailable = new() { IsAvailable = false };
+        TestHost host = await StartHostAsync(source, unavailable).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host, "tenant-a", "user-a");
+            SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
+
+            string denied = await DenialBodyAsync(host, "folder-b", "corr-denied-unavail").ConfigureAwait(true);
+            source.Calls.ShouldBe(0);
+            denied.ShouldNotContain("read_model_unavailable", Case.Sensitive);
+            denied.ShouldNotContain("unavailable", Case.Insensitive);
+            AssertNoLeakageCorpusValue(denied);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task DuplicateSourceHitsForOneIdentityShouldNotDiscloseRawCandidateCounts()
+    {
+        FakeFolderSearchSource source = new()
+        {
+            Hits =
+            [
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-a", 2.0),
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-a", 1.9),
+            ],
+            TotalCount = 99,
+        };
+        SeededBridgeReadModel bridge = new();
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-a"));
+
+        TestHost host = await StartHostAsync(source, bridge).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host, "tenant-a", "user-a");
+            SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
+
+            HttpResponseMessage first = await host.Client
+                .SendAsync(SearchRequest("folder-a", "workspace-a", "needle", "corr-dup-1"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            HttpResponseMessage second = await host.Client
+                .SendAsync(SearchRequest("folder-a", "workspace-a", "needle", "corr-dup-2"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string firstJson = await first.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string secondJson = await second.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            first.StatusCode.ShouldBe(HttpStatusCode.OK, firstJson);
+            second.StatusCode.ShouldBe(HttpStatusCode.OK, secondJson);
+            firstJson.ShouldNotContain("99", Case.Sensitive);
+            secondJson.ShouldNotContain("99", Case.Sensitive);
+            firstJson.ShouldNotContain("rawCount", Case.Insensitive);
+            firstJson.ShouldNotContain("totalCount", Case.Insensitive);
+            AssertNoLeakageCorpusValue(firstJson);
+            AssertNoLeakageCorpusValue(secondJson);
+
+            using JsonDocument firstDocument = JsonDocument.Parse(firstJson);
+            using JsonDocument secondDocument = JsonDocument.Parse(secondJson);
+            firstDocument.RootElement.GetProperty("items")[0].GetProperty("fileVersionReference").GetString()
+                .ShouldBe(secondDocument.RootElement.GetProperty("items")[0].GetProperty("fileVersionReference").GetString());
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task WrongWorkspaceHitShouldBeTrimmedWithoutLeakingExistence()
+    {
+        FakeFolderSearchSource source = new()
+        {
+            Hits =
+            [
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-b", "fv-b", 2.0),
+                new FolderSearchSourceHit("tenant-a", "org-a", "folder-a", "workspace-a", "fv-a", 1.5),
+            ],
+            TotalCount = 2,
+        };
+        SeededBridgeReadModel bridge = new();
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-a", "fv-a"));
+        bridge.Add(Entry("tenant-a", "folder-a", "workspace-b", "fv-b"));
+
+        TestHost host = await StartHostAsync(source, bridge).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host, "tenant-a", "user-a");
+            SeedContextSearchPermission(host, "tenant-a", "org-a", "folder-a", "user-a");
+
+            HttpResponseMessage response = await host.Client
+                .SendAsync(SearchRequest("folder-a", "workspace-a", "needle", "corr-ws"), TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+            using JsonDocument document = JsonDocument.Parse(json);
+            document.RootElement.GetProperty("items").GetArrayLength().ShouldBe(1);
+            json.ShouldNotContain("fv-b", Case.Sensitive);
+            AssertNoLeakageCorpusValue(json);
         }
         finally
         {
@@ -216,7 +455,19 @@ public sealed class ContextSearchFacadeWiringTests
         return request;
     }
 
-    private static SemanticIndexingBridgeEntry Entry(string tenantId, string folderId, string workspaceId, string fileVersionId)
+    private static HttpRequestMessage StatusRequest(string folderId, string correlationId)
+    {
+        HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folderId}/indexing-status");
+        request.Headers.Add("X-Correlation-Id", correlationId);
+        return request;
+    }
+
+    private static SemanticIndexingBridgeEntry Entry(
+        string tenantId,
+        string folderId,
+        string workspaceId,
+        string fileVersionId,
+        SemanticIndexingBridgeStatus status = SemanticIndexingBridgeStatus.Indexed)
         => new(
             new SemanticIndexingFileVersionIdentity(
                 tenantId,
@@ -228,7 +479,7 @@ public sealed class ContextSearchFacadeWiringTests
                 fileVersionId,
                 "hash-" + fileVersionId,
                 $"folders://{tenantId}/organizations/org-a/folders/{folderId}/workspaces/{workspaceId}/file-versions/{fileVersionId}"),
-            SemanticIndexingBridgeStatus.Indexed,
+            status,
             "memories_accepted",
             retryable: false,
             "seed-correlation",
@@ -398,7 +649,7 @@ public sealed class ContextSearchFacadeWiringTests
     {
         private readonly List<SemanticIndexingBridgeEntry> _entries = [];
 
-        public bool IsAvailable => true;
+        public bool IsAvailable { get; init; } = true;
 
         public void Add(SemanticIndexingBridgeEntry entry) => _entries.Add(entry);
 

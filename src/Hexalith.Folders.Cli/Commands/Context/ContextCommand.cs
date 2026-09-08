@@ -5,10 +5,11 @@ using Hexalith.Folders.Client.Generated;
 namespace Hexalith.Folders.Cli.Commands.Context;
 
 /// <summary>
-/// The <c>context</c> command group: file-tree, metadata, search, glob, and range-read queries over a
-/// prepared workspace. Every operation's signature carries <c>x_Hexalith_Task_Id</c>, so each requires
-/// <c>--task-id</c>; none accepts an idempotency key. Range-read results carry authorized content, which the
-/// metadata-only renderer drops from all output.
+/// The <c>context</c> command group: file-tree, metadata, search, glob, range-read, index-search, and
+/// indexing-status queries over a prepared workspace. Task-scoped operations require <c>--task-id</c>;
+/// <c>indexing-status</c> is not task-scoped (folder + optional freshness only). None accepts an
+/// idempotency key. Range-read results carry authorized content, which the metadata-only renderer drops
+/// from all output.
 /// </summary>
 internal static class ContextCommand
 {
@@ -116,6 +117,22 @@ internal static class ContextCommand
                     freshness,
                     CommandOptions.ReadBody<ContextIndexSearchRequest>(body),
                     ct))));
+
+        Option<string> indexingStatusFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
+        Option<string?> indexingStatusFreshness = CommandOptions.Freshness();
+        command.Subcommands.Add(CommandFactory.Query(
+            "indexing-status",
+            "Inspect the metadata-only semantic-indexing status of a folder's file versions (query). Not task-scoped.",
+            pipeline,
+            global,
+            taskIdRequired: false,
+            [indexingStatusFolderId, indexingStatusFreshness],
+            (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetFolderIndexingStatusAsync(
+                parseResult.GetValue(indexingStatusFolderId)!,
+                sourcing.CorrelationId,
+                null,
+                CommandOptions.ParseFreshness(parseResult.GetValue(indexingStatusFreshness)),
+                ct))));
 
         return command;
     }

@@ -144,6 +144,7 @@ The root `folders` command exposes **7 top-level groups**. Each leaf maps to one
 | `context search` | `SearchFolderFiles` | query (POST-as-query) |
 | `context glob` | `GlobFolderFiles` | query (POST-as-query) |
 | `context read-range` | `ReadFileRange` | query (POST-as-query) |
+| `context indexing-status` | `GetFolderIndexingStatus` | query |
 
 ### `folders audit`
 

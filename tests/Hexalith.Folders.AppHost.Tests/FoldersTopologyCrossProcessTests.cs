@@ -77,10 +77,11 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
     }
 
     /// <summary>
-    /// Publishes an EventStore-shaped folder-domain envelope through the live <c>folders.events</c> pub/sub route from
-    /// the EventStore Dapr sidecar. This is the cross-process smoke for the Story 10.3 D1 route itself: publisher
-    /// sidecar → broker topic → folders-workers subscriber endpoint. The worker's fail-closed materializer/authorization
-    /// may record a non-indexed bridge outcome, but the live route must accept the same envelope shape EventStore emits.
+    /// Diagnostic (not Story 10.8 / FR58 acceptance): publishes an EventStore-shaped folder-domain envelope
+    /// through the live <c>folders.events</c> pub/sub route from the EventStore Dapr sidecar. This is the
+    /// cross-process smoke for the Story 10.3 D1 route itself: publisher sidecar → broker topic →
+    /// folders-workers subscriber endpoint. Hand-publishing <see cref="WorkspaceFileMutationAccepted"/> is
+    /// forbidden as FR58 evidence.
     /// </summary>
     [Fact]
     public async Task EventStoreSidecarShouldPublishFolderEnvelopeToWorkerSubscriberTopic()
@@ -131,14 +132,13 @@ public sealed class FoldersTopologyCrossProcessTests(AspireFoldersAppHostFixture
     }
 
     /// <summary>
-    /// Story 10.4 AC9 — the live publish → route → index → search → remove round-trip against the real
-    /// <c>folders-index</c>. It seeds the index by publishing a real <see cref="SearchIndexEntryChanged"/> through the
-    /// worker pub/sub component (option (b): do not depend on the fail-closed content materializer), then proves:
+    /// Diagnostic (not Story 10.8 / FR58 acceptance): Story 10.4 AC9 live publish → route → index → search →
+    /// remove round-trip against the real <c>folders-index</c>. It seeds the index by publishing a real
+    /// <see cref="SearchIndexEntryChanged"/> through the worker pub/sub component, then proves:
     /// (a) a syntactic search returns exactly one hit whose <see cref="ScoredResult.SourceUri"/> echoes the published
     /// <c>cloudevent.id</c>; (b) after a <see cref="SearchIndexEntryRemoved"/> the search returns zero (no stale
     /// entry); (c) after a <see cref="SearchIndexEntryChanged"/> with <c>folders.status=archived</c> the document
-    /// remains, filterable by status. BLOCKED-PENDING the DCP-capable lane: it skips cleanly whenever the opt-in/DCP
-    /// capability is absent (the env-wide Aspire CLI/DCP boot mismatch, open Epic 9 action item), so no lane goes red.
+    /// remains, filterable by status. Direct Memories query and index seeding cannot satisfy FR58.
     /// </summary>
     [Fact]
     public async Task SeedRemoveAndArchiveRoundTripAgainstFoldersIndex()

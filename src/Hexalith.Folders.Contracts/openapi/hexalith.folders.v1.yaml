@@ -3057,6 +3057,7 @@ paths:
           - rest
           - sdk
           - mcp
+          - cli
         behavioralParity:
           - read_consistency
           - authorization_before_observation

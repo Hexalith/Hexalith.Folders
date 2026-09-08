@@ -23,10 +23,12 @@ namespace Hexalith.Folders.AppHost.Tests;
 /// </para>
 /// <para>
 /// This proves process-level cross-process wiring (the dormant Epic 9 routing actually activates and the six
-/// services come up together with the Story 10.3 D1 folders.events override + production pub/sub scopes). The
-/// deeper folder-mutation → worker-receipt assertion layers on top of this same harness; it is currently moot
-/// because the production content materializer is fail-closed (Story 10.3 Task 4) until a real workspace reader
-/// is wired.
+/// services come up together with the Story 10.3 D1 folders.events override + production pub/sub scopes).
+/// Topology boot, EventStore envelope delivery, and seeded Memories lifecycle tests in this project are
+/// component diagnostics. They are not Story 10.8 / FR58 acceptance: that proof is a distinct public-REST
+/// mutation → public search/status round trip and stays incomplete while Task 0 live-path prerequisites
+/// (Stories 12.1–12.3, 12.5, DW-292 ACL population, a production EventStore validator, and Story 11.15) are
+/// missing.
 /// </para>
 /// </remarks>
 public sealed class AspireFoldersAppHostFixture : IAsyncLifetime

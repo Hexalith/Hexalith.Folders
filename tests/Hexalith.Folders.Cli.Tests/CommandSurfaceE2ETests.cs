@@ -139,6 +139,114 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         await client.Received(1).CommitWorkspaceAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CommitWorkspaceRequest>(), Arg.Any<CancellationToken>());
     }
 
+    [Fact]
+    public async Task ContextIndexSearchParsesAndDelegatesToTheSdk()
+    {
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "context", "index-search",
+            "--folder-id", "folder_1",
+            "--workspace-id", "workspace_1",
+            "--task-id", "task_1",
+            "--request", "{\"requestSchemaVersion\":\"v1\",\"queryFamily\":\"semantic_reference_pending\",\"queryText\":\"needle\"}",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(0);
+        await client.Received(1).SearchFolderIndexedFilesAsync(
+            "folder_1",
+            "workspace_1",
+            Arg.Any<string>(),
+            "task_1",
+            Arg.Any<ReadConsistencyClass?>(),
+            Arg.Any<ContextIndexSearchRequest>(),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ContextIndexingStatusParsesAndDelegatesWithoutTaskOrWorkspace()
+    {
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "context", "indexing-status",
+            "--folder-id", "folder_1",
+            "--freshness", "eventually_consistent",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(0);
+        await client.Received(1).GetFolderIndexingStatusAsync(
+            "folder_1",
+            Arg.Any<string>(),
+            Arg.Is<string>(taskId => taskId == null),
+            ReadConsistencyClass.Eventually_consistent,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ContextIndexingStatusRejectsWorkspaceAndIdempotencyOptions()
+    {
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int workspaceExit = await harness.RunAsync(
+            "context", "indexing-status",
+            "--folder-id", "folder_1",
+            "--workspace-id", "workspace_1",
+            "--base-address", BaseAddress,
+            "--token", Token);
+        workspaceExit.ShouldBe(64);
+        harness.ClientFactoryInvoked.ShouldBeFalse();
+
+        CliTestHarness idempotencyHarness = new() { Client = client };
+        int idempotencyExit = await idempotencyHarness.RunAsync(
+            "context", "indexing-status",
+            "--folder-id", "folder_1",
+            "--idempotency-key", "key_1",
+            "--base-address", BaseAddress,
+            "--token", Token);
+        idempotencyExit.ShouldBe(64);
+        idempotencyHarness.ClientFactoryInvoked.ShouldBeFalse();
+        await client.DidNotReceive().GetFolderIndexingStatusAsync(
+            Arg.Any<string>(),
+            Arg.Any<string>(),
+            Arg.Any<string>(),
+            Arg.Any<ReadConsistencyClass?>(),
+            Arg.Any<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData("human")]
+    [InlineData("json")]
+    public async Task ContextIndexingStatusRendersMetadataOnly(string output)
+    {
+        const string json =
+            "{\"items\":[{\"fileVersionReference\":\"01ARZ3NDEKTSV4RRFFQ69G5FAV\",\"indexingStatus\":\"indexed\",\"reasonCode\":\"memories_accepted\",\"sensitivity\":\"tenant_sensitive\",\"redaction\":\"not_redacted\"}],"
+            + "\"isTruncated\":false,"
+            + "\"freshness\":{\"readConsistency\":\"eventually_consistent\",\"observedAt\":\"2026-06-26T00:00:00Z\",\"stale\":false}}";
+        CliTestHarness harness = new();
+        _ = harness.UseRealClient(System.Net.HttpStatusCode.OK, json);
+
+        int exit = await harness.RunAsync(
+            "context", "indexing-status",
+            "--folder-id", "folder_1",
+            "--base-address", BaseAddress,
+            "--token", Token,
+            "--output", output);
+
+        exit.ShouldBe(0);
+        harness.Console.StdOut.ShouldContain("01ARZ3NDEKTSV4RRFFQ69G5FAV");
+        harness.Console.StdOut.ShouldNotContain("folders://");
+        harness.Console.StdOut.ShouldNotContain("snippet");
+        harness.Console.StdOut.ShouldNotContain("sourceUri");
+        harness.Console.StdOut.ShouldNotContain("normalizedPath");
+        harness.Console.StdOut.ShouldNotContain("contentBytes");
+    }
+
     private static async Task RunStepAsync(IClient client, string correlation, params string[] commandArgs)
     {
         // A fresh harness per step (own console) sharing the same fake client so Received() counts accumulate.

@@ -2844,3 +2844,23 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `_bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md`
   summary: A deserialized SemanticIndexingBridgeFolderIndex with null EntryKeys would NullReferenceException in ListFolderAsync and folder-scoped apply.
   evidence: Pre-existing nested DTO; writers always construct an empty list. Would only appear if Dapr state were poisoned JSON.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
+  summary: DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand after OpenAPI cli parity and the indexing-status command landed.
+  evidence: Ledger text is stale relative to hexalith.folders.v1.yaml transportParity and ContextCommand indexing-status; runtime behavior is updated.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
+  summary: Context search still returns one item per duplicate source hit for the same file-version identity.
+  evidence: Pre-existing handler loop; this story only changed Indexed-only IsVisible and the post-auth IsAvailable gate. DuplicateSourceHitsForOneIdentityShouldNotDiscloseRawCandidateCounts asserts no raw counts, not a single item.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
+  summary: CLI RequiredId options accept whitespace identifiers and forward them to the SDK.
+  evidence: Pre-existing CommandOptions.RequiredId has Required=true but no IsNullOrWhiteSpace guard on any command, including indexing-status.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
+  summary: Live file-remove and folder-archive pruning is not proven by a public mutation round trip.
+  evidence: Task 0 still blocks EventStore accepted-event emission, ACL population, and DCP. Hermetic tests drop Tombstoned and simulate archive with an empty source.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md`
+  summary: Epic 11 context rewrite, untracked spec-11-3, and Builds/FrontComposer gitlink moves are in the same working tree as Story 10.8.
+  evidence: Concurrent workspace dirt; not required by the 10.8 frozen intent and not listed in the 10.8 File List.

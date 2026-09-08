@@ -394,7 +394,7 @@ public sealed partial class ConsumerDocsConformanceTests
 
         AssertSetEquals(groups, ["provider", "folder", "workspace", "file", "commit", "context", "audit"],
             "CLI reference must publish exactly the 7 top-level groups.");
-        CliCommandRow().Matches(doc).Count.ShouldBe(40, "CLI reference must enumerate every documented leaf command.");
+        CliCommandRow().Matches(doc).Count.ShouldBe(41, "CLI reference must enumerate every documented leaf command.");
 
         AssertIncreasing(doc, ["`HEXALITH_TOKEN`", "`~/.hexalith/credentials.json`", "`--token` / `-t`"]);
         foreach (string required in new[]
