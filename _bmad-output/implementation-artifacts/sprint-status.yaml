@@ -209,7 +209,7 @@ development_status:
   11-1-establish-refactor-baseline-and-governance-pin-map: done
   11-2-inventory-assign-and-pin-platform-prerequisites: done
   11-3-apply-wire-preserving-repository-hygiene: review
-  11-4-consolidate-server-transport-envelope-and-route-helper-dupli: in-progress
+  11-4-consolidate-server-transport-envelope-and-route-helper-dupli: review
   11-5-consolidate-domain-and-provider-helper-duplication: backlog
   11-6-consolidate-cli-mcp-adapter-core-and-secure-bearer-transport: backlog
   11-7-consolidate-deterministic-time-context-and-path-test-helpers: backlog

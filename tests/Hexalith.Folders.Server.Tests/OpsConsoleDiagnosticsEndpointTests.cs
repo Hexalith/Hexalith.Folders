@@ -197,14 +197,19 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
     }
 
     [Theory]
-    [InlineData("/api/v1/folders/_invalid/workspaces/workspace-a/ops-console/lock-diagnostics")]
-    [InlineData("/api/v1/folders/folder-a/workspaces/_invalid/ops-console/lock-diagnostics")]
-    [InlineData("/api/v1/folders/_invalid/ops-console/provider-status-diagnostics")]
-    public async Task DiagnosticsShouldRejectNonCanonicalPathId(string path)
+    [InlineData("/api/v1/folders/_invalid/workspaces/workspace-a/ops-console/lock-diagnostics", "_invalid")]
+    [InlineData("/api/v1/folders/folder-a/workspaces/_invalid/ops-console/lock-diagnostics", "_invalid")]
+    [InlineData("/api/v1/folders/_invalid/ops-console/provider-status-diagnostics", "_invalid")]
+    [InlineData("/api/v1/folders/installation-123/workspaces/workspace-a/ops-console/lock-diagnostics", "installation-123")]
+    [InlineData("/api/v1/folders/repository/workspaces/workspace-a/ops-console/lock-diagnostics", "repository")]
+    [InlineData("/api/v1/folders/repo_aaaaaaaa/workspaces/workspace-a/ops-console/lock-diagnostics", "repo_aaaaaaaa")]
+    [InlineData("/api/v1/folders/providerpayload/ops-console/provider-status-diagnostics", "providerpayload")]
+    public async Task DiagnosticsShouldRejectNonCanonicalPathId(string path, string rejectedSegment)
     {
         // Canonical-id guardrail (anti-injection): a path segment that is not a canonical identifier
         // must fail closed at the transport boundary with a metadata-only validation problem that never
-        // echoes the offending value.
+        // echoes the offending value. Grammar-valid but secret-looking segments (installation, repository,
+        // repo_, providerpayload) use the shared Provider HTTP detector.
         await using WebApplication app = BuildApp(SeededReadModel());
         await app.StartAsync(TestContext.Current.CancellationToken);
 
@@ -217,29 +222,34 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, json);
         json.ShouldContain("\"code\":\"validation_error\"");
-        json.ShouldNotContain("_invalid", Case.Sensitive);
+        json.ShouldNotContain(rejectedSegment, Case.Sensitive);
     }
 
     [Theory]
-    [InlineData(ReadinessPath)]
-    [InlineData(LockPath)]
-    public async Task DiagnosticsShouldRejectSensitiveCorrelationId(string path)
+    [InlineData(ReadinessPath, "secret-token-aaaa")]
+    [InlineData(LockPath, "secret-token-aaaa")]
+    [InlineData(ReadinessPath, "installation-123")]
+    [InlineData(ReadinessPath, "repository")]
+    [InlineData(ReadinessPath, "repo_aaaaaaaa")]
+    [InlineData(ReadinessPath, "providerpayload")]
+    public async Task DiagnosticsShouldRejectSensitiveCorrelationId(string path, string correlationId)
     {
-        // A correlation id that carries a secret-looking value (token/secret/credential/URL) must be
-        // rejected as unsafe — never accepted, never reflected — to keep diagnostics free of secret leakage.
+        // A correlation id that carries a secret-looking value (token/secret/credential/URL, or the
+        // previously OpsConsole-omitted repository / repo_ / installation / providerpayload tokens)
+        // must be rejected as unsafe — never accepted, never reflected.
         await using WebApplication app = BuildApp(SeededReadModel());
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         using HttpClient client = app.GetTestClient();
         using HttpRequestMessage request = new(HttpMethod.Get, path);
-        request.Headers.Add("X-Correlation-Id", "secret-token-aaaa");
+        request.Headers.Add("X-Correlation-Id", correlationId);
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, json);
         json.ShouldContain("\"code\":\"unsafe_correlation_id\"");
-        json.ShouldNotContain("secret-token-aaaa", Case.Sensitive);
+        json.ShouldNotContain(correlationId, Case.Sensitive);
     }
 
     [Theory]

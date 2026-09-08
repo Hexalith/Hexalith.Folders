@@ -2882,3 +2882,7 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Extract shared Server request/response JsonSerializerOptions.
   evidence: Split from Story 11.4 to keep the spec under the token budget. The four endpoint files already use identical Web defaults; this is not in the story AC and is independently shippable.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: Unverified medium — gateway 403 plus commit_failed or provider_failure_known may now echo those codes instead of denied_safe.
+  evidence: maybe-false. ToArchiveGatewayProblem now treats any allowlisted reason whose StatusFor equals the gateway status as a table hit; StatusFor defaults to 403. The 422 arms are unchanged. Settle by showing a live gateway 403 with those reasons, or by proving the gateway never emits that pairing.

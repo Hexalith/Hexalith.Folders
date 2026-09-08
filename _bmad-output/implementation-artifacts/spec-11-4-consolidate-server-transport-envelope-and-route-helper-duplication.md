@@ -2,7 +2,7 @@
 title: '11.4 consolidate server transport envelope and route helper duplication'
 type: 'refactor'
 created: '2026-09-08'
-status: 'in-review'
+status: 'done'
 baseline_commit: 'aa0b76cf39e11aed5b4299fd4c7a1d3435642faa'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -87,6 +87,23 @@ context:
 ## Spec Change Log
 
 ## Review Triage Log
+
+- `false` — Blind: patch moves Builds/EventStore/FrontComposer SHAs. Those gitlinks are in `472c690` (jpiquot), not in the 11.4 Server file list. Working-tree FrontComposer remains dirty and unstaged by this story.
+- `false` — Blind: hygiene rewrote `epic-11-context.md`. Same `472c690` concurrent commit; 11.4 implementation did not edit that file.
+- `false` — Blind: Story 10.8/10.9 artifacts mixed into the baseline diff. Concurrent `472c690` plus an untracked 10.9 spec; not authored by the 11.4 helper extract.
+- `low` — Blind: `FolderCanonicalErrorMapper.ForDomain` is unused on live query `ToHttpResult` paths. Those switches are not `FolderResultCode`; gateway already uses `StatusFor`/`RetryableFor`. Wiring every query mapper through `ForDomain` is more than a direct correction.
+- `false` — Blind: `StatusFor` has no `folder_acl_denied` arm and the Story 8.3 comment left `ToArchiveGatewayProblem`. Default 403 still matches 403 + `folder_acl_denied` (same as the deleted explicit arm). The Story 8.3 comment remains on `SafeGatewayReasonCode`.
+- `low` — Blind: gateway comment mentions Audit/OpsConsole 409. Comment-only; those surfaces never call this method.
+- `medium` — Blind: OpsConsole AC tokens are unit-tested only. Real: HTTP suites still use pre-change `secret-token-aaaa` / `_invalid`. Grouped with the verification-gap finding.
+- `medium` — Blind: identifier tests omit `IsSafeDiagnosticId` / `SanitizeCorrelationId`. Same missing HTTP lock as the row above. Query CR/LF is already rejected by shared `FirstNonEmpty` covered by `ReadHeaderShouldRejectControlCharactersWithoutEchoingThem`.
+- `false` — Blind: `DomainTitleFor` lacks 410/429 and `DomainMessageFor` omits some gateway categories. Copied from the previous Domain `SafeProblem`; the extract did not change those titles/messages.
+- `false` — Blind: empty Verification/Change/Triage logs and notes vs `references` diff. Fix would edit this spec. Workflow status `in-review` vs sprint `in-progress` is expected mid-review.
+- `false` — Blind: Code Map still cites pre-extract line numbers. Fix would edit this spec.
+- `false` — Blind: spec `in-review` vs sprint `in-progress` vs notes. Workflow-normal; not a runtime defect.
+- `maybe-false` — Edge: 403 + `commit_failed`/`provider_failure_known` now hits `StatusFor` default 403 and echoes those codes instead of `denied_safe`. The 422 arms are unchanged. Unsettled whether any gateway emits 403 with those reasons.
+- `maybe-false` — Edge: same 403 pairing claimed as a REST wire change. Same evidence as the previous row.
+- `false` — Edge: `10-8-…` flipped to `done` in `sprint-status.yaml`. That flip is in `472c690`, not the 11.4-only key edit.
+- `medium` — VG: OpsConsole HTTP gates never observe the newly shared tokens. Pre-verified: `IsSensitive` / `IsSafeDiagnosticId` are used at `OpsConsoleDiagnosticsEndpoints.cs:309-345` and `:452-456`, but `DiagnosticsShouldRejectSensitiveCorrelationId` / `DiagnosticsShouldRejectNonCanonicalPathId` still use values the old filter already rejected.
 
 ## Verification
 
