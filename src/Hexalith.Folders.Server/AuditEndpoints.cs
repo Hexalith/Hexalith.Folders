@@ -9,7 +9,6 @@ using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Primitives;
 
 namespace Hexalith.Folders.Server;
 
@@ -94,8 +93,8 @@ public static partial class AuditEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
 
         IResult? envelope = ValidateListEnvelope(
             httpContext,
@@ -130,7 +129,7 @@ public static partial class AuditEndpoints
         return result.Code switch
         {
             AuditQueryResultCode.Allowed when result.Page is not null => Success(httpContext, result.Page, result.CorrelationId, result.TaskId),
-            _ => SafeProblemFor(result.Code, result.CorrelationId, result.TaskId, AuditEvidenceSource),
+            _ => MapAuditQueryResult(result.Code, result.CorrelationId, result.TaskId, AuditEvidenceSource),
         };
     }
 
@@ -148,8 +147,8 @@ public static partial class AuditEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
 
         IResult? envelope = ValidateSingleEnvelope(httpContext, folderId, auditRecordId, correlationId, taskId, AuditEvidenceSource);
         if (envelope is not null)
@@ -173,7 +172,7 @@ public static partial class AuditEndpoints
         return result.Code switch
         {
             AuditQueryResultCode.Allowed when result.Record is not null => Success(httpContext, result.Record, result.CorrelationId, result.TaskId),
-            _ => SafeProblemFor(result.Code, result.CorrelationId, result.TaskId, AuditEvidenceSource),
+            _ => MapAuditQueryResult(result.Code, result.CorrelationId, result.TaskId, AuditEvidenceSource),
         };
     }
 
@@ -190,8 +189,8 @@ public static partial class AuditEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
 
         IResult? envelope = ValidateListEnvelope(
             httpContext,
@@ -226,7 +225,7 @@ public static partial class AuditEndpoints
         return result.Code switch
         {
             AuditQueryResultCode.Allowed when result.Page is not null => Success(httpContext, result.Page, result.CorrelationId, result.TaskId),
-            _ => SafeProblemFor(result.Code, result.CorrelationId, result.TaskId, TimelineEvidenceSource),
+            _ => MapAuditQueryResult(result.Code, result.CorrelationId, result.TaskId, TimelineEvidenceSource),
         };
     }
 
@@ -244,8 +243,8 @@ public static partial class AuditEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
 
         IResult? envelope = ValidateSingleEnvelope(httpContext, folderId, timelineEntryId, correlationId, taskId, TimelineEvidenceSource);
         if (envelope is not null)
@@ -269,7 +268,7 @@ public static partial class AuditEndpoints
         return result.Code switch
         {
             AuditQueryResultCode.Allowed when result.Entry is not null => Success(httpContext, result.Entry, result.CorrelationId, result.TaskId),
-            _ => SafeProblemFor(result.Code, result.CorrelationId, result.TaskId, TimelineEvidenceSource),
+            _ => MapAuditQueryResult(result.Code, result.CorrelationId, result.TaskId, TimelineEvidenceSource),
         };
     }
 
@@ -294,12 +293,12 @@ public static partial class AuditEndpoints
             return common;
         }
 
-        string? rawCursor = ReadQuery(httpContext, "cursor");
+        string? rawCursor = FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
         if (rawCursor is not null)
         {
             if (rawCursor.Length is < 1 or > 256 || !CursorPattern().IsMatch(rawCursor))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForAudit(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "cursor_tampered",
@@ -313,12 +312,12 @@ public static partial class AuditEndpoints
             cursor = rawCursor;
         }
 
-        string? rawLimit = ReadQuery(httpContext, "limit");
+        string? rawLimit = FolderHttpHeaderReader.ReadQuery(httpContext, "limit");
         if (rawLimit is not null)
         {
             if (!int.TryParse(rawLimit, out int parsedLimit) || parsedLimit < 1 || parsedLimit > OpenApiPageLimitCeiling)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForAudit(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "invalid_pagination",
@@ -331,13 +330,13 @@ public static partial class AuditEndpoints
             requestedLimit = parsedLimit;
         }
 
-        string? rawFilter = ReadQuery(httpContext, "filter");
+        string? rawFilter = FolderHttpHeaderReader.ReadQuery(httpContext, "filter");
         if (rawFilter is not null)
         {
             // Validate the spine wire-shape regex first; a malformed filter is validation_error.
             if (rawFilter.Length is < 1 or > 256 || !FilterPattern().IsMatch(rawFilter))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForAudit(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
@@ -349,7 +348,7 @@ public static partial class AuditEndpoints
             }
 
             // Spine's MetadataFilter is TODO(C4); empty allow-list rejects every well-shaped filter.
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "filter_not_yet_supported",
@@ -383,7 +382,7 @@ public static partial class AuditEndpoints
     {
         if (httpContext.Request.Headers.ContainsKey("Idempotency-Key"))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "idempotency_key_not_allowed",
@@ -394,25 +393,25 @@ public static partial class AuditEndpoints
                 evidenceSource: evidenceSource);
         }
 
-        if (!IsCanonicalIdentifier(folderId)
-            || (extraIdentifier is not null && !IsCanonicalIdentifier(extraIdentifier))
-            || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-            || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+        if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+            || (extraIdentifier is not null && !FolderCanonicalSegmentIdentifier.IsValid(extraIdentifier))
+            || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+            || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
-                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                taskId: IsCanonicalIdentifier(taskId) ? taskId : null,
+                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null,
                 evidenceSource: evidenceSource);
         }
 
-        string? freshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
         if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_read_consistency",
@@ -426,14 +425,14 @@ public static partial class AuditEndpoints
         return null;
     }
 
-    private static IResult SafeProblemFor(
+    private static IResult MapAuditQueryResult(
         AuditQueryResultCode code,
         string? correlationId,
         string? taskId,
         string evidenceSource)
         => code switch
         {
-            AuditQueryResultCode.AuthenticationRequired => SafeProblem(
+            AuditQueryResultCode.AuthenticationRequired => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status401Unauthorized,
                 category: "authentication_failure",
                 code: "authentication_failure",
@@ -441,7 +440,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.TenantAccessDenied => SafeProblem(
+            AuditQueryResultCode.TenantAccessDenied => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status403Forbidden,
                 category: "tenant_access_denied",
                 code: "tenant_access_denied",
@@ -449,7 +448,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.FolderAclDenied => SafeProblem(
+            AuditQueryResultCode.FolderAclDenied => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status403Forbidden,
                 category: "folder_acl_denied",
                 code: "folder_acl_denied",
@@ -457,7 +456,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.AuditAccessDenied => SafeProblem(
+            AuditQueryResultCode.AuditAccessDenied => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status403Forbidden,
                 category: "audit_access_denied",
                 code: "audit_access_denied",
@@ -465,7 +464,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.NotFoundSafe => SafeProblem(
+            AuditQueryResultCode.NotFoundSafe => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status404NotFound,
                 category: "not_found",
                 code: "not_found",
@@ -473,7 +472,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.ValidationError => SafeProblem(
+            AuditQueryResultCode.ValidationError => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -481,7 +480,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.ProjectionStale => SafeProblem(
+            AuditQueryResultCode.ProjectionStale => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status409Conflict,
                 category: "projection_stale",
                 code: "projection_stale",
@@ -489,7 +488,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.ProjectionUnavailable => SafeProblem(
+            AuditQueryResultCode.ProjectionUnavailable => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "projection_unavailable",
                 code: "projection_unavailable",
@@ -497,7 +496,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.ReadModelUnavailable => SafeProblem(
+            AuditQueryResultCode.ReadModelUnavailable => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "read_model_unavailable",
@@ -505,7 +504,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            AuditQueryResultCode.Redacted => SafeProblem(
+            AuditQueryResultCode.Redacted => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status404NotFound,
                 category: "redacted",
                 code: "redacted",
@@ -513,7 +512,7 @@ public static partial class AuditEndpoints
                 correlationId: correlationId,
                 taskId: taskId,
                 evidenceSource: evidenceSource),
-            _ => SafeProblem(
+            _ => FolderProblemDetailsFactory.ForAudit(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "internal_error",
                 code: "internal_error",
@@ -531,12 +530,12 @@ public static partial class AuditEndpoints
 
     private static void AddSuccessHeaders(HttpContext httpContext, string? correlationId, string? taskId)
     {
-        if (!string.IsNullOrWhiteSpace(correlationId) && IsSafeHeaderValue(correlationId))
+        if (!string.IsNullOrWhiteSpace(correlationId) && FolderHttpHeaderReader.IsSafeHeaderValue(correlationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = correlationId;
         }
 
-        if (!string.IsNullOrWhiteSpace(taskId) && IsSafeHeaderValue(taskId))
+        if (!string.IsNullOrWhiteSpace(taskId) && FolderHttpHeaderReader.IsSafeHeaderValue(taskId))
         {
             httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
         }
@@ -544,145 +543,22 @@ public static partial class AuditEndpoints
         httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
     }
 
-    private static IResult SafeProblem(
-        int statusCode,
-        string category,
-        string code,
-        bool retryable,
-        string? correlationId,
-        string? taskId,
-        string? message = null,
-        string? todoRef = null,
-        string evidenceSource = AuditEvidenceSource)
-    {
-        Dictionary<string, object?> details = new()
-        {
-            ["visibility"] = "metadata_only",
-            ["retryReasonCode"] = code,
-            ["reasonCategory"] = category,
-            ["evidenceSource"] = evidenceSource,
-        };
-
-        if (!string.IsNullOrWhiteSpace(todoRef))
-        {
-            details["todoRef"] = todoRef;
-        }
-
-        if (!string.IsNullOrWhiteSpace(taskId) && IsCanonicalIdentifier(taskId))
-        {
-            details["taskId"] = taskId;
-        }
-
-        Dictionary<string, object?> extensions = new()
-        {
-            ["category"] = category,
-            ["code"] = code,
-            ["message"] = message ?? MessageFor(category),
-            ["correlationId"] = correlationId,
-            ["retryable"] = retryable,
-            ["clientAction"] = retryable ? "retry" : "no_action",
-            ["details"] = details,
-        };
-
-        if (!string.IsNullOrWhiteSpace(taskId))
-        {
-            extensions["taskId"] = taskId;
-        }
-
-        return Results.Problem(
-            type: $"https://hexalith.dev/errors/folders/{code}",
-            title: statusCode switch
-            {
-                StatusCodes.Status400BadRequest => "Validation failure.",
-                StatusCodes.Status401Unauthorized => "Authentication required.",
-                StatusCodes.Status404NotFound => "Resource not available.",
-                StatusCodes.Status409Conflict => "Audit evidence is not currently fresh enough for this operation.",
-                StatusCodes.Status503ServiceUnavailable => "Read model unavailable.",
-                _ => "Authorization denied.",
-            },
-            statusCode: statusCode,
-            extensions: extensions);
-    }
-
-    private static string MessageFor(string category) => category switch
-    {
-        "authentication_failure" => "Authentication is required to access this resource.",
-        "tenant_access_denied" => "Access is denied. The caller is not authorized for this operation or resource.",
-        "folder_acl_denied" => "Folder access denied.",
-        "audit_access_denied" => "Audit access denied.",
-        "not_found" => "The requested resource is not available to the caller.",
-        "validation_error" => "Request validation failed.",
-        "projection_stale" => "The read-model projection is stale. Retry later.",
-        "projection_unavailable" => "The read-model projection is unavailable. Retry later.",
-        "read_model_unavailable" => "The read model is temporarily unavailable. Retry later.",
-        "redacted" => "The requested resource is not available to the caller.",
-        _ => "Access is denied. The caller is not authorized for this operation or resource.",
-    };
-
     private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext httpContext)
         => new Dictionary<string, string?>(StringComparer.Ordinal)
         {
-            ["query_tenant_id"] = ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = ReadHeader(httpContext, "X-Forwarded-Tenant"),
+            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
+            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
+            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
+            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
+            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
         };
 
     private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
         => new Dictionary<string, string?>(StringComparer.Ordinal)
         {
-            ["header_principal_id"] = ReadHeader(httpContext, "X-Principal-Id"),
-            ["forwarded_principal_id"] = ReadHeader(httpContext, "X-Forwarded-Principal"),
+            ["header_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Principal-Id"),
+            ["forwarded_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Principal"),
         };
-
-    private static string? ReadHeader(HttpContext httpContext, string name)
-        => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
-
-    private static string? ReadQuery(HttpContext httpContext, string name)
-        => FirstNonEmpty(httpContext.Request.Query.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
-
-    private static string? FirstNonEmpty(StringValues values)
-    {
-        foreach (string? raw in values)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                continue;
-            }
-
-            string trimmed = raw.Trim();
-            if (trimmed.Length == 0 || !IsSafeHeaderValue(trimmed))
-            {
-                continue;
-            }
-
-            return trimmed;
-        }
-
-        return null;
-    }
-
-    private static bool IsSafeHeaderValue(string value)
-    {
-        foreach (char c in value)
-        {
-            if (c == '\r' || c == '\n' || char.IsControl(c))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static bool IsCanonicalIdentifier(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
-        && CanonicalIdentifierPattern().IsMatch(value);
-
-    [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
-    private static partial Regex CanonicalIdentifierPattern();
 
     [GeneratedRegex("^cursor_[A-Za-z0-9_-]{8,247}$", RegexOptions.CultureInvariant)]
     private static partial Regex CursorPattern();

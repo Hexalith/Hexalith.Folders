@@ -100,7 +100,7 @@ public static partial class ProviderReadinessEndpoints
 
         if (!TryReadSupportEvidenceCorrelation(httpContext, out string? correlationId))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "unsafe_correlation_id",
@@ -112,7 +112,7 @@ public static partial class ProviderReadinessEndpoints
         {
             // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
             // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "idempotency_key_not_allowed",
@@ -120,10 +120,10 @@ public static partial class ProviderReadinessEndpoints
                 correlationId);
         }
 
-        string? freshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
         if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "unsupported_read_consistency",
@@ -131,11 +131,9 @@ public static partial class ProviderReadinessEndpoints
                 correlationId);
         }
 
-        if (string.IsNullOrWhiteSpace(providerBindingRef)
-            || providerBindingRef.Length > 256
-            || !CanonicalIdentifierPattern().IsMatch(providerBindingRef))
+        if (!FolderCanonicalPathIdentifier.IsValid(providerBindingRef))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "validation_error",
@@ -161,42 +159,42 @@ public static partial class ProviderReadinessEndpoints
         switch (result.Code)
         {
             case GetProviderBindingQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status401Unauthorized,
                     "authentication_failure",
                     "authentication_failure",
                     retryable: false,
                     result.CorrelationId);
             case GetProviderBindingQueryResultCode.AuthorizationDenied:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status403Forbidden,
                     "authorization_denied",
                     "denied_safe",
                     retryable: false,
                     result.CorrelationId);
             case GetProviderBindingQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status404NotFound,
                     "not_found",
                     "not_found",
                     retryable: false,
                     result.CorrelationId);
             case GetProviderBindingQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "projection_stale",
                     "projection_stale",
                     retryable: true,
                     result.CorrelationId);
             case GetProviderBindingQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "projection_unavailable",
                     "projection_unavailable",
                     retryable: true,
                     result.CorrelationId);
             case GetProviderBindingQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "read_model_unavailable",
                     "read_model_unavailable",
@@ -229,7 +227,7 @@ public static partial class ProviderReadinessEndpoints
 
         if (!TryReadSupportEvidenceCorrelation(httpContext, out string? correlationId))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "unsafe_correlation_id",
@@ -241,7 +239,7 @@ public static partial class ProviderReadinessEndpoints
         {
             // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
             // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "idempotency_key_not_allowed",
@@ -249,10 +247,10 @@ public static partial class ProviderReadinessEndpoints
                 correlationId);
         }
 
-        string? freshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
         if (freshness is not null && !string.Equals(freshness, EventuallyConsistent, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "unsupported_read_consistency",
@@ -262,7 +260,7 @@ public static partial class ProviderReadinessEndpoints
 
         if (!TryReadSupportEvidencePagination(httpContext, out string? cursor, out int limit))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "invalid_pagination",
@@ -296,12 +294,12 @@ public static partial class ProviderReadinessEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
         {
             // Canonical read-op rejection code per Story 8.1 DD1 / AC3 — must match every other
             // read route (idempotency_key_not_allowed), not the legacy provider-readiness variant.
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "idempotency_key_not_allowed",
@@ -309,10 +307,10 @@ public static partial class ProviderReadinessEndpoints
                 correlationId);
         }
 
-        string? freshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string? freshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
         if (freshness is not null && !string.Equals(freshness, SnapshotPerTask, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "unsupported_read_consistency",
@@ -329,7 +327,7 @@ public static partial class ProviderReadinessEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "malformed_provider_readiness_request",
@@ -341,7 +339,7 @@ public static partial class ProviderReadinessEndpoints
             || string.IsNullOrWhiteSpace(body.ProviderBindingRef)
             || !TryParseCapability(body.RequestedCapability, out ProviderReadinessRequestedCapability requestedCapability))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status400BadRequest,
                 "validation_error",
                 "malformed_provider_readiness_request",
@@ -368,28 +366,28 @@ public static partial class ProviderReadinessEndpoints
         switch (result.Code)
         {
             case ProviderReadinessResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status401Unauthorized,
                     "authentication_failure",
                     "authentication_failure",
                     retryable: false,
                     result.CorrelationId);
             case ProviderReadinessResultCode.AuthorizationDenied:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status403Forbidden,
                     "authorization_denied",
                     result.ReasonCode,
                     retryable: false,
                     result.CorrelationId);
             case ProviderReadinessResultCode.ValidationFailed:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status400BadRequest,
                     "validation_error",
                     result.ReasonCode,
                     retryable: false,
                     result.CorrelationId);
             case ProviderReadinessResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "projection_stale",
                     "projection_stale",
@@ -397,7 +395,7 @@ public static partial class ProviderReadinessEndpoints
                     result.CorrelationId);
             case ProviderReadinessResultCode.ProjectionUnavailable:
             case ProviderReadinessResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "projection_unavailable",
                     "projection_unavailable",
@@ -407,7 +405,7 @@ public static partial class ProviderReadinessEndpoints
 
         if (string.Equals(result.CategoryCode, "provider_rate_limited", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status429TooManyRequests,
                 "provider_rate_limited",
                 "provider_rate_limited",
@@ -419,7 +417,7 @@ public static partial class ProviderReadinessEndpoints
         if (string.Equals(result.CategoryCode, "provider_unavailable", StringComparison.Ordinal)
             || string.Equals(result.CategoryCode, "provider_transient_failure", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForProviderReadiness(
                 StatusCodes.Status503ServiceUnavailable,
                 result.CategoryCode,
                 result.CategoryCode,
@@ -453,42 +451,42 @@ public static partial class ProviderReadinessEndpoints
         switch (result.Code)
         {
             case ProviderSupportEvidenceQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status401Unauthorized,
                     "authentication_failure",
                     "authentication_failure",
                     retryable: false,
                     result.CorrelationId);
             case ProviderSupportEvidenceQueryResultCode.AuthorizationDenied:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status403Forbidden,
                     "authorization_denied",
                     result.ReasonCode,
                     retryable: false,
                     result.CorrelationId);
             case ProviderSupportEvidenceQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "projection_stale",
                     "projection_stale",
                     retryable: true,
                     result.CorrelationId);
             case ProviderSupportEvidenceQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "projection_unavailable",
                     "projection_unavailable",
                     retryable: true,
                     result.CorrelationId);
             case ProviderSupportEvidenceQueryResultCode.ProviderUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "provider_unavailable",
                     "provider_unavailable",
                     retryable: true,
                     result.CorrelationId);
             case ProviderSupportEvidenceQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForProviderReadiness(
                     StatusCodes.Status503ServiceUnavailable,
                     "read_model_unavailable",
                     result.ReasonCode,
@@ -505,54 +503,9 @@ public static partial class ProviderReadinessEndpoints
             ResponseJsonOptions);
     }
 
-    private static IResult SafeProblem(
-        int statusCode,
-        string category,
-        string code,
-        bool retryable,
-        string? correlationId,
-        TimeSpan? retryAfter = null)
-    {
-        string safeCorrelationId = SafeCorrelationId(correlationId);
-        Dictionary<string, object?> extensions = new()
-        {
-            ["category"] = category,
-            ["code"] = code,
-            ["message"] = MessageFor(category),
-            ["correlationId"] = safeCorrelationId,
-            ["retryable"] = retryable,
-            ["clientAction"] = retryable ? "retry" : "no_action",
-            ["details"] = new Dictionary<string, object?>
-            {
-                ["visibility"] = "metadata_only",
-                ["retryReasonCode"] = code,
-                ["reasonCategory"] = category,
-                ["evidenceSource"] = "provider_readiness",
-            },
-        };
-
-        if (retryAfter is not null)
-        {
-            extensions["retryAfterSeconds"] = (long)Math.Ceiling(retryAfter.Value.TotalSeconds);
-        }
-
-        return Results.Problem(
-            type: $"https://hexalith.dev/errors/folders/{code}",
-            title: statusCode switch
-            {
-                StatusCodes.Status400BadRequest => "Validation failure.",
-                StatusCodes.Status401Unauthorized => "Authentication required.",
-                StatusCodes.Status429TooManyRequests => "Provider rate limited.",
-                StatusCodes.Status503ServiceUnavailable => "Provider readiness unavailable.",
-                _ => "Authorization denied.",
-            },
-            statusCode: statusCode,
-            extensions: extensions);
-    }
-
     private static void AddSuccessHeaders(HttpContext httpContext, ProviderReadinessValidationResult result)
     {
-        if (IsSafeHeaderValue(result.CorrelationId))
+        if (FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
@@ -562,7 +515,7 @@ public static partial class ProviderReadinessEndpoints
 
     private static void AddSuccessHeaders(HttpContext httpContext, string correlationId, string freshness)
     {
-        if (IsSafeHeaderValue(correlationId))
+        if (FolderHttpHeaderReader.IsSafeHeaderValue(correlationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = correlationId;
         }
@@ -597,11 +550,11 @@ public static partial class ProviderReadinessEndpoints
     private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext httpContext)
         => new Dictionary<string, string?>(StringComparer.Ordinal)
         {
-            ["query_tenant_id"] = ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = ReadHeader(httpContext, "X-Forwarded-Tenant"),
+            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
+            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
+            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
+            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
+            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
         };
 
     private static bool TryReadSupportEvidencePagination(
@@ -612,7 +565,7 @@ public static partial class ProviderReadinessEndpoints
         cursor = null;
         limit = DefaultSupportEvidenceLimit;
 
-        string? rawCursor = ReadQuery(httpContext, "cursor");
+        string? rawCursor = FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
         if (rawCursor is not null)
         {
             if (!CursorPattern().IsMatch(rawCursor))
@@ -623,7 +576,7 @@ public static partial class ProviderReadinessEndpoints
             cursor = rawCursor;
         }
 
-        string? rawLimit = ReadQuery(httpContext, "limit");
+        string? rawLimit = FolderHttpHeaderReader.ReadQuery(httpContext, "limit");
         if (rawLimit is null)
         {
             return true;
@@ -655,10 +608,9 @@ public static partial class ProviderReadinessEndpoints
             }
 
             string candidate = raw.Trim();
-            if (!IsSafeHeaderValue(candidate)
-                || candidate.Length > 256
-                || !CanonicalIdentifierPattern().IsMatch(candidate)
-                || IsSensitiveDiagnosticValue(candidate))
+            if (!FolderHttpHeaderReader.IsSafeHeaderValue(candidate)
+                || !FolderCanonicalPathIdentifier.IsValid(candidate)
+                || FolderSensitiveDiagnosticDetector.IsSensitive(candidate))
             {
                 return false;
             }
@@ -669,83 +621,6 @@ public static partial class ProviderReadinessEndpoints
 
         return true;
     }
-
-    private static string? ReadHeader(HttpContext httpContext, string name)
-        => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
-
-    private static string? ReadQuery(HttpContext httpContext, string name)
-        => FirstNonEmpty(httpContext.Request.Query.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
-
-    private static string? FirstNonEmpty(StringValues values)
-    {
-        foreach (string? raw in values)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                continue;
-            }
-
-            string trimmed = raw.Trim();
-            if (trimmed.Length == 0 || !IsSafeHeaderValue(trimmed))
-            {
-                continue;
-            }
-
-            return trimmed;
-        }
-
-        return null;
-    }
-
-    private static bool IsSafeHeaderValue(string value)
-        => !value.Any(static c => c == '\r' || c == '\n' || char.IsControl(c));
-
-    private static string SafeCorrelationId(string? value)
-    {
-        if (!string.IsNullOrWhiteSpace(value)
-            && value.Length <= 256
-            && IsSafeHeaderValue(value)
-            && CanonicalIdentifierPattern().IsMatch(value)
-            && !IsSensitiveDiagnosticValue(value))
-        {
-            return value.Trim();
-        }
-
-        return $"correlation_{Guid.NewGuid():N}";
-    }
-
-    private static bool IsSensitiveDiagnosticValue(string value)
-    {
-        string canonical = value.Trim().ToLowerInvariant();
-        return canonical.Contains("token", StringComparison.Ordinal)
-            || canonical.Contains("secret", StringComparison.Ordinal)
-            || canonical.Contains("password", StringComparison.Ordinal)
-            || canonical.Contains("credential", StringComparison.Ordinal)
-            || canonical.Contains("repository", StringComparison.Ordinal)
-            || canonical.Contains("repo_", StringComparison.Ordinal)
-            || canonical.Contains("repo-", StringComparison.Ordinal)
-            || canonical.Contains("://", StringComparison.Ordinal)
-            || canonical.Contains("@", StringComparison.Ordinal)
-            || canonical.Contains("diff --git", StringComparison.Ordinal)
-            || canonical.Contains("providerpayload", StringComparison.Ordinal)
-            || canonical.Contains("privatekey", StringComparison.Ordinal)
-            || canonical.Contains("private key", StringComparison.Ordinal)
-            || canonical.Contains("installation", StringComparison.Ordinal)
-            || ProviderTokenPattern().IsMatch(value)
-            || JwtPattern().IsMatch(value)
-            || PemPattern().IsMatch(value);
-    }
-
-    private static string MessageFor(string category)
-        => category switch
-        {
-            "authentication_failure" => "Authentication is required to access this resource.",
-            "validation_error" => "Request validation failed.",
-            "provider_rate_limited" => "Provider readiness is rate limited. Retry later.",
-            "provider_unavailable" or "provider_transient_failure" => "Provider readiness is temporarily unavailable. Retry later.",
-            "projection_stale" or "projection_unavailable" => "Authorization evidence is not currently fresh enough for this operation.",
-            _ => "Access is denied. The caller is not authorized for this operation or resource.",
-        };
 
     private sealed record ProviderReadinessHttpRequest(
         string? ProviderBindingRef,
@@ -779,18 +654,6 @@ public static partial class ProviderReadinessEndpoints
         string Redaction,
         ProviderReadinessFreshness Freshness);
 
-    [GeneratedRegex("^[A-Za-z0-9][A-Za-z0-9_-]{0,255}$", RegexOptions.CultureInvariant)]
-    private static partial Regex CanonicalIdentifierPattern();
-
     [GeneratedRegex("^cursor_[0-9]{1,6}$", RegexOptions.CultureInvariant)]
     private static partial Regex CursorPattern();
-
-    [GeneratedRegex("gh[pousr]_[a-zA-Z0-9_]{20,}", RegexOptions.CultureInvariant)]
-    private static partial Regex ProviderTokenPattern();
-
-    [GeneratedRegex("eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9_-]{5,}\\.[a-zA-Z0-9_-]{5,}", RegexOptions.CultureInvariant)]
-    private static partial Regex JwtPattern();
-
-    [GeneratedRegex("-----BEGIN [A-Z ]*PRIVATE KEY-----", RegexOptions.CultureInvariant)]
-    private static partial Regex PemPattern();
 }

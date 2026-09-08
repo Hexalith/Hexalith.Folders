@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 
 using Dapr.Client;
@@ -149,6 +150,89 @@ public sealed class MetadataDerivedSemanticIndexingContentMaterializerTests
             foreach (string forbiddenValue in forbiddenValues)
             {
                 exposedValue.ShouldNotContain(forbiddenValue, Case.Sensitive);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task MaterializeAsyncShouldIgnoreBodyShapedFixtureAndEmitMetadataTokensOnly()
+    {
+        const string secret = "c9-body-secret-token-10-9";
+        const string snippet = "snippet-body-lorem-classified";
+        const string fileBody = "CLASSIFIED-BODY api_key=" + secret + " " + snippet;
+        const string expectedCuratedText = "text fv-version-a organization-a folder-a small";
+        string path = Path.Combine(Path.GetTempPath(), $"hexalith-10-9-{Path.GetRandomFileName()}.body.txt");
+        await File.WriteAllTextAsync(path, fileBody, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        try
+        {
+            typeof(SemanticIndexingContentMaterializationRequest)
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Select(property => property.PropertyType)
+                .ShouldNotContain(type =>
+                    type == typeof(byte[])
+                    || type == typeof(ReadOnlyMemory<byte>)
+                    || typeof(Stream).IsAssignableFrom(type));
+            typeof(SemanticIndexingContentMaterializationRequest).GetProperty("ContentBytes").ShouldBeNull();
+            typeof(SemanticIndexingContentMaterializationRequest).GetProperty("Body").ShouldBeNull();
+            typeof(SemanticIndexingContentMaterializationRequest).GetProperty("FileBody").ShouldBeNull();
+
+            SemanticIndexingContentMaterializationRequest request = CreateRequest(
+                contentHashReference: fileBody,
+                pathPolicyClass: path,
+                transportEvidenceKind: snippet);
+            MetadataDerivedSemanticIndexingContentMaterializer materializer = new();
+
+            SemanticIndexingContentMaterializationResult result = await materializer
+                .MaterializeAsync(request, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            result.Status.ShouldBe(SemanticIndexingContentMaterializationStatus.Available);
+            result.CuratedText.ShouldBe(expectedCuratedText);
+            result.ContentBytes.ShouldNotBeNull();
+            Encoding.UTF8.GetString(result.ContentBytes!).ShouldBe(expectedCuratedText);
+            result.ContentBytes.ShouldBe(Encoding.UTF8.GetBytes(expectedCuratedText));
+            IReadOnlyDictionary<string, string> attributes = result.CuratedAttributes.ShouldNotBeNull();
+            attributes.Count.ShouldBe(9);
+            attributes[FoldersSemanticIndexingAttributes.ManagedTenantIdAttribute].ShouldBe("tenant-a");
+            attributes[FoldersSemanticIndexingAttributes.OrganizationIdAttribute].ShouldBe("organization-a");
+            attributes[FoldersSemanticIndexingAttributes.FolderIdAttribute].ShouldBe("folder-a");
+            attributes[FoldersSemanticIndexingAttributes.WorkspaceIdAttribute].ShouldBe("workspace-a");
+            attributes[FoldersSemanticIndexingAttributes.FileVersionIdAttribute].ShouldBe("fv-version-a");
+            attributes[FoldersSemanticIndexingAttributes.StatusAttribute].ShouldBe(FoldersSemanticIndexingAttributes.StatusActive);
+            attributes[FoldersSemanticIndexingAttributes.ContentDescriptorAttribute].ShouldBe("metadata-derived");
+            attributes[FoldersSemanticIndexingAttributes.SizeClassificationAttribute].ShouldBe("small");
+            attributes[FoldersSemanticIndexingAttributes.TypeClassificationAttribute].ShouldBe("text");
+
+            string[] exposedValues =
+            [
+                result.CuratedText!,
+                Encoding.UTF8.GetString(result.ContentBytes!),
+                .. attributes.Keys,
+                .. attributes.Values,
+            ];
+            string[] forbiddenValues =
+            [
+                fileBody,
+                path,
+                secret,
+                snippet,
+                "CLASSIFIED-BODY",
+            ];
+
+            foreach (string exposedValue in exposedValues)
+            {
+                foreach (string forbiddenValue in forbiddenValues)
+                {
+                    exposedValue.ShouldNotContain(forbiddenValue, Case.Sensitive);
+                }
+            }
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
             }
         }
     }

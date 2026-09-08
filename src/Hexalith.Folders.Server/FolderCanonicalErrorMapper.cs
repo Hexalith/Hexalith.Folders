@@ -6,6 +6,19 @@ namespace Hexalith.Folders.Server;
 
 internal static class FolderCanonicalErrorMapper
 {
+    /// <summary>
+    /// Maps a Domain <see cref="FolderResultCode"/> onto the Domain REST status table.
+    /// Audit and OpsConsole keep their local <c>projection_stale</c> → 409 mapping and must not use this lookup.
+    /// </summary>
+    /// <param name="code">The Domain result code.</param>
+    /// <returns>The Domain HTTP status, category, retryability, and client action.</returns>
+    public static (int StatusCode, string Category, bool Retryable, string ClientAction) ForDomain(FolderResultCode code)
+    {
+        string category = CategoryFor(code);
+        bool retryable = RetryableFor(category);
+        return (StatusFor(category), category, retryable, ClientActionFor(category, retryable));
+    }
+
     public static string CategoryFor(FolderResultCode code)
         => code switch
         {

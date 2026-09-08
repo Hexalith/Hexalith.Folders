@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 using Dapr;
@@ -44,6 +45,43 @@ public sealed class SemanticIndexingWorkerRegistrationTests
         provider.GetRequiredService<SemanticIndexingProcessManager>().ShouldNotBeNull();
         provider.GetRequiredService<FoldersSemanticIndexingEventProcessor>().ShouldNotBeNull();
         provider.GetRequiredService<DaprClient>().ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void AddFoldersSemanticIndexingWorkersShouldRegisterMetadataDerivedMaterializerWithoutContentStoreDependency()
+    {
+        ServiceCollection services = CreateServiceCollection();
+
+        services.AddFoldersSemanticIndexingWorkers();
+
+        ServiceDescriptor descriptor = services
+            .Single(static service => service.ServiceType == typeof(ISemanticIndexingContentMaterializer));
+        descriptor.ImplementationType.ShouldBe(typeof(MetadataDerivedSemanticIndexingContentMaterializer));
+        descriptor.ImplementationFactory.ShouldBeNull();
+        descriptor.ImplementationInstance.ShouldBeNull();
+        services.Any(static service =>
+                service.ImplementationType == typeof(FailClosedSemanticIndexingContentMaterializer))
+            .ShouldBeFalse();
+
+        ConstructorInfo[] constructors = typeof(MetadataDerivedSemanticIndexingContentMaterializer)
+            .GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        constructors.ShouldNotBeEmpty();
+        foreach (ConstructorInfo constructor in constructors)
+        {
+            constructor.GetParameters().ShouldBeEmpty();
+        }
+
+        typeof(MetadataDerivedSemanticIndexingContentMaterializer)
+            .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            .ShouldBeEmpty();
+
+        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateOnBuild = true,
+            ValidateScopes = true,
+        });
+        provider.GetRequiredService<ISemanticIndexingContentMaterializer>()
+            .ShouldBeOfType<MetadataDerivedSemanticIndexingContentMaterializer>();
     }
 
     [Fact]

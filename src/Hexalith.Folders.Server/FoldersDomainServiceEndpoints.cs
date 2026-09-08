@@ -15,7 +15,6 @@ using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Primitives;
 
 namespace Hexalith.Folders.Server;
 
@@ -52,9 +51,6 @@ public static class FoldersDomainServiceEndpoints
     };
 
     private const string ReservedSystemTenant = "system";
-
-    private static readonly System.Text.RegularExpressions.Regex CanonicalSegmentRegex =
-        new("^[a-z0-9._-]+$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     // Gateway-returned correlation IDs may carry uppercase hex (ULIDs, UUIDs) coming from
     // upstream systems. Caller-supplied identifiers stay strictly lowercase canonical to
@@ -111,15 +107,15 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             EffectivePermissionsQueryResult result = await handler.HandleAsync(
                 new EffectivePermissionsQuery(
                     folderId,
                     tenantContext.AuthoritativeTenantId,
                     tenantContext.PrincipalId ?? string.Empty,
                     correlationId,
-                    TaskContextId: ReadHeader(httpContext, "X-Hexalith-Task-Id"),
-                    WorkspaceContextId: ReadHeader(httpContext, "X-Hexalith-Workspace-Id"),
+                    TaskContextId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"),
+                    WorkspaceContextId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Workspace-Id"),
                     ClientControlledTenantIds: ClientTenantIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
@@ -257,12 +253,12 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
             if (idempotencyKey is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -272,25 +268,25 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || !IsCanonicalIdentifier(workspaceId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -328,12 +324,12 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
             if (idempotencyKey is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -343,25 +339,25 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || !IsCanonicalIdentifier(workspaceId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -399,11 +395,11 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -413,25 +409,25 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || !IsCanonicalIdentifier(workspaceId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, SnapshotPerTask, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -469,12 +465,12 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
             if (idempotencyKey is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -484,25 +480,25 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || !IsCanonicalIdentifier(workspaceId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -539,7 +535,7 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
             IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
                 httpContext,
                 correlationId,
@@ -645,12 +641,12 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
             if (idempotencyKey is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -660,25 +656,25 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || !IsCanonicalIdentifier(workspaceId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, ReadYourWrites, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -839,8 +835,8 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
             IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
             if (envelopeFailure is not null)
             {
@@ -850,13 +846,13 @@ public static class FoldersDomainServiceEndpoints
             FileMetadataContextHttpRequest? body = await ReadContextBodyAsync<FileMetadataContextHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
             if (body is null || !IsSchemaVersionV1(body.RequestSchemaVersion))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
-                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+                    correlationId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"));
             }
 
             return await FileContextQueryAsync(
@@ -887,8 +883,8 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
             IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
             if (envelopeFailure is not null)
             {
@@ -900,13 +896,13 @@ public static class FoldersDomainServiceEndpoints
                 || !IsSchemaVersionV1(body.RequestSchemaVersion)
                 || !string.Equals(body.QueryFamily, "search", StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
-                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+                    correlationId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"));
             }
 
             return await FileContextQueryAsync(
@@ -939,8 +935,8 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
             IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
             if (envelopeFailure is not null)
             {
@@ -952,13 +948,13 @@ public static class FoldersDomainServiceEndpoints
                 || !IsSchemaVersionV1(body.RequestSchemaVersion)
                 || !string.Equals(body.QueryFamily, "glob", StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
-                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+                    correlationId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"));
             }
 
             return await FileContextQueryAsync(
@@ -991,8 +987,8 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
             IResult? envelopeFailure = ValidateContextQueryEnvelope(folderId, workspaceId, httpContext, correlationId, taskId);
             if (envelopeFailure is not null)
             {
@@ -1002,13 +998,13 @@ public static class FoldersDomainServiceEndpoints
             FileRangeReadContextHttpRequest? body = await ReadContextBodyAsync<FileRangeReadContextHttpRequest>(httpContext, cancellationToken).ConfigureAwait(false);
             if (body is null || !IsSchemaVersionV1(body.RequestSchemaVersion) || body.Path is null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: ReadHeader(httpContext, "X-Correlation-Id"),
-                    taskId: ReadHeader(httpContext, "X-Hexalith-Task-Id"));
+                    correlationId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id"),
+                    taskId: FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id"));
             }
 
             return await FileContextQueryAsync(
@@ -1041,8 +1037,8 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
             IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
                 httpContext,
                 correlationId,
@@ -1059,7 +1055,7 @@ public static class FoldersDomainServiceEndpoints
                 || !IsSchemaVersionV1(body.RequestSchemaVersion)
                 || !string.Equals(body.QueryFamily, ContextSearchQueryHandler.QueryFamily, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
@@ -1100,8 +1096,8 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
             IResult? envelopeFailure = ValidateEvidenceQueryEnvelope(
                 httpContext,
                 correlationId,
@@ -1139,12 +1135,12 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
             if (idempotencyKey is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -1154,11 +1150,11 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -1194,13 +1190,13 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
 
             // The operation declares x-hexalith-read-consistency.class: eventually_consistent.
             // A caller-supplied stricter class is silently invalid; surface as 400 instead of
             // silently downgrading to eventually_consistent.
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
             {
@@ -1251,11 +1247,11 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
-            if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
+            if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -1265,25 +1261,25 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || !IsCanonicalIdentifier(repositoryBindingId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-                || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || !FolderCanonicalSegmentIdentifier.IsValid(repositoryBindingId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+                || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                    taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                    taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -1319,10 +1315,10 @@ public static class FoldersDomainServiceEndpoints
             CancellationToken cancellationToken)
             =>
         {
-            string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-            if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+            if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "idempotency_key_not_allowed",
@@ -1332,23 +1328,23 @@ public static class FoldersDomainServiceEndpoints
                     message: "Idempotency-Key is not accepted on read operations.");
             }
 
-            if (!IsCanonicalIdentifier(folderId)
-                || (correlationId is not null && !IsCanonicalIdentifier(correlationId)))
+            if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+                || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId)))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
                     retryable: false,
-                    correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
+                    correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
                     taskId: null);
             }
 
-            string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+            string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
             if (requestedFreshness is not null
                 && !string.Equals(requestedFreshness, EventuallyConsistent, StringComparison.Ordinal))
             {
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "unsupported_read_consistency",
@@ -1451,7 +1447,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1462,7 +1458,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1473,7 +1469,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -1485,7 +1481,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!FolderArchiveReasonCodes.IsSupported(body.ArchiveReasonCode))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_archive_reason_code",
@@ -1525,7 +1521,7 @@ public static class FoldersDomainServiceEndpoints
         {
             // Gateway transport / serialization / Dapr failures must surface as a safe
             // retryable evidence-unavailable result, not a 500 with internal stack.
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -1593,7 +1589,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1604,7 +1600,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null || body.FolderMetadata is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1615,7 +1611,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -1627,7 +1623,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (string.IsNullOrWhiteSpace(body.FolderMetadata.DisplayName))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1677,7 +1673,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -1754,7 +1750,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1765,7 +1761,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1776,7 +1772,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -1790,9 +1786,9 @@ public static class FoldersDomainServiceEndpoints
         if (!FolderAclContract.TryParseSubjectRef(body.SubjectRef, out string principalKindToken, out _, out string principalId)
             || action is null
             || body.Effect is not ("grant" or "revoke")
-            || !IsCanonicalIdentifier(principalId))
+            || !FolderCanonicalSegmentIdentifier.IsValid(principalId))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1804,7 +1800,7 @@ public static class FoldersDomainServiceEndpoints
         string derivedAclEntryId = FolderAclContract.DeriveAclEntryId(principalKindToken, principalId, body.PermissionLevel!);
         if (!string.Equals(aclEntryId, derivedAclEntryId, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "acl_entry_id_mismatch",
@@ -1851,7 +1847,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -1908,9 +1904,9 @@ public static class FoldersDomainServiceEndpoints
         string taskId = envelope.TaskId;
 
         // The provider-binding reference is the gateway aggregate id, so it must be canonical.
-        if (!IsCanonicalIdentifier(providerBindingRef))
+        if (!FolderCanonicalSegmentIdentifier.IsValid(providerBindingRef))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1928,7 +1924,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1939,7 +1935,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -1950,7 +1946,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -1963,7 +1959,7 @@ public static class FoldersDomainServiceEndpoints
         if (string.IsNullOrWhiteSpace(body.ProviderFamilyRef)
             || string.IsNullOrWhiteSpace(body.NonSecretCredentialReference))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2008,7 +2004,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "provider_unavailable",
                 code: "provider_unavailable",
@@ -2049,7 +2045,7 @@ public static class FoldersDomainServiceEndpoints
         switch (result.Code)
         {
             case ListFolderAclEntriesQueryResultCode.Allowed:
-                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
                 {
                     httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
                 }
@@ -2069,7 +2065,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case ListFolderAclEntriesQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -2078,7 +2074,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case ListFolderAclEntriesQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -2087,7 +2083,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case ListFolderAclEntriesQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -2096,7 +2092,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case ListFolderAclEntriesQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -2105,7 +2101,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case ListFolderAclEntriesQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -2115,7 +2111,7 @@ public static class FoldersDomainServiceEndpoints
 
             case ListFolderAclEntriesQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -2161,7 +2157,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2172,7 +2168,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2183,7 +2179,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -2195,7 +2191,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidRepositoryBackedRequest(body))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2243,7 +2239,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -2308,7 +2304,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2319,7 +2315,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2330,7 +2326,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -2342,7 +2338,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidBindRepositoryRequest(body))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2380,7 +2376,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -2445,7 +2441,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2456,7 +2452,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2467,7 +2463,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -2479,7 +2475,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidBranchRefPolicy(body))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2517,7 +2513,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -2583,7 +2579,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2594,7 +2590,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2605,7 +2601,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -2617,7 +2613,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidPrepareWorkspaceRequest(body))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2662,7 +2658,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -2728,7 +2724,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2739,7 +2735,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2750,7 +2746,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -2762,7 +2758,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidLockWorkspaceRequest(body))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2806,7 +2802,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -2872,7 +2868,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2883,7 +2879,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (body is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2894,7 +2890,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_request_schema_version",
@@ -2906,7 +2902,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidReleaseWorkspaceLockRequest(body))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -2951,7 +2947,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -3018,7 +3014,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -3031,7 +3027,7 @@ public static class FoldersDomainServiceEndpoints
             || !string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
             || !string.Equals(body.FileOperationKind, expectedFileOperationKind, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -3057,7 +3053,7 @@ public static class FoldersDomainServiceEndpoints
                 httpContext.Response.Headers["X-Hexalith-Retry-Transport"] = "stream";
             }
 
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 statusCode,
                 category: category,
                 code: category,
@@ -3108,7 +3104,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -3174,7 +3170,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (JsonException)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -3185,7 +3181,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (!IsValidCommitWorkspaceRequest(body, taskId))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -3234,7 +3230,7 @@ public static class FoldersDomainServiceEndpoints
         }
         catch (Exception)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -3264,23 +3260,23 @@ public static class FoldersDomainServiceEndpoints
 
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
-        && IsCanonicalIdentifier(body.FolderId)
-        && IsCanonicalIdentifier(body.ProviderBindingRef)
-        && IsCanonicalIdentifier(body.RepositoryProfileRef)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.FolderId)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.ProviderBindingRef)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.RepositoryProfileRef)
         && IsValidFolderMetadata(body.FolderMetadata)
         && IsValidBranchRefPolicy(body.BranchRefPolicy);
 
     private static bool IsValidBindRepositoryRequest(BindRepositoryHttpRequest? body)
         => body is not null
-        && IsCanonicalIdentifier(body.ProviderBindingRef)
-        && IsCanonicalIdentifier(body.ExternalRepositoryRef)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.ProviderBindingRef)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.ExternalRepositoryRef)
         && IsValidBranchRefPolicy(body.BranchRefPolicy);
 
     private static bool IsValidPrepareWorkspaceRequest(PrepareWorkspaceHttpRequest? body)
         => body is not null
-        && IsCanonicalIdentifier(body.RepositoryBindingId)
-        && IsCanonicalIdentifier(body.BranchRefPolicyRef)
-        && IsCanonicalIdentifier(body.WorkspacePolicyRef);
+        && FolderCanonicalSegmentIdentifier.IsValid(body.RepositoryBindingId)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.BranchRefPolicyRef)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.WorkspacePolicyRef);
 
     private static bool IsValidLockWorkspaceRequest(LockWorkspaceHttpRequest? body)
         => body is not null
@@ -3289,8 +3285,8 @@ public static class FoldersDomainServiceEndpoints
 
     private static bool IsValidReleaseWorkspaceLockRequest(ReleaseWorkspaceLockHttpRequest? body)
         => body is not null
-        && IsCanonicalIdentifier(body.LockId)
-        && IsCanonicalIdentifier(body.LockOwnershipProof)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.LockId)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.LockOwnershipProof)
         && body.ReleaseReasonCode is "caller_completed"
             or "caller_abandoned"
             or "operator_requested"
@@ -3301,7 +3297,7 @@ public static class FoldersDomainServiceEndpoints
     private static bool IsValidCommitWorkspaceRequest(CommitWorkspaceHttpRequest? body, string taskId)
         => body is not null
         && string.Equals(body.RequestSchemaVersion, "v1", StringComparison.Ordinal)
-        && IsCanonicalIdentifier(body.OperationId)
+        && FolderCanonicalSegmentIdentifier.IsValid(body.OperationId)
         && string.Equals(body.TaskId, taskId, StringComparison.Ordinal)
         && IsCommitAuthorMetadataReference(body.AuthorMetadataReference)
         && IsCommitBranchRefTarget(body.BranchRefTarget)
@@ -3335,7 +3331,7 @@ public static class FoldersDomainServiceEndpoints
     private static FileMutationTransportValidation ValidateFileMutationRequest(FileMutationHttpRequest? body)
     {
         if (body is null
-            || !IsCanonicalIdentifier(body.OperationId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(body.OperationId)
             || body.PathMetadata is null)
         {
             return FileMutationTransportValidation.Rejected(body?.PathMetadata is null
@@ -3369,7 +3365,7 @@ public static class FoldersDomainServiceEndpoints
 
     private static FileMutationTransportValidation ValidateAddOrChangeFileMutationRequest(FileMutationHttpRequest body)
     {
-        if (!IsCanonicalIdentifier(body.ContentHashReference) || body.ByteLength is null)
+        if (!FolderCanonicalSegmentIdentifier.IsValid(body.ContentHashReference) || body.ByteLength is null)
         {
             return FileMutationTransportValidation.Rejected(FileMutationRequestValidationResult.ValidationFailed);
         }
@@ -3435,7 +3431,7 @@ public static class FoldersDomainServiceEndpoints
             || !TryGetInt64Property(stream, "declaredLength", out long declaredLength)
             || !TryGetInt64Property(stream, "observedLength", out long observedLength)
             || !TryGetStringProperty(stream, "stagingReference", out string? stagingReference)
-            || !IsCanonicalIdentifier(stagingReference)
+            || !FolderCanonicalSegmentIdentifier.IsValid(stagingReference)
             || !TryGetStringProperty(stream, "observedContentHashReference", out string? observedContentHashReference)
             || !string.Equals(observedContentHashReference, body.ContentHashReference, StringComparison.Ordinal)
             || !TryGetStringProperty(stream, "uploadMode", out string? uploadMode)
@@ -3521,8 +3517,8 @@ public static class FoldersDomainServiceEndpoints
     private static bool IsValidBranchRefPolicy(BranchRefPolicyHttpRequest? policy)
         => policy is not null
         && string.Equals(policy.RequestSchemaVersion, "v1", StringComparison.Ordinal)
-        && IsCanonicalIdentifier(policy.RepositoryBindingId)
-        && IsCanonicalIdentifier(policy.PolicyRef)
+        && FolderCanonicalSegmentIdentifier.IsValid(policy.RepositoryBindingId)
+        && FolderCanonicalSegmentIdentifier.IsValid(policy.PolicyRef)
         && IsBranchRefPolicyIdentifier(policy.DefaultRef)
         && AreRequiredBranchRefPatterns(policy.AllowedRefPatterns)
         && AreOptionalBranchRefPatterns(policy.ProtectedRefPatterns)
@@ -3554,11 +3550,6 @@ public static class FoldersDomainServiceEndpoints
         && protectedPatterns is not null
         && allowed.Intersect(protectedPatterns, StringComparer.Ordinal).Any();
 
-    private static bool IsCanonicalIdentifier(string? value)
-        => !string.IsNullOrWhiteSpace(value)
-        && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
-        && CanonicalSegmentRegex.IsMatch(value);
-
     private static bool IsSafeGatewayCorrelationId(string? value)
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
@@ -3574,29 +3565,29 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(httpContext);
         ArgumentNullException.ThrowIfNull(tenantContext);
 
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
         envelope = new MutationCommandEnvelope(string.Empty, string.Empty, string.Empty, string.Empty);
 
-        if (!IsCanonicalIdentifier(idempotencyKey)
-            || !IsCanonicalIdentifier(correlationId)
-            || !IsCanonicalIdentifier(taskId)
-            || (folderId is not null && !IsCanonicalIdentifier(folderId))
-            || (workspaceId is not null && !IsCanonicalIdentifier(workspaceId)))
+        if (!FolderCanonicalSegmentIdentifier.IsValid(idempotencyKey)
+            || !FolderCanonicalSegmentIdentifier.IsValid(correlationId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(taskId)
+            || (folderId is not null && !FolderCanonicalSegmentIdentifier.IsValid(folderId))
+            || (workspaceId is not null && !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
-                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
         }
 
         if (string.IsNullOrWhiteSpace(tenantContext.AuthoritativeTenantId))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status401Unauthorized,
                 category: "authentication_failure",
                 code: "authentication_failure",
@@ -3607,7 +3598,7 @@ public static class FoldersDomainServiceEndpoints
 
         if (string.Equals(tenantContext.AuthoritativeTenantId, ReservedSystemTenant, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status403Forbidden,
                 category: "tenant_access_denied",
                 code: "denied_safe",
@@ -3658,91 +3649,18 @@ public static class FoldersDomainServiceEndpoints
             : correlationId;
         string? reasonCode = SafeGatewayReasonCode(exception.ReasonCode);
 
-        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "duplicate_binding")
+        // Domain FolderResultCode / category status lives in FolderCanonicalErrorMapper.
+        // Match only when the gateway status equals the Domain table so Audit/OpsConsole
+        // 409 stale mapping is not retargeted and unmapped categories (commit_failed,
+        // provider_failure_known) keep their existing 422 handling.
+        if (reasonCode is not null
+            && exception.StatusCode == FolderCanonicalErrorMapper.StatusFor(reasonCode))
         {
-            return SafeProblem(
-                StatusCodes.Status409Conflict,
-                category: "duplicate_binding",
-                code: "duplicate_binding",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status429TooManyRequests && reasonCode == "provider_rate_limited")
-        {
-            return SafeProblem(
-                StatusCodes.Status429TooManyRequests,
-                category: "provider_rate_limited",
-                code: "provider_rate_limited",
-                retryable: true,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable && reasonCode == "provider_unavailable")
-        {
-            return SafeProblem(
-                StatusCodes.Status503ServiceUnavailable,
-                category: "provider_unavailable",
-                code: "provider_unavailable",
-                retryable: true,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "provider_readiness_failed")
-        {
-            return SafeProblem(
-                StatusCodes.Status422UnprocessableEntity,
-                category: "provider_readiness_failed",
-                code: "provider_readiness_failed",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity
-            && reasonCode is "workspace_preparation_failed" or "workspace_transition_invalid")
-        {
-            return SafeProblem(
-                StatusCodes.Status422UnprocessableEntity,
+            return FolderProblemDetailsFactory.ForDomain(
+                exception.StatusCode,
                 category: reasonCode,
                 code: reasonCode,
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable && reasonCode == "unknown_provider_outcome")
-        {
-            return SafeProblem(
-                StatusCodes.Status503ServiceUnavailable,
-                category: "unknown_provider_outcome",
-                code: "unknown_provider_outcome",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "reconciliation_required")
-        {
-            return SafeProblem(
-                StatusCodes.Status409Conflict,
-                category: "reconciliation_required",
-                code: "reconciliation_required",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "file_operation_failed")
-        {
-            return SafeProblem(
-                StatusCodes.Status422UnprocessableEntity,
-                category: "file_operation_failed",
-                code: "file_operation_failed",
-                retryable: false,
+                retryable: FolderCanonicalErrorMapper.RetryableFor(reasonCode),
                 correlationId: safeCorrelationId,
                 taskId: taskId);
         }
@@ -3750,129 +3668,10 @@ public static class FoldersDomainServiceEndpoints
         if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity
             && reasonCode is "commit_failed" or "provider_failure_known")
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status422UnprocessableEntity,
                 category: reasonCode,
                 code: reasonCode,
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable
-            && reasonCode == "idempotency_admission_unavailable")
-        {
-            return SafeProblem(
-                StatusCodes.Status503ServiceUnavailable,
-                category: "idempotency_admission_unavailable",
-                code: "idempotency_admission_unavailable",
-                retryable: true,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "idempotency_conflict")
-        {
-            return SafeProblem(
-                StatusCodes.Status409Conflict,
-                category: "idempotency_conflict",
-                code: "idempotency_conflict",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "idempotency_key_expired")
-        {
-            return SafeProblem(
-                StatusCodes.Status409Conflict,
-                category: "idempotency_key_expired",
-                code: "idempotency_key_expired",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status503ServiceUnavailable
-            && reasonCode is "read_model_unavailable" or "projection_stale" or "projection_unavailable")
-        {
-            return SafeProblem(
-                StatusCodes.Status503ServiceUnavailable,
-                category: reasonCode,
-                code: reasonCode,
-                retryable: true,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity && reasonCode == "unsupported_provider_capability")
-        {
-            return SafeProblem(
-                StatusCodes.Status422UnprocessableEntity,
-                category: "unsupported_provider_capability",
-                code: "unsupported_provider_capability",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status409Conflict
-            && reasonCode is "lock_conflict" or "workspace_locked")
-        {
-            return SafeProblem(
-                StatusCodes.Status409Conflict,
-                category: reasonCode,
-                code: reasonCode,
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status409Conflict && reasonCode == "lock_not_owned")
-        {
-            return SafeProblem(
-                StatusCodes.Status409Conflict,
-                category: "lock_not_owned",
-                code: "lock_not_owned",
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status410Gone && reasonCode == "lock_expired")
-        {
-            return SafeProblem(
-                StatusCodes.Status410Gone,
-                category: "lock_expired",
-                code: "lock_expired",
-                retryable: true,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        if (exception.StatusCode == StatusCodes.Status422UnprocessableEntity
-            && reasonCode is "path_policy_denied" or "path_validation_failed")
-        {
-            return SafeProblem(
-                StatusCodes.Status422UnprocessableEntity,
-                category: reasonCode,
-                code: reasonCode,
-                retryable: false,
-                correlationId: safeCorrelationId,
-                taskId: taskId);
-        }
-
-        // Story 8.3: an aggregate-gate ACL rejection (FolderAclDenied family) propagated through the gateway
-        // surfaces the canonical folder_acl_denied category at 403 — not the generic denied_safe fallback —
-        // so the CLI exit code (66) and MCP failure kind (folder_acl_denied) match the parity oracle on every
-        // surface. This is the in-tenant ACL-evidence denial reached after layered authorization; the
-        // unknown-existence safe-denial path (404 not_found_to_caller) lives in FolderAuthorizationDenialMapper.
-        if (exception.StatusCode == StatusCodes.Status403Forbidden && reasonCode == "folder_acl_denied")
-        {
-            return SafeProblem(
-                StatusCodes.Status403Forbidden,
-                category: "folder_acl_denied",
-                code: "folder_acl_denied",
                 retryable: false,
                 correlationId: safeCorrelationId,
                 taskId: taskId);
@@ -3880,42 +3679,42 @@ public static class FoldersDomainServiceEndpoints
 
         return exception.StatusCode switch
         {
-            StatusCodes.Status400BadRequest => SafeProblem(
+            StatusCodes.Status400BadRequest => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
-            StatusCodes.Status401Unauthorized => SafeProblem(
+            StatusCodes.Status401Unauthorized => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status401Unauthorized,
                 category: "authentication_failure",
                 code: "authentication_failure",
                 retryable: false,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
-            StatusCodes.Status404NotFound => SafeProblem(
+            StatusCodes.Status404NotFound => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status404NotFound,
                 category: "not_found",
                 code: "not_found",
                 retryable: false,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
-            StatusCodes.Status409Conflict => SafeProblem(
+            StatusCodes.Status409Conflict => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status409Conflict,
                 category: "idempotency_conflict",
                 code: "idempotency_conflict",
                 retryable: false,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
-            StatusCodes.Status429TooManyRequests => SafeProblem(
+            StatusCodes.Status429TooManyRequests => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status429TooManyRequests,
                 category: "provider_rate_limited",
                 code: "provider_rate_limited",
                 retryable: true,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
-            StatusCodes.Status503ServiceUnavailable => SafeProblem(
+            StatusCodes.Status503ServiceUnavailable => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
@@ -3925,14 +3724,14 @@ public static class FoldersDomainServiceEndpoints
             // Any 5xx from the gateway (500, 502, 504) is an upstream failure, not an
             // authorization decision. Surfacing it as 403 denied_safe would be active
             // misinformation to operators chasing a backend incident. Map to safe 503.
-            >= 500 and < 600 => SafeProblem(
+            >= 500 and < 600 => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "evidence_unavailable",
                 retryable: true,
                 correlationId: safeCorrelationId,
                 taskId: taskId),
-            _ => SafeProblem(
+            _ => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status403Forbidden,
                 category: "tenant_access_denied",
                 code: "denied_safe",
@@ -4036,7 +3835,7 @@ public static class FoldersDomainServiceEndpoints
                 // Spine value the caller is told to trust.
                 if (string.IsNullOrWhiteSpace(result.FolderId) || string.IsNullOrWhiteSpace(result.LifecycleState))
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -4061,7 +3860,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case FolderLifecycleStatusResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4070,7 +3869,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4079,7 +3878,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -4088,7 +3887,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -4097,7 +3896,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4107,7 +3906,7 @@ public static class FoldersDomainServiceEndpoints
 
             case FolderLifecycleStatusResultCode.ArchiveStateUnsupported:
                 // Permanent until Story 2.8 lands — non-retryable.
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "internal_error",
                     code: "archive_state_unsupported",
@@ -4119,7 +3918,7 @@ public static class FoldersDomainServiceEndpoints
             default:
                 // AuthorizationDenied without AuthorizationDenial details is a handler
                 // invariant break — fail closed to read_model_unavailable.
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "internal_error",
                     code: "read_model_unavailable",
@@ -4151,8 +3950,8 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
 
         IResult? envelopeFailure = ValidateContextQueryEnvelope(
             folderId,
@@ -4166,7 +3965,7 @@ public static class FoldersDomainServiceEndpoints
         }
 
         int? limit = requestLimit ?? ReadOptionalIntQuery(httpContext, "limit");
-        string? cursor = requestCursor ?? ReadQuery(httpContext, "cursor");
+        string? cursor = requestCursor ?? FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
         string actionToken = kind == WorkspaceFileContextQueryKind.Range
             ? WorkspaceFileContextQueryHandler.ContentActionToken
             : WorkspaceFileContextQueryHandler.MetadataActionToken;
@@ -4202,10 +4001,10 @@ public static class FoldersDomainServiceEndpoints
         string? correlationId,
         string? taskId)
     {
-        string? idempotencyKey = ReadHeader(httpContext, "Idempotency-Key");
+        string? idempotencyKey = FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key");
         if (idempotencyKey is not null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "idempotency_key_not_allowed",
@@ -4215,25 +4014,25 @@ public static class FoldersDomainServiceEndpoints
                 message: "Idempotency-Key is not accepted on read operations.");
         }
 
-        if (!IsCanonicalIdentifier(folderId)
-            || !IsCanonicalIdentifier(workspaceId)
-            || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-            || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+        if (!FolderCanonicalSegmentIdentifier.IsValid(folderId)
+            || !FolderCanonicalSegmentIdentifier.IsValid(workspaceId)
+            || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+            || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
-                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
         }
 
-        string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
         if (requestedFreshness is not null
             && !string.Equals(requestedFreshness, SnapshotPerTask, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_read_consistency",
@@ -4243,10 +4042,10 @@ public static class FoldersDomainServiceEndpoints
                 message: "Operation supports snapshot_per_task only.");
         }
 
-        string? limit = ReadQuery(httpContext, "limit");
+        string? limit = FolderHttpHeaderReader.ReadQuery(httpContext, "limit");
         if (limit is not null && ReadOptionalIntQuery(httpContext, "limit") is null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
@@ -4255,10 +4054,10 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
-        string? cursor = ReadQuery(httpContext, "cursor");
+        string? cursor = FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
         if (cursor is { Length: > 256 })
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status422UnprocessableEntity,
                 category: "input_limit_exceeded",
                 code: "input_limit_exceeded",
@@ -4289,7 +4088,7 @@ public static class FoldersDomainServiceEndpoints
 
     private static int? ReadOptionalIntQuery(HttpContext httpContext, string name)
     {
-        string? raw = ReadQuery(httpContext, name);
+        string? raw = FolderHttpHeaderReader.ReadQuery(httpContext, name);
         return raw is null
             ? null
             : int.TryParse(raw, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out int value)
@@ -4312,7 +4111,7 @@ public static class FoldersDomainServiceEndpoints
                 {
                     if (result.RangePath is null || result.Range is null || result.ContentBytes is null)
                     {
-                        return SafeProblem(
+                        return FolderProblemDetailsFactory.ForDomain(
                             StatusCodes.Status503ServiceUnavailable,
                             category: "read_model_unavailable",
                             code: "read_model_unavailable",
@@ -4351,7 +4150,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case WorkspaceFileContextResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4360,7 +4159,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4369,7 +4168,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.ValidationFailed:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
@@ -4378,7 +4177,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.PathValidationFailed:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status422UnprocessableEntity,
                     category: "path_validation_failed",
                     code: "path_validation_failed",
@@ -4387,7 +4186,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.InputLimitExceeded:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status422UnprocessableEntity,
                     category: "input_limit_exceeded",
                     code: "input_limit_exceeded",
@@ -4396,7 +4195,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.ResponseLimitExceeded:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status413PayloadTooLarge,
                     category: "response_limit_exceeded",
                     code: "response_limit_exceeded",
@@ -4405,7 +4204,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.QueryTimeout:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status408RequestTimeout,
                     category: "query_timeout",
                     code: "query_timeout",
@@ -4414,7 +4213,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.Redacted:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     result.Kind == WorkspaceFileContextQueryKind.Range
                         ? StatusCodes.Status416RangeNotSatisfiable
                         : StatusCodes.Status404NotFound,
@@ -4425,7 +4224,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.RangeUnsatisfiable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status416RangeNotSatisfiable,
                     category: "range_unsatisfiable",
                     code: "range_unsatisfiable",
@@ -4434,7 +4233,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -4443,7 +4242,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -4452,7 +4251,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceFileContextResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4462,7 +4261,7 @@ public static class FoldersDomainServiceEndpoints
 
             case WorkspaceFileContextResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -4515,7 +4314,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case ContextSearchResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4524,7 +4323,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case ContextSearchResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4533,7 +4332,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case ContextSearchResultCode.ValidationFailed:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status400BadRequest,
                     category: "validation_error",
                     code: "validation_error",
@@ -4542,7 +4341,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case ContextSearchResultCode.InputLimitExceeded:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status422UnprocessableEntity,
                     category: "input_limit_exceeded",
                     code: "input_limit_exceeded",
@@ -4551,7 +4350,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case ContextSearchResultCode.ResponseLimitExceeded:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status413PayloadTooLarge,
                     category: "response_limit_exceeded",
                     code: "response_limit_exceeded",
@@ -4560,7 +4359,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case ContextSearchResultCode.QueryTimeout:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status408RequestTimeout,
                     category: "query_timeout",
                     code: "query_timeout",
@@ -4569,7 +4368,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case ContextSearchResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4579,7 +4378,7 @@ public static class FoldersDomainServiceEndpoints
 
             case ContextSearchResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -4592,13 +4391,13 @@ public static class FoldersDomainServiceEndpoints
     private static void AddContextSearchSuccessHeaders(HttpContext httpContext, ContextSearchQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
@@ -4618,12 +4417,12 @@ public static class FoldersDomainServiceEndpoints
         switch (result.Code)
         {
             case FolderIndexingStatusResultCode.Allowed:
-                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
                 {
                     httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
                 }
 
-                if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency) && !ContainsControlChars(result.Freshness.ReadConsistency))
+                if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency) && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
                 {
                     httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
                 }
@@ -4641,7 +4440,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case FolderIndexingStatusResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4650,7 +4449,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderIndexingStatusResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4659,7 +4458,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderIndexingStatusResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4669,7 +4468,7 @@ public static class FoldersDomainServiceEndpoints
 
             case FolderIndexingStatusResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -4695,7 +4494,7 @@ public static class FoldersDomainServiceEndpoints
                     || string.IsNullOrWhiteSpace(result.DefaultRef)
                     || result.AllowedRefPatterns.Count == 0)
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -4721,7 +4520,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case BranchRefPolicyQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4730,7 +4529,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case BranchRefPolicyQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4739,7 +4538,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case BranchRefPolicyQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -4748,7 +4547,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case BranchRefPolicyQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -4757,7 +4556,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case BranchRefPolicyQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4767,7 +4566,7 @@ public static class FoldersDomainServiceEndpoints
 
             case BranchRefPolicyQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -4789,7 +4588,7 @@ public static class FoldersDomainServiceEndpoints
             case WorkspaceLockStatusQueryResultCode.Allowed:
                 if (string.IsNullOrWhiteSpace(result.WorkspaceId))
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -4835,7 +4634,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case WorkspaceLockStatusQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4844,7 +4643,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4853,7 +4652,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -4862,7 +4661,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -4871,7 +4670,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4881,7 +4680,7 @@ public static class FoldersDomainServiceEndpoints
 
             case WorkspaceLockStatusQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -4908,7 +4707,7 @@ public static class FoldersDomainServiceEndpoints
                 WorkspaceLockRetryEligibility retry = result.RetryEligibility;
                 if (string.IsNullOrWhiteSpace(retry.CurrentState) || string.IsNullOrWhiteSpace(retry.ReasonCode))
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -4917,7 +4716,7 @@ public static class FoldersDomainServiceEndpoints
                         taskId: taskId);
                 }
 
-                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
                 {
                     httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
                 }
@@ -4940,7 +4739,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case WorkspaceLockStatusQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -4949,7 +4748,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -4958,7 +4757,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -4967,7 +4766,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -4976,7 +4775,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceLockStatusQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -4986,7 +4785,7 @@ public static class FoldersDomainServiceEndpoints
 
             case WorkspaceLockStatusQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -5013,7 +4812,7 @@ public static class FoldersDomainServiceEndpoints
                 WorkspaceTransitionEvidenceSnapshot? snapshot = result.Snapshot;
                 if (snapshot is null)
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -5022,7 +4821,7 @@ public static class FoldersDomainServiceEndpoints
                         taskId: taskId);
                 }
 
-                if (!string.IsNullOrWhiteSpace(snapshot.CorrelationId) && !ContainsControlChars(snapshot.CorrelationId))
+                if (!string.IsNullOrWhiteSpace(snapshot.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(snapshot.CorrelationId))
                 {
                     httpContext.Response.Headers["X-Correlation-Id"] = snapshot.CorrelationId;
                 }
@@ -5057,7 +4856,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case WorkspaceTransitionEvidenceQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -5066,7 +4865,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceTransitionEvidenceQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -5075,7 +4874,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceTransitionEvidenceQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -5084,7 +4883,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceTransitionEvidenceQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -5093,7 +4892,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceTransitionEvidenceQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -5103,7 +4902,7 @@ public static class FoldersDomainServiceEndpoints
 
             case WorkspaceTransitionEvidenceQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -5128,7 +4927,7 @@ public static class FoldersDomainServiceEndpoints
                     || result.ProjectedState is null
                     || result.ProviderOutcome is null)
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -5169,7 +4968,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case WorkspaceStatusQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -5178,7 +4977,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceStatusQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -5187,7 +4986,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceStatusQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -5196,7 +4995,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceStatusQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -5205,7 +5004,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceStatusQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -5215,7 +5014,7 @@ public static class FoldersDomainServiceEndpoints
 
             case WorkspaceStatusQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -5242,8 +5041,8 @@ public static class FoldersDomainServiceEndpoints
         ArgumentNullException.ThrowIfNull(tenantContext);
         ArgumentNullException.ThrowIfNull(claimTransformEvidence);
 
-        string? correlationId = ReadHeader(httpContext, "X-Correlation-Id");
-        string? taskId = ReadHeader(httpContext, "X-Hexalith-Task-Id");
+        string? correlationId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Correlation-Id");
+        string? taskId = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Task-Id");
         string[] identifiers = operationId is null
             ? [folderId, workspaceId, secondaryId ?? string.Empty]
             : [folderId, workspaceId, operationId];
@@ -5282,7 +5081,7 @@ public static class FoldersDomainServiceEndpoints
             || (operationId is not null && !string.Equals(result.ProviderOutcome.OperationId, operationId, StringComparison.Ordinal))
             || (kind == WorkspaceEvidenceKind.ReconciliationStatus && !string.Equals(result.ProviderOutcome.ReconciliationReference, secondaryId, StringComparison.Ordinal)))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status404NotFound,
                 category: "not_found",
                 code: "not_found",
@@ -5334,7 +5133,7 @@ public static class FoldersDomainServiceEndpoints
                     result.RetryAfter,
                     ToEventuallyConsistentFreshness(result.Freshness)),
                 ResponseJsonOptions),
-            _ => SafeProblem(
+            _ => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "internal_error",
                 code: "read_model_unavailable",
@@ -5356,7 +5155,7 @@ public static class FoldersDomainServiceEndpoints
             case TaskStatusQueryResultCode.Allowed:
                 if (string.IsNullOrWhiteSpace(result.TaskId))
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -5379,7 +5178,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case TaskStatusQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -5388,7 +5187,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case TaskStatusQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -5397,7 +5196,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case TaskStatusQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -5406,7 +5205,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case TaskStatusQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -5415,7 +5214,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: null);
 
             case TaskStatusQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -5425,7 +5224,7 @@ public static class FoldersDomainServiceEndpoints
 
             case TaskStatusQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -5448,7 +5247,7 @@ public static class FoldersDomainServiceEndpoints
                 if (string.IsNullOrWhiteSpace(result.FolderId)
                     || string.IsNullOrWhiteSpace(result.WorkspaceId))
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status503ServiceUnavailable,
                         category: "read_model_unavailable",
                         code: "read_model_unavailable",
@@ -5477,7 +5276,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case WorkspaceCleanupStatusQueryResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -5486,7 +5285,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceCleanupStatusQueryResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -5495,7 +5294,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceCleanupStatusQueryResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -5504,7 +5303,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceCleanupStatusQueryResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -5513,7 +5312,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case WorkspaceCleanupStatusQueryResultCode.ReadModelUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -5523,7 +5322,7 @@ public static class FoldersDomainServiceEndpoints
 
             case WorkspaceCleanupStatusQueryResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -5550,21 +5349,21 @@ public static class FoldersDomainServiceEndpoints
                             result.Freshness.ProjectionWatermark,
                             result.Freshness.Stale)),
                     ResponseJsonOptions),
-            EffectivePermissionsResultCode.AuthenticationRequired => SafeProblem(
+            EffectivePermissionsResultCode.AuthenticationRequired => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status401Unauthorized,
                 category: "authentication_failure",
                 code: "denied_safe",
                 retryable: false,
                 correlationId: correlationId,
                 taskId: null),
-            EffectivePermissionsResultCode.ReadModelUnavailable => SafeProblem(
+            EffectivePermissionsResultCode.ReadModelUnavailable => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "read_model_unavailable",
                 retryable: true,
                 correlationId: correlationId,
                 taskId: null),
-            _ => SafeProblem(
+            _ => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status403Forbidden,
                 category: "tenant_access_denied",
                 code: "denied_safe",
@@ -5573,72 +5372,6 @@ public static class FoldersDomainServiceEndpoints
                 taskId: null),
         };
 
-    private static IResult SafeProblem(
-        int statusCode,
-        string category,
-        string code,
-        bool retryable,
-        string? correlationId,
-        string? taskId,
-        string? message = null)
-    {
-        Dictionary<string, object?> details = new()
-        {
-            ["visibility"] = "metadata_only",
-            ["retryReasonCode"] = code,
-            ["reasonCategory"] = category,
-            ["evidenceSource"] = "http_boundary",
-        };
-
-        if (!string.IsNullOrWhiteSpace(taskId) && IsCanonicalIdentifier(taskId))
-        {
-            details["taskId"] = taskId;
-        }
-
-        if (category is "unknown_provider_outcome" or "reconciliation_required")
-        {
-            details["finalState"] = category;
-        }
-
-        Dictionary<string, object?> extensions = new()
-        {
-            ["category"] = category,
-            ["code"] = code,
-            ["message"] = message ?? MessageFor(category),
-            ["correlationId"] = correlationId,
-            ["retryable"] = retryable,
-            ["clientAction"] = ClientActionFor(category, retryable),
-            ["details"] = details,
-        };
-
-        if (!string.IsNullOrWhiteSpace(taskId))
-        {
-            extensions["taskId"] = taskId;
-        }
-
-        return Results.Problem(
-            type: $"https://hexalith.dev/errors/folders/{code}",
-            title: statusCode switch
-            {
-                StatusCodes.Status400BadRequest => "Validation failure.",
-                StatusCodes.Status401Unauthorized => "Authentication required.",
-                StatusCodes.Status404NotFound => "Resource not available.",
-                StatusCodes.Status408RequestTimeout => "Query timeout.",
-                StatusCodes.Status409Conflict => category == "idempotency_key_expired"
-                    ? "Idempotency key expired."
-                    : "Idempotency conflict.",
-                StatusCodes.Status413PayloadTooLarge => "Response limit exceeded.",
-                StatusCodes.Status416RangeNotSatisfiable => "Range not satisfiable.",
-                StatusCodes.Status422UnprocessableEntity => "Validation outcome.",
-                StatusCodes.Status503ServiceUnavailable => category == "idempotency_admission_unavailable"
-                    ? "Idempotency admission unavailable."
-                    : "Read model unavailable.",
-                _ => "Authorization denied.",
-            },
-            statusCode: statusCode,
-            extensions: extensions);
-    }
-
     private static IResult? ValidateEvidenceQueryEnvelope(
         HttpContext httpContext,
         string? correlationId,
@@ -5646,9 +5379,9 @@ public static class FoldersDomainServiceEndpoints
         IReadOnlyList<string> identifiers,
         bool requireEventuallyConsistent)
     {
-        if (ReadHeader(httpContext, "Idempotency-Key") is not null)
+        if (FolderHttpHeaderReader.ReadHeader(httpContext, "Idempotency-Key") is not null)
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "idempotency_key_not_allowed",
@@ -5658,25 +5391,25 @@ public static class FoldersDomainServiceEndpoints
                 message: "Idempotency-Key is not accepted on read operations.");
         }
 
-        if (identifiers.Any(static identifier => !IsCanonicalIdentifier(identifier))
-            || (correlationId is not null && !IsCanonicalIdentifier(correlationId))
-            || (taskId is not null && !IsCanonicalIdentifier(taskId)))
+        if (identifiers.Any(static identifier => !FolderCanonicalSegmentIdentifier.IsValid(identifier))
+            || (correlationId is not null && !FolderCanonicalSegmentIdentifier.IsValid(correlationId))
+            || (taskId is not null && !FolderCanonicalSegmentIdentifier.IsValid(taskId)))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "validation_error",
                 retryable: false,
-                correlationId: IsCanonicalIdentifier(correlationId) ? correlationId : null,
-                taskId: IsCanonicalIdentifier(taskId) ? taskId : null);
+                correlationId: FolderCanonicalSegmentIdentifier.IsValid(correlationId) ? correlationId : null,
+                taskId: FolderCanonicalSegmentIdentifier.IsValid(taskId) ? taskId : null);
         }
 
-        string? requestedFreshness = ReadHeader(httpContext, FreshnessHeaderName);
+        string? requestedFreshness = FolderHttpHeaderReader.ReadHeader(httpContext, FreshnessHeaderName);
         string expectedFreshness = requireEventuallyConsistent ? EventuallyConsistent : ReadYourWrites;
         if (requestedFreshness is not null
             && !string.Equals(requestedFreshness, expectedFreshness, StringComparison.Ordinal))
         {
-            return SafeProblem(
+            return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
                 category: "validation_error",
                 code: "unsupported_read_consistency",
@@ -5692,35 +5425,35 @@ public static class FoldersDomainServiceEndpoints
     private static IResult TenantAccessDenialToProblem(TenantAccessAuthorizationResult denial, string? correlationId)
         => denial.Outcome switch
         {
-            TenantAccessOutcome.MissingAuthoritativeTenant => SafeProblem(
+            TenantAccessOutcome.MissingAuthoritativeTenant => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status401Unauthorized,
                 category: "authentication_failure",
                 code: "authentication_failure",
                 retryable: false,
                 correlationId: correlationId,
                 taskId: null),
-            TenantAccessOutcome.StaleProjection => SafeProblem(
+            TenantAccessOutcome.StaleProjection => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "projection_stale",
                 code: "projection_stale",
                 retryable: true,
                 correlationId: correlationId,
                 taskId: null),
-            TenantAccessOutcome.UnavailableProjection or TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict => SafeProblem(
+            TenantAccessOutcome.UnavailableProjection or TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status503ServiceUnavailable,
                 category: "read_model_unavailable",
                 code: "read_model_unavailable",
                 retryable: true,
                 correlationId: correlationId,
                 taskId: null),
-            TenantAccessOutcome.UnknownTenant or TenantAccessOutcome.DisabledTenant or TenantAccessOutcome.Denied => SafeProblem(
+            TenantAccessOutcome.UnknownTenant or TenantAccessOutcome.DisabledTenant or TenantAccessOutcome.Denied => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status404NotFound,
                 category: "not_found",
                 code: "not_found",
                 retryable: false,
                 correlationId: correlationId,
                 taskId: null),
-            _ => SafeProblem(
+            _ => FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status403Forbidden,
                 category: "tenant_access_denied",
                 code: "denied_safe",
@@ -5740,7 +5473,7 @@ public static class FoldersDomainServiceEndpoints
         HttpContext httpContext,
         string? correlationId)
     {
-        if (!string.IsNullOrWhiteSpace(correlationId) && !ContainsControlChars(correlationId))
+        if (!string.IsNullOrWhiteSpace(correlationId) && FolderHttpHeaderReader.IsSafeHeaderValue(correlationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = correlationId;
         }
@@ -5775,44 +5508,6 @@ public static class FoldersDomainServiceEndpoints
     private static bool EscalationRequiredFor(string currentState)
         => currentState is "reconciliation_required" or "failed" or "inaccessible";
 
-    private static string ClientActionFor(string category, bool retryable)
-        => FolderCanonicalErrorMapper.ClientActionFor(category, retryable);
-
-    private static string MessageFor(string category) => category switch
-    {
-        "authentication_failure" => "Authentication is required to access this resource.",
-        "read_model_unavailable" => "The read model is temporarily unavailable. Retry later.",
-        "projection_stale" => "The read-model projection is stale. Retry later.",
-        "projection_unavailable" => "The read-model projection is unavailable. Retry later.",
-        "not_found" => "The requested resource is not available to the caller.",
-        "validation_error" => "Request validation failed.",
-        "internal_error" => "The operation cannot be completed in this configuration.",
-        "provider_readiness_failed" => "Provider readiness could not be established for this operation.",
-        "unsupported_provider_capability" => "Provider capability is not available for this operation.",
-        "workspace_preparation_failed" => "Workspace preparation could not be accepted.",
-        "workspace_transition_invalid" => "Workspace lifecycle transition is not valid for this operation.",
-        "lock_conflict" => "Workspace lock is held by another operation.",
-        "workspace_locked" => "Workspace is already locked.",
-        "lock_not_owned" => "Workspace lock is not owned by this task scope.",
-        "lock_expired" => "The workspace lock lease is no longer active.",
-        "path_policy_denied" => "Path policy denied the requested file operation.",
-        "path_validation_failed" => "Path validation failed for the requested operation.",
-        "input_limit_exceeded" => "The request exceeds configured input limits.",
-        "response_limit_exceeded" => "The query exceeds configured response limits.",
-        "query_timeout" => "The context query timed out. Retry later.",
-        "redacted" => "The requested context is not available to the caller.",
-        "range_unsatisfiable" => "The requested byte range cannot be satisfied.",
-        "commit_failed" => "Commit failed with a known final outcome.",
-        "provider_failure_known" => "Provider failure was observed with a known final outcome.",
-        "idempotency_conflict" => "Idempotency key conflicts with a prior operation.",
-        "idempotency_key_expired" => "The supplied idempotency key is no longer reusable. Refresh state, then submit with a new key.",
-        "idempotency_admission_unavailable" => "Idempotency admission is temporarily unavailable. Retry later.",
-        "unknown_provider_outcome" => "Provider outcome is unknown and requires safe reconciliation.",
-        "reconciliation_required" => "Reconciliation is required before this operation can continue.",
-        "provider_unavailable" => "Provider evidence is temporarily unavailable. Retry later.",
-        _ => "Access is denied. The caller is not authorized for this operation or resource.",
-    };
-
     private static string PermissionToken(EffectivePermissionLevel permission)
         => permission switch
         {
@@ -5825,11 +5520,11 @@ public static class FoldersDomainServiceEndpoints
     private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext httpContext)
         => new Dictionary<string, string?>(StringComparer.Ordinal)
         {
-            ["query_tenant_id"] = ReadQuery(httpContext, "tenantId"),
-            ["query_managed_tenant_id"] = ReadQuery(httpContext, "managedTenantId"),
-            ["header_hexalith_tenant_id"] = ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = ReadHeader(httpContext, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = ReadHeader(httpContext, "X-Forwarded-Tenant"),
+            ["query_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "tenantId"),
+            ["query_managed_tenant_id"] = FolderHttpHeaderReader.ReadQuery(httpContext, "managedTenantId"),
+            ["header_hexalith_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Hexalith-Tenant-Id"),
+            ["header_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Tenant-Id"),
+            ["forwarded_tenant_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Tenant"),
         };
 
     private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext httpContext)
@@ -5837,8 +5532,8 @@ public static class FoldersDomainServiceEndpoints
         // reduce attack surface.
         => new Dictionary<string, string?>(StringComparer.Ordinal)
         {
-            ["header_principal_id"] = ReadHeader(httpContext, "X-Principal-Id"),
-            ["forwarded_principal_id"] = ReadHeader(httpContext, "X-Forwarded-Principal"),
+            ["header_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Principal-Id"),
+            ["forwarded_principal_id"] = FolderHttpHeaderReader.ReadHeader(httpContext, "X-Forwarded-Principal"),
         };
 
     private static void AddLifecycleSuccessHeaders(HttpContext httpContext, FolderLifecycleStatusQueryResult result)
@@ -5847,13 +5542,13 @@ public static class FoldersDomainServiceEndpoints
         // 200 response. Writing them on denial paths would leak that the lifecycle handler
         // was reached vs other handlers.
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
@@ -5862,13 +5557,13 @@ public static class FoldersDomainServiceEndpoints
     private static void AddBranchRefPolicySuccessHeaders(HttpContext httpContext, BranchRefPolicyQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
@@ -5901,7 +5596,7 @@ public static class FoldersDomainServiceEndpoints
                     || bindingState is null
                     || !string.Equals(result.RepositoryBindingId, repositoryBindingId, StringComparison.Ordinal))
                 {
-                    return SafeProblem(
+                    return FolderProblemDetailsFactory.ForDomain(
                         StatusCodes.Status404NotFound,
                         category: "not_found",
                         code: "not_found",
@@ -5910,7 +5605,7 @@ public static class FoldersDomainServiceEndpoints
                         taskId: taskId);
                 }
 
-                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && !ContainsControlChars(result.CorrelationId))
+                if (!string.IsNullOrWhiteSpace(result.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
                 {
                     httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
                 }
@@ -5932,7 +5627,7 @@ public static class FoldersDomainServiceEndpoints
                     ResponseJsonOptions);
 
             case FolderLifecycleStatusResultCode.AuthenticationRequired:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status401Unauthorized,
                     category: "authentication_failure",
                     code: "authentication_failure",
@@ -5941,7 +5636,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.NotFoundSafe:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status404NotFound,
                     category: "not_found",
                     code: "not_found",
@@ -5950,7 +5645,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.ProjectionStale:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_stale",
                     code: "projection_stale",
@@ -5959,7 +5654,7 @@ public static class FoldersDomainServiceEndpoints
                     taskId: taskId);
 
             case FolderLifecycleStatusResultCode.ProjectionUnavailable:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "projection_unavailable",
                     code: "projection_unavailable",
@@ -5969,7 +5664,7 @@ public static class FoldersDomainServiceEndpoints
 
             case FolderLifecycleStatusResultCode.ReadModelUnavailable:
             case FolderLifecycleStatusResultCode.ArchiveStateUnsupported:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
@@ -5979,7 +5674,7 @@ public static class FoldersDomainServiceEndpoints
 
             case FolderLifecycleStatusResultCode.AuthorizationDenied:
             default:
-                return SafeProblem(
+                return FolderProblemDetailsFactory.ForDomain(
                     StatusCodes.Status403Forbidden,
                     category: "tenant_access_denied",
                     code: "denied_safe",
@@ -6007,13 +5702,13 @@ public static class FoldersDomainServiceEndpoints
     private static void AddWorkspaceLockSuccessHeaders(HttpContext httpContext, WorkspaceLockStatusQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
@@ -6022,13 +5717,13 @@ public static class FoldersDomainServiceEndpoints
     private static void AddWorkspaceStatusSuccessHeaders(HttpContext httpContext, WorkspaceStatusQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
@@ -6037,13 +5732,13 @@ public static class FoldersDomainServiceEndpoints
     private static void AddWorkspaceCleanupStatusSuccessHeaders(HttpContext httpContext, WorkspaceCleanupStatusQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
@@ -6052,23 +5747,17 @@ public static class FoldersDomainServiceEndpoints
     private static void AddFileContextSuccessHeaders(HttpContext httpContext, WorkspaceFileContextQueryResult result)
     {
         if (!string.IsNullOrWhiteSpace(result.CorrelationId)
-            && !ContainsControlChars(result.CorrelationId))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
         {
             httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
         }
 
         if (!string.IsNullOrWhiteSpace(result.Freshness.ReadConsistency)
-            && !ContainsControlChars(result.Freshness.ReadConsistency))
+            && FolderHttpHeaderReader.IsSafeHeaderValue(result.Freshness.ReadConsistency))
         {
             httpContext.Response.Headers[FreshnessHeaderName] = result.Freshness.ReadConsistency;
         }
     }
-
-    private static string? ReadHeader(HttpContext httpContext, string name)
-        => FirstNonEmpty(httpContext.Request.Headers.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
-
-    private static string? ReadQuery(HttpContext httpContext, string name)
-        => FirstNonEmpty(httpContext.Request.Query.TryGetValue(name, out StringValues values) ? values : StringValues.Empty);
 
     private static bool TryReadString(JsonElement root, string propertyName, out string? value)
     {
@@ -6076,47 +5765,6 @@ public static class FoldersDomainServiceEndpoints
             ? property.GetString()
             : null;
         return !string.IsNullOrWhiteSpace(value);
-    }
-
-    private static string? FirstNonEmpty(StringValues values)
-    {
-        foreach (string? raw in values)
-        {
-            if (string.IsNullOrWhiteSpace(raw))
-            {
-                continue;
-            }
-
-            string trimmed = raw.Trim();
-            if (trimmed.Length == 0)
-            {
-                continue;
-            }
-
-            // Reject header/query values containing CR or LF to prevent response-splitting
-            // when echoed back into response headers.
-            if (ContainsControlChars(trimmed))
-            {
-                continue;
-            }
-
-            return trimmed;
-        }
-
-        return null;
-    }
-
-    private static bool ContainsControlChars(string value)
-    {
-        foreach (char c in value)
-        {
-            if (c == '\r' || c == '\n' || char.IsControl(c))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private enum FileMutationRequestValidationResult

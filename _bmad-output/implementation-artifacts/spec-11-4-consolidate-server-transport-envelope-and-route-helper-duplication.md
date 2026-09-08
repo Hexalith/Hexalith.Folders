@@ -2,7 +2,7 @@
 title: '11.4 consolidate server transport envelope and route helper duplication'
 type: 'refactor'
 created: '2026-09-08'
-status: 'draft'
+status: 'in-review'
 baseline_commit: 'aa0b76cf39e11aed5b4299fd4c7a1d3435642faa'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -65,11 +65,11 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `src/Hexalith.Folders.Server/FolderHttpHeaderReader.cs` (+ segment ID, path ID, detector, ProblemDetails factory files) -- add internal helpers matching current endpoint behavior.
-- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`, `AuditEndpoints.cs`, `ProviderReadinessEndpoints.cs`, `OpsConsoleDiagnosticsEndpoints.cs` -- delete private copies; call shared types; keep typed success mappers and extras.
-- [ ] `src/Hexalith.Folders.Server/FolderCanonicalErrorMapper.cs` -- Domain `FolderResultCode` table only; do not retarget Audit/OpsConsole stale mapping.
-- [ ] `tests/Hexalith.Folders.Server.Tests/FolderSensitiveDiagnosticDetectorTests.cs` (+ ID and ProblemDetails factory tests) -- cover the I/O matrix, including OpsConsole-missing tokens.
-- [ ] `_bmad-output/implementation-artifacts/sprint-status.yaml` -- set `11-4-consolidate-server-transport-envelope-and-route-helper-dupli` to `in-progress` only.
+- [x] `src/Hexalith.Folders.Server/FolderHttpHeaderReader.cs` (+ segment ID, path ID, detector, ProblemDetails factory files) -- add internal helpers matching current endpoint behavior.
+- [x] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`, `AuditEndpoints.cs`, `ProviderReadinessEndpoints.cs`, `OpsConsoleDiagnosticsEndpoints.cs` -- delete private copies; call shared types; keep typed success mappers and extras.
+- [x] `src/Hexalith.Folders.Server/FolderCanonicalErrorMapper.cs` -- Domain `FolderResultCode` table only; do not retarget Audit/OpsConsole stale mapping.
+- [x] `tests/Hexalith.Folders.Server.Tests/FolderSensitiveDiagnosticDetectorTests.cs` (+ ID and ProblemDetails factory tests) -- cover the I/O matrix, including OpsConsole-missing tokens.
+- [x] `_bmad-output/implementation-artifacts/sprint-status.yaml` -- set `11-4-consolidate-server-transport-envelope-and-route-helper-dupli` to `in-progress` only.
 
 **Acceptance Criteria:**
 - Given the four endpoint files each define SafeProblem, readers, and ID/detector helpers, when this story completes, then those private copies are gone and callers use the shared Server types.
@@ -78,6 +78,11 @@ context:
 - Given OpenAPI, parity fixtures, generated clients, and 49 `/api/v1` operations exist, when helpers are extracted, then those artifacts and counts are unchanged.
 
 ## Implementation Notes
+
+- Shared types added: `FolderHttpHeaderReader`, `FolderCanonicalSegmentIdentifier`, `FolderCanonicalPathIdentifier`, `FolderSensitiveDiagnosticDetector`, `FolderProblemDetailsFactory`. Four endpoint files call them; typed success `ToHttpResult` methods remain. `ClientTenantIds` / `ClientPrincipalIds` copies remain (not in the extraction list).
+- `FolderCanonicalErrorMapper.ForDomain` added; table values unchanged. Gateway mapping uses `StatusFor` only when the gateway status already matches. Audit/OpsConsole stale stays 409.
+- Verification (DW-341 assembly `-class`): TransportParity 10, Registration 5, MutationEnvelope 13, Audit 22, ProviderReadiness 23, OpsConsole 43, ErrorMapper 21, Detector 20, Identifiers 18, HeaderReader 6, ProblemDetails 5 — all 0 failed. Spec `rg` clean. OpenAPI/parity/Generated diff empty.
+- Left untouched: `FolderDomainProcessor`, `FoldersDomainServiceRequestHandler`, Domain sanitizers. Dirty gitlinks were committed on `472c690` by a concurrent workspace commit, not this story's file list.
 
 ## Spec Change Log
 

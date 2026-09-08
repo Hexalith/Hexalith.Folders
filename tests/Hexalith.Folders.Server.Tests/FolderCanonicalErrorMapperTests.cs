@@ -43,6 +43,13 @@ public sealed class FolderCanonicalErrorMapperTests
         FolderCanonicalErrorMapper.StatusFor(actualCategory).ShouldBe(statusCode);
         FolderCanonicalErrorMapper.RetryableFor(actualCategory).ShouldBe(retryable);
         FolderCanonicalErrorMapper.ClientActionFor(actualCategory, retryable).ShouldBe(clientAction);
+
+        (int mappedStatus, string mappedCategory, bool mappedRetryable, string mappedClientAction) =
+            FolderCanonicalErrorMapper.ForDomain(code);
+        mappedStatus.ShouldBe(statusCode);
+        mappedCategory.ShouldBe(category);
+        mappedRetryable.ShouldBe(retryable);
+        mappedClientAction.ShouldBe(clientAction);
     }
 
     [Fact]
