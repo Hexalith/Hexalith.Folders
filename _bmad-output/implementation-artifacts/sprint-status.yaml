@@ -201,7 +201,7 @@ development_status:
   10-5-expose-an-authorized-folders-query-facade-over-memories: done
   10-6-replace-the-fail-closed-content-materializer-with-a-metadata: done
   10-7-eventstore-backed-search-bridge-and-deployed-server-registra: done
-  10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: review
+  10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: done
   10-9-authorized-body-content-materialization-c9-gated: backlog
   epic-10-retrospective: done
 

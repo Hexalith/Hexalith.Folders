@@ -2868,3 +2868,17 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
   summary: Pre-existing dirty Builds gitlink moves EventStore 3.102.0 to 3.103.0 with no PR package-mode compile of Hexalith.Folders.EventStore.
   evidence: Working-tree gitlink 071ef99→35c3d1e predates Story 11.3; tests/ never read HexalithEventStoreVersion; PR baseline package-mode builds only UI.Tests. Settle by a package-mode restore+build of Hexalith.Folders.EventStore against the new pin, or by committing the gitlink on its own story.
+
+## Deferred from: code review of spec-10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md (2026-09-08)
+
+- Duplicate source hits still emit one search item per Memories row (`ContextSearchQueryHandler.cs:212`). Pre-existing handler loop; this story only changed Indexed-only `IsVisible` and the post-auth `IsAvailable` gate. The new duplicate test asserts no raw counts, not a single item.
+- CLI reference still omits `context index-search` (`docs/sdk/cli-reference.md` context table). Pre-existing Story 10.5 gap; this slice documented `context indexing-status` and added an index-search parse test without adding the index-search row.
+- DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand. Pre-existing ledger row; runtime OpenAPI `cli` parity and the indexing-status command already landed.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: Consolidate `/process` canonical-identifier copies in FolderDomainProcessor and FoldersDomainServiceRequestHandler.
+  evidence: Split from Story 11.4 to keep the spec under the token budget. Those copies use the same 128-char segment grammar as the REST endpoints but are not Server endpoint files; the story AC targets endpoint-file helpers.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
+  summary: Extract shared Server request/response JsonSerializerOptions.
+  evidence: Split from Story 11.4 to keep the spec under the token budget. The four endpoint files already use identical Web defaults; this is not in the story AC and is independently shippable.

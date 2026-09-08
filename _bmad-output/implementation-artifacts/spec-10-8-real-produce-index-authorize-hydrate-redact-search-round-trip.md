@@ -85,6 +85,33 @@ context:
 - Given authorization failure, when search is invoked, then Memories is not called and the denial does not disclose existence, counts, or dependency health.
 - Given CLI `indexing-status`, when it is invoked with folder and optional freshness, then it uses the same not-task-scoped contract as MCP and renders metadata only.
 
+### Review Findings
+
+- [x] [Review][Defer] Duplicate source hits still emit one search item per Memories row [`src/Hexalith.Folders/Queries/ContextSearch/ContextSearchQueryHandler.cs:212`] — deferred: pre-existing handler loop; this story only changed Indexed-only `IsVisible` and the post-auth `IsAvailable` gate. `DuplicateSourceHitsForOneIdentityShouldNotDiscloseRawCandidateCounts` asserts no raw counts, not a single item.
+- [x] [Review][Defer] CLI reference still omits `context index-search` [`docs/sdk/cli-reference.md:140-147`] — deferred: pre-existing Story 10.5 gap. This slice added `context indexing-status` and `ContextIndexSearchParsesAndDelegatesToTheSdk`; the context table still has no index-search row.
+- [x] [Review][Defer] DW-281 still describes GetFolderIndexingStatus as rest/sdk/mcp-only with no CLI subcommand [`_bmad-output/implementation-artifacts/deferred-work.md:2151`] — deferred: pre-existing ledger row; OpenAPI `cli` parity and the indexing-status command already landed.
+
+#### Rejected
+
+- `false` — FR58 never authenticates / Keycloak off: `LivePathPrerequisitesSatisfied()` is hardcoded false, so `ExecutePublicRoundTripAsync` is not entered.
+- `false` — `NewUlid` emits uppercase IDs vs `CanonicalSegmentRegex`: execute path is not entered.
+- `false` — add body uses `sha256:` instead of `hashref_`: execute path is not entered.
+- `false` — search `queryText` is generic `"text"` and status is a single GET: execute path is not entered.
+- `false` — governed opt-in can still `SkipIfUnavailable` after Task 0: with the gate false, opt-in `Assert.Fail`s before fixture boot.
+- `false` — EventStore `IsAvailable` stays true so production outages skip the new gate: spec Code Map keeps the 10.7 adapter; store throws still map to `ReadModelUnavailable`.
+- `false` — `TransportParityConformanceTests` remarks claim a CLI indexing-status gap: the remarks document the 7 diagnostics MCP-only gap, not indexing-status.
+- `false` — no `--task-id` reject test: `CommandFactory.Query` omits `--task-id` when `taskIdRequired: false`, so it is an unrecognized argument (exit 64), same as the covered extras.
+- `false` — live add omits Authorization, tenant, prepare, and lock: execute path is not entered.
+- `false` — archived Indexed Memories hits would be returned: production `ApplyFolderArchived` tombstones, `MemoriesFolderSearchSource` filters `folders.status=active`, and Indexed-only `IsVisible` drops tombstones.
+- `false` — `docs/sdk/cli-reference.md` omits `context indexing-status` / ConsumerDocs stays at 40: the table has `context indexing-status` and ConsumerDocs pins 41.
+- rejected — spec frontmatter `status: done` while Task 0 fail-closes: fix is to edit the spec under review; Implementation Notes already record incomplete.
+- rejected — Spec Verification lists IntegrationTests as passing vs Implementation Notes 27 failures: fix is to edit the spec under review.
+- `low` — `ArchivedDocumentShouldBeAbsentFromSearchWhileStatusRemainsIndexed` uses an empty source: hermetic stand-in; a stronger fake is extra hit-shape complexity, not a direct correction.
+- `low` — ConsumerDocs never pins `context indexing-status` by name: the command is in the table; the count-only gate is the existing pattern.
+- `low` — story File List omits `docs/sdk/cli-reference.md` / `ConsumerDocsConformanceTests.cs` / `deferred-work.md`: bookkeeping only; not a runtime defect.
+- `low` — `ContextCommand.Create()` group text still says tree/metadata/search/glob/range: `--help` lists subcommands; XML docs already mention indexing-status.
+- `low` — whitespace `--folder-id` is forwarded to the SDK: pre-existing `RequiredId`; a shared whitespace guard is more than a direct indexing-status correction.
+
 ## Implementation Notes
 
 ### Task 0 — live-path prerequisites (2026-09-08, baseline `a99644cfb426bea40f932741fdec1c7ec2f825c1`)
