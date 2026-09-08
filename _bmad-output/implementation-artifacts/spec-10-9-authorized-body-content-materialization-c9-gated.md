@@ -2,7 +2,7 @@
 title: 'Story 10.9: Authorized body-content materialization — C9 gated'
 type: 'feature'
 created: '2026-09-08'
-status: 'in-progress'
+status: 'done'
 baseline_commit: '472c690390fd7a7399da8cdeaeb6a6ea36734366'
 route: 'dispatch'
 review_loop_iteration: 0
@@ -101,13 +101,30 @@ Project-level `dotnet test` is blocked by DW-341. Direct xUnit v3 host was used.
 | Host | Result |
 | --- | --- |
 | `dotnet restore Hexalith.Folders.slnx -p:NuGetAudit=false` && `dotnet build Hexalith.Folders.slnx --configuration Debug --no-restore` | 0 errors / 0 warnings |
-| `tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests` | 90 passed (2 new: DI no content-store; body-shaped metadata-only fixture) |
+| `tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests` | 91 passed (3 new: DI no content-store; metadata-derived request has no body bytes; body-shaped metadata-only fixture) |
 
 ## Spec Change Log
 
 - 2026-09-08: Task 0 recorded C9/12.3/12.5/12.6/DW-292/DenyAll/11.15 blockers. Hermetic Worker tests lock the 10.6 DI default (no content-store/byte-source) and a body-shaped fixture that still emits metadata tokens only. Story remains incomplete; C9 Security/PM action stays open.
 
 ## Review Triage Log
+
+- `false` — Blind: body fixture does not lock “file bodies are not read.” `MetadataDerivedSemanticIndexingContentMaterializer` has no I/O; it never opens `PathPolicyClass`. If it started reading that path, `fileBody` would appear in `CuratedText`/`ContentBytes` and `MaterializeAsyncShouldIgnoreBodyShapedFixtureAndEmitMetadataTokensOnly` would fail.
+- `low` — Blind: `BodyContentLiveRoundTripShouldRemainUnavailableWithoutC9ApprovalAndContentStore` only asserts DI and missing byte members, not a DCP skip. Real: the name overclaims. Q5-A forbids a new AppHost scenario; the test still matches the matrix (“do not run a body round-trip”) by proving the capability is unwired.
+- `false` — Blind: FailClosed could register via factory/instance. The `ISemanticIndexingContentMaterializer` descriptor must have `ImplementationType` = `MetadataDerived…` and `ImplementationFactory` null; a factory registration fails that. `FailClosedFallbackShouldRemainExplicitlyConstructible` already constructs the fallback.
+- `false` — Blind: no new port coverage for the body fixture. This story did not change `MemoriesSemanticIndexingPort`; it copies `CuratedText` verbatim. `RealMaterializerAndPortShouldPublishFacadeDiscoverableMetadataOnlyEntry` still publishes metadata-only `Text`.
+- `false` — Blind: C4/deny rows are not re-proven on the 10.6 materializer. Frozen matrix expects “materializer not called” / skip codes. `ProcessFolderEventsAsyncShouldNotReadContentWhenPolicyDenies`, `ShouldSkipRedactedSensitivityBeforeReadingContent`, `ShouldFailClosedWhenFolderAclDoesNotAuthorizeBeforeReadingContent`, `ShouldSkipOversizedContentBeforeMemories`, and `ShouldSkipUnsupportedContentTypeBeforeMemories` assert that; a recording fake is correct because the real materializer must not run.
+- `false` — Blind: 10.9 spec does not isolate Server/11.4 files in this diff. Fix would be to edit this spec. Concurrent 11.4 work since `472c690` is not a 10.9 product defect.
+- `false` — Blind: empty Review Triage Log / duplicated Verification. Expected during this review; the footer is the spec template. Fix would be to edit this spec.
+- `defer` — Blind: spec-11-4 `done` vs sprint `review` vs the in-progress-only task. Concurrent 11.4 bookkeeping, not caused by 10.9.
+- `defer` — Blind: `FolderCanonicalErrorMapper.ForDomain` is unused on live `ToHttpResult` paths. 11.4 extract leftover, not 10.9.
+- `medium` — Blind/Edge/Verification-gap: `ToArchiveGatewayProblem` treats allowlisted reasons as Domain table hits when status equals `StatusFor`; `StatusFor` defaults to 403, so 403 plus `commit_failed`/`provider_failure_known` now echoes those codes instead of `denied_safe` (`FoldersDomainServiceEndpoints.cs:3656-3666`, `FolderCanonicalErrorMapper.cs:104`). Pre-verified by verification-gap. Caused by 11.4, not 10.9.
+- `defer` — Blind: `FolderCanonicalIdentifierTests` omit `IsSafeDiagnosticId` / `SanitizeCorrelationId`. 11.4 test gap, not 10.9.
+- `defer` — Blind: `ClientTenantIds` / `ClientPrincipalIds` still copied in four endpoint files. 11.4 leftover, not 10.9.
+- `low` — Blind: body fixture writes `CLASSIFIED-BODY api_key=…` under `Path.GetTempPath()`. Production never opens it; `finally` deletes it. Unnecessary disk I/O in a C9 “do not read bodies” test.
+- `defer` — Blind: Story 8.3 comment removed from `ToArchiveGatewayProblem`. Same 11.4 extract as the 403 mapping change.
+- `false` — Blind: stale Code Map line pins. Fix would be to edit this spec.
+- `medium` — Verification-gap Other: `ToArchiveGatewayProblem` comment says unmapped `commit_failed` keep 422-only handling; 403 now matches `StatusFor` default. Same 11.4 defect as the mapping finding.
 
 ## Design Notes
 

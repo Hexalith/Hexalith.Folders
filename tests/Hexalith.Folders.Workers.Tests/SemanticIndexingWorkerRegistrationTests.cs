@@ -85,6 +85,24 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     }
 
     [Fact]
+    public void RegisteredContentMaterializerShouldStayMetadataDerivedAndRequestShouldOmitBodyByteMembers()
+    {
+        ServiceCollection services = CreateServiceCollection();
+        services.AddFoldersSemanticIndexingWorkers();
+
+        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateOnBuild = true,
+            ValidateScopes = true,
+        });
+        provider.GetRequiredService<ISemanticIndexingContentMaterializer>()
+            .ShouldBeOfType<MetadataDerivedSemanticIndexingContentMaterializer>();
+        typeof(SemanticIndexingContentMaterializationRequest).GetProperty("ContentBytes").ShouldBeNull();
+        typeof(SemanticIndexingContentMaterializationRequest).GetProperty("Body").ShouldBeNull();
+        typeof(SemanticIndexingContentMaterializationRequest).GetProperty("FileBody").ShouldBeNull();
+    }
+
+    [Fact]
     public void AddFoldersSemanticIndexingWorkersShouldRegisterEventStoreBackedBridge()
     {
         ServiceCollection services = CreateServiceCollection();

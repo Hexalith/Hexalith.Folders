@@ -2886,3 +2886,24 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md`
   summary: Unverified medium — gateway 403 plus commit_failed or provider_failure_known may now echo those codes instead of denied_safe.
   evidence: maybe-false. ToArchiveGatewayProblem now treats any allowlisted reason whose StatusFor equals the gateway status as a table hit; StatusFor defaults to 403. The 422 arms are unchanged. Settle by showing a live gateway 403 with those reasons, or by proving the gateway never emits that pairing.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
+  summary: Story 11.4 spec status, sprint-status, and the in-progress-only task disagree (`done` vs `review`).
+  evidence: Concurrent 11.4 bookkeeping in the same baseline window as 10.9; not required by the 10.9 frozen intent.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
+  summary: FolderCanonicalErrorMapper.ForDomain is unused on live ToHttpResult and ToArchiveGatewayProblem paths.
+  evidence: 11.4 extract leftover; production still passes raw status/category/code into FolderProblemDetailsFactory.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
+  summary: Gateway 403 plus commit_failed or provider_failure_known now echoes those codes instead of denied_safe.
+  evidence: ToArchiveGatewayProblem matches StatusFor (default 403) before the 422 arms. CLI maps Tenant_access_denied to exit 66 and Commit_failed to 70. Caused by 11.4, not 10.9.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
+  summary: FolderCanonicalIdentifierTests omit IsSafeDiagnosticId and SanitizeCorrelationId.
+  evidence: 11.4 added the helpers; unit tests never call them except indirectly in a few OpsConsole HTTP cases.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md`
+  summary: ClientTenantIds and ClientPrincipalIds remain copy-pasted across Audit, Domain, Provider, and OpsConsole endpoint files.
+  evidence: 11.4 consolidation left the identity-header maps as four independent implementations.
+
