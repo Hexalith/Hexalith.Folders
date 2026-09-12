@@ -81,7 +81,7 @@ run_retention = 10           # newest concluded runs kept whole; older ones are 
 retention_days = 0           # 0 = disabled; else also keep runs newer than N days regardless of count
 trim_artifacts = true        # drop the heavy worktrees/ tree from concluded runs (run stays viewable in the TUI)
 archive_old = true           # archive (.bmad-loop/archive/<id>.tar.gz) rather than hard-delete runs past the window
-auto_clean_on_finish = true  # reconcile stale worktrees + apply retention when a run finishes cleanly
+auto_clean_on_finish = false  # reconcile stale worktrees + apply retention when a run finishes cleanly
 clean_tmp = true             # let engine plugins clean their /tmp scratch on finish (e.g. Unity MCP server zips)
 
 [scm]
