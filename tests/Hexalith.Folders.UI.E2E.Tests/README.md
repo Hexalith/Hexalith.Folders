@@ -35,6 +35,10 @@ E2E tests under this project must follow the contract below. Any deviation is a 
 - Path constants live in `Routes/ConsoleRoutes.cs`.
 - Tests must not rely on undocumented redirects, default landing pages, or environment-specific routing tables.
 
+### Hosting
+
+- A host fixture must stand the console up deterministically. No test may target a hand-started `dotnet run` process.
+
 ### Network discipline
 
 - **Intercept-before-navigate** for any request the test asserts on. Use `IBrowserContext.RouteAsync` before `IPage.GotoAsync` — never after.
@@ -79,17 +83,18 @@ Or directly:
 dotnet test tests\Hexalith.Folders.UI.E2E.Tests\Hexalith.Folders.UI.E2E.Tests.csproj
 ```
 
-CI-equivalent local gate (from the repository root, after provisioning Chromium once):
+CI-equivalent local gates (from the repository root, once Bootstrap above has provisioned Chromium). Both
+CI jobs have a script; run both to reproduce the blocking lane:
 
 ```powershell
-pwsh ./tests/install-playwright.ps1
-pwsh ./tests/tools/run-e2e-ci-gates.ps1 -SkipBrowserInstall
+pwsh tests\tools\run-e2e-ci-gates.ps1 -SkipBrowserInstall
+pwsh tests\tools\run-accessibility-ci-gates.ps1 -SkipBrowserInstall
 ```
 
 ## CI posture
 
 - This lane is **blocking**. `.github/workflows/ci.yml` runs `e2e-gates` (all 63 tests) and `accessibility-gates` (the 23-test Accessibility subset). Both jobs provision Playwright Chromium. See `docs/operations/e2e-ci-gates.md`.
-- Tests run against an in-process console host and headless Chromium. There is no external network, provider, secret, or Dapr dependency.
+- Tests run against an in-process console host and headless Chromium, under the same hermetic posture as the Status section above.
 - A failing UI E2E test must never be silently retried more than the Playwright default (typically 2 in CI). Retries hide flake; flake is critical technical debt.
 
 ## Project layout
@@ -112,6 +117,8 @@ tests/Hexalith.Folders.UI.E2E.Tests/
 ├── StateLabels/                         # 4 disposition-label gallery tests
 └── README.md                            # this file
 ```
+
+Do not create empty placeholder folders; add a directory when the first real test in that area lands.
 
 ## Knowledge references
 

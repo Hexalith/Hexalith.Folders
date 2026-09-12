@@ -74,6 +74,29 @@ context:
 - Given CLI/MCP docs name stale versions, when they are corrected, then versions match Builds pins and `ConsumerDocsConformanceTests` stays green with only that string change.
 - Given evidence, workflows, OpenAPI, parity fixtures, and the dirty 10.8/submodule work exist, when this story completes, then they are unchanged except this spec and the `11-3-*` key.
 
+### Review Findings (code review round 2 — 2026-09-12)
+
+- [x] [Review][Patch] Align the three stale version comments in `src/` with the Builds pins (resolved 2026-09-12: Jerome chose to patch now, accepting the departure from the frozen Code Map) [src/Hexalith.Folders.Cli/Commands/Commit/CommitCommand.cs:26; src/Hexalith.Folders.Mcp/Resources/AuditTrailResource.cs:20; src/Hexalith.Folders.Mcp/Resources/FolderTreeResource.cs:21] — `src/Hexalith.Folders.Cli/Commands/Commit/CommitCommand.cs:26` still says "the System.CommandLine 2.0.8 token table" while `docs/sdk/cli-reference.md:127` now says 2.0.11; `src/Hexalith.Folders.Mcp/Resources/AuditTrailResource.cs:20` still says "Uses the ModelContextProtocol 1.3.0 attribute resource surface (verified against the pinned package)" and `src/Hexalith.Folders.Mcp/Resources/FolderTreeResource.cs:21` says 1.3.0, while the Builds pin is 2.2.0 and `docs/sdk/mcp-reference.md:5` now says 2.2.0. The AuditTrailResource parenthetical is now factually false. The frozen Code Map lists only `docs/sdk/**`, so extending the sweep into `src/` is a scope call, not a mechanical fix.
+- [x] [Review][Patch] `_bmad/*.bak` misses the subdirectory where BMAD customization files actually live [.gitignore:438]
+- [x] [Review][Patch] E2E README rewrite deleted still-valid contract rules beyond the authorized drop [tests/Hexalith.Folders.UI.E2E.Tests/README.md:22,95]
+- [x] [Review][Patch] deferred-work entry breaks the ledger's path and attribution conventions [_bmad-output/implementation-artifacts/deferred-work.md:2867]
+- [x] [Review][Patch] "CI-equivalent local gate" block is not CI-equivalent and contradicts itself [tests/Hexalith.Folders.UI.E2E.Tests/README.md:83]
+- [x] [Review][Patch] Stale future-tense E2E claim survives in a rewritten file [tests/README.md:145]
+- [x] [Review][Patch] `# last_updated:` journal comment skips this story's lifecycle transition [_bmad-output/implementation-artifacts/sprint-status.yaml:2]
+- [x] [Review][Defer] Doc/pin and doc/count literals have no derivation or lockstep guard [tests/Hexalith.Folders.Contracts.Tests/Deployment/ConsumerDocsConformanceTests.cs:417] — deferred: Story 11.16 owns replacing brittle pins with behavioural gates; frozen intent here forbids redesigning the gate. `docs/sdk/mcp-reference.md`'s `2.2.0` is asserted nowhere; only `cli-reference.md:127` is pinned, not `:18`; the 63/23/28/8/4 counts are now hardcoded in three documents with no gate.
+- [x] [Review][Defer] No conformance guard stops untracked litter from re-accreting [.gitignore:434] — deferred: `*.lscache` was already ignored at `.gitignore:434` and 22 files were tracked anyway (ignore rules do not apply to already-tracked paths), so the AC's one-shot `git ls-files` check is the mechanism already shown to fail. A tracked-inventory assertion in `ScaffoldContractTests` is new gate work owned by Story 11.16.
+- [x] [Review][Defer] `project-context.md` still orders agents to keep skipped E2E placeholders [_bmad-output/project-context.md:99] — deferred: agent-context file, and the frozen Decisions explicitly keep that surface. Its bullet ("UI E2E is a deferred Playwright-on-.NET lane; keep skipped placeholders until Epic 6 story 6-2") now directly contradicts both rewritten READMEs.
+
+#### Rejected
+
+- `medium` — Three-way lifecycle inconsistency: spec frontmatter `status: 'done'`, sprint key `review`, and the Code Map / Execution task / Implementation Notes all say `in-progress` — the Notes further claim the key "already had `11-3-…: in-progress`" when the pre-image was `backlog`. Real and confirmed by all four layers, but every available fix edits this spec.
+- `medium` — Verification lists `dotnet test … --filter FullyQualifiedName~ConsumerDocsConformanceTests`, which DW-341 blocks; the direct-runner fallback actually executed (22 passed / 0 failed) is recorded only in Implementation Notes. Fix edits this spec.
+- `low` — Three Review Triage Log entries logged as open `low` are already fixed by this same diff (`tests/README.md:138` and `:80` rewritten, the `Fixtures/` tree now lists all seven files), and `## Spec Change Log` ships as a bare heading. Fix edits this spec.
+- `false` — "The deferred-work entry gets no `DW-NNN` id." The `source_spec:` entry format carries no ids at all: lines 2796–2875 contain zero `DW-` entry ids, and the sibling 10.7/10.8/11.4 entries have none either. The entry follows its section's convention.
+- `low` — `deferred-work.md` is edited although it appears in no Code Map entry, against AC4's "unchanged except this spec and the `11-3-*` key". The wording breach is real, but the entry is a required review-loop artifact; the only non-spec "fix" is deleting evidence.
+- `low` — Doc version claims re-dated without re-proof (the `commit create` parser collision re-attributed to 2.0.11; MCP behavioural claims carried across a two-major jump). `tests/Hexalith.Folders.Cli.Tests/CommandSurfaceE2ETests.cs` exercises the `commit create` surface and the MCP resource tests exercise the attribute surface against the pinned packages; only the rationale prose is unproven.
+- `false` — "`_tmp_*` should be anchored to `/_tmp_*`." Unanchored is the safer shape for a litter class, nothing in the tree matches either form, and the frozen I/O matrix names `_tmp_*` exactly.
+
 ## Implementation Notes
 
 - `sprint-status.yaml` already had `11-3-apply-wire-preserving-repository-hygiene: in-progress`; no other lifecycle keys were touched.

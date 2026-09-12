@@ -2865,7 +2865,9 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: Epic 11 context rewrite, untracked spec-11-3, and Builds/FrontComposer gitlink moves are in the same working tree as Story 10.8.
   evidence: Concurrent workspace dirt; not required by the 10.8 frozen intent and not listed in the 10.8 File List.
 
-- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
+## Deferred from: code review of spec-11-3-apply-wire-preserving-repository-hygiene.md (2026-09-08)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
   summary: Pre-existing dirty Builds gitlink moves EventStore 3.102.0 to 3.103.0 with no PR package-mode compile of Hexalith.Folders.EventStore.
   evidence: Working-tree gitlink 071ef99→35c3d1e predates Story 11.3; tests/ never read HexalithEventStoreVersion; PR baseline package-mode builds only UI.Tests. Settle by a package-mode restore+build of Hexalith.Folders.EventStore against the new pin, or by committing the gitlink on its own story.
 
@@ -2907,3 +2909,17 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
   summary: ClientTenantIds and ClientPrincipalIds remain copy-pasted across Audit, Domain, Provider, and OpsConsole endpoint files.
   evidence: 11.4 consolidation left the identity-header maps as four independent implementations.
 
+
+## Deferred from: code review of spec-11-3-apply-wire-preserving-repository-hygiene.md (2026-09-12)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
+  summary: Doc/pin and doc/count literals have no derivation or lockstep guard, so the drift this story swept by hand will recur silently.
+  evidence: `docs/sdk/mcp-reference.md:5` states `ModelContextProtocol 2.2.0` but no test asserts it; `ConsumerDocsConformanceTests.cs:417` pins only `docs/sdk/cli-reference.md:127`, not the same version at `:18`; nothing derives either literal from `references/Hexalith.Builds/Props/Directory.Packages.props`. The 63/23/28/8/4 E2E counts are now hardcoded in `docs/operations/e2e-ci-gates.md`, `tests/README.md`, and `tests/Hexalith.Folders.UI.E2E.Tests/README.md` with no gate. Owned by Story 11.16; frozen intent here forbids redesigning the gate.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
+  summary: No conformance guard stops untracked litter from re-accreting after this one-shot sweep.
+  evidence: `.gitignore:434` already carried `*.lscache` and 22 files were tracked anyway, because ignore rules do not apply to already-tracked paths. The AC's `git ls-files '*.lscache' '_tmp*' '_bmad/*.bak'` check is manual and one-shot. `ScaffoldContractTests` is the existing repo-hygiene conformance home; a tracked-inventory assertion there is new gate work owned by Story 11.16.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
+  summary: `_bmad-output/project-context.md:99` still instructs agents to keep skipped E2E placeholders until Epic 6 story 6-2.
+  evidence: That bullet now contradicts both READMEs this story rewrote, so agents reading project-context may re-add the placeholders just retired. Frozen Decisions explicitly keep that surface, and it is an agent-context file. Settle by sweeping the E2E bullet when Story 11.13 synchronizes planning/maintenance documents.

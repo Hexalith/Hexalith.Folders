@@ -18,7 +18,7 @@ namespace Hexalith.Folders.Mcp.Resources;
 /// <c>glob-folder-files</c> tool.
 /// </summary>
 /// <remarks>
-/// ModelContextProtocol 1.3.0 exposes a stable resource attribute surface
+/// ModelContextProtocol 2.2.0 exposes a stable resource attribute surface
 /// (<c>[McpServerResource]</c>/<c>[McpServerResourceType]</c> + <c>WithResourcesFromAssembly</c>), verified
 /// against the pinned package — so the AC #3 primary path (resources) is used, not the read-tool fallback.
 /// The URI template carries the task-scoped identifiers because <c>ListFolderFiles</c> requires a task ID.

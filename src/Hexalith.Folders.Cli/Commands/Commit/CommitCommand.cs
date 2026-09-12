@@ -23,7 +23,7 @@ internal static class CommitCommand
         Option<string> commitWorkspaceId = CommandOptions.RequiredId("--workspace-id", "Opaque workspace identifier.");
         Option<string?> commitBody = CommandOptions.Request();
         // Subcommand is named "create", NOT "commit": a "commit" child under the "commit" group collides in
-        // the System.CommandLine 2.0.8 token table (group name == child name) and crashes the parser for
+        // the System.CommandLine 2.0.11 token table (group name == child name) and crashes the parser for
         // every `commit <subcommand>` invocation. "commit create" maps to CommitWorkspaceAsync.
         command.Subcommands.Add(CommandFactory.Mutation(
             "create",

@@ -142,4 +142,4 @@ The route and selector contract lives in `tests/Hexalith.Folders.UI.E2E.Tests/RE
 - BMAD TEA fragments: fixture architecture, data factories, test levels, test quality, Playwright configuration, API request, polling, logging, and contract testing.
 - Microsoft Learn: ASP.NET Core integration testing guidance with xUnit and test host patterns.
 - xUnit v3 docs: fixture support, async tests, and .NET runner integration.
-- Playwright docs: trace/artifact/retry guidance for later UI coverage.
+- Playwright docs: trace/artifact/retry guidance for the UI E2E lane.

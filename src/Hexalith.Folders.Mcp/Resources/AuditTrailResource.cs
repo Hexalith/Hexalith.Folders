@@ -17,7 +17,7 @@ namespace Hexalith.Folders.Mcp.Resources;
 /// <c>list-operation-timeline</c> tool.
 /// </summary>
 /// <remarks>
-/// Uses the ModelContextProtocol 1.3.0 attribute resource surface (verified against the pinned package).
+/// Uses the ModelContextProtocol 2.2.0 attribute resource surface (verified against the pinned package).
 /// Audit-trail listing is not task-scoped, so the URI template carries only the folder identifier.
 /// </remarks>
 [McpServerResourceType]
