@@ -26,6 +26,7 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 ## Owned Inputs
 
 - `docs/exit-criteria/c0-c13-governance-evidence.yaml`
+- `docs/exit-criteria/c7-lock-authorization-timing.md`
 - `tests/fixtures/idempotency-encoding-corpus.json`
 - `tests/fixtures/idempotency-encoding-corpus.schema.json`
 - `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
@@ -48,6 +49,12 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `approval_date_invalid`: an approval record's `approved_on`, or a criterion's `review_by`, is missing or is not a valid `yyyy-MM-dd` date.
 - `approval_date_future`: an approval record's `approved_on` is dated in the future.
 - `approval_stale`: an approval record is older than the mandatory `approval_policy.max_age_days` window, or a per-criterion `review_by` date has already passed.
+- `approval_evidence_version_mismatch`: an approval-backed artifact or approval record does not carry the governed evidence version.
+- `approval_evidence_digest_missing`: an approval-backed artifact or approval record omits its required SHA-256 digest.
+- `approval_evidence_digest_mismatch`: an approval-backed artifact or approval record's SHA-256 digest does not match the canonical artifact.
+- `c7_timing_profile_invalid`: a C7 timing value is missing, differs from the approved profile, is not positive, or violates the authorization-revalidation-to-revocation-SLO relationship.
+- `c7_approval_identity_mismatch`: a C7 approval record does not name the exact approved signer, reported without echoing the unexpected value.
+- `c7_approval_date_mismatch`: a C7 approval record does not carry the exact approved date, reported without echoing the unexpected value.
 - `idempotency_sample_unmapped`: a corpus sample lacks exactly one stable consumption map entry.
 - `pattern_example_invalid`: a C# example is unmarked, stale, or not part of the compilable examples project.
 - `cache_key_unscoped`: a tenant-data cache key candidate lacks tenant scope and no reviewed exception applies.
@@ -57,11 +64,13 @@ Diagnostics may include gate names, rule IDs, criterion IDs, sample IDs, operati
 
 ## Approval Records
 
-Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention and `C4` input limits) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryFreshExactApprovalRecords` enforces this generically so no approval-backed criterion can pass with a stale report or a generic "Legal-approved" phrase:
+Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention, `C4` input limits, and `C7` lock/authorization timing) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryFreshExactApprovalRecords` enforces the generic floor, while `C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` applies C7's stricter bounded exact-value checks:
 
 - Every required authority has exactly one record with a specific (non-generic, non-authority-name) approver and a valid, non-future `approved_on`.
 - `approval_policy.max_age_days` is a mandatory global freshness window: an approval older than the window fails closed and forces a governance re-review. This time-based redden is intentional — refresh the sign-off (or widen the window by decision) to clear it.
 - An optional per-criterion `review_by` date must be a valid date strictly in the future.
+
+C7 additionally binds `evidence_version`, the SHA-256 digest of `docs/exit-criteria/c7-lock-authorization-timing.md`, and the four whole-second timing values to both Architecture and Security records. `GovernanceCompletenessGateTests.C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` rejects value, version, digest, authority, signer, or date drift. A C7 artifact change reopens OQ1 until both authorities approve the new version and digest. This governance approval does not claim runtime coverage: NFR7 and NFR21 remain `reference-pending` until renewal and revocation behavior is executable and evidenced.
 
 The bespoke C3 retention checks in `RetentionAndTenantDeletionConformanceTests` remain the stricter retention-specific gate; this generic floor covers every approval-backed criterion, including future ones.
 

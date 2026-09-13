@@ -12,7 +12,8 @@ public sealed class ExitCriteriaDecisionArtifactTests
         "docs/exit-criteria/c3-retention.md",
         "docs/exit-criteria/c4-input-limits.md",
         "docs/exit-criteria/s2-oidc-validation.md",
-        "docs/exit-criteria/c6-transition-matrix-mapping.md"
+        "docs/exit-criteria/c6-transition-matrix-mapping.md",
+        "docs/exit-criteria/c7-lock-authorization-timing.md"
     ];
 
     private static readonly string[] RequiredMetadataKeys =
@@ -298,6 +299,84 @@ public sealed class ExitCriteriaDecisionArtifactTests
                 numericIsBlank.ShouldBeTrue(
                     $"c4-input-limits.md semantic-flag row must use '—' in the Numeric value column: {row}");
             }
+        }
+    }
+
+    [Fact]
+    public void C7ArtifactPinsApprovedProfileBoundariesOverridesAndProvenance()
+    {
+        string root = RepositoryRoot();
+        string relativePath = "docs/exit-criteria/c7-lock-authorization-timing.md";
+        string content = File.ReadAllText(Path.Combine(root, NormalizeForFileSystem(relativePath)));
+
+        Dictionary<string, string> expectedMetadata = new(StringComparer.Ordinal)
+        {
+            ["status"] = "approved",
+            ["decision owner"] = "Architecture",
+            ["approval authority"] = "Architecture + Security",
+            ["decision version"] = "1.0.0",
+            ["approved on"] = "2026-09-12",
+            ["approved by"] = "Administrator (Architecture); Administrator (Security)",
+            ["lock renewal interval seconds"] = "30",
+            ["authorization revalidation interval seconds"] = "15",
+            ["revocation effect SLO seconds"] = "60",
+            ["expired to stale threshold seconds"] = "60",
+        };
+
+        foreach (KeyValuePair<string, string> expected in expectedMetadata)
+        {
+            ParseFrontMatterValue(content, expected.Key).ShouldBe(expected.Value, expected.Key);
+        }
+
+        foreach (string statement in new[]
+        {
+            "renewalAnchorAt = effectiveAt = acquiredAt",
+            "now >= renewalAnchorAt + effectiveRenewalIntervalSeconds",
+            "valid tenant override or otherwise 30 seconds",
+            "now >= lastSuccessfulAuthorizationValidationAt + 15 seconds",
+            "revocationEffectiveAt + 60 seconds",
+            "authoritative upstream authority source's revocation-effective timestamp",
+            "shared UTC clock domain",
+            "local receipt or observation time is not a substitute",
+            "now >= expiresAt",
+            "now < expiresAt + 60 seconds",
+            "now >= expiresAt + 60 seconds",
+            "Positive whole seconds no greater than 30.",
+            "Positive whole seconds no greater than 15.",
+            "Positive whole seconds no greater than 60.",
+            "caller-requested lease shorter than the effective renewal interval",
+            "Under a tenant override of 10 seconds",
+            "a 5-second",
+            "lease expires before renewal",
+            "Neither profile rounds",
+            "Only the task that owns the lock may renew it",
+            "Stale, unavailable,",
+            "unknown, or revoked authority fails closed",
+        })
+        {
+            content.ShouldContain(statement, Case.Sensitive);
+        }
+
+        Regex.IsMatch(
+            content,
+            @"Any artifact-content change,\s+timing-value\s+change, version change, or digest mismatch reopens OQ1",
+            RegexOptions.CultureInvariant).ShouldBeTrue("C7 artifact drift must reopen OQ1.");
+    }
+
+    [Fact]
+    public void C7GovernanceApprovalKeepsRuntimeEvidenceReferencePending()
+    {
+        string root = RepositoryRoot();
+        string traceability = File.ReadAllText(Path.Combine(root, "docs", "exit-criteria", "nfr-traceability.md"));
+        string[] rows = traceability.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string nfr in new[] { "NFR7", "NFR21" })
+        {
+            string row = rows.Single(line => line.StartsWith($"| {nfr} |", StringComparison.Ordinal));
+            row.ShouldContain("| reference-pending |", Case.Sensitive, $"{nfr} must retain its runtime evidence gap.");
+            row.ShouldContain("| `C7` |", Case.Sensitive, $"{nfr} must remain linked to C7.");
+            row.ShouldContain("executable evidence remains separately deferred", Case.Sensitive,
+                $"{nfr} must not claim runtime coverage from governance approval.");
         }
     }
 

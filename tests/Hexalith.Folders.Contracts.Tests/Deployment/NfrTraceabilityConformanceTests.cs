@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -311,6 +312,7 @@ public sealed partial class NfrTraceabilityConformanceTests
             "#Requires -Version 7",
             "Set-StrictMode -Version Latest",
             "$ErrorActionPreference = 'Stop'",
+            "$PSNativeCommandUseErrorActionPreference = $false",
             // AC11: repository-root resolution from the script path (mirrors the Story 7.13-7.15 posture),
             // never a hard-coded or host-absolute root.
             "Split-Path -Parent $MyInvocation.MyCommand.Path",
@@ -325,6 +327,10 @@ public sealed partial class NfrTraceabilityConformanceTests
             "Pop-Location",
             "GATE-VACUOUS",
             "xunit",
+            "$testExitCode = $LASTEXITCODE",
+            "$runnerFileName += '.exe'",
+            "native-test-failed=true exit_code=$testExitCode",
+            "Testing with VSTest target is no longer supported by Microsoft\\.Testing\\.Platform",
             "source_commit",
             "release_blocking_gaps",
             $"FullyQualifiedName~{ConformanceFqn}",
@@ -343,6 +349,78 @@ public sealed partial class NfrTraceabilityConformanceTests
         runnerMethods.OrderBy(static m => m, StringComparer.Ordinal)
             .ShouldBe(factMethods.OrderBy(static m => m, StringComparer.Ordinal),
                 "the gate script $runnerMethods must equal the NfrTraceabilityConformanceTests [Fact] set exactly.");
+    }
+
+    [Fact]
+    public async Task NfrTraceabilityGatePreservesNativeFailureExitWithoutEchoingOutput()
+    {
+        const int nativeExitCode = 37;
+        const string sentinel = "NFR_NATIVE_SECRET_SENTINEL";
+        string reportPath = RepositoryPath(ReportPath);
+        byte[]? originalReport = File.Exists(reportPath) ? File.ReadAllBytes(reportPath) : null;
+        string stubDirectory = Path.Combine(Path.GetTempPath(), $"hexalith-nfr-native-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(stubDirectory);
+
+        try
+        {
+            string dotnetStub = Path.Combine(stubDirectory, OperatingSystem.IsWindows() ? "dotnet.cmd" : "dotnet");
+            if (OperatingSystem.IsWindows())
+            {
+                File.WriteAllText(dotnetStub, $"@echo off\r\necho {sentinel}\r\nexit /b {nativeExitCode}\r\n", Encoding.ASCII);
+            }
+            else
+            {
+                File.WriteAllText(dotnetStub, $"#!/bin/sh\nprintf '%s\\n' '{sentinel}'\nexit {nativeExitCode}\n", Encoding.ASCII);
+                File.SetUnixFileMode(dotnetStub, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+            }
+
+            ProcessStartInfo startInfo = new("pwsh")
+            {
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                WorkingDirectory = RepositoryPath("."),
+            };
+            startInfo.ArgumentList.Add("-NoLogo");
+            startInfo.ArgumentList.Add("-NoProfile");
+            startInfo.ArgumentList.Add("-Command");
+            startInfo.ArgumentList.Add(
+                "$env:PATH = $env:NFR_TEST_STUB_PATH + [IO.Path]::PathSeparator + $env:PATH; "
+                + "& $env:NFR_TEST_GATE_PATH -SkipRestoreBuild; exit $LASTEXITCODE");
+            startInfo.Environment["NFR_TEST_STUB_PATH"] = stubDirectory;
+            startInfo.Environment["NFR_TEST_GATE_PATH"] = RepositoryPath(GateScriptPath);
+
+            using Process process = Process.Start(startInfo).ShouldNotBeNull();
+            Task<string> outputTask = process.StandardOutput.ReadToEndAsync(TestContext.Current.CancellationToken);
+            Task<string> errorTask = process.StandardError.ReadToEndAsync(TestContext.Current.CancellationToken);
+            await process.WaitForExitAsync(TestContext.Current.CancellationToken);
+            string standardOutput = await outputTask.ConfigureAwait(true);
+            string standardError = await errorTask.ConfigureAwait(true);
+            string combinedOutput = standardOutput + standardError;
+
+            process.ExitCode.ShouldBe(nativeExitCode, "the native test runner exit code must be preserved exactly.");
+            combinedOutput.Contains(sentinel, StringComparison.Ordinal).ShouldBeFalse(
+                "native failure output must not be echoed into gate diagnostics.");
+            combinedOutput.ShouldContain("native-test-failed=true", Case.Sensitive);
+            combinedOutput.ShouldContain($"exit_code={nativeExitCode}", Case.Sensitive);
+
+            using JsonDocument report = JsonDocument.Parse(File.ReadAllText(reportPath, Encoding.UTF8));
+            RequiredString(report.RootElement, "status").ShouldBe("failed");
+            report.RootElement.GetProperty("exit_code").GetInt32().ShouldBe(nativeExitCode);
+        }
+        finally
+        {
+            if (originalReport is null)
+            {
+                File.Delete(reportPath);
+            }
+            else
+            {
+                File.WriteAllBytes(reportPath, originalReport);
+            }
+
+            Directory.Delete(stubDirectory, recursive: true);
+        }
     }
 
     [Fact]
@@ -850,7 +928,7 @@ public sealed partial class NfrTraceabilityConformanceTests
     [GeneratedRegex(@"`([^`]+)`")]
     private static partial Regex BacktickToken();
 
-    [GeneratedRegex(@"\[Fact\]\s+public void (\w+)\s*\(")]
+    [GeneratedRegex(@"\[Fact\]\s+public (?:void|(?:async\s+)?Task) (\w+)\s*\(")]
     private static partial Regex FactMethod();
 
     [GeneratedRegex(@"'(Hexalith\.Folders\.Contracts\.Tests\.Deployment\.NfrTraceabilityConformanceTests\.\w+)'")]

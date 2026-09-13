@@ -32,6 +32,7 @@ function Write-GovernanceReport {
         exit_code = $ExitCode
         canonical_inputs = @(
             'docs/exit-criteria/c0-c13-governance-evidence.yaml',
+            'docs/exit-criteria/c7-lock-authorization-timing.md',
             'tests/fixtures/idempotency-encoding-corpus.json',
             'tests/fixtures/idempotency-encoding-corpus-consumption.yaml',
             'tests/fixtures/pattern-example-manifest.yaml',
@@ -55,7 +56,7 @@ function Invoke-GovernanceTests {
 
     # Match the extensionless ELF runner on Linux and the .exe runner on Windows; the regex
     # excludes .dll/.pdb/.json artifacts that a bare -Filter pattern would otherwise miss/include.
-    $testExecutable = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin') -Recurse -File -ErrorAction SilentlyContinue |
+    $testExecutable = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Debug') -Recurse -File -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -match '^Hexalith\.Folders\.Contracts\.Tests(\.exe)?$' -and $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
         Select-Object -First 1
 

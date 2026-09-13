@@ -34,9 +34,15 @@ This is the safe-denial discipline AC2/AC11 requires. Operation-level Problem De
 - `WorkspaceTransitionAttempt.toState` is required so attempted transitions are always fully described.
 - `releaseReasonCode` includes `task_cancelled` and `lock_revoked` so SDK callers can audit those release paths without collapsing them into `caller_abandoned`.
 
+## Governed C7 Timing
+
+`docs/exit-criteria/c7-lock-authorization-timing.md` version `1.0.0` is the canonical timing authority: lock renewal is due every 30 seconds, held-lock authorization is revalidated every 15 seconds and before every renewal or mutation, revocation takes effect within 60 seconds, and an expired lock becomes stale at the inclusive 60-second post-expiry boundary. Tenant overrides may only lower these positive whole-second ceilings. A caller-requested lease shorter than the effective renewal interval (the valid tenant override, otherwise 30 seconds) expires at its requested boundary and is never rounded up or silently extended.
+
+These governed values do not implement renewal scheduling or revocation propagation. Owner-only renewal under fresh authorization, fail-closed stale/unavailable/revoked authority, no lock takeover, and no automatic release of staged work remain the contract boundaries.
+
 ## Deferred Decisions
 
-- Exact retry policy, default lease duration, renewal policy, clock skew policy, expanded audit taxonomy, runtime authorization-revocation mechanics, and reconciliation execution remain deferred to Epic 4 and later operational stories.
+- Exact retry policy, default lease duration, clock skew policy, expanded audit taxonomy, renewal scheduling, runtime authorization-revocation mechanics, and reconciliation execution remain deferred to Epic 4 and later operational stories. Renewal/revalidation intervals, the revocation-effect SLO, and the expired-to-stale threshold are governed by C7 and are no longer deferred.
 - C3 retention values remain proposed workshop values until Legal and PM approval. Story 1.8 uses mutation-tier idempotency only and does not bind commit retention.
 - C4 input limits remain proposed workshop values until PM approval. Workspace and lock responses are metadata-only and do not introduce path, file, or context-query limits.
 - C6 vocabulary is consumed from `docs/exit-criteria/c6-transition-matrix-mapping.md`; this story exposes evidence shapes and the `state_transition_invalid` category without implementing the aggregate matrix.

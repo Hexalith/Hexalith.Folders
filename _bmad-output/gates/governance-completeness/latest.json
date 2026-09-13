@@ -4,6 +4,7 @@
   "exit_code": 0,
   "canonical_inputs": [
     "docs/exit-criteria/c0-c13-governance-evidence.yaml",
+    "docs/exit-criteria/c7-lock-authorization-timing.md",
     "tests/fixtures/idempotency-encoding-corpus.json",
     "tests/fixtures/idempotency-encoding-corpus-consumption.yaml",
     "tests/fixtures/pattern-example-manifest.yaml",

@@ -8099,7 +8099,7 @@ components:
           type: integer
           minimum: 1
           maximum: 86400
-          description: Requested lease metadata only. Default duration, renewal, and clock-skew policy remain deferred to approved source documents.
+          description: Sets the initial lease expiry so `expiresAt` equals the lock `effectiveAt` plus `requestedLeaseSeconds`; the lock is expired at `now >= expiresAt` unless a successful authorized renewal has already established later effective and expiry timestamps. Renewal timing and the expired-to-stale boundary are governed by docs/exit-criteria/c7-lock-authorization-timing.md version 1.0.0; default lease duration and clock-skew policy remain deferred.
     ReleaseWorkspaceLockRequest:
       type: object
       additionalProperties: false

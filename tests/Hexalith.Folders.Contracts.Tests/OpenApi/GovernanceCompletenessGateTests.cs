@@ -12,6 +12,7 @@ public sealed class GovernanceCompletenessGateTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "c0-c13-governance-evidence.yaml");
+    private static readonly string C7DecisionPath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "c7-lock-authorization-timing.md");
     private static readonly string Oq8DesignPath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-design.md");
     private static readonly string Oq8EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-evidence.yaml");
     private static readonly string CorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.json");
@@ -24,6 +25,7 @@ public sealed class GovernanceCompletenessGateTests
     private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
     private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-governance-completeness-gates.ps1");
     private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "governance-and-completeness-ci-gates.md");
+    private static readonly string GateReportPath = Path.Combine(RepositoryRoot, "_bmad-output", "gates", "governance-completeness", "latest.json");
     private static readonly string SolutionPath = Path.Combine(RepositoryRoot, "Hexalith.Folders.slnx");
 
     private static readonly Regex MarkerPattern = new(
@@ -35,6 +37,9 @@ public sealed class GovernanceCompletenessGateTests
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
     private static readonly Lazy<CorpusSchemaConstraints> CorpusConstraints = new(LoadCorpusSchemaConstraints);
+
+    private const string ApprovedC7Version = "1.0.0";
+    private const string ApprovedC7Sha256 = "47da9d95b5d809a08b0c6097fc9ad97e8bd22e156ee1789f98870345c6be4403";
 
     private static readonly string[] Criteria =
     [
@@ -62,6 +67,7 @@ public sealed class GovernanceCompletenessGateTests
     [
         "C3",
         "C4",
+        "C7",
     ];
 
     [Fact]
@@ -70,6 +76,7 @@ public sealed class GovernanceCompletenessGateTests
         string workflow = File.ReadAllText(WorkflowPath);
         string script = File.ReadAllText(GateScriptPath);
         string documentation = File.ReadAllText(GateDocumentationPath);
+        const string c7DecisionPath = "docs/exit-criteria/c7-lock-authorization-timing.md";
 
         workflow.ShouldContain("./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild");
         workflow.ShouldContain("actions/checkout@v6");
@@ -80,11 +87,13 @@ public sealed class GovernanceCompletenessGateTests
 
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
         script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Debug");
         script.ShouldContain("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
         script.ShouldContain("_bmad-output/gates/governance-completeness/latest.json");
         script.ShouldContain("$LASTEXITCODE");
         script.ShouldContain("#Requires -Version 7");
         script.ShouldContain("utf8NoBOM");
+        script.ShouldContain(c7DecisionPath, Case.Sensitive);
         script.ShouldNotContain("--recursive", Case.Insensitive);
 
         documentation.ShouldContain(".\\tests\\tools\\run-governance-completeness-gates.ps1");
@@ -98,7 +107,18 @@ public sealed class GovernanceCompletenessGateTests
         documentation.ShouldContain("approval_date_invalid");
         documentation.ShouldContain("approval_date_future");
         documentation.ShouldContain("approval_stale");
+        documentation.ShouldContain("approval_evidence_version_mismatch");
+        documentation.ShouldContain("approval_evidence_digest_missing");
+        documentation.ShouldContain("approval_evidence_digest_mismatch");
+        documentation.ShouldContain("c7_timing_profile_invalid");
+        documentation.ShouldContain("c7_approval_identity_mismatch");
+        documentation.ShouldContain("c7_approval_date_mismatch");
+        documentation.ShouldContain(c7DecisionPath, Case.Sensitive);
         AssertMetadataOnly(documentation);
+
+        using JsonDocument report = JsonDocument.Parse(File.ReadAllText(GateReportPath));
+        report.RootElement.GetProperty("canonical_inputs").EnumerateArray()
+            .Select(item => item.GetString().ShouldNotBeNull()).ShouldContain(c7DecisionPath);
     }
 
     [Fact]
@@ -190,10 +210,10 @@ public sealed class GovernanceCompletenessGateTests
             HasApprovalBlock(row).ShouldBeTrue($"{criterion} must carry a structured approval block");
         }
 
-        // Validate every row that declares an approval block (pinned or future), so a newly approval-backed
-        // criterion is covered even before someone extends ApprovalBackedCriteria.
+        // Validate every row that declares an approval block (pinned or future); C7 uses the stricter bounded
+        // exact-value evaluator below so unexpected authority, signer, date, and count values cannot be echoed.
         GateDiagnostic[] diagnostics = rows
-            .Where(HasApprovalBlock)
+            .Where(row => HasApprovalBlock(row) && RequiredScalar(row, "criterion_id") != "C7")
             .SelectMany(row => EvaluateApprovalRecords(row, policy, today))
             .ToArray();
 
@@ -258,6 +278,153 @@ public sealed class GovernanceCompletenessGateTests
             .Concat(unsatisfied).Concat(staleDiagnostics).Concat(reviewExpired))
         {
             AssertMetadataOnly(diagnostic.ToString());
+        }
+    }
+
+    [Fact]
+    public void C7DecisionPackageBindsProfileVersionDigestAndExactApprovals()
+    {
+        File.Exists(C7DecisionPath).ShouldBeTrue("C7 requires a canonical timing decision artifact.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(C7DecisionPath)));
+        actualDigest.ShouldBe(ApprovedC7Sha256, "C7 artifact changes require a new version, digest, and fresh approvals.");
+
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(root);
+        YamlMappingNode c7 = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>()
+            .Single(row => RequiredScalar(row, "criterion_id") == "C7");
+
+        GateDiagnostic[] diagnostics = EvaluateC7DecisionEvidence(
+            c7,
+            actualDigest,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(d => d.ToString())));
+        RequiredScalar(c7, "status").ShouldBe("approved");
+        RequiredScalar(c7, "artifact_path").ShouldBe("docs/exit-criteria/c7-lock-authorization-timing.md");
+        RequiredScalar(c7, "evidence_version").ShouldBe(ApprovedC7Version);
+        RequiredScalar(c7, "evidence_sha256").ShouldBe(ApprovedC7Sha256);
+
+    }
+
+    [Fact]
+    public void C7DecisionNegativeControlsFailClosedWithBoundedDiagnostics()
+    {
+        YamlMappingNode root = LoadYamlMapping(EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(root);
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        YamlMappingNode c7 = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>()
+            .Single(row => RequiredScalar(row, "criterion_id") == "C7");
+
+        YamlMappingNode missingDigest = CloneRow(c7);
+        missingDigest.Children.Remove(new YamlScalarNode("evidence_sha256"));
+        GateDiagnostic[] missingDigestDiagnostics = EvaluateC7DecisionEvidence(
+            missingDigest, ApprovedC7Sha256, policy, today);
+        missingDigestDiagnostics.ShouldContain(d =>
+            d.Category == "approval_evidence_digest_missing" && d.Identifier == "C7");
+
+        YamlMappingNode mismatchedDigest = CloneRow(c7);
+        SetScalar(mismatchedDigest, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDigestDiagnostics = EvaluateC7DecisionEvidence(
+            mismatchedDigest, ApprovedC7Sha256, policy, today);
+        mismatchedDigestDiagnostics.ShouldContain(d =>
+            d.Category == "approval_evidence_digest_mismatch" && d.Identifier == "C7");
+
+        YamlMappingNode incompleteAuthority = CloneRow(c7);
+        YamlSequenceNode approvalRecords = RequiredSequence(RequiredMapping(incompleteAuthority, "approval"), "records");
+        YamlNode securityRecord = approvalRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Security");
+        approvalRecords.Children.Remove(securityRecord);
+        GateDiagnostic[] incompleteAuthorityDiagnostics = EvaluateC7DecisionEvidence(
+            incompleteAuthority, ApprovedC7Sha256, policy, today);
+        incompleteAuthorityDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:Security");
+
+        YamlMappingNode invalidTiming = CloneRow(c7);
+        SetScalar(RequiredMapping(invalidTiming, "timing_profile"), "authorization_revalidation_interval_seconds", "61");
+        GateDiagnostic[] invalidTimingDiagnostics = EvaluateC7DecisionEvidence(
+            invalidTiming, ApprovedC7Sha256, policy, today);
+        invalidTimingDiagnostics.ShouldContain(d =>
+            d.Category == "c7_timing_profile_invalid" && d.Identifier == "C7");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode unexpectedTimingKey = CloneRow(c7);
+        RequiredMapping(unexpectedTimingKey, "timing_profile").Add(
+            new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("7"));
+        GateDiagnostic[] unexpectedTimingDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedTimingKey, ApprovedC7Sha256, policy, today);
+        unexpectedTimingDiagnostics.ShouldContain(d =>
+            d.Category == "c7_timing_profile_invalid" && d.Identifier == "C7");
+
+        YamlMappingNode unexpectedAuthority = CloneRow(c7);
+        YamlMappingNode unexpectedApproval = RequiredMapping(unexpectedAuthority, "approval");
+        RequiredSequence(unexpectedApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(unexpectedApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode("2026-09-12"),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedC7Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedC7Sha256)));
+        GateDiagnostic[] unexpectedAuthorityDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedAuthority, ApprovedC7Sha256, policy, today);
+        unexpectedAuthorityDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:required-authorities");
+        unexpectedAuthorityDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:record-count");
+
+        YamlMappingNode unexpectedSigner = CloneRow(c7);
+        YamlMappingNode signerRecord = RequiredSequence(RequiredMapping(unexpectedSigner, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Architecture");
+        SetScalar(signerRecord, "approver", unexpectedValue);
+        GateDiagnostic[] unexpectedSignerDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedSigner, ApprovedC7Sha256, policy, today);
+        unexpectedSignerDiagnostics.ShouldContain(d =>
+            d.Category == "c7_approval_identity_mismatch" && d.Identifier == "C7:Architecture");
+
+        YamlMappingNode unexpectedDate = CloneRow(c7);
+        YamlMappingNode dateRecord = RequiredSequence(RequiredMapping(unexpectedDate, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Security");
+        SetScalar(dateRecord, "approved_on", "2099-12-31");
+        GateDiagnostic[] unexpectedDateDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedDate, ApprovedC7Sha256, policy, today);
+        unexpectedDateDiagnostics.ShouldContain(d =>
+            d.Category == "c7_approval_date_mismatch" && d.Identifier == "C7:Security");
+
+        YamlMappingNode unexpectedRecordCount = CloneRow(c7);
+        YamlSequenceNode records = RequiredSequence(RequiredMapping(unexpectedRecordCount, "approval"), "records");
+        records.Add(CloneRow(records.Children.Cast<YamlMappingNode>().First()));
+        GateDiagnostic[] unexpectedRecordCountDiagnostics = EvaluateC7DecisionEvidence(
+            unexpectedRecordCount, ApprovedC7Sha256, policy, today);
+        unexpectedRecordCountDiagnostics.ShouldContain(d =>
+            d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:record-count");
+
+        GateDiagnostic[] staleApprovalDiagnostics = EvaluateC7DecisionEvidence(
+            c7, ApprovedC7Sha256, policy, today.AddDays(policy.MaxAgeDays + 1));
+        staleApprovalDiagnostics.ShouldContain(d =>
+            d.Category == "approval_stale" && d.Identifier == "C7:Architecture");
+        staleApprovalDiagnostics.ShouldContain(d =>
+            d.Category == "approval_stale" && d.Identifier == "C7:Security");
+
+        foreach (GateDiagnostic diagnostic in missingDigestDiagnostics
+            .Concat(mismatchedDigestDiagnostics)
+            .Concat(incompleteAuthorityDiagnostics)
+            .Concat(invalidTimingDiagnostics)
+            .Concat(unexpectedTimingDiagnostics)
+            .Concat(unexpectedAuthorityDiagnostics)
+            .Concat(unexpectedSignerDiagnostics)
+            .Concat(unexpectedDateDiagnostics)
+            .Concat(unexpectedRecordCountDiagnostics)
+            .Concat(staleApprovalDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
         }
     }
 
@@ -639,6 +806,168 @@ public sealed class GovernanceCompletenessGateTests
             else if (reviewBy <= today)
             {
                 diagnostics.Add(new("exit-criteria", "approval_stale", criterion, path));
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
+    private static GateDiagnostic[] EvaluateC7DecisionEvidence(
+        YamlMappingNode row,
+        string actualDigest,
+        ApprovalPolicy policy,
+        DateOnly today)
+    {
+        const string path = "docs/exit-criteria/c0-c13-governance-evidence.yaml";
+        List<GateDiagnostic> diagnostics = [];
+
+        if (!string.Equals(TryScalar(row, "evidence_version"), ApprovedC7Version, StringComparison.Ordinal))
+        {
+            diagnostics.Add(new("exit-criteria", "approval_evidence_version_mismatch", "C7", path));
+        }
+
+        string? evidenceDigest = TryScalar(row, "evidence_sha256");
+        if (evidenceDigest is null)
+        {
+            diagnostics.Add(new("exit-criteria", "approval_evidence_digest_missing", "C7", path));
+        }
+        else if (!string.Equals(evidenceDigest, actualDigest, StringComparison.Ordinal)
+            || !Regex.IsMatch(evidenceDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+        {
+            diagnostics.Add(new("exit-criteria", "approval_evidence_digest_mismatch", "C7", path));
+        }
+
+        Dictionary<string, int> expectedTiming = new(StringComparer.Ordinal)
+        {
+            ["lock_renewal_interval_seconds"] = 30,
+            ["authorization_revalidation_interval_seconds"] = 15,
+            ["revocation_effect_slo_seconds"] = 60,
+            ["expired_to_stale_threshold_seconds"] = 60,
+        };
+        Dictionary<string, int> observedTiming = new(StringComparer.Ordinal);
+        bool timingInvalid = false;
+
+        if (!row.Children.TryGetValue(new YamlScalarNode("timing_profile"), out YamlNode? timingNode)
+            || timingNode is not YamlMappingNode timing)
+        {
+            timingInvalid = true;
+        }
+        else
+        {
+            string[] observedKeys = timing.Children.Keys
+                .OfType<YamlScalarNode>()
+                .Select(key => key.Value ?? string.Empty)
+                .ToArray();
+            if (observedKeys.Length != expectedTiming.Count
+                || observedKeys.Any(key => !expectedTiming.ContainsKey(key)))
+            {
+                timingInvalid = true;
+            }
+
+            foreach (KeyValuePair<string, int> expected in expectedTiming)
+            {
+                string? raw = TryScalar(timing, expected.Key);
+                if (!int.TryParse(raw, NumberStyles.None, CultureInfo.InvariantCulture, out int value)
+                    || value <= 0
+                    || value != expected.Value)
+                {
+                    timingInvalid = true;
+                    continue;
+                }
+
+                observedTiming[expected.Key] = value;
+            }
+
+            if (observedTiming.TryGetValue("authorization_revalidation_interval_seconds", out int revalidation)
+                && observedTiming.TryGetValue("revocation_effect_slo_seconds", out int revocationSlo)
+                && revalidation > revocationSlo)
+            {
+                timingInvalid = true;
+            }
+        }
+
+        if (timingInvalid)
+        {
+            diagnostics.Add(new("exit-criteria", "c7_timing_profile_invalid", "C7", path));
+        }
+
+        string[] expectedAuthorities = ["Architecture", "Security"];
+        if (!row.Children.TryGetValue(new YamlScalarNode("approval"), out YamlNode? approvalNode)
+            || approvalNode is not YamlMappingNode approval)
+        {
+            diagnostics.Add(new("exit-criteria", "approval_record_missing", "C7", path));
+            return diagnostics.ToArray();
+        }
+
+        string[] requiredAuthorities = approval.Children.TryGetValue(new YamlScalarNode("required_authorities"), out YamlNode? authoritiesNode)
+            && authoritiesNode is YamlSequenceNode authorities
+                ? authorities.Children.OfType<YamlScalarNode>().Select(node => node.Value ?? string.Empty).ToArray()
+                : [];
+        if (requiredAuthorities.Length != expectedAuthorities.Length
+            || requiredAuthorities.Distinct(StringComparer.Ordinal).Count() != expectedAuthorities.Length
+            || expectedAuthorities.Any(authority => !requiredAuthorities.Contains(authority, StringComparer.Ordinal)))
+        {
+            diagnostics.Add(new("exit-criteria", "approval_authority_unsatisfied", "C7:required-authorities", path));
+        }
+
+        YamlMappingNode[] records = approval.Children.TryGetValue(new YamlScalarNode("records"), out YamlNode? recordsNode)
+            && recordsNode is YamlSequenceNode recordSequence
+                ? recordSequence.Children.OfType<YamlMappingNode>().ToArray()
+                : [];
+        if (records.Length != expectedAuthorities.Length)
+        {
+            diagnostics.Add(new("exit-criteria", "approval_authority_unsatisfied", "C7:record-count", path));
+        }
+
+        foreach (string authority in expectedAuthorities)
+        {
+            YamlMappingNode[] matches = records
+                .Where(record => string.Equals(TryScalar(record, "authority"), authority, StringComparison.Ordinal))
+                .ToArray();
+            if (matches.Length != 1)
+            {
+                diagnostics.Add(new("exit-criteria", "approval_authority_unsatisfied", $"C7:{authority}", path));
+                continue;
+            }
+
+            YamlMappingNode record = matches[0];
+            string identifier = $"C7:{authority}";
+            if (!string.Equals(TryScalar(record, "approver"), "Administrator", StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("exit-criteria", "c7_approval_identity_mismatch", identifier, path));
+            }
+
+            if (!string.Equals(TryScalar(record, "approved_on"), "2026-09-12", StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("exit-criteria", "c7_approval_date_mismatch", identifier, path));
+            }
+            else
+            {
+                DateOnly approvedOn = new(2026, 9, 12);
+                if (approvedOn > today)
+                {
+                    diagnostics.Add(new("exit-criteria", "approval_date_future", identifier, path));
+                }
+                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                {
+                    diagnostics.Add(new("exit-criteria", "approval_stale", identifier, path));
+                }
+            }
+
+            if (!string.Equals(TryScalar(record, "evidence_version"), ApprovedC7Version, StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("exit-criteria", "approval_evidence_version_mismatch", identifier, path));
+            }
+
+            string? recordDigest = TryScalar(record, "evidence_sha256");
+            if (recordDigest is null)
+            {
+                diagnostics.Add(new("exit-criteria", "approval_evidence_digest_missing", identifier, path));
+            }
+            else if (!string.Equals(recordDigest, actualDigest, StringComparison.Ordinal)
+                || !Regex.IsMatch(recordDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+            {
+                diagnostics.Add(new("exit-criteria", "approval_evidence_digest_mismatch", identifier, path));
             }
         }
 

@@ -124,6 +124,14 @@ public sealed class WorkspaceLockContractGroupTests
         RequiredEnumValues(schemas, "WorkspaceTransitionResult").ShouldContain("state_transition_invalid");
         RequiredEnumValues(schemas, "WorkspaceTransitionResult").ShouldContain("authorization_revoked");
 
+        string requestedLeaseDescription = GetScalar(
+            RequiredMapping(RequiredMapping(RequiredMapping(schemas, "LockWorkspaceRequest"), "properties"), "requestedLeaseSeconds"),
+            "description");
+        requestedLeaseDescription.ShouldContain("expiresAt` equals the lock `effectiveAt` plus `requestedLeaseSeconds", Case.Sensitive);
+        requestedLeaseDescription.ShouldContain("expired at `now >= expiresAt`", Case.Sensitive);
+        requestedLeaseDescription.ShouldContain("successful authorized renewal", Case.Sensitive);
+        requestedLeaseDescription.ShouldNotContain("metadata only", Case.Insensitive);
+
         string[] requiredExamples =
         [
             "WorkspaceLockStatus",

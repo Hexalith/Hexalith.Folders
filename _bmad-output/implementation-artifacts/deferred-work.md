@@ -2923,3 +2923,31 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `_bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md`
   summary: `_bmad-output/project-context.md:99` still instructs agents to keep skipped E2E placeholders until Epic 6 story 6-2.
   evidence: That bullet now contradicts both READMEs this story rewrote, so agents reading project-context may re-add the placeholders just retired. Frozen Decisions explicitly keep that surface, and it is an agent-context file. Settle by sweeping the E2E bullet when Story 11.13 synchronizes planning/maintenance documents.
+
+- source_spec: none
+  summary: Complete OQ2 by publishing and approving the canonical file-policy contract and cross-surface tests.
+  evidence: Split from the OQ1-OQ4 request because file-policy vocabulary and allow/reject behavior are independently reviewable and shippable from the OQ1 lock-timing decision.
+
+- source_spec: none
+  summary: Complete OQ3 by publishing and approving the canonical authorization matrix and permission representation.
+  evidence: Split from the OQ1-OQ4 request because the actor/access-state authorization denominator is independently reviewable and shippable from the OQ1 lock-timing decision.
+
+- source_spec: none
+  summary: Complete OQ4 by finishing and approving the provider compatibility catalog and GitHub/Forgejo live-drift evidence.
+  evidence: Split from the OQ1-OQ4 request because provider profiles, readiness evidence, and C12 governance are independently reviewable and shippable from the OQ1 lock-timing decision.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq1-approve-lock-authorization-timing.md`
+  summary: Define and prove the authoritative clock and skew policy for distributed C7 renewal, revocation, expiry, and stale boundaries.
+  evidence: C7 fixes inclusive timestamp boundaries, but the clock-skew/time-source policy predates OQ1 as an explicit runtime deferral; the future renewal/revocation consumer must select and test the clock before NFR7/NFR21 executable evidence can close.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq1-approve-lock-authorization-timing.md`
+  summary: Define tenant timing-override representation, activation, invalid-configuration fallback, supported lower bounds, and treatment of already-held locks.
+  evidence: No tenant timing-override runtime exists. C7 supplies tightening-only numeric ceilings and the revalidation/SLO relationship, but the future policy consumer must settle configuration and activation semantics before overrides become active.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq1-approve-lock-authorization-timing.md`
+  summary: Reconcile the concurrent `Hexalith.EventStore` gitlink move independently from OQ1.
+  evidence: The root gitlink moved from `fe05a796faa46f6486f615c119809148347c9a25` to `17779677e30ad8f3b525a3e75841d3be9ab61731` after the OQ1 baseline; it is unrelated user work and must not be reverted or attributed to this story.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq1-approve-lock-authorization-timing.md`
+  summary: Make generic governance approval evaluation reject a present malformed or empty `review_by` value.
+  evidence: The pre-existing evaluator validates only a non-empty scalar `review_by`; an empty scalar or mapping is silently ignored. C7 does not currently use `review_by`, so this belongs to generic governance hardening.

@@ -36,8 +36,8 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
   governance criterion already marked `approved` in `docs/exit-criteria/c0-c13-governance-evidence.yaml` still
   stays `reference-pending` while a separately-owned downstream evidence or conformance-guard gap remains:
   criterion approval and NFR-row status are distinct tracks, so approving the criterion never auto-converts
-  its cited rows (precedent: `C3` with `NFR60`, and `C4` with `NFR30` / `NFR33`, are approved criteria whose
-  cited rows stay reference-pending below).
+  its cited rows (precedent: `C3` with `NFR60`, `C4` with `NFR30` / `NFR33`, and `C7` with `NFR7` /
+  `NFR21` are approved criteria whose cited rows stay reference-pending below).
 
 ## NFR traceability table
 
@@ -50,7 +50,7 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
 | NFR4 | Security & Tenant Isolation | 8dcefb5d7669 | covered | `7-6` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-safety-invariant-gates.ps1` | `C9` | — | Security | Not release-blocking; automated evidence current. |
 | NFR5 | Security & Tenant Isolation | b3b6047dbf5b | covered | `7-6` | `tests/tools/run-security-redaction-ci-gates.ps1` | `C9` | — | Security | Not release-blocking; automated evidence current. |
 | NFR6 | Security & Tenant Isolation | 4980431b2d0b | covered | `7-6` | `tests/tools/run-safety-invariant-gates.ps1` | `C8` | — | Safety Invariants | Not release-blocking; automated evidence current. |
-| NFR7 | Security & Tenant Isolation | 364d8a0de490 | reference-pending | `4-3` | `tests/tools/run-governance-completeness-gates.ps1` | `C7` | — | Architecture | Release-blocking: C7 authorization-revalidation budget and mid-task revocation evidence remain deferred. |
+| NFR7 | Security & Tenant Isolation | 364d8a0de490 | reference-pending | `4-3` | `tests/tools/run-governance-completeness-gates.ps1` | `C7` | — | Architecture | Release-blocking: C7 timing is approved; mid-task revocation executable evidence remains separately deferred. |
 | NFR8 | Security & Tenant Isolation | 2acb1b25e69a | reference-pending | `6-12` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` | `C9` | `docs/operations/audit-and-redaction.md` | Security / Projections | Release-blocking: the C9 tenant-confidential projection write-time correlation-token override lacks production implementation evidence. |
 | NFR9 | Security & Tenant Isolation | 0d7ced37babf | covered | `7-15` | `tests/tools/run-provider-error-docs-gates.ps1` | `docs/operations/production-identity-and-secrets.md` | — | Security | Not release-blocking; automated evidence current. |
 | NFR10 | Security & Tenant Isolation | 856688113814 | covered | `7-6` `7-15` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-provider-error-docs-gates.ps1` | `docs/operations/provider-integration-and-testing.md` | — | Security | Not release-blocking; automated evidence current. |
@@ -64,7 +64,7 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
 | NFR18 | Reliability, Idempotency & Failure Visibility | aad318ad1f0e | covered | `4-11` | `tests/tools/run-contract-parity-ci-gates.ps1` | `C13` | — | Contracts | Not release-blocking; automated evidence current. |
 | NFR19 | Reliability, Idempotency & Failure Visibility | 72b863dac04f | covered | `4-11` | `tests/tools/run-contract-parity-ci-gates.ps1` | `C13` | — | Contracts | Not release-blocking; automated evidence current. |
 | NFR20 | Reliability, Idempotency & Failure Visibility | f720f96adc61 | covered | `4-3` | `tests/tools/run-contract-parity-ci-gates.ps1` | `C13` | — | Lifecycle | Not release-blocking; automated evidence current. |
-| NFR21 | Reliability, Idempotency & Failure Visibility | 529873496722 | reference-pending | `4-3` | `tests/tools/run-governance-completeness-gates.ps1` | `C7` | — | Architecture | Release-blocking: C7 lock-renewal and authorization-revalidation executable evidence remains deferred. |
+| NFR21 | Reliability, Idempotency & Failure Visibility | 529873496722 | reference-pending | `4-3` | `tests/tools/run-governance-completeness-gates.ps1` | `C7` | — | Architecture | Release-blocking: C7 timing is approved; lock-renewal and authorization-revalidation executable evidence remains separately deferred. |
 | NFR22 | Reliability, Idempotency & Failure Visibility | f0aa0ecd8f0e | covered | `4-4` | `tests/tools/run-contract-parity-ci-gates.ps1` | `C13` | — | Lifecycle | Not release-blocking; automated evidence current. |
 | NFR23 | Reliability, Idempotency & Failure Visibility | 2032217fba61 | reference-pending | `12-4` | `tests/tools/run-contract-parity-ci-gates.ps1` | `C6` | `docs/operations/provider-integration-and-testing.md` | Provider / Delivery | Release-blocking: Story 12.4 real Git execution must prove provider-confirmed durable remote/ref success and no-blind-retry outcomes. |
 | NFR24 | Reliability, Idempotency & Failure Visibility | 18996c70babc | covered | `4-13` | `tests/tools/run-contract-parity-ci-gates.ps1` | `docs/operations/canonical-error-catalog.md` | — | Lifecycle | Not release-blocking; automated evidence current. |
@@ -161,8 +161,10 @@ evidence. They are kept honest here and in `_bmad-output/gates/nfr-traceability/
 maintenance runbooks for alerts, rollback, provider drift, reconciliation, and incident-mode operations — this
 bridge only cross-links to existing evidence and does not author those artifacts.
 
-- `C7` — lock revalidation budget and mid-task revocation evidence. Owner: Architecture. Consuming story:
-  `4-3`. Surfaced by NFR7 and NFR21.
+- `C7` — the governed timing values are approved in
+  `docs/exit-criteria/c7-lock-authorization-timing.md`; renewal, authorization revalidation, and mid-task
+  revocation still lack executable runtime evidence. Owner: Architecture. Consuming story: `4-3`. Surfaced
+  by NFR7 and NFR21.
 - `C9` — the classification decision is approved, but the tenant-confidential projection write-time
   correlation-token override still lacks production evidence. Owner: Security / Projections. Consuming story:
   `6-12`. Surfaced by NFR8 and NFR54.

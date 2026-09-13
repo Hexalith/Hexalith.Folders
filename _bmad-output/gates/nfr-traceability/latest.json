@@ -4,7 +4,7 @@
   "exit_code": 0,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
-  "source_commit": "154215c60438a5dae14f660609f7f181c818091f",
+  "source_commit": "e7386ceab65beeb60019761d8253cc35d867720f",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
   "nfr_total": 73,
   "category_total": 9,
@@ -35,7 +35,7 @@
       "criterion": "C7",
       "owner": "Architecture",
       "consuming_story": "4-3",
-      "gap": "authorization-revalidation-budget-and-mid-task-revocation-evidence"
+      "gap": "runtime-authorization-revalidation-and-mid-task-revocation-evidence"
     },
     {
       "nfr": "NFR8",

@@ -60,8 +60,9 @@ approval_policy:
 # nfr-traceability.md "Status semantics"). A criterion's `approved` status here and the status of the NFR
 # rows that cite it in nfr-traceability.md are separately-owned tracks: approving a criterion does NOT
 # auto-convert its cited NFR rows to `covered`, and a lingering `reference-pending` NFR row does NOT reopen
-# this approval. C3 and C4 are approved below yet still own reference-pending rows (NFR57 cites C3; NFR26 and
-# NFR28 cite C4), hard-pinned by NfrTraceabilityConformanceTests.ReferencePendingRowsAreOwnedAndSurfaceKnownGaps.
+# this approval. C3, C4, and C7 are approved below yet still own reference-pending rows (NFR60 cites C3;
+# NFR30 and NFR33 cite C4; NFR7 and NFR21 cite C7), hard-pinned by
+# NfrTraceabilityConformanceTests.ReferencePendingRowsAreOwnedAndSurfaceKnownGaps.
 criteria:
   - criterion_id: C0
     title: Contract Spine source of truth
@@ -141,16 +142,33 @@ criteria:
   - criterion_id: C7
     title: Lock revalidation budget evidence
     owner: Architecture
-    status: reference_pending
-    artifact_path: _bmad-output/planning-artifacts/architecture.md
+    status: approved
+    artifact_path: docs/exit-criteria/c7-lock-authorization-timing.md
+    evidence_version: '1.0.0'
+    evidence_sha256: 47da9d95b5d809a08b0c6097fc9ad97e8bd22e156ee1789f98870345c6be4403
+    timing_profile:
+      lock_renewal_interval_seconds: 30
+      authorization_revalidation_interval_seconds: 15
+      revocation_effect_slo_seconds: 60
+      expired_to_stale_threshold_seconds: 60
     verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
-    result_summary: Architecture records lock revalidation intent; executable lock evidence is deferred to Epic 4.
-    open_policy_placeholders:
-      - id: C7-lock-revalidation
-        owner: Architecture
-        reason: Lock implementation and revocation tests do not exist until workspace lifecycle stories.
-        verification_gap: Lock revalidation budget tests and mid-task revocation coverage are absent.
-        consuming_story: 4-3-acquire-task-scoped-workspace-lock
+    result_summary: C7 version 1.0.0 fixes the 30-second renewal, 15-second authorization revalidation, 60-second revocation-effect SLO, and 60-second expired-to-stale threshold; executable runtime evidence remains separately reference-pending in NFR7 and NFR21.
+    open_policy_placeholders: []
+    approval:
+      required_authorities:
+        - Architecture
+        - Security
+      records:
+        - authority: Architecture
+          approver: Administrator
+          approved_on: '2026-09-12'
+          evidence_version: '1.0.0'
+          evidence_sha256: 47da9d95b5d809a08b0c6097fc9ad97e8bd22e156ee1789f98870345c6be4403
+        - authority: Security
+          approver: Administrator
+          approved_on: '2026-09-12'
+          evidence_version: '1.0.0'
+          evidence_sha256: 47da9d95b5d809a08b0c6097fc9ad97e8bd22e156ee1789f98870345c6be4403
   - criterion_id: C8
     title: Context-query authorization evidence
     owner: Contracts

@@ -253,7 +253,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-CURRENT-05: Epic 12 owns durable source events, authoritative file content/state, restart replay, task completion, durable Git-execution orchestration, and recoverable at-least-once egress. Stories 3.11 and 3.13 own the production-registered provider-private mutation, explicit-commit, and status adapter seams that Epic 12 consumes; Epic 12 does not reimplement those transports or own consuming product projections.
 - AR-CURRENT-06: Epic 4 owns workspace transition evidence and durable prepare/lock/mutation/context/commit/reconciliation proof; Epic 6 owns seven populated diagnostic projections and deployed operator/incident journeys; Epic 10 owns the search bridge, deployed Server registration, current-authority hydration/redaction/pruning, and the non-empty FR58 round trip.
 - AR-CURRENT-07: Story 11.10 owns EventStore admission and subscription-mapping seam adoption only. Story 11.14 owns Memories publication/search-client seams, and Story 11.15 owns the DCP-capable cross-repository verification lane. Workstream 11 owns no product projection.
-- AR-CURRENT-08: The governing dependency sequence is OQ1–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun.
+- AR-CURRENT-08: OQ1's approved C7 timing profile is closed; the governing dependency sequence is OQ2–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun.
 - AR-CURRENT-09: Authorization order is JWT validation → EventStore claim transform → fresh tenant-access evidence → folder ACL → EventStore validator → Dapr deny-by-default policy. Authorization must precede any protected lookup, counting, filtering, provider call, file/content access, audit access, or search egress.
 - AR-CURRENT-10: The serializing lock identity is managed tenant plus canonical provider/repository identity plus normalized target ref. Folder/workspace/task IDs are metadata, aliases collide, and lock state is distinct from lifecycle and disposition.
 - AR-CURRENT-11: Every mutation follows the EventStore-owned durable admission contract; every read rejects an idempotency key before source execution. Live-equivalent replay, live-conflict, and expired-key precedence are distinct, and consumed-key evidence survives replay-result expiry without retaining protected prior intent.
@@ -303,7 +303,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-AUTHZ-01: Implement layered authorization: JWT validation → Hexalith.EventStore claim transform (`eventstore:tenant`, `eventstore:permission`) → local fail-closed-on-stale tenant-access projection → folder ACL → EventStore validators → production Dapr deny-by-default policies + mTLS.
 - AR-AUTHZ-02: Wire `Hexalith.Folders.Client.Subscription.MapTenantEventSubscription` consuming `system.tenants.events` Dapr pub/sub; build local `FolderTenantAccessProjection` (Dapr state) for fail-closed authorization.
 - AR-AUTHZ-03: Implement Tenants-availability degraded mode: read paths continue under bounded staleness; mutations require fresh authorization (synchronous Tenants query or rejection). Health check `TenantsAvailabilityCheck`.
-- AR-AUTHZ-04: Implement mid-task authorization revalidation per C7 two-number lock contract (lease-renewal interval AND auth-revalidation interval, default + per-tenant tunable, tied to stated SLO "revoked tenant access takes effect within N seconds").
+- AR-AUTHZ-04: Implement the approved C7 four-value profile: 30-second lock renewal, 15-second authorization revalidation, 60-second revocation-effect SLO, and 60-second expired-to-stale threshold. Tenant overrides may only tighten these values.
 - AR-AUTHZ-05: Tenant context provenance middleware: authoritative tenant comes from request authentication context + EventStore envelope; tenant-in-payload is INPUT requiring validation, never authority. Tested as parity invariant on REST/CLI/MCP/SDK.
 
 #### Provider Adapters
@@ -592,7 +592,7 @@ Security and operations stakeholders can harden the surfaces that already claim 
 
 ### Governing Portfolio Dependency
 
-`OQ1–OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`.
+OQ1's approved C7 timing profile is closed. The remaining sequence is `OQ2–OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`.
 
 Stable epic numbers are retained for historical traceability, so numeric order is not execution order. No product completion claim may be supported only by NoOp, in-memory, seed, unavailable, safe-empty, or fake evidence.
 
@@ -2611,7 +2611,7 @@ Authorized developers and AI agents can persist folder lifecycle and file conten
 
 **FRs covered:** FR1–FR3, FR9–FR14, FR18–FR21, FR24–FR46, FR58.
 
-**Prerequisite decisions:** OQ1–OQ4 where they govern timing, file policy, authorization, provider compatibility, and reconciliation. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
+**Prerequisite decisions:** OQ1's C7 timing profile is approved; OQ2–OQ4 remain prerequisite decisions where they govern file policy, authorization, provider compatibility, and reconciliation. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
 
 ### Story 12.1: EventStore-backed folder repository, retire NoOp, and implement projection replay
 
@@ -2621,7 +2621,7 @@ So that accepted lifecycle operations survive process restart and Production can
 
 **Acceptance Criteria:**
 
-**Given** OQ1–OQ4 prerequisites affecting the durable boundary are recorded
+**Given** OQ1's approved C7 timing profile and the OQ2–OQ4 prerequisites affecting the durable boundary are recorded
 **When** the real REST → EventStore gateway → processor → authorization gate → repository path accepts folder or organization behavior
 **Then** metadata-only events append durably, `IFolderRepository` and required organization state rebuild from ordered streams, `/project` consumes events rather than returning 501, the ADR-0001 `DomainResult.NoOp()` path is retired, and Production boots with a real registration
 **And** empty-checkpoint replay, host restart, append conflict/reread, equivalent/conflicting idempotency, wrong-tenant/authorization denial, corrupt/unavailable store, timeout, event-version boundary, and sensitive-data exclusion are proven

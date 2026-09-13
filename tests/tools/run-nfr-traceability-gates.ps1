@@ -7,6 +7,7 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+$PSNativeCommandUseErrorActionPreference = $false
 
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
     Write-Error 'NFR-TRACEABILITY-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the NFR traceability gate.'
@@ -33,6 +34,7 @@ $runnerMethods = @(
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocStaysMetadataOnlyWithOperatorBoilerplate',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.GovernanceEvidenceReferencePendingCriteriaStaySurfaced',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGateScriptFailsClosedAndEmitsBoundedEvidence',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGatePreservesNativeFailureExitWithoutEchoingOutput',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ContractSpineWorkflowAndBaselineCiWireNfrTraceabilityGate',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ReleasePackageWiringRequiresNfrTraceabilityEvidence',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGateRunsOnlyInReleasePrerequisiteJob',
@@ -69,7 +71,7 @@ function Write-NfrTraceabilityReport {
     # gate can reject an unowned gap. These mirror the reference-pending rows in
     # docs/exit-criteria/nfr-traceability.md and the conformance test asserts the two stay in sync.
     $releaseBlockingGaps = @(
-        [ordered]@{ nfr = 'NFR7'; criterion = 'C7'; owner = 'Architecture'; consuming_story = '4-3'; gap = 'authorization-revalidation-budget-and-mid-task-revocation-evidence' },
+        [ordered]@{ nfr = 'NFR7'; criterion = 'C7'; owner = 'Architecture'; consuming_story = '4-3'; gap = 'runtime-authorization-revalidation-and-mid-task-revocation-evidence' },
         [ordered]@{ nfr = 'NFR8'; criterion = 'C9'; owner = 'Security / Projections'; consuming_story = '6-12'; gap = 'tenant-confidential-write-time-correlation-token-projection-evidence' },
         [ordered]@{ nfr = 'NFR21'; criterion = 'C7'; owner = 'Architecture'; consuming_story = '4-3'; gap = 'lock-renewal-and-authorization-revalidation-evidence' },
         [ordered]@{ nfr = 'NFR23'; criterion = ''; owner = 'Provider / Delivery'; consuming_story = '12-4'; gap = 'provider-confirmed-durable-commit-evidence' },
@@ -139,8 +141,14 @@ function Get-ExecutedTestCount {
 
 function Invoke-XunitInProcessFallback {
     $script:usedXunitFallback = $true
-    Write-Host 'NFR-TRACEABILITY category=static-nfr-traceability vstest-socket-denied=true fallback=xunit-in-process'
-    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests'
+    Write-Host 'NFR-TRACEABILITY category=static-nfr-traceability vstest-unavailable=true fallback=xunit-in-process'
+    $runnerDirectory = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0'
+    $runnerFileName = 'Hexalith.Folders.Contracts.Tests'
+    if ($IsWindows) {
+        $runnerFileName += '.exe'
+    }
+
+    $runnerPath = Join-Path $runnerDirectory $runnerFileName
     if (-not (Test-Path $runnerPath)) {
         Write-NfrTraceabilityReport -Status 'failed' -ExitCode 1
         Write-Error 'NFR-TRACEABILITY-GATE-VACUOUS: xUnit in-process runner missing for NfrTraceabilityConformanceTests.'
@@ -149,7 +157,6 @@ function Invoke-XunitInProcessFallback {
 
     $runnerOutput = & $runnerPath -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests 2>&1
     $runnerExitCode = $LASTEXITCODE
-    $runnerOutput | ForEach-Object { Write-Host $_ }
 
     [int]$executedTests = Get-ExecutedTestCount -Output $runnerOutput
     if ($executedTests -lt $runnerMethods.Count) {
@@ -159,9 +166,12 @@ function Invoke-XunitInProcessFallback {
     }
 
     if ($runnerExitCode -ne 0) {
+        Write-Host "NFR-TRACEABILITY category=static-nfr-traceability fallback-native-test-failed=true exit_code=$runnerExitCode"
         Write-NfrTraceabilityReport -Status 'failed' -ExitCode $runnerExitCode
         exit $runnerExitCode
     }
+
+    Write-Host "NFR-TRACEABILITY category=static-nfr-traceability fallback-executed=$executedTests"
 }
 
 try {
@@ -173,15 +183,17 @@ try {
 
     if (-not $SkipRestoreBuild) {
         dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
-        if ($LASTEXITCODE -ne 0) {
-            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $LASTEXITCODE
-            exit $LASTEXITCODE
+        $restoreExitCode = $LASTEXITCODE
+        if ($restoreExitCode -ne 0) {
+            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $restoreExitCode
+            exit $restoreExitCode
         }
 
         dotnet build Hexalith.Folders.slnx --no-restore -m:1
-        if ($LASTEXITCODE -ne 0) {
-            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $LASTEXITCODE
-            exit $LASTEXITCODE
+        $buildExitCode = $LASTEXITCODE
+        if ($buildExitCode -ne 0) {
+            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $buildExitCode
+            exit $buildExitCode
         }
     }
 
@@ -192,13 +204,17 @@ try {
     }
 
     $testOutput = dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter $testFilter --results-directory $reportDirectory --logger "trx;LogFileName=$trxName" 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        if (($testOutput -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied') {
+    $testExitCode = $LASTEXITCODE
+    if ($testExitCode -ne 0) {
+        $testFailure = $testOutput -join [Environment]::NewLine
+        if ($testFailure -match 'System\.Net\.Sockets\.SocketException.*Permission denied' -or
+            $testFailure -match 'Testing with VSTest target is no longer supported by Microsoft\.Testing\.Platform') {
             Invoke-XunitInProcessFallback
         }
         else {
-            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $LASTEXITCODE
-            exit $LASTEXITCODE
+            Write-Host "NFR-TRACEABILITY category=static-nfr-traceability native-test-failed=true exit_code=$testExitCode"
+            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $testExitCode
+            exit $testExitCode
         }
     }
     else {
