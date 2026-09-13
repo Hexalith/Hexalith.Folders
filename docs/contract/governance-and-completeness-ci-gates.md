@@ -27,6 +27,8 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 
 - `docs/exit-criteria/c0-c13-governance-evidence.yaml`
 - `docs/exit-criteria/c7-lock-authorization-timing.md`
+- `docs/contract/file-context-contract-groups.md`
+- `docs/contract/oq2-file-policy-evidence.yaml`
 - `tests/fixtures/idempotency-encoding-corpus.json`
 - `tests/fixtures/idempotency-encoding-corpus.schema.json`
 - `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
@@ -55,6 +57,12 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `c7_timing_profile_invalid`: a C7 timing value is missing, differs from the approved profile, is not positive, or violates the authorization-revalidation-to-revocation-SLO relationship.
 - `c7_approval_identity_mismatch`: a C7 approval record does not name the exact approved signer, reported without echoing the unexpected value.
 - `c7_approval_date_mismatch`: a C7 approval record does not carry the exact approved date, reported without echoing the unexpected value.
+- `oq2_evidence_missing`: the OQ2 manifest, canonical policy binding, approval block, or required runtime-posture declaration is absent.
+- `oq2_evidence_mismatch`: OQ2 evidence identity, status, policy version/path/digest, approval date, canonical surface inventory, or runtime posture differs from the approved package.
+- `oq2_approval_incomplete`: one of PM, Architecture, or Security has no single approval record.
+- `oq2_approval_extra`: the OQ2 authority or record set contains an unexpected or duplicate entry.
+- `oq2_approval_identity_mismatch`: an OQ2 approval record does not name Administrator, reported without echoing the unexpected value.
+- `oq2_approval_date_mismatch`: an OQ2 approval record does not carry 2026-09-13, reported without echoing the unexpected value.
 - `idempotency_sample_unmapped`: a corpus sample lacks exactly one stable consumption map entry.
 - `pattern_example_invalid`: a C# example is unmarked, stale, or not part of the compilable examples project.
 - `cache_key_unscoped`: a tenant-data cache key candidate lacks tenant scope and no reviewed exception applies.
@@ -73,6 +81,14 @@ Approval-backed criteria (those whose `approved` status rests on a human governa
 C7 additionally binds `evidence_version`, the SHA-256 digest of `docs/exit-criteria/c7-lock-authorization-timing.md`, and the four whole-second timing values to both Architecture and Security records. `GovernanceCompletenessGateTests.C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` rejects value, version, digest, authority, signer, or date drift. A C7 artifact change reopens OQ1 until both authorities approve the new version and digest. This governance approval does not claim runtime coverage: NFR7 and NFR21 remain `reference-pending` until renewal and revocation behavior is executable and evidenced.
 
 The bespoke C3 retention checks in `RetentionAndTenantDeletionConformanceTests` remain the stricter retention-specific gate; this generic floor covers every approval-backed criterion, including future ones.
+
+OQ2 uses a separate versioned manifest because it governs the file-policy decision rather than one C0-C13
+criterion row. `GovernanceCompletenessGateTests.Oq2FilePolicyPackageBindsVersionDigestApprovalsAndRuntimePosture`
+binds `docs/contract/file-context-contract-groups.md` version `1.0.0` and its LF-stable SHA-256 digest to
+exactly one PM, one Architecture, and one Security approval by Administrator dated 2026-09-13. Missing,
+mismatched, stale, extra, or incomplete evidence fails closed with bounded metadata-only diagnostics. A policy
+content/version/digest change reopens all three approvals. The manifest deliberately keeps Stories 12.1,
+12.3, and 4.20 and FR32-FR35 runtime evidence incomplete; design approval is not runtime completion.
 
 ## Contribution Checklist
 

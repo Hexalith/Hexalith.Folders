@@ -80,16 +80,18 @@ releaseMode: phased
 title: 'Product Requirements Document — Hexalith.Folders'
 status: final
 created: '2026-05-05'
-updated: '2026-09-12'
+updated: '2026-09-13'
 finalized: '2026-07-15'
 completedAt: '2026-05-07'
-lastEdited: '2026-09-12'
+lastEdited: '2026-09-13'
 implementationReadiness: not-ready
 implementationReadinessAssessedAt: '2026-08-04'
 implementationReadinessSource: '_bmad-output/planning-artifacts/implementation-readiness-report-2026-08-04.md'
 productMvpDecision: durable-repository-round-trip-required
 productMvpDecisionRatifiedAt: '2026-07-14'
 editHistory:
+  - date: '2026-09-13'
+    changes: 'Closed OQ2 as a governed design decision through canonical file-policy version 1.0.0 and its SHA-256-bound PM, Architecture, and Security approvals. Aligned the Contract Spine and offline conformance gates while preserving Stories 12.1, 12.3, and 4.20 and FR32-FR35 runtime evidence as incomplete.'
   - date: '2026-09-12'
     changes: 'Closed OQ1 through the Architecture + Security-approved C7 version 1.0.0 timing artifact: 30-second renewal, 15-second authorization revalidation, 60-second revocation-effect SLO, and 60-second expired-to-stale threshold, with tenant overrides restricted to tighter positive bounds and digest-bound governance records. Runtime NFR7/NFR21 evidence remains separately reference-pending.'
   - date: '2026-09-08'
@@ -888,7 +890,7 @@ Functional Requirements are organized by capability area. Each block traces back
 - FR35: Live-workspace context queries enforce authorization and path policy before filtering or shaping; body-search results contain only authorized C9-wrapped relative identity, line/byte location, match classification, and a bounded live snippet. Supported truncation sets `isTruncated`, range and file content are never silently truncated, and a request whose excess cannot be handled by supported truncation returns the stable input/response-limit result without logging raw queries, path lists, content, or hidden existence.
 - FR36: The operations console must remain read-only and excluded from file editing or file-content browsing capabilities.
 
-[NOTE FOR PM] OQ2 closes the file-policy vocabulary and exact allow/reject behaviour for FR32–FR35; the fail-closed defaults in Data Schemas apply until it closes.
+[NOTE FOR PM] OQ2 closed on 2026-09-13 through canonical file-policy version `1.0.0` and digest-bound PM, Architecture, and Security approval. This closes vocabulary and exact allow/reject behaviour only; Stories 12.1, 12.3, and 4.20 and FR32-FR35 runtime proof remain incomplete.
 
 ### Commit, Evidence, and Idempotency
 
@@ -1039,12 +1041,12 @@ Cross-workspace body-content indexing, indexed body snippets, and indexed body r
 
 ## Open Release Items
 
-OQ1 closed the lock timing parameter on 2026-09-12; OQ2–OQ4 still close product parameters and inventories that this PRD bounds but does not fully specify (file policy, the authorization matrix, and the supported-provider catalog). Their closure may refine FR25–FR35 within the fail-closed invariants above but may not weaken those invariants or the approved scope. OQ5–OQ10 close implementation and release evidence. Every still-open item, plus any item PD1 and PD3 add, must close before release acceptance. This inventory is incomplete until PD1 and PD3 resolve: Epic 12 (durable round trip) and Epic 13 (hardening) are release-blocking by the 2026-07-20 and 2026-08-04 approvals but have no row here yet; the candidate rows are the OQ11–OQ13 texts drafted in `reconcile-july-2026-synthesis.md` §8.
+OQ1 closed the lock timing parameter on 2026-09-12 and OQ2 closed the canonical file-policy design on 2026-09-13. OQ3–OQ4 still close product inventories that this PRD bounds but does not fully specify (the authorization matrix and supported-provider catalog). Their closure may refine the affected requirements within the fail-closed invariants above but may not weaken those invariants or the approved scope. OQ5–OQ10 close implementation and release evidence. Every still-open item, plus any item PD1 and PD3 add, must close before release acceptance. This inventory is incomplete until PD1 and PD3 resolve: Epic 12 (durable round trip) and Epic 13 (hardening) are release-blocking by the 2026-07-20 and 2026-08-04 approvals but have no row here yet; the candidate rows are the OQ11–OQ13 texts drafted in `reconcile-july-2026-synthesis.md` §8.
 
 | ID | Decision/evidence still open | Delivery owner | Blocking consequence and revisit condition | Canonical evidence and accountable approvers |
 | --- | --- | --- | --- | --- |
 | OQ1 | **Closed 2026-09-12:** approve C7 lock renewal at 30 seconds, authorization revalidation at 15 seconds, revocation effect within 60 seconds, and stale at the inclusive 60-second post-expiry boundary; tenant overrides may only tighten these bounds. | Architecture + Security | Closed by C7 governance approval; reopens on any artifact value, version, or SHA-256 digest change until both authorities reapprove. Runtime NFR7/NFR21 evidence remains a separate release gate. | `docs/exit-criteria/c7-lock-authorization-timing.md` version `1.0.0` plus `docs/exit-criteria/c0-c13-governance-evidence.yaml`; Architecture and Security approvals by Administrator on 2026-09-12, bound to the artifact digest. |
-| OQ2 | Publish the canonical file-policy vocabulary and exact allow/reject behavior for symlinks, Unicode/case collisions, encoding, binary/large files, include/exclude precedence, and safe-denial routing. | Architecture + Security + PM | Blocks final FR32–FR35 acceptance; close when the file-policy contract and cross-surface tests are approved. | `docs/contract/file-context-contract-groups.md`; PM, Architecture, and Security approvers. |
+| OQ2 | **Closed 2026-09-13:** canonical file-policy version `1.0.0` fixes the ASCII/500/NFC path profile, ordinal-ignore-case collision and no-follow link rejection, four server-owned classes, include/exclude precedence, mutation/content bounds, and 404-versus-416 routing. | Architecture + Security + PM | Closed as a governed design decision; reopens on policy content, version, digest, authority, signer, or date drift until all three authorities reapprove. Stories 12.1, 12.3, and 4.20 and FR32–FR35 runtime proof remain incomplete. | `docs/contract/file-context-contract-groups.md` plus `docs/contract/oq2-file-policy-evidence.yaml`; PM, Architecture, and Security approvals by Administrator on 2026-09-13, bound to SHA-256 `09a25950ee8db6e5417d543f1b0a16ed88364b898ddd3d7cd9d3c3628ef37dd4`. |
 | OQ3 | Publish the canonical actor/access-state × protected-operation authorization matrix used as the release denominator. | Security/Authorization | Blocks the authorization completeness gate; close when the inventory covers every canonical actor and negative case in the Actors table and every family in the Protected operation families table, and records the chosen permission representation. | `docs/contract/authorization-matrix.md` (to be created; OQ3); Security and PM approvers. |
 | OQ4 | Publish the supported-provider compatibility catalog: product/instance identity, observed versions/API profiles, accepted credential profiles, capability semantics, readiness outcomes, reconciliation check policy, per-call timeout, retry-limit, and backoff-cap ceilings, and the C12 provider live-drift evidence for GitHub and Forgejo. | Provider + Architecture | Blocks provider-ready status and provider contract acceptance; close when both providers pass against the catalog and C12 changes from reference-pending to approved. | `docs/contract/provider-compatibility-catalog.md`; Provider, Architecture, and PM approvers. |
 | OQ5 | Replace the fail-safe but functionally empty FR58 search/status facade with evidence for authorized non-empty metadata-token results, indexing status, stale/unauthorized hit removal, and unavailable behavior. | Search/Delivery | Blocks FR58 implementation readiness; close when coverage and tests round-trip FR58 and both C13 operations. | `docs/exit-criteria/fr58-search-evidence.md` (to be created; OQ5); PM, Security, and Test approvers. |

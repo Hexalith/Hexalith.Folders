@@ -1,0 +1,48 @@
+schema_version: '1.0.0'
+evidence_id: OQ2
+title: Canonical file-policy vocabulary and behavior
+status: design-approved
+release_gate_status: in-progress
+policy_version: '1.0.0'
+policy_path: docs/contract/file-context-contract-groups.md
+policy_sha256: 09a25950ee8db6e5417d543f1b0a16ed88364b898ddd3d7cd9d3c3628ef37dd4
+approved_on: '2026-09-13'
+canonical_surfaces:
+  - docs/contract/file-context-contract-groups.md
+  - src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+  - tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs
+  - tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+approval:
+  required_authorities:
+    - PM
+    - Architecture
+    - Security
+  records:
+    - authority: PM
+      approver: Administrator
+      approved_on: '2026-09-13'
+      evidence_version: '1.0.0'
+      evidence_sha256: 09a25950ee8db6e5417d543f1b0a16ed88364b898ddd3d7cd9d3c3628ef37dd4
+    - authority: Architecture
+      approver: Administrator
+      approved_on: '2026-09-13'
+      evidence_version: '1.0.0'
+      evidence_sha256: 09a25950ee8db6e5417d543f1b0a16ed88364b898ddd3d7cd9d3c3628ef37dd4
+    - authority: Security
+      approver: Administrator
+      approved_on: '2026-09-13'
+      evidence_version: '1.0.0'
+      evidence_sha256: 09a25950ee8db6e5417d543f1b0a16ed88364b898ddd3d7cd9d3c3628ef37dd4
+runtime_posture:
+  status: incomplete
+  incomplete_stories:
+    - '12.1'
+    - '12.3'
+    - '4.20'
+  functional_requirements:
+    FR32: incomplete
+    FR33: incomplete
+    FR34: incomplete
+    FR35: incomplete
+  evidence_claim: Governance approval closes the OQ2 design decision only; no runtime implementation or production evidence is claimed.
+reopen_policy: Any change to the canonical policy content, version, or SHA-256 digest reopens PM, Architecture, and Security approval.

@@ -1,71 +1,151 @@
 # File Mutation And Context Query Contract Groups
 
-Status: Story 1.9 contract-only authoring note.
+Status: OQ2 file-policy decision approved; downstream runtime evidence remains incomplete.
 
-This note records how the Story 1.9 Contract Spine additions must be reused by downstream stories. The OpenAPI document remains the source of truth; this file is only a small map for future implementation owners.
+Policy version: `1.0.0`
+
+Approved on: `2026-09-13`
+
+Approved by: `Administrator` for PM, Architecture, and Security
+
+Canonical policy artifact: `docs/contract/file-context-contract-groups.md`
+
+Governance evidence: `docs/contract/oq2-file-policy-evidence.yaml`
+
+This contract-only document is the canonical OQ2 file-policy decision. The OpenAPI Contract Spine remains the
+machine-readable surface contract and must reproduce this policy without weakening it. The policy is a
+governed design decision; it does not claim that file/workspace/provider/query runtime behavior or
+FR32-FR35 production evidence exists.
 
 ## Reuse Points
 
 - Story 1.10 must reuse the file mutation `operationId`, task, workspace, path metadata, retry eligibility, unknown outcome, and reconciliation vocabulary when commit and workspace status contracts are authored.
 - Story 1.11 must reuse the metadata-only audit keys and safe-denial behavior for audit timeline contracts.
+- Stories 12.1 and 12.3 own the durable event, state, content, and content-read prerequisites; Story 4.20 owns deployed mutation and bounded-context lifecycle proof.
 - Epic 4 owns runtime file mutation behavior, prepared-workspace checks, held-lock enforcement, path policy execution, context-query execution, provider/Git/filesystem side effects, and reconciliation.
 - Epic 5 owns SDK, CLI, and MCP behavioral parity over these operation groups.
 - Story 6.6 must reuse the same metadata-only context-query and workspace diagnostic labels in the read-only operations console.
 
-## Deferred Owners
+## Mandatory Evaluation Order And Atomicity
 
-- Runtime file mutation behavior: Epic 4.
-- Path policy enforcement and authorization-before-observation execution: Epic 4.
-- Context-query tree, metadata, search, glob, and range-read execution: Epic 4.
-- Semantic indexing and RAG retrieval integration: downstream Memories integration work; this story reserves only extension-safe vocabulary and does not implement semantic indexing.
-- Commit/status contracts: Story 1.10.
-- Audit timeline contracts: Story 1.11.
-- Operations-console projections: Story 6.6 and adjacent Epic 6 stories.
-- Generated SDK helpers and NSwag wiring: Story 1.12.
-- Final parity oracle rows and CI gates: Story 1.13 and later release-readiness stories.
+Every path-bearing operation preserves authorization and path policy before observation. Context queries
+use this contract-binding order:
 
-## Reference-Pending Decisions
-
-- C4 input limits are copied from `docs/exit-criteria/c4-input-limits.md` as proposed workshop values with PM approval still pending.
-- Story 1.6 foundation vocabulary and Story 1.8 workspace/lock references are reused rather than duplicated.
-- C6 state metadata is referenced from `docs/exit-criteria/c6-transition-matrix-mapping.md`; aggregate implementation is deferred.
-
-## Idempotency-equivalence and tenant authority partition
-
-`x-hexalith-idempotency-equivalence` lists for `AddFile`, `ChangeFile`, and `RemoveFile` deliberately omit `tenant_id`. Tenant authority is envelope-derived per `docs/contract/idempotency-and-parity-rules.md:11`: it MUST NOT appear in equivalence lists because the idempotency cache key is server-scoped to `(envelope_tenant_id, idempotency_key)`. The Story 1.9 spec subtask wording referencing `tenant_id` in the equivalence list reflects pre-canonical-rule drafting; the contract is correct as authored and the canonical doc is authoritative.
-
-## Authorization-order vocabulary
-
-Context-query operations declare authorization order both as human-readable prose (`x-hexalith-authorization.requirement`) and as a structured array (`x-hexalith-authorization.order`). Parity oracles, adapter generators, and audit-leakage tooling SHOULD consume the array form. The canonical token sequence is:
-
-```
+```text
 tenant_access -> folder_acl -> path_policy -> sensitivity_classification -> c4_bounds -> query_execution
 ```
 
-The order is contract-binding. Implementations MUST evaluate stages in this sequence; search-first/filter-later and retrieval-first/filter-later semantics are forbidden across REST, SDK, CLI, MCP, and future Memories integration.
+No implementation may stat, open, resolve, follow, scan, count, rank, filter, truncate, or shape a candidate
+before the authorization and path-policy stages that protect it. Search-first/filter-later and
+retrieval-first/filter-later are forbidden.
 
-## D-9 transport headers
+A mutation change set is validated as one atomic unit before any change is applied. If any path, link,
+policy, content, count, aggregate-size, authorization, workspace, or lock check fails, no part of the change
+set is applied and workspace/lock state remains unchanged. Diagnostics are bounded and metadata-only.
 
-The request-side header `X-Hexalith-Retry-As: [caller, operator]` signals retry allocation. The response-side header `X-Hexalith-Retry-Transport: [stream]` signals transport substitution and is emitted with `413 Payload Too Large` on inline file mutations. The names are deliberately disjoint so a caller echoing back a response value cannot trip request-side validation. `FileInlineTooLargeProblem` carries the canonical category only; the configured byte limit is not surfaced in the response body to keep 413 disclosure safe for pre-authentication callers.
+## Canonical Path Profile
 
-`PutFileStream` requests must carry observed transient staging evidence. A descriptor with only declared length and media type is not sufficient runtime evidence for add/change mutation acceptance.
+`PathMetadata.normalizedPath` carries the caller's exact accepted spelling; the name does not authorize the
+server to lowercase, case-fold, separator-convert, Unicode-rewrite, alias-resolve, or otherwise retarget it.
+An accepted path has all of these properties:
 
-## Range-read safe-denial routing (deferred)
+- It is a non-empty workspace-root-relative path of at most 500 characters, with no leading or trailing slash.
+- Its only characters are ASCII `A-Z a-z 0-9 . _ - /`; `/` is the only separator and empty segments are rejected.
+- It is already NFC. Because version 1.0.0 permits ASCII only, NFC does not transform accepted input; the explicit declaration prevents a future Unicode profile from silently changing identity.
+- `.` and `..` path segments, absolute paths, drive-qualified paths, UNC forms, backslashes, control characters, and empty segments are rejected.
+- Windows device base names `CON`, `PRN`, `AUX`, `NUL`, `COM1` through `COM9`, and `LPT1` through `LPT9`, with or without an extension and in any ASCII case, are rejected as a complete segment.
 
-`ReadFileRange` currently surfaces sensitivity-denied paths under `416` with `category: redacted` and unsatisfiable byte ranges under `416` with `category: range_unsatisfiable`. The final safe-denial routing between `416 redacted` and `404 SafeAuthorizationDenial` is `TODO(reference-pending)` against the safe-denial-matrix follow-up story. Until that story lands, downstream adapters MUST treat both `416 redacted` and `404` as externally-indistinguishable from an unauthorized-existence-disclosure standpoint.
+The server compares full accepted paths with ordinal-ignore-case semantics against the existing namespace and
+every other path touched by the same change set. Distinct spellings that compare equal are an ambiguous case
+alias: the whole operation is rejected before observation, and neither spelling is selected as canonical.
 
-## Path policy class vocabulary (deferred)
+For every touched path, the server inspects the touched entry and each existing ancestor with no-follow
+filesystem operations. A symbolic link, junction, mount-point reparse entry, or any other reparse entry in
+that chain rejects the whole operation. The server never follows the entry to learn or report its target.
+For an add whose leaf does not yet exist, every existing ancestor is still checked. Rejection never echoes
+the path, target, ancestor, or existence evidence.
 
-`PathMetadata.pathPolicyClass` is a `^[a-z][a-z0-9_]{0,79}$`-bounded string. The closed enum of approved class values is `TODO(reference-pending)` against the path-policy-class definition story. Today the synthetic examples use `tenant_sensitive_document` as a placeholder. Downstream parity oracles MUST NOT hardcode this list; they SHOULD treat any class matching the pattern as opaque until the closed enum ships.
+Structural path failures use the canonical `path_validation_failed` family with metadata-only diagnostics.
+They are distinct from policy-hidden paths, whose public routing is defined below.
 
-## Path-metadata Unicode policy (deferred)
+## Server-Owned Policy Vocabulary And Precedence
 
-`PathMetadata.normalizedPath` currently uses an ASCII-only character class. The `unicodeNormalization: NFC` enum is preserved for forward compatibility, but until the parser-policy story finalizes the Unicode allow-list (`\p{L}`, `\p{N}`, etc.), only ASCII paths are representable. Tenants requiring non-ASCII filenames cannot be onboarded until the parser-policy story lands.
+`PathMetadata.pathPolicyClass` has exactly four server-owned values:
 
-## 429 rate-limit (deferred to Epic 4)
+| Class | Meaning | Mutation | Metadata query | Content query |
+| --- | --- | --- | --- | --- |
+| `content_allowed` | The path is included, not excluded or restricted, sensitivity permits it, and its bytes satisfy the content-readable rule. | Allowed within all mutation bounds. | Allowed. | Allowed within C4 bounds. |
+| `metadata_only` | The path is included and mutation-eligible, but content is binary, uses another encoding, is oversized for content reading, or policy permits metadata only. | Allowed within all mutation bounds. | Allowed without content, snippet, or content-derived evidence. | Denied with the canonical 404 safe-denial envelope. |
+| `excluded` | The path did not match the required include allowlist or an exclusion matched it. | Denied; apply nothing. | Omitted from collection results; a direct target is denied. | Denied. |
+| `restricted` | A restriction or sensitivity rule denies the caller access to the path. | Denied; apply nothing. | Omitted from collection results; a direct target is denied. | Denied. |
 
-`CanonicalErrorCategory` includes `provider_rate_limited`, but Story 1.9 does not declare an HTTP `429 Too Many Requests` response. The 429 response shape with `Retry-After` semantics is `TODO(reference-pending)` against Epic 4 runtime, which owns provider integration. Until then, the category is foundation-only vocabulary; no operation emits 429.
+The active policy must contain a finite, server-bounded, non-empty include allowlist. An invalid, empty,
+unbounded, stale, unreadable, or unavailable policy fails closed and cannot be replaced by a permissive
+default. A path must match an include entry. Exclusions are then evaluated and always win. Re-inclusion after
+an exclusion is unsupported: a later include never reverses an exclusion. Restriction and sensitivity checks
+run after include/exclude classification and can only reduce visibility. Callers cannot select, override, or
+upgrade a class; any class value carried through a request is revalidated against the active server policy.
+
+## Content And Mutation Bounds
+
+The D-9 inline transport boundary remains 262,144 bytes. Add/change content from 0 through 262,144 bytes
+uses `PutFileInline`; content from 262,145 through 1,048,576 bytes uses `PutFileStream`. A file mutation over
+1,048,576 bytes is rejected without truncation. A change set contains at most 100 changes and at most
+10,485,760 aggregate add/change bytes; removes contribute zero bytes. Exceeding either change-set bound rejects
+the complete change set before execution. Declared and observed stream lengths and content hashes must agree;
+descriptor-only stream evidence is insufficient.
+
+Content is readable only when its exact bytes decode with strict UTF-8 validation, with either no byte-order
+mark or one UTF-8 BOM at byte zero. Invalid byte sequences, another encoding, or binary content remains
+mutation-eligible within the limits but is classified `metadata_only`. The server preserves exact mutation
+bytes; it does not transcode, repair, replace invalid sequences, strip bytes, or silently truncate. Media type
+is metadata and cannot upgrade non-readable bytes to `content_allowed`.
+
+Collection tree/metadata/glob results may contain only visible `content_allowed` and `metadata_only` entries.
+Excluded, restricted, sensitivity-denied, and unauthorized entries are removed before ordering, counts,
+pagination, truncation, or response shaping, so hidden counts are not disclosed. Body search and range reads
+operate only on `content_allowed` files. No metadata-only result contains file bytes, snippets, decoded text,
+content hashes derived for display, or other content evidence.
+
+## Safe-Denial And Range Routing
+
+Missing, excluded, restricted, sensitivity-denied, and unauthorized paths have one public outcome: HTTP 404
+with `category: tenant_access_denied`, `code: resource_unavailable`, the approved safe message, and redacted
+details. The envelope is identical across those causes apart from approved current-request correlation fields.
+It does not expose a path, policy rule, class, existence bit, count, byte length, encoding, sensitivity, link
+target, or authorization reason.
+
+HTTP 416 is reserved for a caller that is already authorized for a visible `content_allowed` path when the
+requested range is unsatisfiable. A sensitivity, policy, visibility, or authorization denial never uses 416.
+The C4 262,144-byte window remains an input-bound check and is never silently truncated.
+
+## D-9 Transport Headers
+
+The request-side header `X-Hexalith-Retry-As: [caller, operator]` signals retry allocation. The response-side
+header `X-Hexalith-Retry-Transport: [stream]` signals transport substitution and is emitted with
+`413 Payload Too Large` on inline file mutations. The names are deliberately disjoint so a caller echoing back
+a response value cannot trip request-side validation. `FileInlineTooLargeProblem` carries the canonical
+category only; the configured byte limit is not surfaced in the response body to keep 413 disclosure safe for
+pre-authentication callers.
+
+## Governance And Reopen Rule
+
+`docs/contract/oq2-file-policy-evidence.yaml` binds policy version `1.0.0` and the SHA-256 digest of this LF-stable
+artifact to exactly one PM, one Architecture, and one Security approval by Administrator dated 2026-09-13.
+Any policy-content, policy-version, digest, authority, signer, or approval-date change reopens OQ2 until all
+three authorities record fresh approval for the new version and digest. Governance approval closes the design
+decision only; Stories 12.1, 12.3, and 4.20 and FR32-FR35 runtime proof remain incomplete.
+
+## Unrelated Deferred Decisions
+
+- 429 provider rate-limit response shape and `Retry-After` semantics remain deferred to Epic 4 runtime work.
+- Semantic indexing and RAG retrieval remain downstream Memories integration work; OQ2 defines file-policy eligibility but does not implement indexing.
+- Runtime file/workspace/provider/query behavior, CLI/MCP behavior, OQ3, and broad PD10 cleanup remain owned by their downstream work.
+- Generated SDK helpers and broader C13 parity evidence remain owned by their existing stories.
 
 ## Negative Scope
 
-This is contract-only work. It does not add REST handlers, EventStore commands, domain aggregate behavior, provider adapters, Git or filesystem side effects, generated SDK output, NSwag generation wiring, CLI commands, MCP tools, workers, UI pages, final parity rows, CI gates, repair automation, or nested-submodule initialization.
+This OQ2 closure does not add REST handlers, EventStore commands, domain aggregate behavior, content or
+workspace stores, provider adapters, Git or filesystem side effects, query handlers, generated SDK output,
+CLI commands, MCP tools, workers, UI pages, repair automation, or nested-submodule initialization. It does
+not claim FR32-FR35 runtime completion.

@@ -36,7 +36,7 @@ completedAt: '2026-05-11'
 resumedAt: '2026-05-11'
 completionRefreshedAt: '2026-05-11'
 uxDesignIncludedAt: '2026-05-11'
-updated: '2026-09-12'
+updated: '2026-09-13'
 reconciledTo: 'sprint-change-proposal-2026-07-15 (ratified 2026-07-15 authority; amends the 2026-07-14 structural correction)'
 implementationReadiness: 'not-ready (2026-07-14/15)'
 ---
@@ -212,7 +212,7 @@ Epic 12 is the product data plane the control-plane shell was built around: auth
 - **12.4** Real Git commit executor + durable provider-write orchestration (replace the `NotImplementedException` workspace executor methods; compose the production-registered provider-private mutation/commit/status adapters owned by Stories 3.11/3.13; wire the provisioning process manager).
 - **12.5** At-least-once Memories egress + reconciler (commit-then-append ordering).
 
-**Dependency spine:** OQ1's C7 timing decision is closed. The remaining sequence is `OQ2–OQ4 → Epic 12 durable substrate → {Epic 4 lifecycle/transition evidence, Epic 6 console diagnostics/incident proof, Epic 10 deployed search bridge/round trip} → OQ5–OQ9 evidence → OQ10 → readiness rerun`.
+**Dependency spine:** OQ1's C7 timing decision and OQ2's canonical file-policy version `1.0.0` are closed design decisions. The remaining sequence is `OQ3–OQ4 → Epic 12 durable substrate → {Epic 4 lifecycle/transition evidence, Epic 6 console diagnostics/incident proof, Epic 10 deployed search bridge/round trip} → OQ5–OQ9 evidence → OQ10 → readiness rerun`. OQ2 approval is bound to `docs/contract/file-context-contract-groups.md` and `docs/contract/oq2-file-policy-evidence.yaml`; it does not complete Stories 12.1, 12.3, or 4.20 or FR32-FR35 runtime proof.
 
 ### Security & Operational Hardening — Epic 13
 

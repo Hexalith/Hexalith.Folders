@@ -15,6 +15,8 @@ public sealed class GovernanceCompletenessGateTests
     private static readonly string C7DecisionPath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "c7-lock-authorization-timing.md");
     private static readonly string Oq8DesignPath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-design.md");
     private static readonly string Oq8EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-evidence.yaml");
+    private static readonly string Oq2PolicyPath = Path.Combine(RepositoryRoot, "docs", "contract", "file-context-contract-groups.md");
+    private static readonly string Oq2EvidencePath = Path.Combine(RepositoryRoot, "docs", "contract", "oq2-file-policy-evidence.yaml");
     private static readonly string CorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.json");
     private static readonly string CorpusSchemaPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.schema.json");
     private static readonly string CorpusConsumptionPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus-consumption.yaml");
@@ -40,6 +42,8 @@ public sealed class GovernanceCompletenessGateTests
 
     private const string ApprovedC7Version = "1.0.0";
     private const string ApprovedC7Sha256 = "47da9d95b5d809a08b0c6097fc9ad97e8bd22e156ee1789f98870345c6be4403";
+    private const string ApprovedOq2Version = "1.0.0";
+    private const string ApprovedOq2Sha256 = "09a25950ee8db6e5417d543f1b0a16ed88364b898ddd3d7cd9d3c3628ef37dd4";
 
     private static readonly string[] Criteria =
     [
@@ -113,6 +117,14 @@ public sealed class GovernanceCompletenessGateTests
         documentation.ShouldContain("c7_timing_profile_invalid");
         documentation.ShouldContain("c7_approval_identity_mismatch");
         documentation.ShouldContain("c7_approval_date_mismatch");
+        documentation.ShouldContain("oq2_evidence_missing");
+        documentation.ShouldContain("oq2_evidence_mismatch");
+        documentation.ShouldContain("oq2_approval_incomplete");
+        documentation.ShouldContain("oq2_approval_extra");
+        documentation.ShouldContain("oq2_approval_identity_mismatch");
+        documentation.ShouldContain("oq2_approval_date_mismatch");
+        documentation.ShouldContain("docs/contract/file-context-contract-groups.md", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/oq2-file-policy-evidence.yaml", Case.Sensitive);
         documentation.ShouldContain(c7DecisionPath, Case.Sensitive);
         AssertMetadataOnly(documentation);
 
@@ -484,6 +496,128 @@ public sealed class GovernanceCompletenessGateTests
             RequiredScalar(record, "approved_on").ShouldBe("2026-07-19");
             RequiredScalar(record, "evidence_version").ShouldBe("1.0.0");
             RequiredScalar(record, "evidence_sha256").ShouldBe(actualDigest);
+        }
+    }
+
+    [Fact]
+    public void Oq2FilePolicyPackageBindsVersionDigestApprovalsAndRuntimePosture()
+    {
+        File.Exists(Oq2PolicyPath).ShouldBeTrue("OQ2 requires the canonical file-policy artifact.");
+        File.Exists(Oq2EvidencePath).ShouldBeTrue("OQ2 requires a versioned governance evidence manifest.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq2PolicyPath)));
+        actualDigest.ShouldBe(ApprovedOq2Sha256, "OQ2 policy changes require a new version, digest, and fresh PM, Architecture, and Security approvals.");
+
+        YamlMappingNode evidence = LoadYamlMapping(Oq2EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        GateDiagnostic[] diagnostics = EvaluateOq2Evidence(
+            evidence,
+            actualDigest,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(diagnostic => diagnostic.ToString())));
+
+        string[] canonicalSurfaces = RequiredSequence(evidence, "canonical_surfaces").Children
+            .Select(node => RequiredScalar(node, "canonical_surface"))
+            .ToArray();
+        canonicalSurfaces.ShouldBe(
+        [
+            "docs/contract/file-context-contract-groups.md",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        ]);
+
+        YamlMappingNode runtime = RequiredMapping(evidence, "runtime_posture");
+        RequiredScalar(runtime, "status").ShouldBe("incomplete");
+        RequiredSequence(runtime, "incomplete_stories").Children
+            .Select(node => RequiredScalar(node, "incomplete_story"))
+            .ToArray().ShouldBe(["12.1", "12.3", "4.20"]);
+
+        YamlMappingNode requirements = RequiredMapping(runtime, "functional_requirements");
+        requirements.Children.Keys.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["FR32", "FR33", "FR34", "FR35"]);
+        requirements.Children.Values.Select(node => RequiredScalar(node, "runtime_status")).ToArray()
+            .ShouldAllBe(status => status == "incomplete");
+        RequiredScalar(runtime, "evidence_claim").ShouldContain("no runtime implementation or production evidence is claimed", Case.Sensitive);
+    }
+
+    [Fact]
+    public void Oq2EvidenceNegativeControlsFailClosedForMissingMismatchedStaleExtraAndIncompleteEvidence()
+    {
+        YamlMappingNode evidence = LoadYamlMapping(Oq2EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        YamlMappingNode missingDigest = CloneRow(evidence);
+        missingDigest.Children.Remove(new YamlScalarNode("policy_sha256"));
+        GateDiagnostic[] missingDiagnostics = EvaluateOq2Evidence(missingDigest, ApprovedOq2Sha256, policy, today);
+        missingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_evidence_missing" && diagnostic.Identifier == "OQ2:policy_sha256");
+
+        YamlMappingNode mismatchedDigest = CloneRow(evidence);
+        SetScalar(mismatchedDigest, "policy_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDiagnostics = EvaluateOq2Evidence(mismatchedDigest, ApprovedOq2Sha256, policy, today);
+        mismatchedDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ2");
+
+        YamlMappingNode incomplete = CloneRow(evidence);
+        YamlSequenceNode incompleteRecords = RequiredSequence(RequiredMapping(incomplete, "approval"), "records");
+        YamlNode securityRecord = incompleteRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Security");
+        incompleteRecords.Children.Remove(securityRecord);
+        GateDiagnostic[] incompleteDiagnostics = EvaluateOq2Evidence(incomplete, ApprovedOq2Sha256, policy, today);
+        incompleteDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_incomplete" && diagnostic.Identifier == "OQ2:Security");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode extra = CloneRow(evidence);
+        YamlMappingNode extraApproval = RequiredMapping(extra, "approval");
+        RequiredSequence(extraApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(extraApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode("2026-09-13"),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedOq2Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedOq2Sha256)));
+        GateDiagnostic[] extraDiagnostics = EvaluateOq2Evidence(extra, ApprovedOq2Sha256, policy, today);
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_extra" && diagnostic.Identifier == "OQ2:required-authorities");
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_extra" && diagnostic.Identifier == "OQ2:record-count");
+
+        YamlMappingNode mismatchedRecord = CloneRow(evidence);
+        YamlMappingNode architectureRecord = RequiredSequence(RequiredMapping(mismatchedRecord, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "Architecture");
+        SetScalar(architectureRecord, "approver", unexpectedValue);
+        SetScalar(architectureRecord, "approved_on", "2099-12-31");
+        SetScalar(architectureRecord, "evidence_version", "9.9.9");
+        SetScalar(architectureRecord, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedRecordDiagnostics = EvaluateOq2Evidence(mismatchedRecord, ApprovedOq2Sha256, policy, today);
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_identity_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq2_approval_date_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_version_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ2:Architecture");
+
+        GateDiagnostic[] staleDiagnostics = EvaluateOq2Evidence(
+            evidence,
+            ApprovedOq2Sha256,
+            policy,
+            today.AddDays(policy.MaxAgeDays + 1));
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:PM");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:Architecture");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:Security");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics
+            .Concat(mismatchedDiagnostics)
+            .Concat(incompleteDiagnostics)
+            .Concat(extraDiagnostics)
+            .Concat(mismatchedRecordDiagnostics)
+            .Concat(staleDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
         }
     }
 
@@ -968,6 +1102,219 @@ public sealed class GovernanceCompletenessGateTests
                 || !Regex.IsMatch(recordDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
             {
                 diagnostics.Add(new("exit-criteria", "approval_evidence_digest_mismatch", identifier, path));
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
+    private static GateDiagnostic[] EvaluateOq2Evidence(
+        YamlMappingNode evidence,
+        string actualDigest,
+        ApprovalPolicy policy,
+        DateOnly today)
+    {
+        const string path = "docs/contract/oq2-file-policy-evidence.yaml";
+        List<GateDiagnostic> diagnostics = [];
+
+        void ExpectScalar(string key, string expected)
+        {
+            string? observed = TryScalar(evidence, key);
+            if (observed is null)
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", $"OQ2:{key}", path));
+            }
+            else if (!string.Equals(observed, expected, StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_evidence_mismatch", $"OQ2:{key}", path));
+            }
+        }
+
+        ExpectScalar("schema_version", "1.0.0");
+        ExpectScalar("evidence_id", "OQ2");
+        ExpectScalar("status", "design-approved");
+        ExpectScalar("release_gate_status", "in-progress");
+        ExpectScalar("policy_version", ApprovedOq2Version);
+        ExpectScalar("policy_path", "docs/contract/file-context-contract-groups.md");
+        ExpectScalar("approved_on", "2026-09-13");
+
+        string? policyDigest = TryScalar(evidence, "policy_sha256");
+        if (policyDigest is null)
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", "OQ2:policy_sha256", path));
+        }
+        else if (!string.Equals(policyDigest, actualDigest, StringComparison.Ordinal)
+            || !Regex.IsMatch(policyDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+        {
+            diagnostics.Add(new("oq2-file-policy", "approval_evidence_digest_mismatch", "OQ2", path));
+        }
+
+        string[] expectedSurfaces =
+        [
+            "docs/contract/file-context-contract-groups.md",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        ];
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("canonical_surfaces"), out YamlNode? surfacesNode)
+            || surfacesNode is not YamlSequenceNode surfaces)
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", "OQ2:canonical-surfaces", path));
+        }
+        else
+        {
+            string[] observedSurfaces = surfaces.Children.OfType<YamlScalarNode>()
+                .Select(node => node.Value ?? string.Empty).ToArray();
+            if (observedSurfaces.Length != expectedSurfaces.Length
+                || !observedSurfaces.SequenceEqual(expectedSurfaces, StringComparer.Ordinal)
+                || observedSurfaces.Any(surface => !IsRepositoryRelativePath(surface) || !PathExists(surface)))
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_evidence_mismatch", "OQ2:canonical-surfaces", path));
+            }
+        }
+
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("runtime_posture"), out YamlNode? runtimeNode)
+            || runtimeNode is not YamlMappingNode runtime)
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", "OQ2:runtime-posture", path));
+        }
+        else
+        {
+            string[] expectedStories = ["12.1", "12.3", "4.20"];
+            bool invalidRuntime = !string.Equals(TryScalar(runtime, "status"), "incomplete", StringComparison.Ordinal)
+                || string.IsNullOrWhiteSpace(TryScalar(runtime, "evidence_claim"));
+
+            if (!runtime.Children.TryGetValue(new YamlScalarNode("incomplete_stories"), out YamlNode? storiesNode)
+                || storiesNode is not YamlSequenceNode stories)
+            {
+                invalidRuntime = true;
+            }
+            else
+            {
+                string[] observedStories = stories.Children.OfType<YamlScalarNode>()
+                    .Select(node => node.Value ?? string.Empty).ToArray();
+                invalidRuntime |= !observedStories.SequenceEqual(expectedStories, StringComparer.Ordinal);
+            }
+
+            string[] expectedRequirements = ["FR32", "FR33", "FR34", "FR35"];
+            if (!runtime.Children.TryGetValue(new YamlScalarNode("functional_requirements"), out YamlNode? requirementsNode)
+                || requirementsNode is not YamlMappingNode requirements)
+            {
+                invalidRuntime = true;
+            }
+            else
+            {
+                string[] observedRequirements = requirements.Children.Keys.OfType<YamlScalarNode>()
+                    .Select(node => node.Value ?? string.Empty).ToArray();
+                invalidRuntime |= !observedRequirements.SequenceEqual(expectedRequirements, StringComparer.Ordinal)
+                    || requirements.Children.Values.Any(node => node is not YamlScalarNode { Value: "incomplete" });
+            }
+
+            if (invalidRuntime)
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_evidence_mismatch", "OQ2:runtime-posture", path));
+            }
+        }
+
+        string[] expectedAuthorities = ["PM", "Architecture", "Security"];
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("approval"), out YamlNode? approvalNode)
+            || approvalNode is not YamlMappingNode approval)
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", "OQ2:approval", path));
+            return diagnostics.ToArray();
+        }
+
+        string[] requiredAuthorities = approval.Children.TryGetValue(new YamlScalarNode("required_authorities"), out YamlNode? authoritiesNode)
+            && authoritiesNode is YamlSequenceNode authoritySequence
+                ? authoritySequence.Children.OfType<YamlScalarNode>().Select(node => node.Value ?? string.Empty).ToArray()
+                : [];
+        if (requiredAuthorities.Length == 0)
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", "OQ2:required-authorities", path));
+        }
+        else
+        {
+            foreach (string authority in expectedAuthorities.Where(authority => !requiredAuthorities.Contains(authority, StringComparer.Ordinal)))
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_approval_incomplete", $"OQ2:{authority}", path));
+            }
+
+            if (requiredAuthorities.Length != expectedAuthorities.Length
+                || requiredAuthorities.Distinct(StringComparer.Ordinal).Count() != expectedAuthorities.Length
+                || requiredAuthorities.Any(authority => !expectedAuthorities.Contains(authority, StringComparer.Ordinal)))
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_approval_extra", "OQ2:required-authorities", path));
+            }
+        }
+
+        YamlMappingNode[] records = approval.Children.TryGetValue(new YamlScalarNode("records"), out YamlNode? recordsNode)
+            && recordsNode is YamlSequenceNode recordSequence
+                ? recordSequence.Children.OfType<YamlMappingNode>().ToArray()
+                : [];
+        if (records.Length == 0)
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_evidence_missing", "OQ2:approval-records", path));
+        }
+        else if (records.Length != expectedAuthorities.Length
+            || records.Select(record => TryScalar(record, "authority") ?? string.Empty).Any(authority => !expectedAuthorities.Contains(authority, StringComparer.Ordinal)))
+        {
+            diagnostics.Add(new("oq2-file-policy", "oq2_approval_extra", "OQ2:record-count", path));
+        }
+
+        foreach (string authority in expectedAuthorities)
+        {
+            YamlMappingNode[] matches = records
+                .Where(record => string.Equals(TryScalar(record, "authority"), authority, StringComparison.Ordinal))
+                .ToArray();
+            if (matches.Length != 1)
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_approval_incomplete", $"OQ2:{authority}", path));
+                if (matches.Length > 1)
+                {
+                    diagnostics.Add(new("oq2-file-policy", "oq2_approval_extra", "OQ2:record-count", path));
+                }
+
+                continue;
+            }
+
+            YamlMappingNode record = matches[0];
+            string identifier = $"OQ2:{authority}";
+            if (!string.Equals(TryScalar(record, "approver"), "Administrator", StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_approval_identity_mismatch", identifier, path));
+            }
+
+            if (!string.Equals(TryScalar(record, "approved_on"), "2026-09-13", StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("oq2-file-policy", "oq2_approval_date_mismatch", identifier, path));
+            }
+            else
+            {
+                DateOnly approvedOn = new(2026, 9, 13);
+                if (approvedOn > today)
+                {
+                    diagnostics.Add(new("oq2-file-policy", "approval_date_future", identifier, path));
+                }
+                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                {
+                    diagnostics.Add(new("oq2-file-policy", "approval_stale", identifier, path));
+                }
+            }
+
+            if (!string.Equals(TryScalar(record, "evidence_version"), ApprovedOq2Version, StringComparison.Ordinal))
+            {
+                diagnostics.Add(new("oq2-file-policy", "approval_evidence_version_mismatch", identifier, path));
+            }
+
+            string? recordDigest = TryScalar(record, "evidence_sha256");
+            if (recordDigest is null)
+            {
+                diagnostics.Add(new("oq2-file-policy", "approval_evidence_digest_missing", identifier, path));
+            }
+            else if (!string.Equals(recordDigest, actualDigest, StringComparison.Ordinal)
+                || !Regex.IsMatch(recordDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+            {
+                diagnostics.Add(new("oq2-file-policy", "approval_evidence_digest_mismatch", identifier, path));
             }
         }
 
