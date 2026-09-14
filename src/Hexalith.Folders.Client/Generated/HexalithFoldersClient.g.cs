@@ -550,7 +550,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Add a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape for larger content. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
+        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape through the 1048576-byte per-file mutation maximum. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -566,7 +566,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Add a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape for larger content. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
+        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape through the 1048576-byte per-file mutation maximum. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -581,7 +581,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Change a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content uses `PutFileStream`. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
+        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content through 1048576 bytes uses `PutFileStream`. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -597,7 +597,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Change a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content uses `PutFileStream`. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
+        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content through 1048576 bytes uses `PutFileStream`. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -612,7 +612,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Remove a file through metadata-only mutation evidence.
         /// </summary>
         /// <remarks>
-        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. The caller must already have a prepared workspace and a valid held workspace lock.
+        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. A containing change set is limited to 100 changes, removes contribute zero aggregate content bytes, and the complete set is validated before anything is applied. The caller must already have a prepared workspace and a valid held workspace lock.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -628,7 +628,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Remove a file through metadata-only mutation evidence.
         /// </summary>
         /// <remarks>
-        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. The caller must already have a prepared workspace and a valid held workspace lock.
+        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. A containing change set is limited to 100 changes, removes contribute zero aggregate content bytes, and the complete set is validated before anything is applied. The caller must already have a prepared workspace and a valid held workspace lock.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -643,7 +643,7 @@ namespace Hexalith.Folders.Client.Generated
         /// List authorized workspace file metadata.
         /// </summary>
         /// <remarks>
-        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are security-trimmed before ordering, truncation, response shaping, or audit metadata is produced; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are limited to visible content_allowed and metadata_only entries and are security-trimmed before ordering, counting, truncation, response shaping, or audit metadata is produced. Excluded, restricted, sensitivity-denied, and unauthorized entries and their counts are not observable; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -661,7 +661,7 @@ namespace Hexalith.Folders.Client.Generated
         /// List authorized workspace file metadata.
         /// </summary>
         /// <remarks>
-        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are security-trimmed before ordering, truncation, response shaping, or audit metadata is produced; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are limited to visible content_allowed and metadata_only entries and are security-trimmed before ordering, counting, truncation, response shaping, or audit metadata is produced. Excluded, restricted, sensitivity-denied, and unauthorized entries and their counts are not observable; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -678,7 +678,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Unauthorized, excluded, binary-disallowed, missing, and sensitivity-denied cases use safe-denial or metadata-only Problem Details before any resource-existence detail is disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -694,7 +694,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Unauthorized, excluded, binary-disallowed, missing, and sensitivity-denied cases use safe-denial or metadata-only Problem Details before any resource-existence detail is disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -709,7 +709,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Search authorized file metadata without snippets.
         /// </summary>
         /// <remarks>
-        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Only content_allowed files are eligible for content search; metadata_only, excluded, restricted, sensitivity-denied, and unauthorized files are removed before scanning, matching, counting, ordering, or shaping. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -725,7 +725,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Search authorized file metadata without snippets.
         /// </summary>
         /// <remarks>
-        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Only content_allowed files are eligible for content search; metadata_only, excluded, restricted, sensitivity-denied, and unauthorized files are removed before scanning, matching, counting, ordering, or shaping. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -800,7 +800,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Glob authorized file metadata without content previews.
         /// </summary>
         /// <remarks>
-        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming; hidden paths, excluded paths, and unauthorized hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming. Visible content_allowed and metadata_only entries may be returned; excluded, restricted, sensitivity-denied, and unauthorized paths and their hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -816,7 +816,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Glob authorized file metadata without content previews.
         /// </summary>
         /// <remarks>
-        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming; hidden paths, excluded paths, and unauthorized hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming. Visible content_allowed and metadata_only entries may be returned; excluded, restricted, sensitivity-denied, and unauthorized paths and their hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -831,7 +831,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -847,7 +847,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -1682,7 +1682,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -1846,7 +1846,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -2007,7 +2007,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -2177,7 +2177,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -2318,7 +2318,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -2621,7 +2621,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -2762,7 +2762,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 429)
@@ -3067,7 +3067,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3251,7 +3251,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3428,7 +3428,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -3592,7 +3592,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3733,7 +3733,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -3911,7 +3911,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -4109,7 +4109,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -4293,7 +4293,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 410)
@@ -4481,7 +4481,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -4664,7 +4664,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -4823,7 +4823,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -4859,7 +4859,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Add a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape for larger content. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
+        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape through the 1048576-byte per-file mutation maximum. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -4878,7 +4878,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Add a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape for larger content. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
+        /// Contract-only file add operation. The request declares file operation identity, workspace-root-relative path metadata, content hash metadata, and D-9 transport shape. `PutFileInline` is allowed for content at or below 262144 bytes; `PutFileStream` is the required shape through the 1048576-byte per-file mutation maximum. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior is deferred to downstream stories.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5001,7 +5001,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5097,7 +5097,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Change a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content uses `PutFileStream`. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
+        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content through 1048576 bytes uses `PutFileStream`. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5116,7 +5116,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Change a file through the prepared workspace file mutation contract.
         /// </summary>
         /// <remarks>
-        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content uses `PutFileStream`. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
+        /// Contract-only file change operation using the same D-9 `PutFileInline` and `PutFileStream` shapes as AddFile. Inline content is capped at 262144 bytes and larger content through 1048576 bytes uses `PutFileStream`. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically. The caller must already have a prepared workspace and a valid held workspace lock. File diffs, provider payloads, generated context payloads, and runtime write behavior are not represented by this contract group.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5239,7 +5239,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5335,7 +5335,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Remove a file through metadata-only mutation evidence.
         /// </summary>
         /// <remarks>
-        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. The caller must already have a prepared workspace and a valid held workspace lock.
+        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. A containing change set is limited to 100 changes, removes contribute zero aggregate content bytes, and the complete set is validated before anything is applied. The caller must already have a prepared workspace and a valid held workspace lock.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5354,7 +5354,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Remove a file through metadata-only mutation evidence.
         /// </summary>
         /// <remarks>
-        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. The caller must already have a prepared workspace and a valid held workspace lock.
+        /// Contract-only file removal operation. Removal is metadata-only: request, response, audit, diagnostics, and Problem Details never include removed file contents, diffs, previous content samples, provider payloads, or local paths. A containing change set is limited to 100 changes, removes contribute zero aggregate content bytes, and the complete set is validated before anything is applied. The caller must already have a prepared workspace and a valid held workspace lock.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5477,7 +5477,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5563,7 +5563,7 @@ namespace Hexalith.Folders.Client.Generated
         /// List authorized workspace file metadata.
         /// </summary>
         /// <remarks>
-        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are security-trimmed before ordering, truncation, response shaping, or audit metadata is produced; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are limited to visible content_allowed and metadata_only entries and are security-trimmed before ordering, counting, truncation, response shaping, or audit metadata is produced. Excluded, restricted, sensitivity-denied, and unauthorized entries and their counts are not observable; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5584,7 +5584,7 @@ namespace Hexalith.Folders.Client.Generated
         /// List authorized workspace file metadata.
         /// </summary>
         /// <remarks>
-        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are security-trimmed before ordering, truncation, response shaping, or audit metadata is produced; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Lists metadata-only file tree entries from an authorized workspace snapshot. Context query authorization order is tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Results are limited to visible content_allowed and metadata_only entries and are security-trimmed before ordering, counting, truncation, response shaping, or audit metadata is produced. Excluded, restricted, sensitivity-denied, and unauthorized entries and their counts are not observable; search-first/filter-later and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5710,7 +5710,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5776,7 +5776,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Unauthorized, excluded, binary-disallowed, missing, and sensitivity-denied cases use safe-denial or metadata-only Problem Details before any resource-existence detail is disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5795,7 +5795,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Unauthorized, excluded, binary-disallowed, missing, and sensitivity-denied cases use safe-denial or metadata-only Problem Details before any resource-existence detail is disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5916,7 +5916,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5982,7 +5982,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Search authorized file metadata without snippets.
         /// </summary>
         /// <remarks>
-        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Only content_allowed files are eligible for content search; metadata_only, excluded, restricted, sensitivity-denied, and unauthorized files are removed before scanning, matching, counting, ordering, or shaping. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6001,7 +6001,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Search authorized file metadata without snippets.
         /// </summary>
         /// <remarks>
-        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Searches only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Only content_allowed files are eligible for content search; metadata_only, excluded, restricted, sensitivity-denied, and unauthorized files are removed before scanning, matching, counting, ordering, or shaping. The result is metadata-only: no snippets, matched-line text, previews, diffs, raw search text in audit, generated context payloads, or provider payloads are returned. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6122,7 +6122,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6328,7 +6328,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6520,7 +6520,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -6556,7 +6556,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Glob authorized file metadata without content previews.
         /// </summary>
         /// <remarks>
-        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming; hidden paths, excluded paths, and unauthorized hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming. Visible content_allowed and metadata_only entries may be returned; excluded, restricted, sensitivity-denied, and unauthorized paths and their hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6575,7 +6575,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Glob authorized file metadata without content previews.
         /// </summary>
         /// <remarks>
-        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming; hidden paths, excluded paths, and unauthorized hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Evaluates glob metadata only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Result limits are applied after security trimming. Visible content_allowed and metadata_only entries may be returned; excluded, restricted, sensitivity-denied, and unauthorized paths and their hit counts are never disclosed. Safe-denial Problem Details do not disclose hidden resource existence.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6696,7 +6696,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6762,7 +6762,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6781,7 +6781,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported. Safe-denial Problem Details do not disclose hidden resource existence.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6912,7 +6912,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6942,7 +6942,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Requested range cannot be satisfied. Returned when the range is reversed at the byte level (caught after schema validation), exceeds the file\'s authorized end, or is redacted by sensitivity. Sensitivity-denied routing between 416 and 404 safe-denial is TODO(reference-pending) against the safe-denial-matrix follow-up story; the contract currently surfaces redacted ranges under 416 with deliberate visibility.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Reserved for an authorized, visible content_allowed path whose requested byte range is unsatisfiable. Missing, metadata_only, excluded, restricted, sensitivity-denied, and unauthorized paths use the canonical 404 tenant_access_denied/resource_unavailable envelope instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
@@ -7130,7 +7130,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -7304,7 +7304,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -7463,7 +7463,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -7610,7 +7610,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -7771,7 +7771,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -7932,7 +7932,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -8093,7 +8093,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -8260,7 +8260,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8423,7 +8423,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8600,7 +8600,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8763,7 +8763,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8913,7 +8913,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9077,7 +9077,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9241,7 +9241,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9405,7 +9405,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9562,7 +9562,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9726,7 +9726,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9876,7 +9876,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases \u2014 does not reveal protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -10935,7 +10935,7 @@ namespace Hexalith.Folders.Client.Generated
         public LockWorkspaceRequestLockIntent LockIntent { get; set; }
 
         /// <summary>
-        /// Requested lease metadata only. Default duration, renewal, and clock-skew policy remain deferred to approved source documents.
+        /// Sets the initial lease expiry so `expiresAt` equals the lock `effectiveAt` plus `requestedLeaseSeconds`; the lock is expired at `now &gt;= expiresAt` unless a successful authorized renewal has already established later effective and expiry timestamps. Renewal timing and the expired-to-stale boundary are governed by docs/exit-criteria/c7-lock-authorization-timing.md version 1.0.0; default lease duration and clock-skew policy remain deferred.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("requestedLeaseSeconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int RequestedLeaseSeconds { get; set; }
@@ -11191,7 +11191,7 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     /// <summary>
-    /// Workspace-root-relative path metadata. Paths use forward slashes, have no leading slash, are NFC-normalized by contract, and are never local or absolute filesystem paths. Traversal, symlink escape, reserved names, and case-collision outcomes are path-policy decisions evaluated before file or query execution.
+    /// File-policy v1.0.0 workspace-root-relative path metadata. Paths preserve the caller's accepted spelling, use forward slashes, have no leading or trailing slash, are declared NFC, and are never local or absolute filesystem paths. The server does not lowercase, case-fold, separator-convert, Unicode-rewrite, alias-resolve, follow links, or otherwise retarget a path. Traversal, reserved names, ordinal-ignore-case aliases, and every touched symlink/reparse entry or ancestor are rejected before observation.
     /// <br/>
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -11199,7 +11199,7 @@ namespace Hexalith.Folders.Client.Generated
     {
 
         /// <summary>
-        /// Workspace-root-relative path. The pattern rejects: leading slash, parent-directory segments `..` (segment-only, allowing legitimate filenames like `a..b`), empty segments `//`, and reserved Windows base names (CON, NUL, PRN, AUX, COM1-9, LPT1-9 with optional extension). Character class is transitional ASCII-only. TODO(reference-pending): Unicode allow-list policy and final NFC enforcement live in Story 1.5 parser-policy classification.
+        /// Caller spelling preserved without retargeting. The file-policy v1.0.0 profile permits only ASCII A-Z a-z 0-9 . _ - / and rejects a leading/trailing slash, empty segment, complete . or .. segment, backslash, absolute/drive/UNC form, and Windows device base names in any ASCII case. The server also rejects ordinal-ignore-case aliases and every touched symlink/reparse entry or ancestor without following it.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("normalizedPath", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string NormalizedPath { get; set; }
@@ -11211,10 +11211,11 @@ namespace Hexalith.Folders.Client.Generated
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Server-determined path policy classification. TODO(reference-pending): closed enum of approved class values pending path-policy-class definition story. Until that story lands, the pattern is the only contract-level constraint and the canonical class list is documented in docs/contract/file-context-contract-groups.md.
+        /// Closed, server-owned file-policy v1.0.0 classification. Callers cannot select or upgrade this value; any value carried through a request is revalidated against the active server policy. A required bounded include allowlist is evaluated first, exclusions always win with no re-inclusion, and invalid or unavailable policy fails closed.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string PathPolicyClass { get; set; }
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PathMetadataPathPolicyClass PathPolicyClass { get; set; }
 
         [Newtonsoft.Json.JsonProperty("unicodeNormalization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -11260,7 +11261,7 @@ namespace Hexalith.Folders.Client.Generated
         public string MediaType { get; set; }
 
         /// <summary>
-        /// Authorized request body only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed.
+        /// Authorized request body only; base64-encoded bytes up to the 262144-byte D-9 inline boundary (349528 base64 characters). Strict UTF-8 bytes with an optional leading UTF-8 BOM may be content-readable; binary and other encodings remain mutation-eligible but metadata_only. Exact bytes are preserved and never transcoded, repaired, or silently truncated. Never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("contentBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ContentBytes { get; set; }
@@ -11287,7 +11288,7 @@ namespace Hexalith.Folders.Client.Generated
         public int DeclaredLength { get; set; }
 
         /// <summary>
-        /// Observed byte length from the transient content staging boundary. Descriptor-only stream requests are not valid evidence.
+        /// Observed byte length from the transient content staging boundary. It must equal declaredLength and the top-level byteLength; descriptor-only stream requests are not valid evidence. Exact bytes are preserved without truncation or transcoding.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("observedLength", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int ObservedLength { get; set; }
@@ -11604,6 +11605,9 @@ namespace Hexalith.Folders.Client.Generated
 
     }
 
+    /// <summary>
+    /// Authorized bytes from a visible content_allowed path. metadata_only, excluded, restricted, sensitivity-denied, missing, and unauthorized paths cannot produce this schema and use the canonical 404 safe-denial envelope.
+    /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FileRangeReadResult
     {
@@ -11668,13 +11672,13 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     /// <summary>
-    /// File metadata entry returned by tree, metadata, search, and glob context queries.
-    /// <br/>Field visibility depends on `redaction`:
-    /// <br/>  - `not_redacted`  -&gt; `path`, `kind`, `byteLength` (if known), `sensitivity` all present.
-    /// <br/>  - `redacted`      -&gt; `path` and `byteLength` may be present; no content evidence ever exposed.
-    /// <br/>  - `excluded`      -&gt; `path` and `byteLength` MUST be omitted; only `kind`, `sensitivity`, `redaction` retained so the caller knows an item was withheld without learning which path.
-    /// <br/>  - `binary_disallowed` -&gt; `path` may be present; `byteLength` may be omitted; redaction state communicates why the item carries no content evidence.
-    /// <br/>Servers MUST omit `path` when `redaction` is `excluded`. The redaction-state-to-field-visibility matrix is contract-binding so safe-denial parity holds across REST, SDK, CLI, and MCP surfaces.
+    /// Visible metadata entry returned by tree, metadata, search, and glob context queries.
+    /// <br/>`path.pathPolicyClass` is either content_allowed or metadata_only. Excluded,
+    /// <br/>restricted, sensitivity-denied, missing, and unauthorized paths never produce
+    /// <br/>an item and are removed before ordering, counts, pagination, truncation, and
+    /// <br/>response shaping. Direct targets use the canonical 404 safe-denial envelope.
+    /// <br/>metadata_only entries never carry file bytes, snippets, decoded text, or other
+    /// <br/>content evidence.
     /// <br/>
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -11682,7 +11686,7 @@ namespace Hexalith.Folders.Client.Generated
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PathMetadata Path { get; set; }
+        public PathMetadata Path { get; set; } = new PathMetadata();
 
         [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -11698,9 +11702,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public SensitiveMetadataTier Sensitivity { get; set; }
 
+        /// <summary>
+        /// Hidden path classes are omitted entirely; visible entries use not_redacted.
+        /// </summary>
         [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public FileMetadataItemRedaction Redaction { get; set; }
+        public string Redaction { get; set; }
 
     }
 
@@ -13602,6 +13608,24 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PathMetadataPathPolicyClass
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"content_allowed")]
+        Content_allowed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"excluded")]
+        Excluded = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"restricted")]
+        Restricted = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum PathMetadataUnicodeNormalization
     {
 
@@ -13757,24 +13781,6 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"directory")]
         Directory = 1,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum FileMetadataItemRedaction
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"not_redacted")]
-        Not_redacted = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"excluded")]
-        Excluded = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"binary_disallowed")]
-        Binary_disallowed = 3,
 
     }
 
