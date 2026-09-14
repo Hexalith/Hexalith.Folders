@@ -2975,3 +2975,15 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
   summary: Validate every clean `/pushall` merge before pushing and pruning branches.
   evidence: The unrelated agent-context procedure requires validation only after conflict resolution, so a syntactically clean merge that breaks the repository can still be pushed and its source branches pruned.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq3-publish-canonical-authorization-matrix.md`
+  summary: Confirm whether `CreateRepositoryBackedFolder` creates a new folder, in which case the authorization matrix binds it to a folder `administer` grant on a folder that does not yet exist.
+  evidence: The matrix maps it to `folder-administration` with `folder` applicable, but the Contract Spine's own requirement token is `tenant-context-existing-folder-access-and-provider-binding-use`, which supports the existing-folder reading. Settling it needs the operation's request schema and its handler; if it does create a folder, the matrix needs a tenant folder-create conjunct or a recorded gap.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq3-publish-canonical-authorization-matrix.md`
+  summary: Reconcile the `open_questions` status vocabulary in `planning-story-manifest.yaml`, where OQ1 and OQ2 still read `status: open` after being closed.
+  evidence: `planning-story-manifest.yaml:479,490` read `open` although `prd.md`, `architecture.md` and `epics.md` all record OQ1 closed 2026-09-12 and OQ2 closed 2026-09-14 by the same governance mechanism OQ3 now uses. Pre-existing drift in the sibling rows, not caused by the OQ3 change; a consumer filtering `status == open` reads three different answers for one situation.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq3-publish-canonical-authorization-matrix.md`
+  summary: Pin the `G4` effective-permission action-catalog drift to a check that reads `EffectivePermissionsActionCatalog.cs`, so a fix or further drift produces a signal.
+  evidence: `EvaluateGaps` only asserts that `G4`'s evidence path exists; no gate reads the catalog. The catalog's action-to-level mapping is pinned by its own tests under `tests/Hexalith.Folders.Tests/Authorization/`, so the recompute-from-source shape used for `G1`-`G3` does not extend cleanly here.

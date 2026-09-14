@@ -17,6 +17,8 @@ public sealed class GovernanceCompletenessGateTests
     private static readonly string Oq8EvidencePath = Path.Combine(RepositoryRoot, "docs", "exit-criteria", "oq8-idempotency-evidence.yaml");
     private static readonly string Oq2PolicyPath = Path.Combine(RepositoryRoot, "docs", "contract", "file-context-contract-groups.md");
     private static readonly string Oq2EvidencePath = Path.Combine(RepositoryRoot, "docs", "contract", "oq2-file-policy-evidence.yaml");
+    private static readonly string Oq3MatrixPath = Path.Combine(RepositoryRoot, "docs", "contract", "authorization-matrix.md");
+    private static readonly string Oq3EvidencePath = Path.Combine(RepositoryRoot, "docs", "contract", "oq3-authorization-evidence.yaml");
     private static readonly string CorpusPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.json");
     private static readonly string CorpusSchemaPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus.schema.json");
     private static readonly string CorpusConsumptionPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "idempotency-encoding-corpus-consumption.yaml");
@@ -46,6 +48,47 @@ public sealed class GovernanceCompletenessGateTests
     private const string ApprovedOq2Sha256 = "b7123536cc243c52e853980313ff8ebee5abb9936b331e71f30ad6d554975713";
     private const string ApprovedOq2Date = "2026-09-14";
     private const string ApprovedOq2ReopenPolicy = "Any change to the canonical policy content, policy version, SHA-256 digest, required authority set, approver identity, or approval date reopens PM, Architecture, and Security approval.";
+    private const string ApprovedOq3Version = "1.0.0";
+    private const string ApprovedOq3Sha256 = "5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7";
+    private const string ApprovedOq3Date = "2026-09-14";
+    private const string ApprovedOq3ReopenPolicy = "Any change to the canonical matrix content, matrix version, SHA-256 digest, required authority set, approver identity, or approval date reopens Security and PM approval.";
+
+    // Stories the OQ3 design approval explicitly does not complete. Shortening this list is a false
+    // completion claim, not a cleanup.
+    private static readonly string[] ApprovedOq3IncompleteStories =
+    [
+        "12.1",
+        "4.19",
+        "4.20",
+        "4.21",
+        "6.14",
+        "10.8",
+    ];
+
+    // Conformance gaps the approved matrix records rather than disguises.
+    private static readonly string[] ApprovedOq3GapIds =
+    [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8",
+        "G9",
+        "G10",
+        "G11",
+    ];
+
+    // Planning artifacts that restate the approved OQ3 digest by hand. Without this pin a future matrix
+    // revision would leave all three silently stale.
+    private static readonly string[] Oq3DigestBoundPlanningArtifacts =
+    [
+        "_bmad-output/planning-artifacts/prd.md",
+        "_bmad-output/planning-artifacts/.memlog.md",
+        "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+    ];
 
     private static readonly string[] Criteria =
     [
@@ -93,6 +136,10 @@ public sealed class GovernanceCompletenessGateTests
 
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
         script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests");
+        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests");
+        script.ShouldContain("-class Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests");
+        script.ShouldContain("docs/contract/authorization-matrix.md", Case.Sensitive);
+        script.ShouldContain("docs/contract/oq3-authorization-evidence.yaml", Case.Sensitive);
         script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Debug");
         script.ShouldContain("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
         script.ShouldContain("_bmad-output/gates/governance-completeness/latest.json");
@@ -125,8 +172,25 @@ public sealed class GovernanceCompletenessGateTests
         documentation.ShouldContain("oq2_approval_extra");
         documentation.ShouldContain("oq2_approval_identity_mismatch");
         documentation.ShouldContain("oq2_approval_date_mismatch");
+        documentation.ShouldContain("oq3_evidence_missing");
+        documentation.ShouldContain("oq3_evidence_mismatch");
+        documentation.ShouldContain("oq3_approval_incomplete");
+        documentation.ShouldContain("oq3_approval_extra");
+        documentation.ShouldContain("oq3_approval_identity_mismatch");
+        documentation.ShouldContain("oq3_approval_date_mismatch");
+        documentation.ShouldContain("oq3_matrix_mismatch");
+        documentation.ShouldContain("oq3_operation_unmapped");
+        documentation.ShouldContain("oq3_operation_unknown");
+        documentation.ShouldContain("oq3_operation_duplicate");
+        documentation.ShouldContain("oq3_family_uncovered");
+        documentation.ShouldContain("oq3_actor_uncovered");
+        documentation.ShouldContain("oq3_scope_incomplete");
+        documentation.ShouldContain("oq3_denial_shape_mismatch");
+        documentation.ShouldContain("oq3_gap_unrecorded");
         documentation.ShouldContain("docs/contract/file-context-contract-groups.md", Case.Sensitive);
         documentation.ShouldContain("docs/contract/oq2-file-policy-evidence.yaml", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/authorization-matrix.md", Case.Sensitive);
+        documentation.ShouldContain("docs/contract/oq3-authorization-evidence.yaml", Case.Sensitive);
         documentation.ShouldContain(c7DecisionPath, Case.Sensitive);
         AssertMetadataOnly(documentation);
 
@@ -137,6 +201,8 @@ public sealed class GovernanceCompletenessGateTests
             .Select(item => item.GetString().ShouldNotBeNull()).ToArray();
         reportInputs.ShouldContain("docs/contract/file-context-contract-groups.md");
         reportInputs.ShouldContain("docs/contract/oq2-file-policy-evidence.yaml");
+        reportInputs.ShouldContain("docs/contract/authorization-matrix.md");
+        reportInputs.ShouldContain("docs/contract/oq3-authorization-evidence.yaml");
         reportInputs.ShouldContain("src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml");
     }
 
@@ -683,6 +749,206 @@ public sealed class GovernanceCompletenessGateTests
             .Concat(missingReopenDiagnostics)
             .Concat(mismatchedReopenDiagnostics)
             .Concat(mismatchedRecordDiagnostics)
+            .Concat(staleDiagnostics))
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+            diagnostic.ToString().ShouldNotContain(unexpectedValue, Case.Sensitive);
+        }
+    }
+
+    [Fact]
+    public void Oq3AuthorizationMatrixPackageBindsVersionDigestApprovalsAndRuntimePosture()
+    {
+        File.Exists(Oq3MatrixPath).ShouldBeTrue("OQ3 requires the canonical authorization-matrix artifact.");
+        File.Exists(Oq3EvidencePath).ShouldBeTrue("OQ3 requires a versioned governance evidence manifest.");
+
+        string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq3MatrixPath)));
+        actualDigest.ShouldBe(ApprovedOq3Sha256, "OQ3 matrix changes require a new version, digest, and fresh Security and PM approvals.");
+
+        YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        GateDiagnostic[] diagnostics = EvaluateOq3Evidence(
+            evidence,
+            actualDigest,
+            policy,
+            DateOnly.FromDateTime(DateTime.UtcNow));
+
+        foreach (GateDiagnostic diagnostic in diagnostics)
+        {
+            AssertMetadataOnly(diagnostic.ToString());
+        }
+
+        diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(diagnostic => diagnostic.ToString())));
+
+        string[] canonicalSurfaces = RequiredSequence(evidence, "canonical_surfaces").Children
+            .Select(node => RequiredScalar(node, "canonical_surface"))
+            .ToArray();
+        canonicalSurfaces.ShouldBe(
+        [
+            "docs/contract/authorization-matrix.md",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        ]);
+
+        YamlMappingNode denominator = RequiredMapping(evidence, "denominator");
+        RequiredScalar(denominator, "access_states").ShouldBe("12");
+        RequiredScalar(denominator, "canonical_actors").ShouldBe("6");
+        RequiredScalar(denominator, "negative_access_states").ShouldBe("6");
+        RequiredScalar(denominator, "denial_routing_states").ShouldBe("8");
+        RequiredScalar(denominator, "operation_families").ShouldBe("11");
+        RequiredScalar(denominator, "spine_operations").ShouldBe("49");
+        RequiredScalar(denominator, "scope_dimensions").ShouldBe("8");
+
+        YamlMappingNode runtime = RequiredMapping(evidence, "runtime_posture");
+        RequiredScalar(runtime, "status").ShouldBe("incomplete");
+        RequiredSequence(runtime, "incomplete_stories").Children
+            .Select(node => RequiredScalar(node, "incomplete_story"))
+            .ToArray().ShouldBe(ApprovedOq3IncompleteStories);
+
+        YamlMappingNode requirements = RequiredMapping(runtime, "functional_requirements");
+        requirements.Children.Keys.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
+            .ShouldBe(["FR8", "FR9", "FR10"]);
+        requirements.Children.Values.Select(node => RequiredScalar(node, "runtime_status")).ToArray()
+            .ShouldAllBe(status => status == "incomplete");
+        RequiredScalar(runtime, "evidence_claim").ShouldContain("no runtime authorization", Case.Sensitive);
+
+        foreach (string planningPath in Oq3DigestBoundPlanningArtifacts)
+        {
+            File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningPath)))
+                .Contains(ApprovedOq3Sha256, StringComparison.Ordinal)
+                .ShouldBeTrue(planningPath);
+        }
+    }
+
+    [Fact]
+    public void Oq3EvidenceNegativeControlsFailClosedForMissingMismatchedStaleExtraAndIncompleteEvidence()
+    {
+        YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        (string key, string expected)[] packageIdentity =
+        [
+            ("schema_version", "1.0.0"),
+            ("evidence_id", "OQ3"),
+            ("status", "design-approved"),
+            ("release_gate_status", "in-progress"),
+            ("matrix_version", ApprovedOq3Version),
+            ("matrix_path", "docs/contract/authorization-matrix.md"),
+            ("approved_on", ApprovedOq3Date),
+        ];
+        foreach ((string key, string expected) in packageIdentity)
+        {
+            YamlMappingNode missingIdentity = CloneRow(evidence);
+            missingIdentity.Children.Remove(new YamlScalarNode(key));
+            EvaluateOq3Evidence(missingIdentity, ApprovedOq3Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == $"OQ3:{key}");
+
+            YamlMappingNode mismatchedIdentity = CloneRow(evidence);
+            SetScalar(mismatchedIdentity, key, expected + "-unexpected");
+            EvaluateOq3Evidence(mismatchedIdentity, ApprovedOq3Sha256, policy, today)
+                .ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == $"OQ3:{key}");
+        }
+
+        YamlMappingNode missingDigest = CloneRow(evidence);
+        missingDigest.Children.Remove(new YamlScalarNode("matrix_sha256"));
+        GateDiagnostic[] missingDiagnostics = EvaluateOq3Evidence(missingDigest, ApprovedOq3Sha256, policy, today);
+        missingDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == "OQ3:matrix_sha256");
+
+        YamlMappingNode mismatchedDigest = CloneRow(evidence);
+        SetScalar(mismatchedDigest, "matrix_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedDiagnostics = EvaluateOq3Evidence(mismatchedDigest, ApprovedOq3Sha256, policy, today);
+        mismatchedDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ3");
+
+        YamlMappingNode driftedDenominator = CloneRow(evidence);
+        SetScalar(RequiredMapping(driftedDenominator, "denominator"), "spine_operations", "48");
+        GateDiagnostic[] denominatorDiagnostics = EvaluateOq3Evidence(driftedDenominator, ApprovedOq3Sha256, policy, today);
+        denominatorDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:denominator");
+
+        YamlMappingNode droppedGap = CloneRow(evidence);
+        YamlSequenceNode gapIds = RequiredSequence(droppedGap, "recorded_gap_ids");
+        gapIds.Children.Remove(gapIds.Children.Last());
+        GateDiagnostic[] gapDiagnostics = EvaluateOq3Evidence(droppedGap, ApprovedOq3Sha256, policy, today);
+        gapDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:recorded-gap-ids");
+
+        YamlMappingNode incomplete = CloneRow(evidence);
+        YamlSequenceNode incompleteRecords = RequiredSequence(RequiredMapping(incomplete, "approval"), "records");
+        YamlNode securityRecord = incompleteRecords.Children.Cast<YamlMappingNode>()
+            .Single(record => RequiredScalar(record, "authority") == "Security");
+        incompleteRecords.Children.Remove(securityRecord);
+        GateDiagnostic[] incompleteDiagnostics = EvaluateOq3Evidence(incomplete, ApprovedOq3Sha256, policy, today);
+        incompleteDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_incomplete" && diagnostic.Identifier == "OQ3:Security");
+
+        YamlMappingNode missingAuthorities = CloneRow(evidence);
+        RequiredMapping(missingAuthorities, "approval").Children.Remove(new YamlScalarNode("required_authorities"));
+        GateDiagnostic[] missingAuthorityDiagnostics = EvaluateOq3Evidence(missingAuthorities, ApprovedOq3Sha256, policy, today);
+        missingAuthorityDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == "OQ3:required-authorities");
+
+        const string unexpectedValue = "tenant-secret-unexpected-value";
+        YamlMappingNode extra = CloneRow(evidence);
+        YamlMappingNode extraApproval = RequiredMapping(extra, "approval");
+        RequiredSequence(extraApproval, "required_authorities").Add(new YamlScalarNode(unexpectedValue));
+        RequiredSequence(extraApproval, "records").Add(new YamlMappingNode(
+            new YamlScalarNode("authority"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approver"), new YamlScalarNode(unexpectedValue),
+            new YamlScalarNode("approved_on"), new YamlScalarNode(ApprovedOq3Date),
+            new YamlScalarNode("evidence_version"), new YamlScalarNode(ApprovedOq3Version),
+            new YamlScalarNode("evidence_sha256"), new YamlScalarNode(ApprovedOq3Sha256)));
+        GateDiagnostic[] extraDiagnostics = EvaluateOq3Evidence(extra, ApprovedOq3Sha256, policy, today);
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_extra" && diagnostic.Identifier == "OQ3:required-authorities");
+        extraDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_extra" && diagnostic.Identifier == "OQ3:record-count");
+
+        YamlMappingNode missingReopenPolicy = CloneRow(evidence);
+        missingReopenPolicy.Children.Remove(new YamlScalarNode("reopen_policy"));
+        GateDiagnostic[] missingReopenDiagnostics = EvaluateOq3Evidence(missingReopenPolicy, ApprovedOq3Sha256, policy, today);
+        missingReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq3_evidence_missing" && diagnostic.Identifier == "OQ3:reopen_policy");
+
+        YamlMappingNode mismatchedReopenPolicy = CloneRow(evidence);
+        SetScalar(mismatchedReopenPolicy, "reopen_policy", "matrix content and digest only");
+        GateDiagnostic[] mismatchedReopenDiagnostics = EvaluateOq3Evidence(mismatchedReopenPolicy, ApprovedOq3Sha256, policy, today);
+        mismatchedReopenDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:reopen_policy");
+
+        YamlMappingNode mismatchedRecord = CloneRow(evidence);
+        YamlMappingNode pmRecord = RequiredSequence(RequiredMapping(mismatchedRecord, "approval"), "records")
+            .Children.Cast<YamlMappingNode>().Single(record => RequiredScalar(record, "authority") == "PM");
+        SetScalar(pmRecord, "approver", unexpectedValue);
+        SetScalar(pmRecord, "approved_on", "2099-12-31");
+        SetScalar(pmRecord, "evidence_version", "9.9.9");
+        SetScalar(pmRecord, "evidence_sha256", new string('0', 64));
+        GateDiagnostic[] mismatchedRecordDiagnostics = EvaluateOq3Evidence(mismatchedRecord, ApprovedOq3Sha256, policy, today);
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_identity_mismatch" && diagnostic.Identifier == "OQ3:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "oq3_approval_date_mismatch" && diagnostic.Identifier == "OQ3:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_version_mismatch" && diagnostic.Identifier == "OQ3:PM");
+        mismatchedRecordDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_evidence_digest_mismatch" && diagnostic.Identifier == "OQ3:PM");
+
+        YamlMappingNode completedRuntime = CloneRow(evidence);
+        SetScalar(RequiredMapping(completedRuntime, "runtime_posture"), "status", "complete");
+        GateDiagnostic[] runtimeDiagnostics = EvaluateOq3Evidence(completedRuntime, ApprovedOq3Sha256, policy, today);
+        runtimeDiagnostics.ShouldContain(diagnostic =>
+            diagnostic.Category == "oq3_evidence_mismatch" && diagnostic.Identifier == "OQ3:runtime-posture");
+
+        GateDiagnostic[] staleDiagnostics = EvaluateOq3Evidence(
+            evidence,
+            ApprovedOq3Sha256,
+            policy,
+            today.AddDays(policy.MaxAgeDays + 1));
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ3:Security");
+        staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ3:PM");
+
+        foreach (GateDiagnostic diagnostic in missingDiagnostics
+            .Concat(mismatchedDiagnostics)
+            .Concat(denominatorDiagnostics)
+            .Concat(gapDiagnostics)
+            .Concat(incompleteDiagnostics)
+            .Concat(missingAuthorityDiagnostics)
+            .Concat(extraDiagnostics)
+            .Concat(missingReopenDiagnostics)
+            .Concat(mismatchedReopenDiagnostics)
+            .Concat(mismatchedRecordDiagnostics)
+            .Concat(runtimeDiagnostics)
             .Concat(staleDiagnostics))
         {
             AssertMetadataOnly(diagnostic.ToString());
@@ -1387,6 +1653,263 @@ public sealed class GovernanceCompletenessGateTests
                 || !Regex.IsMatch(recordDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
             {
                 diagnostics.Add(new("oq2-file-policy", "approval_evidence_digest_mismatch", identifier, path));
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
+    private static GateDiagnostic[] EvaluateOq3Evidence(
+        YamlMappingNode evidence,
+        string actualDigest,
+        ApprovalPolicy policy,
+        DateOnly today)
+    {
+        const string path = "docs/contract/oq3-authorization-evidence.yaml";
+        const string gate = "oq3-authorization-matrix";
+        List<GateDiagnostic> diagnostics = [];
+
+        void ExpectScalar(string key, string expected)
+        {
+            string? observed = TryScalar(evidence, key);
+            if (observed is null)
+            {
+                diagnostics.Add(new(gate, "oq3_evidence_missing", $"OQ3:{key}", path));
+            }
+            else if (!string.Equals(observed, expected, StringComparison.Ordinal))
+            {
+                diagnostics.Add(new(gate, "oq3_evidence_mismatch", $"OQ3:{key}", path));
+            }
+        }
+
+        ExpectScalar("schema_version", "1.0.0");
+        ExpectScalar("evidence_id", "OQ3");
+        ExpectScalar("status", "design-approved");
+        ExpectScalar("release_gate_status", "in-progress");
+        ExpectScalar("matrix_version", ApprovedOq3Version);
+        ExpectScalar("matrix_path", "docs/contract/authorization-matrix.md");
+        ExpectScalar("approved_on", ApprovedOq3Date);
+        ExpectScalar("reopen_policy", ApprovedOq3ReopenPolicy);
+
+        string? matrixDigest = TryScalar(evidence, "matrix_sha256");
+        if (matrixDigest is null)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:matrix_sha256", path));
+        }
+        else if (!string.Equals(matrixDigest, actualDigest, StringComparison.Ordinal)
+            || !Regex.IsMatch(matrixDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+        {
+            diagnostics.Add(new(gate, "approval_evidence_digest_mismatch", "OQ3", path));
+        }
+
+        string[] expectedSurfaces =
+        [
+            "docs/contract/authorization-matrix.md",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs",
+            "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
+        ];
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("canonical_surfaces"), out YamlNode? surfacesNode)
+            || surfacesNode is not YamlSequenceNode surfaces)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:canonical-surfaces", path));
+        }
+        else
+        {
+            string[] observedSurfaces = surfaces.Children.OfType<YamlScalarNode>()
+                .Select(node => node.Value ?? string.Empty).ToArray();
+            if (observedSurfaces.Length != expectedSurfaces.Length
+                || !observedSurfaces.SequenceEqual(expectedSurfaces, StringComparer.Ordinal)
+                || observedSurfaces.Any(surface => !IsRepositoryRelativePath(surface) || !PathExists(surface)))
+            {
+                diagnostics.Add(new(gate, "oq3_evidence_mismatch", "OQ3:canonical-surfaces", path));
+            }
+        }
+
+        (string key, string expected)[] expectedDenominator =
+        [
+            ("access_states", "12"),
+            ("canonical_actors", "6"),
+            ("negative_access_states", "6"),
+            ("denial_routing_states", "8"),
+            ("operation_families", "11"),
+            ("spine_operations", "49"),
+            ("scope_dimensions", "8"),
+        ];
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("denominator"), out YamlNode? denominatorNode)
+            || denominatorNode is not YamlMappingNode denominator)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:denominator", path));
+        }
+        else
+        {
+            string[] observedKeys = denominator.Children.Keys.OfType<YamlScalarNode>()
+                .Select(node => node.Value ?? string.Empty).ToArray();
+            bool invalidDenominator = !observedKeys.SequenceEqual(expectedDenominator.Select(entry => entry.key), StringComparer.Ordinal)
+                || expectedDenominator.Any(entry => !string.Equals(TryScalar(denominator, entry.key), entry.expected, StringComparison.Ordinal));
+            if (invalidDenominator)
+            {
+                diagnostics.Add(new(gate, "oq3_evidence_mismatch", "OQ3:denominator", path));
+            }
+        }
+
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("recorded_gap_ids"), out YamlNode? gapNode)
+            || gapNode is not YamlSequenceNode gapIds)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:recorded-gap-ids", path));
+        }
+        else
+        {
+            string[] observedGaps = gapIds.Children.OfType<YamlScalarNode>()
+                .Select(node => node.Value ?? string.Empty).ToArray();
+            if (!observedGaps.SequenceEqual(ApprovedOq3GapIds, StringComparer.Ordinal))
+            {
+                diagnostics.Add(new(gate, "oq3_evidence_mismatch", "OQ3:recorded-gap-ids", path));
+            }
+        }
+
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("runtime_posture"), out YamlNode? runtimeNode)
+            || runtimeNode is not YamlMappingNode runtime)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:runtime-posture", path));
+        }
+        else
+        {
+            bool invalidRuntime = !string.Equals(TryScalar(runtime, "status"), "incomplete", StringComparison.Ordinal)
+                || string.IsNullOrWhiteSpace(TryScalar(runtime, "evidence_claim"));
+
+            if (!runtime.Children.TryGetValue(new YamlScalarNode("incomplete_stories"), out YamlNode? storiesNode)
+                || storiesNode is not YamlSequenceNode stories)
+            {
+                invalidRuntime = true;
+            }
+            else
+            {
+                string[] observedStories = stories.Children.OfType<YamlScalarNode>()
+                    .Select(node => node.Value ?? string.Empty).ToArray();
+                invalidRuntime |= !observedStories.SequenceEqual(ApprovedOq3IncompleteStories, StringComparer.Ordinal);
+            }
+
+            string[] expectedRequirements = ["FR8", "FR9", "FR10"];
+            if (!runtime.Children.TryGetValue(new YamlScalarNode("functional_requirements"), out YamlNode? requirementsNode)
+                || requirementsNode is not YamlMappingNode requirements)
+            {
+                invalidRuntime = true;
+            }
+            else
+            {
+                string[] observedRequirements = requirements.Children.Keys.OfType<YamlScalarNode>()
+                    .Select(node => node.Value ?? string.Empty).ToArray();
+                invalidRuntime |= !observedRequirements.SequenceEqual(expectedRequirements, StringComparer.Ordinal)
+                    || requirements.Children.Values.Any(node => node is not YamlScalarNode { Value: "incomplete" });
+            }
+
+            if (invalidRuntime)
+            {
+                diagnostics.Add(new(gate, "oq3_evidence_mismatch", "OQ3:runtime-posture", path));
+            }
+        }
+
+        string[] expectedAuthorities = ["Security", "PM"];
+        if (!evidence.Children.TryGetValue(new YamlScalarNode("approval"), out YamlNode? approvalNode)
+            || approvalNode is not YamlMappingNode approval)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:approval", path));
+            return diagnostics.ToArray();
+        }
+
+        string[] requiredAuthorities = approval.Children.TryGetValue(new YamlScalarNode("required_authorities"), out YamlNode? authoritiesNode)
+            && authoritiesNode is YamlSequenceNode authoritySequence
+                ? authoritySequence.Children.OfType<YamlScalarNode>().Select(node => node.Value ?? string.Empty).ToArray()
+                : [];
+        if (requiredAuthorities.Length == 0)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:required-authorities", path));
+        }
+        else
+        {
+            foreach (string authority in expectedAuthorities.Where(authority => !requiredAuthorities.Contains(authority, StringComparer.Ordinal)))
+            {
+                diagnostics.Add(new(gate, "oq3_approval_incomplete", $"OQ3:{authority}", path));
+            }
+
+            if (requiredAuthorities.Length != expectedAuthorities.Length
+                || requiredAuthorities.Distinct(StringComparer.Ordinal).Count() != expectedAuthorities.Length
+                || requiredAuthorities.Any(authority => !expectedAuthorities.Contains(authority, StringComparer.Ordinal)))
+            {
+                diagnostics.Add(new(gate, "oq3_approval_extra", "OQ3:required-authorities", path));
+            }
+        }
+
+        YamlSequenceNode? recordSequence = approval.Children.TryGetValue(new YamlScalarNode("records"), out YamlNode? recordsNode)
+            ? recordsNode as YamlSequenceNode
+            : null;
+        YamlMappingNode[] records = recordSequence?.Children.OfType<YamlMappingNode>().ToArray() ?? [];
+        if (records.Length == 0)
+        {
+            diagnostics.Add(new(gate, "oq3_evidence_missing", "OQ3:approval-records", path));
+        }
+        else if (recordSequence!.Children.Count != expectedAuthorities.Length
+            || records.Length != expectedAuthorities.Length
+            || records.Select(record => TryScalar(record, "authority") ?? string.Empty).Any(authority => !expectedAuthorities.Contains(authority, StringComparer.Ordinal)))
+        {
+            diagnostics.Add(new(gate, "oq3_approval_extra", "OQ3:record-count", path));
+        }
+
+        foreach (string authority in expectedAuthorities)
+        {
+            YamlMappingNode[] matches = records
+                .Where(record => string.Equals(TryScalar(record, "authority"), authority, StringComparison.Ordinal))
+                .ToArray();
+            if (matches.Length != 1)
+            {
+                diagnostics.Add(new(gate, "oq3_approval_incomplete", $"OQ3:{authority}", path));
+                if (matches.Length > 1)
+                {
+                    diagnostics.Add(new(gate, "oq3_approval_extra", "OQ3:record-count", path));
+                }
+
+                continue;
+            }
+
+            YamlMappingNode record = matches[0];
+            string identifier = $"OQ3:{authority}";
+            if (!string.Equals(TryScalar(record, "approver"), "Administrator", StringComparison.Ordinal))
+            {
+                diagnostics.Add(new(gate, "oq3_approval_identity_mismatch", identifier, path));
+            }
+
+            if (!string.Equals(TryScalar(record, "approved_on"), ApprovedOq3Date, StringComparison.Ordinal))
+            {
+                diagnostics.Add(new(gate, "oq3_approval_date_mismatch", identifier, path));
+            }
+            else
+            {
+                DateOnly approvedOn = ParseDate(ApprovedOq3Date, "approved_on");
+                if (approvedOn > today)
+                {
+                    diagnostics.Add(new(gate, "approval_date_future", identifier, path));
+                }
+                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                {
+                    diagnostics.Add(new(gate, "approval_stale", identifier, path));
+                }
+            }
+
+            if (!string.Equals(TryScalar(record, "evidence_version"), ApprovedOq3Version, StringComparison.Ordinal))
+            {
+                diagnostics.Add(new(gate, "approval_evidence_version_mismatch", identifier, path));
+            }
+
+            string? recordDigest = TryScalar(record, "evidence_sha256");
+            if (recordDigest is null)
+            {
+                diagnostics.Add(new(gate, "approval_evidence_digest_missing", identifier, path));
+            }
+            else if (!string.Equals(recordDigest, actualDigest, StringComparison.Ordinal)
+                || !Regex.IsMatch(recordDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+            {
+                diagnostics.Add(new(gate, "approval_evidence_digest_mismatch", identifier, path));
             }
         }
 

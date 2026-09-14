@@ -32,6 +32,7 @@ generatedCountsAuthority: '_bmad-output/planning-artifacts/planning-story-manife
 storyAuthorityManifest: '_bmad-output/planning-artifacts/planning-story-manifest.yaml'
 domainFocusRefactoringApprovedAt: "2026-07-07"
 oq2PolicyApprovedAt: '2026-09-14'
+oq3MatrixApprovedAt: '2026-09-14'
 ---
 
 # Hexalith.Folders - Epic Breakdown
@@ -254,7 +255,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-CURRENT-05: Epic 12 owns durable source events, authoritative file content/state, restart replay, task completion, durable Git-execution orchestration, and recoverable at-least-once egress. Stories 3.11 and 3.13 own the production-registered provider-private mutation, explicit-commit, and status adapter seams that Epic 12 consumes; Epic 12 does not reimplement those transports or own consuming product projections.
 - AR-CURRENT-06: Epic 4 owns workspace transition evidence and durable prepare/lock/mutation/context/commit/reconciliation proof; Epic 6 owns seven populated diagnostic projections and deployed operator/incident journeys; Epic 10 owns the search bridge, deployed Server registration, current-authority hydration/redaction/pruning, and the non-empty FR58 round trip.
 - AR-CURRENT-07: Story 11.10 owns EventStore admission and subscription-mapping seam adoption only. Story 11.14 owns Memories publication/search-client seams, and Story 11.15 owns the DCP-capable cross-repository verification lane. Workstream 11 owns no product projection.
-- AR-CURRENT-08: OQ1's approved C7 timing profile and OQ2's canonical file-policy version `1.1.0` are closed design decisions; the governing dependency sequence is OQ3–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun. OQ2 governance does not complete Stories 12.1, 12.3, or 4.20, public multi-file transport, or FR32-FR35 runtime proof.
+- AR-CURRENT-08: OQ1's approved C7 timing profile, OQ2's canonical file-policy version `1.1.0`, and OQ3's canonical authorization matrix version `1.0.0` are closed design decisions; the governing dependency sequence is OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun. OQ2 governance does not complete Stories 12.1, 12.3, or 4.20, public multi-file transport, or FR32-FR35 runtime proof, and OQ3 governance does not complete Stories 12.1, 4.19, 4.20, 4.21, 6.14, or 10.8 or FR8-FR10 runtime proof.
 - AR-CURRENT-09: Authorization order is JWT validation → EventStore claim transform → fresh tenant-access evidence → folder ACL → EventStore validator → Dapr deny-by-default policy. Authorization must precede any protected lookup, counting, filtering, provider call, file/content access, audit access, or search egress.
 - AR-CURRENT-10: The serializing lock identity is managed tenant plus canonical provider/repository identity plus normalized target ref. Folder/workspace/task IDs are metadata, aliases collide, and lock state is distinct from lifecycle and disposition.
 - AR-CURRENT-11: Every mutation follows the EventStore-owned durable admission contract; every read rejects an idempotency key before source execution. Live-equivalent replay, live-conflict, and expired-key precedence are distinct, and consumed-key evidence survives replay-result expiry without retaining protected prior intent.
@@ -593,7 +594,7 @@ Security and operations stakeholders can harden the surfaces that already claim 
 
 ### Governing Portfolio Dependency
 
-OQ1's approved C7 timing profile and OQ2's canonical file-policy version `1.1.0` are closed design decisions. The remaining sequence is `OQ3–OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`. OQ2 remains separate from the incomplete durable/runtime evidence owned by Stories 12.1, 12.3, and 4.20; public multi-file transport also remains deferred.
+OQ1's approved C7 timing profile, OQ2's canonical file-policy version `1.1.0`, and OQ3's canonical authorization matrix version `1.0.0` are closed design decisions. The remaining sequence is `OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`. OQ2 remains separate from the incomplete durable/runtime evidence owned by Stories 12.1, 12.3, and 4.20; public multi-file transport also remains deferred. OQ3 likewise remains separate from the runtime authorization evidence owned by Stories 12.1, 4.19, 4.20, 4.21, 6.14, and 10.8.
 
 Stable epic numbers are retained for historical traceability, so numeric order is not execution order. No product completion claim may be supported only by NoOp, in-memory, seed, unavailable, safe-empty, or fake evidence.
 
@@ -2612,7 +2613,7 @@ Authorized developers and AI agents can persist folder lifecycle and file conten
 
 **FRs covered:** FR1–FR3, FR9–FR14, FR18–FR21, FR24–FR46, FR58.
 
-**Prerequisite decisions:** OQ1's C7 timing profile and OQ2's canonical file-policy version `1.1.0` are approved; OQ3–OQ4 remain prerequisite decisions where they govern authorization, provider compatibility, and reconciliation. OQ2 approval closes design only, while Stories 12.1, 12.3, and 4.20, public multi-file transport, and FR32-FR35 runtime evidence remain incomplete. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
+**Prerequisite decisions:** OQ1's C7 timing profile, OQ2's canonical file-policy version `1.1.0`, and OQ3's canonical authorization matrix version `1.0.0` are approved; OQ4 remains a prerequisite decision where it governs provider compatibility and reconciliation. OQ2 and OQ3 approval closes design only, while Stories 12.1, 12.3, 4.19, 4.20, 4.21, 6.14, and 10.8, public multi-file transport, and FR8-FR10 plus FR32-FR35 runtime evidence remain incomplete. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
 
 ### Story 12.1: EventStore-backed folder repository, retire NoOp, and implement projection replay
 
@@ -2622,7 +2623,7 @@ So that accepted lifecycle operations survive process restart and Production can
 
 **Acceptance Criteria:**
 
-**Given** OQ1's approved C7 timing profile, OQ2's approved canonical file policy, and the OQ3–OQ4 prerequisites affecting the durable boundary are recorded
+**Given** OQ1's approved C7 timing profile, OQ2's approved canonical file policy, OQ3's approved canonical authorization matrix, and the OQ4 prerequisites affecting the durable boundary are recorded
 **When** the real REST → EventStore gateway → processor → authorization gate → repository path accepts folder or organization behavior
 **Then** metadata-only events append durably, `IFolderRepository` and required organization state rebuild from ordered streams, `/project` consumes events rather than returning 501, the ADR-0001 `DomainResult.NoOp()` path is retired, and Production boots with a real registration
 **And** empty-checkpoint replay, host restart, append conflict/reread, equivalent/conflicting idempotency, wrong-tenant/authorization denial, corrupt/unavailable store, timeout, event-version boundary, and sensitive-data exclusion are proven

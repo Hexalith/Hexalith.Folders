@@ -29,6 +29,8 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `docs/exit-criteria/c7-lock-authorization-timing.md`
 - `docs/contract/file-context-contract-groups.md`
 - `docs/contract/oq2-file-policy-evidence.yaml`
+- `docs/contract/authorization-matrix.md`
+- `docs/contract/oq3-authorization-evidence.yaml`
 - `tests/fixtures/idempotency-encoding-corpus.json`
 - `tests/fixtures/idempotency-encoding-corpus.schema.json`
 - `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
@@ -63,6 +65,21 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `oq2_approval_extra`: the OQ2 authority or record set contains an unexpected or duplicate entry.
 - `oq2_approval_identity_mismatch`: an OQ2 approval record does not name Administrator, reported without echoing the unexpected value.
 - `oq2_approval_date_mismatch`: an OQ2 approval record does not carry 2026-09-14, reported without echoing the unexpected value.
+- `oq3_evidence_missing`: the OQ3 manifest, canonical matrix binding, denominator block, recorded gap inventory, approval block, or required runtime-posture declaration is absent.
+- `oq3_evidence_mismatch`: OQ3 evidence identity, status, matrix version/path/digest, approval date, exact reopen policy, canonical surface inventory, denominator counts, recorded gap IDs, or runtime posture differs from the approved package.
+- `oq3_approval_incomplete`: one of Security or PM has no single approval record.
+- `oq3_approval_extra`: the OQ3 authority or record set contains an unexpected or duplicate entry.
+- `oq3_approval_identity_mismatch`: an OQ3 approval record does not name Administrator, reported without echoing the unexpected value.
+- `oq3_approval_date_mismatch`: an OQ3 approval record does not carry 2026-09-14, reported without echoing the unexpected value.
+- `oq3_matrix_mismatch`: a matrix family, decision, negative access state, operation identity, family operation count, or gap evidence path differs from the approved denominator or its closed vocabulary.
+- `oq3_operation_unmapped`: a current Contract Spine operation has no authorization-matrix row.
+- `oq3_operation_unknown`: an authorization-matrix row names an operation the Contract Spine does not declare.
+- `oq3_operation_duplicate`: an operation maps to more than one matrix row.
+- `oq3_family_uncovered`: one of the 11 protected operation families has no requirement row.
+- `oq3_actor_uncovered`: a canonical actor, a canonical negative case, or an actor-by-family decision row is missing.
+- `oq3_scope_incomplete`: an operation row does not account for all eight FR8 scope dimensions, or omits a dimension the Contract Spine declares.
+- `oq3_denial_shape_mismatch`: a negative access state does not route to the exact canonical 404 safe denial.
+- `oq3_gap_unrecorded`: an observed runtime or Contract Spine deviation is not recorded in the matrix conformance-gap table.
 - `idempotency_sample_unmapped`: a corpus sample lacks exactly one stable consumption map entry.
 - `pattern_example_invalid`: a C# example is unmarked, stale, or not part of the compilable examples project.
 - `cache_key_unscoped`: a tenant-data cache key candidate lacks tenant scope and no reviewed exception applies.
@@ -90,6 +107,19 @@ mismatched, stale, extra, or incomplete evidence fails closed with bounded metad
 content/version/digest, required-authority, signer-identity, or approval-date change reopens all three approvals.
 The manifest deliberately keeps Stories 12.1,
 12.3, and 4.20 and FR32-FR35 runtime evidence incomplete; design approval is not runtime completion.
+
+OQ3 uses the same separate-manifest shape because it governs the authorization denominator rather than one
+C0-C13 criterion row. `GovernanceCompletenessGateTests.Oq3AuthorizationMatrixPackageBindsVersionDigestApprovalsAndRuntimePosture`
+binds `docs/contract/authorization-matrix.md` version `1.0.0` and its LF-stable SHA-256 digest to exactly one
+Security and one PM approval by Administrator dated 2026-09-14, and
+`AuthorizationMatrixContractTests` enforces the denominator itself: 49 Contract Spine operations mapped exactly
+once, all 11 protected operation families present, all 6 canonical actors and 6 canonical negative cases
+covered, and all 8 FR8 scope dimensions explicit or explicitly not applicable on every operation. Missing,
+mismatched, stale, extra, duplicate, or incomplete evidence fails closed with bounded metadata-only
+diagnostics. A matrix content/version/digest, required-authority, signer-identity, or approval-date change
+reopens both approvals. The manifest deliberately keeps Stories 12.1, 4.19, 4.20, 4.21, 6.14, and 10.8 and
+FR8-FR10 runtime evidence incomplete, and the matrix records rather than hides the current Contract Spine and
+runtime drift under gap IDs `G1` through `G11`, whose downstream owners are PD10, OQ9, Story 12.1, and Epic 13.
 
 ## Contribution Checklist
 

@@ -494,11 +494,12 @@ open_questions:
   - '4.20'
 - id: OQ3
   owner: Security/Authorization
-  evidence: docs/contract/authorization-matrix.md
+  evidence: docs/contract/authorization-matrix.md plus docs/contract/oq3-authorization-evidence.yaml
   approvers:
   - Security
   - PM
-  status: open
+  status: design-approved
+  notes: '2026-09-14 Administrator approved canonical authorization matrix version 1.0.0 for Security and PM, bound to SHA-256 5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7. The design decision is closed; runtime authorization, C7 revocation timing, Story 12.1 projections, OQ9 incident access, and PD10 Contract Spine remediation remain open, so the blocked stories stay blocked for runtime evidence.'
   blocks:
   - '12.1'
   - '4.19'

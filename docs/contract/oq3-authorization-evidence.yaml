@@ -1,0 +1,64 @@
+schema_version: '1.0.0'
+evidence_id: OQ3
+title: Canonical actor and access-state by protected-operation authorization matrix
+status: design-approved
+release_gate_status: in-progress
+matrix_version: '1.0.0'
+matrix_path: docs/contract/authorization-matrix.md
+matrix_sha256: 5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7
+approved_on: '2026-09-14'
+canonical_surfaces:
+  - docs/contract/authorization-matrix.md
+  - src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+  - tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs
+  - tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+denominator:
+  access_states: 12
+  canonical_actors: 6
+  negative_access_states: 6
+  denial_routing_states: 8
+  operation_families: 11
+  spine_operations: 49
+  scope_dimensions: 8
+recorded_gap_ids:
+  - G1
+  - G2
+  - G3
+  - G4
+  - G5
+  - G6
+  - G7
+  - G8
+  - G9
+  - G10
+  - G11
+approval:
+  required_authorities:
+    - Security
+    - PM
+  records:
+    - authority: Security
+      approver: Administrator
+      approved_on: '2026-09-14'
+      evidence_version: '1.0.0'
+      evidence_sha256: 5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7
+    - authority: PM
+      approver: Administrator
+      approved_on: '2026-09-14'
+      evidence_version: '1.0.0'
+      evidence_sha256: 5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7
+runtime_posture:
+  status: incomplete
+  incomplete_stories:
+    - '12.1'
+    - '4.19'
+    - '4.20'
+    - '4.21'
+    - '6.14'
+    - '10.8'
+  functional_requirements:
+    FR8: incomplete
+    FR9: incomplete
+    FR10: incomplete
+  evidence_claim: Governance approval closes the OQ3 authorization-matrix design decision only; no runtime authorization, C7 revocation timing, Story 12.1 projection, OQ9 incident-access, or broad PD10 Contract Spine remediation is claimed.
+reopen_policy: Any change to the canonical matrix content, matrix version, SHA-256 digest, required authority set, approver identity, or approval date reopens Security and PM approval.
