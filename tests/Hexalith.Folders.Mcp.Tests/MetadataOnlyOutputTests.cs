@@ -25,7 +25,7 @@ public sealed class MetadataOnlyOutputTests
         // A 200 OK FileRangeReadResult carrying authorized content in contentBytes plus benign metadata.
         string body = $$"""
             {
-              "path": { "normalizedPath": "docs/readme.md", "displayName": "readme.md" },
+              "path": { "normalizedPath": "docs/readme.md", "displayName": "readme.md", "pathPolicyClass": "content_allowed", "unicodeNormalization": "NFC" },
               "range": { "startOffset": 0, "endOffset": 16, "actualBytes": 16, "partial": false },
               "contentBytes": "{{LeakedContentMarker}}",
               "freshness": { "readConsistency": "read_your_writes", "stale": false }
@@ -35,7 +35,13 @@ public sealed class MetadataOnlyOutputTests
         ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
         string result = await ContextTools.ReadFileRange(
-            pipeline, folderId: "f", workspaceId: "w", taskId: "task-1", correlationId: "corr-range", requestJson: "{}", cancellationToken: TestContext.Current.CancellationToken);
+            pipeline,
+            folderId: "f",
+            workspaceId: "w",
+            taskId: "task-1",
+            correlationId: "corr-range",
+            requestJson: "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"startOffset\":0,\"endOffset\":16}",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         result.ShouldNotContain(LeakedContentMarker);
         result.ShouldNotContain("contentBytes");

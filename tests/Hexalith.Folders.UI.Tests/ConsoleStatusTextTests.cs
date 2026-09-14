@@ -20,7 +20,13 @@ public sealed class ConsoleStatusTextTests
 
     public static TheoryData<FileMetadataItemKind> FileKinds => [.. Enum.GetValues<FileMetadataItemKind>()];
 
-    public static TheoryData<FileMetadataItemRedaction> FileRedactions => [.. Enum.GetValues<FileMetadataItemRedaction>()];
+    public static TheoryData<FileMetadataItemRedaction> FileRedactions =>
+    [
+        FileMetadataItemRedaction.Not_redacted,
+        (FileMetadataItemRedaction)1,
+        (FileMetadataItemRedaction)2,
+        (FileMetadataItemRedaction)3,
+    ];
 
     public static TheoryData<CommitEvidenceCommitReferenceClassification> CommitClassifications => [.. Enum.GetValues<CommitEvidenceCommitReferenceClassification>()];
 

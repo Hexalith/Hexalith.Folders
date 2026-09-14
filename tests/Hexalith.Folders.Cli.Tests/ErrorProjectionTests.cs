@@ -43,6 +43,7 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.Path_validation_failed, 69)]
     [InlineData(CanonicalErrorCategory.Branch_ref_policy_invalid, 69)]
     [InlineData(CanonicalErrorCategory.Response_limit_exceeded, 69)]
+    [InlineData(CanonicalErrorCategory.Range_unsatisfiable, 69)]
     [InlineData(CanonicalErrorCategory.Provider_failure_known, 70)]
     [InlineData(CanonicalErrorCategory.Provider_unavailable, 70)]
     [InlineData(CanonicalErrorCategory.Provider_rate_limited, 70)]
@@ -63,6 +64,7 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.Workspace_not_ready, 72)]
     [InlineData(CanonicalErrorCategory.Workspace_preparation_failed, 72)]
     [InlineData(CanonicalErrorCategory.Dirty_workspace, 72)]
+    [InlineData(CanonicalErrorCategory.File_policy_unavailable, 72)]
     [InlineData(CanonicalErrorCategory.Not_found, 73)]
     [InlineData(CanonicalErrorCategory.Authorization_revocation_detected, 73)]
     [InlineData(CanonicalErrorCategory.State_transition_invalid, 74)]
@@ -71,11 +73,6 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.Internal_error, 1)]
     public void ProjectsCategoryToCanonicalExitCode(CanonicalErrorCategory category, int expectedExitCode)
         => ErrorProjection.Project(category).ShouldBe(expectedExitCode);
-
-    [Fact]
-    public void CategoryAbsentFromOracleFallsThroughToInternalError()
-        // range_unsatisfiable is an SDK enum member but has no oracle outcome_mapping row → 1 (drift signal).
-        => ErrorProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(1);
 
     [Fact]
     public void EveryEnumMemberHasACoveredProjection()

@@ -54,15 +54,7 @@ public sealed class FailureKindProjectionTests
     {
         string kind = FailureKindProjection.Project(category);
 
-        if (category == CanonicalErrorCategory.Range_unsatisfiable)
-        {
-            // Absent from the oracle mcp_failure_kind set → internal_error (drift signal), per Story 5.2 parity.
-            kind.ShouldBe("internal_error");
-        }
-        else
-        {
-            kind.ShouldBe(EnumMemberValue(category));
-        }
+        kind.ShouldBe(EnumMemberValue(category));
     }
 
     [Fact]

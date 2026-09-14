@@ -50,7 +50,8 @@ public sealed class FileTransportTests
             cancellationToken: TestContext.Current.CancellationToken);
 
         captured.ShouldNotBeNull();
-        captured!.TransportOperation.ShouldBe("PutFileInline");
+        captured!.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
+        captured.PathMetadata.PathPolicyClass.ShouldBe(PathMetadataPathPolicyClass.Metadata_only);
         result.ShouldNotContain(content);
         result.ShouldNotContain(contentBase64);
         TestSupport.Kind(result).ShouldBeNull(); // success envelope, not a failure
@@ -101,6 +102,33 @@ public sealed class FileTransportTests
             idempotencyKey: "idem-1",
             taskId: "task-1",
             correlationId: "corr-bad",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        TestSupport.Kind(result).ShouldBe("usage_error");
+        client.ReceivedCalls().Any(c => c.GetMethodInfo().Name == nameof(IClient.AddFileAsync)).ShouldBeFalse();
+    }
+
+    [Theory]
+    [InlineData("unknown")]
+    [InlineData("0")]
+    public async Task AddFileWithInvalidPolicyClassIsUsageErrorWithNoCall(string policyClass)
+    {
+        IClient client = Substitute.For<IClient>();
+        ToolPipeline pipeline = TestSupport.Pipeline(client);
+
+        string result = await FileTools.AddFile(
+            pipeline,
+            folderId: "f",
+            workspaceId: "w",
+            operationId: "op-1",
+            path: "docs/x.md",
+            displayName: "x.md",
+            mediaType: "text/markdown",
+            contentBase64: Convert.ToBase64String([1, 2, 3]),
+            idempotencyKey: "idem-1",
+            taskId: "task-1",
+            correlationId: "corr-policy",
+            pathPolicyClass: policyClass,
             cancellationToken: TestContext.Current.CancellationToken);
 
         TestSupport.Kind(result).ShouldBe("usage_error");

@@ -115,25 +115,26 @@ public static class ConsoleStatusText
     /// <summary>
     /// Maps a file-entry redaction to its <b>access</b>-column label (distinct from the redaction
     /// disclosure rendered through <c>RedactedField</c>): permitted / redacted / excluded-by-policy / binary.
+    /// Historical ordinals remain supported even though the narrowed generated enum now names only ordinal zero.
     /// </summary>
     public static string ResolveFileAccessLabel(FileMetadataItemRedaction redaction)
-        => redaction switch
+        => (int)redaction switch
         {
-            FileMetadataItemRedaction.Not_redacted => "Permitted",
-            FileMetadataItemRedaction.Redacted => "Redacted",
-            FileMetadataItemRedaction.Excluded => "Excluded by policy",
-            FileMetadataItemRedaction.Binary_disallowed => "Binary",
+            0 => "Permitted",
+            1 => "Redacted",
+            2 => "Excluded by policy",
+            3 => "Binary",
             _ => throw new ArgumentOutOfRangeException(nameof(redaction), redaction, "Unknown file metadata item redaction."),
         };
 
     /// <summary>Maps a file-entry redaction to its access-column badge slot.</summary>
     public static BadgeSlot ResolveFileAccessSlot(FileMetadataItemRedaction redaction)
-        => redaction switch
+        => (int)redaction switch
         {
-            FileMetadataItemRedaction.Not_redacted => BadgeSlot.Success,
-            FileMetadataItemRedaction.Redacted => BadgeSlot.Warning,
-            FileMetadataItemRedaction.Excluded => BadgeSlot.Neutral,
-            FileMetadataItemRedaction.Binary_disallowed => BadgeSlot.Neutral,
+            0 => BadgeSlot.Success,
+            1 => BadgeSlot.Warning,
+            2 => BadgeSlot.Neutral,
+            3 => BadgeSlot.Neutral,
             _ => throw new ArgumentOutOfRangeException(nameof(redaction), redaction, "Unknown file metadata item redaction."),
         };
 

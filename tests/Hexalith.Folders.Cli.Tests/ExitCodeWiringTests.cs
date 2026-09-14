@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ public sealed class ExitCodeWiringTests
 {
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
+    private static readonly IReadOnlyDictionary<string, IEnumerable<string>> NoHeaders = new Dictionary<string, IEnumerable<string>>();
 
     [Theory]
     [InlineData(CanonicalErrorCategory.Not_found, 73)]
@@ -74,6 +76,44 @@ public sealed class ExitCodeWiringTests
         harness.Console.StdErr.ShouldContain("\"code\": \"test_code\"");
         harness.Console.StdErr.ShouldContain("\"correlationId\": \"corr_TEST\"");
         harness.Console.StdOut.ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("file_policy_unavailable", 72)]
+    [InlineData("range_unsatisfiable", 69)]
+    public async Task ExactFileProblemDtosPreserveCanonicalProjection(string category, int expectedExit)
+    {
+        string response = Newtonsoft.Json.JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "File request failed",
+            status = 503,
+            category,
+            code = category,
+            message = "The file request could not be completed.",
+            correlationId = "server-file-correlation",
+            retryable = true,
+            clientAction = "retry",
+            details = new { visibility = "redacted" },
+        });
+        HexalithFoldersApiException exact = category == "file_policy_unavailable"
+            ? new HexalithFoldersApiException<FileMutationUnavailableProblem>("policy", 503, response, NoHeaders, null!, null)
+            : new HexalithFoldersApiException<FileRangeUnsatisfiableProblem>("range", 416, response, NoHeaders, null!, null);
+
+        IClient client = Substitute.For<IClient>();
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException<FolderLifecycleStatus>(exact));
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "folder", "status",
+            "--folder-id", "folder_1",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(expectedExit);
+        harness.Console.StdErr.ShouldContain(category);
+        harness.Console.StdErr.ShouldContain("server-file-correlation");
     }
 
     [Fact]

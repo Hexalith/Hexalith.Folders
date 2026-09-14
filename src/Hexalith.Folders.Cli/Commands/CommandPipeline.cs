@@ -196,6 +196,13 @@ internal sealed class CommandPipeline
             ResultRenderer.RenderProblem(_dependencies.Console, global.Output, typed.Result);
             return ErrorProjection.Project(typed.Result.Category);
         }
+        catch (HexalithFoldersApiException exception) when (exception.ProblemDetails is { } problem)
+        {
+            // File-specific exact response DTOs produce a non-generic generated exception. The generated
+            // client exposes their canonical Problem Details projection without collapsing the category.
+            ResultRenderer.RenderProblem(_dependencies.Console, global.Output, problem);
+            return ErrorProjection.Project(problem.Category);
+        }
         catch (HexalithFoldersApiException)
         {
             // Bare exception (unexpected/unmapped status or null typed body) → internal_error (1).

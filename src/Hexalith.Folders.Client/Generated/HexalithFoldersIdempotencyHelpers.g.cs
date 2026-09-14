@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "a953a7d3bf6e3b1f99542ba8d20720047c1aa316d7a80d6725a28e96f834c420";
-    public const string GenerationConfigurationSha256 = "9e125282c0394f9862d0c7b7b54fbb0ec79480a1d995655dd7538b775b549f1d";
-    public const string GeneratedHelpersSha256 = "634ffb2c0d25a274fb38ab04fa5dce10d00fa039e2aa3df881c8da0ec047aef7";
+    public const string ContractSpineSha256 = "6550ef3ed6f40937a1d97626cd4f4917747d3a516fc8c1069a0e145c152036fe";
+    public const string GenerationConfigurationSha256 = "50cf48e82504d08f309328a3c3eca940f71bef7ec8794aada4ae2ff2e872dbf8";
+    public const string GeneratedHelpersSha256 = "8d11d138b8423744460418728f589d8263da14bc956d6d139d147091a643829d";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -213,6 +213,187 @@ public partial class HexalithFoldersApiException
     }
 }
 
+public partial class PathMetadata
+{
+    [System.Runtime.Serialization.OnSerializing]
+    private void ValidatePolicyClassBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (GetType() != typeof(PathMetadata))
+        {
+            return; // Visible/content-only derived schemas carry their own narrowed pathPolicyClass property.
+        }
+
+        if (PathPolicyClass is null || !Enum.IsDefined(PathPolicyClass.Value))
+        {
+            throw new JsonSerializationException("PathMetadata.pathPolicyClass is required and must be a defined canonical policy class.");
+        }
+    }
+}
+
+public partial class FileSafeResourceUnavailableProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (Status != FileSafeResourceUnavailableProblemStatus._404
+            || Category != FileSafeResourceUnavailableProblemCategory.Tenant_access_denied
+            || Code != FileSafeResourceUnavailableProblemCode.Resource_unavailable
+            || Retryable != false
+            || ClientAction != FileSafeResourceUnavailableProblemClientAction.No_action)
+        {
+            throw new JsonSerializationException("FileSafeResourceUnavailableProblem contains a noncanonical exact response value.");
+        }
+    }
+}
+
+public partial class FileRangeUnsatisfiableProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (Status != FileRangeUnsatisfiableProblemStatus._416
+            || Category != FileRangeUnsatisfiableProblemCategory.Range_unsatisfiable
+            || Code != FileRangeUnsatisfiableProblemCode.Range_unsatisfiable
+            || Retryable != false
+            || ClientAction != FileRangeUnsatisfiableProblemClientAction.Revise_request)
+        {
+            throw new JsonSerializationException("FileRangeUnsatisfiableProblem contains a noncanonical exact response value.");
+        }
+    }
+}
+
+public partial class FilePolicyUnavailableProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (Status != FilePolicyUnavailableProblemStatus._503
+            || Category != FilePolicyUnavailableProblemCategory.File_policy_unavailable
+            || Code != FilePolicyUnavailableProblemCode.File_policy_unavailable
+            || Retryable != true
+            || ClientAction != FilePolicyUnavailableProblemClientAction.Retry)
+        {
+            throw new JsonSerializationException("FilePolicyUnavailableProblem contains a noncanonical exact response value.");
+        }
+    }
+}
+
+public partial class FileContentEvidenceInvalidProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (Status != FileContentEvidenceInvalidProblemStatus._400
+            || Category != FileContentEvidenceInvalidProblemCategory.Validation_error
+            || Code != FileContentEvidenceInvalidProblemCode.Content_evidence_invalid
+            || Retryable != false
+            || ClientAction != FileContentEvidenceInvalidProblemClientAction.Revise_request)
+        {
+            throw new JsonSerializationException("FileContentEvidenceInvalidProblem contains a noncanonical exact response value.");
+        }
+    }
+}
+
+public partial class FileInlineTransportRequiredProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (Status != FileInlineTransportRequiredProblemStatus._413
+            || Category != FileInlineTransportRequiredProblemCategory.Input_limit_exceeded
+            || Code != FileInlineTransportRequiredProblemCode.D9_inline_limit_exceeded
+            || Retryable != true
+            || ClientAction != FileInlineTransportRequiredProblemClientAction.Revise_request)
+        {
+            throw new JsonSerializationException("FileInlineTransportRequiredProblem contains a noncanonical exact response value.");
+        }
+    }
+}
+
+public partial class FileContentLimitExceededProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (Status != FileContentLimitExceededProblemStatus._422
+            || Category != FileContentLimitExceededProblemCategory.Input_limit_exceeded
+            || Code != FileContentLimitExceededProblemCode.File_content_limit_exceeded
+            || Retryable != false
+            || ClientAction != FileContentLimitExceededProblemClientAction.Revise_request)
+        {
+            throw new JsonSerializationException("FileContentLimitExceededProblem contains a noncanonical exact response value.");
+        }
+    }
+}
+
+public partial class FileContentEvidenceInvalidOrValidationProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        bool exactSignal = string.Equals(Code, "content_evidence_invalid", System.StringComparison.Ordinal);
+        if (exactSignal && (Status != 400
+            || Category != CanonicalErrorCategory.Validation_error
+            || !string.Equals(Code, "content_evidence_invalid", System.StringComparison.Ordinal)
+            || Retryable != false
+            || ClientAction != ProblemDetailsClientAction.Revise_request))
+        {
+            throw new JsonSerializationException("FileContentEvidenceInvalidOrValidationProblem contains a malformed OQ2 exact response that cannot fall through to the legacy branch.");
+        }
+    }
+}
+
+public partial class FileContentLimitExceededOrWorkspaceTransitionProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        bool exactSignal = string.Equals(Code, "file_content_limit_exceeded", System.StringComparison.Ordinal) || Category == CanonicalErrorCategory.Input_limit_exceeded;
+        if (exactSignal && (Status != 422
+            || Category != CanonicalErrorCategory.Input_limit_exceeded
+            || !string.Equals(Code, "file_content_limit_exceeded", System.StringComparison.Ordinal)
+            || Retryable != false
+            || ClientAction != ProblemDetailsClientAction.Revise_request))
+        {
+            throw new JsonSerializationException("FileContentLimitExceededOrWorkspaceTransitionProblem contains a malformed OQ2 exact response that cannot fall through to the legacy branch.");
+        }
+    }
+}
+
+public partial class FileMutationUnavailableProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        bool exactSignal = string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal) || Category == CanonicalErrorCategory.File_policy_unavailable;
+        if (exactSignal && (Status != 503
+            || Category != CanonicalErrorCategory.File_policy_unavailable
+            || !string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal)
+            || Retryable != true
+            || ClientAction != ProblemDetailsClientAction.Retry))
+        {
+            throw new JsonSerializationException("FileMutationUnavailableProblem contains a malformed OQ2 exact response that cannot fall through to the legacy branch.");
+        }
+    }
+}
+
+public partial class FileContextUnavailableProblem
+{
+    [System.Runtime.Serialization.OnDeserialized]
+    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        bool exactSignal = string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal) || Category == CanonicalErrorCategory.File_policy_unavailable;
+        if (exactSignal && (Status != 503
+            || Category != CanonicalErrorCategory.File_policy_unavailable
+            || !string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal)
+            || Retryable != true
+            || ClientAction != ProblemDetailsClientAction.Retry))
+        {
+            throw new JsonSerializationException("FileContextUnavailableProblem contains a malformed OQ2 exact response that cannot fall through to the legacy branch.");
+        }
+    }
+}
+
 public partial class ArchiveFolderRequest
 {
     public string ComputeIdempotencyHash(string folderId) =>
@@ -328,36 +509,6 @@ public partial class CreateRepositoryBackedFolderRequest
 
 public partial class FileMutationRequest
 {
-    [JsonProperty("requestSchemaVersion", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-    public string? RequestSchemaVersion { get; set; }
-
-    [JsonProperty("operationId", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-    public string? OperationId { get; set; }
-
-    [JsonProperty("pathMetadata", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-    public PathMetadata? PathMetadata { get; set; }
-
-    [JsonProperty("contentHashReference", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-    public string? ContentHashReference { get; set; }
-
-    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's
-    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value
-    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;
-    // the static constructor below verifies at type-init time that no named member collides with
-    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.
-    private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;
-
-    static FileMutationRequest()
-    {
-        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())
-        {
-            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, "Remove", StringComparison.Ordinal))
-            {
-                throw new InvalidOperationException("FileMutationRequestFileOperationKind member '" + memberName + "' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.");
-            }
-        }
-    }
-
     public string ComputeIdempotencyHash(string workspaceId, string taskId)
     {
         string operationId = ResolveFileMutationOperationId();
@@ -412,7 +563,7 @@ public partial class FileMutationRequest
     {
         FileMutationRequestFileOperationKind.Add => "AddFile",
         FileMutationRequestFileOperationKind.Change => "ChangeFile",
-        RemoveFileOperationKind => "RemoveFile",
+        FileMutationRequestFileOperationKind.Remove => "RemoveFile",
         _ => throw new InvalidOperationException($"Unsupported file operation kind '{FileOperationKind}'."),
     };
 
@@ -420,7 +571,7 @@ public partial class FileMutationRequest
     {
         FileMutationRequestFileOperationKind.Add => "add",
         FileMutationRequestFileOperationKind.Change => "change",
-        RemoveFileOperationKind => "remove",
+        FileMutationRequestFileOperationKind.Remove => "remove",
         _ => throw new InvalidOperationException($"Unsupported file operation kind '{FileOperationKind}'."),
     };
 }

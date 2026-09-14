@@ -48,6 +48,36 @@ public sealed class FileUploadTransportTests : IDisposable
         exit.ShouldBe(0);
         handler.RequestBody.ShouldNotBeNull();
         handler.RequestBody!.ShouldContain("PutFileInline");
+        handler.RequestBody.ShouldContain("\"pathPolicyClass\":\"metadata_only\"");
+    }
+
+    [Theory]
+    [InlineData("unknown")]
+    [InlineData("0")]
+    public async Task InvalidPolicyClassUsesStableUsageErrorBeforeSdk(string policyClass)
+    {
+        System.IO.File.WriteAllText(_contentPath, "small synthetic authorized content");
+        CliTestHarness harness = new();
+        CapturingHttpHandler handler = harness.UseRealClient(HttpStatusCode.Accepted, TestData.AcceptedJson());
+
+        int exit = await harness.RunAsync(
+            "file", "add",
+            "--folder-id", "folder_1",
+            "--workspace-id", "workspace_1",
+            "--operation-id", "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+            "--file", _contentPath,
+            "--path", "docs/readme.md",
+            "--display-name", "readme.md",
+            "--media-type", "text/plain",
+            "--path-policy-class", policyClass,
+            "--base-address", BaseAddress,
+            "--token", Token,
+            "--task-id", "task_1",
+            "--idempotency-key", "key_1");
+
+        exit.ShouldBe(64);
+        handler.Request.ShouldBeNull();
+        harness.Console.StdErr.ShouldContain("client_configuration_error");
     }
 
     [Fact]

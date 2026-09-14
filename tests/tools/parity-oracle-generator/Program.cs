@@ -1284,6 +1284,7 @@ internal static class GeneratorConstants
             ["projection_stale"] = new(72, "projection_stale", "none"),
             ["projection_unavailable"] = new(72, "projection_unavailable", "none"),
             ["range_unsatisfiable"] = new(69, "range_unsatisfiable", "none"),
+            ["file_policy_unavailable"] = new(72, "file_policy_unavailable", "none"),
             ["failed_operation"] = new(70, "failed_operation", "none"),
             ["redacted"] = new(75, "redacted", "none"),
             ["internal_error"] = new(1, "internal_error", "none"),

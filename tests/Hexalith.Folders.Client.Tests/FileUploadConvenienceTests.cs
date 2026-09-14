@@ -58,7 +58,7 @@ public sealed class FileUploadConvenienceTests
     {
         NormalizedPath = "docs/readme.md",
         DisplayName = "readme.md",
-        PathPolicyClass = "metadata_only",
+        PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
         UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
     };
 
@@ -73,13 +73,12 @@ public sealed class FileUploadConvenienceTests
             SamplePath(),
             "01ARZ3NDEKTSV4RRFFQ69G5FAV");
 
-        request.TransportOperation.ShouldBe("PutFileInline");
+        request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Add);
         request.ByteLength.ShouldBe(content.Length);
         request.RequestSchemaVersion.ShouldBe("v1");
 
-        request.AdditionalProperties.ShouldContainKey("inlineContent");
-        var inline = request.AdditionalProperties["inlineContent"].ShouldBeOfType<PutFileInline>();
+        PutFileInline inline = request.InlineContent.ShouldNotBeNull();
         Convert.FromBase64String(inline.ContentBytes).ShouldBe(content);
         inline.MediaType.ShouldBe("text/plain");
     }
@@ -91,7 +90,7 @@ public sealed class FileUploadConvenienceTests
 
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(content, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
 
-        request.TransportOperation.ShouldBe("PutFileInline");
+        request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.ByteLength.ShouldBe(FileUpload.InlineTransportBoundaryBytes);
     }
 
@@ -143,12 +142,12 @@ public sealed class FileUploadConvenienceTests
         FileMutationRequest request = FileUpload.BuildStreamedFileMutation(
             evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", FileMutationRequestFileOperationKind.Change);
 
-        request.TransportOperation.ShouldBe("PutFileStream");
+        request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileStream);
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Change);
         request.ByteLength.ShouldBe(evidence.ObservedLength);
         request.ContentHashReference.ShouldBe(evidence.ObservedContentHashReference);
 
-        var descriptor = request.AdditionalProperties["streamDescriptor"].ShouldBeOfType<PutFileStream>();
+        PutFileStream descriptor = request.StreamDescriptor.ShouldNotBeNull();
         descriptor.ObservedLength.ShouldBe(evidence.ObservedLength);
         descriptor.StagingReference.ShouldBe(evidence.StagingReference);
         descriptor.ObservedContentHashReference.ShouldBe(evidence.ObservedContentHashReference);
@@ -170,6 +169,29 @@ public sealed class FileUploadConvenienceTests
     }
 
     [Fact]
+    public void BuildStreamedAcceptsMaximumAndRejectsContentAboveMaximum()
+    {
+        var evidence = new FileStreamStagingEvidence
+        {
+            StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedLength = FileUpload.MaximumFileBytes,
+        };
+
+        FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV")
+            .ByteLength.ShouldBe(FileUpload.MaximumFileBytes);
+
+        evidence = new FileStreamStagingEvidence
+        {
+            StagingReference = evidence.StagingReference,
+            ObservedContentHashReference = evidence.ObservedContentHashReference,
+            ObservedLength = FileUpload.MaximumFileBytes + 1,
+        };
+        _ = Should.Throw<ArgumentOutOfRangeException>(
+            () => FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
+    }
+
+    [Fact]
     public void BuildRejectsRemoveOperationKind()
     {
         byte[] content = Encoding.UTF8.GetBytes("synthetic");
@@ -185,8 +207,6 @@ public sealed class FileUploadConvenienceTests
 
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
             content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", contentMediaType: "text/markdown");
-
-        request.AdditionalProperties.Keys.ShouldBeSubsetOf(new[] { "inlineContent" });
 
         JObject json = JObject.Parse(JsonConvert.SerializeObject(request));
         json.Properties().Select(p => p.Name).ShouldBeSubsetOf(AllowedRequestFields);
@@ -207,8 +227,6 @@ public sealed class FileUploadConvenienceTests
         };
 
         FileMutationRequest request = FileUpload.BuildStreamedFileMutation(evidence, "application/octet-stream", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
-
-        request.AdditionalProperties.Keys.ShouldBeSubsetOf(new[] { "streamDescriptor" });
 
         JObject json = JObject.Parse(JsonConvert.SerializeObject(request));
         json.Properties().Select(p => p.Name).ShouldBeSubsetOf(AllowedRequestFields);
@@ -369,7 +387,7 @@ public sealed class FileUploadConvenienceTests
             contentMediaType: "text/markdown");
 
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Change);
-        var inline = request.AdditionalProperties["inlineContent"].ShouldBeOfType<PutFileInline>();
+        PutFileInline inline = request.InlineContent.ShouldNotBeNull();
         inline.ContentMediaType.ShouldBe("text/markdown");
     }
 
@@ -379,9 +397,9 @@ public sealed class FileUploadConvenienceTests
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
             ReadOnlyMemory<byte>.Empty, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV");
 
-        request.TransportOperation.ShouldBe("PutFileInline");
+        request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.ByteLength.ShouldBe(0);
-        var inline = request.AdditionalProperties["inlineContent"].ShouldBeOfType<PutFileInline>();
+        PutFileInline inline = request.InlineContent.ShouldNotBeNull();
         inline.ContentBytes.ShouldBe(string.Empty);
     }
 

@@ -43,6 +43,10 @@ public sealed class ClientGenerationTests
         generator.GetProperty("generateClientInterfaces").GetBoolean().ShouldBeTrue();
         generator.GetProperty("generateExceptionClasses").GetBoolean().ShouldBeTrue();
         generator.GetProperty("useBaseUrl").GetBoolean().ShouldBeFalse();
+        generator.GetProperty("excludedTypeNames").EnumerateArray()
+            .Select(item => item.GetString()).ShouldBe(["MutateFilesRequest", "MutateFilesRequestRequestSchemaVersion"]);
+        typeof(CreateFolderRequest).Assembly.GetType("Hexalith.Folders.Client.Generated.MutateFilesRequest").ShouldBeNull(
+            "the canonical internal batch shape must not become a public SDK type");
     }
 
     [Fact]
@@ -67,7 +71,9 @@ public sealed class ClientGenerationTests
         OpenApiOperation[] operations = LoadOperations().ToArray();
         Assembly clientAssembly = typeof(CreateFolderRequest).Assembly;
 
-        foreach (IGrouping<string, OpenApiOperation> group in operations.Where(o => o.IdempotencyFields.Count > 0).Where(o => o.RequestSchema is not null).GroupBy(o => o.RequestSchema!, StringComparer.Ordinal))
+        foreach (IGrouping<string, OpenApiOperation> group in operations.Where(o => o.IdempotencyFields.Count > 0).Where(o => o.RequestSchema is not null).GroupBy(
+            o => o.RequestSchema is "AddFileRequest" or "ChangeFileRequest" or "RemoveFileRequest" ? "FileMutationRequest" : o.RequestSchema!,
+            StringComparer.Ordinal))
         {
             Type type = clientAssembly.GetType("Hexalith.Folders.Client.Generated." + group.Key).ShouldNotBeNull();
             MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => m.Name == "ComputeIdempotencyHash").ToArray();
@@ -120,9 +126,9 @@ public sealed class ClientGenerationTests
     [Fact]
     public void FileMutationHelperSeparatesAddChangeAndRemove()
     {
-        var add = CreateFileMutation(FileMutationRequestFileOperationKind.Add, "PutFileInline");
-        var change = CreateFileMutation(FileMutationRequestFileOperationKind.Change, "PutFileInline");
-        var remove = CreateFileMutation((FileMutationRequestFileOperationKind)2, "metadataOnlyRemoval");
+        var add = CreateFileMutation(FileMutationRequestFileOperationKind.Add, FileMutationRequestTransportOperation.PutFileInline);
+        var change = CreateFileMutation(FileMutationRequestFileOperationKind.Change, FileMutationRequestTransportOperation.PutFileInline);
+        var remove = CreateFileMutation(FileMutationRequestFileOperationKind.Remove, FileMutationRequestTransportOperation.MetadataOnlyRemoval);
         remove.ContentHashReference = null;
 
         string workspaceId = "workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001";
@@ -212,7 +218,7 @@ public sealed class ClientGenerationTests
     [Fact]
     public void FileMutationHelpersIgnoreRawContentAndLocalPaths()
     {
-        FileMutationRequest first = CreateFileMutation(FileMutationRequestFileOperationKind.Add, "PutFileInline");
+        FileMutationRequest first = CreateFileMutation(FileMutationRequestFileOperationKind.Add, FileMutationRequestTransportOperation.PutFileInline);
         FileMutationRequest second = CreateFileMutation(first.FileOperationKind, first.TransportOperation);
 
         first.ComputeIdempotencyHash("workspace_01HZY7Z6N7J4Q2X8Y9V0WKS001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001")
@@ -446,18 +452,125 @@ public sealed class ClientGenerationTests
     }
 
     [Fact]
+    public void GeneratedOq2TypesRejectWrongExactValuesAndMissingPolicyClass()
+    {
+        (Type type, int status, string category, string code, bool retryable, string action, string visibility)[] exactProblems =
+        [
+            (typeof(FileSafeResourceUnavailableProblem), 404, "tenant_access_denied", "resource_unavailable", false, "no_action", "redacted"),
+            (typeof(FileRangeUnsatisfiableProblem), 416, "range_unsatisfiable", "range_unsatisfiable", false, "revise_request", "metadata_only"),
+            (typeof(FilePolicyUnavailableProblem), 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", "redacted"),
+            (typeof(FileContentEvidenceInvalidProblem), 400, "validation_error", "content_evidence_invalid", false, "revise_request", "metadata_only"),
+            (typeof(FileInlineTransportRequiredProblem), 413, "input_limit_exceeded", "d9_inline_limit_exceeded", true, "revise_request", "metadata_only"),
+            (typeof(FileContentLimitExceededProblem), 422, "input_limit_exceeded", "file_content_limit_exceeded", false, "revise_request", "metadata_only"),
+        ];
+        foreach ((Type type, int status, string category, string code, bool retryable, string action, string visibility) in exactProblems)
+        {
+            string canonical = JsonConvert.SerializeObject(new
+            {
+                type = "about:blank",
+                title = "File request failed",
+                status,
+                category,
+                code,
+                message = "The file request could not be completed.",
+                correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+                retryable,
+                clientAction = action,
+                details = new { visibility },
+            });
+            JsonConvert.DeserializeObject(canonical, type).ShouldNotBeNull(type.Name);
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"status\":{status}", $"\"status\":{status + 1}", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"retryable\":{retryable.ToString().ToLowerInvariant()}", $"\"retryable\":{(!retryable).ToString().ToLowerInvariant()}", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"category\":\"{category}\"", "\"category\":\"internal_error\"", StringComparison.Ordinal),
+                type));
+        }
+
+        Enum.GetNames<FileMetadataItemRedaction>().ShouldBe(["Not_redacted"]);
+        Enum.GetNames<ContentAllowedPathMetadataPathPolicyClass>().ShouldBe(["Content_allowed"]);
+
+        var missing = new PathMetadata
+        {
+            DisplayName = "readme.md",
+            NormalizedPath = "docs/readme.md",
+            UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
+        };
+        Should.Throw<TargetInvocationException>(() => JsonConvert.SerializeObject(missing))
+            .InnerException.ShouldBeOfType<JsonSerializationException>();
+
+        missing.PathPolicyClass = (PathMetadataPathPolicyClass)999;
+        Should.Throw<TargetInvocationException>(() => JsonConvert.SerializeObject(missing))
+            .InnerException.ShouldBeOfType<JsonSerializationException>();
+
+        missing.PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed;
+        JsonConvert.SerializeObject(missing).ShouldContain("\"pathPolicyClass\":\"content_allowed\"", Case.Sensitive);
+
+        var contentOnlyPath = new ContentAllowedPathMetadata
+        {
+            DisplayName = "readme.md",
+            NormalizedPath = "docs/readme.md",
+            PathPolicyClass = ContentAllowedPathMetadataPathPolicyClass.Content_allowed,
+            UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
+        };
+        JsonConvert.SerializeObject(contentOnlyPath).ShouldContain("\"pathPolicyClass\":\"content_allowed\"", Case.Sensitive);
+    }
+
+    [Fact]
+    public void GeneratedOq2ResponseUnionsAcceptExactAndLegacyBranchesButRejectMalformedExactSignals()
+    {
+        (Type Type, int Status, string ExactCategory, string ExactCode, bool ExactRetryable, string ExactAction, string LegacyCategory, string LegacyCode, bool LegacyRetryable, string LegacyAction, bool CategoryDiscriminates)[] unions =
+        [
+            (typeof(FileContentEvidenceInvalidOrValidationProblem), 400, "validation_error", "content_evidence_invalid", false, "revise_request", "validation_error", "validation_error", false, "revise_request", false),
+            (typeof(FileContentLimitExceededOrWorkspaceTransitionProblem), 422, "input_limit_exceeded", "file_content_limit_exceeded", false, "revise_request", "state_transition_invalid", "state_transition_invalid", false, "revise_request", true),
+            (typeof(FileMutationUnavailableProblem), 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", true),
+            (typeof(FileContextUnavailableProblem), 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", "read_model_unavailable", "projection_unavailable", true, "retry", true),
+        ];
+
+        foreach ((Type type, int status, string exactCategory, string exactCode, bool exactRetryable, string exactAction, string legacyCategory, string legacyCode, bool legacyRetryable, string legacyAction, bool categoryDiscriminates) in unions)
+        {
+            string exact = ProblemJson(status, exactCategory, exactCode, exactRetryable, exactAction);
+            string legacy = ProblemJson(status, legacyCategory, legacyCode, legacyRetryable, legacyAction);
+            JsonConvert.DeserializeObject(exact, type).ShouldNotBeNull(type.Name + " exact branch");
+            JsonConvert.DeserializeObject(legacy, type).ShouldNotBeNull(type.Name + " legacy branch");
+
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                exact.Replace($"\"retryable\":{exactRetryable.ToString().ToLowerInvariant()}", $"\"retryable\":{(!exactRetryable).ToString().ToLowerInvariant()}", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                exact.Replace($"\"category\":\"{exactCategory}\"", "\"category\":\"internal_error\"", StringComparison.Ordinal),
+                type));
+
+            if (categoryDiscriminates)
+            {
+                AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                    exact.Replace($"\"code\":\"{exactCode}\"", "\"code\":\"malformed_exact_code\"", StringComparison.Ordinal),
+                    type));
+            }
+        }
+    }
+
+    [Fact]
     public void HelperGeneratorProjectIsBuildTimeInput()
     {
         string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
         XDocument document = XDocument.Load(project);
 
         XElement target = document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersIdempotencyHelpers");
-        target.Attribute("BeforeTargets")?.Value.ShouldBe("BeforeCompile");
+        target.Attribute("BeforeTargets").ShouldBeNull("ordinary builds must never repair checked-in generated output before freshness verification");
         target.Attribute("Inputs")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
         string inputs = target.Attribute("Inputs")?.Value ?? string.Empty;
         inputs.Replace('\\', '/').ShouldContain("Generation/Program.cs");
         target.Attribute("Outputs")?.Value.ShouldBe("$(HexalithFoldersGeneratedHelpers)");
         target.Descendants("Exec").Single().Attribute("Command")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
+
+        document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersClient")
+            .Attribute("BeforeTargets").ShouldBeNull("ordinary builds must not invoke NSwag in place");
+        document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "VerifyHexalithFoldersGeneratedArtifacts")
+            .Attribute("BeforeTargets").ShouldBeNull("freshness is verified by the pre-build CI gate against checked-in files");
     }
 
     [Fact]
@@ -472,7 +585,7 @@ public sealed class ClientGenerationTests
         Should.Throw<InvalidOperationException>(() => HexalithIdempotencyHasher.Compute("Primitive", [new IdempotencyField("value", true, DateTime.SpecifyKind(DateTime.UnixEpoch, DateTimeKind.Unspecified))]));
     }
 
-    private static FileMutationRequest CreateFileMutation(FileMutationRequestFileOperationKind kind, object transportOperation) =>
+    private static FileMutationRequest CreateFileMutation(FileMutationRequestFileOperationKind kind, FileMutationRequestTransportOperation transportOperation) =>
         new()
         {
             FileOperationKind = kind,
@@ -482,12 +595,34 @@ public sealed class ClientGenerationTests
             {
                 NormalizedPath = "docs/readme.md",
                 DisplayName = "readme.md",
-                PathPolicyClass = "metadata_only",
+                PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
                 UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
             },
             ContentHashReference = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             RequestSchemaVersion = "v1",
         };
+
+    private static void AssertJsonSerializationRejected(Func<object?> action)
+    {
+        Exception exception = Should.Throw<Exception>(action);
+        (exception is JsonSerializationException || exception.InnerException is JsonSerializationException)
+            .ShouldBeTrue($"Expected JsonSerializationException for noncanonical exact response, got {exception.GetType().Name}.");
+    }
+
+    private static string ProblemJson(int status, string category, string code, bool retryable, string clientAction) =>
+        JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "File request failed",
+            status,
+            category,
+            code,
+            message = "The file request could not be completed.",
+            correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+            retryable,
+            clientAction,
+            details = new { visibility = "metadata_only" },
+        });
 
     private static string ExpectedHash(params string[] lines)
     {

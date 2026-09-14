@@ -36,9 +36,9 @@ public sealed class MetadataOnlyFolderTreeTests
         List<FileMetadataItem> items =
         [
             Item("src/visible.cs", FileMetadataItemKind.File, FileMetadataItemRedaction.Not_redacted),
-            Item("src/secret.cs", FileMetadataItemKind.File, FileMetadataItemRedaction.Redacted),
-            Item("src/excluded.bin", FileMetadataItemKind.File, FileMetadataItemRedaction.Excluded),
-            Item("src/blob.bin", FileMetadataItemKind.File, FileMetadataItemRedaction.Binary_disallowed),
+            Item("src/secret.cs", FileMetadataItemKind.File, HistoricalRedaction(1)),
+            Item("src/excluded.bin", FileMetadataItemKind.File, HistoricalRedaction(2)),
+            Item("src/blob.bin", FileMetadataItemKind.File, HistoricalRedaction(3)),
         ];
 
         IRenderedComponent<MetadataOnlyFolderTree> rendered = ctx.Render<MetadataOnlyFolderTree>(p => p
@@ -48,19 +48,10 @@ public sealed class MetadataOnlyFolderTreeTests
             .Add(t => t.Items, items));
 
         rendered.FindAll("[data-testid=\"metadata-only-folder-tree-row\"]").Count.ShouldBe(4);
-
-        // Redaction is distinct: exactly two redacted disclosures for the single redacted row — its Path
-        // column and its Redaction column — both carrying the lock affordance.
         rendered.FindAll("[data-fc-disclosure=\"redacted\"]").Count.ShouldBe(2);
-        rendered.Markup.ShouldNotContain("secret.cs"); // redacted path value never leaks
-
-        // Last-op + Changed render the honest unknown disclosure for all four rows (2 columns × 4 rows).
+        rendered.Markup.ShouldNotContain("secret.cs");
         rendered.FindAll("[data-fc-disclosure=\"unknown\"]").Count.ShouldBe(8);
-
-        // Missing disclosures: the withheld excluded path + the excluded and binary redaction columns.
         rendered.FindAll("[data-fc-disclosure=\"missing\"]").Count.ShouldBe(3);
-
-        // The four access states are distinctly labelled (positive coverage of every access label).
         rendered.Markup.ShouldContain("Permitted");
         rendered.Markup.ShouldContain("Redacted");
         rendered.Markup.ShouldContain("Excluded by policy");
@@ -74,8 +65,8 @@ public sealed class MetadataOnlyFolderTreeTests
 
         List<FileMetadataItem> items =
         [
-            Item("src/excluded.bin", FileMetadataItemKind.File, FileMetadataItemRedaction.Excluded),
-            Item("src/blob.bin", FileMetadataItemKind.File, FileMetadataItemRedaction.Binary_disallowed),
+            Item("src/excluded.bin", FileMetadataItemKind.File, HistoricalRedaction(2)),
+            Item("src/blob.bin", FileMetadataItemKind.File, HistoricalRedaction(3)),
         ];
 
         IRenderedComponent<MetadataOnlyFolderTree> rendered = ctx.Render<MetadataOnlyFolderTree>(p => p
@@ -87,7 +78,6 @@ public sealed class MetadataOnlyFolderTreeTests
         // A withheld byte length is never presented as a real "empty" size (fabricated metadata).
         rendered.Markup.ShouldNotContain("empty");
 
-        // Defence-in-depth: the excluded path is withheld even though the item carried one.
         rendered.Markup.ShouldNotContain("excluded.bin");
     }
 
@@ -129,17 +119,25 @@ public sealed class MetadataOnlyFolderTreeTests
     }
 
     private static FileMetadataItem Item(string path, FileMetadataItemKind kind, FileMetadataItemRedaction redaction)
-        => new()
+    {
+        var pathMetadata = new VisiblePathMetadata
         {
-            Path = new PathMetadata
-            {
-                NormalizedPath = path,
-                DisplayName = path[(path.LastIndexOf('/') + 1)..],
-                PathPolicyClass = "code",
-            },
+            NormalizedPath = path,
+            DisplayName = path[(path.LastIndexOf('/') + 1)..],
+            PathPolicyClass = VisiblePathMetadataPathPolicyClass.Metadata_only,
+            UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
+        };
+        ((PathMetadata)pathMetadata).PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only;
+
+        return new FileMetadataItem
+        {
+            Path = pathMetadata,
             Kind = kind,
             ByteLength = 256,
             Sensitivity = SensitiveMetadataTier.Public_metadata,
             Redaction = redaction,
         };
+    }
+
+    private static FileMetadataItemRedaction HistoricalRedaction(int ordinal) => (FileMetadataItemRedaction)ordinal;
 }

@@ -20,6 +20,10 @@ src/Hexalith.Folders.Contracts/openapi/**/*.yaml text eol=lf
 # C7 approvals bind the exact SHA-256 bytes of the canonical decision artifact.
 docs/exit-criteria/c7-lock-authorization-timing.md text eol=lf
 
+# OQ2 approvals bind the exact SHA-256 bytes of the canonical file-policy artifact.
+docs/contract/file-context-contract-groups.md text eol=lf
+docs/contract/oq2-file-policy-evidence.yaml text eol=lf
+
 # Unified-diff context lines intentionally contain one leading space. Disable
 # whitespace diagnostics for the preserved intent-gap review artifact only.
 _bmad-output/implementation-artifacts/review-3-11-intent-gap.patch -whitespace

@@ -84,14 +84,15 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
             }
         }
 
-        YamlMappingNode schema = RequiredMapping(schemas, operation.RequestSchema);
+        string helperSchemaName = ResolveHelperSchemaName(schemas, operation.RequestSchema);
+        YamlMappingNode schema = RequiredMapping(schemas, helperSchemaName);
         IReadOnlyDictionary<string, SchemaPropertyModel> schemaProperties = ReadProperties(schema);
         List<FieldModel> fields = [];
         List<ParameterModel> helperParameters = [];
 
         foreach (string field in operation.IdempotencyFields)
         {
-            FieldModel fieldModel = ResolveField(operation, field, operation.RequestSchema, schemaProperties, helperParameters);
+            FieldModel fieldModel = ResolveField(operation, field, helperSchemaName, schemaProperties, helperParameters);
             fields.Add(fieldModel);
         }
 
@@ -101,10 +102,10 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
             .ThenBy(p => p.Field, StringComparer.Ordinal)
             .ToArray();
 
-        if (!variantsBySchema.TryGetValue(operation.RequestSchema, out List<HelperVariantModel>? variants))
+        if (!variantsBySchema.TryGetValue(helperSchemaName, out List<HelperVariantModel>? variants))
         {
             variants = [];
-            variantsBySchema.Add(operation.RequestSchema, variants);
+            variantsBySchema.Add(helperSchemaName, variants);
         }
 
         variants.Add(new HelperVariantModel(operation.OperationId, operation.IdempotencyFields, fields, orderedParameters));
@@ -128,6 +129,32 @@ static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyLi
     }
 
     return helpers;
+}
+
+static string ResolveHelperSchemaName(YamlMappingNode schemas, string requestSchemaName)
+{
+    YamlMappingNode schema = RequiredMapping(schemas, requestSchemaName);
+    if (!schema.Children.TryGetValue(new YamlScalarNode("allOf"), out YamlNode? allOfNode))
+    {
+        return requestSchemaName;
+    }
+
+    foreach (YamlNode branchNode in allOfNode.ShouldBeSequence("allOf"))
+    {
+        YamlMappingNode branch = branchNode.ShouldBeMapping("allOf branch");
+        if (branch.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode)
+            && referenceNode.ShouldBeScalar("$ref").Value is { } reference
+            && reference.StartsWith("#/components/schemas/", StringComparison.Ordinal))
+        {
+            string referencedSchema = reference["#/components/schemas/".Length..];
+            if (referencedSchema == "FileMutationRequest")
+            {
+                return referencedSchema;
+            }
+        }
+    }
+
+    return requestSchemaName;
 }
 
 static FieldModel ResolveField(
@@ -526,12 +553,100 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("}");
     code.AppendLine();
 
+    code.AppendLine("public partial class PathMetadata");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+    code.AppendLine("    private void ValidatePolicyClassBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine("        if (GetType() != typeof(PathMetadata))");
+    code.AppendLine("        {");
+    code.AppendLine("            return; // Visible/content-only derived schemas carry their own narrowed pathPolicyClass property.");
+    code.AppendLine("        }");
+    code.AppendLine();
+    code.AppendLine("        if (PathPolicyClass is null || !Enum.IsDefined(PathPolicyClass.Value))");
+    code.AppendLine("        {");
+    code.AppendLine("            throw new JsonSerializationException(\"PathMetadata.pathPolicyClass is required and must be a defined canonical policy class.\");");
+    code.AppendLine("        }");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+
+    RenderExactProblemValidator(code, "FileSafeResourceUnavailableProblem", "_404", "Tenant_access_denied", "Resource_unavailable", false, "No_action");
+    RenderExactProblemValidator(code, "FileRangeUnsatisfiableProblem", "_416", "Range_unsatisfiable", "Range_unsatisfiable", false, "Revise_request");
+    RenderExactProblemValidator(code, "FilePolicyUnavailableProblem", "_503", "File_policy_unavailable", "File_policy_unavailable", true, "Retry");
+    RenderExactProblemValidator(code, "FileContentEvidenceInvalidProblem", "_400", "Validation_error", "Content_evidence_invalid", false, "Revise_request");
+    RenderExactProblemValidator(code, "FileInlineTransportRequiredProblem", "_413", "Input_limit_exceeded", "D9_inline_limit_exceeded", true, "Revise_request");
+    RenderExactProblemValidator(code, "FileContentLimitExceededProblem", "_422", "Input_limit_exceeded", "File_content_limit_exceeded", false, "Revise_request");
+    RenderConditionalExactProblemValidator(code, "FileContentEvidenceInvalidOrValidationProblem", 400, "Validation_error", "content_evidence_invalid", false, "Revise_request", categoryIsDiscriminator: false);
+    RenderConditionalExactProblemValidator(code, "FileContentLimitExceededOrWorkspaceTransitionProblem", 422, "Input_limit_exceeded", "file_content_limit_exceeded", false, "Revise_request", categoryIsDiscriminator: true);
+    RenderConditionalExactProblemValidator(code, "FileMutationUnavailableProblem", 503, "File_policy_unavailable", "file_policy_unavailable", true, "Retry", categoryIsDiscriminator: true);
+    RenderConditionalExactProblemValidator(code, "FileContextUnavailableProblem", 503, "File_policy_unavailable", "file_policy_unavailable", true, "Retry", categoryIsDiscriminator: true);
+
     foreach (HelperModel helper in helpers)
     {
         RenderHelper(code, helper);
     }
 
     return code.ToString().ReplaceLineEndings("\n");
+}
+
+static void RenderExactProblemValidator(
+    StringBuilder code,
+    string typeName,
+    string statusMember,
+    string categoryMember,
+    string codeMember,
+    bool retryable,
+    string actionMember)
+{
+    code.AppendLine($"public partial class {typeName}");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnDeserialized]");
+    code.AppendLine("    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine($"        if (Status != {typeName}Status.{statusMember}");
+    code.AppendLine($"            || Category != {typeName}Category.{categoryMember}");
+    code.AppendLine($"            || Code != {typeName}Code.{codeMember}");
+    code.AppendLine($"            || Retryable != {retryable.ToString().ToLowerInvariant()}");
+    code.AppendLine($"            || ClientAction != {typeName}ClientAction.{actionMember})");
+    code.AppendLine("        {");
+    code.AppendLine($"            throw new JsonSerializationException(\"{typeName} contains a noncanonical exact response value.\");");
+    code.AppendLine("        }");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+}
+
+static void RenderConditionalExactProblemValidator(
+    StringBuilder code,
+    string typeName,
+    int status,
+    string categoryMember,
+    string exactCode,
+    bool retryable,
+    string actionMember,
+    bool categoryIsDiscriminator)
+{
+    code.AppendLine($"public partial class {typeName}");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnDeserialized]");
+    code.AppendLine("    private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    string categorySignal = categoryIsDiscriminator
+        ? $" || Category == CanonicalErrorCategory.{categoryMember}"
+        : string.Empty;
+    code.AppendLine($"        bool exactSignal = string.Equals(Code, \"{exactCode}\", System.StringComparison.Ordinal){categorySignal};");
+    code.AppendLine($"        if (exactSignal && (Status != {status}");
+    code.AppendLine($"            || Category != CanonicalErrorCategory.{categoryMember}");
+    code.AppendLine($"            || !string.Equals(Code, \"{exactCode}\", System.StringComparison.Ordinal)");
+    code.AppendLine($"            || Retryable != {retryable.ToString().ToLowerInvariant()}");
+    code.AppendLine($"            || ClientAction != ProblemDetailsClientAction.{actionMember}))");
+    code.AppendLine("        {");
+    code.AppendLine($"            throw new JsonSerializationException(\"{typeName} contains a malformed OQ2 exact response that cannot fall through to the legacy branch.\");");
+    code.AppendLine("        }");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
 }
 
 static void RenderHelper(StringBuilder code, HelperModel helper)
@@ -543,40 +658,6 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
     {
         code.AppendLine("    [JsonIgnore]");
         code.AppendLine("    public bool ParentFolderIdSpecified { get; set; }");
-        code.AppendLine();
-    }
-
-    if (helper.SchemaName == "FileMutationRequest")
-    {
-        code.AppendLine("    [JsonProperty(\"requestSchemaVersion\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
-        code.AppendLine("    public string? RequestSchemaVersion { get; set; }");
-        code.AppendLine();
-        code.AppendLine("    [JsonProperty(\"operationId\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
-        code.AppendLine("    public string? OperationId { get; set; }");
-        code.AppendLine();
-        code.AppendLine("    [JsonProperty(\"pathMetadata\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
-        code.AppendLine("    public PathMetadata? PathMetadata { get; set; }");
-        code.AppendLine();
-        code.AppendLine("    [JsonProperty(\"contentHashReference\", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]");
-        code.AppendLine("    public string? ContentHashReference { get; set; }");
-        code.AppendLine();
-        code.AppendLine("    // NSwag emits FileMutationRequestFileOperationKind with Add=0 and Change=1 only; the spine's");
-        code.AppendLine("    // 'remove' const lives on a oneOf branch NSwag cannot surface, so we synthesize an unnamed value");
-        code.AppendLine("    // at ordinal 2. The const declaration is required so the value can be used in switch patterns;");
-        code.AppendLine("    // the static constructor below verifies at type-init time that no named member collides with");
-        code.AppendLine("    // ordinal 2, failing fast on Contract Spine or NSwag generator drift.");
-        code.AppendLine("    private const FileMutationRequestFileOperationKind RemoveFileOperationKind = (FileMutationRequestFileOperationKind)2;");
-        code.AppendLine();
-        code.AppendLine("    static FileMutationRequest()");
-        code.AppendLine("    {");
-        code.AppendLine("        foreach (FileMutationRequestFileOperationKind member in Enum.GetValues<FileMutationRequestFileOperationKind>())");
-        code.AppendLine("        {");
-        code.AppendLine("            if ((int)member == (int)RemoveFileOperationKind && Enum.GetName(member) is { } memberName && !string.Equals(memberName, \"Remove\", StringComparison.Ordinal))");
-        code.AppendLine("            {");
-        code.AppendLine("                throw new InvalidOperationException(\"FileMutationRequestFileOperationKind member '\" + memberName + \"' collides with the synthesized Remove ordinal; Contract Spine or NSwag generator drift.\");");
-        code.AppendLine("            }");
-        code.AppendLine("        }");
-        code.AppendLine("    }");
         code.AppendLine();
     }
 
@@ -613,7 +694,7 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
         code.AppendLine("    {");
         code.AppendLine("        FileMutationRequestFileOperationKind.Add => \"AddFile\",");
         code.AppendLine("        FileMutationRequestFileOperationKind.Change => \"ChangeFile\",");
-        code.AppendLine("        RemoveFileOperationKind => \"RemoveFile\",");
+        code.AppendLine("        FileMutationRequestFileOperationKind.Remove => \"RemoveFile\",");
         code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{FileOperationKind}'.\"),");
         code.AppendLine("    };");
         code.AppendLine();
@@ -621,7 +702,7 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
         code.AppendLine("    {");
         code.AppendLine("        FileMutationRequestFileOperationKind.Add => \"add\",");
         code.AppendLine("        FileMutationRequestFileOperationKind.Change => \"change\",");
-        code.AppendLine("        RemoveFileOperationKind => \"remove\",");
+        code.AppendLine("        FileMutationRequestFileOperationKind.Remove => \"remove\",");
         code.AppendLine("        _ => throw new InvalidOperationException($\"Unsupported file operation kind '{FileOperationKind}'.\"),");
         code.AppendLine("    };");
     }

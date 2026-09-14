@@ -169,7 +169,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
             {
                 NormalizedPath = "docs/readme.md",
                 DisplayName = "readme.md",
-                PathPolicyClass = "metadata_only",
+                PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
                 UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
             },
         };

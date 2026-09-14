@@ -163,7 +163,7 @@ public sealed partial class ConsumerDocsConformanceTests
     public void McpReferenceFailureKindCatalogEqualsOraclePlusPreSdkKinds()
     {
         HashSet<string> oracleKinds = ParseOracleFailureKinds();
-        oracleKinds.Count.ShouldBe(44, "The oracle must carry the canonical 44 outcome_mapping failure kinds.");
+        oracleKinds.Count.ShouldBe(46, "The oracle must carry the canonical 46 outcome_mapping failure kinds.");
         oracleKinds.ShouldNotContain("none");
 
         HashSet<string> expected = new(oracleKinds, StringComparer.Ordinal);
@@ -172,7 +172,7 @@ public sealed partial class ConsumerDocsConformanceTests
             expected.Add(preSdk);
         }
 
-        expected.Count.ShouldBe(46);
+        expected.Count.ShouldBe(48);
 
         HashSet<string> docKinds = ParseDocFailureKinds(ReadText(McpReferencePath));
         AssertSetEquals(docKinds, expected, "MCP failure-kind catalog must equal the oracle set plus the 2 pre-SDK kinds.");

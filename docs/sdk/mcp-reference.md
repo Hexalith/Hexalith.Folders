@@ -153,14 +153,15 @@ Two read-only resources are exposed via `[McpServerResource]` URI templates:
 
 ## Failure-kind catalog
 
-The authoritative MCP failure-kind catalog is the **43** `outcome_mapping.mcp_failure_kind` values from the
+The authoritative MCP failure-kind catalog is the **46** `outcome_mapping.mcp_failure_kind` values from the
 parity oracle (`tests/fixtures/parity-contract.yaml`) — each equal verbatim to its `CanonicalErrorCategory`
 name in snake_case — **plus the 2 pre-SDK kinds** `usage_error` and `credential_missing` (emitted before any
-HTTP call, for client-side usage and missing-credential failures). That is **45** kinds total.
+HTTP call, for client-side usage and missing-credential failures). That is **48** kinds total.
 
 Do not use the abridged 13-row architecture summary; it misspells `unknown_provider_outcome`. The success
-mapping (`none`) is not a failure kind. `range_unsatisfiable` is intentionally **absent** from the oracle and
-maps to `internal_error` (the documented spine/oracle drift fallback), mirroring the CLI exit-code projection.
+mapping (`none`) is not a failure kind. OQ2's `range_unsatisfiable` and `file_policy_unavailable` mappings are
+both present in the oracle and project verbatim across MCP and CLI; only a genuinely unknown future category
+falls back to `internal_error`.
 
 <!-- failure-kind-catalog -->
 
@@ -178,6 +179,7 @@ dirty_workspace
 duplicate_binding
 failed_operation
 file_operation_failed
+file_policy_unavailable
 folder_acl_denied
 idempotency_conflict
 idempotency_key_expired
@@ -196,6 +198,7 @@ provider_rate_limited
 provider_readiness_failed
 provider_unavailable
 query_timeout
+range_unsatisfiable
 read_model_unavailable
 reconciliation_required
 redacted

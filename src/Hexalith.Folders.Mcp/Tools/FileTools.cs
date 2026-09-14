@@ -104,7 +104,7 @@ internal static class FileTools
                 {
                     NormalizedPath = path,
                     DisplayName = displayName,
-                    PathPolicyClass = pathPolicyClass,
+                    PathPolicyClass = ParsePolicyClass(pathPolicyClass),
                     UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
                 },
             };
@@ -124,4 +124,13 @@ internal static class FileTools
             throw new McpUsageException("The contentBase64 input is not valid base64.");
         }
     }
+
+    private static PathMetadataPathPolicyClass ParsePolicyClass(string value) => value switch
+    {
+        "content_allowed" => PathMetadataPathPolicyClass.Content_allowed,
+        "metadata_only" => PathMetadataPathPolicyClass.Metadata_only,
+        "excluded" => PathMetadataPathPolicyClass.Excluded,
+        "restricted" => PathMetadataPathPolicyClass.Restricted,
+        _ => throw new McpUsageException("The pathPolicyClass input must be one canonical policy class."),
+    };
 }

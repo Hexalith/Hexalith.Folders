@@ -9,8 +9,7 @@ namespace Hexalith.Folders.Cli.Errors;
 /// </summary>
 /// <remarks>
 /// Distinct categories are never collapsed for adapter convenience (project-context Critical Don't-Miss
-/// rule). Any category absent from the oracle <c>outcome_mapping</c> — including the SDK enum member
-/// <c>range_unsatisfiable</c>, which the oracle does not list — falls through to
+/// rule). Any category absent from the oracle <c>outcome_mapping</c> falls through to
 /// <see cref="FoldersExitCodes.InternalError"/> (1), the documented fallback for spine/oracle drift.
 /// </remarks>
 internal static class ErrorProjection
@@ -57,6 +56,7 @@ internal static class ErrorProjection
         CanonicalErrorCategory.Path_validation_failed => FoldersExitCodes.ValidationError,
         CanonicalErrorCategory.Branch_ref_policy_invalid => FoldersExitCodes.ValidationError,
         CanonicalErrorCategory.Response_limit_exceeded => FoldersExitCodes.ValidationError,
+        CanonicalErrorCategory.Range_unsatisfiable => FoldersExitCodes.ValidationError,
 
         // Provider / repository operation failures → 70.
         CanonicalErrorCategory.Provider_failure_known => FoldersExitCodes.ProviderFailure,
@@ -83,6 +83,7 @@ internal static class ErrorProjection
         CanonicalErrorCategory.Workspace_not_ready => FoldersExitCodes.ReconciliationRequired,
         CanonicalErrorCategory.Workspace_preparation_failed => FoldersExitCodes.ReconciliationRequired,
         CanonicalErrorCategory.Dirty_workspace => FoldersExitCodes.ReconciliationRequired,
+        CanonicalErrorCategory.File_policy_unavailable => FoldersExitCodes.ReconciliationRequired,
 
         // Not found / authorization revoked → 73.
         CanonicalErrorCategory.Not_found => FoldersExitCodes.NotFound,
@@ -98,7 +99,7 @@ internal static class ErrorProjection
         CanonicalErrorCategory.Query_timeout => FoldersExitCodes.InternalError,
         CanonicalErrorCategory.Internal_error => FoldersExitCodes.InternalError,
 
-        // Any category not present in the oracle outcome_mapping (e.g. range_unsatisfiable) falls through
+        // Any category not present in the oracle outcome_mapping falls through
         // to 1; this implies oracle/spine drift and is surfaced with the correlation ID by the caller.
         _ => FoldersExitCodes.InternalError,
     };

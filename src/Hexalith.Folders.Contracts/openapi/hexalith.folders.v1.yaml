@@ -29,9 +29,129 @@ tags:
   - name: ops-console
     description: Read-only operations console projection contracts.
   - name: context-queries
-    description: Bounded metadata-only file and context query contracts.
+    description: Bounded policy-filtered metadata and content query contracts; content is available only for content_allowed paths.
 security:
   - oidcBearer: []
+x-hexalith-file-policy:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-file-policy
+  foundationUse: Binds every file mutation and context query to the closed OQ2 policy instance below.
+  version: 1.1.0
+  canonicalArtifact: docs/contract/file-context-contract-groups.md
+  pathProfile:
+    characterProfile: ASCII A-Z a-z 0-9 . _ - /
+    maximumCharacters: 500
+    unicodeNormalization: NFC
+    collisionComparison: ordinal-ignore-case
+    componentCollisionComparison: ordinal-ignore-case
+    callerSpelling: preserve-without-retargeting
+    linkHandling: reject-touched-entry-or-ancestor-without-following
+    trailingSpaceOrDot: reject
+    restrictedRoots:
+      - .git
+  policyClasses:
+    - content_allowed
+    - metadata_only
+    - excluded
+    - restricted
+  policyPrecedence:
+    includeAllowlistRequired: true
+    exclusionsAlwaysWin: true
+    reInclusionSupported: false
+    invalidOrUnavailablePolicy: fail-closed
+  ruleGrammar:
+    anchoring: workspace-root
+    comparison: ordinal-ignore-case
+    minimumRules: 1
+    maximumRules: 100
+    minimumRuleCharacters: 1
+    maximumRuleCharacters: 256
+    maximumAggregateCharacters: 25600
+    segmentSeparator: /
+    singleSegmentWildcard: "*"
+    singleCharacterWildcard: "?"
+    recursiveWildcard: complete-segment-only
+    recursiveWildcardMatches: zero-or-more-segments
+    unsupported:
+      - escapes
+      - negation
+      - character-classes
+      - braces
+      - re-inclusion
+  mutationLimits:
+    inlineTransportBytes: 262144
+    perFileBytes: 1048576
+    maximumChanges: 100
+    aggregateBytes: 10485760
+    validation: atomic-apply-none-on-any-failure
+  batchSemantics:
+    requestSchema: MutateFilesRequest
+    ordering: caller-order
+    operationIdUniqueness: ordinal-ignore-case
+    pathUniqueness: ordinal-ignore-case
+    removeBytes: 0
+    publicEndpoints: matching-one-item-adapters
+  contentReadability:
+    encoding: strict-utf-8-with-optional-leading-bom
+    maximumBytes: 1048576
+    allowedControls:
+      - tab
+      - carriage-return
+      - line-feed
+    binaryAndOtherEncodings: metadata-only
+    visibleDirectoryClass: metadata_only
+    truncation: forbidden
+  inlineEvidence:
+    decodedByteMaximum: 262144
+    decodedLength: equals-byteLength
+    trustedHash: equals-contentHashReference
+    malformedOrMismatched: content_evidence_invalid
+  directMetadataTargets:
+    mixedHiddenOrMissing: reject-whole-request
+    visibleSubset: forbidden
+  hiddenPathOutcome:
+    status: 404
+    category: tenant_access_denied
+    code: resource_unavailable
+  authorizedUnsatisfiableRangeStatus: 416
+  rangeRouting:
+    emptyAtEof: 200
+    startBeyondEof: 416
+    nonEmptyStartAtEof: 416
+    endBeyondEofFromVisibleStart: 206
+  policySnapshot:
+    binding: immutable-version-and-digest
+    recheckBefore:
+      - atomic-apply
+      - response-shaping
+    driftBehavior: discard-and-fail-closed
+    unavailableOutcome:
+      status: 503
+      category: file_policy_unavailable
+      code: file_policy_unavailable
+      retryable: true
+      clientAction: retry
+  contentFailurePrecedence:
+    - condition: decoded-or-observed-content-above-1048576
+      status: 422
+      category: input_limit_exceeded
+      code: file_content_limit_exceeded
+      retryable: false
+      clientAction: revise_request
+    - condition: inline-content-from-262145-through-1048576
+      status: 413
+      category: input_limit_exceeded
+      code: d9_inline_limit_exceeded
+      retryable: true
+      clientAction: revise_request
+    - condition: malformed-base64-or-evidence-mismatch
+      status: 400
+      category: validation_error
+      code: content_evidence_invalid
+      retryable: false
+      clientAction: revise_request
+x-hexalith-decoded-byte-maximum:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-decoded-byte-maximum
+  foundationUse: Enforces a decoded-byte maximum for base64-encoded content where JSON Schema maxLength is not byte-exact.
 paths:
   /api/v1/folders:
     post:
@@ -2035,7 +2155,9 @@ paths:
         Contract-only file add operation. The request declares file operation identity,
         workspace-root-relative path metadata, content hash metadata, and D-9
         transport shape. `PutFileInline` is allowed for content at or below 262144
-        bytes; `PutFileStream` is the required shape for larger content. The caller
+        bytes; `PutFileStream` is the required shape through the 1048576-byte per-file
+        mutation maximum. A containing change set is limited to 100 changes and
+        10485760 aggregate add/change bytes and is validated atomically. The caller
         must already have a prepared workspace and a valid held workspace lock.
         Runtime file-system, Git, provider, aggregate, worker, and SDK helper behavior
         is deferred to downstream stories.
@@ -2055,7 +2177,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FileMutationRequest"
+              $ref: "#/components/schemas/AddFileRequest"
             examples:
               inline:
                 $ref: "#/components/examples/AddFileInlineRequest"
@@ -2072,37 +2194,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/FileMutationAccepted"
         "400":
-          $ref: "#/components/responses/ValidationFailure"
+          $ref: "#/components/responses/FileContentEvidenceInvalid400"
         "401":
           $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
         "410":
           $ref: "#/components/responses/WorkspaceLockExpired"
         "413":
-          description: "Inline payload exceeds the D-9 boundary; retry as stream without echoing content. The transport-substitution hint is surfaced via the response header `X-Hexalith-Retry-Transport: stream` only; the configured byte limit is never disclosed in the response body to preserve authorization-before-observation."
-          headers:
-            X-Hexalith-Retry-Transport:
-              $ref: "#/components/headers/RetryTransport"
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetails"
-              examples:
-                overBound:
-                  $ref: "#/components/examples/FileInlineTooLargeProblem"
+          $ref: "#/components/responses/FileInlineTransportRequired413"
         "422":
-          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+          $ref: "#/components/responses/FileContentLimitExceeded422"
         "423":
           $ref: "#/components/responses/LockConflict"
         "428":
           $ref: "#/components/responses/WorkspaceAuthorizationRevoked"
         "503":
-          $ref: "#/components/responses/ReconciliationRequired"
+          $ref: "#/components/responses/FileMutationUnavailable503"
       x-hexalith-idempotency-key:
         required: true
         adapterSourcing:
@@ -2142,6 +2254,7 @@ paths:
         - stale_workspace
         - path_validation_failed
         - input_limit_exceeded
+        - file_policy_unavailable
         - file_operation_failed
         - provider_failure_known
         - failed_operation
@@ -2202,7 +2315,9 @@ paths:
       description: >
         Contract-only file change operation using the same D-9 `PutFileInline`
         and `PutFileStream` shapes as AddFile. Inline content is capped at 262144
-        bytes and larger content uses `PutFileStream`. The caller must already have a
+        bytes and larger content through 1048576 bytes uses `PutFileStream`. A
+        containing change set is limited to 100 changes and 10485760 aggregate
+        add/change bytes and is validated atomically. The caller must already have a
         prepared workspace and a valid held workspace lock. File diffs, provider
         payloads, generated context payloads, and runtime write behavior are not
         represented by this contract group.
@@ -2222,7 +2337,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FileMutationRequest"
+              $ref: "#/components/schemas/ChangeFileRequest"
             examples:
               stream:
                 $ref: "#/components/examples/ChangeFileStreamRequest"
@@ -2239,37 +2354,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/FileMutationAccepted"
         "400":
-          $ref: "#/components/responses/ValidationFailure"
+          $ref: "#/components/responses/FileContentEvidenceInvalid400"
         "401":
           $ref: "#/components/responses/SafeAuthorizationDenial401"
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
         "410":
           $ref: "#/components/responses/WorkspaceLockExpired"
         "413":
-          description: "Inline payload exceeds the D-9 boundary; retry as stream without echoing content. The transport-substitution hint is surfaced via the response header `X-Hexalith-Retry-Transport: stream` only; the configured byte limit is never disclosed in the response body to preserve authorization-before-observation."
-          headers:
-            X-Hexalith-Retry-Transport:
-              $ref: "#/components/headers/RetryTransport"
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetails"
-              examples:
-                overBound:
-                  $ref: "#/components/examples/FileInlineTooLargeProblem"
+          $ref: "#/components/responses/FileInlineTransportRequired413"
         "422":
-          $ref: "#/components/responses/WorkspaceTransitionInvalid"
+          $ref: "#/components/responses/FileContentLimitExceeded422"
         "423":
           $ref: "#/components/responses/LockConflict"
         "428":
           $ref: "#/components/responses/WorkspaceAuthorizationRevoked"
         "503":
-          $ref: "#/components/responses/ReconciliationRequired"
+          $ref: "#/components/responses/FileMutationUnavailable503"
       x-hexalith-idempotency-key:
         required: true
         adapterSourcing:
@@ -2309,6 +2414,7 @@ paths:
         - stale_workspace
         - path_validation_failed
         - input_limit_exceeded
+        - file_policy_unavailable
         - file_operation_failed
         - provider_failure_known
         - failed_operation
@@ -2370,7 +2476,9 @@ paths:
         Contract-only file removal operation. Removal is metadata-only: request,
         response, audit, diagnostics, and Problem Details never include removed file
         contents, diffs, previous content samples, provider payloads, or local paths.
-        The caller must already have a prepared workspace and a valid held workspace lock.
+        A containing change set is limited to 100 changes, removes contribute zero
+        aggregate content bytes, and the complete set is validated before anything is
+        applied. The caller must already have a prepared workspace and a valid held workspace lock.
       parameters:
         - $ref: "#/components/parameters/FolderId"
         - $ref: "#/components/parameters/WorkspaceId"
@@ -2387,7 +2495,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FileMutationRequest"
+              $ref: "#/components/schemas/RemoveFileRequest"
             examples:
               remove:
                 $ref: "#/components/examples/RemoveFileRequest"
@@ -2410,7 +2518,7 @@ paths:
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "409":
           $ref: "#/components/responses/IdempotencyConflict"
         "410":
@@ -2422,7 +2530,7 @@ paths:
         "428":
           $ref: "#/components/responses/WorkspaceAuthorizationRevoked"
         "503":
-          $ref: "#/components/responses/ReconciliationRequired"
+          $ref: "#/components/responses/FileMutationUnavailable503"
       x-hexalith-idempotency-key:
         required: true
         adapterSourcing:
@@ -2460,6 +2568,7 @@ paths:
         - authorization_revocation_detected
         - stale_workspace
         - path_validation_failed
+        - file_policy_unavailable
         - file_operation_failed
         - provider_failure_known
         - failed_operation
@@ -2515,10 +2624,12 @@ paths:
         Lists metadata-only file tree entries from an authorized workspace snapshot.
         Context query authorization order is tenant access, folder ACL, path policy,
         sensitivity classification, C4 bounds, then query execution. Results are
-        security-trimmed before ordering, truncation, response shaping, or audit
-        metadata is produced; search-first/filter-later and retrieval-first/filter-later
-        semantics are forbidden. Safe-denial Problem Details do not disclose hidden
-        resource existence.
+        limited to visible content_allowed and metadata_only entries and are
+        security-trimmed before ordering, counting, truncation, response shaping, or
+        audit metadata is produced. Excluded, restricted, sensitivity-denied, and
+        unauthorized entries and their counts are not observable; search-first/filter-later
+        and retrieval-first/filter-later semantics are forbidden. Safe-denial Problem
+        Details do not disclose hidden resource existence.
       parameters:
         - $ref: "#/components/parameters/FolderId"
         - $ref: "#/components/parameters/WorkspaceId"
@@ -2549,7 +2660,7 @@ paths:
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "408":
           $ref: "#/components/responses/ContextQueryTimeout"
         "413":
@@ -2557,7 +2668,7 @@ paths:
         "422":
           $ref: "#/components/responses/ContextInputLimitExceeded"
         "503":
-          $ref: "#/components/responses/ReadModelUnavailable"
+          $ref: "#/components/responses/FileContextUnavailable503"
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
@@ -2588,7 +2699,7 @@ paths:
         - read_model_unavailable
         - projection_stale
         - projection_unavailable
-        - redacted
+        - file_policy_unavailable
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -2637,10 +2748,12 @@ paths:
       description: >
         Retrieves metadata only for requested workspace-root-relative paths after
         tenant access, folder ACL, path policy, sensitivity classification, C4 bounds,
-        then query execution. Unauthorized, excluded, binary-disallowed, missing, and
-        sensitivity-denied cases use safe-denial or metadata-only Problem Details before
-        any resource-existence detail is disclosed. Safe-denial Problem Details do
-        not disclose hidden resource existence.
+        then query execution. Visible content_allowed and metadata_only paths can return
+        metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized
+        direct targets all return the same 404 tenant_access_denied/resource_unavailable
+        safe-denial envelope before any resource-existence detail is disclosed. If
+        any path in a multi-target request is hidden or missing, the complete request
+        returns that 404 and no visible subset is returned.
       parameters:
         - $ref: "#/components/parameters/FolderId"
         - $ref: "#/components/parameters/WorkspaceId"
@@ -2670,7 +2783,7 @@ paths:
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "408":
           $ref: "#/components/responses/ContextQueryTimeout"
         "413":
@@ -2678,7 +2791,7 @@ paths:
         "422":
           $ref: "#/components/responses/ContextInputLimitExceeded"
         "503":
-          $ref: "#/components/responses/ReadModelUnavailable"
+          $ref: "#/components/responses/FileContextUnavailable503"
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
@@ -2709,7 +2822,7 @@ paths:
         - read_model_unavailable
         - projection_stale
         - projection_unavailable
-        - redacted
+        - file_policy_unavailable
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -2754,8 +2867,11 @@ paths:
       summary: Search authorized file metadata without snippets.
       description: >
         Searches only after tenant access, folder ACL, path policy, sensitivity
-        classification, C4 bounds, then query execution. The result is metadata-only:
-        no snippets, matched-line text, previews, diffs, raw search text in audit,
+        classification, C4 bounds, then query execution. Only content_allowed files are
+        eligible for content search; metadata_only, excluded, restricted,
+        sensitivity-denied, and unauthorized files are removed before scanning,
+        matching, counting, ordering, or shaping. The result is metadata-only: no
+        snippets, matched-line text, previews, diffs, raw search text in audit,
         generated context payloads, or provider payloads are returned. Safe-denial
         Problem Details do not disclose hidden resource existence.
       parameters:
@@ -2779,7 +2895,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FileTreeResult"
+                $ref: "#/components/schemas/FileSearchResult"
               examples:
                 synthetic:
                   $ref: "#/components/examples/FileTreeResult"
@@ -2790,7 +2906,7 @@ paths:
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "408":
           $ref: "#/components/responses/ContextQueryTimeout"
         "413":
@@ -2798,7 +2914,7 @@ paths:
         "422":
           $ref: "#/components/responses/ContextInputLimitExceeded"
         "503":
-          $ref: "#/components/responses/ReadModelUnavailable"
+          $ref: "#/components/responses/FileContextUnavailable503"
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
@@ -2829,7 +2945,7 @@ paths:
         - read_model_unavailable
         - projection_stale
         - projection_unavailable
-        - redacted
+        - file_policy_unavailable
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -3075,9 +3191,10 @@ paths:
       description: >
         Evaluates glob metadata only after tenant access, folder ACL, path policy,
         sensitivity classification, C4 bounds, then query execution. Result limits
-        are applied after security trimming; hidden paths, excluded paths, and
-        unauthorized hit counts are never disclosed. Safe-denial Problem Details do
-        not disclose hidden resource existence.
+        are applied after security trimming. Visible content_allowed and metadata_only
+        entries may be returned; excluded, restricted, sensitivity-denied, and
+        unauthorized paths and their hit counts are never disclosed. Safe-denial
+        Problem Details do not disclose hidden resource existence.
       parameters:
         - $ref: "#/components/parameters/FolderId"
         - $ref: "#/components/parameters/WorkspaceId"
@@ -3110,7 +3227,7 @@ paths:
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "408":
           $ref: "#/components/responses/ContextQueryTimeout"
         "413":
@@ -3118,7 +3235,7 @@ paths:
         "422":
           $ref: "#/components/responses/ContextInputLimitExceeded"
         "503":
-          $ref: "#/components/responses/ReadModelUnavailable"
+          $ref: "#/components/responses/FileContextUnavailable503"
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
@@ -3149,7 +3266,7 @@ paths:
         - read_model_unavailable
         - projection_stale
         - projection_unavailable
-        - redacted
+        - file_policy_unavailable
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -3199,12 +3316,15 @@ paths:
       description: >
         Reads bytes only after tenant access, folder ACL, path policy, sensitivity
         classification, C4 bounds, then query execution. This is the only context
-        query in this group allowed to return authorized file bytes. Range semantics
-        are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero
-        length returns metadata with no content bytes, end-of-file returns the
-        available authorized bytes, reversed ranges fail validation, over-bound
+        query in this group allowed to return authorized file bytes and it is available
+        only for content_allowed paths. A missing, metadata_only, excluded, restricted,
+        sensitivity-denied, or unauthorized path returns the same 404
+        tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are
+        zero-based with inclusive `startOffset` and exclusive `endOffset`.
+        `[EOF,EOF)` returns 200 with no bytes; any start beyond EOF or non-empty range
+        starting at EOF returns 416; a range starting before EOF and ending after it
+        returns available bytes with 206. Reversed ranges fail validation, over-bound
         ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
-        Safe-denial Problem Details do not disclose hidden resource existence.
       parameters:
         - $ref: "#/components/parameters/FolderId"
         - $ref: "#/components/parameters/WorkspaceId"
@@ -3249,26 +3369,17 @@ paths:
         "403":
           $ref: "#/components/responses/SafeAuthorizationDenial403"
         "404":
-          $ref: "#/components/responses/SafeAuthorizationDenial404"
+          $ref: "#/components/responses/FileSafeAuthorizationDenial404"
         "408":
           $ref: "#/components/responses/ContextQueryTimeout"
         "413":
           $ref: "#/components/responses/ContextResponseLimitExceeded"
         "416":
-          description: "Requested range cannot be satisfied. Returned when the range is reversed at the byte level (caught after schema validation), exceeds the file's authorized end, or is redacted by sensitivity. Sensitivity-denied routing between 416 and 404 safe-denial is TODO(reference-pending) against the safe-denial-matrix follow-up story; the contract currently surfaces redacted ranges under 416 with deliberate visibility."
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/ProblemDetails"
-              examples:
-                unsatisfiable:
-                  $ref: "#/components/examples/ReadFileRangeUnsatisfiableProblem"
-                redacted:
-                  $ref: "#/components/examples/ReadFileRangeRedactedProblem"
+          $ref: "#/components/responses/FileRangeUnsatisfiable416"
         "422":
           $ref: "#/components/responses/ContextInputLimitExceeded"
         "503":
-          $ref: "#/components/responses/ReadModelUnavailable"
+          $ref: "#/components/responses/FileContextUnavailable503"
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
@@ -3299,7 +3410,8 @@ paths:
         - read_model_unavailable
         - projection_stale
         - projection_unavailable
-        - redacted
+        - range_unsatisfiable
+        - file_policy_unavailable
         - validation_error
         - internal_error
       x-hexalith-audit-metadata-keys:
@@ -5418,7 +5530,7 @@ components:
             synthetic:
               $ref: "#/components/examples/SafeDenial401Unauthorized"
     SafeAuthorizationDenial403:
-      description: Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.
+      description: Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.
       content:
         application/problem+json:
           schema:
@@ -5427,7 +5539,7 @@ components:
             synthetic:
               $ref: "#/components/examples/SafeDenial403Forbidden"
     SafeAuthorizationDenial404:
-      description: Safe denial for missing-or-unauthorized resources. Externally indistinguishable across absent, cross-tenant, missing-binding, and missing-policy cases — does not reveal protected resource existence.
+      description: Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.
       content:
         application/problem+json:
           schema:
@@ -5435,6 +5547,80 @@ components:
           examples:
             synthetic:
               $ref: "#/components/examples/SafeDenial404NotFound"
+    FileSafeAuthorizationDenial404:
+      description: Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileSafeResourceUnavailableProblem"
+          examples:
+            synthetic:
+              $ref: "#/components/examples/SafeDenial404NotFound"
+    FileRangeUnsatisfiable416:
+      description: Exact outcome for an authorized visible content_allowed path whose half-open range is unsatisfiable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileRangeUnsatisfiableProblem"
+          examples:
+            unsatisfiable:
+              $ref: "#/components/examples/ReadFileRangeUnsatisfiableProblem"
+    FileMutationUnavailable503:
+      description: File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileMutationUnavailableProblem"
+          examples:
+            filePolicyUnavailable:
+              $ref: "#/components/examples/FilePolicyUnavailableProblem"
+            reconciliationRequired:
+              $ref: "#/components/examples/FileMutationReconciliationRequiredProblem"
+    FileContextUnavailable503:
+      description: File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileContextUnavailableProblem"
+          examples:
+            filePolicyUnavailable:
+              $ref: "#/components/examples/FilePolicyUnavailableProblem"
+            readModelUnavailable:
+              $ref: "#/components/examples/ReadModelUnavailable"
+    FileContentEvidenceInvalid400:
+      description: Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileContentEvidenceInvalidOrValidationProblem"
+          examples:
+            contentEvidenceInvalid:
+              $ref: "#/components/examples/FileContentEvidenceInvalidProblem"
+            validationFailure:
+              $ref: "#/components/examples/FileValidationFailureProblem"
+    FileInlineTransportRequired413:
+      description: Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.
+      headers:
+        X-Hexalith-Retry-Transport:
+          $ref: "#/components/headers/RetryTransport"
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileInlineTransportRequiredProblem"
+          examples:
+            overBound:
+              $ref: "#/components/examples/FileInlineTooLargeProblem"
+    FileContentLimitExceeded422:
+      description: Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/FileContentLimitExceededOrWorkspaceTransitionProblem"
+          examples:
+            fileContentLimitExceeded:
+              $ref: "#/components/examples/FileContentLimitExceededProblem"
+            workspaceTransitionInvalid:
+              $ref: "#/components/examples/FileMutationWorkspaceTransitionInvalidProblem"
     ValidationFailure:
       description: Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.
       content:
@@ -5593,7 +5779,7 @@ components:
         details:
           visibility: redacted
     SafeDenial403Forbidden:
-      summary: Canonical 403 safe denial — authenticated caller lacks permission. Envelope shape is identical across all tenant/folder/binding/policy cases.
+      summary: Canonical 403 safe denial — authenticated caller lacks coarse resource or action permission; file path-policy and sensitivity cases use the file-specific 404.
       value:
         type: about:blank
         title: Access unavailable
@@ -5607,7 +5793,7 @@ components:
         details:
           visibility: redacted
     SafeDenial404NotFound:
-      summary: Canonical 404 safe denial — resource absent, cross-tenant, missing binding, missing branch/ref policy, or otherwise not visible. Envelope shape is identical across all of these cases (does not reveal protected resource existence).
+      summary: Canonical 404 safe denial — path or resource is missing, excluded, restricted, sensitivity-denied, unauthorized, or otherwise not visible. Envelope shape is identical across all causes and does not reveal protected existence, policy, class, path, or hidden counts.
       value:
         type: about:blank
         title: Access unavailable
@@ -6411,7 +6597,7 @@ components:
         pathMetadata:
           normalizedPath: docs/synthetic-add-001.md
           displayName: synthetic-add-001.md
-          pathPolicyClass: tenant_sensitive_document
+          pathPolicyClass: content_allowed
           unicodeNormalization: NFC
         contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002
         byteLength: 33
@@ -6429,7 +6615,7 @@ components:
         pathMetadata:
           normalizedPath: docs/synthetic-change-002.bin
           displayName: synthetic-change-002.bin
-          pathPolicyClass: tenant_sensitive_document
+          pathPolicyClass: metadata_only
           unicodeNormalization: NFC
         contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002
         byteLength: 262145
@@ -6450,7 +6636,7 @@ components:
         pathMetadata:
           normalizedPath: docs/synthetic-remove-003.md
           displayName: synthetic-remove-003.md
-          pathPolicyClass: tenant_sensitive_document
+          pathPolicyClass: content_allowed
           unicodeNormalization: NFC
     FileInlineTooLargeProblem:
       summary: "Synthetic inline content exceeds the D-9 boundary. The retry-as-stream hint is carried via the `X-Hexalith-Retry-Transport: stream` response header; the configured limit value is intentionally absent from the body to keep 413 disclosure safe for pre-authentication callers."
@@ -6466,6 +6652,90 @@ components:
         clientAction: revise_request
         details:
           visibility: metadata_only
+    FileContentEvidenceInvalidProblem:
+      summary: Synthetic malformed-base64 or decoded-length/trusted-hash mismatch outcome.
+      value:
+        type: about:blank
+        title: Content evidence invalid
+        status: 400
+        category: validation_error
+        code: content_evidence_invalid
+        message: The supplied content evidence is not valid.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD400
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    FileValidationFailureProblem:
+      summary: Synthetic legacy validation failure retained alongside the exact content-evidence outcome.
+      value:
+        type: about:blank
+        title: Validation failure
+        status: 400
+        category: validation_error
+        code: validation_error
+        message: The supplied file request is not valid.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0VAL400
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    FileContentLimitExceededProblem:
+      summary: Synthetic decoded or observed content above the absolute 1048576-byte file limit.
+      value:
+        type: about:blank
+        title: File content limit exceeded
+        status: 422
+        category: input_limit_exceeded
+        code: file_content_limit_exceeded
+        message: The file content exceeds the permitted maximum.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD422
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    FileMutationWorkspaceTransitionInvalidProblem:
+      summary: Synthetic legacy workspace-transition outcome retained alongside the exact file-content limit outcome.
+      value:
+        type: about:blank
+        title: State transition invalid
+        status: 422
+        category: state_transition_invalid
+        code: state_transition_invalid
+        message: The requested state transition is invalid for the current workspace state.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0WST422
+        retryable: false
+        clientAction: revise_request
+        details:
+          visibility: metadata_only
+    FilePolicyUnavailableProblem:
+      summary: Synthetic non-disclosing policy snapshot drift or verification failure.
+      value:
+        type: about:blank
+        title: File policy unavailable
+        status: 503
+        category: file_policy_unavailable
+        code: file_policy_unavailable
+        message: The file policy cannot be verified for this request.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0POL503
+        retryable: true
+        clientAction: retry
+        details:
+          visibility: redacted
+    FileMutationReconciliationRequiredProblem:
+      summary: Synthetic legacy mutation reconciliation outcome retained at HTTP 503.
+      value:
+        type: about:blank
+        title: Reconciliation required
+        status: 503
+        category: reconciliation_required
+        code: reconciliation_required
+        message: The mutation outcome requires reconciliation before it can be finalized.
+        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0REC503
+        retryable: false
+        clientAction: wait_for_reconciliation
+        details:
+          visibility: metadata_only
     FileTreeResult:
       summary: Synthetic metadata-only file tree result (not truncated).
       value:
@@ -6473,7 +6743,7 @@ components:
           - path:
               normalizedPath: docs/synthetic-tree-001.md
               displayName: synthetic-tree-001.md
-              pathPolicyClass: tenant_sensitive_document
+              pathPolicyClass: content_allowed
               unicodeNormalization: NFC
             kind: file
             byteLength: 42
@@ -6501,7 +6771,7 @@ components:
           - path:
               normalizedPath: docs/synthetic-tree-002.md
               displayName: synthetic-tree-002.md
-              pathPolicyClass: tenant_sensitive_document
+              pathPolicyClass: content_allowed
               unicodeNormalization: NFC
             kind: file
             byteLength: 4096
@@ -6530,7 +6800,7 @@ components:
           - path:
               normalizedPath: docs/synthetic-note.md
               displayName: synthetic-note.md
-              pathPolicyClass: tenant_sensitive_document
+              pathPolicyClass: content_allowed
               unicodeNormalization: NFC
             kind: file
             byteLength: 42
@@ -6556,7 +6826,7 @@ components:
         requestedPaths:
           - normalizedPath: docs
             displayName: docs
-            pathPolicyClass: tenant_sensitive_document
+            pathPolicyClass: content_allowed
             unicodeNormalization: NFC
         limit: 500
     GlobFolderFilesRequest:
@@ -6568,7 +6838,7 @@ components:
         requestedPaths:
           - normalizedPath: docs
             displayName: docs
-            pathPolicyClass: tenant_sensitive_document
+            pathPolicyClass: content_allowed
             unicodeNormalization: NFC
         limit: 500
     ReadFileRangeMinimumRequest:
@@ -6578,7 +6848,7 @@ components:
         path:
           normalizedPath: docs/synthetic-note.md
           displayName: synthetic-note.md
-          pathPolicyClass: tenant_sensitive_document
+          pathPolicyClass: content_allowed
           unicodeNormalization: NFC
         startOffset: 0
         endOffset: 0
@@ -6589,7 +6859,7 @@ components:
         path:
           normalizedPath: docs/synthetic-note.md
           displayName: synthetic-note.md
-          pathPolicyClass: tenant_sensitive_document
+          pathPolicyClass: content_allowed
           unicodeNormalization: NFC
         startOffset: 0
         endOffset: 262144
@@ -6625,7 +6895,7 @@ components:
           configuredLimit: 262144
           unit: bytes
     ReadFileRangeUnsatisfiableProblem:
-      summary: "Synthetic 416 range-unsatisfiable response. Status and category align; emitted when the requested byte range exceeds the authorized file end or is otherwise unsatisfiable. Sensitivity-denied routing under 416 vs 404 remains TODO(reference-pending) against the safe-denial-matrix follow-up."
+      summary: "Synthetic 416 range-unsatisfiable response for an authorized, visible content_allowed path. Missing, metadata_only, excluded, restricted, sensitivity-denied, and unauthorized paths use the canonical 404 safe-denial envelope."
       value:
         type: about:blank
         title: Range unsatisfiable
@@ -6653,20 +6923,6 @@ components:
         details:
           visibility: metadata_only
           dimension: input_count
-    ReadFileRangeRedactedProblem:
-      summary: Synthetic range denied by sensitivity or path policy.
-      value:
-        type: about:blank
-        title: Range unavailable
-        status: 416
-        category: redacted
-        code: range_not_available
-        message: The requested range is not available.
-        correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG003
-        retryable: false
-        clientAction: no_action
-        details:
-          visibility: redacted
     ContextResponseLimitExceededProblem:
       summary: Synthetic response budget exceeded.
       value:
@@ -7349,6 +7605,287 @@ components:
               - type: number
               - type: boolean
           description: Metadata-only details. File contents, diffs, tokens, secrets, and unauthorized existence hints are forbidden.
+    ExactFileProblem:
+      type: object
+      additionalProperties: false
+      description: Closed Problem Details foundation for exact OQ2 file-policy outcomes. No path, policy class, content, hidden count, or protected-existence evidence is permitted.
+      required:
+        - type
+        - title
+        - status
+        - category
+        - code
+        - message
+        - correlationId
+        - retryable
+        - clientAction
+        - details
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+          minLength: 1
+          maxLength: 128
+        status:
+          type: integer
+          format: int32
+        category:
+          $ref: "#/components/schemas/CanonicalErrorCategory"
+        code:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: "^[a-z0-9][a-z0-9_:-]{0,127}$"
+        message:
+          type: string
+          minLength: 1
+          maxLength: 512
+        correlationId:
+          $ref: "#/components/schemas/OpaqueIdentifier"
+        retryable:
+          type: boolean
+        clientAction:
+          type: string
+          enum:
+            - retry
+            - revise_request
+            - no_action
+        details:
+          type: object
+          additionalProperties: false
+          required:
+            - visibility
+          properties:
+            visibility:
+              type: string
+              enum:
+                - redacted
+                - metadata_only
+    FileSafeResourceUnavailableProblem:
+      allOf:
+        - $ref: "#/components/schemas/ExactFileProblem"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum: [404]
+            category:
+              type: string
+              enum: [tenant_access_denied]
+            code:
+              type: string
+              enum: [resource_unavailable]
+            retryable:
+              type: boolean
+              const: false
+            clientAction:
+              type: string
+              enum: [no_action]
+            details:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  enum: [redacted]
+    FileRangeUnsatisfiableProblem:
+      allOf:
+        - $ref: "#/components/schemas/ExactFileProblem"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum: [416]
+            category:
+              type: string
+              enum: [range_unsatisfiable]
+            code:
+              type: string
+              enum: [range_unsatisfiable]
+            retryable:
+              type: boolean
+              const: false
+            clientAction:
+              type: string
+              enum: [revise_request]
+            details:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  enum: [metadata_only]
+    FilePolicyUnavailableProblem:
+      allOf:
+        - $ref: "#/components/schemas/ExactFileProblem"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum: [503]
+            category:
+              type: string
+              enum: [file_policy_unavailable]
+            code:
+              type: string
+              enum: [file_policy_unavailable]
+            retryable:
+              type: boolean
+              const: true
+            clientAction:
+              type: string
+              enum: [retry]
+            details:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  enum: [redacted]
+    FileContentEvidenceInvalidProblem:
+      allOf:
+        - $ref: "#/components/schemas/ExactFileProblem"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum: [400]
+            category:
+              type: string
+              enum: [validation_error]
+            code:
+              type: string
+              enum: [content_evidence_invalid]
+            retryable:
+              type: boolean
+              const: false
+            clientAction:
+              type: string
+              enum: [revise_request]
+            details:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  enum: [metadata_only]
+    FileContentEvidenceInvalidOrValidationProblem:
+      description: Disjoint exact-or-legacy 400 union. The legacy branch cannot accept the OQ2 exact code, so a malformed exact envelope fails closed instead of falling through.
+      oneOf:
+        - $ref: "#/components/schemas/FileLegacyValidationFailureProblem"
+        - $ref: "#/components/schemas/FileContentEvidenceInvalidProblem"
+    FileLegacyValidationFailureProblem:
+      allOf:
+        - $ref: "#/components/schemas/ValidationFailure"
+        - not:
+            required: [code]
+            properties:
+              code:
+                enum: [content_evidence_invalid]
+    FileInlineTransportRequiredProblem:
+      allOf:
+        - $ref: "#/components/schemas/ExactFileProblem"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum: [413]
+            category:
+              type: string
+              enum: [input_limit_exceeded]
+            code:
+              type: string
+              enum: [d9_inline_limit_exceeded]
+            retryable:
+              type: boolean
+              const: true
+            clientAction:
+              type: string
+              enum: [revise_request]
+            details:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  enum: [metadata_only]
+    FileContentLimitExceededProblem:
+      allOf:
+        - $ref: "#/components/schemas/ExactFileProblem"
+        - type: object
+          properties:
+            status:
+              type: integer
+              enum: [422]
+            category:
+              type: string
+              enum: [input_limit_exceeded]
+            code:
+              type: string
+              enum: [file_content_limit_exceeded]
+            retryable:
+              type: boolean
+              const: false
+            clientAction:
+              type: string
+              enum: [revise_request]
+            details:
+              type: object
+              properties:
+                visibility:
+                  type: string
+                  enum: [metadata_only]
+    FileContentLimitExceededOrWorkspaceTransitionProblem:
+      description: Disjoint exact-or-legacy 422 union. Either exact category or code selects the closed OQ2 branch and cannot fall through to the legacy workspace-transition branch.
+      oneOf:
+        - $ref: "#/components/schemas/FileLegacyWorkspaceTransitionInvalidProblem"
+        - $ref: "#/components/schemas/FileContentLimitExceededProblem"
+    FileLegacyWorkspaceTransitionInvalidProblem:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+        - not:
+            anyOf:
+              - required: [category]
+                properties:
+                  category:
+                    enum: [input_limit_exceeded]
+              - required: [code]
+                properties:
+                  code:
+                    enum: [file_content_limit_exceeded]
+    FileMutationUnavailableProblem:
+      description: Disjoint exact-or-legacy mutation 503 union. Either exact category or code selects the closed OQ2 branch and cannot fall through to reconciliation-required handling.
+      oneOf:
+        - $ref: "#/components/schemas/FileLegacyMutationReconciliationRequiredProblem"
+        - $ref: "#/components/schemas/FilePolicyUnavailableProblem"
+    FileLegacyMutationReconciliationRequiredProblem:
+      allOf:
+        - $ref: "#/components/schemas/ReconciliationRequired"
+        - not:
+            anyOf:
+              - required: [category]
+                properties:
+                  category:
+                    enum: [file_policy_unavailable]
+              - required: [code]
+                properties:
+                  code:
+                    enum: [file_policy_unavailable]
+    FileContextUnavailableProblem:
+      description: Disjoint exact-or-legacy context-query 503 union. Either exact category or code selects the closed OQ2 branch and cannot fall through to read-model-unavailable handling.
+      oneOf:
+        - $ref: "#/components/schemas/FileLegacyContextReadModelUnavailableProblem"
+        - $ref: "#/components/schemas/FilePolicyUnavailableProblem"
+    FileLegacyContextReadModelUnavailableProblem:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetails"
+        - not:
+            anyOf:
+              - required: [category]
+                properties:
+                  category:
+                    enum: [file_policy_unavailable]
+              - required: [code]
+                properties:
+                  code:
+                    enum: [file_policy_unavailable]
     SafeAuthorizationDenial:
       allOf:
         - $ref: "#/components/schemas/ProblemDetails"
@@ -8329,11 +8866,14 @@ components:
       type: object
       additionalProperties: false
       description: >
-        Workspace-root-relative path metadata. Paths use forward slashes, have no
-        leading slash, are NFC-normalized by contract, and are never local or
-        absolute filesystem paths. Traversal, symlink escape, reserved names, and
-        case-collision outcomes are path-policy decisions evaluated before file or
-        query execution.
+        File-policy v1.1.0 workspace-root-relative path metadata. Paths preserve the
+        caller's accepted spelling, use forward slashes, have no leading or trailing
+        slash, are declared NFC, and are never local or absolute filesystem paths.
+        The server does not lowercase, case-fold, separator-convert, Unicode-rewrite,
+        alias-resolve, follow links, or otherwise retarget a path. Traversal, reserved
+        names, a trailing space or dot in any segment, `.git` and its descendants,
+        ordinal-ignore-case component aliases, and every touched symlink/reparse entry
+        or ancestor are rejected before observation.
       required:
         - normalizedPath
         - displayName
@@ -8343,9 +8883,9 @@ components:
         normalizedPath:
           type: string
           minLength: 1
-          maxLength: 512
-          pattern: "^(?!/)(?!.*(?:^|/)\\.\\.(?:$|/))(?!.*//)(?!.*(?:^|/)(?:CON|NUL|PRN|AUX|COM[1-9]|LPT[1-9])(?:\\.[^/]*)?(?:$|/))[A-Za-z0-9._/-]+$"
-          description: "Workspace-root-relative path. The pattern rejects: leading slash, parent-directory segments `..` (segment-only, allowing legitimate filenames like `a..b`), empty segments `//`, and reserved Windows base names (CON, NUL, PRN, AUX, COM1-9, LPT1-9 with optional extension). Character class is transitional ASCII-only. TODO(reference-pending): Unicode allow-list policy and final NFC enforcement live in Story 1.5 parser-policy classification."
+          maxLength: 500
+          pattern: "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:$|/))(?!.*//)(?!.*[/]$)(?!.*(?:^|/)[^/]*\\.(?:/|$))(?!.*(?:^|/)(?:[Cc][Oo][Nn]|[Pp][Rr][Nn]|[Aa][Uu][Xx]|[Nn][Uu][Ll]|[Cc][Oo][Mm][1-9]|[Ll][Pp][Tt][1-9])(?:\\.[^/]*)?(?:$|/))[A-Za-z0-9._/-]+$"
+          description: "Caller spelling preserved without retargeting. The file-policy v1.1.0 profile permits only ASCII A-Z a-z 0-9 . _ - / and rejects a leading/trailing slash, empty segment, complete . or .. segment, trailing dot in any segment, backslash, absolute/drive/UNC form, and Windows device base names in any ASCII case. The server restricts `.git` and descendants and rejects ordinal-ignore-case aliases for every component plus every touched symlink/reparse entry or ancestor without following it."
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         displayName:
           type: string
@@ -8356,26 +8896,50 @@ components:
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         pathPolicyClass:
           type: string
-          minLength: 1
-          maxLength: 80
-          pattern: "^[a-z][a-z0-9_]{0,79}$"
-          description: "Server-determined path policy classification. TODO(reference-pending): closed enum of approved class values pending path-policy-class definition story. Until that story lands, the pattern is the only contract-level constraint and the canonical class list is documented in docs/contract/file-context-contract-groups.md."
+          nullable: true
+          enum:
+            - content_allowed
+            - metadata_only
+            - excluded
+            - restricted
+          description: "Closed, server-owned file-policy v1.1.0 classification. Callers cannot select or upgrade this value; any value carried through a request is revalidated against the pinned server policy. A required bounded include allowlist is evaluated first, exclusions always win with no re-inclusion, and invalid, unavailable, or changed policy fails closed."
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         unicodeNormalization:
           type: string
           enum:
             - NFC
+    VisiblePathMetadata:
+      allOf:
+        - $ref: "#/components/schemas/PathMetadata"
+        - type: object
+          properties:
+            pathPolicyClass:
+              type: string
+              enum: [content_allowed, metadata_only]
+      description: Successful metadata-response path. Hidden classes can never inhabit this schema.
+    ContentAllowedPathMetadata:
+      allOf:
+        - $ref: "#/components/schemas/PathMetadata"
+        - type: object
+          properties:
+            pathPolicyClass:
+              type: string
+              enum: [content_allowed]
+      description: Successful content-response path. Only content_allowed can inhabit this schema.
     FileMutationRequest:
       type: object
       additionalProperties: false
       description: >
-        Contract-only file mutation request. Two `oneOf` discriminators enforce the
-        valid combinations: (a) `transportOperation` selects the transport shape
+        Contract-only file mutation item governed by file-policy v1.1.0. Conditional
+        schemas enforce valid combinations: `transportOperation` selects the transport shape
         (`PutFileInline` for content at or below 262144 bytes, `PutFileStream` for
-        larger streamed content, `metadataOnlyRemoval` for delete); (b)
+        larger streamed content through 1048576 bytes, `metadataOnlyRemoval` for delete); (b)
         `fileOperationKind` enforces that `remove` carries no content, content hash
         reference, or byte length. Add/change operations require a content hash
-        reference and the matching transport branch.
+        reference and the matching transport branch. A containing change set is
+        limited to 100 changes and 10485760 aggregate add/change bytes and is
+        validated atomically before any mutation is applied. This item is the public
+        one-item adapter shape; `MutateFilesRequest` is the canonical internal batch.
       required:
         - requestSchemaVersion
         - fileOperationKind
@@ -8407,70 +8971,119 @@ components:
         byteLength:
           type: integer
           minimum: 0
-          description: "Logical content length in bytes. Inline branch caps this at 262144; stream branch requires at least 262145. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+          maximum: 1048576
+          description: "Logical content length in bytes. Inline branch caps this at 262144; stream branch permits 262145 through the file-policy v1.1.0 per-file maximum of 1048576. Content is never silently truncated."
         inlineContent:
           $ref: "#/components/schemas/PutFileInline"
         streamDescriptor:
           $ref: "#/components/schemas/PutFileStream"
-      oneOf:
-        - title: InlineTransportBranch
-          description: Add or change file via PutFileInline; content fits within the 262144-byte D-9 boundary.
-          required:
-            - inlineContent
-            - byteLength
-            - contentHashReference
-          properties:
-            transportOperation:
-              const: PutFileInline
-            fileOperationKind:
-              enum:
-                - add
-                - change
-            byteLength:
-              maximum: 262144
-          not:
-            anyOf:
-              - required:
-                  - streamDescriptor
-        - title: StreamTransportBranch
-          description: Add or change file via PutFileStream; content exceeds the 262144-byte D-9 boundary.
-          required:
-            - streamDescriptor
-            - byteLength
-            - contentHashReference
-          properties:
-            transportOperation:
-              const: PutFileStream
-            fileOperationKind:
-              enum:
-                - add
-                - change
-            byteLength:
-              minimum: 262145
-          not:
-            anyOf:
-              - required:
-                  - inlineContent
-        - title: MetadataOnlyRemovalBranch
-          description: Remove a file with metadata-only semantics. No content, content hash, byte length, inline content, or stream descriptor allowed.
-          required:
-            - transportOperation
-            - fileOperationKind
-          properties:
-            transportOperation:
-              const: metadataOnlyRemoval
-            fileOperationKind:
-              const: remove
-          not:
-            anyOf:
-              - required:
-                  - inlineContent
-              - required:
-                  - streamDescriptor
-              - required:
-                  - contentHashReference
-              - required:
-                  - byteLength
+      allOf:
+        - if:
+            required: [transportOperation]
+            properties:
+              transportOperation:
+                enum: [PutFileInline]
+          then:
+            required: [inlineContent, byteLength, contentHashReference]
+            properties:
+              fileOperationKind:
+                enum: [add, change]
+              byteLength:
+                maximum: 262144
+            not:
+              required: [streamDescriptor]
+        - if:
+            required: [transportOperation]
+            properties:
+              transportOperation:
+                enum: [PutFileStream]
+          then:
+            required: [streamDescriptor, byteLength, contentHashReference]
+            properties:
+              fileOperationKind:
+                enum: [add, change]
+              byteLength:
+                minimum: 262145
+                maximum: 1048576
+            not:
+              required: [inlineContent]
+        - if:
+            required: [transportOperation]
+            properties:
+              transportOperation:
+                enum: [metadataOnlyRemoval]
+          then:
+            properties:
+              fileOperationKind:
+                enum: [remove]
+            not:
+              anyOf:
+                - required: [inlineContent]
+                - required: [streamDescriptor]
+                - required: [contentHashReference]
+                - required: [byteLength]
+        - if:
+            required: [fileOperationKind]
+            properties:
+              fileOperationKind:
+                enum: [add, change]
+          then:
+            properties:
+              transportOperation:
+                enum: [PutFileInline, PutFileStream]
+        - if:
+            required: [fileOperationKind]
+            properties:
+              fileOperationKind:
+                enum: [remove]
+          then:
+            properties:
+              transportOperation:
+                enum: [metadataOnlyRemoval]
+    AddFileRequest:
+      description: Public AddFile one-item adapter; only fileOperationKind add is valid.
+      allOf:
+        - $ref: "#/components/schemas/FileMutationRequest"
+      not:
+        properties:
+          fileOperationKind:
+            enum: [change, remove]
+        required: [fileOperationKind]
+    ChangeFileRequest:
+      description: Public ChangeFile one-item adapter; only fileOperationKind change is valid.
+      allOf:
+        - $ref: "#/components/schemas/FileMutationRequest"
+      not:
+        properties:
+          fileOperationKind:
+            enum: [add, remove]
+        required: [fileOperationKind]
+    RemoveFileRequest:
+      description: Public RemoveFile one-item adapter; only fileOperationKind remove is valid.
+      allOf:
+        - $ref: "#/components/schemas/FileMutationRequest"
+      not:
+        properties:
+          fileOperationKind:
+            enum: [add, change]
+        required: [fileOperationKind]
+    MutateFilesRequest:
+      type: object
+      additionalProperties: false
+      description: Canonical internal batch wire shape. Items retain caller order; operation IDs and normalized paths are each unique under ordinal-ignore-case comparison. Removes contribute zero bytes. More than 100 changes, more than 10485760 aggregate add/change bytes, any duplicate, or any item/policy failure rejects the whole batch before mutation.
+      required:
+        - requestSchemaVersion
+        - changes
+      properties:
+        requestSchemaVersion:
+          type: string
+          enum: [v1]
+        changes:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: "#/components/schemas/FileMutationRequest"
     PutFileInline:
       type: object
       additionalProperties: false
@@ -8487,7 +9100,8 @@ components:
           type: string
           contentEncoding: base64
           maxLength: 349528
-          description: "Authorized request body only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
+          x-hexalith-decoded-byte-maximum: 262144
+          description: "Authorized request body only; base64-encoded bytes up to the 262144-byte D-9 inline boundary (349528 base64 characters). Strict UTF-8 bytes with an optional leading UTF-8 BOM may be content-readable; binary and other encodings remain mutation-eligible but metadata_only. Exact bytes are preserved and never transcoded, repaired, or silently truncated. Never emitted in events, logs, audit, diagnostics, examples outside request bodies, or context-query metadata."
         contentMediaType:
           type: string
           maxLength: 128
@@ -8512,10 +9126,12 @@ components:
         declaredLength:
           type: integer
           minimum: 262145
+          maximum: 1048576
         observedLength:
           type: integer
           minimum: 262145
-          description: Observed byte length from the transient content staging boundary. Descriptor-only stream requests are not valid evidence.
+          maximum: 1048576
+          description: Observed byte length from the transient content staging boundary. It must equal declaredLength and the top-level byteLength; descriptor-only stream requests are not valid evidence. Exact bytes are preserved without truncation or transcoding.
         stagingReference:
           $ref: "#/components/schemas/OpaqueIdentifier"
           description: Tenant-scoped transient content staging reference. It is metadata only and never a caller-supplied local path.
@@ -8834,6 +9450,7 @@ components:
     FileRangeReadResult:
       type: object
       additionalProperties: false
+      description: Authorized bytes from a visible content_allowed path. metadata_only, excluded, restricted, sensitivity-denied, missing, and unauthorized paths cannot produce this schema and use the canonical 404 safe-denial envelope.
       required:
         - path
         - range
@@ -8842,7 +9459,7 @@ components:
         - freshness
       properties:
         path:
-          $ref: "#/components/schemas/PathMetadata"
+          $ref: "#/components/schemas/ContentAllowedPathMetadata"
         range:
           type: object
           additionalProperties: false
@@ -8870,7 +9487,7 @@ components:
           type: string
           contentEncoding: base64
           maxLength: 349528
-          maxBytes: 262144
+          x-hexalith-decoded-byte-maximum: 262144
           description: Authorized response body for ReadFileRange only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never audit, log, diagnostic, projection, or generated context material.
         limits:
           $ref: "#/components/schemas/ContextQueryLimitMetadata"
@@ -8898,6 +9515,28 @@ components:
           $ref: "#/components/schemas/ContextQueryLimitMetadata"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+    FileSearchResult:
+      type: object
+      additionalProperties: false
+      description: Search-only result whose entries are content_allowed files; metadata_only paths and directories are ineligible rather than redacted.
+      required:
+        - items
+        - page
+        - limits
+        - freshness
+      properties:
+        items:
+          type: array
+          maxItems: 2000
+          maxResultCount: 2000
+          items:
+            $ref: "#/components/schemas/ContentAllowedFileMetadataItem"
+        page:
+          $ref: "#/components/schemas/PaginationMetadata"
+        limits:
+          $ref: "#/components/schemas/ContextQueryLimitMetadata"
+        freshness:
+          $ref: "#/components/schemas/FreshnessMetadata"
     FileMetadataResult:
       type: object
       additionalProperties: false
@@ -8919,20 +9558,21 @@ components:
       type: object
       additionalProperties: false
       description: |
-        File metadata entry returned by tree, metadata, search, and glob context queries.
-        Field visibility depends on `redaction`:
-          - `not_redacted`  -> `path`, `kind`, `byteLength` (if known), `sensitivity` all present.
-          - `redacted`      -> `path` and `byteLength` may be present; no content evidence ever exposed.
-          - `excluded`      -> `path` and `byteLength` MUST be omitted; only `kind`, `sensitivity`, `redaction` retained so the caller knows an item was withheld without learning which path.
-          - `binary_disallowed` -> `path` may be present; `byteLength` may be omitted; redaction state communicates why the item carries no content evidence.
-        Servers MUST omit `path` when `redaction` is `excluded`. The redaction-state-to-field-visibility matrix is contract-binding so safe-denial parity holds across REST, SDK, CLI, and MCP surfaces.
+        Visible metadata entry returned by tree, metadata, search, and glob context queries.
+        `path.pathPolicyClass` is either content_allowed or metadata_only. Excluded,
+        restricted, sensitivity-denied, missing, and unauthorized paths never produce
+        an item and are removed before ordering, counts, pagination, truncation, and
+        response shaping. Direct targets use the canonical 404 safe-denial envelope.
+        metadata_only entries never carry file bytes, snippets, decoded text, or other
+        content evidence.
       required:
+        - path
         - kind
         - sensitivity
         - redaction
       properties:
         path:
-          $ref: "#/components/schemas/PathMetadata"
+          $ref: "#/components/schemas/VisiblePathMetadata"
         kind:
           type: string
           enum:
@@ -8947,11 +9587,34 @@ components:
           $ref: "#/components/schemas/SensitiveMetadataTier"
         redaction:
           type: string
-          enum:
-            - not_redacted
-            - redacted
-            - excluded
-            - binary_disallowed
+          enum: [not_redacted]
+          description: Hidden path classes are omitted entirely; visible entries use not_redacted.
+      allOf:
+        - if:
+            required: [kind]
+            properties:
+              kind:
+                enum: [directory]
+          then:
+            properties:
+              path:
+                allOf:
+                  - $ref: "#/components/schemas/VisiblePathMetadata"
+                  - type: object
+                    properties:
+                      pathPolicyClass:
+                        type: string
+                        enum: [metadata_only]
+    ContentAllowedFileMetadataItem:
+      allOf:
+        - $ref: "#/components/schemas/FileMetadataItem"
+        - type: object
+          properties:
+            path:
+              $ref: "#/components/schemas/ContentAllowedPathMetadata"
+            kind:
+              type: string
+              enum: [file]
     ContextQueryLimitMetadata:
       type: object
       additionalProperties: false
@@ -10204,6 +10867,7 @@ components:
         - projection_stale
         - projection_unavailable
         - range_unsatisfiable
+        - file_policy_unavailable
         - failed_operation
         - redacted
         - internal_error
@@ -10275,6 +10939,7 @@ components:
         - projection_stale
         - projection_unavailable
         - range_unsatisfiable
+        - file_policy_unavailable
         - failed_operation
         - redacted
         - internal_error

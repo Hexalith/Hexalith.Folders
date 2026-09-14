@@ -37,14 +37,14 @@ public static class RedactionDisclosureMapper
             _ => throw new ArgumentOutOfRangeException(nameof(precision), precision, "Unknown redactable audit timestamp precision."),
         };
 
-    /// <summary>Maps <see cref="FileMetadataItemRedaction"/> to a disclosure. Excluded/binary-disallowed items have no value to render.</summary>
+    /// <summary>Maps <see cref="FileMetadataItemRedaction"/> to a disclosure. Historical excluded/binary-disallowed ordinals have no value to render.</summary>
     public static FieldDisclosure FromFileMetadataRedaction(FileMetadataItemRedaction redaction)
-        => redaction switch
+        => (int)redaction switch
         {
-            FileMetadataItemRedaction.Not_redacted => FieldDisclosure.Visible,
-            FileMetadataItemRedaction.Redacted => FieldDisclosure.Redacted,
-            FileMetadataItemRedaction.Excluded => FieldDisclosure.Missing,
-            FileMetadataItemRedaction.Binary_disallowed => FieldDisclosure.Missing,
+            0 => FieldDisclosure.Visible,
+            1 => FieldDisclosure.Redacted,
+            2 => FieldDisclosure.Missing,
+            3 => FieldDisclosure.Missing,
             _ => throw new ArgumentOutOfRangeException(nameof(redaction), redaction, "Unknown file metadata item redaction."),
         };
 

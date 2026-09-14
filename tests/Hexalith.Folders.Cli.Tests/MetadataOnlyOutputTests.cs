@@ -25,10 +25,14 @@ public sealed class MetadataOnlyOutputTests
     private const string ContentBase64 = "U0VDUkVUQllURVM=";
 
     private const string RangeReadJson =
-        "{\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"metadata_only\",\"unicodeNormalization\":\"NFC\"},"
+        "{\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},"
         + "\"range\":{\"startOffset\":0,\"endOffset\":11,\"actualBytes\":11,\"partial\":false},"
         + "\"contentBytes\":\"" + ContentBase64 + "\","
         + "\"freshness\":{\"readConsistency\":\"read_your_writes\"}}";
+
+    private const string RangeReadRequestJson =
+        "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},"
+        + "\"startOffset\":0,\"endOffset\":11}";
 
     [Fact]
     public async Task RangeReadOutputNeverContainsFileContent()
@@ -44,7 +48,7 @@ public sealed class MetadataOnlyOutputTests
             "--base-address", BaseAddress,
             "--token", "synthetic-jwt",
             "--output", "json",
-            "--request", "{}");
+            "--request", RangeReadRequestJson);
 
         exit.ShouldBe(0);
         harness.Console.StdOut.ShouldNotContain(ContentBase64);

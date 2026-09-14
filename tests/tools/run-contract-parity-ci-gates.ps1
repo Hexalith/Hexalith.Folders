@@ -124,7 +124,9 @@ function Invoke-ContractParityGate {
     $output = & dotnet @arguments 2>&1
     $exitCode = $LASTEXITCODE
     $output | ForEach-Object { Write-Host $_ }
-    if ($exitCode -ne 0 -and (($output -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied')) {
+    $joinedOutput = $output -join [Environment]::NewLine
+    if ($exitCode -ne 0 -and ($joinedOutput -match 'System\.Net\.Sockets\.SocketException.*Permission denied' -or
+            $joinedOutput -match 'Testing with VSTest target is no longer supported')) {
         $exitCode = Invoke-XunitInProcessFallback -Gate $Gate
     }
 
@@ -149,7 +151,7 @@ function Invoke-XunitInProcessFallback {
         [Parameter(Mandatory = $true)]$Gate
     )
 
-    Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) vstest-socket-denied=true fallback=xunit-in-process"
+    Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) vstest-unavailable=true fallback=xunit-in-process"
     $projectDirectory = Split-Path -Parent (Join-Path $repositoryRoot $Gate.project_path)
     $projectName = [System.IO.Path]::GetFileNameWithoutExtension($Gate.project_path)
     $runnerPath = Join-Path $projectDirectory "bin/Debug/net10.0/$projectName"

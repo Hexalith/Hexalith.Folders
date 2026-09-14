@@ -15,9 +15,6 @@ namespace Hexalith.Folders.Client.Convenience;
 /// <c>contentHashReference</c>, <c>byteLength</c>, <c>transportOperation</c>, <c>fileOperationKind</c>, and
 /// the <c>inlineContent</c>/<c>streamDescriptor</c> branch). It introduces no new field, state, operation,
 /// error category, or retry semantics.</para>
-/// <para>The inline (<c>PutFileInline</c>) and streamed (<c>PutFileStream</c>) descriptors are attached
-/// through the generated request's JSON extension data because the generated <see cref="FileMutationRequest"/>
-/// surfaces the merged <c>oneOf</c> branch members there rather than as typed properties.</para>
 /// </remarks>
 public static class FileUpload
 {
@@ -27,11 +24,10 @@ public static class FileUpload
     /// </summary>
     public const int InlineTransportBoundaryBytes = 262144;
 
+    /// <summary>The inclusive canonical per-file maximum for both inline and streamed evidence.</summary>
+    public const int MaximumFileBytes = 1048576;
+
     private const string RequestSchemaVersionV1 = "v1";
-    private const string InlineTransportOperation = "PutFileInline";
-    private const string StreamTransportOperation = "PutFileStream";
-    private const string InlineContentField = "inlineContent";
-    private const string StreamDescriptorField = "streamDescriptor";
 
     /// <summary>
     /// Builds an inline (<c>PutFileInline</c>) file-mutation request from in-memory content.
@@ -80,13 +76,13 @@ public static class FileUpload
             OperationId = operationId,
             PathMetadata = pathMetadata,
             FileOperationKind = fileOperationKind,
-            TransportOperation = InlineTransportOperation,
+            TransportOperation = FileMutationRequestTransportOperation.PutFileInline,
             ByteLength = content.Length,
             ContentHashReference = string.IsNullOrWhiteSpace(contentHashReference)
                 ? ComputeContentHashReference(content.Span)
                 : contentHashReference,
+            InlineContent = inline,
         };
-        request.AdditionalProperties[InlineContentField] = inline;
         return request;
     }
 
@@ -122,6 +118,13 @@ public static class FileUpload
                 "Streamed staging evidence must observe content larger than the inline transport boundary.");
         }
 
+        if (stagingEvidence.ObservedLength > MaximumFileBytes)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(stagingEvidence),
+                $"Streamed staging evidence must not exceed the canonical {MaximumFileBytes}-byte per-file maximum.");
+        }
+
         PutFileStream descriptor = new()
         {
             MediaType = mediaType,
@@ -138,11 +141,11 @@ public static class FileUpload
             OperationId = operationId,
             PathMetadata = pathMetadata,
             FileOperationKind = fileOperationKind,
-            TransportOperation = StreamTransportOperation,
+            TransportOperation = FileMutationRequestTransportOperation.PutFileStream,
             ByteLength = stagingEvidence.ObservedLength,
             ContentHashReference = stagingEvidence.ObservedContentHashReference,
+            StreamDescriptor = descriptor,
         };
-        request.AdditionalProperties[StreamDescriptorField] = descriptor;
         return request;
     }
 

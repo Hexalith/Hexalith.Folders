@@ -100,12 +100,14 @@ public sealed class CrossAdapterBehavioralParityTests
     }
 
     [Fact]
-    public void RangeUnsatisfiableIsTheDocumentedDriftExceptionOnBothSurfaces()
+    public void Oq2CategoriesProjectExactlyOnBothSurfaces()
     {
-        // SDK enum member 43 is deliberately absent from the oracle; both adapters fall through to internal_error.
-        ParityOracle.DistinctCategories().ShouldNotContain("range_unsatisfiable");
-        ErrorProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(1);
-        FailureKindProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(FailureKindProjection.InternalError);
+        ParityOracle.DistinctCategories().ShouldContain("range_unsatisfiable");
+        ParityOracle.DistinctCategories().ShouldContain("file_policy_unavailable");
+        ErrorProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(69);
+        FailureKindProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe("range_unsatisfiable");
+        ErrorProjection.Project(CanonicalErrorCategory.File_policy_unavailable).ShouldBe(72);
+        FailureKindProjection.Project(CanonicalErrorCategory.File_policy_unavailable).ShouldBe("file_policy_unavailable");
     }
 
     [Fact]
@@ -122,7 +124,6 @@ public sealed class CrossAdapterBehavioralParityTests
             CanonicalErrorCategory.Success,
             CanonicalErrorCategory.Client_configuration_error,
             CanonicalErrorCategory.Credential_missing,
-            CanonicalErrorCategory.Range_unsatisfiable,
         ];
 
         foreach (CanonicalErrorCategory member in Enum.GetValues<CanonicalErrorCategory>())
@@ -156,8 +157,8 @@ public sealed class CrossAdapterBehavioralParityTests
             }
         }
 
-        oracleCategories.Count.ShouldBe(44);
-        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(48);
+        oracleCategories.Count.ShouldBe(46);
+        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(49);
     }
 
     // =====================================================================================================

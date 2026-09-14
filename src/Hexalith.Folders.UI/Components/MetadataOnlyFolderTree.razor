@@ -33,15 +33,14 @@
             <tbody>
                 @foreach (FileMetadataItem item in _sorted)
                 {
-                    // Defence-in-depth: the path of a redacted or excluded entry is withheld even if the
-                    // server (contract: omits path for excluded) ever leaks one. Binary-disallowed keeps
-                    // its path — only its content is disallowed. The path column never carries a value for
-                    // a withheld entry, neither in the cell nor in the tooltip.
-                    bool pathWithheld = item.Redaction is FileMetadataItemRedaction.Redacted or FileMetadataItemRedaction.Excluded;
-                    FieldDisclosure pathDisclosure = item.Redaction switch
+                    // Defence-in-depth: retain the historical presentation for redacted/excluded ordinals
+                    // even though the narrowed generated enum now names only the visible ordinal.
+                    int redactionOrdinal = (int)item.Redaction;
+                    bool pathWithheld = redactionOrdinal is 1 or 2;
+                    FieldDisclosure pathDisclosure = redactionOrdinal switch
                     {
-                        FileMetadataItemRedaction.Redacted => FieldDisclosure.Redacted,
-                        FileMetadataItemRedaction.Excluded => FieldDisclosure.Missing,
+                        1 => FieldDisclosure.Redacted,
+                        2 => FieldDisclosure.Missing,
                         _ => FieldDisclosure.Visible,
                     };
                     string? displayName = pathWithheld ? null : item.Path?.DisplayName;

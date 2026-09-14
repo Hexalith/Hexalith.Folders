@@ -100,12 +100,12 @@ public sealed class ParityOracleConformanceTests
     }
 
     [Fact]
-    public void RangeUnsatisfiableIsAbsentFromTheOracleAndProjectsToInternalError()
+    public void Oq2CategoriesArePresentAndProjectExactly()
     {
-        // The documented drift exception: range_unsatisfiable is deliberately not in the oracle → CLI exit 1.
-        ParityOracle.DistinctCategories().ShouldNotContain("range_unsatisfiable");
-        FoldersExitCodes.InternalError.ShouldBe(1);
-        ErrorProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(FoldersExitCodes.InternalError);
+        ParityOracle.DistinctCategories().ShouldContain("range_unsatisfiable");
+        ParityOracle.DistinctCategories().ShouldContain("file_policy_unavailable");
+        ErrorProjection.Project(CanonicalErrorCategory.Range_unsatisfiable).ShouldBe(FoldersExitCodes.ValidationError);
+        ErrorProjection.Project(CanonicalErrorCategory.File_policy_unavailable).ShouldBe(FoldersExitCodes.ReconciliationRequired);
     }
 
     [Fact]
@@ -121,7 +121,6 @@ public sealed class ParityOracleConformanceTests
             CanonicalErrorCategory.Success,                     // behavioral_parity success marker → 0
             CanonicalErrorCategory.Client_configuration_error,  // pre-SDK usage category → 64
             CanonicalErrorCategory.Credential_missing,          // credential family → 65 (oracle carries it only as a pre_sdk_error_class)
-            CanonicalErrorCategory.Range_unsatisfiable,         // documented drift exception → 1
         ];
 
         foreach (CanonicalErrorCategory member in Enum.GetValues<CanonicalErrorCategory>())
@@ -136,7 +135,7 @@ public sealed class ParityOracleConformanceTests
                 $"enum member '{member}' is absent from the oracle outcome_mapping and is not a documented exception — the oracle dropped a category or a new category needs handling.");
         }
 
-        oracleCategories.Count.ShouldBe(44); // 44 post-SDK categories carry an outcome_mapping row.
+        oracleCategories.Count.ShouldBe(46); // 46 post-SDK categories carry an outcome_mapping row.
     }
 
     [Fact]

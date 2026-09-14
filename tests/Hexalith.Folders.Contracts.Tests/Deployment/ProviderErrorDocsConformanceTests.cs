@@ -203,7 +203,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocGeneratedCategoryInventoryEqualsClient()
     {
         HashSet<string> generated = ParseGeneratedEnumValues("CanonicalErrorCategory");
-        generated.Count.ShouldBe(48, "the generated CanonicalErrorCategory must declare exactly 48 members.");
+        generated.Count.ShouldBe(49, "the generated CanonicalErrorCategory must declare exactly 49 members.");
 
         HashSet<string> docCategories = FirstColumnBacktickTokens(ErrorDocPath, "<!-- generated-canonical-categories -->");
         AssertSetEquals(docCategories, generated, "error doc generated categories must equal the generated enum exactly.");
@@ -213,17 +213,17 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocOracleCategoryInventoryEqualsParityContract()
     {
         HashSet<string> oracle = ParseParityOracleCategories();
-        oracle.Count.ShouldBe(44, "the parity oracle must carry exactly 44 distinct canonical categories.");
+        oracle.Count.ShouldBe(46, "the parity oracle must carry exactly 46 distinct canonical categories.");
 
         HashSet<string> docOracle = FirstColumnBacktickTokens(ErrorDocPath, "<!-- oracle-carried-categories -->");
         AssertSetEquals(docOracle, oracle, "error doc oracle categories must equal the parity oracle exactly.");
 
-        // The four generated categories deliberately outside the oracle path are exactly these.
+        // The three generated categories deliberately outside the oracle path are exactly these.
         HashSet<string> generated = ParseGeneratedEnumValues("CanonicalErrorCategory");
         HashSet<string> outsideOracle = new(generated, StringComparer.Ordinal);
         outsideOracle.ExceptWith(oracle);
-        AssertSetEquals(outsideOracle, ["success", "client_configuration_error", "credential_missing", "range_unsatisfiable"],
-            "exactly success, client_configuration_error, credential_missing, and range_unsatisfiable sit outside the oracle path.");
+        AssertSetEquals(outsideOracle, ["success", "client_configuration_error", "credential_missing"],
+            "exactly success, client_configuration_error, and credential_missing sit outside the oracle path.");
     }
 
     [Fact]
@@ -251,8 +251,8 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocMcpFailureKindProjectionRulesEqualSource()
     {
         HashSet<string> docRules = FirstColumnBacktickTokens(ErrorDocPath, "<!-- mcp-failure-kind-projection -->");
-        AssertSetEquals(docRules, ["verbatim", "usage_error", "credential_missing", "range_unsatisfiable"],
-            "error doc MCP projection rules must pin verbatim plus the two pre-SDK kinds and the range_unsatisfiable fallback.");
+        AssertSetEquals(docRules, ["verbatim", "usage_error", "credential_missing"],
+            "error doc MCP projection rules must pin verbatim oracle projection plus the two pre-SDK kinds.");
 
         // The projection source must actually carry the pre-SDK kinds and the documented drift fallback.
         string projection = ReadText(FailureKindProjectionPath);
@@ -260,7 +260,8 @@ public sealed partial class ProviderErrorDocsConformanceTests
         {
             "UsageError = \"usage_error\"",
             "CredentialMissing = \"credential_missing\"",
-            "range_unsatisfiable",
+            "CanonicalErrorCategory.Range_unsatisfiable => \"range_unsatisfiable\"",
+            "CanonicalErrorCategory.File_policy_unavailable => \"file_policy_unavailable\"",
             "_ => InternalError,",
         })
         {

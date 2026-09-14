@@ -171,6 +171,12 @@ internal sealed class ToolPipeline
             // Post-SDK: server returned RFC 9457 + canonical category. Project category → kind.
             return Failure(McpFailure.FromProblem(typed.Result, correlation));
         }
+        catch (HexalithFoldersApiException exception) when (exception.ProblemDetails is { } problem)
+        {
+            // Exact file-policy response DTOs arrive as non-generic generated exceptions. Preserve the
+            // canonical category through the generated metadata-only Problem Details projection.
+            return Failure(McpFailure.FromProblem(problem, correlation));
+        }
         catch (HexalithFoldersApiException)
         {
             // Bare exception (unexpected/unmapped status or null typed body) → internal_error.

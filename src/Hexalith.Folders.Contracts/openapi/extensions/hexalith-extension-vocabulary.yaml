@@ -453,3 +453,322 @@ x-hexalith-sensitive-metadata-tier:
   valueSchema:
     $ref: "../hexalith.folders.v1.yaml#/components/schemas/SensitiveMetadataTier"
   example: tenant_sensitive
+x-hexalith-decoded-byte-maximum:
+  summary: Maximum decoded bytes carried by a base64-encoded string.
+  allowedLocations:
+    - OpenAPI Property Schema Object with contentEncoding base64
+    - Extension vocabulary definition
+  requirement: Required when a base64 string has a decoded-byte boundary that cannot be enforced by maxLength alone.
+  referencePendingPolicy: The numeric value must come from an approved contract policy; the extension never invents a fallback.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+        minLength: 1
+      foundationUse:
+        type: string
+        minLength: 1
+  valueSchema:
+    type: integer
+    minimum: 0
+    maximum: 2147483647
+    description: Enforcing decoded-byte maximum for contentEncoding base64 after strict base64 decoding.
+  example: 262144
+x-hexalith-file-policy:
+  summary: Canonical versioned file-policy vocabulary and behavior.
+  allowedLocations:
+    - OpenAPI root extension instance
+    - Extension vocabulary definition
+  requirement: Required as one closed root instance that binds every file operation and context query to the approved OQ2 policy.
+  referencePendingPolicy: No fallback is permitted; an absent, invalid, stale, or unverifiable policy fails closed.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+    properties:
+      vocabularyRef:
+        type: string
+        minLength: 1
+      foundationUse:
+        type: string
+        minLength: 1
+  valueSchema:
+    type: object
+    additionalProperties: false
+    required:
+      - vocabularyRef
+      - foundationUse
+      - version
+      - canonicalArtifact
+      - pathProfile
+      - policyClasses
+      - policyPrecedence
+      - ruleGrammar
+      - mutationLimits
+      - batchSemantics
+      - contentReadability
+      - inlineEvidence
+      - directMetadataTargets
+      - hiddenPathOutcome
+      - authorizedUnsatisfiableRangeStatus
+      - rangeRouting
+      - policySnapshot
+      - contentFailurePrecedence
+    properties:
+      vocabularyRef:
+        type: string
+        minLength: 1
+      foundationUse:
+        type: string
+        minLength: 1
+      version:
+        type: string
+        enum: ['1.1.0']
+      canonicalArtifact:
+        type: string
+        minLength: 1
+        maxLength: 256
+      pathProfile:
+        type: object
+        additionalProperties: false
+        required: [characterProfile, maximumCharacters, unicodeNormalization, collisionComparison, componentCollisionComparison, callerSpelling, linkHandling, trailingSpaceOrDot, restrictedRoots]
+        properties:
+          characterProfile: { type: string, minLength: 1, maxLength: 64 }
+          maximumCharacters: { type: integer, const: 500 }
+          unicodeNormalization: { type: string, enum: [NFC] }
+          collisionComparison: { type: string, enum: [ordinal-ignore-case] }
+          componentCollisionComparison: { type: string, enum: [ordinal-ignore-case] }
+          callerSpelling: { type: string, enum: [preserve-without-retargeting] }
+          linkHandling: { type: string, enum: [reject-touched-entry-or-ancestor-without-following] }
+          trailingSpaceOrDot: { type: string, enum: [reject] }
+          restrictedRoots:
+            type: array
+            minItems: 1
+            maxItems: 1
+            uniqueItems: true
+            items: { type: string, enum: [.git] }
+      policyClasses:
+        type: array
+        minItems: 4
+        maxItems: 4
+        uniqueItems: true
+        items: { type: string, enum: [content_allowed, metadata_only, excluded, restricted] }
+      policyPrecedence:
+        type: object
+        additionalProperties: false
+        required: [includeAllowlistRequired, exclusionsAlwaysWin, reInclusionSupported, invalidOrUnavailablePolicy]
+        properties:
+          includeAllowlistRequired: { type: boolean, const: true }
+          exclusionsAlwaysWin: { type: boolean, const: true }
+          reInclusionSupported: { type: boolean, const: false }
+          invalidOrUnavailablePolicy: { type: string, enum: [fail-closed] }
+      ruleGrammar:
+        type: object
+        additionalProperties: false
+        required: [anchoring, comparison, minimumRules, maximumRules, minimumRuleCharacters, maximumRuleCharacters, maximumAggregateCharacters, segmentSeparator, singleSegmentWildcard, singleCharacterWildcard, recursiveWildcard, recursiveWildcardMatches, unsupported]
+        properties:
+          anchoring: { type: string, enum: [workspace-root] }
+          comparison: { type: string, enum: [ordinal-ignore-case] }
+          minimumRules: { type: integer, const: 1 }
+          maximumRules: { type: integer, const: 100 }
+          minimumRuleCharacters: { type: integer, const: 1 }
+          maximumRuleCharacters: { type: integer, const: 256 }
+          maximumAggregateCharacters: { type: integer, const: 25600 }
+          segmentSeparator: { type: string, enum: ['/'] }
+          singleSegmentWildcard: { type: string, enum: ['*'] }
+          singleCharacterWildcard: { type: string, enum: ['?'] }
+          recursiveWildcard: { type: string, enum: [complete-segment-only] }
+          recursiveWildcardMatches: { type: string, enum: [zero-or-more-segments] }
+          unsupported:
+            type: array
+            minItems: 5
+            maxItems: 5
+            uniqueItems: true
+            items: { type: string, enum: [escapes, negation, character-classes, braces, re-inclusion] }
+      mutationLimits:
+        type: object
+        additionalProperties: false
+        required: [inlineTransportBytes, perFileBytes, maximumChanges, aggregateBytes, validation]
+        properties:
+          inlineTransportBytes: { type: integer, const: 262144 }
+          perFileBytes: { type: integer, const: 1048576 }
+          maximumChanges: { type: integer, const: 100 }
+          aggregateBytes: { type: integer, const: 10485760 }
+          validation: { type: string, enum: [atomic-apply-none-on-any-failure] }
+      batchSemantics:
+        type: object
+        additionalProperties: false
+        required: [requestSchema, ordering, operationIdUniqueness, pathUniqueness, removeBytes, publicEndpoints]
+        properties:
+          requestSchema: { type: string, enum: [MutateFilesRequest] }
+          ordering: { type: string, enum: [caller-order] }
+          operationIdUniqueness: { type: string, enum: [ordinal-ignore-case] }
+          pathUniqueness: { type: string, enum: [ordinal-ignore-case] }
+          removeBytes: { type: integer, const: 0 }
+          publicEndpoints: { type: string, enum: [matching-one-item-adapters] }
+      contentReadability:
+        type: object
+        additionalProperties: false
+        required: [encoding, maximumBytes, allowedControls, binaryAndOtherEncodings, visibleDirectoryClass, truncation]
+        properties:
+          encoding: { type: string, enum: [strict-utf-8-with-optional-leading-bom] }
+          maximumBytes: { type: integer, const: 1048576 }
+          allowedControls:
+            type: array
+            minItems: 3
+            maxItems: 3
+            uniqueItems: true
+            items: { type: string, enum: [tab, carriage-return, line-feed] }
+          binaryAndOtherEncodings: { type: string, enum: [metadata-only] }
+          visibleDirectoryClass: { type: string, enum: [metadata_only] }
+          truncation: { type: string, enum: [forbidden] }
+      inlineEvidence:
+        type: object
+        additionalProperties: false
+        required: [decodedByteMaximum, decodedLength, trustedHash, malformedOrMismatched]
+        properties:
+          decodedByteMaximum: { type: integer, const: 262144 }
+          decodedLength: { type: string, enum: [equals-byteLength] }
+          trustedHash: { type: string, enum: [equals-contentHashReference] }
+          malformedOrMismatched: { type: string, enum: [content_evidence_invalid] }
+      directMetadataTargets:
+        type: object
+        additionalProperties: false
+        required: [mixedHiddenOrMissing, visibleSubset]
+        properties:
+          mixedHiddenOrMissing: { type: string, enum: [reject-whole-request] }
+          visibleSubset: { type: string, enum: [forbidden] }
+      hiddenPathOutcome:
+        type: object
+        additionalProperties: false
+        required: [status, category, code]
+        properties:
+          status: { type: integer, const: 404 }
+          category: { type: string, enum: [tenant_access_denied] }
+          code: { type: string, enum: [resource_unavailable] }
+      authorizedUnsatisfiableRangeStatus: { type: integer, const: 416 }
+      rangeRouting:
+        type: object
+        additionalProperties: false
+        required: [emptyAtEof, startBeyondEof, nonEmptyStartAtEof, endBeyondEofFromVisibleStart]
+        properties:
+          emptyAtEof: { type: integer, const: 200 }
+          startBeyondEof: { type: integer, const: 416 }
+          nonEmptyStartAtEof: { type: integer, const: 416 }
+          endBeyondEofFromVisibleStart: { type: integer, const: 206 }
+      policySnapshot:
+        type: object
+        additionalProperties: false
+        required: [binding, recheckBefore, driftBehavior, unavailableOutcome]
+        properties:
+          binding: { type: string, enum: [immutable-version-and-digest] }
+          recheckBefore:
+            type: array
+            minItems: 2
+            maxItems: 2
+            uniqueItems: true
+            items: { type: string, enum: [atomic-apply, response-shaping] }
+          driftBehavior: { type: string, enum: [discard-and-fail-closed] }
+          unavailableOutcome:
+            type: object
+            additionalProperties: false
+            required: [status, category, code, retryable, clientAction]
+            properties:
+              status: { type: integer, const: 503 }
+              category: { type: string, enum: [file_policy_unavailable] }
+              code: { type: string, enum: [file_policy_unavailable] }
+              retryable: { type: boolean, const: true }
+              clientAction: { type: string, enum: [retry] }
+      contentFailurePrecedence:
+        type: array
+        minItems: 3
+        maxItems: 3
+        prefixItems:
+          - type: object
+            additionalProperties: false
+            required: [condition, status, category, code, retryable, clientAction]
+            properties:
+              condition: { type: string, enum: [decoded-or-observed-content-above-1048576] }
+              status: { type: integer, const: 422 }
+              category: { type: string, enum: [input_limit_exceeded] }
+              code: { type: string, enum: [file_content_limit_exceeded] }
+              retryable: { type: boolean, const: false }
+              clientAction: { type: string, enum: [revise_request] }
+          - type: object
+            additionalProperties: false
+            required: [condition, status, category, code, retryable, clientAction]
+            properties:
+              condition: { type: string, enum: [inline-content-from-262145-through-1048576] }
+              status: { type: integer, const: 413 }
+              category: { type: string, enum: [input_limit_exceeded] }
+              code: { type: string, enum: [d9_inline_limit_exceeded] }
+              retryable: { type: boolean, const: true }
+              clientAction: { type: string, enum: [revise_request] }
+          - type: object
+            additionalProperties: false
+            required: [condition, status, category, code, retryable, clientAction]
+            properties:
+              condition: { type: string, enum: [malformed-base64-or-evidence-mismatch] }
+              status: { type: integer, const: 400 }
+              category: { type: string, enum: [validation_error] }
+              code: { type: string, enum: [content_evidence_invalid] }
+              retryable: { type: boolean, const: false }
+              clientAction: { type: string, enum: [revise_request] }
+        items: false
+  example:
+    version: 1.1.0
+    canonicalArtifact: docs/contract/file-context-contract-groups.md
+    pathProfile:
+      characterProfile: ASCII A-Z a-z 0-9 . _ - /
+      maximumCharacters: 500
+      unicodeNormalization: NFC
+      collisionComparison: ordinal-ignore-case
+      componentCollisionComparison: ordinal-ignore-case
+      callerSpelling: preserve-without-retargeting
+      linkHandling: reject-touched-entry-or-ancestor-without-following
+      trailingSpaceOrDot: reject
+      restrictedRoots: [.git]
+    policyClasses: [content_allowed, metadata_only, excluded, restricted]
+    policyPrecedence:
+      includeAllowlistRequired: true
+      exclusionsAlwaysWin: true
+      reInclusionSupported: false
+      invalidOrUnavailablePolicy: fail-closed
+    ruleGrammar:
+      anchoring: workspace-root
+      comparison: ordinal-ignore-case
+      minimumRules: 1
+      maximumRules: 100
+      minimumRuleCharacters: 1
+      maximumRuleCharacters: 256
+      maximumAggregateCharacters: 25600
+      segmentSeparator: /
+      singleSegmentWildcard: '*'
+      singleCharacterWildcard: '?'
+      recursiveWildcard: complete-segment-only
+      recursiveWildcardMatches: zero-or-more-segments
+      unsupported: [escapes, negation, character-classes, braces, re-inclusion]
+    mutationLimits: { inlineTransportBytes: 262144, perFileBytes: 1048576, maximumChanges: 100, aggregateBytes: 10485760, validation: atomic-apply-none-on-any-failure }
+    batchSemantics: { requestSchema: MutateFilesRequest, ordering: caller-order, operationIdUniqueness: ordinal-ignore-case, pathUniqueness: ordinal-ignore-case, removeBytes: 0, publicEndpoints: matching-one-item-adapters }
+    contentReadability: { encoding: strict-utf-8-with-optional-leading-bom, maximumBytes: 1048576, allowedControls: [tab, carriage-return, line-feed], binaryAndOtherEncodings: metadata-only, visibleDirectoryClass: metadata_only, truncation: forbidden }
+    inlineEvidence: { decodedByteMaximum: 262144, decodedLength: equals-byteLength, trustedHash: equals-contentHashReference, malformedOrMismatched: content_evidence_invalid }
+    directMetadataTargets: { mixedHiddenOrMissing: reject-whole-request, visibleSubset: forbidden }
+    hiddenPathOutcome: { status: 404, category: tenant_access_denied, code: resource_unavailable }
+    authorizedUnsatisfiableRangeStatus: 416
+    rangeRouting: { emptyAtEof: 200, startBeyondEof: 416, nonEmptyStartAtEof: 416, endBeyondEofFromVisibleStart: 206 }
+    policySnapshot:
+      binding: immutable-version-and-digest
+      recheckBefore: [atomic-apply, response-shaping]
+      driftBehavior: discard-and-fail-closed
+      unavailableOutcome: { status: 503, category: file_policy_unavailable, code: file_policy_unavailable, retryable: true, clientAction: retry }
+    contentFailurePrecedence:
+      - { condition: decoded-or-observed-content-above-1048576, status: 422, category: input_limit_exceeded, code: file_content_limit_exceeded, retryable: false, clientAction: revise_request }
+      - { condition: inline-content-from-262145-through-1048576, status: 413, category: input_limit_exceeded, code: d9_inline_limit_exceeded, retryable: true, clientAction: revise_request }
+      - { condition: malformed-base64-or-evidence-mismatch, status: 400, category: validation_error, code: content_evidence_invalid, retryable: false, clientAction: revise_request }

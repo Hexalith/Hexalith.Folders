@@ -19,7 +19,13 @@ public sealed class RedactionDisclosureMapperTests
 
     public static TheoryData<RedactableAuditTimestampPrecision> AllPrecisions() => ToTheory<RedactableAuditTimestampPrecision>();
 
-    public static TheoryData<FileMetadataItemRedaction> AllFileRedactions() => ToTheory<FileMetadataItemRedaction>();
+    public static TheoryData<FileMetadataItemRedaction> AllFileRedactions() =>
+    [
+        FileMetadataItemRedaction.Not_redacted,
+        (FileMetadataItemRedaction)1,
+        (FileMetadataItemRedaction)2,
+        (FileMetadataItemRedaction)3,
+    ];
 
     public static TheoryData<DiagnosticFieldClassification, bool> AllClassificationsWithHasValue()
     {
@@ -66,12 +72,12 @@ public sealed class RedactionDisclosureMapperTests
     [MemberData(nameof(AllFileRedactions))]
     public void FromFileMetadataRedaction_IsTotal_ForEveryRedaction(FileMetadataItemRedaction redaction)
     {
-        FieldDisclosure expected = redaction switch
+        FieldDisclosure expected = (int)redaction switch
         {
-            FileMetadataItemRedaction.Not_redacted => FieldDisclosure.Visible,
-            FileMetadataItemRedaction.Redacted => FieldDisclosure.Redacted,
-            FileMetadataItemRedaction.Excluded => FieldDisclosure.Missing,
-            FileMetadataItemRedaction.Binary_disallowed => FieldDisclosure.Missing,
+            0 => FieldDisclosure.Visible,
+            1 => FieldDisclosure.Redacted,
+            2 => FieldDisclosure.Missing,
+            3 => FieldDisclosure.Missing,
             _ => throw new InvalidOperationException($"Unhandled redaction {redaction} — mapper coverage drifted."),
         };
 

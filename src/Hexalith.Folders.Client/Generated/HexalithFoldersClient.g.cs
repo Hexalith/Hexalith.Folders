@@ -678,7 +678,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed. If any path in a multi-target request is hidden or missing, the complete request returns that 404 and no visible subset is returned.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -694,7 +694,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed. If any path in a multi-target request is hidden or missing, the complete request returns that 404 and no visible subset is returned.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -718,7 +718,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Metadata-only, policy-filtered search result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FileTreeResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body);
+        System.Threading.Tasks.Task<FileSearchResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -734,7 +734,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Metadata-only, policy-filtered search result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<FileTreeResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<FileSearchResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Search the authorized Folders semantic search index without content.
@@ -831,7 +831,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`. `[EOF,EOF)` returns 200 with no bytes; any start beyond EOF or non-empty range starting at EOF returns 416; a range starting before EOF and ending after it returns available bytes with 206. Reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -847,7 +847,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`. `[EOF,EOF)` returns 200 with no bytes; any start beyond EOF or non-empty range starting at EOF returns 416; a range starting before EOF and ending after it returns available bytes with 206. Reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -1541,7 +1541,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -1672,7 +1672,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -1836,7 +1836,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -1997,7 +1997,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -2167,7 +2167,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -2308,7 +2308,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -2471,7 +2471,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -2611,7 +2611,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -2752,7 +2752,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -2910,7 +2910,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -3057,7 +3057,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -3241,7 +3241,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -3418,7 +3418,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -3582,7 +3582,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -3723,7 +3723,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -3901,7 +3901,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -4099,7 +4099,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -4283,7 +4283,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -4471,7 +4471,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -4654,7 +4654,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -4813,7 +4813,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -4966,12 +4966,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContentEvidenceInvalidOrValidationProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContentEvidenceInvalidOrValidationProblem>("Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -4991,17 +4991,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5026,22 +5026,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileInlineTransportRequiredProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Inline payload exceeds the D-9 boundary; retry as stream without echoing content. The transport-substitution hint is surfaced via the response header `X-Hexalith-Retry-Transport: stream` only; the configured byte limit is never disclosed in the response body to preserve authorization-before-observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileInlineTransportRequiredProblem>("Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContentLimitExceededOrWorkspaceTransitionProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContentLimitExceededOrWorkspaceTransitionProblem>("Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 423)
@@ -5066,12 +5066,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider outcome requires explicit reconciliation before the task can be treated as complete.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5204,12 +5204,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContentEvidenceInvalidOrValidationProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Validation failure represented as RFC 9457 Problem Details plus Hexalith canonical fields.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContentEvidenceInvalidOrValidationProblem>("Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -5229,17 +5229,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5264,22 +5264,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileInlineTransportRequiredProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Inline payload exceeds the D-9 boundary; retry as stream without echoing content. The transport-substitution hint is surfaced via the response header `X-Hexalith-Retry-Transport: stream` only; the configured byte limit is never disclosed in the response body to preserve authorization-before-observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileInlineTransportRequiredProblem>("Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContentLimitExceededOrWorkspaceTransitionProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContentLimitExceededOrWorkspaceTransitionProblem>("Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 423)
@@ -5304,12 +5304,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider outcome requires explicit reconciliation before the task can be treated as complete.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5467,17 +5467,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5532,12 +5532,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider outcome requires explicit reconciliation before the task can be treated as complete.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5700,17 +5700,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5745,12 +5745,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5776,7 +5776,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed. If any path in a multi-target request is hidden or missing, the complete request returns that 404 and no visible subset is returned.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5795,7 +5795,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Look up bounded authorized file metadata.
         /// </summary>
         /// <remarks>
-        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed.
+        /// Retrieves metadata only for requested workspace-root-relative paths after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. Visible content_allowed and metadata_only paths can return metadata; missing, excluded, restricted, sensitivity-denied, and unauthorized direct targets all return the same 404 tenant_access_denied/resource_unavailable safe-denial envelope before any resource-existence detail is disclosed. If any path in a multi-target request is hidden or missing, the complete request returns that 404 and no visible subset is returned.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -5906,17 +5906,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5951,12 +5951,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5991,7 +5991,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Metadata-only, policy-filtered search result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileTreeResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body)
+        public virtual System.Threading.Tasks.Task<FileSearchResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body)
         {
             return SearchFolderFilesAsync(folderId, workspaceId, x_Correlation_Id, x_Hexalith_Task_Id, x_Hexalith_Freshness, body, System.Threading.CancellationToken.None);
         }
@@ -6010,7 +6010,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Metadata-only, policy-filtered search result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileTreeResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileSearchResult> SearchFolderFilesAsync(string folderId, string workspaceId, string x_Correlation_Id, string x_Hexalith_Task_Id, ReadConsistencyClass? x_Hexalith_Freshness, FileSearchRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (folderId == null)
                 throw new System.ArgumentNullException("folderId");
@@ -6077,7 +6077,7 @@ namespace Hexalith.Folders.Client.Generated
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileTreeResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSearchResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6112,17 +6112,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6157,12 +6157,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6318,7 +6318,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -6510,7 +6510,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -6686,17 +6686,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6731,12 +6731,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6762,7 +6762,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`. `[EOF,EOF)` returns 200 with no bytes; any start beyond EOF or non-empty range starting at EOF returns 416; a range starting before EOF and ending after it returns available bytes with 206. Reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6781,7 +6781,7 @@ namespace Hexalith.Folders.Client.Generated
         /// Read an authorized bounded byte range.
         /// </summary>
         /// <remarks>
-        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`; zero length returns metadata with no content bytes, end-of-file returns the available authorized bytes, reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
+        /// Reads bytes only after tenant access, folder ACL, path policy, sensitivity classification, C4 bounds, then query execution. This is the only context query in this group allowed to return authorized file bytes and it is available only for content_allowed paths. A missing, metadata_only, excluded, restricted, sensitivity-denied, or unauthorized path returns the same 404 tenant_access_denied/resource_unavailable safe-denial envelope. Range semantics are zero-based with inclusive `startOffset` and exclusive `endOffset`. `[EOF,EOF)` returns 200 with no bytes; any start beyond EOF or non-empty range starting at EOF returns 416; a range starting before EOF and ending after it returns available bytes with 206. Reversed ranges fail validation, over-bound ranges fail with input_limit_exceeded, and multi-range requests are unsupported.
         /// </remarks>
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="workspaceId">Opaque workspace identifier scoped by authorized tenant, folder, repository binding, branch/ref policy, and task. It is not a local filesystem path and does not establish tenant authority.</param>
@@ -6902,17 +6902,17 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6937,12 +6937,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 416)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileRangeUnsatisfiableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Reserved for an authorized, visible content_allowed path whose requested byte range is unsatisfiable. Missing, metadata_only, excluded, restricted, sensitivity-denied, and unauthorized paths use the canonical 404 tenant_access_denied/resource_unavailable envelope instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileRangeUnsatisfiableProblem>("Exact outcome for an authorized visible content_allowed path whose half-open range is unsatisfiable.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
@@ -6957,12 +6957,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7120,7 +7120,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -7294,7 +7294,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -7453,7 +7453,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -7600,7 +7600,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -7761,7 +7761,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -7922,7 +7922,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -8083,7 +8083,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -8250,7 +8250,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -8413,7 +8413,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -8590,7 +8590,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -8753,7 +8753,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -8903,7 +8903,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -9067,7 +9067,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -9231,7 +9231,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -9395,7 +9395,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -9552,7 +9552,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -9716,7 +9716,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -9866,7 +9866,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller. Externally indistinguishable across tenant/folder/binding/policy cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
@@ -10103,6 +10103,287 @@ namespace Hexalith.Folders.Client.Generated
             get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
+
+    }
+
+    /// <summary>
+    /// Closed Problem Details foundation for exact OQ2 file-policy outcomes. No path, policy class, content, hidden count, or protected-existence evidence is permitted.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CanonicalErrorCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ExactFileProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details Details { get; set; } = new Details();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileSafeResourceUnavailableProblem : ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileSafeResourceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSafeResourceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSafeResourceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSafeResourceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details2 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileRangeUnsatisfiableProblem : ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileRangeUnsatisfiableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileRangeUnsatisfiableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileRangeUnsatisfiableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileRangeUnsatisfiableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details3 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FilePolicyUnavailableProblem : ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FilePolicyUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FilePolicyUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FilePolicyUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FilePolicyUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details4 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileContentEvidenceInvalidProblem : ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileContentEvidenceInvalidProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentEvidenceInvalidProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentEvidenceInvalidProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentEvidenceInvalidProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details5 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileContentEvidenceInvalidOrValidationProblem : ProblemDetails
+    {
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileInlineTransportRequiredProblem : ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileInlineTransportRequiredProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileInlineTransportRequiredProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileInlineTransportRequiredProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileInlineTransportRequiredProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details6 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileContentLimitExceededProblem : ExactFileProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileContentLimitExceededProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentLimitExceededProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentLimitExceededProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentLimitExceededProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details7 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileContentLimitExceededOrWorkspaceTransitionProblem : ProblemDetails
+    {
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileMutationUnavailableProblem : ProblemDetails
+    {
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileContextUnavailableProblem : ProblemDetails
+    {
 
     }
 
@@ -11191,7 +11472,7 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     /// <summary>
-    /// File-policy v1.0.0 workspace-root-relative path metadata. Paths preserve the caller's accepted spelling, use forward slashes, have no leading or trailing slash, are declared NFC, and are never local or absolute filesystem paths. The server does not lowercase, case-fold, separator-convert, Unicode-rewrite, alias-resolve, follow links, or otherwise retarget a path. Traversal, reserved names, ordinal-ignore-case aliases, and every touched symlink/reparse entry or ancestor are rejected before observation.
+    /// File-policy v1.1.0 workspace-root-relative path metadata. Paths preserve the caller's accepted spelling, use forward slashes, have no leading or trailing slash, are declared NFC, and are never local or absolute filesystem paths. The server does not lowercase, case-fold, separator-convert, Unicode-rewrite, alias-resolve, follow links, or otherwise retarget a path. Traversal, reserved names, a trailing space or dot in any segment, `.git` and its descendants, ordinal-ignore-case component aliases, and every touched symlink/reparse entry or ancestor are rejected before observation.
     /// <br/>
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -11199,7 +11480,7 @@ namespace Hexalith.Folders.Client.Generated
     {
 
         /// <summary>
-        /// Caller spelling preserved without retargeting. The file-policy v1.0.0 profile permits only ASCII A-Z a-z 0-9 . _ - / and rejects a leading/trailing slash, empty segment, complete . or .. segment, backslash, absolute/drive/UNC form, and Windows device base names in any ASCII case. The server also rejects ordinal-ignore-case aliases and every touched symlink/reparse entry or ancestor without following it.
+        /// Caller spelling preserved without retargeting. The file-policy v1.1.0 profile permits only ASCII A-Z a-z 0-9 . _ - / and rejects a leading/trailing slash, empty segment, complete . or .. segment, trailing dot in any segment, backslash, absolute/drive/UNC form, and Windows device base names in any ASCII case. The server restricts `.git` and descendants and rejects ordinal-ignore-case aliases for every component plus every touched symlink/reparse entry or ancestor without following it.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("normalizedPath", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string NormalizedPath { get; set; }
@@ -11211,11 +11492,11 @@ namespace Hexalith.Folders.Client.Generated
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Closed, server-owned file-policy v1.0.0 classification. Callers cannot select or upgrade this value; any value carried through a request is revalidated against the active server policy. A required bounded include allowlist is evaluated first, exclusions always win with no re-inclusion, and invalid or unavailable policy fails closed.
+        /// Closed, server-owned file-policy v1.1.0 classification. Callers cannot select or upgrade this value; any value carried through a request is revalidated against the pinned server policy. A required bounded include allowlist is evaluated first, exclusions always win with no re-inclusion, and invalid, unavailable, or changed policy fails closed.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public PathMetadataPathPolicyClass PathPolicyClass { get; set; }
+        public PathMetadataPathPolicyClass? PathPolicyClass { get; set; }
 
         [Newtonsoft.Json.JsonProperty("unicodeNormalization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -11224,20 +11505,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     /// <summary>
-    /// Add or change file via PutFileInline; content fits within the 262144-byte D-9 boundary.
+    /// Successful metadata-response path. Hidden classes can never inhabit this schema.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FileMutationRequest
+    public partial class VisiblePathMetadata : PathMetadata
     {
 
-        [Newtonsoft.Json.JsonProperty("transportOperation", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object TransportOperation { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("fileOperationKind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public FileMutationRequestFileOperationKind FileOperationKind { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("byteLength", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object ByteLength { get; set; }
+        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public VisiblePathMetadataPathPolicyClass PathPolicyClass { get; set; }
 
         private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
 
@@ -11247,6 +11523,70 @@ namespace Hexalith.Folders.Client.Generated
             get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
             set { _additionalProperties = value; }
         }
+
+    }
+
+    /// <summary>
+    /// Successful content-response path. Only content_allowed can inhabit this schema.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContentAllowedPathMetadata : PathMetadata
+    {
+
+        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ContentAllowedPathMetadataPathPolicyClass PathPolicyClass { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    /// <summary>
+    /// Contract-only file mutation item governed by file-policy v1.1.0. Conditional schemas enforce valid combinations: `transportOperation` selects the transport shape (`PutFileInline` for content at or below 262144 bytes, `PutFileStream` for larger streamed content through 1048576 bytes, `metadataOnlyRemoval` for delete); (b) `fileOperationKind` enforces that `remove` carries no content, content hash reference, or byte length. Add/change operations require a content hash reference and the matching transport branch. A containing change set is limited to 100 changes and 10485760 aggregate add/change bytes and is validated atomically before any mutation is applied. This item is the public one-item adapter shape; `MutateFilesRequest` is the canonical internal batch.
+    /// <br/>
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileMutationRequest : object
+    {
+
+        [Newtonsoft.Json.JsonProperty("requestSchemaVersion", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string RequestSchemaVersion { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("fileOperationKind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileMutationRequestFileOperationKind FileOperationKind { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("transportOperation", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileMutationRequestTransportOperation TransportOperation { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string OperationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("pathMetadata", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PathMetadata PathMetadata { get; set; } = new PathMetadata();
+
+        [Newtonsoft.Json.JsonProperty("contentHashReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ContentHashReference { get; set; }
+
+        /// <summary>
+        /// Logical content length in bytes. Inline branch caps this at 262144; stream branch permits 262145 through the file-policy v1.1.0 per-file maximum of 1048576. Content is never silently truncated.
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("byteLength", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ByteLength { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("inlineContent", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PutFileInline InlineContent { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("streamDescriptor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PutFileStream StreamDescriptor { get; set; }
 
     }
 
@@ -11613,7 +11953,7 @@ namespace Hexalith.Folders.Client.Generated
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PathMetadata Path { get; set; } = new PathMetadata();
+        public ContentAllowedPathMetadata Path { get; set; }
 
         /// <summary>
         /// Range descriptor returned with the read result. Derived rule: `partial == (actualBytes &lt; endOffset - startOffset)`. When the server reached end-of-file before the exclusive `endOffset`, `partial` is `true` and `actualBytes` is the bytes returned; the response status is `206 Partial Content`. When `actualBytes == endOffset - startOffset`, `partial` is `false` and the status is `200 OK`.
@@ -11656,6 +11996,27 @@ namespace Hexalith.Folders.Client.Generated
 
     }
 
+    /// <summary>
+    /// Search-only result whose entries are content_allowed files; metadata_only paths and directories are ineligible rather than redacted.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileSearchResult
+    {
+
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<ContentAllowedFileMetadataItem> Items { get; set; } = new System.Collections.Generic.List<ContentAllowedFileMetadataItem>();
+
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public PaginationMetadata Page { get; set; } = new PaginationMetadata();
+
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ContextQueryLimitMetadata Limits { get; set; } = new ContextQueryLimitMetadata();
+
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
+
+    }
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class FileMetadataResult
     {
@@ -11682,11 +12043,11 @@ namespace Hexalith.Folders.Client.Generated
     /// <br/>
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class FileMetadataItem
+    public partial class FileMetadataItem : object
     {
 
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PathMetadata Path { get; set; } = new PathMetadata();
+        public VisiblePathMetadata Path { get; set; }
 
         [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -11706,7 +12067,21 @@ namespace Hexalith.Folders.Client.Generated
         /// Hidden path classes are omitted entirely; visible entries use not_redacted.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Redaction { get; set; }
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileMetadataItemRedaction Redaction { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ContentAllowedFileMetadataItem : FileMetadataItem
+    {
+
+        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ContentAllowedPathMetadata Path { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ContentAllowedFileMetadataItemKind Kind { get; set; }
 
     }
 
@@ -12834,14 +13209,17 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
         Range_unsatisfiable = 44,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 45,
+
         [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 45,
+        Failed_operation = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 46,
+        Redacted = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 47,
+        Internal_error = 48,
 
     }
 
@@ -13041,14 +13419,17 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
         Range_unsatisfiable = 45,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 46,
+
         [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 46,
+        Failed_operation = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 47,
+        Redacted = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 48,
+        Internal_error = 49,
 
     }
 
@@ -13214,6 +13595,355 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"refresh_state_then_submit_with_new_key")]
         Refresh_state_then_submit_with_new_key = 6,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ExactFileProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"revise_request")]
+        Revise_request = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"no_action")]
+        No_action = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public DetailsVisibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSafeResourceUnavailableProblemStatus
+    {
+
+        _404 = 404,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSafeResourceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSafeResourceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"resource_unavailable")]
+        Resource_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSafeResourceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"no_action")]
+        No_action = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details2
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details2Visibility Visibility { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileRangeUnsatisfiableProblemStatus
+    {
+
+        _416 = 416,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileRangeUnsatisfiableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileRangeUnsatisfiableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileRangeUnsatisfiableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"revise_request")]
+        Revise_request = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details3
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details3Visibility Visibility { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilePolicyUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilePolicyUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilePolicyUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilePolicyUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details4
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details4Visibility Visibility { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentEvidenceInvalidProblemStatus
+    {
+
+        _400 = 400,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentEvidenceInvalidProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentEvidenceInvalidProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"content_evidence_invalid")]
+        Content_evidence_invalid = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentEvidenceInvalidProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"revise_request")]
+        Revise_request = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details5
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details5Visibility Visibility { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileInlineTransportRequiredProblemStatus
+    {
+
+        _413 = 413,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileInlineTransportRequiredProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileInlineTransportRequiredProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"d9_inline_limit_exceeded")]
+        D9_inline_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileInlineTransportRequiredProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"revise_request")]
+        Revise_request = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details6
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details6Visibility Visibility { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentLimitExceededProblemStatus
+    {
+
+        _422 = 422,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentLimitExceededProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentLimitExceededProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_content_limit_exceeded")]
+        File_content_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentLimitExceededProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"revise_request")]
+        Revise_request = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details7
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details7Visibility Visibility { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
     }
 
@@ -13635,6 +14365,27 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum VisiblePathMetadataPathPolicyClass
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"content_allowed")]
+        Content_allowed = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ContentAllowedPathMetadataPathPolicyClass
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"content_allowed")]
+        Content_allowed = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FileMutationRequestFileOperationKind
     {
 
@@ -13643,6 +14394,24 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"change")]
         Change = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"remove")]
+        Remove = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileMutationRequestTransportOperation
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PutFileInline")]
+        PutFileInline = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"PutFileStream")]
+        PutFileStream = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadataOnlyRemoval")]
+        MetadataOnlyRemoval = 2,
 
     }
 
@@ -13781,6 +14550,24 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"directory")]
         Directory = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileMetadataItemRedaction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"not_redacted")]
+        Not_redacted = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ContentAllowedFileMetadataItemKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file")]
+        File = 0,
 
     }
 
@@ -13976,6 +14763,72 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"unavailable")]
         Unavailable = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum DetailsVisibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details2Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details3Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details4Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details5Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details6Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details7Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
 
     }
 

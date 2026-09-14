@@ -5,6 +5,8 @@
   "canonical_inputs": [
     "docs/exit-criteria/c0-c13-governance-evidence.yaml",
     "docs/exit-criteria/c7-lock-authorization-timing.md",
+    "docs/contract/file-context-contract-groups.md",
+    "docs/contract/oq2-file-policy-evidence.yaml",
     "tests/fixtures/idempotency-encoding-corpus.json",
     "tests/fixtures/idempotency-encoding-corpus-consumption.yaml",
     "tests/fixtures/pattern-example-manifest.yaml",

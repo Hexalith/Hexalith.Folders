@@ -31,6 +31,7 @@ implementationReadinessPatchedAt: '2026-05-12'
 generatedCountsAuthority: '_bmad-output/planning-artifacts/planning-story-manifest.yaml'
 storyAuthorityManifest: '_bmad-output/planning-artifacts/planning-story-manifest.yaml'
 domainFocusRefactoringApprovedAt: "2026-07-07"
+oq2PolicyApprovedAt: '2026-09-14'
 ---
 
 # Hexalith.Folders - Epic Breakdown
@@ -253,7 +254,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-CURRENT-05: Epic 12 owns durable source events, authoritative file content/state, restart replay, task completion, durable Git-execution orchestration, and recoverable at-least-once egress. Stories 3.11 and 3.13 own the production-registered provider-private mutation, explicit-commit, and status adapter seams that Epic 12 consumes; Epic 12 does not reimplement those transports or own consuming product projections.
 - AR-CURRENT-06: Epic 4 owns workspace transition evidence and durable prepare/lock/mutation/context/commit/reconciliation proof; Epic 6 owns seven populated diagnostic projections and deployed operator/incident journeys; Epic 10 owns the search bridge, deployed Server registration, current-authority hydration/redaction/pruning, and the non-empty FR58 round trip.
 - AR-CURRENT-07: Story 11.10 owns EventStore admission and subscription-mapping seam adoption only. Story 11.14 owns Memories publication/search-client seams, and Story 11.15 owns the DCP-capable cross-repository verification lane. Workstream 11 owns no product projection.
-- AR-CURRENT-08: OQ1's approved C7 timing profile is closed; the governing dependency sequence is OQ2–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun.
+- AR-CURRENT-08: OQ1's approved C7 timing profile and OQ2's canonical file-policy version `1.1.0` are closed design decisions; the governing dependency sequence is OQ3–OQ4 → 12.1 → 12.2 plus 12.3 → 12.4 plus 12.5 → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun. OQ2 governance does not complete Stories 12.1, 12.3, or 4.20, public multi-file transport, or FR32-FR35 runtime proof.
 - AR-CURRENT-09: Authorization order is JWT validation → EventStore claim transform → fresh tenant-access evidence → folder ACL → EventStore validator → Dapr deny-by-default policy. Authorization must precede any protected lookup, counting, filtering, provider call, file/content access, audit access, or search egress.
 - AR-CURRENT-10: The serializing lock identity is managed tenant plus canonical provider/repository identity plus normalized target ref. Folder/workspace/task IDs are metadata, aliases collide, and lock state is distinct from lifecycle and disposition.
 - AR-CURRENT-11: Every mutation follows the EventStore-owned durable admission contract; every read rejects an idempotency key before source execution. Live-equivalent replay, live-conflict, and expired-key precedence are distinct, and consumed-key evidence survives replay-result expiry without retaining protected prior intent.
@@ -592,7 +593,7 @@ Security and operations stakeholders can harden the surfaces that already claim 
 
 ### Governing Portfolio Dependency
 
-OQ1's approved C7 timing profile is closed. The remaining sequence is `OQ2–OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`.
+OQ1's approved C7 timing profile and OQ2's canonical file-policy version `1.1.0` are closed design decisions. The remaining sequence is `OQ3–OQ4 → 12.1 → (12.2 + 12.3) → (12.4 + 12.5) → Epic 4/6/10 production closure → OQ5–OQ9 → OQ10 → implementation-readiness rerun`. OQ2 remains separate from the incomplete durable/runtime evidence owned by Stories 12.1, 12.3, and 4.20; public multi-file transport also remains deferred.
 
 Stable epic numbers are retained for historical traceability, so numeric order is not execution order. No product completion claim may be supported only by NoOp, in-memory, seed, unavailable, safe-empty, or fake evidence.
 
@@ -1416,7 +1417,7 @@ So that safe repository work remains correct across restart and every context-qu
 
 **Acceptance Criteria:**
 
-**Given** Stories 12.1–12.3 provide durable events, task state, and authoritative file content and the caller has current tenant/folder authorization
+**Given** Stories 12.1–12.3 provide durable events, task state, and authoritative file content, OQ2 file-policy version `1.1.0` is active, and the caller has current tenant/folder authorization
 **When** add/change/remove and tree/metadata/range/glob/search behavior runs through the real deployed production path
 **Then** mutation ordering, all-mutation idempotency, lock ownership, path policy, cancellation, content authority, task/projection state, and replay survive restart without duplicate effects
 **And** C4 enforces 100 requested paths, 2,000 tree entries, 500 search/glob results, 262,144 bytes per range, 1,048,576 aggregate bytes, and 2 seconds; each query family proves canonical success, truncation, denial, limit, unavailable, and cancellation semantics independently
@@ -2611,7 +2612,7 @@ Authorized developers and AI agents can persist folder lifecycle and file conten
 
 **FRs covered:** FR1–FR3, FR9–FR14, FR18–FR21, FR24–FR46, FR58.
 
-**Prerequisite decisions:** OQ1's C7 timing profile is approved; OQ2–OQ4 remain prerequisite decisions where they govern file policy, authorization, provider compatibility, and reconciliation. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
+**Prerequisite decisions:** OQ1's C7 timing profile and OQ2's canonical file-policy version `1.1.0` are approved; OQ3–OQ4 remain prerequisite decisions where they govern authorization, provider compatibility, and reconciliation. OQ2 approval closes design only, while Stories 12.1, 12.3, and 4.20, public multi-file transport, and FR32-FR35 runtime evidence remain incomplete. Product projection ownership remains with Epics 4, 6, and 10; Epic 12 owns their durable source events, authoritative state/content, task completion, Git persistence, and egress substrate.
 
 ### Story 12.1: EventStore-backed folder repository, retire NoOp, and implement projection replay
 
@@ -2621,7 +2622,7 @@ So that accepted lifecycle operations survive process restart and Production can
 
 **Acceptance Criteria:**
 
-**Given** OQ1's approved C7 timing profile and the OQ2–OQ4 prerequisites affecting the durable boundary are recorded
+**Given** OQ1's approved C7 timing profile, OQ2's approved canonical file policy, and the OQ3–OQ4 prerequisites affecting the durable boundary are recorded
 **When** the real REST → EventStore gateway → processor → authorization gate → repository path accepts folder or organization behavior
 **Then** metadata-only events append durably, `IFolderRepository` and required organization state rebuild from ordered streams, `/project` consumes events rather than returning 501, the ADR-0001 `DomainResult.NoOp()` path is retired, and Production boots with a real registration
 **And** empty-checkpoint replay, host restart, append conflict/reread, equivalent/conflicting idempotency, wrong-tenant/authorization denial, corrupt/unavailable store, timeout, event-version boundary, and sensitive-data exclusion are proven
@@ -2649,7 +2650,7 @@ So that mutations, context queries, and commits operate on verified content afte
 
 **Acceptance Criteria:**
 
-**Given** Story 12.1 supplies durable folder streams and current authorization/path policy passes
+**Given** Story 12.1 supplies durable folder streams and current authorization plus OQ2 file-policy version `1.1.0` passes
 **When** bounded inline or streamed add/change/remove content is staged, retrieved, restarted, or replayed
 **Then** content and metadata persist in the approved store, server-side hashes and byte/media metadata are verified, task/lock/version identity is enforced, deleted content is unavailable, and context reads use this authority rather than a derived index
 **And** wrong-tenant/authorization denial, traversal/symlink/case boundary, binary/oversize/encoding limits, conflicting replay, corrupt/missing content, timeout/cancellation, restart, and retention/deletion evidence are attached without content in events/audit/telemetry

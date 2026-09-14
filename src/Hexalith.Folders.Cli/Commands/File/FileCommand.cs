@@ -68,7 +68,7 @@ internal static class FileCommand
                     {
                         NormalizedPath = parseResult.GetValue(path)!,
                         DisplayName = parseResult.GetValue(displayName)!,
-                        PathPolicyClass = parseResult.GetValue(pathPolicyClass)!,
+                        PathPolicyClass = ParsePolicyClass(parseResult.GetValue(pathPolicyClass)),
                         UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
                     },
                 };
@@ -120,4 +120,13 @@ internal static class FileCommand
             throw new CliUsageException("The --file content could not be read.");
         }
     }
+
+    private static PathMetadataPathPolicyClass ParsePolicyClass(string? value) => value switch
+    {
+        "content_allowed" => PathMetadataPathPolicyClass.Content_allowed,
+        "metadata_only" => PathMetadataPathPolicyClass.Metadata_only,
+        "excluded" => PathMetadataPathPolicyClass.Excluded,
+        "restricted" => PathMetadataPathPolicyClass.Restricted,
+        _ => throw new CliUsageException("The --path-policy-class value must be one canonical policy class."),
+    };
 }

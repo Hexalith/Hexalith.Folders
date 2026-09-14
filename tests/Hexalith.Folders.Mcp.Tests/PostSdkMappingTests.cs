@@ -78,6 +78,41 @@ public sealed class PostSdkMappingTests
         TestSupport.Kind(result).ShouldBe("unknown_provider_outcome");
     }
 
+    [Theory]
+    [InlineData("file_policy_unavailable")]
+    [InlineData("range_unsatisfiable")]
+    public async Task ExactFileProblemDtosPreserveCanonicalProjection(string category)
+    {
+        string response = Newtonsoft.Json.JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "File request failed",
+            status = 503,
+            category,
+            code = category,
+            message = "The file request could not be completed.",
+            correlationId = "server-file-correlation",
+            retryable = true,
+            clientAction = "retry",
+            details = new { visibility = "redacted" },
+        });
+        HexalithFoldersApiException exact = category == "file_policy_unavailable"
+            ? new HexalithFoldersApiException<FileContextUnavailableProblem>("policy", 503, response, NoHeaders, null!, null)
+            : new HexalithFoldersApiException<FileRangeUnsatisfiableProblem>("range", 416, response, NoHeaders, null!, null);
+
+        IClient client = Substitute.For<IClient>();
+        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromException<FolderLifecycleStatus>(exact));
+        ToolPipeline pipeline = TestSupport.Pipeline(client);
+
+        string result = await FolderTools.GetFolderLifecycleStatus(
+            pipeline, folderId: "f", correlationId: "client-correlation", cancellationToken: TestContext.Current.CancellationToken);
+
+        Newtonsoft.Json.Linq.JObject json = TestSupport.Parse(result);
+        json.Value<string>("kind").ShouldBe(category);
+        json.Value<string>("correlationId").ShouldBe("server-file-correlation");
+    }
+
     [Fact]
     public async Task BareApiExceptionIsInternalErrorWithCorrelation()
     {

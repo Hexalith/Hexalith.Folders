@@ -59,7 +59,10 @@
       "jsonLibrary": "NewtonsoftJson",
       "generateDefaultValues": false,
       "generateDataAnnotations": false,
-      "excludedTypeNames": [],
+      "excludedTypeNames": [
+        "MutateFilesRequest",
+        "MutateFilesRequestRequestSchemaVersion"
+      ],
       "handleReferences": false,
       "generateImmutableArrayProperties": false,
       "generateImmutableDictionaryProperties": false,

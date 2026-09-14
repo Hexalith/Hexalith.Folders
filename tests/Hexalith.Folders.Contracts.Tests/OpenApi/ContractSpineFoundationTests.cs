@@ -17,6 +17,8 @@ public sealed class ContractSpineFoundationTests
         "x-hexalith-authorization",
         "x-hexalith-canonical-error-categories",
         "x-hexalith-correlation",
+        "x-hexalith-decoded-byte-maximum",
+        "x-hexalith-file-policy",
         "x-hexalith-idempotency-equivalence",
         "x-hexalith-idempotency-key",
         "x-hexalith-idempotency-ttl-tier",
@@ -116,12 +118,19 @@ public sealed class ContractSpineFoundationTests
         {
             YamlMappingNode spineEntry = RequiredMapping(openApi, extension);
 
-            spineEntry.Children.Keys
+            string[] declarationKeys = spineEntry.Children.Keys
                 .OfType<YamlScalarNode>()
                 .Select(key => key.Value ?? string.Empty)
                 .Order(StringComparer.Ordinal)
-                .ToArray()
-                .ShouldBe(["foundationUse", "vocabularyRef"], $"Spine entry {extension} must declare only vocabularyRef and foundationUse; valueSchema redefinition is forbidden.");
+                .ToArray();
+            declarationKeys.ShouldContain("foundationUse", extension);
+            declarationKeys.ShouldContain("vocabularyRef", extension);
+            declarationKeys.ShouldNotContain("valueSchema", $"Spine entry {extension} must not redefine its registered value schema.");
+
+            if (extension != "x-hexalith-file-policy")
+            {
+                declarationKeys.ShouldBe(["foundationUse", "vocabularyRef"], $"Foundation-only spine entry {extension} must declare only vocabularyRef and foundationUse.");
+            }
 
             YamlMappingNode foundationSchema = RequiredMapping(RequiredMapping(vocabulary, extension), "foundationSchema");
             foundationSchema.Children.TryGetValue(new YamlScalarNode("required"), out YamlNode? requiredNode).ShouldBeTrue(extension);
@@ -131,6 +140,37 @@ public sealed class ContractSpineFoundationTests
                 .ToArray();
             requiredFields.ShouldContain("vocabularyRef");
             requiredFields.ShouldContain("foundationUse");
+
+        }
+
+        foreach (string boundedExtension in new[] { "x-hexalith-decoded-byte-maximum", "x-hexalith-file-policy" })
+        {
+            YamlMappingNode foundationSchema = RequiredMapping(RequiredMapping(vocabulary, boundedExtension), "foundationSchema");
+            YamlMappingNode foundationProperties = RequiredMapping(foundationSchema, "properties");
+            GetScalar(RequiredMapping(foundationProperties, "vocabularyRef"), "minLength").ShouldBe("1", boundedExtension);
+            GetScalar(RequiredMapping(foundationProperties, "foundationUse"), "minLength").ShouldBe("1", boundedExtension);
+        }
+    }
+
+    [Fact]
+    public void Oq2ExtensionFoundationStringBoundsFailClosedForEmptyValues()
+    {
+        YamlMappingNode vocabulary = LoadYamlMapping(ExtensionVocabularyPath);
+
+        foreach (string extension in new[] { "x-hexalith-decoded-byte-maximum", "x-hexalith-file-policy" })
+        {
+            YamlMappingNode schema = RequiredMapping(RequiredMapping(vocabulary, extension), "foundationSchema");
+            var valid = new YamlMappingNode(
+                new YamlScalarNode("vocabularyRef"), new YamlScalarNode("./extensions/hexalith-extension-vocabulary.yaml#/synthetic"),
+                new YamlScalarNode("foundationUse"), new YamlScalarNode("synthetic bounded use"));
+            ValidateBoundedFoundationStrings(schema, valid).ShouldBeEmpty(extension);
+
+            foreach (string field in new[] { "vocabularyRef", "foundationUse" })
+            {
+                YamlMappingNode empty = CloneMapping(valid);
+                empty.Children[new YamlScalarNode(field)] = new YamlScalarNode(string.Empty);
+                ValidateBoundedFoundationStrings(schema, empty).ShouldContain($"{field}:minLength", extension);
+            }
         }
     }
 
@@ -357,6 +397,42 @@ public sealed class ContractSpineFoundationTests
             .OfType<YamlScalarNode>()
             .Select(value => value.Value ?? string.Empty)
             .ToArray();
+    }
+
+    private static string[] ValidateBoundedFoundationStrings(YamlMappingNode schema, YamlMappingNode instance)
+    {
+        List<string> diagnostics = [];
+        YamlMappingNode properties = RequiredMapping(schema, "properties");
+        foreach (YamlNode requiredNode in RequiredSequence(schema, "required"))
+        {
+            string field = requiredNode.ShouldBeOfType<YamlScalarNode>().Value ?? string.Empty;
+            if (!instance.Children.TryGetValue(new YamlScalarNode(field), out YamlNode? value)
+                || value is not YamlScalarNode scalar)
+            {
+                diagnostics.Add($"{field}:required");
+                continue;
+            }
+
+            YamlMappingNode propertySchema = RequiredMapping(properties, field);
+            int minimumLength = int.Parse(GetScalar(propertySchema, "minLength")!, System.Globalization.CultureInfo.InvariantCulture);
+            if ((scalar.Value ?? string.Empty).Length < minimumLength)
+            {
+                diagnostics.Add($"{field}:minLength");
+            }
+        }
+
+        return diagnostics.ToArray();
+    }
+
+    private static YamlMappingNode CloneMapping(YamlMappingNode mapping)
+    {
+        YamlStream stream = new(new YamlDocument(mapping));
+        using StringWriter writer = new();
+        stream.Save(writer, false);
+        using StringReader reader = new(writer.ToString());
+        YamlStream clone = new();
+        clone.Load(reader);
+        return clone.Documents[0].RootNode.ShouldBeOfType<YamlMappingNode>();
     }
 
     private static IEnumerable<string> EnumerateExtensionKeys(YamlNode node)
