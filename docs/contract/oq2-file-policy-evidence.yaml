@@ -10,6 +10,7 @@ approved_on: '2026-09-14'
 canonical_surfaces:
   - docs/contract/file-context-contract-groups.md
   - src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+  - src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml
   - tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs
   - tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
 approval:

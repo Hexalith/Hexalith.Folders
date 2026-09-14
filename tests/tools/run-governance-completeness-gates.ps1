@@ -40,7 +40,8 @@ function Write-GovernanceReport {
             'tests/fixtures/pattern-example-manifest.yaml',
             'tests/fixtures/cache-key-exceptions.yaml',
             'tests/fixtures/parity-contract.yaml',
-            'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml'
+            'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml',
+            'src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml'
         )
         report_path = '_bmad-output/gates/governance-completeness/latest.json'
         diagnostic_policy = 'metadata-only'

@@ -35,7 +35,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         { "provider", ["provider", "get-binding", "--provider-binding-ref", "pbr_1", "--base-address", BaseAddress, "--token", Token] },
         { "folder", ["folder", "status", "--folder-id", "folder_1", "--base-address", BaseAddress, "--token", Token] },
         { "workspace", ["workspace", "status", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--base-address", BaseAddress, "--token", Token] },
-        { "file", ["file", "remove", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_1", "--request", "{}", "--base-address", BaseAddress, "--token", Token] },
+        { "file", ["file", "remove", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_1", "--request", "{\"requestSchemaVersion\":\"v1\",\"fileOperationKind\":\"remove\",\"transportOperation\":\"metadataOnlyRemoval\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"metadata_only\",\"unicodeNormalization\":\"NFC\"}}", "--base-address", BaseAddress, "--token", Token] },
         { "commit", ["commit", "reconciliation-status", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--reconciliation-id", "recon_1", "--base-address", BaseAddress, "--token", Token] },
         { "context", ["context", "list", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--base-address", BaseAddress, "--token", Token] },
         { "audit", ["audit", "list", "--folder-id", "folder_1", "--base-address", BaseAddress, "--token", Token] },
@@ -65,7 +65,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         // Configure the accepted-command mutations to acknowledge truthfully; queries default to null (exit 0).
         client.CreateRepositoryBackedFolderAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CreateRepositoryBackedFolderRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(TestData.Accepted()));
-        client.AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FileMutationRequest>(), Arg.Any<CancellationToken>())
+        client.AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<AddFileRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(TestData.Accepted()));
 
         // configure provider binding → validate readiness → create repo-backed folder → prepare → lock →
@@ -83,7 +83,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
 
         // The golden path's mutations and queries each reached their canonical SDK operation exactly once.
         await client.Received(1).CreateRepositoryBackedFolderAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CreateRepositoryBackedFolderRequest>(), Arg.Any<CancellationToken>());
-        await client.Received(1).AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FileMutationRequest>(), Arg.Any<CancellationToken>());
+        await client.Received(1).AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<AddFileRequest>(), Arg.Any<CancellationToken>());
         await client.Received(1).CommitWorkspaceAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CommitWorkspaceRequest>(), Arg.Any<CancellationToken>());
         await client.Received(1).ReleaseWorkspaceLockAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReleaseWorkspaceLockRequest>(), Arg.Any<CancellationToken>());
         await client.Received(1).ListAuditTrailAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
@@ -94,7 +94,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
     {
         File.WriteAllText(_contentPath, "synthetic changed content");
         IClient client = Substitute.For<IClient>();
-        client.ChangeFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FileMutationRequest>(), Arg.Any<CancellationToken>())
+        client.ChangeFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ChangeFileRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(TestData.Accepted()));
         CliTestHarness harness = new() { Client = client };
 
@@ -113,7 +113,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
             "--idempotency-key", "key_1");
 
         exit.ShouldBe(0);
-        await client.Received(1).ChangeFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<FileMutationRequest>(), Arg.Any<CancellationToken>());
+        await client.Received(1).ChangeFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ChangeFileRequest>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

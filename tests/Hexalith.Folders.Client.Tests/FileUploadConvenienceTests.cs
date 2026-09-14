@@ -118,15 +118,40 @@ public sealed class FileUploadConvenienceTests
     }
 
     [Fact]
-    public void BuildInlineHonorsExplicitContentHashReference()
+    public void BuildInlineRequiresExplicitContentHashReferenceToMatch()
     {
         byte[] content = Encoding.UTF8.GetBytes("synthetic");
-        const string explicitReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002";
+        string explicitReference = "hashref_" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(content)).ToLowerInvariant();
 
         FileMutationRequest request = FileUpload.BuildInlineFileMutation(
             content, "text/plain", SamplePath(), "01ARZ3NDEKTSV4RRFFQ69G5FAV", contentHashReference: explicitReference);
 
         request.ContentHashReference.ShouldBe(explicitReference);
+
+        _ = Should.Throw<ArgumentException>(() => FileUpload.BuildInlineFileMutation(
+            content,
+            "text/plain",
+            SamplePath(),
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+            contentHashReference: " "));
+        _ = Should.Throw<ArgumentException>(() => FileUpload.BuildInlineFileMutation(
+            content,
+            "text/plain",
+            SamplePath(),
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+            contentHashReference: "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+    }
+
+    [Fact]
+    public void BuildInlineAbsoluteLimitWinsBeforeStreamingRouting()
+    {
+        byte[] content = new byte[FileUpload.MaximumFileBytes + 1];
+
+        _ = Should.Throw<ArgumentOutOfRangeException>(() => FileUpload.BuildInlineFileMutation(
+            content,
+            "application/octet-stream",
+            SamplePath(),
+            "01ARZ3NDEKTSV4RRFFQ69G5FAV"));
     }
 
     [Fact]
@@ -135,7 +160,7 @@ public sealed class FileUploadConvenienceTests
         FileStreamStagingEvidence evidence = new()
         {
             StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
-            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF",
             ObservedLength = FileUpload.InlineTransportBoundaryBytes + 1,
         };
 
@@ -160,7 +185,7 @@ public sealed class FileUploadConvenienceTests
         FileStreamStagingEvidence evidence = new()
         {
             StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
-            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF",
             ObservedLength = FileUpload.InlineTransportBoundaryBytes,
         };
 
@@ -174,7 +199,7 @@ public sealed class FileUploadConvenienceTests
         var evidence = new FileStreamStagingEvidence
         {
             StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
-            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF",
             ObservedLength = FileUpload.MaximumFileBytes,
         };
 
@@ -222,7 +247,7 @@ public sealed class FileUploadConvenienceTests
         FileStreamStagingEvidence evidence = new()
         {
             StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
-            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF",
             ObservedLength = FileUpload.InlineTransportBoundaryBytes + 1,
         };
 
@@ -350,9 +375,35 @@ public sealed class FileUploadConvenienceTests
     public async Task UploadFileAsyncTranslatesServer413IntoStreamingRequired()
     {
         const string payloadTooLargeJson = """
-            {"type":"about:blank","title":"Payload Too Large","status":413,"category":"validation_error","code":"input_limit_exceeded","message":"Synthetic.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":false}
+            {"type":"about:blank","title":"Inline payload too large","status":413,"category":"input_limit_exceeded","code":"d9_inline_limit_exceeded","message":"The inline payload exceeds the configured D-9 boundary.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":true,"clientAction":"revise_request","details":{"visibility":"metadata_only"}}
+            """;
+        CapturingHandler handler = new(HttpStatusCode.RequestEntityTooLarge, payloadTooLargeJson, streamingRetry: true);
+        IClient client = NewClient(handler);
+
+        _ = await Should.ThrowAsync<FileUploadStreamingRequiredException>(
+            () => client.UploadFileAsync(InlineDescriptor(), Encoding.UTF8.GetBytes("synthetic"), "idem_01HZY7Z6N7J4Q2X8Y9V0IDK001", "corr_01HZY7Z6N7J4Q2X8Y9V0COR001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001", TestContext.Current.CancellationToken)).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task UploadFileAsyncDoesNotTranslateExact413WithoutRetryTransportEvidence()
+    {
+        const string payloadTooLargeJson = """
+            {"type":"about:blank","title":"Inline payload too large","status":413,"category":"input_limit_exceeded","code":"d9_inline_limit_exceeded","message":"The inline payload exceeds the configured D-9 boundary.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":true,"clientAction":"revise_request","details":{"visibility":"metadata_only"}}
             """;
         CapturingHandler handler = new(HttpStatusCode.RequestEntityTooLarge, payloadTooLargeJson);
+        IClient client = NewClient(handler);
+
+        _ = await Should.ThrowAsync<HexalithFoldersApiException<FileInlineTransportRequiredProblem>>(
+            () => client.UploadFileAsync(InlineDescriptor(), Encoding.UTF8.GetBytes("synthetic"), "idem_01HZY7Z6N7J4Q2X8Y9V0IDK001", "corr_01HZY7Z6N7J4Q2X8Y9V0COR001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001", TestContext.Current.CancellationToken)).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task UploadFileAsyncRecognizesRetryTransportHeaderCaseInsensitively()
+    {
+        const string payloadTooLargeJson = """
+            {"type":"about:blank","title":"Inline payload too large","status":413,"category":"input_limit_exceeded","code":"d9_inline_limit_exceeded","message":"The inline payload exceeds the configured D-9 boundary.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":true,"clientAction":"revise_request","details":{"visibility":"metadata_only"}}
+            """;
+        CapturingHandler handler = new(HttpStatusCode.RequestEntityTooLarge, payloadTooLargeJson, streamingRetry: true, lowercaseRetryHeader: true);
         IClient client = NewClient(handler);
 
         _ = await Should.ThrowAsync<FileUploadStreamingRequiredException>(
@@ -470,7 +521,7 @@ public sealed class FileUploadConvenienceTests
         FileStreamStagingEvidence evidence = new()
         {
             StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
-            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF",
             ObservedLength = FileUpload.InlineTransportBoundaryBytes + 4096,
         };
 
@@ -499,7 +550,7 @@ public sealed class FileUploadConvenienceTests
         FileStreamStagingEvidence evidence = new()
         {
             StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
-            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002",
+            ObservedContentHashReference = "hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF",
             ObservedLength = FileUpload.InlineTransportBoundaryBytes + 4096,
         };
 
@@ -527,9 +578,9 @@ public sealed class FileUploadConvenienceTests
     public async Task UploadFileAsync413TranslationPreservesOriginatingApiException()
     {
         const string payloadTooLargeJson = """
-            {"type":"about:blank","title":"Payload Too Large","status":413,"category":"validation_error","code":"input_limit_exceeded","message":"Synthetic.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":false}
+            {"type":"about:blank","title":"Inline payload too large","status":413,"category":"input_limit_exceeded","code":"d9_inline_limit_exceeded","message":"The inline payload exceeds the configured D-9 boundary.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":true,"clientAction":"revise_request","details":{"visibility":"metadata_only"}}
             """;
-        CapturingHandler handler = new(HttpStatusCode.RequestEntityTooLarge, payloadTooLargeJson);
+        CapturingHandler handler = new(HttpStatusCode.RequestEntityTooLarge, payloadTooLargeJson, streamingRetry: true);
         IClient client = NewClient(handler);
 
         FileUploadStreamingRequiredException exception = await Should.ThrowAsync<FileUploadStreamingRequiredException>(
@@ -576,7 +627,7 @@ public sealed class FileUploadConvenienceTests
         {"acceptedAt":"2026-05-27T12:00:00+00:00","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","taskId":"task_01HZY7Z6N7J4Q2X8Y9V0TSK001","status":"accepted","idempotentReplay":{{(idempotentReplay ? "true" : "false")}}}
         """;
 
-    private sealed class CapturingHandler(HttpStatusCode statusCode, string responseJson) : HttpMessageHandler
+    private sealed class CapturingHandler(HttpStatusCode statusCode, string responseJson, bool streamingRetry = false, bool lowercaseRetryHeader = false) : HttpMessageHandler
     {
         public HttpRequestMessage? Request { get; private set; }
 
@@ -590,11 +641,17 @@ public sealed class FileUploadConvenienceTests
                 RequestBody = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            return new HttpResponseMessage(statusCode)
+            var response = new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(responseJson, Encoding.UTF8, "application/json"),
                 RequestMessage = request,
             };
+            if (streamingRetry)
+            {
+                response.Headers.Add(lowercaseRetryHeader ? "x-hexalith-retry-transport" : "X-Hexalith-Retry-Transport", "stream");
+            }
+
+            return response;
         }
     }
 }

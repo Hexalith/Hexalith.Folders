@@ -248,6 +248,39 @@
       ],
       "status": "failed",
       "exit_code": 1
+    },
+    {
+      "category": "cli-behavioral-parity",
+      "project_path": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Cli.Tests.ParityOracleConformanceTests|FullyQualifiedName~Hexalith.Folders.Cli.Tests.BehavioralParityTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Cli"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "mcp-behavioral-parity",
+      "project_path": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Mcp.Tests.ParityOracleConformanceTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.PreSdkFailureTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.PostSdkMappingTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.SourcingTests|FullyQualifiedName~Hexalith.Folders.Mcp.Tests.FailureKindProjectionTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "src/Hexalith.Folders.Mcp"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "mixed-surface-handoff",
+      "project_path": "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.IntegrationTests.AdapterParity.CrossAdapterBehavioralParityTests|FullyQualifiedName~Hexalith.Folders.IntegrationTests.MixedSurfaceHandoff.MixedSurfaceHandoffTests",
+      "artifact_paths": [
+        "tests/fixtures/parity-contract.yaml",
+        "tests/shared/Parity/MixedSurfaceScenario.cs"
+      ],
+      "status": "failed",
+      "exit_code": 1
     }
   ]
 }

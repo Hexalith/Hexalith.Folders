@@ -106,6 +106,39 @@ internal static class ResultRenderer
         console.Error.WriteLine($"correlationId: {correlationId}");
     }
 
+    /// <summary>Renders a locally detected failure whose full canonical retry envelope is known.</summary>
+    public static void RenderCanonicalClientError(
+        ICliConsole console,
+        OutputMode output,
+        string category,
+        string code,
+        string message,
+        string correlationId,
+        bool retryable,
+        string clientAction)
+    {
+        if (output == OutputMode.Json)
+        {
+            console.Error.WriteLine(MetadataOnlyJson.Serialize(new
+            {
+                category,
+                code,
+                message,
+                correlationId,
+                retryable,
+                clientAction,
+            }));
+            return;
+        }
+
+        console.Error.WriteLine($"error: {category}");
+        console.Error.WriteLine($"code: {code}");
+        console.Error.WriteLine($"message: {message}");
+        console.Error.WriteLine($"correlationId: {correlationId}");
+        console.Error.WriteLine($"retryable: {retryable.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()}");
+        console.Error.WriteLine($"clientAction: {clientAction}");
+    }
+
     private sealed record ProjectedProblem(
         string Category,
         string Code,

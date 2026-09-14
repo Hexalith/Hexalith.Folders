@@ -140,22 +140,72 @@ public static class FoldersFileUploadExtensions
             return descriptor.FileOperationKind switch
             {
                 FileMutationRequestFileOperationKind.Add => await client
-                    .AddFileAsync(descriptor.FolderId, descriptor.WorkspaceId, idempotencyKey, correlationId, taskId, request, cancellationToken)
+                    .AddFileAsync(descriptor.FolderId, descriptor.WorkspaceId, idempotencyKey, correlationId, taskId, ToAddRequest(request), cancellationToken)
                     .ConfigureAwait(false),
                 FileMutationRequestFileOperationKind.Change => await client
-                    .ChangeFileAsync(descriptor.FolderId, descriptor.WorkspaceId, idempotencyKey, correlationId, taskId, request, cancellationToken)
+                    .ChangeFileAsync(descriptor.FolderId, descriptor.WorkspaceId, idempotencyKey, correlationId, taskId, ToChangeRequest(request), cancellationToken)
                     .ConfigureAwait(false),
                 _ => throw new ArgumentOutOfRangeException(
                     nameof(descriptor),
                     "File uploads support only Add and Change file operation kinds."),
             };
         }
-        catch (HexalithFoldersApiException apiException) when (apiException.StatusCode == 413)
+        catch (HexalithFoldersApiException<FileInlineTransportRequiredProblem> apiException)
+            when (IsExactStreamingRetry(apiException))
         {
-            // Server signalled inline-over-boundary via 413 + X-Hexalith-Retry-Transport: stream.
-            // Surface the transport-substitution requirement without echoing the byte limit or content.
             throw new FileUploadStreamingRequiredException(apiException);
         }
+    }
+
+    private static bool IsExactStreamingRetry(HexalithFoldersApiException<FileInlineTransportRequiredProblem> exception) =>
+        exception.StatusCode == 413
+        && exception.Result is
+        {
+            Status: FileInlineTransportRequiredProblemStatus._413,
+            Category: FileInlineTransportRequiredProblemCategory.Input_limit_exceeded,
+            Code: FileInlineTransportRequiredProblemCode.D9_inline_limit_exceeded,
+            Retryable: true,
+            ClientAction: FileInlineTransportRequiredProblemClientAction.Revise_request,
+        }
+        && exception.Headers
+            .FirstOrDefault(static header => string.Equals(header.Key, "X-Hexalith-Retry-Transport", StringComparison.OrdinalIgnoreCase))
+            .Value is { } values
+        && values.Any(static value => string.Equals(value, "stream", StringComparison.Ordinal));
+
+    private static AddFileRequest ToAddRequest(FileMutationRequest request)
+    {
+        AddFileRequest result = new()
+        {
+            RequestSchemaVersion = request.RequestSchemaVersion,
+            OperationId = request.OperationId,
+            PathMetadata = request.PathMetadata,
+            TransportOperation = request.TransportOperation,
+            ContentHashReference = request.ContentHashReference,
+            ByteLength = request.ByteLength,
+            InlineContent = request.InlineContent,
+            StreamDescriptor = request.StreamDescriptor,
+            FileOperationKind = AddFileRequestFileOperationKind.Add,
+        };
+        ((FileMutationRequest)result).FileOperationKind = FileMutationRequestFileOperationKind.Add;
+        return result;
+    }
+
+    private static ChangeFileRequest ToChangeRequest(FileMutationRequest request)
+    {
+        ChangeFileRequest result = new()
+        {
+            RequestSchemaVersion = request.RequestSchemaVersion,
+            OperationId = request.OperationId,
+            PathMetadata = request.PathMetadata,
+            TransportOperation = request.TransportOperation,
+            ContentHashReference = request.ContentHashReference,
+            ByteLength = request.ByteLength,
+            InlineContent = request.InlineContent,
+            StreamDescriptor = request.StreamDescriptor,
+            FileOperationKind = ChangeFileRequestFileOperationKind.Change,
+        };
+        ((FileMutationRequest)result).FileOperationKind = FileMutationRequestFileOperationKind.Change;
+        return result;
     }
 
     private static async Task<ReadOnlyMemory<byte>> ReadInlineCandidateAsync(Stream content, CancellationToken cancellationToken)

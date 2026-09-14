@@ -1,20 +1,30 @@
 #Requires -Version 7
 
+param(
+    [switch]$SkipRestoreBuild,
+    [switch]$SelfTestFailureIsolation,
+    [switch]$SelfTestMissingDotnet,
+    [string]$OutputReportPath
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-
-if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
-    Write-Error 'CONTRACT-PARITY-CI-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the contract parity CI gate.'
-    exit 1
-}
 
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $toolsParent = Join-Path $scriptRoot '..'
 $repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
-$reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/contract-parity-ci'
-$reportPath = Join-Path $reportDirectory 'latest.json'
+$defaultReportEvidencePath = '_bmad-output/gates/contract-parity-ci/latest.json'
+$reportEvidencePath = if ([string]::IsNullOrWhiteSpace($OutputReportPath)) { $defaultReportEvidencePath } else { $OutputReportPath }
+$reportPath = if ([string]::IsNullOrWhiteSpace($OutputReportPath)) {
+    Join-Path $repositoryRoot $defaultReportEvidencePath
+}
+else {
+    [System.IO.Path]::GetFullPath($OutputReportPath)
+}
+$reportDirectory = [System.IO.Path]::GetDirectoryName($reportPath)
 $pushed = $false
 $results = @()
+$finalExitCode = 1
 
 $testGates = @(
     [ordered]@{
@@ -96,6 +106,14 @@ $testGates = @(
     }
 )
 
+if ($SelfTestFailureIsolation) {
+    $testGates = @(
+        [ordered]@{ category = 'synthetic-before'; project_path = 'self-test'; filter = 'pass'; runner_classes = @(); artifact_paths = @(); synthetic_outcome = 'pass' },
+        [ordered]@{ category = 'synthetic-terminating'; project_path = 'self-test'; filter = 'throw'; runner_classes = @(); artifact_paths = @(); synthetic_outcome = 'throw' },
+        [ordered]@{ category = 'synthetic-after'; project_path = 'self-test'; filter = 'pass'; runner_classes = @(); artifact_paths = @(); synthetic_outcome = 'pass' }
+    )
+}
+
 function Write-ContractParityReport {
     param(
         [Parameter(Mandatory = $true)][string]$Status,
@@ -106,7 +124,7 @@ function Write-ContractParityReport {
     [ordered]@{
         gate = 'contract-parity-ci'
         status = $Status
-        report_path = '_bmad-output/gates/contract-parity-ci/latest.json'
+        report_path = $reportEvidencePath
         diagnostic_policy = 'metadata-only'
         categories = $testGates.category
         test_gates = $testGates
@@ -120,14 +138,23 @@ function Invoke-ContractParityGate {
     )
 
     Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) project=$($Gate.project_path)"
-    $arguments = @('test', $gate.project_path, '--no-restore', '--no-build', '--filter', $gate.filter)
-    $output = & dotnet @arguments 2>&1
-    $exitCode = $LASTEXITCODE
-    $output | ForEach-Object { Write-Host $_ }
-    $joinedOutput = $output -join [Environment]::NewLine
-    if ($exitCode -ne 0 -and ($joinedOutput -match 'System\.Net\.Sockets\.SocketException.*Permission denied' -or
-            $joinedOutput -match 'Testing with VSTest target is no longer supported')) {
-        $exitCode = Invoke-XunitInProcessFallback -Gate $Gate
+    if ($Gate.Contains('synthetic_outcome')) {
+        if ($Gate.synthetic_outcome -eq 'throw') {
+            throw [System.InvalidOperationException]::new('synthetic terminating gate failure')
+        }
+
+        $exitCode = 0
+    }
+    else {
+        $arguments = @('test', $gate.project_path, '--no-restore', '--no-build', '--filter', $gate.filter)
+        $output = & dotnet @arguments 2>&1
+        $exitCode = $LASTEXITCODE
+        $output | ForEach-Object { Write-Host $_ }
+        $joinedOutput = $output -join [Environment]::NewLine
+        if ($exitCode -ne 0 -and ($joinedOutput -match 'System\.Net\.Sockets\.SocketException.*Permission denied' -or
+                $joinedOutput -match 'Testing with VSTest target is no longer supported')) {
+            $exitCode = Invoke-XunitInProcessFallback -Gate $Gate
+        }
     }
 
     $status = if ($exitCode -eq 0) { 'passed' } else { 'failed' }
@@ -138,11 +165,6 @@ function Invoke-ContractParityGate {
         artifact_paths = $Gate.artifact_paths
         status = $status
         exit_code = $exitCode
-    }
-    Write-ContractParityReport -Status $status -Results $script:results
-
-    if ($exitCode -ne 0) {
-        exit $exitCode
     }
 }
 
@@ -176,14 +198,50 @@ try {
     New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
     Write-ContractParityReport -Status 'discovered' -Results $results
 
-    foreach ($gate in $testGates) {
-        Invoke-ContractParityGate -Gate $gate
+    if (-not $SelfTestFailureIsolation -and ($SelfTestMissingDotnet -or -not (Get-Command dotnet -ErrorAction SilentlyContinue))) {
+        foreach ($gate in $testGates) {
+            $script:results += [ordered]@{
+                category = $gate.category
+                project_path = $gate.project_path
+                filter = $gate.filter
+                artifact_paths = $gate.artifact_paths
+                status = 'failed'
+                exit_code = 1
+                error_type = 'DotnetSdkNotFound'
+            }
+        }
+
+        Write-Warning 'CONTRACT-PARITY-CI-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the contract parity CI gate.'
+    }
+    else {
+        foreach ($gate in $testGates) {
+            try {
+                Invoke-ContractParityGate -Gate $gate
+            }
+            catch {
+                $script:results += [ordered]@{
+                    category = $gate.category
+                    project_path = $gate.project_path
+                    filter = $gate.filter
+                    artifact_paths = $gate.artifact_paths
+                    status = 'failed'
+                    exit_code = 1
+                    error_type = $_.Exception.GetType().Name
+                }
+            }
+
+            Write-ContractParityReport -Status 'running' -Results $results
+        }
     }
 
-    Write-ContractParityReport -Status 'passed' -Results $results
+    $finalStatus = if ($results.Where({ $_.status -eq 'failed' }).Count -eq 0) { 'passed' } else { 'failed' }
+    $finalExitCode = if ($finalStatus -eq 'passed') { 0 } else { 1 }
+    Write-ContractParityReport -Status $finalStatus -Results $results
 }
 finally {
     if ($pushed) {
         Pop-Location
     }
 }
+
+exit $finalExitCode

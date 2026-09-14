@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 using Hexalith.Folders.Mcp.Tooling;
@@ -19,19 +20,24 @@ public sealed class MetadataOnlyOutputTests
 {
     private const string LeakedContentMarker = "LEAKED_FILE_BYTES_MARKER";
 
-    [Fact]
-    public async Task AuthorizedReadFileRangeDropsContentBytes()
+    [Theory]
+    [InlineData(HttpStatusCode.OK, false)]
+    [InlineData(HttpStatusCode.PartialContent, true)]
+    public async Task AuthorizedReadFileRangeDropsContentBytes(HttpStatusCode status, bool partial)
     {
         // A 200 OK FileRangeReadResult carrying authorized content in contentBytes plus benign metadata.
+        string encodedContent = Convert.ToBase64String(Encoding.UTF8.GetBytes(LeakedContentMarker));
+        int contentLength = Encoding.UTF8.GetByteCount(LeakedContentMarker);
         string body = $$"""
             {
               "path": { "normalizedPath": "docs/readme.md", "displayName": "readme.md", "pathPolicyClass": "content_allowed", "unicodeNormalization": "NFC" },
-              "range": { "startOffset": 0, "endOffset": 16, "actualBytes": 16, "partial": false },
-              "contentBytes": "{{LeakedContentMarker}}",
-              "freshness": { "readConsistency": "read_your_writes", "stale": false }
+              "range": { "startOffset": 0, "endOffset": {{contentLength + (partial ? 1 : 0)}}, "actualBytes": {{contentLength}}, "partial": {{partial.ToString().ToLowerInvariant()}} },
+              "contentBytes": "{{encodedContent}}",
+              "limits": { "queryFamily": "range", "configuredLimit": 262144, "actualCount": 1, "actualBytes": {{contentLength}}, "elapsedMilliseconds": 1, "isTruncated": false, "truncatedReason": "not_truncated" },
+              "freshness": { "readConsistency": "read_your_writes", "observedAt": "2026-09-14T00:00:00Z", "projectionWatermark": "watermark_01HZY7Z6N7J4Q2X8", "stale": false }
             }
             """;
-        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, body);
+        TestSupport.CapturingHandler handler = new(status, body);
         ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
         string result = await ContextTools.ReadFileRange(
@@ -40,7 +46,9 @@ public sealed class MetadataOnlyOutputTests
             workspaceId: "w",
             taskId: "task-1",
             correlationId: "corr-range",
-            requestJson: "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"startOffset\":0,\"endOffset\":16}",
+            requestJson: $$"""
+                {"requestSchemaVersion":"v1","path":{"normalizedPath":"docs/readme.md","displayName":"readme.md","pathPolicyClass":"content_allowed","unicodeNormalization":"NFC"},"startOffset":0,"endOffset":{{contentLength}}}
+                """,
             cancellationToken: TestContext.Current.CancellationToken);
 
         result.ShouldNotContain(LeakedContentMarker);

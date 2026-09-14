@@ -135,6 +135,18 @@ internal static class CommandOptions
         }
     }
 
+    /// <summary>Reads an operation body that is required by the Contract Spine.</summary>
+    public static T ReadRequiredBody<T>(string? requestValue)
+        where T : new()
+    {
+        if (string.IsNullOrWhiteSpace(requestValue))
+        {
+            throw new CliUsageException("The --request body is required for this operation.");
+        }
+
+        return ReadBody<T>(requestValue);
+    }
+
     /// <summary>Maps a <c>--freshness</c> value to the typed read-consistency class.</summary>
     /// <param name="freshness">The raw option value.</param>
     /// <returns>The mapped class, or <see langword="null"/> when unspecified.</returns>

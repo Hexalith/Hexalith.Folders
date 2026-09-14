@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -83,30 +84,35 @@ public sealed class PostSdkMappingTests
     [InlineData("range_unsatisfiable")]
     public async Task ExactFileProblemDtosPreserveCanonicalProjection(string category)
     {
+        bool policyUnavailable = category == "file_policy_unavailable";
         string response = Newtonsoft.Json.JsonConvert.SerializeObject(new
         {
             type = "about:blank",
-            title = "File request failed",
-            status = 503,
+            title = policyUnavailable ? "File policy unavailable" : "Range unsatisfiable",
+            status = policyUnavailable ? 503 : 416,
             category,
-            code = category,
-            message = "The file request could not be completed.",
+            code = policyUnavailable ? "file_policy_unavailable" : "range_unsatisfiable",
+            message = policyUnavailable
+                ? "The file policy cannot be verified for this request."
+                : "The requested byte range cannot be satisfied.",
             correlationId = "server-file-correlation",
-            retryable = true,
-            clientAction = "retry",
-            details = new { visibility = "redacted" },
+            retryable = policyUnavailable,
+            clientAction = policyUnavailable ? "retry" : "revise_request",
+            details = new { visibility = policyUnavailable ? "redacted" : "metadata_only" },
         });
-        HexalithFoldersApiException exact = category == "file_policy_unavailable"
-            ? new HexalithFoldersApiException<FileContextUnavailableProblem>("policy", 503, response, NoHeaders, null!, null)
-            : new HexalithFoldersApiException<FileRangeUnsatisfiableProblem>("range", 416, response, NoHeaders, null!, null);
+        TestSupport.CapturingHandler handler = new(
+            policyUnavailable ? HttpStatusCode.ServiceUnavailable : HttpStatusCode.RequestedRangeNotSatisfiable,
+            response);
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
-        IClient client = Substitute.For<IClient>();
-        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromException<FolderLifecycleStatus>(exact));
-        ToolPipeline pipeline = TestSupport.Pipeline(client);
-
-        string result = await FolderTools.GetFolderLifecycleStatus(
-            pipeline, folderId: "f", correlationId: "client-correlation", cancellationToken: TestContext.Current.CancellationToken);
+        string result = await ContextTools.ReadFileRange(
+            pipeline,
+            folderId: "f",
+            workspaceId: "w",
+            taskId: "task-1",
+            correlationId: "client-correlation",
+            requestJson: "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"startOffset\":0,\"endOffset\":1}",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         Newtonsoft.Json.Linq.JObject json = TestSupport.Parse(result);
         json.Value<string>("kind").ShouldBe(category);

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ using Hexalith.Folders.Mcp.Tooling;
 using Hexalith.Folders.Mcp.Tools;
 
 using NSubstitute;
+
+using Newtonsoft.Json;
 
 using Shouldly;
 
@@ -31,7 +34,7 @@ public sealed class FileTransportTests
 
         FileMutationRequest? captured = null;
         IClient client = Substitute.For<IClient>();
-        client.AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Do<FileMutationRequest>(r => captured = r), Arg.Any<CancellationToken>())
+        client.AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Do<AddFileRequest>(r => captured = r), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(new AcceptedCommand { Status = AcceptedCommandStatus.Accepted }));
         ToolPipeline pipeline = TestSupport.Pipeline(client);
 
@@ -81,7 +84,46 @@ public sealed class FileTransportTests
             cancellationToken: TestContext.Current.CancellationToken);
 
         TestSupport.Kind(result).ShouldBe("input_limit_exceeded");
+        Newtonsoft.Json.Linq.JObject failure = TestSupport.Parse(result);
+        failure.Value<string>("code").ShouldBe("d9_inline_limit_exceeded");
+        failure.Value<bool>("retryable").ShouldBeTrue();
+        failure.Value<string>("clientAction").ShouldBe("revise_request");
         client.ReceivedCalls().Any(c => c.GetMethodInfo().Name == nameof(IClient.AddFileAsync)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task AddFileOverAbsoluteLimitReturnsCanonical422WithNoCall()
+    {
+        string contentBase64 = Convert.ToBase64String(new byte[FileUpload.MaximumFileBytes + 1]);
+        IClient client = Substitute.For<IClient>();
+        ToolPipeline pipeline = TestSupport.Pipeline(client);
+
+        string result = await FileTools.AddFile(
+            pipeline, "f", "w", "op-1", "docs/too-big.bin", "too-big.bin", "application/octet-stream", contentBase64,
+            "idem-1", "task-1", "corr-limit", cancellationToken: TestContext.Current.CancellationToken);
+
+        Newtonsoft.Json.Linq.JObject failure = TestSupport.Parse(result);
+        TestSupport.Kind(result).ShouldBe("input_limit_exceeded");
+        failure.Value<string>("code").ShouldBe("file_content_limit_exceeded");
+        failure.Value<bool>("retryable").ShouldBeFalse();
+        failure.Value<string>("clientAction").ShouldBe("revise_request");
+        client.ReceivedCalls().Any(c => c.GetMethodInfo().Name == nameof(IClient.AddFileAsync)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task CallbackWrappedRequestValidationReturnsUsageError()
+    {
+        IClient client = Substitute.For<IClient>();
+        client.AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<AddFileRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromException<AcceptedCommand>(new TargetInvocationException(new JsonSerializationException("synthetic validation"))));
+        ToolPipeline pipeline = TestSupport.Pipeline(client);
+
+        string result = await FileTools.AddFile(
+            pipeline, "f", "w", "op-1", "docs/readme.md", "readme.md", "text/plain", Convert.ToBase64String([1]),
+            "idem-1", "task-1", "corr-validation", cancellationToken: TestContext.Current.CancellationToken);
+
+        TestSupport.Kind(result).ShouldBe("usage_error");
+        result.ShouldNotContain("synthetic validation");
     }
 
     [Fact]
@@ -106,6 +148,26 @@ public sealed class FileTransportTests
 
         TestSupport.Kind(result).ShouldBe("usage_error");
         client.ReceivedCalls().Any(c => c.GetMethodInfo().Name == nameof(IClient.AddFileAsync)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task RemoveFileRequiresBodyBeforeSdkCall()
+    {
+        IClient client = Substitute.For<IClient>();
+        ToolPipeline pipeline = TestSupport.Pipeline(client);
+
+        string result = await FileTools.RemoveFile(
+            pipeline,
+            folderId: "f",
+            workspaceId: "w",
+            idempotencyKey: "idem-1",
+            taskId: "task-1",
+            correlationId: "corr-remove",
+            requestJson: null,
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        TestSupport.Kind(result).ShouldBe("usage_error");
+        client.ReceivedCalls().Any(c => c.GetMethodInfo().Name == nameof(IClient.RemoveFileAsync)).ShouldBeFalse();
     }
 
     [Theory]

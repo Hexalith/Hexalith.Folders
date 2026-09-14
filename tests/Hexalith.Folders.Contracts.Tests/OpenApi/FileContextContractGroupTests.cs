@@ -9,6 +9,7 @@ public sealed class FileContextContractGroupTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string ExtensionVocabularyPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "extensions", "hexalith-extension-vocabulary.yaml");
     private static readonly string ContractNotesPath = Path.Combine(RepositoryRoot, "docs", "contract", "file-context-contract-groups.md");
 
     private static readonly string[] FileContextOperationIds =
@@ -114,6 +115,21 @@ public sealed class FileContextContractGroupTests
     {
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
         YamlMappingNode policy = RequiredMapping(root, "x-hexalith-file-policy");
+        YamlMappingNode vocabulary = LoadYamlMapping(ExtensionVocabularyPath);
+        YamlMappingNode policyDefinition = RequiredMapping(vocabulary, "x-hexalith-file-policy");
+        YamlMappingNode policySchema = RequiredMapping(policyDefinition, "valueSchema");
+        SchemaAccepts(vocabulary, policySchema, policy).ShouldBeTrue("the complete root policy instance must satisfy the registered valueSchema");
+        SchemaAccepts(vocabulary, policySchema, RequiredMapping(policyDefinition, "example"))
+            .ShouldBeTrue("the vocabulary example must satisfy its own registered valueSchema");
+
+        YamlMappingNode missingNestedPolicyField = CloneMapping(policy);
+        RequiredMapping(missingNestedPolicyField, "policySnapshot").Children.Remove(new YamlScalarNode("unavailableOutcome"));
+        SchemaAccepts(vocabulary, policySchema, missingNestedPolicyField).ShouldBeFalse("nested required policy members must fail closed");
+
+        YamlMappingNode extraNestedPolicyField = CloneMapping(policy);
+        RequiredMapping(extraNestedPolicyField, "pathProfile").Add("unknownProfileRule", "forbidden");
+        SchemaAccepts(vocabulary, policySchema, extraNestedPolicyField).ShouldBeFalse("nested unknown policy members must fail closed");
+
         GetScalar(policy, "version").ShouldBe("1.1.0");
         GetScalar(policy, "canonicalArtifact").ShouldBe("docs/contract/file-context-contract-groups.md");
 
@@ -179,6 +195,7 @@ public sealed class FileContextContractGroupTests
         YamlMappingNode pathPolicyClass = RequiredMapping(pathProperties, "pathPolicyClass");
         RequiredSequence(pathPolicyClass, "enum").Children.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
             .ShouldBe(["content_allowed", "metadata_only", "excluded", "restricted"]);
+        pathPolicyClass.Children.ContainsKey(new YamlScalarNode("nullable")).ShouldBeFalse("policy class is required and never null");
 
         YamlMappingNode mutation = RequiredMapping(schemas, "FileMutationRequest");
         GetScalar(RequiredMapping(RequiredMapping(mutation, "properties"), "byteLength"), "maximum").ShouldBe("1048576");
@@ -196,12 +213,33 @@ public sealed class FileContextContractGroupTests
             GetScalar(requestSchema, "$ref").ShouldBe($"#/components/schemas/{schemaName}");
             YamlMappingNode endpointSchema = RequiredMapping(schemas, schemaName);
             string allowedKind = operationId.Replace("File", string.Empty).ToLowerInvariant();
-            string[] rejectedKinds = RequiredSequence(
-                RequiredMapping(RequiredMapping(RequiredMapping(endpointSchema, "not"), "properties"), "fileOperationKind"),
-                "enum").Children.Cast<YamlScalarNode>().Select(node => node.Value ?? string.Empty).ToArray();
-            rejectedKinds.ShouldBe(new[] { "add", "change", "remove" }.Where(kind => kind != allowedKind).ToArray(),
-                $"{operationId} must reject both mismatched endpoint kinds");
+            YamlMappingNode narrowedBranch = RequiredSequence(endpointSchema, "allOf").Children
+                .Cast<YamlMappingNode>()
+                .Single(branch => branch.Children.ContainsKey(new YamlScalarNode("properties")));
+            RequiredSequence(RequiredMapping(RequiredMapping(narrowedBranch, "properties"), "fileOperationKind"), "enum")
+                .Children.Cast<YamlScalarNode>().Select(node => node.Value ?? string.Empty)
+                .ShouldBe([allowedKind], $"{operationId} must expose only its matching endpoint kind");
         }
+
+        YamlMappingNode examples = RequiredMapping(RequiredMapping(root, "components"), "examples");
+        YamlMappingNode addExample = RequiredMapping(RequiredMapping(examples, "AddFileInlineRequest"), "value");
+        YamlMappingNode changeExample = RequiredMapping(RequiredMapping(examples, "ChangeFileStreamRequest"), "value");
+        YamlMappingNode removeExample = RequiredMapping(RequiredMapping(examples, "RemoveFileRequest"), "value");
+        SchemaAccepts(root, RequiredMapping(schemas, "AddFileRequest"), addExample).ShouldBeTrue("valid inline add branch");
+        SchemaAccepts(root, RequiredMapping(schemas, "ChangeFileRequest"), changeExample).ShouldBeTrue("valid streamed change branch");
+        SchemaAccepts(root, RequiredMapping(schemas, "RemoveFileRequest"), removeExample).ShouldBeTrue("valid metadata-only removal branch");
+
+        YamlMappingNode incompleteInline = CloneMapping(addExample);
+        incompleteInline.Children.Remove(new YamlScalarNode("inlineContent"));
+        SchemaAccepts(root, RequiredMapping(schemas, "AddFileRequest"), incompleteInline).ShouldBeFalse("inline conditional requires inlineContent");
+
+        YamlMappingNode forbiddenRemovalEvidence = CloneMapping(removeExample);
+        forbiddenRemovalEvidence.Add("byteLength", "0");
+        SchemaAccepts(root, RequiredMapping(schemas, "RemoveFileRequest"), forbiddenRemovalEvidence).ShouldBeFalse("removal conditional omits content evidence");
+
+        YamlMappingNode streamBelowBoundary = CloneMapping(changeExample);
+        streamBelowBoundary.Children[new YamlScalarNode("byteLength")] = new YamlScalarNode("262144");
+        SchemaAccepts(root, RequiredMapping(schemas, "ChangeFileRequest"), streamBelowBoundary).ShouldBeFalse("stream conditional enforces its lower bound");
 
         Operation rangeRead = EnumerateOperations(root).Single(operation => operation.OperationId == "ReadFileRange");
         YamlMappingNode responses = RequiredMapping(rangeRead.Node, "responses");
@@ -304,12 +342,12 @@ public sealed class FileContextContractGroupTests
         YamlMappingNode schemas = RequiredMapping(components, "schemas");
         YamlMappingNode responses = RequiredMapping(components, "responses");
 
-        AssertExactProblem(schemas, "FileSafeResourceUnavailableProblem", "404", "tenant_access_denied", "resource_unavailable", "false", "no_action");
-        AssertExactProblem(schemas, "FileRangeUnsatisfiableProblem", "416", "range_unsatisfiable", "range_unsatisfiable", "false", "revise_request");
-        AssertExactProblem(schemas, "FilePolicyUnavailableProblem", "503", "file_policy_unavailable", "file_policy_unavailable", "true", "retry");
-        AssertExactProblem(schemas, "FileContentEvidenceInvalidProblem", "400", "validation_error", "content_evidence_invalid", "false", "revise_request");
-        AssertExactProblem(schemas, "FileInlineTransportRequiredProblem", "413", "input_limit_exceeded", "d9_inline_limit_exceeded", "true", "revise_request");
-        AssertExactProblem(schemas, "FileContentLimitExceededProblem", "422", "input_limit_exceeded", "file_content_limit_exceeded", "false", "revise_request");
+        AssertExactProblem(schemas, "FileSafeResourceUnavailableProblem", "404", "tenant_access_denied", "resource_unavailable", "false", "no_action", "Access unavailable", "The requested resource is unavailable.");
+        AssertExactProblem(schemas, "FileRangeUnsatisfiableProblem", "416", "range_unsatisfiable", "range_unsatisfiable", "false", "revise_request", "Range unsatisfiable", "The requested byte range cannot be satisfied.");
+        AssertExactProblem(schemas, "FilePolicyUnavailableProblem", "503", "file_policy_unavailable", "file_policy_unavailable", "true", "retry", "File policy unavailable", "The file policy cannot be verified for this request.");
+        AssertExactProblem(schemas, "FileContentEvidenceInvalidProblem", "400", "validation_error", "content_evidence_invalid", "false", "revise_request", "Content evidence invalid", "The supplied content evidence is not valid.");
+        AssertExactProblem(schemas, "FileInlineTransportRequiredProblem", "413", "input_limit_exceeded", "d9_inline_limit_exceeded", "true", "revise_request", "Inline payload too large", "The inline payload exceeds the configured D-9 boundary.");
+        AssertExactProblem(schemas, "FileContentLimitExceededProblem", "422", "input_limit_exceeded", "file_content_limit_exceeded", "false", "revise_request", "File content limit exceeded", "The file content exceeds the permitted maximum.");
 
         RequiredMapping(responses, "SafeAuthorizationDenial404").Children.ShouldNotBeEmpty();
         GetScalar(RequiredMapping(RequiredMapping(RequiredMapping(responses, "SafeAuthorizationDenial404"), "content"), "application/problem+json").Children[new YamlScalarNode("schema")].ShouldBeOfType<YamlMappingNode>(), "$ref")
@@ -324,6 +362,52 @@ public sealed class FileContextContractGroupTests
 
         Operation search = EnumerateOperations(root).Single(operation => operation.OperationId == "SearchFolderFiles");
         SerializeYaml(search.Node).ShouldContain("#/components/schemas/FileSearchResult", Case.Sensitive);
+        GetScalar(RequiredMapping(RequiredMapping(RequiredMapping(RequiredMapping(search.Node, "responses"), "200"), "content"), "application/json")
+            .Children[new YamlScalarNode("examples")].ShouldBeOfType<YamlMappingNode>()
+            .Children[new YamlScalarNode("synthetic")].ShouldBeOfType<YamlMappingNode>(), "$ref")
+            .ShouldBe("#/components/examples/FileSearchResult");
+
+        Operation tree = EnumerateOperations(root).Single(operation => operation.OperationId == "ListFolderFiles");
+        GetScalar(RequiredMapping(RequiredMapping(RequiredMapping(RequiredMapping(tree.Node, "responses"), "200"), "content"), "application/json")
+            .Children[new YamlScalarNode("examples")].ShouldBeOfType<YamlMappingNode>()
+            .Children[new YamlScalarNode("synthetic")].ShouldBeOfType<YamlMappingNode>(), "$ref")
+            .ShouldBe("#/components/examples/FileTreeResult");
+
+        YamlMappingNode searchResult = RequiredMapping(schemas, "FileSearchResult");
+        GetScalar(RequiredMapping(RequiredMapping(searchResult, "properties"), "items"), "maxItems").ShouldBe("500");
+
+        YamlMappingNode rangeRequestProperties = RequiredMapping(RequiredMapping(schemas, "FileRangeReadRequest"), "properties");
+        GetScalar(RequiredMapping(rangeRequestProperties, "startOffset"), "format").ShouldBe("int64");
+        GetScalar(RequiredMapping(rangeRequestProperties, "endOffset"), "format").ShouldBe("int64");
+        YamlMappingNode rangeResponses = RequiredMapping(EnumerateOperations(root).Single(operation => operation.OperationId == "ReadFileRange").Node, "responses");
+        GetScalar(RequiredMapping(RequiredMapping(RequiredMapping(RequiredMapping(rangeResponses, "200"), "content"), "application/json"), "schema"), "$ref")
+            .ShouldBe("#/components/schemas/FileRangeReadCompleteResult");
+        GetScalar(RequiredMapping(RequiredMapping(RequiredMapping(RequiredMapping(rangeResponses, "206"), "content"), "application/json"), "schema"), "$ref")
+            .ShouldBe("#/components/schemas/FileRangeReadPartialResult");
+
+        YamlMappingNode examples = RequiredMapping(components, "examples");
+        SchemaAccepts(root, searchResult, RequiredMapping(RequiredMapping(examples, "FileSearchResult"), "value"))
+            .ShouldBeTrue("the bound search example must satisfy the search-only result schema");
+        YamlMappingNode truncatedSearchWithoutReason = CloneMapping(RequiredMapping(RequiredMapping(examples, "FileSearchResult"), "value"));
+        RequiredMapping(truncatedSearchWithoutReason, "page").Children[new YamlScalarNode("isTruncated")] = new YamlScalarNode("true");
+        SchemaAccepts(root, searchResult, truncatedSearchWithoutReason)
+            .ShouldBeFalse("a truncated search page must carry its canonical truncation reason");
+        YamlMappingNode untruncatedSearchWithReason = CloneMapping(RequiredMapping(RequiredMapping(examples, "FileSearchResult"), "value"));
+        RequiredMapping(untruncatedSearchWithReason, "page").Children[new YamlScalarNode("truncatedReason")] = new YamlScalarNode("not_truncated");
+        SchemaAccepts(root, searchResult, untruncatedSearchWithReason)
+            .ShouldBeFalse("an untruncated search page must omit its optional reason");
+        YamlMappingNode truncatedSearchWithNotTruncatedLimitReason = CloneMapping(RequiredMapping(RequiredMapping(examples, "FileSearchResult"), "value"));
+        RequiredMapping(truncatedSearchWithNotTruncatedLimitReason, "page").Children[new YamlScalarNode("isTruncated")] = new YamlScalarNode("true");
+        RequiredMapping(truncatedSearchWithNotTruncatedLimitReason, "page").Children[new YamlScalarNode("truncatedReason")] = new YamlScalarNode("result_count_limit");
+        RequiredMapping(truncatedSearchWithNotTruncatedLimitReason, "limits").Children[new YamlScalarNode("isTruncated")] = new YamlScalarNode("true");
+        SchemaAccepts(root, searchResult, truncatedSearchWithNotTruncatedLimitReason)
+            .ShouldBeFalse("a truncated search limit must not report not_truncated");
+        SchemaAccepts(root, RequiredMapping(schemas, "FileTreeResult"), RequiredMapping(RequiredMapping(examples, "FileTreeResult"), "value"))
+            .ShouldBeTrue("the bound tree example must satisfy the tree result schema");
+        SchemaAccepts(root, RequiredMapping(schemas, "FileRangeReadCompleteResult"), RequiredMapping(RequiredMapping(examples, "FileRangeReadCompleteResult"), "value"))
+            .ShouldBeTrue("the 200 example must satisfy the complete range schema");
+        SchemaAccepts(root, RequiredMapping(schemas, "FileRangeReadPartialResult"), RequiredMapping(RequiredMapping(examples, "FileRangeReadPartialResult"), "value"))
+            .ShouldBeTrue("the 206 example must satisfy the partial range schema");
 
         foreach (Operation operation in EnumerateOperations(root).Where(operation => FileContextOperationIds.Contains(operation.OperationId, StringComparer.Ordinal)))
         {
@@ -681,7 +765,9 @@ public sealed class FileContextContractGroupTests
         string category,
         string code,
         string retryable,
-        string clientAction)
+        string clientAction,
+        string title,
+        string message)
     {
         YamlSequenceNode allOf = RequiredSequence(RequiredMapping(schemas, schemaName), "allOf");
         GetScalar(allOf.Children[0].ShouldBeOfType<YamlMappingNode>(), "$ref").ShouldBe("#/components/schemas/ExactFileProblem", schemaName);
@@ -690,6 +776,8 @@ public sealed class FileContextContractGroupTests
         RequiredSequence(RequiredMapping(properties, "status"), "enum").Children.Single().ShouldBeOfType<YamlScalarNode>().Value.ShouldBe(status);
         RequiredSequence(RequiredMapping(properties, "category"), "enum").Children.Single().ShouldBeOfType<YamlScalarNode>().Value.ShouldBe(category);
         RequiredSequence(RequiredMapping(properties, "code"), "enum").Children.Single().ShouldBeOfType<YamlScalarNode>().Value.ShouldBe(code);
+        RequiredSequence(RequiredMapping(properties, "title"), "enum").Children.Single().ShouldBeOfType<YamlScalarNode>().Value.ShouldBe(title);
+        RequiredSequence(RequiredMapping(properties, "message"), "enum").Children.Single().ShouldBeOfType<YamlScalarNode>().Value.ShouldBe(message);
         GetScalar(RequiredMapping(properties, "retryable"), "const").ShouldBe(retryable);
         RequiredSequence(RequiredMapping(properties, "clientAction"), "enum").Children.Single().ShouldBeOfType<YamlScalarNode>().Value.ShouldBe(clientAction);
     }
@@ -741,6 +829,24 @@ public sealed class FileContextContractGroupTests
             && SchemaAccepts(root, notNode.ShouldBeOfType<YamlMappingNode>(), instance))
         {
             return false;
+        }
+
+        if (schema.Children.TryGetValue(new YamlScalarNode("if"), out YamlNode? ifNode))
+        {
+            bool condition = SchemaAccepts(root, ifNode.ShouldBeOfType<YamlMappingNode>(), instance);
+            if (condition
+                && schema.Children.TryGetValue(new YamlScalarNode("then"), out YamlNode? thenNode)
+                && !SchemaAccepts(root, thenNode.ShouldBeOfType<YamlMappingNode>(), instance))
+            {
+                return false;
+            }
+
+            if (!condition
+                && schema.Children.TryGetValue(new YamlScalarNode("else"), out YamlNode? elseNode)
+                && !SchemaAccepts(root, elseNode.ShouldBeOfType<YamlMappingNode>(), instance))
+            {
+                return false;
+            }
         }
 
         if (schema.Children.TryGetValue(new YamlScalarNode("type"), out YamlNode? typeNode)
@@ -808,6 +914,19 @@ public sealed class FileContextContractGroupTests
                 return false;
             }
 
+            if (schema.Children.TryGetValue(new YamlScalarNode("dependentRequired"), out YamlNode? dependentRequiredNode))
+            {
+                foreach (KeyValuePair<YamlNode, YamlNode> dependency in dependentRequiredNode.ShouldBeOfType<YamlMappingNode>().Children)
+                {
+                    if (instanceMapping.Children.ContainsKey(dependency.Key)
+                        && dependency.Value.ShouldBeOfType<YamlSequenceNode>().OfType<YamlScalarNode>()
+                            .Any(required => !instanceMapping.Children.ContainsKey(new YamlScalarNode(required.Value))))
+                    {
+                        return false;
+                    }
+                }
+            }
+
             YamlMappingNode? properties = schema.Children.TryGetValue(new YamlScalarNode("properties"), out YamlNode? propertiesNode)
                 ? propertiesNode.ShouldBeOfType<YamlMappingNode>()
                 : null;
@@ -832,6 +951,55 @@ public sealed class FileContextContractGroupTests
                     {
                         return false;
                     }
+                }
+            }
+        }
+        else if (instance is YamlSequenceNode instanceSequence)
+        {
+            if (schema.Children.TryGetValue(new YamlScalarNode("minItems"), out YamlNode? minItemsNode)
+                && instanceSequence.Children.Count < int.Parse(minItemsNode.ShouldBeOfType<YamlScalarNode>().Value!))
+            {
+                return false;
+            }
+
+            if (schema.Children.TryGetValue(new YamlScalarNode("maxItems"), out YamlNode? maxItemsNode)
+                && instanceSequence.Children.Count > int.Parse(maxItemsNode.ShouldBeOfType<YamlScalarNode>().Value!))
+            {
+                return false;
+            }
+
+            if (schema.Children.TryGetValue(new YamlScalarNode("uniqueItems"), out YamlNode? uniqueItemsNode)
+                && uniqueItemsNode.ShouldBeOfType<YamlScalarNode>().Value == "true"
+                && instanceSequence.Children.Select(SerializeYaml).Distinct(StringComparer.Ordinal).Count() != instanceSequence.Children.Count)
+            {
+                return false;
+            }
+
+            int prefixCount = 0;
+            if (schema.Children.TryGetValue(new YamlScalarNode("prefixItems"), out YamlNode? prefixItemsNode))
+            {
+                YamlSequenceNode prefixSchemas = prefixItemsNode.ShouldBeOfType<YamlSequenceNode>();
+                prefixCount = prefixSchemas.Children.Count;
+                for (int index = 0; index < Math.Min(instanceSequence.Children.Count, prefixCount); index++)
+                {
+                    if (!SchemaAccepts(root, prefixSchemas.Children[index].ShouldBeOfType<YamlMappingNode>(), instanceSequence.Children[index]))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (schema.Children.TryGetValue(new YamlScalarNode("items"), out YamlNode? itemsNode))
+            {
+                if (itemsNode is YamlScalarNode { Value: "false" } && instanceSequence.Children.Count > prefixCount)
+                {
+                    return false;
+                }
+
+                if (itemsNode is YamlMappingNode itemSchema
+                    && instanceSequence.Children.Any(item => !SchemaAccepts(root, itemSchema, item)))
+                {
+                    return false;
                 }
             }
         }

@@ -68,10 +68,10 @@ internal static class FileTools
         [Description("Caller-sourced idempotency key (required; never MCP-generated).")] string idempotencyKey,
         [Description("Caller-provided task ID (required; never MCP-generated).")] string taskId,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
-        [Description("Request body as inline JSON matching the FileMutationRequest (removal) contract schema.")] string? requestJson = null,
+        [Description("Request body as inline JSON matching the RemoveFileRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.RemoveFileAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<FileMutationRequest>(requestJson), ct)), cancellationToken);
+            client.RemoveFileAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<RemoveFileRequest>(requestJson), ct)), cancellationToken);
 
     private static Task<string> Upload(
         ToolPipeline pipeline,

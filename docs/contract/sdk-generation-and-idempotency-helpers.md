@@ -22,10 +22,10 @@ Generated files are not manually customized. Hexalith-specific helper logic is e
 ## Rerun Command
 
 ```text
-dotnet msbuild src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj /t:GenerateHexalithFoldersClient
+dotnet msbuild src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug
 ```
 
-The client project also runs the generation target before compile when the generated client is stale or missing.
+This explicit target runs raw NSwag client generation, deterministic helper generation, and the required generated-client postprocessing as one fail-closed pipeline. Do not invoke the raw `GenerateHexalithFoldersClient` target as a recovery command because that omits helper regeneration and postprocessing. Ordinary compilation never repairs checked-in generated artifacts; CI verifies freshness before it builds.
 
 ## Deterministic Output Policy
 

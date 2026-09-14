@@ -137,6 +137,7 @@ public sealed class GovernanceCompletenessGateTests
             .Select(item => item.GetString().ShouldNotBeNull()).ToArray();
         reportInputs.ShouldContain("docs/contract/file-context-contract-groups.md");
         reportInputs.ShouldContain("docs/contract/oq2-file-policy-evidence.yaml");
+        reportInputs.ShouldContain("src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml");
     }
 
     [Fact]
@@ -536,6 +537,7 @@ public sealed class GovernanceCompletenessGateTests
         [
             "docs/contract/file-context-contract-groups.md",
             "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml",
             "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs",
             "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
         ]);
@@ -1221,6 +1223,7 @@ public sealed class GovernanceCompletenessGateTests
         [
             "docs/contract/file-context-contract-groups.md",
             "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+            "src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml",
             "tests/Hexalith.Folders.Contracts.Tests/OpenApi/FileContextContractGroupTests.cs",
             "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs",
         ];

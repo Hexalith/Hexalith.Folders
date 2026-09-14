@@ -106,6 +106,20 @@ public sealed class ContractSpineFoundationTests
 
         YamlMappingNode parityValueSchema = RequiredMapping(RequiredMapping(vocabulary, "x-hexalith-parity-dimensions"), "valueSchema");
         (GetScalar(parityValueSchema, "description") ?? string.Empty).ShouldContain("vocabulary only");
+
+        YamlMappingNode filePolicy = RequiredMapping(vocabulary, "x-hexalith-file-policy");
+        YamlMappingNode filePolicyExample = RequiredMapping(filePolicy, "example");
+        GetScalar(filePolicyExample, "vocabularyRef").ShouldNotBeNullOrWhiteSpace();
+        GetScalar(filePolicyExample, "foundationUse").ShouldNotBeNullOrWhiteSpace();
+        YamlMappingNode characterProfile = RequiredMapping(
+            RequiredMapping(
+                RequiredMapping(
+                    RequiredMapping(filePolicy, "valueSchema"),
+                    "properties"),
+                "pathProfile"),
+            "properties");
+        GetScalar(RequiredMapping(characterProfile, "characterProfile"), "const")
+            .ShouldBe("ASCII A-Z a-z 0-9 . _ - /");
     }
 
     [Fact]

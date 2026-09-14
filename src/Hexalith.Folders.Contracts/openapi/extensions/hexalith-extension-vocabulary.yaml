@@ -540,7 +540,7 @@ x-hexalith-file-policy:
         additionalProperties: false
         required: [characterProfile, maximumCharacters, unicodeNormalization, collisionComparison, componentCollisionComparison, callerSpelling, linkHandling, trailingSpaceOrDot, restrictedRoots]
         properties:
-          characterProfile: { type: string, minLength: 1, maxLength: 64 }
+          characterProfile: { type: string, const: ASCII A-Z a-z 0-9 . _ - / }
           maximumCharacters: { type: integer, const: 500 }
           unicodeNormalization: { type: string, enum: [NFC] }
           collisionComparison: { type: string, enum: [ordinal-ignore-case] }
@@ -723,6 +723,8 @@ x-hexalith-file-policy:
               clientAction: { type: string, enum: [revise_request] }
         items: false
   example:
+    vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-file-policy
+    foundationUse: Binds every file mutation and context query to the closed OQ2 policy instance below.
     version: 1.1.0
     canonicalArtifact: docs/contract/file-context-contract-groups.md
     pathProfile:

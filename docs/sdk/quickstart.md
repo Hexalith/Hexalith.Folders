@@ -104,7 +104,7 @@ var descriptor = new FileUploadDescriptor
     {
         NormalizedPath = "docs/readme.md",
         DisplayName = "readme.md",
-        PathPolicyClass = "metadata_only",
+        PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
         UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
     },
     FileOperationKind = FileMutationRequestFileOperationKind.Add, // or Change

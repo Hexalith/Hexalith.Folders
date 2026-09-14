@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +8,8 @@ using Hexalith.Folders.Cli.Errors;
 using Hexalith.Folders.Cli.Rendering;
 using Hexalith.Folders.Client.Convenience;
 using Hexalith.Folders.Client.Generated;
+
+using Newtonsoft.Json;
 
 namespace Hexalith.Folders.Cli.Commands;
 
@@ -182,13 +185,33 @@ internal sealed class CommandPipeline
         {
             // Content exceeds the inline transport boundary. Content-safe and retryable via streamed staging;
             // mapped to the input-limit family (69). The message never discloses limits, paths, or content.
-            ResultRenderer.RenderClientError(
+            ResultRenderer.RenderCanonicalClientError(
                 _dependencies.Console,
                 global.Output,
                 "input_limit_exceeded",
+                "d9_inline_limit_exceeded",
                 "File content exceeds the inline upload limit; stage it out of band and retry via the streamed transport.",
-                correlationId);
+                correlationId,
+                retryable: true,
+                clientAction: "revise_request");
             return FoldersExitCodes.ValidationError;
+        }
+        catch (FileContentLimitExceededException)
+        {
+            ResultRenderer.RenderCanonicalClientError(
+                _dependencies.Console,
+                global.Output,
+                "input_limit_exceeded",
+                "file_content_limit_exceeded",
+                "The file content exceeds the permitted maximum.",
+                correlationId,
+                retryable: false,
+                clientAction: "revise_request");
+            return FoldersExitCodes.ValidationError;
+        }
+        catch (Exception exception) when (IsRequestValidationFailure(exception))
+        {
+            return UsageError(global, correlationId, "The request body is not valid for this operation.");
         }
         catch (HexalithFoldersApiException<ProblemDetails> typed) when (typed.Result is not null)
         {
@@ -244,4 +267,9 @@ internal sealed class CommandPipeline
 
     private void EmitCorrelation(string correlationId)
         => _dependencies.Console.Error.WriteLine($"correlation-id: {correlationId}");
+
+    private static bool IsRequestValidationFailure(Exception exception) =>
+        exception is JsonSerializationException
+        || (exception is TargetInvocationException { InnerException: { } inner }
+            && IsRequestValidationFailure(inner));
 }

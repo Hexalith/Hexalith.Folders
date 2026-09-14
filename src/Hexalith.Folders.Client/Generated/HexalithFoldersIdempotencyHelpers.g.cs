@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "6550ef3ed6f40937a1d97626cd4f4917747d3a516fc8c1069a0e145c152036fe";
+    public const string ContractSpineSha256 = "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2";
     public const string GenerationConfigurationSha256 = "50cf48e82504d08f309328a3c3eca940f71bef7ec8794aada4ae2ff2e872dbf8";
-    public const string GeneratedHelpersSha256 = "8d11d138b8423744460418728f589d8263da14bc956d6d139d147091a643829d";
+    public const string GeneratedHelpersSha256 = "679ef8c351da8e7310e898a461daccec3e5e88d1cff4da2e745c2c3aa02f5092";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -184,32 +184,12 @@ public partial class HexalithFoldersApiException
     {
         if (this is HexalithFoldersApiException<ProblemDetails> typed)
         {
-            return (typed.Result, null);
+            return typed.Result is not null && typed.Result.Status == StatusCode
+                ? (typed.Result, null)
+                : (null, "http_status_mismatch");
         }
 
-        if (string.IsNullOrWhiteSpace(Response))
-        {
-            return (null, null);
-        }
-
-        try
-        {
-            using StringReader stringReader = new(Response);
-            using JsonTextReader jsonReader = new(stringReader)
-            {
-                DateParseHandling = DateParseHandling.None,
-                FloatParseHandling = FloatParseHandling.Decimal,
-            };
-            JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
-            {
-                Culture = System.Globalization.CultureInfo.InvariantCulture,
-            });
-            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);
-        }
-        catch (Exception exception) when (exception is JsonException or JsonSerializationException)
-        {
-            return (null, exception.GetType().Name);
-        }
+        return Hexalith.Folders.Client.Serialization.Oq2ProblemProjection.Project(this);
     }
 }
 
@@ -223,10 +203,74 @@ public partial class PathMetadata
             return; // Visible/content-only derived schemas carry their own narrowed pathPolicyClass property.
         }
 
-        if (PathPolicyClass is null || !Enum.IsDefined(PathPolicyClass.Value))
+        if (!Enum.IsDefined(PathPolicyClass))
         {
             throw new JsonSerializationException("PathMetadata.pathPolicyClass is required and must be a defined canonical policy class.");
         }
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePath(this);
+    }
+}
+
+public partial class VisiblePathMetadata
+{
+    [System.Runtime.Serialization.OnSerializing]
+    private void SynchronizePolicyClassBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        ((PathMetadata)this).PathPolicyClass = PathPolicyClass switch
+        {
+            VisiblePathMetadataPathPolicyClass.Content_allowed => PathMetadataPathPolicyClass.Content_allowed,
+            VisiblePathMetadataPathPolicyClass.Metadata_only => PathMetadataPathPolicyClass.Metadata_only,
+            _ => throw new JsonSerializationException("VisiblePathMetadata.pathPolicyClass must be canonical."),
+        };
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePath(this);
+    }
+}
+
+public partial class ContentAllowedPathMetadata
+{
+    [System.Runtime.Serialization.OnSerializing]
+    private void SynchronizePolicyClassBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (PathPolicyClass != ContentAllowedPathMetadataPathPolicyClass.Content_allowed)
+        {
+            throw new JsonSerializationException("ContentAllowedPathMetadata.pathPolicyClass must be content_allowed.");
+        }
+
+        ((PathMetadata)this).PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePath(this);
+    }
+}
+
+public partial class AddFileRequest
+{
+    [System.Runtime.Serialization.OnSerializing]
+    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (FileOperationKind != AddFileRequestFileOperationKind.Add) throw new JsonSerializationException("AddFileRequest requires fileOperationKind add.");
+        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Add;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Add);
+    }
+}
+
+public partial class ChangeFileRequest
+{
+    [System.Runtime.Serialization.OnSerializing]
+    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (FileOperationKind != ChangeFileRequestFileOperationKind.Change) throw new JsonSerializationException("ChangeFileRequest requires fileOperationKind change.");
+        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Change;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Change);
+    }
+}
+
+public partial class RemoveFileRequest
+{
+    [System.Runtime.Serialization.OnSerializing]
+    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (FileOperationKind != RemoveFileRequestFileOperationKind.Remove) throw new JsonSerializationException("RemoveFileRequest requires fileOperationKind remove.");
+        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Remove;
+        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Remove);
     }
 }
 
@@ -523,7 +567,7 @@ public partial class FileMutationRequest
                         new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
-                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
                         new IdempotencyField("task_id", true, taskId),
                         new IdempotencyField("workspace_id", true, workspaceId),
                     })
@@ -537,7 +581,7 @@ public partial class FileMutationRequest
                         new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
-                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
                         new IdempotencyField("task_id", true, taskId),
                         new IdempotencyField("workspace_id", true, workspaceId),
                     })
@@ -550,13 +594,22 @@ public partial class FileMutationRequest
                         new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
-                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
                         new IdempotencyField("task_id", true, taskId),
                         new IdempotencyField("workspace_id", true, workspaceId),
                     })
             ,
             _ => throw new InvalidOperationException($"Unsupported file mutation operation '{operationId}'."),
         };
+    }
+
+    [System.Runtime.Serialization.OnSerializing]
+    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)
+    {
+        if (GetType() == typeof(FileMutationRequest))
+        {
+            Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileOperationKind);
+        }
     }
 
     private string ResolveFileMutationOperationId() => FileOperationKind switch

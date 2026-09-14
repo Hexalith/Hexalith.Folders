@@ -2951,3 +2951,27 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq1-approve-lock-authorization-timing.md`
   summary: Make generic governance approval evaluation reject a present malformed or empty `review_by` value.
   evidence: The pre-existing evaluator validates only a non-empty scalar `review_by`; an empty scalar or mapping is silently ignored. C7 does not currently use `review_by`, so this belongs to generic governance hardening.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
+  summary: Make generic typed Problem Details projection fail closed for success-category or otherwise incoherent error bodies.
+  evidence: A pre-existing `HexalithFoldersApiException<ProblemDetails>` with matching HTTP/body status can retain `CanonicalErrorCategory.Success`, which downstream CLI and MCP mappings can treat as success even though transport failed.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
+  summary: Extend the public generated-artifact verification helper to verify the principal generated client as well as helper provenance.
+  evidence: The pre-existing `HexalithFoldersGeneratedArtifacts.VerifyCurrent` hashes the spine, generation configuration, and helper file but not the principal generated client; the CI isolated-regeneration test currently supplies the missing protection only inside the repository gate.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
+  summary: Give the `/pushall` skill the collaboration capabilities its required subagent orchestration needs.
+  evidence: The unrelated agent-context manifest permits only Git shell commands while the workflow requires dedicated subagents, so runtimes that enforce the manifest cannot perform its mandated orchestration.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
+  summary: Make `/pushall` resolve the remote's advertised default branch before falling back to local branch names.
+  evidence: The unrelated agent-context procedure prefers any local `main` or `master`, which can select a stale non-default branch and then merge, push, or prune against the wrong target.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
+  summary: Preserve dirty detached-HEAD work safely before `/pushall` switches to the default branch.
+  evidence: The unrelated agent-context procedure commits dirty detached-HEAD work in place and then checks out the default branch, which can strand the new commit without a protecting ref.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-oq2-publish-canonical-file-policy-vocabulary-and-behavior.md`
+  summary: Validate every clean `/pushall` merge before pushing and pruning branches.
+  evidence: The unrelated agent-context procedure requires validation only after conflict resolution, so a syntactically clean merge that breaks the repository can still be pushed and its source branches pruned.

@@ -115,9 +115,22 @@ internal sealed record McpFailure
     {
         Kind = "input_limit_exceeded",
         CorrelationId = correlationId,
-        Code = "input_limit_exceeded",
-        Retryable = false,
+        Code = "d9_inline_limit_exceeded",
+        Retryable = true,
         ClientAction = "revise_request",
         Message = "File content exceeds the inline upload limit; stage it out of band and retry via the streamed transport.",
+    };
+
+    /// <summary>Builds the canonical non-retryable absolute file-content limit failure.</summary>
+    /// <param name="correlationId">The correlation ID used by the call.</param>
+    /// <returns>The input-limit failure.</returns>
+    public static McpFailure FileContentLimitExceeded(string correlationId) => new()
+    {
+        Kind = "input_limit_exceeded",
+        CorrelationId = correlationId,
+        Code = "file_content_limit_exceeded",
+        Retryable = false,
+        ClientAction = "revise_request",
+        Message = "The file content exceeds the permitted maximum.",
     };
 }

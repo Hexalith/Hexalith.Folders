@@ -55,9 +55,23 @@ public static class FileUpload
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
         EnsureUploadOperationKind(fileOperationKind);
 
+        if (content.Length > MaximumFileBytes)
+        {
+            throw new FileContentLimitExceededException(nameof(content));
+        }
+
         if (content.Length > InlineTransportBoundaryBytes)
         {
             throw new FileUploadStreamingRequiredException();
+        }
+
+        string computedHashReference = ComputeContentHashReference(content.Span);
+        if (contentHashReference is not null
+            && !string.Equals(contentHashReference, computedHashReference, StringComparison.Ordinal))
+        {
+            throw new ArgumentException(
+                "The explicit content hash reference must exactly match the supplied content.",
+                nameof(contentHashReference));
         }
 
         PutFileInline inline = new()
@@ -78,9 +92,7 @@ public static class FileUpload
             FileOperationKind = fileOperationKind,
             TransportOperation = FileMutationRequestTransportOperation.PutFileInline,
             ByteLength = content.Length,
-            ContentHashReference = string.IsNullOrWhiteSpace(contentHashReference)
-                ? ComputeContentHashReference(content.Span)
-                : contentHashReference,
+            ContentHashReference = contentHashReference ?? computedHashReference,
             InlineContent = inline,
         };
         return request;
@@ -120,9 +132,7 @@ public static class FileUpload
 
         if (stagingEvidence.ObservedLength > MaximumFileBytes)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(stagingEvidence),
-                $"Streamed staging evidence must not exceed the canonical {MaximumFileBytes}-byte per-file maximum.");
+            throw new FileContentLimitExceededException(nameof(stagingEvidence));
         }
 
         PutFileStream descriptor = new()

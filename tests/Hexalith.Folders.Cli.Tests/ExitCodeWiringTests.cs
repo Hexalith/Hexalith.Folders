@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,8 +22,6 @@ public sealed class ExitCodeWiringTests
 {
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
-    private static readonly IReadOnlyDictionary<string, IEnumerable<string>> NoHeaders = new Dictionary<string, IEnumerable<string>>();
-
     [Theory]
     [InlineData(CanonicalErrorCategory.Not_found, 73)]
     [InlineData(CanonicalErrorCategory.Workspace_locked, 67)]
@@ -83,33 +81,33 @@ public sealed class ExitCodeWiringTests
     [InlineData("range_unsatisfiable", 69)]
     public async Task ExactFileProblemDtosPreserveCanonicalProjection(string category, int expectedExit)
     {
+        bool policyUnavailable = category == "file_policy_unavailable";
         string response = Newtonsoft.Json.JsonConvert.SerializeObject(new
         {
             type = "about:blank",
-            title = "File request failed",
-            status = 503,
+            title = policyUnavailable ? "File policy unavailable" : "Range unsatisfiable",
+            status = policyUnavailable ? 503 : 416,
             category,
-            code = category,
-            message = "The file request could not be completed.",
+            code = policyUnavailable ? "file_policy_unavailable" : "range_unsatisfiable",
+            message = policyUnavailable
+                ? "The file policy cannot be verified for this request."
+                : "The requested byte range cannot be satisfied.",
             correlationId = "server-file-correlation",
-            retryable = true,
-            clientAction = "retry",
-            details = new { visibility = "redacted" },
+            retryable = policyUnavailable,
+            clientAction = policyUnavailable ? "retry" : "revise_request",
+            details = new { visibility = policyUnavailable ? "redacted" : "metadata_only" },
         });
-        HexalithFoldersApiException exact = category == "file_policy_unavailable"
-            ? new HexalithFoldersApiException<FileMutationUnavailableProblem>("policy", 503, response, NoHeaders, null!, null)
-            : new HexalithFoldersApiException<FileRangeUnsatisfiableProblem>("range", 416, response, NoHeaders, null!, null);
-
-        IClient client = Substitute.For<IClient>();
-        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
-            .Returns(_ => Task.FromException<FolderLifecycleStatus>(exact));
-        CliTestHarness harness = new() { Client = client };
+        CliTestHarness harness = new();
+        _ = harness.UseRealClient(policyUnavailable ? HttpStatusCode.ServiceUnavailable : HttpStatusCode.RequestedRangeNotSatisfiable, response);
 
         int exit = await harness.RunAsync(
-            "folder", "status",
+            "context", "read-range",
             "--folder-id", "folder_1",
+            "--workspace-id", "workspace_1",
+            "--task-id", "task_1",
             "--base-address", BaseAddress,
-            "--token", Token);
+            "--token", Token,
+            "--request", "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"startOffset\":0,\"endOffset\":1}");
 
         exit.ShouldBe(expectedExit);
         harness.Console.StdErr.ShouldContain(category);

@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using YamlDotNet.RepresentationModel;
 using Hexalith.Folders.Client.Generation.Shared;
+using Hexalith.Folders.Client.Generation;
 using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
 
 Dictionary<string, string> arguments = ParseArguments(args);
@@ -11,6 +12,7 @@ string repositoryRoot = RequiredArgument(arguments, "--repository-root");
 string contractPath = RequiredArgument(arguments, "--contract");
 string configurationPath = RequiredArgument(arguments, "--configuration");
 string outputPath = RequiredArgument(arguments, "--output");
+string clientPath = RequiredArgument(arguments, "--client");
 
 string contract = NormalizeText(File.ReadAllText(contractPath));
 string configuration = NormalizeText(File.ReadAllText(configurationPath));
@@ -36,7 +38,23 @@ if (output.IndexOf(constDeclarationSentinel, constLineIndex + constDeclarationSe
 int placeholderOffset = constLineIndex + ConstDeclarationPrefix.Length;
 output = output.Remove(placeholderOffset, PlaceholderToken.Length).Insert(placeholderOffset, helperHash);
 Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
-File.WriteAllText(outputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+GeneratedClientPostProcessor.Process(clientPath);
+WriteAtomically(outputPath, output);
+
+static void WriteAtomically(string path, string content)
+{
+    string directory = Path.GetDirectoryName(path) ?? ".";
+    string temporaryPath = Path.Combine(directory, $".{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
+    try
+    {
+        File.WriteAllText(temporaryPath, content, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        File.Move(temporaryPath, path, overwrite: true);
+    }
+    finally
+    {
+        File.Delete(temporaryPath);
+    }
+}
 
 static IReadOnlyList<HelperModel> BuildHelpers(YamlMappingNode root, IReadOnlyList<OperationModel> operations)
 {
@@ -523,32 +541,12 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("    {");
     code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
     code.AppendLine("        {");
-    code.AppendLine("            return (typed.Result, null);");
+    code.AppendLine("            return typed.Result is not null && typed.Result.Status == StatusCode");
+    code.AppendLine("                ? (typed.Result, null)");
+    code.AppendLine("                : (null, \"http_status_mismatch\");");
     code.AppendLine("        }");
     code.AppendLine();
-    code.AppendLine("        if (string.IsNullOrWhiteSpace(Response))");
-    code.AppendLine("        {");
-    code.AppendLine("            return (null, null);");
-    code.AppendLine("        }");
-    code.AppendLine();
-    code.AppendLine("        try");
-    code.AppendLine("        {");
-    code.AppendLine("            using StringReader stringReader = new(Response);");
-    code.AppendLine("            using JsonTextReader jsonReader = new(stringReader)");
-    code.AppendLine("            {");
-    code.AppendLine("                DateParseHandling = DateParseHandling.None,");
-    code.AppendLine("                FloatParseHandling = FloatParseHandling.Decimal,");
-    code.AppendLine("            };");
-    code.AppendLine("            JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings");
-    code.AppendLine("            {");
-    code.AppendLine("                Culture = System.Globalization.CultureInfo.InvariantCulture,");
-    code.AppendLine("            });");
-    code.AppendLine("            return (serializer.Deserialize<ProblemDetails>(jsonReader), null);");
-    code.AppendLine("        }");
-    code.AppendLine("        catch (Exception exception) when (exception is JsonException or JsonSerializationException)");
-    code.AppendLine("        {");
-    code.AppendLine("            return (null, exception.GetType().Name);");
-    code.AppendLine("        }");
+    code.AppendLine("        return Hexalith.Folders.Client.Serialization.Oq2ProblemProjection.Project(this);");
     code.AppendLine("    }");
     code.AppendLine("}");
     code.AppendLine();
@@ -563,10 +561,79 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("            return; // Visible/content-only derived schemas carry their own narrowed pathPolicyClass property.");
     code.AppendLine("        }");
     code.AppendLine();
-    code.AppendLine("        if (PathPolicyClass is null || !Enum.IsDefined(PathPolicyClass.Value))");
+    code.AppendLine("        if (!Enum.IsDefined(PathPolicyClass))");
     code.AppendLine("        {");
     code.AppendLine("            throw new JsonSerializationException(\"PathMetadata.pathPolicyClass is required and must be a defined canonical policy class.\");");
     code.AppendLine("        }");
+    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePath(this);");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+
+    code.AppendLine("public partial class VisiblePathMetadata");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+    code.AppendLine("    private void SynchronizePolicyClassBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine("        ((PathMetadata)this).PathPolicyClass = PathPolicyClass switch");
+    code.AppendLine("        {");
+    code.AppendLine("            VisiblePathMetadataPathPolicyClass.Content_allowed => PathMetadataPathPolicyClass.Content_allowed,");
+    code.AppendLine("            VisiblePathMetadataPathPolicyClass.Metadata_only => PathMetadataPathPolicyClass.Metadata_only,");
+    code.AppendLine("            _ => throw new JsonSerializationException(\"VisiblePathMetadata.pathPolicyClass must be canonical.\"),");
+    code.AppendLine("        };");
+    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePath(this);");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+
+    code.AppendLine("public partial class ContentAllowedPathMetadata");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+    code.AppendLine("    private void SynchronizePolicyClassBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine("        if (PathPolicyClass != ContentAllowedPathMetadataPathPolicyClass.Content_allowed)");
+    code.AppendLine("        {");
+    code.AppendLine("            throw new JsonSerializationException(\"ContentAllowedPathMetadata.pathPolicyClass must be content_allowed.\");");
+    code.AppendLine("        }");
+    code.AppendLine();
+    code.AppendLine("        ((PathMetadata)this).PathPolicyClass = PathMetadataPathPolicyClass.Content_allowed;");
+    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidatePath(this);");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+
+    code.AppendLine("public partial class AddFileRequest");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+    code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine("        if (FileOperationKind != AddFileRequestFileOperationKind.Add) throw new JsonSerializationException(\"AddFileRequest requires fileOperationKind add.\");");
+    code.AppendLine("        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Add;");
+    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Add);");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+
+    code.AppendLine("public partial class ChangeFileRequest");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+    code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine("        if (FileOperationKind != ChangeFileRequestFileOperationKind.Change) throw new JsonSerializationException(\"ChangeFileRequest requires fileOperationKind change.\");");
+    code.AppendLine("        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Change;");
+    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Change);");
+    code.AppendLine("    }");
+    code.AppendLine("}");
+    code.AppendLine();
+
+    code.AppendLine("public partial class RemoveFileRequest");
+    code.AppendLine("{");
+    code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+    code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+    code.AppendLine("    {");
+    code.AppendLine("        if (FileOperationKind != RemoveFileRequestFileOperationKind.Remove) throw new JsonSerializationException(\"RemoveFileRequest requires fileOperationKind remove.\");");
+    code.AppendLine("        ((FileMutationRequest)this).FileOperationKind = FileMutationRequestFileOperationKind.Remove;");
+    code.AppendLine("        Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileMutationRequestFileOperationKind.Remove);");
     code.AppendLine("    }");
     code.AppendLine("}");
     code.AppendLine();
@@ -689,6 +756,15 @@ static void RenderHelper(StringBuilder code, HelperModel helper)
 
     if (helper.SchemaName == "FileMutationRequest")
     {
+        code.AppendLine();
+        code.AppendLine("    [System.Runtime.Serialization.OnSerializing]");
+        code.AppendLine("    private void ValidateBeforeSerialization(System.Runtime.Serialization.StreamingContext _)");
+        code.AppendLine("    {");
+        code.AppendLine("        if (GetType() == typeof(FileMutationRequest))");
+        code.AppendLine("        {");
+        code.AppendLine("            Hexalith.Folders.Client.Serialization.Oq2RequestValidation.ValidateMutation(this, FileOperationKind);");
+        code.AppendLine("        }");
+        code.AppendLine("    }");
         code.AppendLine();
         code.AppendLine("    private string ResolveFileMutationOperationId() => FileOperationKind switch");
         code.AppendLine("    {");
@@ -849,6 +925,6 @@ internal static class SpecialFields
         // Entry: path_metadata (AddFile, ChangeFile, RemoveFile equivalence; typed PathMetadata object).
         [("FileMutationRequest", "path_metadata")] = new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
         // Entry: path_policy_class (derives from PathMetadata.PathPolicyClass; declared spine-side as a top-level equivalence entry on all three file-mutation operations).
-        [("FileMutationRequest", "path_policy_class")] = new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
+        [("FileMutationRequest", "path_policy_class")] = new FieldModel("path_policy_class", "PathMetadata is not null", "PathMetadata?.PathPolicyClass"),
     };
 }

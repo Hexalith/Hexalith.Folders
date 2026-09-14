@@ -559,7 +559,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body);
+        System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, AddFileRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -575,7 +575,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, AddFileRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Change a file through the prepared workspace file mutation contract.
@@ -590,7 +590,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body);
+        System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, ChangeFileRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -606,7 +606,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, ChangeFileRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Remove a file through metadata-only mutation evidence.
@@ -621,7 +621,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File removal accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body);
+        System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, RemoveFileRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -637,7 +637,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File removal accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, RemoveFileRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// List authorized workspace file metadata.
@@ -4868,7 +4868,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body)
+        public virtual System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, AddFileRequest body)
         {
             return AddFileAsync(folderId, workspaceId, idempotency_Key, x_Correlation_Id, x_Hexalith_Task_Id, body, System.Threading.CancellationToken.None);
         }
@@ -4887,7 +4887,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AcceptedCommand> AddFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, AddFileRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (folderId == null)
                 throw new System.ArgumentNullException("folderId");
@@ -5106,7 +5106,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body)
+        public virtual System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, ChangeFileRequest body)
         {
             return ChangeFileAsync(folderId, workspaceId, idempotency_Key, x_Correlation_Id, x_Hexalith_Task_Id, body, System.Threading.CancellationToken.None);
         }
@@ -5125,7 +5125,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File mutation accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AcceptedCommand> ChangeFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, ChangeFileRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (folderId == null)
                 throw new System.ArgumentNullException("folderId");
@@ -5344,7 +5344,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File removal accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body)
+        public virtual System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, RemoveFileRequest body)
         {
             return RemoveFileAsync(folderId, workspaceId, idempotency_Key, x_Correlation_Id, x_Hexalith_Task_Id, body, System.Threading.CancellationToken.None);
         }
@@ -5363,7 +5363,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Task_Id">Caller-provided task identity. Required because task_id participates in file mutation idempotency equivalence and lock scope.</param>
         /// <returns>File removal accepted as metadata-only task work.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, FileMutationRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AcceptedCommand> RemoveFileAsync(string folderId, string workspaceId, string idempotency_Key, string x_Correlation_Id, string x_Hexalith_Task_Id, RemoveFileRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (folderId == null)
                 throw new System.ArgumentNullException("folderId");
@@ -6857,7 +6857,7 @@ namespace Hexalith.Folders.Client.Generated
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileRangeReadResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileRangeReadCompleteResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -6867,7 +6867,7 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 206)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileRangeReadResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileRangeReadPartialResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -10148,8 +10148,13 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileSafeResourceUnavailableProblem : ExactFileProblem
     {
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSafeResourceUnavailableProblemTitle Title { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FileSafeResourceUnavailableProblemStatus Status { get; set; }
@@ -10161,6 +10166,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSafeResourceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSafeResourceUnavailableProblemMessage Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Retryable { get; set; }
@@ -10184,8 +10193,13 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileRangeUnsatisfiableProblem : ExactFileProblem
     {
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileRangeUnsatisfiableProblemTitle Title { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FileRangeUnsatisfiableProblemStatus Status { get; set; }
@@ -10197,6 +10211,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileRangeUnsatisfiableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileRangeUnsatisfiableProblemMessage Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Retryable { get; set; }
@@ -10220,8 +10238,13 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FilePolicyUnavailableProblem : ExactFileProblem
     {
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FilePolicyUnavailableProblemTitle Title { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FilePolicyUnavailableProblemStatus Status { get; set; }
@@ -10233,6 +10256,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FilePolicyUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FilePolicyUnavailableProblemMessage Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Retryable { get; set; }
@@ -10256,8 +10283,13 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileContentEvidenceInvalidProblem : ExactFileProblem
     {
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentEvidenceInvalidProblemTitle Title { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FileContentEvidenceInvalidProblemStatus Status { get; set; }
@@ -10269,6 +10301,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentEvidenceInvalidProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentEvidenceInvalidProblemMessage Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Retryable { get; set; }
@@ -10292,14 +10328,20 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileContentEvidenceInvalidOrValidationProblem : ProblemDetails
     {
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileInlineTransportRequiredProblem : ExactFileProblem
     {
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileInlineTransportRequiredProblemTitle Title { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FileInlineTransportRequiredProblemStatus Status { get; set; }
@@ -10311,6 +10353,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileInlineTransportRequiredProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileInlineTransportRequiredProblemMessage Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Retryable { get; set; }
@@ -10334,8 +10380,13 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileContentLimitExceededProblem : ExactFileProblem
     {
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentLimitExceededProblemTitle Title { get; set; }
 
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FileContentLimitExceededProblemStatus Status { get; set; }
@@ -10347,6 +10398,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentLimitExceededProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileContentLimitExceededProblemMessage Message { get; set; }
 
         [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Retryable { get; set; }
@@ -10370,18 +10425,21 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileContentLimitExceededOrWorkspaceTransitionProblem : ProblemDetails
     {
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileMutationUnavailableProblem : ProblemDetails
     {
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileContextUnavailableProblem : ProblemDetails
     {
 
@@ -11476,6 +11534,7 @@ namespace Hexalith.Folders.Client.Generated
     /// <br/>
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class PathMetadata
     {
 
@@ -11494,9 +11553,9 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Closed, server-owned file-policy v1.1.0 classification. Callers cannot select or upgrade this value; any value carried through a request is revalidated against the pinned server policy. A required bounded include allowlist is evaluated first, exclusions always win with no re-inclusion, and invalid, unavailable, or changed policy fails closed.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public PathMetadataPathPolicyClass? PathPolicyClass { get; set; }
+        public PathMetadataPathPolicyClass PathPolicyClass { get; set; }
 
         [Newtonsoft.Json.JsonProperty("unicodeNormalization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -11508,6 +11567,7 @@ namespace Hexalith.Folders.Client.Generated
     /// Successful metadata-response path. Hidden classes can never inhabit this schema.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class VisiblePathMetadata : PathMetadata
     {
 
@@ -11530,6 +11590,7 @@ namespace Hexalith.Folders.Client.Generated
     /// Successful content-response path. Only content_allowed can inhabit this schema.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class ContentAllowedPathMetadata : PathMetadata
     {
 
@@ -11553,6 +11614,7 @@ namespace Hexalith.Folders.Client.Generated
     /// <br/>
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileMutationRequest : object
     {
 
@@ -11579,14 +11641,56 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Logical content length in bytes. Inline branch caps this at 262144; stream branch permits 262145 through the file-policy v1.1.0 per-file maximum of 1048576. Content is never silently truncated.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("byteLength", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int ByteLength { get; set; }
+        [Newtonsoft.Json.JsonProperty("byteLength", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? ByteLength { get; set; }
 
         [Newtonsoft.Json.JsonProperty("inlineContent", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PutFileInline InlineContent { get; set; }
 
         [Newtonsoft.Json.JsonProperty("streamDescriptor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public PutFileStream StreamDescriptor { get; set; }
+
+    }
+
+    /// <summary>
+    /// Public AddFile one-item adapter; only fileOperationKind add is valid.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class AddFileRequest : FileMutationRequest
+    {
+
+        [Newtonsoft.Json.JsonProperty("fileOperationKind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileRequestFileOperationKind FileOperationKind { get; set; }
+
+    }
+
+    /// <summary>
+    /// Public ChangeFile one-item adapter; only fileOperationKind change is valid.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ChangeFileRequest : FileMutationRequest
+    {
+
+        [Newtonsoft.Json.JsonProperty("fileOperationKind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileRequestFileOperationKind FileOperationKind { get; set; }
+
+    }
+
+    /// <summary>
+    /// Public RemoveFile one-item adapter; only fileOperationKind remove is valid.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class RemoveFileRequest : FileMutationRequest
+    {
+
+        [Newtonsoft.Json.JsonProperty("fileOperationKind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileRequestFileOperationKind FileOperationKind { get; set; }
 
     }
 
@@ -11935,13 +12039,13 @@ namespace Hexalith.Folders.Client.Generated
         /// Inclusive zero-based byte offset. May reference any non-negative offset within the authorized file.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("startOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int StartOffset { get; set; }
+        public long StartOffset { get; set; }
 
         /// <summary>
         /// Exclusive byte offset. Derived rule: `endOffset &gt;= startOffset` and `endOffset - startOffset &lt;= 262144` (single read window). Larger files require multiple bounded calls. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("endOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int EndOffset { get; set; }
+        public long EndOffset { get; set; }
 
     }
 
@@ -11955,11 +12059,8 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public ContentAllowedPathMetadata Path { get; set; }
 
-        /// <summary>
-        /// Range descriptor returned with the read result. Derived rule: `partial == (actualBytes &lt; endOffset - startOffset)`. When the server reached end-of-file before the exclusive `endOffset`, `partial` is `true` and `actualBytes` is the bytes returned; the response status is `206 Partial Content`. When `actualBytes == endOffset - startOffset`, `partial` is `false` and the status is `200 OK`.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Range Range { get; set; } = new Range();
+        public FileRangeReadDescriptor Range { get; set; } = new FileRangeReadDescriptor();
 
         /// <summary>
         /// Authorized response body for ReadFileRange only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never audit, log, diagnostic, projection, or generated context material.
@@ -11972,6 +12073,107 @@ namespace Hexalith.Folders.Client.Generated
 
         [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
+
+    }
+
+    /// <summary>
+    /// HTTP 200 range result. The requested half-open window is complete, including the valid empty `[EOF,EOF)` result.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class FileRangeReadCompleteResult : FileRangeReadResult
+    {
+
+        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileRangeReadCompleteDescriptor Range { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    /// <summary>
+    /// HTTP 206 range result. The authorized start is before EOF and the response contains all remaining bytes before EOF.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class FileRangeReadPartialResult : FileRangeReadResult
+    {
+
+        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public FileRangeReadPartialDescriptor Range { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    /// <summary>
+    /// Range descriptor shared by the status-specific 200 and 206 response schemas.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileRangeReadDescriptor
+    {
+
+        [Newtonsoft.Json.JsonProperty("startOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long StartOffset { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("endOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long EndOffset { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long ActualBytes { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Partial { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileRangeReadCompleteDescriptor : FileRangeReadDescriptor
+    {
+
+        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Partial { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileRangeReadPartialDescriptor : FileRangeReadDescriptor
+    {
+
+        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Partial { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
 
     }
 
@@ -12000,6 +12202,7 @@ namespace Hexalith.Folders.Client.Generated
     /// Search-only result whose entries are content_allowed files; metadata_only paths and directories are ineligible rather than redacted.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileSearchResult
     {
 
@@ -12007,13 +12210,60 @@ namespace Hexalith.Folders.Client.Generated
         public System.Collections.Generic.ICollection<ContentAllowedFileMetadataItem> Items { get; set; } = new System.Collections.Generic.List<ContentAllowedFileMetadataItem>();
 
         [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public PaginationMetadata Page { get; set; } = new PaginationMetadata();
+        public FileSearchPaginationMetadata Page { get; set; } = new FileSearchPaginationMetadata();
 
         [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ContextQueryLimitMetadata Limits { get; set; } = new ContextQueryLimitMetadata();
+        public FileSearchLimitMetadata Limits { get; set; } = new FileSearchLimitMetadata();
 
         [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileSearchPaginationMetadata : object
+    {
+
+        [Newtonsoft.Json.JsonProperty("cursor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Cursor { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Limit { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsTruncated { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSearchPaginationMetadataTruncatedReason? TruncatedReason { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class FileSearchLimitMetadata : object
+    {
+
+        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string QueryFamily { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ConfiguredLimit { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ActualCount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ActualBytes { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int ElapsedMilliseconds { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsTruncated { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public FileSearchLimitMetadataTruncatedReason TruncatedReason { get; set; }
 
     }
 
@@ -13624,6 +13874,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSafeResourceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Access unavailable")]
+        Access_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FileSafeResourceUnavailableProblemStatus
     {
 
@@ -13646,6 +13905,15 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"resource_unavailable")]
         Resource_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSafeResourceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The requested resource is unavailable.")]
+        The_requested_resource_is_unavailable_ = 0,
 
     }
 
@@ -13678,6 +13946,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileRangeUnsatisfiableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Range unsatisfiable")]
+        Range_unsatisfiable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FileRangeUnsatisfiableProblemStatus
     {
 
@@ -13700,6 +13977,15 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
         Range_unsatisfiable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileRangeUnsatisfiableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The requested byte range cannot be satisfied.")]
+        The_requested_byte_range_cannot_be_satisfied_ = 0,
 
     }
 
@@ -13732,6 +14018,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilePolicyUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FilePolicyUnavailableProblemStatus
     {
 
@@ -13754,6 +14049,15 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
         File_policy_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FilePolicyUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
 
     }
 
@@ -13786,6 +14090,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentEvidenceInvalidProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Content evidence invalid")]
+        Content_evidence_invalid = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FileContentEvidenceInvalidProblemStatus
     {
 
@@ -13808,6 +14121,15 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"content_evidence_invalid")]
         Content_evidence_invalid = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentEvidenceInvalidProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The supplied content evidence is not valid.")]
+        The_supplied_content_evidence_is_not_valid_ = 0,
 
     }
 
@@ -13840,6 +14162,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileInlineTransportRequiredProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Inline payload too large")]
+        Inline_payload_too_large = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FileInlineTransportRequiredProblemStatus
     {
 
@@ -13862,6 +14193,15 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"d9_inline_limit_exceeded")]
         D9_inline_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileInlineTransportRequiredProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The inline payload exceeds the configured D-9 boundary.")]
+        The_inline_payload_exceeds_the_configured_D9_boundary_ = 0,
 
     }
 
@@ -13894,6 +14234,15 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentLimitExceededProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File content limit exceeded")]
+        File_content_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum FileContentLimitExceededProblemStatus
     {
 
@@ -13916,6 +14265,15 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_content_limit_exceeded")]
         File_content_limit_exceeded = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileContentLimitExceededProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file content exceeds the permitted maximum.")]
+        The_file_content_exceeds_the_permitted_maximum_ = 0,
 
     }
 
@@ -14416,6 +14774,33 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileRequestFileOperationKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"add")]
+        Add = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileRequestFileOperationKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"change")]
+        Change = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileRequestFileOperationKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"remove")]
+        Remove = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum PutFileStreamUploadMode
     {
 
@@ -14521,23 +14906,35 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Range
+    public enum FileSearchPaginationMetadataTruncatedReason
     {
 
-        [Newtonsoft.Json.JsonProperty("startOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int StartOffset { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"result_count_limit")]
+        Result_count_limit = 0,
 
-        [Newtonsoft.Json.JsonProperty("endOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int EndOffset { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"response_budget_limit")]
+        Response_budget_limit = 1,
 
-        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int ActualBytes { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 2,
 
-        /// <summary>
-        /// True when `actualBytes &lt; endOffset - startOffset` (end-of-file reached before requested window end).
-        /// </summary>
-        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool Partial { get; set; }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum FileSearchLimitMetadataTruncatedReason
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"result_count_limit")]
+        Result_count_limit = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_budget_limit")]
+        Response_budget_limit = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"not_truncated")]
+        Not_truncated = 3,
 
     }
 

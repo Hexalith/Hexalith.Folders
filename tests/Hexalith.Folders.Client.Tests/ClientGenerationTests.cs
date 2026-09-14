@@ -4,10 +4,12 @@ using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 using System.Diagnostics;
+using System.Net;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Client.Generation.Shared;
 using Hexalith.Folders.Client.Idempotency;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shouldly;
 using Xunit;
 using YamlDotNet.RepresentationModel;
@@ -259,6 +261,7 @@ public sealed class ClientGenerationTests
                 "src/Hexalith.Folders.Client/nswag.json",
                 "src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj",
                 "src/Hexalith.Folders.Client/Generation/Program.cs",
+                "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
                 "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
                 "src/Hexalith.Folders.Client/Generation/Shared/YamlContractLoader.cs",
             ];
@@ -273,7 +276,7 @@ public sealed class ClientGenerationTests
 
             ProcessResult generation = RunProcess(
                 "dotnet",
-                $"msbuild \"{project}\" /t:GenerateHexalithFoldersClient;GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
+                $"msbuild \"{project}\" /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug",
                 tempRoot,
                 240_000);
             generation.ExitCode.ShouldBe(0, RedactDiagnosticOutput(generation.Output, tempRoot));
@@ -341,6 +344,38 @@ public sealed class ClientGenerationTests
             process.ExitCode.ShouldBe(0, RedactDiagnosticOutput(combinedOutput, tempRoot));
             File.Exists(output).ShouldBeTrue();
             File.ReadAllText(output).ShouldNotBe(File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs")));
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public void GeneratorFailsClosedBeforeWritingHelpersWhenClientShapeDrifts()
+    {
+        string tempRoot = Path.Combine(Path.GetTempPath(), "hexalith-folders-postprocess-drift-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+        try
+        {
+            string client = Path.Combine(tempRoot, "HexalithFoldersClient.g.cs");
+            string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
+            File.WriteAllText(client, "// deliberately unrecognized generated-client shape\n", Encoding.UTF8);
+
+            string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "Hexalith.Folders.Client.Generation.csproj");
+            string contract = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+            string configuration = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
+            ProcessResult generation = RunProcess(
+                "dotnet",
+                $"run --project \"{project}\" --no-build -- --repository-root \"{RepositoryRoot}\" --contract \"{contract}\" --configuration \"{configuration}\" --output \"{output}\" --client \"{client}\"",
+                RepositoryRoot,
+                120_000);
+
+            generation.ExitCode.ShouldNotBe(0);
+            RedactDiagnosticOutput(generation.Output, tempRoot)
+                .ShouldContain("Generated-client range return shape was neither raw nor already post-processed.");
+            File.Exists(output).ShouldBeFalse("helper output must not be published after postprocessor drift");
+            File.ReadAllText(client).ShouldBe("// deliberately unrecognized generated-client shape\n");
         }
         finally
         {
@@ -436,6 +471,7 @@ public sealed class ClientGenerationTests
             CorrelationId = "correlation_01HZY7Z6N7J4Q2X8Y9V0COR001",
             Message = "Synthetic validation failure.",
             Retryable = false,
+            Status = 400,
         };
 
         var typed = new HexalithFoldersApiException<ProblemDetails>("message", 400, "{}", new Dictionary<string, IEnumerable<string>>(), problem, null!);
@@ -443,8 +479,8 @@ public sealed class ClientGenerationTests
 
         string response = JsonConvert.SerializeObject(problem);
         var untyped = new HexalithFoldersApiException("message", 400, response, new Dictionary<string, IEnumerable<string>>(), null!);
-        untyped.ProblemDetails.ShouldNotBeNull().Code.ShouldBe("validation_error");
-        untyped.ProblemDetailsParseDiagnostic.ShouldBeNull();
+        untyped.ProblemDetails.ShouldBeNull("raw or arbitrary exception bodies are not declared typed problem results");
+        untyped.ProblemDetailsParseDiagnostic.ShouldBe("unsupported_problem_result_type");
 
         var malformed = new HexalithFoldersApiException("message", 400, "{not valid json", new Dictionary<string, IEnumerable<string>>(), null!);
         malformed.ProblemDetails.ShouldBeNull();
@@ -454,31 +490,44 @@ public sealed class ClientGenerationTests
     [Fact]
     public void GeneratedOq2TypesRejectWrongExactValuesAndMissingPolicyClass()
     {
-        (Type type, int status, string category, string code, bool retryable, string action, string visibility)[] exactProblems =
+        (Type type, int status, string category, string code, bool retryable, string action, string visibility, string title, string message)[] exactProblems =
         [
-            (typeof(FileSafeResourceUnavailableProblem), 404, "tenant_access_denied", "resource_unavailable", false, "no_action", "redacted"),
-            (typeof(FileRangeUnsatisfiableProblem), 416, "range_unsatisfiable", "range_unsatisfiable", false, "revise_request", "metadata_only"),
-            (typeof(FilePolicyUnavailableProblem), 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", "redacted"),
-            (typeof(FileContentEvidenceInvalidProblem), 400, "validation_error", "content_evidence_invalid", false, "revise_request", "metadata_only"),
-            (typeof(FileInlineTransportRequiredProblem), 413, "input_limit_exceeded", "d9_inline_limit_exceeded", true, "revise_request", "metadata_only"),
-            (typeof(FileContentLimitExceededProblem), 422, "input_limit_exceeded", "file_content_limit_exceeded", false, "revise_request", "metadata_only"),
+            (typeof(FileSafeResourceUnavailableProblem), 404, "tenant_access_denied", "resource_unavailable", false, "no_action", "redacted", "Access unavailable", "The requested resource is unavailable."),
+            (typeof(FileRangeUnsatisfiableProblem), 416, "range_unsatisfiable", "range_unsatisfiable", false, "revise_request", "metadata_only", "Range unsatisfiable", "The requested byte range cannot be satisfied."),
+            (typeof(FilePolicyUnavailableProblem), 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", "redacted", "File policy unavailable", "The file policy cannot be verified for this request."),
+            (typeof(FileContentEvidenceInvalidProblem), 400, "validation_error", "content_evidence_invalid", false, "revise_request", "metadata_only", "Content evidence invalid", "The supplied content evidence is not valid."),
+            (typeof(FileInlineTransportRequiredProblem), 413, "input_limit_exceeded", "d9_inline_limit_exceeded", true, "revise_request", "metadata_only", "Inline payload too large", "The inline payload exceeds the configured D-9 boundary."),
+            (typeof(FileContentLimitExceededProblem), 422, "input_limit_exceeded", "file_content_limit_exceeded", false, "revise_request", "metadata_only", "File content limit exceeded", "The file content exceeds the permitted maximum."),
         ];
-        foreach ((Type type, int status, string category, string code, bool retryable, string action, string visibility) in exactProblems)
+        foreach ((Type type, int status, string category, string code, bool retryable, string action, string visibility, string title, string message) in exactProblems)
         {
             string canonical = JsonConvert.SerializeObject(new
             {
                 type = "about:blank",
-                title = "File request failed",
+                title,
                 status,
                 category,
                 code,
-                message = "The file request could not be completed.",
+                message,
                 correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
                 retryable,
                 clientAction = action,
                 details = new { visibility },
             });
-            JsonConvert.DeserializeObject(canonical, type).ShouldNotBeNull(type.Name);
+            object exactResult = JsonConvert.DeserializeObject(canonical, type).ShouldNotBeNull(type.Name);
+            var exactException = (HexalithFoldersApiException)Activator.CreateInstance(
+                typeof(HexalithFoldersApiException<>).MakeGenericType(type),
+                [
+                    "Exact problem",
+                    status,
+                    canonical,
+                    new Dictionary<string, IEnumerable<string>>(),
+                    exactResult,
+                    new InvalidOperationException(),
+                ])!;
+            ProblemDetails projected = exactException.ProblemDetails.ShouldNotBeNull(type.Name + " projection");
+            projected.Title.ShouldBe(title);
+            projected.Message.ShouldBe(message);
             AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
                 canonical.Replace($"\"status\":{status}", $"\"status\":{status + 1}", StringComparison.Ordinal),
                 type));
@@ -488,10 +537,57 @@ public sealed class ClientGenerationTests
             AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
                 canonical.Replace($"\"category\":\"{category}\"", "\"category\":\"internal_error\"", StringComparison.Ordinal),
                 type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"code\":\"{code}\"", "\"code\":\"wrong_exact_code\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"clientAction\":\"{action}\"", "\"clientAction\":\"wrong_action\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"title\":\"{title}\"", "\"title\":\"Disclosure-bearing replacement\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"status\":{status}", $"\"status\":\"{status}\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"retryable\":{retryable.ToString().ToLowerInvariant()}", $"\"retryable\":\"{retryable.ToString().ToLowerInvariant()}\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"category\":\"{category}\"", "\"category\":0", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical[..^1] + ",\"unexpected\":true}",
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace("\"correlationId\":\"opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3\"", "\"correlationId\":\"short\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"message\":\"{message}\"", "\"message\":\"Disclosure-bearing replacement\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace($"\"visibility\":\"{visibility}\"", "\"visibility\":\"wrong_visibility\"", StringComparison.Ordinal),
+                type));
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
+                canonical.Replace("\"type\":\"about:blank\"", "\"type\":\"not a uri reference%\"", StringComparison.Ordinal),
+                type));
+
+            foreach (string requiredMember in new[] { "type", "title", "status", "category", "code", "message", "correlationId", "retryable", "clientAction", "details" })
+            {
+                JObject missingEnvelope = JObject.Parse(canonical);
+                _ = missingEnvelope.Remove(requiredMember);
+                AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(missingEnvelope.ToString(Formatting.None), type));
+            }
+
+            JObject extraDetail = JObject.Parse(canonical);
+            ((JObject)extraDetail["details"]!)["unexpected"] = true;
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(extraDetail.ToString(Formatting.None), type));
         }
 
         Enum.GetNames<FileMetadataItemRedaction>().ShouldBe(["Not_redacted"]);
         Enum.GetNames<ContentAllowedPathMetadataPathPolicyClass>().ShouldBe(["Content_allowed"]);
+
+        const string missingPolicyClass = "{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"unicodeNormalization\":\"NFC\"}";
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<PathMetadata>(missingPolicyClass));
 
         var missing = new PathMetadata
         {
@@ -499,9 +595,6 @@ public sealed class ClientGenerationTests
             NormalizedPath = "docs/readme.md",
             UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
         };
-        Should.Throw<TargetInvocationException>(() => JsonConvert.SerializeObject(missing))
-            .InnerException.ShouldBeOfType<JsonSerializationException>();
-
         missing.PathPolicyClass = (PathMetadataPathPolicyClass)999;
         Should.Throw<TargetInvocationException>(() => JsonConvert.SerializeObject(missing))
             .InnerException.ShouldBeOfType<JsonSerializationException>();
@@ -548,8 +641,253 @@ public sealed class ClientGenerationTests
             {
                 AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject(
                     exact.Replace($"\"code\":\"{exactCode}\"", "\"code\":\"malformed_exact_code\"", StringComparison.Ordinal),
-                    type));
+                type));
             }
+        }
+
+        JObject extendedLegacy = JObject.Parse(ProblemJson(503, "read_model_unavailable", "projection_unavailable", true, "retry"));
+        extendedLegacy["title"] = new string('t', 256);
+        extendedLegacy["message"] = new string('m', 1024);
+        extendedLegacy["detail"] = "Permitted legacy detail.";
+        extendedLegacy["instance"] = "/problems/legacy/1";
+        extendedLegacy["taskId"] = "task_01HZY7Z6N7J4Q2X8Y9V0TSK001";
+        JsonConvert.DeserializeObject<FileContextUnavailableProblem>(extendedLegacy.ToString(Formatting.None)).ShouldNotBeNull();
+
+        JObject invalidLegacy = (JObject)extendedLegacy.DeepClone();
+        invalidLegacy["detail"] = 42;
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileContextUnavailableProblem>(invalidLegacy.ToString(Formatting.None)));
+        invalidLegacy = (JObject)extendedLegacy.DeepClone();
+        invalidLegacy["instance"] = "not a uri reference%";
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileContextUnavailableProblem>(invalidLegacy.ToString(Formatting.None)));
+
+        string duplicateExact = ProblemJson(400, "validation_error", "content_evidence_invalid", false, "revise_request")
+            .Replace("\"status\":400", "\"status\":400,\"status\":400", StringComparison.Ordinal);
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileContentEvidenceInvalidOrValidationProblem>(duplicateExact));
+    }
+
+    [Fact]
+    public void Oq2WireValidationRejectsCoercionAndCompleteShapeDrift()
+    {
+        const string path = "{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"}";
+        const string inline = "{\"requestSchemaVersion\":\"v1\",\"fileOperationKind\":\"add\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":" + path + ",\"contentHashReference\":\"hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"byteLength\":0,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"\"}}";
+
+        AddFileRequest add = JsonConvert.DeserializeObject<AddFileRequest>(inline).ShouldNotBeNull();
+        add.FileOperationKind.ShouldBe(AddFileRequestFileOperationKind.Add);
+        ((FileMutationRequest)add).FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Add);
+
+        FileMutationRequest undefinedKind = JsonConvert.DeserializeObject<FileMutationRequest>(inline).ShouldNotBeNull();
+        undefinedKind.FileOperationKind = (FileMutationRequestFileOperationKind)999;
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(undefinedKind));
+
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"fileOperationKind\":\"add\"", "\"fileOperationKind\":0", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"byteLength\":0", "\"byteLength\":\"0\"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"contentBytes\":\"\"", "\"contentBytes\":\"AA==\"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("text/plain", "!text/plain", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"contentBytes\":\"\"", "\"contentBytes\":\"    \"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<AddFileRequest>(inline.Replace("\"contentBytes\":\"\"", $"\"contentBytes\":\"{new string('A', 349532)}\"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<PathMetadata>(path.Replace("\"content_allowed\"", "0", StringComparison.Ordinal)));
+        foreach (string invalidPath in new[] { ".git/config", "docs/../secret", "docs/readme.", "CON/file.txt" })
+        {
+            AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<PathMetadata>(path.Replace("docs/readme.md", invalidPath, StringComparison.Ordinal)));
+
+            AddFileRequest invalidOutboundPath = JsonConvert.DeserializeObject<AddFileRequest>(inline).ShouldNotBeNull();
+            invalidOutboundPath.PathMetadata.NormalizedPath = invalidPath;
+            AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(invalidOutboundPath));
+        }
+
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<PathMetadata>(path.Replace("readme.md\",\"pathPolicyClass", "bad/name\",\"pathPolicyClass", StringComparison.Ordinal)));
+        AddFileRequest invalidOutboundName = JsonConvert.DeserializeObject<AddFileRequest>(inline).ShouldNotBeNull();
+        invalidOutboundName.PathMetadata.DisplayName = "bad/name";
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(invalidOutboundName));
+
+        ContentAllowedPathMetadata narrowed = JsonConvert.DeserializeObject<ContentAllowedPathMetadata>(path).ShouldNotBeNull();
+        ((PathMetadata)narrowed).PathPolicyClass.ShouldBe(PathMetadataPathPolicyClass.Content_allowed);
+
+        const string search = "{\"items\":[],\"page\":{\"limit\":500,\"isTruncated\":false},\"limits\":{\"queryFamily\":\"search\",\"configuredLimit\":500,\"actualCount\":0,\"actualBytes\":0,\"elapsedMilliseconds\":1,\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"},\"freshness\":{\"readConsistency\":\"snapshot_per_task\",\"observedAt\":\"2026-09-14T00:00:00Z\"}}";
+        JsonConvert.DeserializeObject<FileSearchResult>(search).ShouldNotBeNull();
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(search.Replace("\"limit\":500", "\"limit\":501", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(search.Replace("\"queryFamily\":\"search\"", "\"queryFamily\":\"tree\"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(search.Replace(",\"freshness\":", ",\"unexpected\":true,\"freshness\":", StringComparison.Ordinal)));
+
+        RemoveFileRequest remove = new()
+        {
+            RequestSchemaVersion = "v1",
+            FileOperationKind = RemoveFileRequestFileOperationKind.Remove,
+            TransportOperation = FileMutationRequestTransportOperation.MetadataOnlyRemoval,
+            OperationId = "operation_01HZY7Z6N7J4Q2X8",
+            PathMetadata = JsonConvert.DeserializeObject<PathMetadata>(path).ShouldNotBeNull(),
+        };
+        string removeJson = JsonConvert.SerializeObject(remove);
+        removeJson.ShouldContain("\"fileOperationKind\":\"remove\"");
+        removeJson.ShouldNotContain("contentHashReference");
+        removeJson.ShouldNotContain("byteLength");
+        removeJson.ShouldNotContain("inlineContent");
+        removeJson.ShouldNotContain("streamDescriptor");
+
+        remove.TransportOperation = FileMutationRequestTransportOperation.PutFileInline;
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(remove));
+
+        AddFileRequest incompleteAdd = new()
+        {
+            RequestSchemaVersion = "v1",
+            FileOperationKind = AddFileRequestFileOperationKind.Add,
+            TransportOperation = FileMutationRequestTransportOperation.PutFileInline,
+            OperationId = "operation_01HZY7Z6N7J4Q2X8",
+            PathMetadata = JsonConvert.DeserializeObject<PathMetadata>(path).ShouldNotBeNull(),
+            ContentHashReference = "hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            ByteLength = 0,
+        };
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(incompleteAdd));
+    }
+
+    [Fact]
+    public void HandBuiltStreamMutationsRejectEveryEvidenceMismatch()
+    {
+        const int length = 262145;
+        const string hash = "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        AddFileRequest request = new()
+        {
+            RequestSchemaVersion = "v1",
+            FileOperationKind = AddFileRequestFileOperationKind.Add,
+            TransportOperation = FileMutationRequestTransportOperation.PutFileStream,
+            OperationId = "operation_01HZY7Z6N7J4Q2X8",
+            PathMetadata = new PathMetadata
+            {
+                NormalizedPath = "docs/readme.md",
+                DisplayName = "readme.md",
+                PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
+                UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
+            },
+            ContentHashReference = hash,
+            ByteLength = length,
+            StreamDescriptor = new PutFileStream
+            {
+                MediaType = "application/octet-stream",
+                DeclaredLength = length,
+                ObservedLength = length,
+                StagingReference = "staging_01HZY7Z6N7J4Q2X8Y9V0STG001",
+                ObservedContentHashReference = hash,
+                UploadMode = PutFileStreamUploadMode.Request_body_stream,
+            },
+        };
+
+        JsonConvert.SerializeObject(request).ShouldContain("\"transportOperation\":\"PutFileStream\"");
+
+        request.StreamDescriptor.DeclaredLength--;
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(request));
+        request.StreamDescriptor.DeclaredLength = length;
+        request.StreamDescriptor.ObservedLength--;
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(request));
+        request.StreamDescriptor.ObservedLength = length;
+        request.StreamDescriptor.ObservedContentHashReference = "hashref_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(request));
+        request.StreamDescriptor.ObservedContentHashReference = hash;
+        request.ByteLength++;
+        AssertJsonSerializationRejected(() => JsonConvert.SerializeObject(request));
+    }
+
+    [Fact]
+    public void ApiExceptionProjectionRejectsArbitraryTypedResultsAndHttpStatusMismatch()
+    {
+        var successfulResult = new AcceptedCommand();
+        var arbitrary = new HexalithFoldersApiException<AcceptedCommand>("unexpected", 500, "{}", new Dictionary<string, IEnumerable<string>>(), successfulResult, null!);
+        arbitrary.ProblemDetails.ShouldBeNull();
+        arbitrary.ProblemDetailsParseDiagnostic.ShouldBe("unsupported_problem_result_type");
+
+        var problem = new ProblemDetails { Status = 503 };
+        var mismatch = new HexalithFoldersApiException<ProblemDetails>("mismatch", 400, "{}", new Dictionary<string, IEnumerable<string>>(), problem, null!);
+        mismatch.ProblemDetails.ShouldBeNull();
+        mismatch.ProblemDetailsParseDiagnostic.ShouldBe("http_status_mismatch");
+    }
+
+    [Fact]
+    public async Task RangeWireTreats206AsSuccessAndProjectsExact416And503()
+    {
+        const string path = "{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"}";
+        const string limits = "{\"queryFamily\":\"range\",\"configuredLimit\":262144,\"actualCount\":1,\"actualBytes\":1,\"elapsedMilliseconds\":1,\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"}";
+        const string freshness = "{\"readConsistency\":\"read_your_writes\",\"observedAt\":\"2026-09-14T00:00:00Z\",\"projectionWatermark\":\"watermark_01HZY7Z6N7J4Q2X8\",\"stale\":false}";
+        string partialJson = $"{{\"path\":{path},\"range\":{{\"startOffset\":0,\"endOffset\":2,\"actualBytes\":1,\"partial\":true}},\"contentBytes\":\"AA==\",\"limits\":{limits},\"freshness\":{freshness}}}";
+        var partialClient = new Hexalith.Folders.Client.Generated.Client(new HttpClient(new StaticResponseHandler(HttpStatusCode.PartialContent, partialJson)) { BaseAddress = new Uri("https://folders.test/") });
+        FileRangeReadRequest request = new()
+        {
+            RequestSchemaVersion = "v1",
+            Path = new ContentAllowedPathMetadata
+            {
+                NormalizedPath = "docs/readme.md",
+                DisplayName = "readme.md",
+                PathPolicyClass = ContentAllowedPathMetadataPathPolicyClass.Content_allowed,
+                UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
+            },
+            StartOffset = 0,
+            EndOffset = 1,
+        };
+
+        FileRangeReadResult result = await partialClient.ReadFileRangeAsync(
+            "folder", "workspace", "correlation", "task", null, request, TestContext.Current.CancellationToken);
+        result.ShouldBeOfType<FileRangeReadPartialResult>();
+        result.Range.StartOffset.ShouldBe(0);
+        result.Range.EndOffset.ShouldBe(2);
+        result.Range.ActualBytes.ShouldBe(1);
+        result.Range.Partial.ShouldBeTrue("the common SDK result abstraction must expose the populated 206 range");
+        ((FileRangeReadPartialResult)result).Range.Partial.ShouldBeTrue();
+
+        string completeJson = partialJson
+            .Replace("\"endOffset\":2", "\"endOffset\":1", StringComparison.Ordinal)
+            .Replace("\"partial\":true", "\"partial\":false", StringComparison.Ordinal);
+        FileRangeReadCompleteResult complete = JsonConvert.DeserializeObject<FileRangeReadCompleteResult>(completeJson).ShouldNotBeNull();
+        ((FileRangeReadResult)complete).Range.EndOffset.ShouldBe(complete.Range.EndOffset);
+        ((FileRangeReadDescriptor)complete.Range).Partial.ShouldBeFalse();
+
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(partialJson.Replace("\"endOffset\":2", "\"endOffset\":262145", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(partialJson.Replace("\"contentBytes\":\"AA==\"", "\"contentBytes\":\"AAA=\"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(partialJson.Replace("\"actualBytes\":1,\"elapsedMilliseconds\"", "\"actualBytes\":2,\"elapsedMilliseconds\"", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(partialJson.Replace("2026-09-14T00:00:00Z", "2026-09-14T02:00:00+02:00", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(MutateJson(partialJson, root => root["range"]!["partial"] = false)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(MutateJson(partialJson, root => root["range"]!["startOffset"] = 3)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadPartialResult>(MutateJson(partialJson, root => root["range"]!["endOffset"] = 1)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileRangeReadCompleteResult>(MutateJson(completeJson, root => root["range"]!["actualBytes"] = 0)));
+
+        const string searchItem = "{\"path\":{" + "\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"kind\":\"file\",\"byteLength\":1,\"sensitivity\":\"public_metadata\",\"redaction\":\"not_redacted\"}";
+        string searchJson = $"{{\"items\":[{searchItem}],\"page\":{{\"limit\":1,\"isTruncated\":false}},\"limits\":{{\"queryFamily\":\"search\",\"configuredLimit\":1,\"actualCount\":1,\"actualBytes\":1,\"elapsedMilliseconds\":1,\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"}},\"freshness\":{freshness}}}";
+        FileSearchResult searchResult = JsonConvert.DeserializeObject<FileSearchResult>(searchJson).ShouldNotBeNull();
+        searchResult.Page.TruncatedReason.ShouldBeNull();
+        ContentAllowedFileMetadataItem searchResultItem = searchResult.Items.Single();
+        ((FileMetadataItem)searchResultItem).Path.NormalizedPath.ShouldBe(searchResultItem.Path.NormalizedPath);
+        ((FileMetadataItem)searchResultItem).Kind.ShouldBe(FileMetadataItemKind.File);
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(
+            searchJson,
+            root => _ = ((JObject)root["items"]![0]!).Remove("byteLength"))));
+
+        string overPageLimit = searchJson
+            .Replace($"\"items\":[{searchItem}]", $"\"items\":[{searchItem},{searchItem}]", StringComparison.Ordinal)
+            .Replace("\"actualCount\":1", "\"actualCount\":2", StringComparison.Ordinal);
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(overPageLimit));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(searchJson.Replace("\"isTruncated\":false}", "\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"}", StringComparison.Ordinal)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(searchJson, root => root["limits"]!["configuredLimit"] = 2)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(searchJson, root => root["limits"]!["actualCount"] = 0)));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(searchJson, root => root["limits"]!["isTruncated"] = true)));
+        string truncatedSearch = MutateJson(searchJson, root =>
+        {
+            root["page"]!["isTruncated"] = true;
+            root["page"]!["truncatedReason"] = "result_count_limit";
+            root["limits"]!["isTruncated"] = true;
+            root["limits"]!["truncatedReason"] = "result_count_limit";
+        });
+        JsonConvert.DeserializeObject<FileSearchResult>(truncatedSearch).ShouldNotBeNull();
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(truncatedSearch, root => root["page"]!["truncatedReason"] = "query_timeout")));
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<FileSearchResult>(MutateJson(truncatedSearch, root => _ = ((JObject)root["page"]!).Remove("truncatedReason"))));
+
+        foreach ((HttpStatusCode httpStatus, int status, string category, string code, bool retryable, string action, string visibility) in new[]
+        {
+            (HttpStatusCode.RequestedRangeNotSatisfiable, 416, "range_unsatisfiable", "range_unsatisfiable", false, "revise_request", "metadata_only"),
+            (HttpStatusCode.ServiceUnavailable, 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", "redacted"),
+        })
+        {
+            string problemJson = ProblemJson(status, category, code, retryable, action);
+            var errorClient = new Hexalith.Folders.Client.Generated.Client(new HttpClient(new StaticResponseHandler(httpStatus, problemJson)) { BaseAddress = new Uri("https://folders.test/") });
+            HexalithFoldersApiException exception = await Should.ThrowAsync<HexalithFoldersApiException>(() => errorClient.ReadFileRangeAsync(
+                "folder", "workspace", "correlation", "task", null, request, TestContext.Current.CancellationToken));
+            exception.ProblemDetails.ShouldNotBeNull().Code.ShouldBe(code);
         }
     }
 
@@ -563,14 +901,25 @@ public sealed class ClientGenerationTests
         target.Attribute("BeforeTargets").ShouldBeNull("ordinary builds must never repair checked-in generated output before freshness verification");
         target.Attribute("Inputs")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
         string inputs = target.Attribute("Inputs")?.Value ?? string.Empty;
+        inputs.ShouldContain("$(HexalithFoldersGeneratedClient)");
         inputs.Replace('\\', '/').ShouldContain("Generation/Program.cs");
+        inputs.Replace('\\', '/').ShouldContain("Generation/GeneratedClientPostProcessor.cs");
+        target.Attribute("DependsOnTargets")?.Value.ShouldBe("GenerateHexalithFoldersClient");
         target.Attribute("Outputs")?.Value.ShouldBe("$(HexalithFoldersGeneratedHelpers)");
-        target.Descendants("Exec").Single().Attribute("Command")?.Value.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
+        string command = target.Descendants("Exec").Single().Attribute("Command")?.Value ?? string.Empty;
+        command.ShouldContain("$(HexalithFoldersHelperGeneratorProject)");
+        command.ShouldContain("--client");
 
         document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "GenerateHexalithFoldersClient")
             .Attribute("BeforeTargets").ShouldBeNull("ordinary builds must not invoke NSwag in place");
         document.Descendants("Target").Single(e => e.Attribute("Name")?.Value == "VerifyHexalithFoldersGeneratedArtifacts")
             .Attribute("BeforeTargets").ShouldBeNull("freshness is verified by the pre-build CI gate against checked-in files");
+
+        string program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "Program.cs"));
+        program.IndexOf("GeneratedClientPostProcessor.Process(clientPath);", StringComparison.Ordinal)
+            .ShouldBeLessThan(program.IndexOf("WriteAtomically(outputPath, output);", StringComparison.Ordinal));
+        File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "GeneratedClientPostProcessor.cs"))
+            .ShouldContain("AssertPartialRangeIsSuccessful(source);");
     }
 
     [Fact]
@@ -605,24 +954,53 @@ public sealed class ClientGenerationTests
     private static void AssertJsonSerializationRejected(Func<object?> action)
     {
         Exception exception = Should.Throw<Exception>(action);
-        (exception is JsonSerializationException || exception.InnerException is JsonSerializationException)
-            .ShouldBeTrue($"Expected JsonSerializationException for noncanonical exact response, got {exception.GetType().Name}.");
+        (exception is Newtonsoft.Json.JsonException || exception.InnerException is Newtonsoft.Json.JsonException)
+            .ShouldBeTrue($"Expected a Json.NET validation exception for noncanonical exact response, got {exception.GetType().Name}.");
+    }
+
+    private static string MutateJson(string json, Action<JObject> mutation)
+    {
+        JObject value = JObject.Parse(json);
+        mutation(value);
+        return value.ToString(Formatting.None);
     }
 
     private static string ProblemJson(int status, string category, string code, bool retryable, string clientAction) =>
         JsonConvert.SerializeObject(new
         {
             type = "about:blank",
-            title = "File request failed",
+            title = ExactTitle(code) ?? "Legacy failure",
             status,
             category,
             code,
-            message = "The file request could not be completed.",
+            message = ExactMessage(code) ?? "Synthetic legacy failure.",
             correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
             retryable,
             clientAction,
-            details = new { visibility = "metadata_only" },
+            details = new { visibility = status is 404 or 503 ? "redacted" : "metadata_only" },
         });
+
+    private static string? ExactTitle(string code) => code switch
+    {
+        "resource_unavailable" => "Access unavailable",
+        "range_unsatisfiable" => "Range unsatisfiable",
+        "file_policy_unavailable" => "File policy unavailable",
+        "content_evidence_invalid" => "Content evidence invalid",
+        "d9_inline_limit_exceeded" => "Inline payload too large",
+        "file_content_limit_exceeded" => "File content limit exceeded",
+        _ => null,
+    };
+
+    private static string? ExactMessage(string code) => code switch
+    {
+        "resource_unavailable" => "The requested resource is unavailable.",
+        "range_unsatisfiable" => "The requested byte range cannot be satisfied.",
+        "file_policy_unavailable" => "The file policy cannot be verified for this request.",
+        "content_evidence_invalid" => "The supplied content evidence is not valid.",
+        "d9_inline_limit_exceeded" => "The inline payload exceeds the configured D-9 boundary.",
+        "file_content_limit_exceeded" => "The file content exceeds the permitted maximum.",
+        _ => null,
+    };
 
     private static string ExpectedHash(params string[] lines)
     {
@@ -793,4 +1171,14 @@ public sealed class ClientGenerationTests
     private sealed record OpenApiParameter(string Field, string Name);
 
     private sealed record ProcessResult(int ExitCode, string Output);
+
+    private sealed class StaticResponseHandler(HttpStatusCode statusCode, string json) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpResponseMessage(statusCode)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json"),
+                RequestMessage = request,
+            });
+    }
 }

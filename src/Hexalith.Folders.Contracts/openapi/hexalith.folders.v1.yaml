@@ -2898,7 +2898,7 @@ paths:
                 $ref: "#/components/schemas/FileSearchResult"
               examples:
                 synthetic:
-                  $ref: "#/components/examples/FileTreeResult"
+                  $ref: "#/components/examples/FileSearchResult"
         "400":
           $ref: "#/components/responses/ValidationFailure"
         "401":
@@ -3348,13 +3348,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FileRangeReadResult"
+                $ref: "#/components/schemas/FileRangeReadCompleteResult"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FileRangeReadCompleteResult"
         "206":
           description: Partial authorized byte range when end-of-file is reached before the requested exclusive end offset.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FileRangeReadResult"
+                $ref: "#/components/schemas/FileRangeReadPartialResult"
+              examples:
+                synthetic:
+                  $ref: "#/components/examples/FileRangeReadPartialResult"
         "400":
           description: Invalid range shape such as reversed range or unsupported multi-range.
           content:
@@ -6599,7 +6605,7 @@ components:
           displayName: synthetic-add-001.md
           pathPolicyClass: content_allowed
           unicodeNormalization: NFC
-        contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002
+        contentHashReference: hashref_3f1a645ae436e57589316e9c9b9162380d622db4a25e57751988a977fb16bfba
         byteLength: 33
         inlineContent:
           mediaType: text/plain
@@ -6617,14 +6623,14 @@ components:
           displayName: synthetic-change-002.bin
           pathPolicyClass: metadata_only
           unicodeNormalization: NFC
-        contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002
+        contentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF
         byteLength: 262145
         streamDescriptor:
           mediaType: application/octet-stream
           declaredLength: 262145
           observedLength: 262145
           stagingReference: staged-content-a
-          observedContentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002
+          observedContentHashReference: hashref_01HZY7Z6N7J4Q2X8Y9V0CHG002ABCDEF
           uploadMode: request_body_stream
     RemoveFileRequest:
       summary: Synthetic metadata-only file removal request.
@@ -6752,7 +6758,6 @@ components:
         page:
           limit: 2000
           isTruncated: false
-          truncatedReason: not_truncated
         limits:
           queryFamily: tree
           configuredLimit: 2000
@@ -6790,6 +6795,33 @@ components:
           elapsedMilliseconds: 1850
           isTruncated: true
           truncatedReason: result_count_limit
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
+    FileSearchResult:
+      summary: Synthetic metadata-only search result containing only a content-allowed file.
+      value:
+        items:
+          - path:
+              normalizedPath: docs/synthetic-search-001.md
+              displayName: synthetic-search-001.md
+              pathPolicyClass: content_allowed
+              unicodeNormalization: NFC
+            kind: file
+            byteLength: 42
+            sensitivity: tenant_sensitive
+            redaction: not_redacted
+        page:
+          limit: 500
+          isTruncated: false
+        limits:
+          queryFamily: search
+          configuredLimit: 500
+          actualCount: 1
+          actualBytes: 256
+          elapsedMilliseconds: 12
+          isTruncated: false
+          truncatedReason: not_truncated
         freshness:
           readConsistency: snapshot_per_task
           observedAt: "2026-05-12T12:34:56Z"
@@ -6863,6 +6895,56 @@ components:
           unicodeNormalization: NFC
         startOffset: 0
         endOffset: 262144
+    FileRangeReadCompleteResult:
+      summary: Synthetic fully satisfied one-byte range response for HTTP 200.
+      value:
+        path:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: content_allowed
+          unicodeNormalization: NFC
+        range:
+          startOffset: 0
+          endOffset: 1
+          actualBytes: 1
+          partial: false
+        contentBytes: AA==
+        limits:
+          queryFamily: range
+          configuredLimit: 262144
+          actualCount: 1
+          actualBytes: 1
+          elapsedMilliseconds: 4
+          isTruncated: false
+          truncatedReason: not_truncated
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
+    FileRangeReadPartialResult:
+      summary: Synthetic EOF-shortened one-byte range response for HTTP 206.
+      value:
+        path:
+          normalizedPath: docs/synthetic-note.md
+          displayName: synthetic-note.md
+          pathPolicyClass: content_allowed
+          unicodeNormalization: NFC
+        range:
+          startOffset: 0
+          endOffset: 2
+          actualBytes: 1
+          partial: true
+        contentBytes: AA==
+        limits:
+          queryFamily: range
+          configuredLimit: 262144
+          actualCount: 1
+          actualBytes: 1
+          elapsedMilliseconds: 4
+          isTruncated: false
+          truncatedReason: not_truncated
+        freshness:
+          readConsistency: snapshot_per_task
+          observedAt: "2026-05-12T12:34:56Z"
     ReadFileRangeInvalidReversedProblem:
       summary: Synthetic reversed range validation failure.
       value:
@@ -7539,10 +7621,11 @@ components:
       pattern: "^hashref_[A-Za-z0-9]{32,96}$"
       description: Non-secret opaque content hash reference. The `hashref_` prefix distinguishes content hash references from generic opaque identifiers (`opaque_*`) to prevent cross-domain key reuse, copy-paste collisions with operation IDs, and audit-pipeline misclassification. The reference is never a secret, token, credential, file content, or absolute path.
       examples:
-        - hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002
+        - hashref_01HZY7Z6N7J4Q2X8Y9V0ADD002ABCDEF
     UtcDateTime:
       type: string
       format: date-time
+      pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-]00:00)$"
       description: ISO-8601 UTC timestamp.
       examples:
         - "2026-05-12T12:34:56Z"
@@ -7668,6 +7751,9 @@ components:
         - $ref: "#/components/schemas/ExactFileProblem"
         - type: object
           properties:
+            title:
+              type: string
+              enum: [Access unavailable]
             status:
               type: integer
               enum: [404]
@@ -7677,6 +7763,9 @@ components:
             code:
               type: string
               enum: [resource_unavailable]
+            message:
+              type: string
+              enum: [The requested resource is unavailable.]
             retryable:
               type: boolean
               const: false
@@ -7694,6 +7783,9 @@ components:
         - $ref: "#/components/schemas/ExactFileProblem"
         - type: object
           properties:
+            title:
+              type: string
+              enum: [Range unsatisfiable]
             status:
               type: integer
               enum: [416]
@@ -7703,6 +7795,9 @@ components:
             code:
               type: string
               enum: [range_unsatisfiable]
+            message:
+              type: string
+              enum: [The requested byte range cannot be satisfied.]
             retryable:
               type: boolean
               const: false
@@ -7720,6 +7815,9 @@ components:
         - $ref: "#/components/schemas/ExactFileProblem"
         - type: object
           properties:
+            title:
+              type: string
+              enum: [File policy unavailable]
             status:
               type: integer
               enum: [503]
@@ -7729,6 +7827,9 @@ components:
             code:
               type: string
               enum: [file_policy_unavailable]
+            message:
+              type: string
+              enum: [The file policy cannot be verified for this request.]
             retryable:
               type: boolean
               const: true
@@ -7746,6 +7847,9 @@ components:
         - $ref: "#/components/schemas/ExactFileProblem"
         - type: object
           properties:
+            title:
+              type: string
+              enum: [Content evidence invalid]
             status:
               type: integer
               enum: [400]
@@ -7755,6 +7859,9 @@ components:
             code:
               type: string
               enum: [content_evidence_invalid]
+            message:
+              type: string
+              enum: [The supplied content evidence is not valid.]
             retryable:
               type: boolean
               const: false
@@ -7785,6 +7892,9 @@ components:
         - $ref: "#/components/schemas/ExactFileProblem"
         - type: object
           properties:
+            title:
+              type: string
+              enum: [Inline payload too large]
             status:
               type: integer
               enum: [413]
@@ -7794,6 +7904,9 @@ components:
             code:
               type: string
               enum: [d9_inline_limit_exceeded]
+            message:
+              type: string
+              enum: [The inline payload exceeds the configured D-9 boundary.]
             retryable:
               type: boolean
               const: true
@@ -7811,6 +7924,9 @@ components:
         - $ref: "#/components/schemas/ExactFileProblem"
         - type: object
           properties:
+            title:
+              type: string
+              enum: [File content limit exceeded]
             status:
               type: integer
               enum: [422]
@@ -7820,6 +7936,9 @@ components:
             code:
               type: string
               enum: [file_content_limit_exceeded]
+            message:
+              type: string
+              enum: [The file content exceeds the permitted maximum.]
             retryable:
               type: boolean
               const: false
@@ -8896,7 +9015,6 @@ components:
           x-hexalith-sensitive-metadata-tier: tenant_sensitive
         pathPolicyClass:
           type: string
-          nullable: true
           enum:
             - content_allowed
             - metadata_only
@@ -8970,6 +9088,7 @@ components:
           $ref: "#/components/schemas/ContentHashReference"
         byteLength:
           type: integer
+          nullable: true
           minimum: 0
           maximum: 1048576
           description: "Logical content length in bytes. Inline branch caps this at 262144; stream branch permits 262145 through the file-policy v1.1.0 per-file maximum of 1048576. Content is never silently truncated."
@@ -9044,29 +9163,32 @@ components:
       description: Public AddFile one-item adapter; only fileOperationKind add is valid.
       allOf:
         - $ref: "#/components/schemas/FileMutationRequest"
-      not:
-        properties:
-          fileOperationKind:
-            enum: [change, remove]
-        required: [fileOperationKind]
+        - type: object
+          required: [fileOperationKind]
+          properties:
+            fileOperationKind:
+              type: string
+              enum: [add]
     ChangeFileRequest:
       description: Public ChangeFile one-item adapter; only fileOperationKind change is valid.
       allOf:
         - $ref: "#/components/schemas/FileMutationRequest"
-      not:
-        properties:
-          fileOperationKind:
-            enum: [add, remove]
-        required: [fileOperationKind]
+        - type: object
+          required: [fileOperationKind]
+          properties:
+            fileOperationKind:
+              type: string
+              enum: [change]
     RemoveFileRequest:
       description: Public RemoveFile one-item adapter; only fileOperationKind remove is valid.
       allOf:
         - $ref: "#/components/schemas/FileMutationRequest"
-      not:
-        properties:
-          fileOperationKind:
-            enum: [add, change]
-        required: [fileOperationKind]
+        - type: object
+          required: [fileOperationKind]
+          properties:
+            fileOperationKind:
+              type: string
+              enum: [remove]
     MutateFilesRequest:
       type: object
       additionalProperties: false
@@ -9441,10 +9563,12 @@ components:
           $ref: "#/components/schemas/PathMetadata"
         startOffset:
           type: integer
+          format: int64
           minimum: 0
           description: Inclusive zero-based byte offset. May reference any non-negative offset within the authorized file.
         endOffset:
           type: integer
+          format: int64
           minimum: 0
           description: "Exclusive byte offset. Derived rule: `endOffset >= startOffset` and `endOffset - startOffset <= 262144` (single read window). Larger files require multiple bounded calls. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed."
     FileRangeReadResult:
@@ -9461,28 +9585,7 @@ components:
         path:
           $ref: "#/components/schemas/ContentAllowedPathMetadata"
         range:
-          type: object
-          additionalProperties: false
-          description: "Range descriptor returned with the read result. Derived rule: `partial == (actualBytes < endOffset - startOffset)`. When the server reached end-of-file before the exclusive `endOffset`, `partial` is `true` and `actualBytes` is the bytes returned; the response status is `206 Partial Content`. When `actualBytes == endOffset - startOffset`, `partial` is `false` and the status is `200 OK`."
-          required:
-            - startOffset
-            - endOffset
-            - actualBytes
-            - partial
-          properties:
-            startOffset:
-              type: integer
-              minimum: 0
-            endOffset:
-              type: integer
-              minimum: 0
-            actualBytes:
-              type: integer
-              minimum: 0
-              maximum: 262144
-            partial:
-              type: boolean
-              description: "True when `actualBytes < endOffset - startOffset` (end-of-file reached before requested window end)."
+          $ref: "#/components/schemas/FileRangeReadDescriptor"
         contentBytes:
           type: string
           contentEncoding: base64
@@ -9493,6 +9596,63 @@ components:
           $ref: "#/components/schemas/ContextQueryLimitMetadata"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+    FileRangeReadCompleteResult:
+      description: HTTP 200 range result. The requested half-open window is complete, including the valid empty `[EOF,EOF)` result.
+      allOf:
+        - $ref: "#/components/schemas/FileRangeReadResult"
+        - type: object
+          required: [range]
+          properties:
+            range:
+              $ref: "#/components/schemas/FileRangeReadCompleteDescriptor"
+    FileRangeReadPartialResult:
+      description: HTTP 206 range result. The authorized start is before EOF and the response contains all remaining bytes before EOF.
+      allOf:
+        - $ref: "#/components/schemas/FileRangeReadResult"
+        - type: object
+          required: [range]
+          properties:
+            range:
+              $ref: "#/components/schemas/FileRangeReadPartialDescriptor"
+    FileRangeReadDescriptor:
+      type: object
+      additionalProperties: false
+      description: Range descriptor shared by the status-specific 200 and 206 response schemas.
+      required: [startOffset, endOffset, actualBytes, partial]
+      properties:
+        startOffset:
+          type: integer
+          format: int64
+          minimum: 0
+        endOffset:
+          type: integer
+          format: int64
+          minimum: 0
+        actualBytes:
+          type: integer
+          format: int64
+          minimum: 0
+          maximum: 262144
+        partial:
+          type: boolean
+    FileRangeReadCompleteDescriptor:
+      allOf:
+        - $ref: "#/components/schemas/FileRangeReadDescriptor"
+        - type: object
+          required: [partial]
+          properties:
+            partial:
+              type: boolean
+              const: false
+    FileRangeReadPartialDescriptor:
+      allOf:
+        - $ref: "#/components/schemas/FileRangeReadDescriptor"
+        - type: object
+          required: [partial]
+          properties:
+            partial:
+              type: boolean
+              const: true
     FileTreeResult:
       type: object
       additionalProperties: false
@@ -9527,16 +9687,88 @@ components:
       properties:
         items:
           type: array
-          maxItems: 2000
-          maxResultCount: 2000
+          maxItems: 500
+          maxResultCount: 500
           items:
             $ref: "#/components/schemas/ContentAllowedFileMetadataItem"
         page:
-          $ref: "#/components/schemas/PaginationMetadata"
+          $ref: "#/components/schemas/FileSearchPaginationMetadata"
         limits:
-          $ref: "#/components/schemas/ContextQueryLimitMetadata"
+          $ref: "#/components/schemas/FileSearchLimitMetadata"
         freshness:
           $ref: "#/components/schemas/FreshnessMetadata"
+    FileSearchPaginationMetadata:
+      type: object
+      additionalProperties: false
+      required: [limit, isTruncated]
+      properties:
+        cursor:
+          type: string
+          maxLength: 256
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 500
+        isTruncated:
+          type: boolean
+        truncatedReason:
+          type: string
+          nullable: true
+          enum: [result_count_limit, response_budget_limit, query_timeout]
+      allOf:
+        - if:
+            required: [isTruncated]
+            properties:
+              isTruncated:
+                const: true
+          then:
+            required: [truncatedReason]
+          else:
+            not:
+              required: [truncatedReason]
+    FileSearchLimitMetadata:
+      type: object
+      additionalProperties: false
+      required: [queryFamily, configuredLimit, actualCount, actualBytes, elapsedMilliseconds, isTruncated, truncatedReason]
+      properties:
+        queryFamily:
+          type: string
+          const: search
+        configuredLimit:
+          type: integer
+          minimum: 0
+          maximum: 500
+        actualCount:
+          type: integer
+          minimum: 0
+          maximum: 500
+        actualBytes:
+          type: integer
+          minimum: 0
+          maximum: 1048576
+        elapsedMilliseconds:
+          type: integer
+          minimum: 0
+          maximum: 86400000
+        isTruncated:
+          type: boolean
+        truncatedReason:
+          type: string
+          enum: [result_count_limit, response_budget_limit, query_timeout, not_truncated]
+      allOf:
+        - if:
+            required: [isTruncated]
+            properties:
+              isTruncated:
+                const: false
+          then:
+            properties:
+              truncatedReason:
+                const: not_truncated
+          else:
+            properties:
+              truncatedReason:
+                enum: [result_count_limit, response_budget_limit, query_timeout]
     FileMetadataResult:
       type: object
       additionalProperties: false

@@ -96,7 +96,7 @@ internal static class FileCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<FileMutationRequest>(parseResult.GetValue(body)),
+                CommandOptions.ReadRequiredBody<RemoveFileRequest>(parseResult.GetValue(body)),
                 ct)));
     }
 

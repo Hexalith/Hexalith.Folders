@@ -37,4 +37,16 @@ internal static class RequestBody
             throw new McpUsageException("The request body is not valid JSON for this operation.");
         }
     }
+
+    /// <summary>Reads an operation body that is required by the Contract Spine.</summary>
+    public static T ReadRequired<T>(string? requestJson)
+        where T : new()
+    {
+        if (string.IsNullOrWhiteSpace(requestJson))
+        {
+            throw new McpUsageException("The request body is required for this operation.");
+        }
+
+        return Read<T>(requestJson);
+    }
 }

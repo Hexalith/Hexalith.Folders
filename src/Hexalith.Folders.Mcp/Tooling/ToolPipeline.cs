@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,6 +8,8 @@ using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Mcp.Credentials;
 using Hexalith.Folders.Mcp.Errors;
 using Hexalith.Folders.Mcp.Infrastructure;
+
+using Newtonsoft.Json;
 
 namespace Hexalith.Folders.Mcp.Tooling;
 
@@ -166,6 +169,14 @@ internal sealed class ToolPipeline
             // Inline content exceeded the upload boundary; content-safe, mapped to input_limit_exceeded.
             return Failure(McpFailure.InputLimitExceeded(correlation));
         }
+        catch (FileContentLimitExceededException)
+        {
+            return Failure(McpFailure.FileContentLimitExceeded(correlation));
+        }
+        catch (Exception exception) when (IsRequestValidationFailure(exception))
+        {
+            return Failure(McpFailure.UsageError(correlation, "The request body is not valid for this operation."));
+        }
         catch (HexalithFoldersApiException<ProblemDetails> typed) when (typed.Result is not null)
         {
             // Post-SDK: server returned RFC 9457 + canonical category. Project category → kind.
@@ -185,6 +196,11 @@ internal sealed class ToolPipeline
     }
 
     private static string Failure(McpFailure failure) => MetadataOnlyJson.Serialize(failure);
+
+    private static bool IsRequestValidationFailure(Exception exception) =>
+        exception is JsonSerializationException
+        || (exception is TargetInvocationException { InnerException: { } inner }
+            && IsRequestValidationFailure(inner));
 
     /// <summary>Adapts a typed <see cref="Task{T}"/> SDK call to the pipeline's <c>Task&lt;object?&gt;</c> shape.</summary>
     /// <typeparam name="T">The SDK result type.</typeparam>

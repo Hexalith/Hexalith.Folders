@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -138,6 +139,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         ProjectPathAssignmentPattern().Matches(script)
             .Cast<Match>()
             .Select(static match => match.Groups["value"].Value)
+            .Where(static value => value != "self-test")
             .Distinct(StringComparer.Ordinal)
             .ShouldBe(_testProjects);
 
@@ -197,6 +199,92 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
             .ShouldBe(_testProjects);
 
         AssertMetadataOnlyJson(root);
+    }
+
+    [Fact]
+    public void ContractParityGateRecordsEveryLaneAfterTerminatingFailure()
+    {
+        string reportFileName = $"hexalith-parity-isolation-{Guid.NewGuid():N}.json";
+        string reportPath = Path.Combine(Path.GetTempPath(), reportFileName);
+        try
+        {
+            ProcessStartInfo startInfo = new()
+            {
+                FileName = "pwsh",
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                WorkingDirectory = Path.GetTempPath(),
+            };
+            startInfo.ArgumentList.Add("-NoProfile");
+            startInfo.ArgumentList.Add("-File");
+            startInfo.ArgumentList.Add(RepositoryPath(GateScriptPath));
+            startInfo.ArgumentList.Add("-SelfTestFailureIsolation");
+            startInfo.ArgumentList.Add("-OutputReportPath");
+            startInfo.ArgumentList.Add(reportFileName);
+
+            using Process process = Process.Start(startInfo).ShouldNotBeNull();
+            process.WaitForExit(30_000).ShouldBeTrue("parity self-test must terminate promptly");
+            process.ExitCode.ShouldNotBe(0, "the injected terminating lane must preserve aggregate failure");
+
+            using JsonDocument report = JsonDocument.Parse(File.ReadAllText(reportPath, Encoding.UTF8));
+            RequiredString(report.RootElement, "status").ShouldBe("failed");
+            RequiredString(report.RootElement, "report_path").ShouldBe(reportFileName);
+            JsonElement[] results = report.RootElement.GetProperty("results").EnumerateArray().ToArray();
+            results.Length.ShouldBe(3);
+            results.Select(static result => RequiredString(result, "category"))
+                .ShouldBe(["synthetic-before", "synthetic-terminating", "synthetic-after"]);
+            results.Select(static result => RequiredString(result, "status"))
+                .ShouldBe(["passed", "failed", "passed"]);
+        }
+        finally
+        {
+            File.Delete(reportPath);
+        }
+    }
+
+    [Fact]
+    public void ContractParityGateRecordsEveryLaneWhenDotnetIsMissing()
+    {
+        string temporaryDirectory = Path.Combine(Path.GetTempPath(), $"hexalith-parity-prerequisite-{Guid.NewGuid():N}");
+        string reportFileName = "custom-parity-report.json";
+        string reportPath = Path.Combine(temporaryDirectory, reportFileName);
+        Directory.CreateDirectory(temporaryDirectory);
+        try
+        {
+            ProcessStartInfo startInfo = new()
+            {
+                FileName = "pwsh",
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                WorkingDirectory = temporaryDirectory,
+            };
+            startInfo.ArgumentList.Add("-NoProfile");
+            startInfo.ArgumentList.Add("-File");
+            startInfo.ArgumentList.Add(RepositoryPath(GateScriptPath));
+            startInfo.ArgumentList.Add("-SelfTestMissingDotnet");
+            startInfo.ArgumentList.Add("-OutputReportPath");
+            startInfo.ArgumentList.Add(reportFileName);
+
+            using Process process = Process.Start(startInfo).ShouldNotBeNull();
+            process.WaitForExit(30_000).ShouldBeTrue("missing-dotnet handling must terminate promptly");
+            process.ExitCode.ShouldNotBe(0, "a missing dotnet prerequisite must fail the aggregate gate");
+
+            using JsonDocument report = JsonDocument.Parse(File.ReadAllText(reportPath, Encoding.UTF8));
+            RequiredString(report.RootElement, "status").ShouldBe("failed");
+            RequiredString(report.RootElement, "report_path").ShouldBe(reportFileName);
+            JsonElement[] results = report.RootElement.GetProperty("results").EnumerateArray().ToArray();
+            results.Select(static result => RequiredString(result, "category")).ShouldBe(_categories);
+            results.ShouldAllBe(static result =>
+                RequiredString(result, "status") == "failed"
+                && RequiredString(result, "error_type") == "DotnetSdkNotFound");
+        }
+        finally
+        {
+            File.Delete(reportPath);
+            Directory.Delete(temporaryDirectory);
+        }
     }
 
     [Fact]

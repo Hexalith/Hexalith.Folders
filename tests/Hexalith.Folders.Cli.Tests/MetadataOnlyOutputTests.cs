@@ -24,21 +24,24 @@ public sealed class MetadataOnlyOutputTests
     // base64 of "SECRETBYTES" — must never reach any output channel.
     private const string ContentBase64 = "U0VDUkVUQllURVM=";
 
-    private const string RangeReadJson =
+    private static string RangeReadJson(bool partial) =>
         "{\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},"
-        + "\"range\":{\"startOffset\":0,\"endOffset\":11,\"actualBytes\":11,\"partial\":false},"
+        + $"\"range\":{{\"startOffset\":0,\"endOffset\":{(partial ? 12 : 11)},\"actualBytes\":11,\"partial\":{partial.ToString().ToLowerInvariant()}}},"
         + "\"contentBytes\":\"" + ContentBase64 + "\","
-        + "\"freshness\":{\"readConsistency\":\"read_your_writes\"}}";
+        + "\"limits\":{\"queryFamily\":\"range\",\"configuredLimit\":262144,\"actualCount\":1,\"actualBytes\":11,\"elapsedMilliseconds\":1,\"isTruncated\":false,\"truncatedReason\":\"not_truncated\"},"
+        + "\"freshness\":{\"readConsistency\":\"read_your_writes\",\"observedAt\":\"2026-09-14T00:00:00Z\",\"projectionWatermark\":\"watermark_01HZY7Z6N7J4Q2X8\",\"stale\":false}}";
 
     private const string RangeReadRequestJson =
         "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},"
         + "\"startOffset\":0,\"endOffset\":11}";
 
-    [Fact]
-    public async Task RangeReadOutputNeverContainsFileContent()
+    [Theory]
+    [InlineData(HttpStatusCode.OK, false)]
+    [InlineData(HttpStatusCode.PartialContent, true)]
+    public async Task RangeReadOutputNeverContainsFileContent(HttpStatusCode status, bool partial)
     {
         CliTestHarness harness = new();
-        _ = harness.UseRealClient(HttpStatusCode.OK, RangeReadJson);
+        _ = harness.UseRealClient(status, RangeReadJson(partial));
 
         int exit = await harness.RunAsync(
             "context", "read-range",
@@ -50,7 +53,7 @@ public sealed class MetadataOnlyOutputTests
             "--output", "json",
             "--request", RangeReadRequestJson);
 
-        exit.ShouldBe(0);
+        exit.ShouldBe(0, harness.Console.StdErr);
         harness.Console.StdOut.ShouldNotContain(ContentBase64);
         harness.Console.StdOut.ShouldNotContain("SECRETBYTES");
         harness.Console.StdOut.ShouldNotContain("contentBytes");
