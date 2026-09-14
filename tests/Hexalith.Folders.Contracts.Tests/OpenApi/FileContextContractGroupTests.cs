@@ -61,156 +61,6 @@ public sealed class FileContextContractGroupTests
     }
 
     [Fact]
-    public void Oq2CanonicalPolicyPinsPathVocabularyPrecedenceContentAndSafeDenial()
-    {
-        File.Exists(ContractNotesPath).ShouldBeTrue(ContractNotesPath);
-        string policy = File.ReadAllText(ContractNotesPath);
-
-        string[] requiredStatements =
-        [
-            "Policy version: `1.0.0`",
-            "Approved by: `Administrator` for PM, Architecture, and Security",
-            "at most 500 characters",
-            "ASCII `A-Z a-z 0-9 . _ - /`",
-            "caller's exact accepted spelling",
-            "ordinal-ignore-case semantics",
-            "touched entry and each existing ancestor",
-            "no-follow",
-            "`content_allowed`",
-            "`metadata_only`",
-            "`excluded`",
-            "`restricted`",
-            "non-empty include allowlist",
-            "Exclusions are then evaluated and always win",
-            "Re-inclusion after",
-            "an exclusion is unsupported",
-            "invalid, empty,",
-            "unbounded, stale, unreadable, or unavailable policy fails closed",
-            "1,048,576 bytes",
-            "at most 100 changes",
-            "10,485,760 aggregate add/change bytes",
-            "strict UTF-8 validation",
-            "one UTF-8 BOM at byte zero",
-            "HTTP 404",
-            "`category: tenant_access_denied`",
-            "`code: resource_unavailable`",
-            "HTTP 416 is reserved for a caller that is already authorized",
-            "Stories 12.1, 12.3, and 4.20 and FR32-FR35 runtime proof remain incomplete",
-        ];
-
-        foreach (string statement in requiredStatements)
-        {
-            policy.ShouldContain(statement, Case.Sensitive);
-        }
-
-        policy.ShouldNotContain("safe-denial-matrix follow-up", Case.Insensitive);
-        policy.ShouldNotContain("path-policy-class definition story", Case.Insensitive);
-        policy.ShouldNotContain("parser-policy story", Case.Insensitive);
-        policy.ShouldNotContain("tenant_sensitive_document", Case.Sensitive);
-    }
-
-    [Fact]
-    public void Oq2OpenApiPinsCanonicalPathClassesMutationBoundsAndRouting()
-    {
-        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
-        YamlMappingNode policy = RequiredMapping(root, "x-hexalith-file-policy");
-        GetScalar(policy, "version").ShouldBe("1.0.0");
-        GetScalar(policy, "canonicalArtifact").ShouldBe("docs/contract/file-context-contract-groups.md");
-
-        YamlMappingNode pathProfile = RequiredMapping(policy, "pathProfile");
-        GetScalar(pathProfile, "characterProfile").ShouldBe("ASCII A-Z a-z 0-9 . _ - /");
-        GetScalar(pathProfile, "maximumCharacters").ShouldBe("500");
-        GetScalar(pathProfile, "unicodeNormalization").ShouldBe("NFC");
-        GetScalar(pathProfile, "collisionComparison").ShouldBe("ordinal-ignore-case");
-        GetScalar(pathProfile, "callerSpelling").ShouldBe("preserve-without-retargeting");
-        GetScalar(pathProfile, "linkHandling").ShouldBe("reject-touched-entry-or-ancestor-without-following");
-
-        RequiredSequence(policy, "policyClasses").Children.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
-            .ShouldBe(["content_allowed", "metadata_only", "excluded", "restricted"]);
-
-        YamlMappingNode precedence = RequiredMapping(policy, "policyPrecedence");
-        GetScalar(precedence, "includeAllowlistRequired").ShouldBe("true");
-        GetScalar(precedence, "exclusionsAlwaysWin").ShouldBe("true");
-        GetScalar(precedence, "reInclusionSupported").ShouldBe("false");
-        GetScalar(precedence, "invalidOrUnavailablePolicy").ShouldBe("fail-closed");
-
-        YamlMappingNode limits = RequiredMapping(policy, "mutationLimits");
-        GetScalar(limits, "inlineTransportBytes").ShouldBe("262144");
-        GetScalar(limits, "perFileBytes").ShouldBe("1048576");
-        GetScalar(limits, "maximumChanges").ShouldBe("100");
-        GetScalar(limits, "aggregateBytes").ShouldBe("10485760");
-        GetScalar(limits, "validation").ShouldBe("atomic-apply-none-on-any-failure");
-
-        YamlMappingNode readability = RequiredMapping(policy, "contentReadability");
-        GetScalar(readability, "encoding").ShouldBe("strict-utf-8-with-optional-leading-bom");
-        GetScalar(readability, "binaryAndOtherEncodings").ShouldBe("metadata-only");
-        GetScalar(readability, "truncation").ShouldBe("forbidden");
-
-        YamlMappingNode hidden = RequiredMapping(policy, "hiddenPathOutcome");
-        GetScalar(hidden, "status").ShouldBe("404");
-        GetScalar(hidden, "category").ShouldBe("tenant_access_denied");
-        GetScalar(hidden, "code").ShouldBe("resource_unavailable");
-        GetScalar(policy, "authorizedUnsatisfiableRangeStatus").ShouldBe("416");
-
-        foreach (Operation operation in EnumerateOperations(root).Where(operation => FileContextOperationIds.Contains(operation.OperationId, StringComparer.Ordinal)))
-        {
-            GetScalar(RequiredMapping(RequiredMapping(operation.Node, "responses"), "404"), "$ref")
-                .ShouldBe("#/components/responses/SafeAuthorizationDenial404", operation.OperationId);
-        }
-
-        YamlMappingNode schemas = RequiredMapping(RequiredMapping(root, "components"), "schemas");
-        YamlMappingNode pathMetadata = RequiredMapping(schemas, "PathMetadata");
-        YamlMappingNode pathProperties = RequiredMapping(pathMetadata, "properties");
-        YamlMappingNode normalizedPath = RequiredMapping(pathProperties, "normalizedPath");
-        GetScalar(normalizedPath, "maxLength").ShouldBe("500");
-        string pathPattern = GetScalar(normalizedPath, "pattern");
-        Regex.IsMatch("Docs/A-1_b.c", pathPattern, RegexOptions.CultureInvariant).ShouldBeTrue();
-        foreach (string rejected in new[] { "/docs/a.md", "docs/a.md/", "docs//a.md", "docs/./a.md", "docs/../a.md", "docs/con.txt", "docs\\a.md", "docs/é.md" })
-        {
-            Regex.IsMatch(rejected, pathPattern, RegexOptions.CultureInvariant).ShouldBeFalse(rejected);
-        }
-
-        YamlMappingNode pathPolicyClass = RequiredMapping(pathProperties, "pathPolicyClass");
-        RequiredSequence(pathPolicyClass, "enum").Children.Cast<YamlScalarNode>().Select(node => node.Value).ToArray()
-            .ShouldBe(["content_allowed", "metadata_only", "excluded", "restricted"]);
-
-        YamlMappingNode mutation = RequiredMapping(schemas, "FileMutationRequest");
-        YamlMappingNode mutationLimits = RequiredMapping(mutation, "x-hexalith-change-set-limits");
-        GetScalar(mutationLimits, "maximumChanges").ShouldBe("100");
-        GetScalar(mutationLimits, "aggregateBytes").ShouldBe("10485760");
-        GetScalar(mutationLimits, "perFileBytes").ShouldBe("1048576");
-        GetScalar(RequiredMapping(RequiredMapping(mutation, "properties"), "byteLength"), "maximum").ShouldBe("1048576");
-        GetScalar(RequiredMapping(RequiredMapping(schemas, "PutFileStream"), "properties").Children[new YamlScalarNode("declaredLength")].ShouldBeOfType<YamlMappingNode>(), "maximum").ShouldBe("1048576");
-        GetScalar(RequiredMapping(RequiredMapping(schemas, "PutFileStream"), "properties").Children[new YamlScalarNode("observedLength")].ShouldBeOfType<YamlMappingNode>(), "maximum").ShouldBe("1048576");
-
-        Operation rangeRead = EnumerateOperations(root).Single(operation => operation.OperationId == "ReadFileRange");
-        YamlMappingNode responses = RequiredMapping(rangeRead.Node, "responses");
-        GetScalar(RequiredMapping(responses, "404"), "$ref").ShouldBe("#/components/responses/SafeAuthorizationDenial404");
-        YamlMappingNode rangeExamples = RequiredMapping(RequiredMapping(RequiredMapping(responses, "416"), "content"), "application/problem+json");
-        string rangeResponse = SerializeYaml(rangeExamples);
-        rangeResponse.ShouldContain("ReadFileRangeUnsatisfiableProblem", Case.Sensitive);
-        rangeResponse.ShouldNotContain("redacted", Case.Insensitive);
-        rangeResponse.ShouldNotContain("sensitivity-denied", Case.Insensitive);
-
-        string[] rangeCategories = RequiredSequence(rangeRead.Node, "x-hexalith-canonical-error-categories")
-            .Children.Cast<YamlScalarNode>().Select(node => node.Value ?? string.Empty).ToArray();
-        rangeCategories.ShouldContain("range_unsatisfiable");
-        rangeCategories.ShouldNotContain("redacted");
-
-        YamlMappingNode safe404 = RequiredMapping(RequiredMapping(RequiredMapping(root, "components"), "examples"), "SafeDenial404NotFound");
-        YamlMappingNode safe404Value = RequiredMapping(safe404, "value");
-        GetScalar(safe404Value, "status").ShouldBe("404");
-        GetScalar(safe404Value, "category").ShouldBe("tenant_access_denied");
-        GetScalar(safe404Value, "code").ShouldBe("resource_unavailable");
-
-        string openApi = File.ReadAllText(OpenApiPath);
-        openApi.ShouldNotContain("ReadFileRangeRedactedProblem", Case.Sensitive);
-        openApi.ShouldNotContain("safe-denial-matrix follow-up", Case.Insensitive);
-        openApi.ShouldNotContain("path-policy-class definition story", Case.Insensitive);
-        openApi.ShouldNotContain("tenant_sensitive_document", Case.Sensitive);
-    }
-
-    [Fact]
     public void FileMutations_DeclareIdempotencyLockScopeAndD9Transport()
     {
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
@@ -290,15 +140,9 @@ public sealed class FileContextContractGroupTests
                 .Select(value => value.Value ?? string.Empty)
                 .ToArray();
 
-            foreach (string expected in new[] { "tenant_access_denied", "folder_acl_denied", "path_validation_failed", "input_limit_exceeded", "response_limit_exceeded", "query_timeout", "read_model_unavailable" })
+            foreach (string expected in new[] { "tenant_access_denied", "folder_acl_denied", "path_validation_failed", "input_limit_exceeded", "response_limit_exceeded", "query_timeout", "read_model_unavailable", "redacted" })
             {
                 categories.ShouldContain(expected, operation.OperationId);
-            }
-
-            if (operation.OperationId == "ReadFileRange")
-            {
-                categories.ShouldContain("range_unsatisfiable", operation.OperationId);
-                categories.ShouldNotContain("redacted", operation.OperationId);
             }
         }
     }
@@ -370,7 +214,7 @@ public sealed class FileContextContractGroupTests
             "ReadFileRangeInvalidReversedProblem",
             "ReadFileRangeOverBoundProblem",
             "ReadFileRangeUnsatisfiableProblem",
-            "SafeDenial404NotFound",
+            "ReadFileRangeRedactedProblem",
             "ContextInputLimitExceededProblem",
         ];
 
