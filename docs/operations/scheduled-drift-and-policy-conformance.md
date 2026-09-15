@@ -54,7 +54,11 @@ Nightly drift categories:
 - `forgejo-snapshot-coverage`: pinned Forgejo OpenAPI snapshots exist and cover required provider operation paths.
 - `forgejo-drift-classification`: classification fixtures stay metadata-only and breaking or unknown actual drift fails.
 - `forgejo-sanitized-report`: sanitized report generation succeeds and raw schema diff retention is disabled.
-- `live-provider-drift`: `reference_pending_story_7_8` until a credential-free live lane is implemented.
+- `github-pinned-profile-integrity`: the GitHub pinned-profile manifest agrees with the OQ4 catalog version, the centrally pinned SDK package, the dated REST API version, the product header, and the catalog's claimed provider-neutral failure categories. The lane performs no network call.
+- `github-failure-mode-coverage`: the C12 fixture-to-failure-mode coverage matrix maps every catalog-claimed provider-neutral failure category to exactly one real proving fixture; an unmapped category, an orphaned row, or a duplicate row fails closed.
+- `credentialed-live-provider-evidence`: reported as `not_run`. C12 is closed on hermetic-PR-gate plus scheduled containerized and fixture drift evidence; credentialed live provider runs against GitHub and Forgejo remain residual provider-ready debt and are never reported as a pass.
+
+Per-provider hermetic status is derived from the category results actually recorded in the run, so no provider row can report a hardcoded placeholder status.
 
 Additive provider drift is warning-class evidence and remains visible. Breaking provider drift, unknown/unclassified drift, missing snapshots, stale integrity hashes, missing sanitized reports, raw schema diff retention, and forbidden sentinel values fail the workflow.
 
@@ -77,7 +81,7 @@ The scheduled workflows are continuous release-readiness evidence. They do not r
 
 ## Ownership and escalation
 
-`folders-provider-maintainers` own Forgejo drift categories and the future live-provider implementation boundary.
+`folders-provider-maintainers` own the Forgejo and GitHub drift categories, the OQ4 provider compatibility catalog, and the residual credentialed live-provider evidence boundary.
 
 `platform-engineering` owns production Dapr policy conformance, the static Dapr policy gate, and the future live-kind synthetic denial lane.
 

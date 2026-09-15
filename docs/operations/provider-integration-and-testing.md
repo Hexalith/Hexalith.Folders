@@ -96,10 +96,49 @@ outcome is unknown.
 The concrete Octokit path creates organization repositories without implicit initialization and validates
 existing repositories by canonical identity, exact default/selected branch, permission, and protection
 evidence. Every owned request sends REST profile `2022-11-28`; the complete pinned assumptions and release
-limits are recorded in [`provider-compatibility-catalog.md`](provider-compatibility-catalog.md). Production
+limits are recorded in [`provider-compatibility-catalog.md`](../contract/provider-compatibility-catalog.md). Production
 composition remains fail-closed until an authoritative tenant policy source supplies the internal target
 resolver, and live GitHub readiness is still owned by Story 3.3. These limits mean the implementation must not
 be advertised as full GitHub provider readiness.
+
+### OQ4 provider compatibility catalog and the C12 drift lanes
+
+`docs/contract/provider-compatibility-catalog.md` is the canonical, versioned provider compatibility catalog.
+Version `1.0.0` was approved on 2026-09-15 by Provider, Architecture, and PM (signer Administrator) and is bound
+to its SHA-256 digest by `docs/contract/oq4-provider-compatibility-evidence.yaml`. Editing the catalog without
+re-cutting the version, digest, and all three approval records fails the offline governance gate
+(`pwsh ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild`) closed.
+
+The catalog publishes three profiles operators should read before changing adapter behavior:
+
+- **Product and instance identity** — provider family keys, instance model, product header, API surface
+  identity, observed product versions, SDK/native pins, accepted credential modes, and each provider's drift
+  evidence lane.
+- **Call ceilings `CC1`-`CC12`** — the per-call budgets, reconciliation window, `Retry-After` clamp, and input
+  caps exactly as the adapters enforce them. Each ceiling either cites the enforcing constant or is recorded as
+  a numbered gap.
+- **Readiness outcomes** — the nine capability rows both readiness mappers publish, and the
+  `bounded_retry` / `no_retry` rate-limit posture.
+
+Three gaps are recorded rather than hidden: `PG1` (GitHub pins no adapter-level per-call REST timeout), `PG2`
+(no retry-limit or backoff-cap ceiling has a referent, because no adapter implements a retry loop), and `PG3`
+(the 24-hour `Retry-After` clamp bounds a passed-through value, not a backoff algorithm).
+
+Criterion C12 is approved on a narrowed evidence standard: hermetic-PR-gate provider contract evidence plus
+scheduled containerized and fixture drift evidence. The Forgejo lane stays the per-version Swagger snapshot
+manifest; the GitHub lane is the pinned-profile manifest `tests/contracts/github/pinned-profile.json` plus the
+fixture-to-failure-mode coverage matrix proven by
+`Hexalith.Folders.Tests.Providers.GitHub.GitHubDriftConformanceTests`. Neither lane makes a network call to a
+provider endpoint. Run both with
+`pwsh ./tests/tools/run-nightly-drift-gates.ps1 -SkipRestoreBuild -ProviderProfile pinned-snapshots`; the report
+at `_bmad-output/gates/nightly-drift/latest.json` carries real per-provider hermetic status plus an explicit
+`credentialed-live-provider-evidence: not_run` row. Credentialed live provider runs against GitHub and Forgejo
+are residual provider-ready debt; they are never reported as a pass, and NFR49 stays reference-pending for them.
+
+When the pinned Octokit package, the `X-GitHub-Api-Version` value, the product header, or a provider-neutral
+failure category changes, update the catalog and `tests/contracts/github/pinned-profile.json` in the same commit:
+the drift gate fails closed on an unmapped category, an orphaned matrix row, a duplicate row, a proving fixture
+that does not exist, or a package/API-version mismatch.
 
 ### Story 3.11 live evidence residual
 

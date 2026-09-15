@@ -4,26 +4,50 @@
   "report_path": "_bmad-output/gates/nightly-drift/latest.json",
   "diagnostic_policy": "metadata-only",
   "trigger_policy": "schedule_utc_or_manual_dispatch_default_branch",
-  "provider": "forgejo",
+  "providers": [
+    "forgejo",
+    "github"
+  ],
   "provider_profile": "pinned-snapshots",
   "categories": [
     "forgejo-manifest-integrity",
     "forgejo-snapshot-coverage",
     "forgejo-drift-classification",
     "forgejo-sanitized-report",
-    "live-provider-drift"
+    "github-pinned-profile-integrity",
+    "github-failure-mode-coverage",
+    "credentialed-live-provider-evidence"
   ],
   "manifest_path": "tests/contracts/forgejo/supported-versions.json",
+  "github_profile_path": "tests/contracts/github/pinned-profile.json",
   "classification_fixture_path": "tests/tools/forgejo-drift/classification-fixtures.json",
   "sanitized_report_path": "_bmad-output/gates/nightly-drift/sanitized-forgejo-drift.json",
   "test_project": "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
-  "expected_test_count": 7,
-  "live_provider_drift": {
-    "status": "reference_pending_story_7_8",
+  "expected_test_count": 10,
+  "github_expected_test_count": 5,
+  "provider_status": [
+    {
+      "provider": "forgejo",
+      "hermetic_status": "passed",
+      "evidence_kind": "pinned-swagger-snapshot-manifest-and-classification-fixtures",
+      "credentialed_live_evidence": "not_run"
+    },
+    {
+      "provider": "github",
+      "hermetic_status": "passed",
+      "evidence_kind": "pinned-profile-manifest-and-failure-mode-coverage-matrix",
+      "credentialed_live_evidence": "not_run"
+    }
+  ],
+  "credentialed_live_provider_evidence": {
+    "status": "not_run",
+    "reason": "no credentialed provider lane runs in scheduled CI; C12 is closed on hermetic plus scheduled containerized and fixture evidence only",
     "owner": "folders-provider-maintainers",
-    "command_shape": "pwsh ./tests/tools/run-nightly-drift-gates.ps1 -ProviderProfile pinned-snapshots",
+    "forgejo_command_shape": "pwsh ./tests/tools/run-forgejo-provider-evidence-gates.ps1",
+    "github_command_shape": "none; the live GitHub mutation archive is waived, not executed",
     "evidence_path": "_bmad-output/gates/nightly-drift/latest.json",
-    "follow_up_boundary": "replace reference_pending only when a synthetic credential-free live provider lane can classify live schema drift without retaining raw upstream responses"
+    "residual_debt": "credentialed live provider runs against both providers remain residual provider-ready debt recorded in the OQ4 catalog",
+    "closing_condition": "retire not_run only when an operator-run credentialed lane for both providers archives metadata-only positive, denial and tenant-isolation evidence against approved isolated installations, and the OQ4 catalog is re-cut with a new version, digest and three fresh authority approvals"
   },
   "provider_versions": [
     {
@@ -42,7 +66,7 @@
     }
   ],
   "sanitized_report_schema": "forgejo-drift-report-v1",
-  "elapsed_ms": 2829,
+  "elapsed_ms": 3858,
   "results": [
     {
       "category": "forgejo-manifest-integrity",
@@ -69,9 +93,21 @@
       "exit_code": 0
     },
     {
-      "category": "live-provider-drift",
-      "status": "reference_pending_story_7_8",
-      "severity": "warning",
+      "category": "github-pinned-profile-integrity",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "github-failure-mode-coverage",
+      "status": "passed",
+      "severity": "none",
+      "exit_code": 0
+    },
+    {
+      "category": "credentialed-live-provider-evidence",
+      "status": "not_run",
+      "severity": "informational",
       "exit_code": 0
     }
   ]

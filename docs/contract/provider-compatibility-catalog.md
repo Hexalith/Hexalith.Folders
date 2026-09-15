@@ -1,14 +1,117 @@
 # Provider Compatibility Catalog
 
-This catalog records the compatibility assumptions used by the provider adapters.
-The GitHub profile OQ4 status below is the human approval record for that profile.
-Forgejo remains pending live operator evidence. Product release acceptance still
-requires the remaining open release items.
+This catalog is the canonical, versioned record of the compatibility assumptions the provider
+adapters enforce. It publishes the product/instance identity, call-ceiling, and readiness-outcome
+profiles for both governed providers, records every unenforced ceiling as a numbered gap, and carries
+the OQ4 governance record. Forgejo remains pending live operator evidence, and product release
+acceptance still requires the remaining open release items.
+
+## Catalog identity and OQ4 governance
+
+- Catalog version: `1.0.0`
+- Canonical path: `docs/contract/provider-compatibility-catalog.md`
+- Evidence package: `docs/contract/oq4-provider-compatibility-evidence.yaml` binds this catalog version, its SHA-256 digest, the published ceilings, the recorded gaps, and the authority records.
+- Governed provider profiles: `github` and `forgejo`.
+- OQ4 status: approved
+- OQ4 approval record: 2026-09-05 by jpiquot; GitHub profile in this catalog is the approved compatibility profile for Stories 3.10 and 3.11. Forgejo live evidence and full provider-ready closure remain separate.
+- OQ4 authority approval: Provider, signer Administrator, dated 2026-09-15, bound to catalog version `1.0.0` and its SHA-256 digest. Catalog version `1.0.0` is approved for the Provider authority.
+- OQ4 authority approval: Architecture, signer Administrator, dated 2026-09-15, bound to catalog version `1.0.0` and its SHA-256 digest. Catalog version `1.0.0` is approved for the Architecture authority.
+- OQ4 authority approval: PM, signer Administrator, dated 2026-09-15, bound to catalog version `1.0.0` and its SHA-256 digest. Catalog version `1.0.0` is approved for the PM authority.
+- OQ4 reopen policy: any change to the canonical catalog content, the catalog version, the SHA-256 digest, the required authority set, an approver identity, or an approval date reopens Provider, Architecture, and PM approval.
+- OQ4 runtime posture: this catalog closes the OQ4 compatibility-catalog decision and criterion C12 on the narrowed evidence standard below. It completes no dependent story and it claims no credentialed live provider run.
+- C12 evidence standard: C12 is closed on hermetic-PR-gate provider contract evidence plus scheduled containerized and fixture drift evidence. Credentialed live provider runs against GitHub and Forgejo are reported as explicitly not run and remain residual provider-ready debt.
+
+## Product and instance identity profile
+
+| Field | github | forgejo |
+| --- | --- | --- |
+| Provider family key | `github` | `forgejo` |
+| Instance model | the single hosted `api.github.com` service; no self-hosted enterprise base URL is an accepted target | an operator-supplied authorized HTTPS base URL, escaped per segment, with redirects rejected |
+| Product identity header | `Hexalith-Folders` | `Hexalith-Folders` |
+| API surface identity | `X-GitHub-Api-Version: 2022-11-28` on every owned request, one dated REST API behind the pinned SDK | `forgejo-rest-v1` observed through `/version` against an exact supported product version |
+| Observed product versions | not version-negotiated; the pinned SDK package is the compatibility referent | exactly `16.0.3` latest stable and `15.0.7` LTS |
+| SDK and native pin | Octokit `14.0.0` | LibGit2Sharp `0.32.0` with bundled libgit2 `1.8.6` |
+| Accepted credential modes | `AppInstallationReference` and `UserDelegatedReference` | `UserDelegatedReference` and `ServiceAccountReference` |
+| Capability profile schema | GitHub capability rows from `GitHubReadinessMapper` | `v1`, Forgejo capability rows from `ForgejoReadinessMapper` |
+| Drift evidence lane | `tests/contracts/github/pinned-profile.json` pinned-profile manifest plus the failure-mode coverage matrix | `tests/contracts/forgejo/supported-versions.json` per-version Swagger snapshot manifest |
+
+## Call-ceiling profile
+
+Every ceiling below is published as observed in adapter code. A ceiling with no enforcing constant is recorded
+as a numbered catalog gap instead of being presented as an enforced bound. No ceiling in this table is a target
+or an aspiration.
+
+| Ceiling | Provider scope | Published value | Enforcing constant | Recorded gap |
+| --- | --- | --- | --- | --- |
+| `CC1` | github | five-second mutation-send budget per owned mutation request | `OctokitGitHubApiClient.MaximumMutationRequestElapsed` | none |
+| `CC2` | github | five-second tree-observation budget per staged-tree read-back | `OctokitGitHubApiClient.MaximumTreeElapsed` | none |
+| `CC3` | github | per-call REST timeout on SDK-dispatched calls | none | `PG1` |
+| `CC4` | forgejo | thirty-second REST response and body deadline per owned operation request | `ForgejoHttpApiClient.OperationResponseTimeout` | none |
+| `CC5` | forgejo | thirty-second managed `HttpClient` deadline | `ForgejoHttpApiClientFactory` HttpClient timeout | none |
+| `CC6` | forgejo | thirty-second native smart-HTTPS transport deadline | `ForgejoSmartHttpGitTransport.NativeOperationDeadline` | none |
+| `CC7` | github, forgejo | fifteen-minute reconciliation window holding at most five read-only checks | `GitHubProvider.ReconciliationWindow` and `ForgejoProvider.OperationReconciliationWindow` | none |
+| `CC8` | github, forgejo | twenty-four-hour `Retry-After` clamp on surfaced retry evidence | `OctokitGitHubApiClient.BoundedRetryAfter` and `ForgejoHttpApiClient` retry-after bounding | `PG3` |
+| `CC9` | github, forgejo | per-call retry limit and backoff cap | none | `PG2` |
+| `CC10` | github, forgejo | one hundred changes per atomic change set | `GitHubProvider.MaximumChangeCount` and `ForgejoProvider.MaximumOperationChangeCount` | none |
+| `CC11` | github, forgejo | one MiB decoded content per file | `GitHubProvider.MaximumFileBytes` and `ForgejoProvider.MaximumOperationFileBytes` | none |
+| `CC12` | github, forgejo | ten MiB aggregate decoded content per change set | `GitHubProvider.MaximumAggregateContentBytes` and `ForgejoProvider.MaximumOperationAggregateContentBytes` | none |
+
+## Readiness-outcome profile
+
+Both adapters publish the same nine capability rows through their readiness mappers. A row that is not granted
+becomes `Unavailable` carrying `ProviderPermissionInsufficient`; no row is silently omitted and no row is
+reported as ready on missing evidence. The canonical operation identifier `workspace_preparation` deliberately
+carries no readiness row in either capability profile, and `cleanup_expiration` is published as `Unsupported`
+rather than unavailable.
+
+| Readiness row | github outcome | forgejo outcome |
+| --- | --- | --- |
+| `readiness_validation` | `Supported` | `Supported` |
+| `provider_support_evidence` | `Supported` on granted metadata read, otherwise `Unavailable` | `Supported` on granted metadata read, otherwise `Unavailable` |
+| `repository_creation` | `Supported` on granted administration write, otherwise `Unavailable` | `Supported` on granted organization repository creation, otherwise `Unavailable` |
+| `repository_binding` | `Supported` on granted metadata read, otherwise `Unavailable` | `Supported` on granted repository observation, otherwise `Unavailable` |
+| `branch_ref_inspection` | `Supported` on granted contents read, otherwise `Unavailable` | `Supported` on granted ref observation, otherwise `Unavailable` |
+| `file_mutation_support` | `Partial`, because staging uses Git Data blobs and trees and never the Contents API | `Supported` through bounded smart-HTTPS fetch and local bare-tree staging |
+| `commit_support` | `Supported` on granted contents write, otherwise `Unavailable` | `Supported` through non-force receive-pack with expected-old compare-and-swap |
+| `status_query` | `Supported` on granted exact-ref observation, otherwise `Unavailable` | `Supported` through version recheck plus exact REST ref observation |
+| `cleanup_expiration` | `Unsupported` | `Unsupported` |
+
+Rate-limit posture is published with every readiness result as `bounded_retry` when retry-after evidence is
+present and retryable, and as `no_retry` otherwise. Retryability never authorizes retrying an ambiguous
+mutation. Live readiness execution remains owned by Story 3.3; this profile publishes the mapped outcome shape,
+not a completed live readiness run.
+
+## Recorded catalog gaps
+
+| Gap | Statement | Owner |
+| --- | --- | --- |
+| `PG1` | The GitHub adapter pins no adapter-level per-call REST timeout. Only the five-second mutation-send and five-second tree-observation budgets bound owned calls; the SDK-dispatched create, repository read, and branch read run under the SDK transport defaults, so `CC3` has no enforcing constant. | Provider Readiness |
+| `PG2` | No retry-limit or backoff-cap ceiling has a referent, because no provider adapter implements a retry loop. Ambiguous mutations are never retried, and the bounded read-only status checks are caller-driven inside `CC7`, so `CC9` is published as absent rather than as a number. | Provider Readiness |
+| `PG3` | The twenty-four-hour `Retry-After` clamp bounds a value the provider passes through; it is not a backoff algorithm. It caps the retry evidence surfaced to callers and never authorizes replay of an ambiguous mutation. | Provider Readiness |
+
+## GitHub hermetic drift lane
+
+GitHub REST is one dated API behind a pinned SDK package, so the GitHub drift lane is a pinned-profile manifest
+plus the C12 fixture-to-failure-mode coverage matrix rather than a schema-snapshot diff. The manifest is
+`tests/contracts/github/pinned-profile.json`, and `GitHubDriftConformanceTests` proves that the manifest agrees
+with this catalog and with the centrally pinned package, and that every provider-neutral failure category this
+catalog claims maps to exactly one proving fixture. The lane performs no network call to any GitHub endpoint.
+
+Provider-neutral failure categories claimed by the GitHub profile:
+
+- `UnsupportedProviderCapability`
+- `ProviderUnavailable`
+- `ProviderAuthenticationRequired`
+- `ProviderPermissionInsufficient`
+- `ProviderRateLimited`
+- `ProviderValidationFailed`
+- `ProviderConflict`
+- `ProviderFailureKnown`
+- `ProviderTransientFailure`
+- `UnknownProviderOutcome`
 
 ## GitHub profile
 
-- OQ4 status: approved
-- OQ4 approval record: 2026-09-05 by jpiquot; GitHub profile in this catalog is the approved compatibility profile for Stories 3.10 and 3.11. Forgejo live evidence and full provider-ready closure remain separate.
 - Story authority: Story 3.10 comes from the approved 2026-07-14 structural correction as amended on 2026-07-15. Historical Story 3.3 completion does not complete this split story.
 - SDK: Octokit `14.0.0`, centrally pinned in `references/Hexalith.Builds/Props/Directory.Packages.props`.
 - REST profile: every owned request sends `X-GitHub-Api-Version: 2022-11-28`. Updating this value is compatibility work and requires focused transport and mapping verification.
@@ -64,6 +167,7 @@ requires the remaining open release items.
 - OQ8 remains the authority for idempotency-record retention, expired-key tombstones, and `idempotency_key_expired` precedence. Existing repository flows prove unexpired equivalent/conflicting replay and restart no-mutation behavior, but Story 3.10 cannot invent the missing retention source or claim expired-key acceptance.
 - Safe target fingerprints are not durable. The repository-creation fingerprint binds the repository profile reference under the `github-target-v1` label, and no worker, aggregate, projection, or emitted event reads a stored fingerprint today. Whoever first persists one owes a version-label bump, because a fingerprint whose inputs changed under an unchanged label silently invalidates stored evidence.
 - The existing OpenAPI Contract Spine already carries opaque repository binding identities and canonical failure categories, including provider conflict, idempotency conflict/expiry, unknown outcome, and reconciliation required. Story 3.10 therefore introduces no public contract change.
+- OQ4 catalog approval and the C12 closure it carries are governance records only. Stories 3.3, 3.14, 12.1, and 12.3 remain incomplete; the Forgejo credentialed live-evidence lane has not been run; and the Story 3.11 GitHub live-mutation archive stays waived rather than executed. This catalog grants none of them a completion claim, and the scheduled drift lane reports credentialed live provider evidence as explicitly not run.
 
 Full GitHub provider-ready status requires OQ8 acceptance plus completion evidence from Stories 3.3, 3.10, 3.11, and 3.14. The GitHub OQ4 profile in this catalog is approved; this catalog must not be interpreted as complete provider-ready or release acceptance.
 

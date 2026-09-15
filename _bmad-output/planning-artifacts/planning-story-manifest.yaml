@@ -509,13 +509,13 @@ open_questions:
   - '10.8'
 - id: OQ4
   owner: Provider + Architecture
-  evidence: docs/contract/provider-compatibility-catalog.md
+  evidence: docs/contract/provider-compatibility-catalog.md plus docs/contract/oq4-provider-compatibility-evidence.yaml
   approvers:
   - Provider
   - Architecture
   - PM
-  status: open
-  notes: '2026-09-05 jpiquot approved the GitHub profile in the catalog. Full OQ4 remains open until Forgejo live evidence and remaining provider-ready closure conditions are satisfied.'
+  status: design-approved
+  notes: '2026-09-15 Administrator approved canonical provider compatibility catalog version 1.0.0 for Provider, Architecture, and PM, bound to SHA-256 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a. The catalog publishes the product/instance identity, call-ceiling CC1-CC12, and readiness-outcome profiles and records gaps PG1-PG3, and closes criterion C12 on hermetic-PR-gate plus scheduled containerized and fixture drift evidence. Credentialed live provider runs against GitHub and Forgejo remain residual provider-ready debt, so the blocked stories stay blocked for runtime evidence.'
   blocks:
   - '12.1'
   - '3.10'

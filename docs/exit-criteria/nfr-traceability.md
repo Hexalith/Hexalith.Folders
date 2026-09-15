@@ -174,7 +174,10 @@ bridge only cross-links to existing evidence and does not author those artifacts
   `docs/exit-criteria/c4-input-limits.md`. This row remains reference-pending only for downstream
   evidence and conformance-guard visibility. Owner: Contracts / Delivery. Consuming story: `4-8`. Surfaced by
   NFR30 and NFR33.
-- `C12` — live provider drift checks requiring provider credentials absent in CI. Owner: Provider Readiness.
+- `C12` — Provider + Architecture + PM-approved provider drift evidence is recorded in
+  `docs/contract/provider-compatibility-catalog.md` version `1.0.0`, closed on hermetic-PR-gate plus
+  scheduled containerized and fixture drift evidence. This row remains reference-pending only for the
+  credentialed live provider drift checks whose credentials are absent in CI. Owner: Provider Readiness.
   Consuming story: `7-8`. Surfaced by NFR49.
 - `C3` — Legal + PM-approved retention durations and tenant-deletion dispositions are recorded in
   `docs/exit-criteria/c3-retention.md`. This row remains reference-pending only for downstream

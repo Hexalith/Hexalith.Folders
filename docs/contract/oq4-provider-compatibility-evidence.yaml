@@ -1,0 +1,71 @@
+schema_version: '1.0.0'
+evidence_id: OQ4
+title: Canonical provider compatibility catalog for the governed GitHub and Forgejo profiles
+status: design-approved
+release_gate_status: in-progress
+catalog_version: '1.0.0'
+catalog_path: docs/contract/provider-compatibility-catalog.md
+catalog_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+approved_on: '2026-09-15'
+canonical_surfaces:
+  - docs/contract/provider-compatibility-catalog.md
+  - tests/contracts/github/pinned-profile.json
+  - tests/Hexalith.Folders.Contracts.Tests/OpenApi/ProviderCompatibilityCatalogContractTests.cs
+  - tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+governed_providers:
+  - github
+  - forgejo
+published_ceiling_ids:
+  - CC1
+  - CC2
+  - CC3
+  - CC4
+  - CC5
+  - CC6
+  - CC7
+  - CC8
+  - CC9
+  - CC10
+  - CC11
+  - CC12
+recorded_gap_ids:
+  - PG1
+  - PG2
+  - PG3
+approval:
+  required_authorities:
+    - Provider
+    - Architecture
+    - PM
+  records:
+    - authority: Provider
+      approver: Administrator
+      approved_on: '2026-09-15'
+      evidence_version: '1.0.0'
+      evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+    - authority: Architecture
+      approver: Administrator
+      approved_on: '2026-09-15'
+      evidence_version: '1.0.0'
+      evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+    - authority: PM
+      approver: Administrator
+      approved_on: '2026-09-15'
+      evidence_version: '1.0.0'
+      evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+runtime_posture:
+  status: incomplete
+  c12_evidence_standard: C12 is closed on hermetic-PR-gate provider contract evidence plus scheduled containerized and fixture drift evidence; credentialed live provider runs against GitHub and Forgejo are reported as explicitly not run and remain residual provider-ready debt.
+  credentialed_live_provider_evidence: not-run
+  incomplete_stories:
+    - '3.3'
+    - '3.14'
+    - '12.1'
+    - '12.3'
+  functional_requirements:
+    FR16: incomplete
+    FR17: incomplete
+    FR22: incomplete
+    FR23: incomplete
+  evidence_claim: Governance approval closes the OQ4 provider compatibility catalog decision and the C12 provider-drift criterion on the narrowed hermetic plus scheduled evidence standard only; no credentialed live provider run, no live GitHub mutation archive, no Forgejo operator evidence execution, and no dependent story completion is claimed.
+reopen_policy: Any change to the canonical catalog content, catalog version, SHA-256 digest, required authority set, approver identity, or approval date reopens Provider, Architecture, and PM approval.

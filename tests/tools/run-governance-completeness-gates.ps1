@@ -37,6 +37,8 @@ function Write-GovernanceReport {
             'docs/contract/oq2-file-policy-evidence.yaml',
             'docs/contract/authorization-matrix.md',
             'docs/contract/oq3-authorization-evidence.yaml',
+            'docs/contract/provider-compatibility-catalog.md',
+            'docs/contract/oq4-provider-compatibility-evidence.yaml',
             'tests/fixtures/idempotency-encoding-corpus.json',
             'tests/fixtures/idempotency-encoding-corpus-consumption.yaml',
             'tests/fixtures/pattern-example-manifest.yaml',
@@ -54,7 +56,7 @@ function Invoke-GovernanceTests {
     # Keep a native non-zero exit from dotnet test as a returnable code (do not let it throw
     # under Stop) so the xUnit v3 in-process fallback below is reliably reached.
     $PSNativeCommandUseErrorActionPreference = $false
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests' | Out-Host
+    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests' | Out-Host
     if ($LASTEXITCODE -eq 0) {
         return 0
     }
@@ -69,7 +71,7 @@ function Invoke-GovernanceTests {
         return $LASTEXITCODE
     }
 
-    & $testExecutable.FullName -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests -class Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests | Out-Host
+    & $testExecutable.FullName -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests -class Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests -class Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests | Out-Host
     return $LASTEXITCODE
 }
 

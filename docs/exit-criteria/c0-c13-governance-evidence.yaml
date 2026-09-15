@@ -204,16 +204,34 @@ criteria:
   - criterion_id: C12
     title: Provider drift evidence
     owner: Provider Readiness
-    status: reference_pending
-    artifact_path: _bmad-output/planning-artifacts/architecture.md
+    status: approved
+    artifact_path: docs/contract/provider-compatibility-catalog.md
+    evidence_version: '1.0.0'
+    evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
     verification_command: .\tests\tools\run-governance-completeness-gates.ps1 -SkipRestoreBuild
-    result_summary: Architecture records provider drift posture; live provider gates are deferred to Epic 7.
-    open_policy_placeholders:
-      - id: C12-provider-live-drift
-        owner: Provider Readiness
-        reason: Live provider drift checks require provider adapters and credentials not present in this story.
-        verification_gap: Scheduled provider drift workflow and provider adapter contract tests are not yet implemented.
-        consuming_story: 7-8-wire-scheduled-drift-and-policy-conformance-workflows
+    result_summary: C12 is closed on the narrowed evidence standard published in provider compatibility catalog version 1.0.0 - hermetic-PR-gate provider contract evidence plus scheduled containerized and fixture drift evidence, with the GitHub pinned-profile manifest and its fixture-to-failure-mode coverage matrix replacing the former hardcoded live-drift placeholder. Credentialed live provider runs against GitHub and Forgejo are reported as explicitly not run and remain residual provider-ready debt; NFR49 stays reference-pending for that runtime evidence.
+    open_policy_placeholders: []
+    approval:
+      required_authorities:
+        - Provider
+        - Architecture
+        - PM
+      records:
+        - authority: Provider
+          approver: Administrator
+          approved_on: '2026-09-15'
+          evidence_version: '1.0.0'
+          evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+        - authority: Architecture
+          approver: Administrator
+          approved_on: '2026-09-15'
+          evidence_version: '1.0.0'
+          evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+        - authority: PM
+          approver: Administrator
+          approved_on: '2026-09-15'
+          evidence_version: '1.0.0'
+          evidence_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
   - criterion_id: C13
     title: Cross-surface parity oracle evidence
     owner: C13 Parity Oracle Generation

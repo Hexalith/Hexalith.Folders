@@ -25,11 +25,16 @@ $latestReportPath = Join-Path $reportDirectory 'latest.json'
 $sanitizedReportRelativePath = '_bmad-output/gates/nightly-drift/sanitized-forgejo-drift.json'
 $sanitizedReportPath = Join-Path $repositoryRoot $sanitizedReportRelativePath
 $manifestPath = 'tests/contracts/forgejo/supported-versions.json'
+$githubProfilePath = 'tests/contracts/github/pinned-profile.json'
+$githubPackagePinPath = 'references/Hexalith.Builds/Props/Directory.Packages.props'
+$githubTestClass = 'Hexalith.Folders.Tests.Providers.GitHub.GitHubDriftConformanceTests'
+$githubTrxName = 'nightly-drift-github.trx'
 $classificationFixturePath = 'tests/tools/forgejo-drift/classification-fixtures.json'
 $sanitizedReportScriptPath = 'tests/tools/forgejo-drift/Write-SanitizedForgejoDriftReport.ps1'
 $testProjectPath = 'tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj'
 $trxName = 'nightly-drift-forgejo.trx'
 $trxPath = Join-Path $reportDirectory $trxName
+$githubTrxPath = Join-Path $reportDirectory $githubTrxName
 $pushed = $false
 $results = @()
 $usedXunitFallback = $false
@@ -40,7 +45,9 @@ $categories = @(
     'forgejo-snapshot-coverage',
     'forgejo-drift-classification',
     'forgejo-sanitized-report',
-    'live-provider-drift'
+    'github-pinned-profile-integrity',
+    'github-failure-mode-coverage',
+    'credentialed-live-provider-evidence'
 )
 
 $requiredSnapshotPaths = @(
@@ -58,7 +65,8 @@ $requiredSnapshotPaths = @(
 $requiredInputs = @(
     $manifestPath,
     $classificationFixturePath,
-    $sanitizedReportScriptPath
+    $sanitizedReportScriptPath,
+    $githubProfilePath
 )
 
 function Add-Result {
@@ -77,6 +85,81 @@ function Add-Result {
     }
 }
 
+function Get-ProviderCategories {
+    param(
+        [Parameter(Mandatory = $true)][string]$Provider
+    )
+
+    # Derived from the declared category inventory by provider prefix, so a new provider category is covered
+    # the moment it is declared instead of silently leaving the provider row reporting passed.
+    return @($script:categories | Where-Object { $_ -like "$Provider-*" })
+}
+
+function Get-ProviderHermeticStatus {
+    param(
+        [AllowEmptyCollection()]
+        [Parameter(Mandatory = $true)][array]$Results,
+        [Parameter(Mandatory = $true)][AllowEmptyCollection()][string[]]$Categories
+    )
+
+    if ($Categories.Count -eq 0) {
+        return 'not_started'
+    }
+
+    $observed = @($Results | Where-Object { $Categories -contains $_.category })
+    if ($observed.Count -eq 0) {
+        return 'not_started'
+    }
+
+    if (@($observed | Where-Object { $_.status -ne 'passed' }).Count -gt 0) {
+        return 'failed'
+    }
+
+    if ($observed.Count -lt $Categories.Count) {
+        return 'in_progress'
+    }
+
+    return 'passed'
+}
+
+function Assert-ProviderHermeticStatusDerivation {
+    # The derivation is the mechanism behind the "no hardcoded provider status" guarantee, so it is exercised
+    # against synthetic result sets on every run. Replacing the body with a constant fails here immediately.
+    $synthetic = @('synthetic-a', 'synthetic-b')
+    $passedResults = @(
+        [ordered]@{ category = 'synthetic-a'; status = 'passed' },
+        [ordered]@{ category = 'synthetic-b'; status = 'passed' }
+    )
+    $failedResults = @(
+        [ordered]@{ category = 'synthetic-a'; status = 'passed' },
+        [ordered]@{ category = 'synthetic-b'; status = 'failed' }
+    )
+    $partialResults = @([ordered]@{ category = 'synthetic-a'; status = 'passed' })
+    $foreignResults = @([ordered]@{ category = 'unrelated-category'; status = 'passed' })
+
+    $cases = @(
+        @{ expected = 'passed'; results = $passedResults; categories = $synthetic },
+        @{ expected = 'failed'; results = $failedResults; categories = $synthetic },
+        @{ expected = 'in_progress'; results = $partialResults; categories = $synthetic },
+        @{ expected = 'not_started'; results = $foreignResults; categories = $synthetic },
+        @{ expected = 'not_started'; results = @(); categories = $synthetic },
+        @{ expected = 'not_started'; results = $passedResults; categories = @() }
+    )
+
+    foreach ($case in $cases) {
+        $actual = Get-ProviderHermeticStatus -Results $case.results -Categories $case.categories
+        if ($actual -ne $case.expected) {
+            Fail-Gate -Category 'github-pinned-profile-integrity' -Reason "hermetic-status-derivation-drift expected=$($case.expected) actual=$actual"
+        }
+    }
+
+    foreach ($provider in @('forgejo', 'github')) {
+        if (@(Get-ProviderCategories -Provider $provider).Count -eq 0) {
+            Fail-Gate -Category 'github-pinned-profile-integrity' -Reason "provider-category-inventory-empty provider=$provider"
+        }
+    }
+}
+
 function Write-NightlyDriftReport {
     param(
         [Parameter(Mandatory = $true)][string]$Status,
@@ -85,6 +168,13 @@ function Write-NightlyDriftReport {
         [AllowNull()]$Manifest,
         [AllowNull()]$SanitizedReport
     )
+
+    # Per-provider hermetic status is derived from the category results actually recorded in this run,
+    # so no provider row can report a hardcoded placeholder.
+    $ProviderHermeticStatus = [ordered]@{
+        forgejo = Get-ProviderHermeticStatus -Results $Results -Categories (Get-ProviderCategories -Provider 'forgejo')
+        github = Get-ProviderHermeticStatus -Results $Results -Categories (Get-ProviderCategories -Provider 'github')
+    }
 
     $versions = @()
     if ($null -ne $Manifest) {
@@ -105,20 +195,39 @@ function Write-NightlyDriftReport {
         report_path = '_bmad-output/gates/nightly-drift/latest.json'
         diagnostic_policy = 'metadata-only'
         trigger_policy = 'schedule_utc_or_manual_dispatch_default_branch'
-        provider = 'forgejo'
+        providers = @('forgejo', 'github')
         provider_profile = $ProviderProfile
         categories = $categories
         manifest_path = $manifestPath
+        github_profile_path = $githubProfilePath
         classification_fixture_path = $classificationFixturePath
         sanitized_report_path = $sanitizedReportRelativePath
         test_project = $testProjectPath
-        expected_test_count = 8
-        live_provider_drift = [ordered]@{
-            status = 'reference_pending_story_7_8'
+        expected_test_count = 10
+        github_expected_test_count = 5
+        provider_status = @(
+            [ordered]@{
+                provider = 'forgejo'
+                hermetic_status = $ProviderHermeticStatus.forgejo
+                evidence_kind = 'pinned-swagger-snapshot-manifest-and-classification-fixtures'
+                credentialed_live_evidence = 'not_run'
+            },
+            [ordered]@{
+                provider = 'github'
+                hermetic_status = $ProviderHermeticStatus.github
+                evidence_kind = 'pinned-profile-manifest-and-failure-mode-coverage-matrix'
+                credentialed_live_evidence = 'not_run'
+            }
+        )
+        credentialed_live_provider_evidence = [ordered]@{
+            status = 'not_run'
+            reason = 'no credentialed provider lane runs in scheduled CI; C12 is closed on hermetic plus scheduled containerized and fixture evidence only'
             owner = 'folders-provider-maintainers'
-            command_shape = 'pwsh ./tests/tools/run-nightly-drift-gates.ps1 -ProviderProfile pinned-snapshots'
+            forgejo_command_shape = 'pwsh ./tests/tools/run-forgejo-provider-evidence-gates.ps1'
+            github_command_shape = 'none; the live GitHub mutation archive is waived, not executed'
             evidence_path = '_bmad-output/gates/nightly-drift/latest.json'
-            follow_up_boundary = 'replace reference_pending only when a synthetic credential-free live provider lane can classify live schema drift without retaining raw upstream responses'
+            residual_debt = 'credentialed live provider runs against both providers remain residual provider-ready debt recorded in the OQ4 catalog'
+            closing_condition = 'retire not_run only when an operator-run credentialed lane for both providers archives metadata-only positive, denial and tenant-isolation evidence against approved isolated installations, and the OQ4 catalog is re-cut with a new version, digest and three fresh authority approvals'
         }
         provider_versions = $versions
         sanitized_report_schema = if ($null -ne $SanitizedReport) { $SanitizedReport.schemaVersion } else { $null }
@@ -314,6 +423,90 @@ function Assert-SanitizedReport {
     Assert-NoForbiddenDiagnostics -Text ($Report | ConvertTo-Json -Depth 12) -Category 'forgejo-sanitized-report'
 }
 
+function Assert-GitHubPinnedProfile {
+    param(
+        [Parameter(Mandatory = $true)]$PinnedProfile
+    )
+
+    if ($PinnedProfile.schemaVersion -ne 'github-pinned-profile-v1') {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'github-profile-schema-drift'
+    }
+
+    foreach ($field in @('provider', 'catalogPath', 'catalogVersion', 'packagePinPath', 'octokitPackageVersion', 'libGit2SharpPackageVersion', 'libGit2SharpPinPath', 'restApiVersion', 'productHeader', 'driftLane', 'provingAssembly')) {
+        if ([string]::IsNullOrWhiteSpace([string]$PinnedProfile.$field)) {
+            Fail-Gate -Category 'github-pinned-profile-integrity' -Reason "missing-github-profile-field field=$field"
+        }
+    }
+
+    if ($PinnedProfile.networkCallsPermitted -ne $false) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'github-lane-network-call-permitted'
+    }
+
+    $profileText = Get-Content -Raw -Path (Join-Path $repositoryRoot $githubProfilePath)
+    Assert-NoForbiddenDiagnostics -Text $profileText -Category 'github-pinned-profile-integrity'
+
+    $catalogPath = Join-Path $repositoryRoot $PinnedProfile.catalogPath
+    if (-not (Test-Path $catalogPath)) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'missing-catalog'
+    }
+
+    $catalog = Get-Content -Raw -Path $catalogPath
+    $backtick = [char]0x60
+    if (-not $catalog.Contains("- Catalog version: $backtick$($PinnedProfile.catalogVersion)$backtick")) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'catalog-version-drift'
+    }
+
+    if (-not $catalog.Contains("Octokit $backtick$($PinnedProfile.octokitPackageVersion)$backtick")) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'catalog-package-version-drift'
+    }
+
+    if (-not $catalog.Contains("X-GitHub-Api-Version: $($PinnedProfile.restApiVersion)")) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'catalog-api-version-drift'
+    }
+
+    if (-not $catalog.Contains("$backtick$($PinnedProfile.productHeader)$backtick")) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'catalog-product-header-drift'
+    }
+
+    $quote = [char]0x22
+    $packagePin = Get-Content -Raw -Path (Join-Path $repositoryRoot $githubPackagePinPath)
+    $expectedPin = "PackageVersion Include=$quote" + 'Octokit' + "$quote Version=$quote$($PinnedProfile.octokitPackageVersion)$quote"
+    if (-not $packagePin.Contains($expectedPin)) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'package-pin-drift'
+    }
+
+    if (-not $catalog.Contains("LibGit2Sharp $backtick$($PinnedProfile.libGit2SharpPackageVersion)$backtick")) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'catalog-native-package-version-drift'
+    }
+
+    $nativePin = Get-Content -Raw -Path (Join-Path $repositoryRoot $PinnedProfile.libGit2SharpPinPath)
+    $expectedNativePin = "PackageVersion Include=$quote" + 'LibGit2Sharp' + "$quote Version=$quote$($PinnedProfile.libGit2SharpPackageVersion)$quote"
+    if (-not $nativePin.Contains($expectedNativePin)) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'native-package-pin-drift'
+    }
+
+    $categories = @($PinnedProfile.failureModeCoverage | ForEach-Object { $_.providerNeutralCategory })
+    if ($categories.Count -eq 0) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'empty-failure-mode-coverage'
+    }
+
+    if (@($categories | Select-Object -Unique).Count -ne $categories.Count) {
+        Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'duplicate-failure-mode-category'
+    }
+
+    foreach ($row in $PinnedProfile.failureModeCoverage) {
+        foreach ($field in @('providerNeutralCategory', 'provingFixture', 'provingCondition')) {
+            if ([string]::IsNullOrWhiteSpace([string]$row.$field)) {
+                Fail-Gate -Category 'github-pinned-profile-integrity' -Reason "missing-failure-mode-field field=$field"
+            }
+        }
+
+        if (-not $catalog.Contains("- $backtick$($row.providerNeutralCategory)$backtick")) {
+            Fail-Gate -Category 'github-pinned-profile-integrity' -Reason 'orphaned-failure-mode-category'
+        }
+    }
+}
+
 function Assert-TestAssembly {
     $assembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests') -Recurse -Filter 'Hexalith.Folders.Tests.dll' -ErrorAction SilentlyContinue |
         Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
@@ -340,23 +533,29 @@ function Get-ExecutedTestCount {
 }
 
 function Invoke-XunitInProcessFallback {
+    param(
+        [Parameter(Mandatory = $true)][string]$Category,
+        [Parameter(Mandatory = $true)][string]$ClassName,
+        [Parameter(Mandatory = $true)][int]$ExpectedCount
+    )
+
     $script:usedXunitFallback = $true
-    Write-Host 'NIGHTLY-DRIFT category=forgejo-drift-classification vstest-socket-denied=true fallback=xunit-in-process'
+    Write-Host "NIGHTLY-DRIFT category=$Category vstest-socket-denied=true fallback=xunit-in-process"
     $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests'
     if (-not (Test-Path $runnerPath)) {
-        Fail-Gate -Category 'forgejo-drift-classification' -Reason 'xunit-in-process-runner-missing'
+        Fail-Gate -Category $Category -Reason 'xunit-in-process-runner-missing'
     }
 
-    $runnerOutput = & $runnerPath -noLogo -noColor -class 'Hexalith.Folders.Tests.Providers.Forgejo.ForgejoManifestAndDriftTests' 2>&1
+    $runnerOutput = & $runnerPath -noLogo -noColor -class $ClassName 2>&1
     $runnerExitCode = $LASTEXITCODE
     $runnerOutput | ForEach-Object { Write-Host $_ }
 
-    if ((Get-ExecutedTestCount -Output $runnerOutput) -ne 8) {
-        Fail-Gate -Category 'forgejo-drift-classification' -Reason 'zero-or-partial-test-selection expected=8'
+    if ((Get-ExecutedTestCount -Output $runnerOutput) -ne $ExpectedCount) {
+        Fail-Gate -Category $Category -Reason "zero-or-partial-test-selection expected=$ExpectedCount"
     }
 
     if ($runnerExitCode -ne 0) {
-        Add-Result -Category 'forgejo-drift-classification' -Status 'failed' -Severity 'failure' -ExitCode $runnerExitCode
+        Add-Result -Category $Category -Status 'failed' -Severity 'failure' -ExitCode $runnerExitCode
         Write-NightlyDriftReport -Status 'failed' -Results $script:results -Manifest $null -SanitizedReport $null
         exit $runnerExitCode
     }
@@ -365,14 +564,16 @@ function Invoke-XunitInProcessFallback {
 function Invoke-DotNet {
     param(
         [Parameter(Mandatory = $true)][string]$Category,
-        [Parameter(Mandatory = $true)][string[]]$Arguments
+        [Parameter(Mandatory = $true)][string[]]$Arguments,
+        [string]$FallbackClassName,
+        [int]$FallbackExpectedCount = 0
     )
 
     $output = & dotnet @Arguments 2>&1
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
-        if ($Category -eq 'forgejo-drift-classification' -and (($output -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied|Testing with VSTest target is no longer supported')) {
-            Invoke-XunitInProcessFallback
+        if ($FallbackClassName -and (($output -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied|Testing with VSTest target is no longer supported')) {
+            Invoke-XunitInProcessFallback -Category $Category -ClassName $FallbackClassName -ExpectedCount $FallbackExpectedCount
             return
         }
 
@@ -393,6 +594,8 @@ try {
     foreach ($input in $requiredInputs) {
         Assert-RequiredInput -RelativePath $input
     }
+
+    Assert-ProviderHermeticStatusDerivation
 
     if (-not $SkipRestoreBuild) {
         Invoke-DotNet -Category 'forgejo-manifest-integrity' -Arguments @('restore', 'Hexalith.Folders.slnx', '-m:1', '-p:NuGetAudit=false')
@@ -422,7 +625,7 @@ try {
         '--filter', 'FullyQualifiedName~Hexalith.Folders.Tests.Providers.Forgejo.ForgejoManifestAndDriftTests',
         '--results-directory', $reportDirectory,
         '--logger', "trx;LogFileName=$trxName"
-    )
+    ) -FallbackClassName 'Hexalith.Folders.Tests.Providers.Forgejo.ForgejoManifestAndDriftTests' -FallbackExpectedCount 10
 
     [int]$executedTests = 0
     if (Test-Path $trxPath) {
@@ -430,8 +633,8 @@ try {
         $executedTests = [int]$trx.TestRun.ResultSummary.Counters.total
     }
 
-    if (-not $usedXunitFallback -and (Test-Path $trxPath) -and $executedTests -ne 8) {
-        Fail-Gate -Category 'forgejo-drift-classification' -Reason "zero-or-partial-test-selection expected=8 actual=$executedTests"
+    if (-not $usedXunitFallback -and (Test-Path $trxPath) -and $executedTests -ne 10) {
+        Fail-Gate -Category 'forgejo-drift-classification' -Reason "zero-or-partial-test-selection expected=10 actual=$executedTests"
     }
 
     Add-Result -Category 'forgejo-drift-classification' -Status 'passed' -Severity 'none' -ExitCode 0
@@ -445,7 +648,38 @@ try {
     Assert-SanitizedReport -Report $sanitizedReport
     Add-Result -Category 'forgejo-sanitized-report' -Status 'passed' -Severity 'none' -ExitCode 0
 
-    Add-Result -Category 'live-provider-drift' -Status 'reference_pending_story_7_8' -Severity 'warning' -ExitCode 0
+    $githubProfile = Get-Content -Raw -Path (Join-Path $repositoryRoot $githubProfilePath) | ConvertFrom-Json
+    Assert-GitHubPinnedProfile -PinnedProfile $githubProfile
+    Add-Result -Category 'github-pinned-profile-integrity' -Status 'passed' -Severity 'none' -ExitCode 0
+
+    if (Test-Path $githubTrxPath) {
+        Remove-Item $githubTrxPath -Force
+    }
+
+    $script:usedXunitFallback = $false
+    Invoke-DotNet -Category 'github-failure-mode-coverage' -Arguments @(
+        'test', $testProjectPath,
+        '--no-build',
+        '--filter', "FullyQualifiedName~$githubTestClass",
+        '--results-directory', $reportDirectory,
+        '--logger', "trx;LogFileName=$githubTrxName"
+    ) -FallbackClassName $githubTestClass -FallbackExpectedCount 5
+
+    [int]$githubExecutedTests = 0
+    if (Test-Path $githubTrxPath) {
+        [xml]$githubTrx = Get-Content -Raw -Path $githubTrxPath
+        $githubExecutedTests = [int]$githubTrx.TestRun.ResultSummary.Counters.total
+    }
+
+    if (-not $usedXunitFallback -and (Test-Path $githubTrxPath) -and $githubExecutedTests -ne 5) {
+        Fail-Gate -Category 'github-failure-mode-coverage' -Reason "zero-or-partial-test-selection expected=5 actual=$githubExecutedTests"
+    }
+
+    Add-Result -Category 'github-failure-mode-coverage' -Status 'passed' -Severity 'none' -ExitCode 0
+
+    # Credentialed live provider evidence is reported as explicitly not run, never as a hardcoded
+    # placeholder status standing in for real hermetic drift coverage.
+    Add-Result -Category 'credentialed-live-provider-evidence' -Status 'not_run' -Severity 'informational' -ExitCode 0
     Write-NightlyDriftReport -Status 'passed' -Results $results -Manifest $manifest -SanitizedReport $sanitizedReport
 }
 finally {

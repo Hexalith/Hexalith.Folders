@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "github-pinned-profile-v1",
+  "provider": "github",
+  "catalogPath": "docs/contract/provider-compatibility-catalog.md",
+  "catalogVersion": "1.0.0",
+  "packagePinPath": "references/Hexalith.Builds/Props/Directory.Packages.props",
+  "octokitPackageVersion": "14.0.0",
+  "libGit2SharpPackageVersion": "0.32.0",
+  "libGit2SharpPinPath": "Directory.Packages.props",
+  "restApiVersion": "2022-11-28",
+  "productHeader": "Hexalith-Folders",
+  "driftLane": "pinned-profile-manifest-plus-failure-mode-coverage-matrix",
+  "networkCallsPermitted": false,
+  "provingAssembly": "Hexalith.Folders.Tests",
+  "failureModeCoverage": [
+    {
+      "providerNeutralCategory": "ProviderValidationFailed",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryCreationFailures",
+      "provingCondition": "ValidationFailure"
+    },
+    {
+      "providerNeutralCategory": "ProviderConflict",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryCreationFailures",
+      "provingCondition": "RepositoryConflict"
+    },
+    {
+      "providerNeutralCategory": "ProviderRateLimited",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryCreationFailures",
+      "provingCondition": "PrimaryRateLimit"
+    },
+    {
+      "providerNeutralCategory": "UnknownProviderOutcome",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryCreationFailures",
+      "provingCondition": "TimeoutDuringMutation"
+    },
+    {
+      "providerNeutralCategory": "ProviderTransientFailure",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryCreationFailures",
+      "provingCondition": "CancellationBeforeDispatch"
+    },
+    {
+      "providerNeutralCategory": "ProviderFailureKnown",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryCreationFailures",
+      "provingCondition": "MalformedResponse"
+    },
+    {
+      "providerNeutralCategory": "ProviderAuthenticationRequired",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryBindingFailures",
+      "provingCondition": "AuthenticationRequired"
+    },
+    {
+      "providerNeutralCategory": "ProviderPermissionInsufficient",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryBindingFailures",
+      "provingCondition": "PermissionInsufficient"
+    },
+    {
+      "providerNeutralCategory": "ProviderUnavailable",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryBindingFailures",
+      "provingCondition": "ServerUnavailable"
+    },
+    {
+      "providerNeutralCategory": "UnsupportedProviderCapability",
+      "provingFixture": "Hexalith.Folders.Tests.Providers.GitHub.GitHubProviderTests.MapsGitHubRepositoryBindingFailures",
+      "provingCondition": "UnsupportedRefOperation"
+    }
+  ]
+}

@@ -78,6 +78,11 @@ public sealed partial class NfrTraceabilityConformanceTests
 
     // The gate report surfaces[] must stay bounded to exactly these diagnostic surfaces (AC11): neither
     // truncated (a dropped surface) nor unbounded (a new surface leaking unintended diagnostics).
+    // Criteria whose governance approval rests on a human sign-off while their cited NFR rows stay
+    // reference-pending for downstream runtime evidence (the governance/NFR-traceability decoupling
+    // precedent). Both tests below project this one set; they must never drift apart.
+    private static readonly string[] OwnedReferencePendingCriteria = ["C3", "C4", "C7", "C12"];
+
     private static readonly string[] ExpectedReportSurfaces =
     [
         "prd-nfr-inventory",
@@ -202,7 +207,7 @@ public sealed partial class NfrTraceabilityConformanceTests
             .SelectMany(static r => BacktickTokens(r.Exit))
             .Where(static t => CriterionId().IsMatch(t))
             .ToHashSet(StringComparer.Ordinal);
-        foreach (string criterion in new[] { "C3", "C4", "C7", "C12" })
+        foreach (string criterion in OwnedReferencePendingCriteria)
         {
             pendingCriteria.ShouldContain(criterion, $"{criterion} must stay surfaced as a reference-pending gap.");
         }
@@ -284,11 +289,16 @@ public sealed partial class NfrTraceabilityConformanceTests
     [Fact]
     public void GovernanceEvidenceReferencePendingCriteriaStaySurfaced()
     {
-        HashSet<string> governancePending = ParseGovernanceCriteria()
-            .Where(static kvp => kvp.Value == "reference_pending")
-            .Select(static kvp => kvp.Key)
-            .ToHashSet(StringComparer.Ordinal);
-        governancePending.Count.ShouldBeGreaterThan(0, "governance must declare reference-pending criteria to surface.");
+        Dictionary<string, string> criteria = ParseGovernanceCriteria();
+        criteria.Count.ShouldBeGreaterThan(0, "governance must declare criteria to surface.");
+        criteria.Values.ShouldAllBe(static status => status == "approved" || status == "reference_pending");
+
+        // Governance-criterion status and NFR-row status are separately owned (architecture.md decoupling
+        // precedent). Every C0-C13 criterion is approved - OQ4 closed C12 on 2026-09-15 - so there is no
+        // governance-pending set left to project. What must not decay is the other direction: an approved
+        // criterion never retires the traceability bridge's own owned gaps.
+        criteria.Values.ShouldNotContain("reference_pending",
+            "a new governance reference-pending criterion must be projected into the traceability bridge; restore that projection here.");
 
         HashSet<string> docPendingCriteria = ParseTraceRows()
             .Where(static r => r.Status == "reference-pending")
@@ -296,10 +306,10 @@ public sealed partial class NfrTraceabilityConformanceTests
             .Where(static t => CriterionId().IsMatch(t))
             .ToHashSet(StringComparer.Ordinal);
 
-        foreach (string criterion in governancePending)
+        foreach (string criterion in OwnedReferencePendingCriteria)
         {
             docPendingCriteria.ShouldContain(criterion,
-                $"governance reference-pending {criterion} must stay visible in the traceability bridge.");
+                $"{criterion} must stay surfaced as an owned reference-pending NFR gap even while its criterion is approved.");
         }
     }
 

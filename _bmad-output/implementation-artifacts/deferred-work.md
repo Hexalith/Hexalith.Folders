@@ -2987,3 +2987,19 @@ resolution: already resolved: Commit 3309644; src/Hexalith.Folders/Providers/For
 - source_spec: `_bmad-output/implementation-artifacts/spec-oq3-publish-canonical-authorization-matrix.md`
   summary: Pin the `G4` effective-permission action-catalog drift to a check that reads `EffectivePermissionsActionCatalog.cs`, so a fix or further drift produces a signal.
   evidence: `EvaluateGaps` only asserts that `G4`'s evidence path exists; no gate reads the catalog. The catalog's action-to-level mapping is pinned by its own tests under `tests/Hexalith.Folders.Tests/Authorization/`, so the recompute-from-source shape used for `G1`-`G3` does not extend cleanly here.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq4-publish-canonical-provider-compatibility-catalog.md`
+  summary: NFR34 is recorded `covered` while the newly approved OQ4 catalog publishes gaps PG1 and PG2 stating that GitHub pins no adapter-level per-call REST timeout and that no retry-limit or backoff-cap ceiling has a referent.
+  evidence: `docs/exit-criteria/nfr-traceability.md:80` carries NFR34 as `covered` with hash `17a95286cc6f`; `_bmad-output/planning-artifacts/epics.md:184` states "Provider calls must use explicit timeout budgets, retry limits, and backoff caps." The approved catalog is direct counter-evidence. The inaccuracy pre-dates this change, and correcting the row touches the 73 hash-pinned NFR bullets that PD6 (`prd.md:1104`) reserves for one lockstep relock of prd.md, epics.md NFR1-NFR73 and the nfr-traceability hashes.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq4-publish-canonical-provider-compatibility-catalog.md`
+  summary: NFR49's residual credentialed-live-provider debt names consuming story `7-8`, which is already `done`, leaving the sole remaining release-blocking provider gap with no live owner.
+  evidence: `docs/exit-criteria/nfr-traceability.md:95` and `:181` both name `7-8`; `_bmad-output/implementation-artifacts/sprint-status.yaml:168` records `7-8-wire-scheduled-drift-and-policy-conformance-workflows: done`. C12's `open_policy_placeholders` block was the last structured record of that ownership and was cleared by this change. The NFR49 row is hash-pinned (`897e345f0e61`), so reassigning the consuming story belongs to the same PD6 lockstep relock.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq4-publish-canonical-provider-compatibility-catalog.md`
+  summary: The catalog's product/instance identity table omits GitHub's `capability_profile_schema` value `v1`, which the GitHub readiness mapper actually emits, while printing it for forgejo.
+  evidence: `src/Hexalith.Folders/Providers/GitHub/GitHubReadinessMapper.cs:67` emits `["capability_profile_schema"] = "v1"`, identical to `ForgejoProviderConstants.CapabilityProfileSchemaVersion`. Correcting the table edits `docs/contract/provider-compatibility-catalog.md`, which re-cuts the approval-bound SHA-256 and would re-stamp the 2026-09-15 Provider/Architecture/PM sign-off onto content those authorities did not approve. Fold into the next catalog version bump with fresh approvals.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-oq4-publish-canonical-provider-compatibility-catalog.md`
+  summary: PD6's reserved lockstep relock now partially overlaps shipped work — provider timeout/retry/backoff ceilings were published into PRD FR prose outside the relock.
+  evidence: `_bmad-output/planning-artifacts/prd.md:1104` reserves "add provider timeout/retry/backoff ceilings" for one lockstep change of `prd.md`, `epics.md` NFR1-NFR73 and the `docs/exit-criteria/nfr-traceability.md` hashes. This change published those ceilings as `CC1`-`CC12` into `prd.md:612` while touching none of the 73 hash-pinned NFR bullets, so the relock's remaining scope has shrunk and should be restated before it is executed.

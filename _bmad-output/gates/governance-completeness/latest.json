@@ -9,6 +9,8 @@
     "docs/contract/oq2-file-policy-evidence.yaml",
     "docs/contract/authorization-matrix.md",
     "docs/contract/oq3-authorization-evidence.yaml",
+    "docs/contract/provider-compatibility-catalog.md",
+    "docs/contract/oq4-provider-compatibility-evidence.yaml",
     "tests/fixtures/idempotency-encoding-corpus.json",
     "tests/fixtures/idempotency-encoding-corpus-consumption.yaml",
     "tests/fixtures/pattern-example-manifest.yaml",

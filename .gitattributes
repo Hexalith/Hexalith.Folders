@@ -28,6 +28,11 @@ docs/contract/oq2-file-policy-evidence.yaml text eol=lf
 docs/contract/authorization-matrix.md text eol=lf
 docs/contract/oq3-authorization-evidence.yaml text eol=lf
 
+# OQ4 approvals bind the exact SHA-256 bytes of the canonical provider compatibility catalog.
+docs/contract/provider-compatibility-catalog.md text eol=lf
+docs/contract/oq4-provider-compatibility-evidence.yaml text eol=lf
+tests/contracts/github/pinned-profile.json text eol=lf
+
 # Unified-diff context lines intentionally contain one leading space. Disable
 # whitespace diagnostics for the preserved intent-gap review artifact only.
 _bmad-output/implementation-artifacts/review-3-11-intent-gap.patch -whitespace

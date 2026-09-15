@@ -31,6 +31,9 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `docs/contract/oq2-file-policy-evidence.yaml`
 - `docs/contract/authorization-matrix.md`
 - `docs/contract/oq3-authorization-evidence.yaml`
+- `docs/contract/provider-compatibility-catalog.md`
+- `docs/contract/oq4-provider-compatibility-evidence.yaml`
+- `tests/contracts/github/pinned-profile.json`
 - `tests/fixtures/idempotency-encoding-corpus.json`
 - `tests/fixtures/idempotency-encoding-corpus.schema.json`
 - `tests/fixtures/idempotency-encoding-corpus-consumption.yaml`
@@ -80,6 +83,22 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `oq3_scope_incomplete`: an operation row does not account for all eight FR8 scope dimensions, or omits a dimension the Contract Spine declares.
 - `oq3_denial_shape_mismatch`: a negative access state does not route to the exact canonical 404 safe denial.
 - `oq3_gap_unrecorded`: an observed runtime or Contract Spine deviation is not recorded in the matrix conformance-gap table.
+- `oq4_evidence_missing`: the OQ4 manifest, canonical catalog binding, governed-provider list, ceiling or gap inventory, approval block, or required runtime-posture declaration is absent.
+- `oq4_evidence_mismatch`: OQ4 evidence identity, status, catalog version/path/digest, approval date, exact reopen policy, canonical surface inventory, governed providers, published ceiling IDs, recorded gap IDs, or runtime posture differs from the approved package.
+- `oq4_approval_incomplete`: one of Provider, Architecture, or PM has no single approval record.
+- `oq4_approval_extra`: the OQ4 authority or record set contains an unexpected or duplicate entry.
+- `oq4_approval_identity_mismatch`: an OQ4 approval record does not name Administrator, reported without echoing the unexpected value.
+- `oq4_approval_date_mismatch`: an OQ4 approval record does not carry 2026-09-15, reported without echoing the unexpected value.
+- `oq4_catalog_section_missing`: a required catalog profile section is absent.
+- `oq4_catalog_section_duplicate`: a required catalog profile section appears more than once.
+- `oq4_ceiling_missing`: a published call-ceiling ID is absent from the catalog's ceiling table.
+- `oq4_ceiling_duplicate`: a published call-ceiling ID appears more than once.
+- `oq4_ceiling_unpinned`: a published ceiling cites neither an enforcing constant nor a recorded catalog gap, reported by ceiling ID only.
+- `oq4_ceiling_provider_unknown`: a published ceiling names a provider scope outside the governed provider set.
+- `oq4_gap_missing`: a recorded catalog gap ID is absent, or a ceiling cites a gap the catalog never records.
+- `oq4_gap_duplicate`: a recorded catalog gap ID appears more than once.
+- `oq4_readiness_row_missing`: a canonical readiness-outcome row is absent from the readiness profile.
+- `oq4_readiness_row_duplicate`: a canonical readiness-outcome row appears more than once.
 - `idempotency_sample_unmapped`: a corpus sample lacks exactly one stable consumption map entry.
 - `pattern_example_invalid`: a C# example is unmarked, stale, or not part of the compilable examples project.
 - `cache_key_unscoped`: a tenant-data cache key candidate lacks tenant scope and no reviewed exception applies.
@@ -89,7 +108,7 @@ Diagnostics may include gate names, rule IDs, criterion IDs, sample IDs, operati
 
 ## Approval Records
 
-Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention, `C4` input limits, and `C7` lock/authorization timing) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryFreshExactApprovalRecords` enforces the generic floor, while `C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` applies C7's stricter bounded exact-value checks:
+Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention, `C4` input limits, `C7` lock/authorization timing, and `C12` provider drift) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryFreshExactApprovalRecords` enforces the generic floor, while `C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` applies C7's stricter bounded exact-value checks:
 
 - Every required authority has exactly one record with a specific (non-generic, non-authority-name) approver and a valid, non-future `approved_on`.
 - `approval_policy.max_age_days` is a mandatory global freshness window: an approval older than the window fails closed and forces a governance re-review. This time-based redden is intentional — refresh the sign-off (or widen the window by decision) to clear it.
@@ -120,6 +139,27 @@ diagnostics. A matrix content/version/digest, required-authority, signer-identit
 reopens both approvals. The manifest deliberately keeps Stories 12.1, 4.19, 4.20, 4.21, 6.14, and 10.8 and
 FR8-FR10 runtime evidence incomplete, and the matrix records rather than hides the current Contract Spine and
 runtime drift under gap IDs `G1` through `G11`, whose downstream owners are PD10, OQ9, Story 12.1, and Epic 13.
+
+OQ4 uses the same separate-manifest shape because it governs the provider compatibility catalog rather than a
+single C0-C13 criterion row, while also carrying the C12 criterion approval.
+`GovernanceCompletenessGateTests.Oq4ProviderCompatibilityPackageBindsVersionDigestApprovalsAndRuntimePosture`
+binds `docs/contract/provider-compatibility-catalog.md` version `1.0.0` and its LF-stable SHA-256 digest to
+exactly one Provider, one Architecture, and one PM approval by Administrator dated 2026-09-15, and
+`ProviderCompatibilityCatalogContractTests` enforces the catalog content itself: every required profile
+section, governed provider, published call ceiling `CC1`-`CC12`, recorded gap `PG1`-`PG3`, and readiness-outcome
+row appears exactly once, and every published ceiling either cites an enforcing adapter constant or is recorded
+as a numbered gap. Missing, mismatched, stale, extra, duplicate, unpinned, or incomplete evidence fails closed
+with bounded metadata-only diagnostics. A catalog content/version/digest, required-authority, signer-identity,
+or approval-date change reopens all three approvals.
+
+C12 is approved on a deliberately narrowed evidence standard: hermetic-PR-gate provider contract evidence plus
+scheduled containerized and fixture drift evidence. The GitHub lane is the pinned-profile manifest
+`tests/contracts/github/pinned-profile.json` plus the fixture-to-failure-mode coverage matrix proven by
+`GitHubDriftConformanceTests`; it replaces the former hardcoded `live-provider-drift` placeholder and makes no
+network call. Credentialed live provider runs against GitHub and Forgejo are reported as explicitly not run and
+remain residual provider-ready debt, so NFR49 stays `reference-pending` under the governance/NFR-traceability
+decoupling precedent. The manifest deliberately keeps Stories 3.3, 3.14, 12.1, and 12.3 and FR16, FR17, FR22,
+and FR23 runtime evidence incomplete; design approval is not runtime completion.
 
 ## Contribution Checklist
 

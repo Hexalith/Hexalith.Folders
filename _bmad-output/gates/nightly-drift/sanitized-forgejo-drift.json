@@ -1,6 +1,6 @@
 {
   "schemaVersion": "forgejo-drift-report-v1",
-  "generatedAtUtc": "2026-08-26T09:51:27.0072208+00:00",
+  "generatedAtUtc": "2026-09-15T07:49:37.3163742+00:00",
   "provider": "forgejo",
   "fixtureSet": "tests/contracts/forgejo",
   "versions": [

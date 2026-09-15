@@ -32,13 +32,17 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         "references/Hexalith.Tenants",
     ];
 
+    // OQ4 replaced the hardcoded `live-provider-drift` placeholder with a real GitHub hermetic lane plus
+    // an explicit credentialed-evidence not-run row. Reintroducing a placeholder status is a regression.
     private static readonly string[] _nightlyCategories =
     [
         "forgejo-manifest-integrity",
         "forgejo-snapshot-coverage",
         "forgejo-drift-classification",
         "forgejo-sanitized-report",
-        "live-provider-drift",
+        "github-pinned-profile-integrity",
+        "github-failure-mode-coverage",
+        "credentialed-live-provider-evidence",
     ];
 
     private static readonly string[] _policyCategories =
@@ -117,8 +121,8 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         script.ShouldContain("'/version'");
         script.ShouldContain("'/repos/{owner}/{repo}/git/refs/{ref}'");
         script.ShouldContain("ForgejoManifestAndDriftTests");
-        script.ShouldContain("expected_test_count = 8");
-        script.ShouldContain("$executedTests -ne 8");
+        script.ShouldContain("expected_test_count = 10");
+        script.ShouldContain("$executedTests -ne 10");
         script.ShouldContain("fallback=xunit-in-process");
         script.ShouldContain("zero-or-partial-test-selection");
         script.ShouldContain("missing-test-assembly");
@@ -128,9 +132,35 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         script.ShouldContain("breaking-incompatible-not-failure");
         script.ShouldContain("unknown-unclassified-not-failure");
         script.ShouldContain("raw-schema-diff-retention");
-        script.ShouldContain("reference_pending_story_7_8");
         script.ShouldContain("folders-provider-maintainers");
         script.ShouldContain(NightlyReportPath);
+
+        // OQ4 GitHub hermetic lane: a pinned-profile manifest plus the failure-mode coverage matrix, with
+        // no network call and no hardcoded live-drift placeholder status.
+        script.ShouldContain("tests/contracts/github/pinned-profile.json", Case.Sensitive);
+        script.ShouldContain("references/Hexalith.Builds/Props/Directory.Packages.props", Case.Sensitive);
+        script.ShouldContain("Hexalith.Folders.Tests.Providers.GitHub.GitHubDriftConformanceTests", Case.Sensitive);
+        script.ShouldContain("github_expected_test_count = 5");
+        script.ShouldContain("$githubExecutedTests -ne 5");
+        script.ShouldContain("github-profile-schema-drift");
+        script.ShouldContain("github-lane-network-call-permitted");
+        script.ShouldContain("orphaned-failure-mode-category");
+        script.ShouldContain("duplicate-failure-mode-category");
+        script.ShouldContain("package-pin-drift");
+        script.ShouldContain("Get-ProviderHermeticStatus");
+        script.ShouldContain("credentialed_live_provider_evidence");
+        script.ShouldContain("'not_run'");
+        // The not-run row must name the exact condition that would retire it, so it cannot persist forever
+        // as unchallenged prose.
+        script.ShouldContain("closing_condition");
+        script.ShouldContain("libGit2SharpPackageVersion");
+        script.ShouldContain("native-package-pin-drift");
+        script.ShouldContain("Assert-ProviderHermeticStatusDerivation");
+        script.ShouldContain("hermetic-status-derivation-drift");
+        script.ShouldContain("Get-ProviderCategories");
+        script.ShouldNotContain("reference_pending_story_7_8", Case.Sensitive);
+        script.ShouldNotContain("live-provider-drift", Case.Sensitive);
+        script.ShouldNotContain("api.github.com", Case.Insensitive);
 
         foreach (string category in _nightlyCategories)
         {
@@ -215,6 +245,31 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
     {
         AssertScheduledReportWhenPresent(NightlyReportPath, "nightly-drift", _nightlyCategories);
         AssertScheduledReportWhenPresent(PolicyReportPath, "policy-conformance", _policyCategories);
+    }
+
+    [Fact]
+    public void NightlyReportCredentialedLiveRowNamesItsClosingConditionWhenPresent()
+    {
+        if (!File.Exists(RepositoryPath(NightlyReportPath)))
+        {
+            return;
+        }
+
+        using JsonDocument document = JsonDocument.Parse(ReadText(NightlyReportPath));
+        JsonElement row = document.RootElement.GetProperty("credentialed_live_provider_evidence");
+
+        RequiredString(row, "status").ShouldBe("not_run");
+        RequiredString(row, "owner").ShouldNotBeNullOrWhiteSpace();
+        RequiredString(row, "reason").ShouldNotBeNullOrWhiteSpace();
+        RequiredString(row, "closing_condition").ShouldNotBeNullOrWhiteSpace();
+
+        // Per-provider hermetic status must be derived, never a hardcoded placeholder token.
+        foreach (JsonElement provider in document.RootElement.GetProperty("provider_status").EnumerateArray())
+        {
+            RequiredString(provider, "provider").ShouldBeOneOf("forgejo", "github");
+            RequiredString(provider, "hermetic_status").ShouldBeOneOf("passed", "failed", "in_progress", "not_started");
+            RequiredString(provider, "credentialed_live_evidence").ShouldBe("not_run");
+        }
     }
 
     [Fact]
