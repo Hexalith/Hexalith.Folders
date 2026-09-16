@@ -10,9 +10,9 @@ evidence fails the release-readiness review.
 The traceability table below is re-derived from these authorities by
 `NfrTraceabilityConformanceTests`; it is never hand-maintained in isolation:
 
-- PRD NFR inventory: `_bmad-output/planning-artifacts/prd.md` `## Non-Functional Requirements` — 73 bullets
-  across nine categories.
-- Epics NFR inventory: `_bmad-output/planning-artifacts/epics.md` numbered `NFR1` through `NFR73`,
+- PRD NFR inventory: `_bmad-output/planning-artifacts/prd.md` `## Non-Functional Requirements` — 84 bullets
+  across eleven categories.
+- Epics NFR inventory: `_bmad-output/planning-artifacts/epics.md` numbered `NFR1` through `NFR84`,
   aligned one-for-one with the PRD by the 2026-08-04 planning-reconciliation recovery.
 - Architecture exit criteria: `docs/exit-criteria/c0-c13-governance-evidence.yaml` C0 through C13, including
   owner and `reference_pending` semantics, plus `_bmad-output/planning-artifacts/architecture.md`.
@@ -51,7 +51,7 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
 | NFR5 | Security & Tenant Isolation | b3b6047dbf5b | covered | `7-6` | `tests/tools/run-security-redaction-ci-gates.ps1` | `C9` | — | Security | Not release-blocking; automated evidence current. |
 | NFR6 | Security & Tenant Isolation | 4980431b2d0b | covered | `7-6` | `tests/tools/run-safety-invariant-gates.ps1` | `C8` | — | Safety Invariants | Not release-blocking; automated evidence current. |
 | NFR7 | Security & Tenant Isolation | 364d8a0de490 | reference-pending | `4-3` | `tests/tools/run-governance-completeness-gates.ps1` | `C7` | — | Architecture | Release-blocking: C7 timing is approved; mid-task revocation executable evidence remains separately deferred. |
-| NFR8 | Security & Tenant Isolation | 2acb1b25e69a | reference-pending | `6-12` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` | `C9` | `docs/operations/audit-and-redaction.md` | Security / Projections | Release-blocking: the C9 tenant-confidential projection write-time correlation-token override lacks production implementation evidence. |
+| NFR8 | Security & Tenant Isolation | cf50f43293a4 | reference-pending | `6-12` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` | `C9` | `docs/operations/audit-and-redaction.md` | Security / Projections | Release-blocking: the C9 tenant-confidential projection write-time correlation-token override lacks production implementation evidence. |
 | NFR9 | Security & Tenant Isolation | 0d7ced37babf | covered | `7-15` | `tests/tools/run-provider-error-docs-gates.ps1` | `docs/operations/production-identity-and-secrets.md` | — | Security | Not release-blocking; automated evidence current. |
 | NFR10 | Security & Tenant Isolation | 856688113814 | covered | `7-6` `7-15` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-provider-error-docs-gates.ps1` | `docs/operations/provider-integration-and-testing.md` | — | Security | Not release-blocking; automated evidence current. |
 | NFR11 | Security & Tenant Isolation | 1c2567dc7169 | covered | `7-15` | `tests/tools/run-provider-error-docs-gates.ps1` | `docs/operations/provider-integration-and-testing.md` | — | Provider Readiness | Not release-blocking; automated evidence current. |
@@ -97,7 +97,7 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
 | NFR51 | Integration & Contract Compatibility | 3babf7ce08ff | covered | `7-15` | `tests/tools/run-provider-error-docs-gates.ps1` | `docs/operations/canonical-error-catalog.md` | — | Provider Readiness | Not release-blocking; automated evidence current. |
 | NFR52 | Observability, Auditability & Replay | a0365aa4a3c9 | covered | `7-12` | `tests/tools/run-operations-audit-docs-gates.ps1` `tests/tools/run-production-observability-gates.ps1` | `docs/operations/production-observability.md` | — | Observability | Not release-blocking; automated evidence current. |
 | NFR53 | Observability, Auditability & Replay | cef18e07d812 | covered | `7-14` | `tests/tools/run-safety-invariant-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` | `C9` | — | Audit | Not release-blocking; automated evidence current. |
-| NFR54 | Observability, Auditability & Replay | 70e811e8ff2e | reference-pending | `6-12` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` | `C9` | `docs/operations/audit-and-redaction.md` | Security / Projections | Release-blocking: C9 classification is approved, but confidential write-time correlation-token projection evidence remains open. |
+| NFR54 | Observability, Auditability & Replay | d2601e1d27ce | reference-pending | `6-12` | `tests/tools/run-security-redaction-ci-gates.ps1` `tests/tools/run-operations-audit-docs-gates.ps1` | `C9` | `docs/operations/audit-and-redaction.md` | Security / Projections | Release-blocking: C9 classification is approved, but confidential write-time correlation-token projection evidence remains open. |
 | NFR55 | Observability, Auditability & Replay | 3cb9b10e0041 | covered | `6-11` | `tests/tools/run-operations-audit-docs-gates.ps1` | `docs/operations/operations-console.md` | — | Observability | Not release-blocking; automated evidence current. |
 | NFR56 | Observability, Auditability & Replay | 145faedebc7b | covered | `4-15` | `tests/tools/run-contract-spine-gates.ps1` | `C6` | — | Lifecycle | Not release-blocking; automated evidence current. |
 | NFR57 | Observability, Auditability & Replay | 75999519d2f2 | covered | `7-12` | `tests/tools/run-production-observability-gates.ps1` | `C2` | `docs/exit-criteria/c2-freshness.md` | Observability | Not release-blocking; automated evidence current. |
@@ -117,11 +117,22 @@ compact; the conformance test re-derives each hash from `prd.md` and asserts the
 | NFR71 | Verification Expectations | fc40fb7b47cc | covered | `5-5` | `tests/tools/run-contract-parity-ci-gates.ps1` `tests/tools/run-safety-invariant-gates.ps1` | `C13` | — | Contracts | Not release-blocking; automated evidence current. |
 | NFR72 | Verification Expectations | e924c41216c4 | release-validation | `7-10` `7-11` | `tests/tools/run-capacity-calibration-gates.ps1` | `C1` `C3` | `docs/exit-criteria/c1-capacity.md` `docs/exit-criteria/c3-retention.md` `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` | Release Readiness | Release-validation: performance, accessibility, retention, and backup evidence is consolidated; backup remains separately reference-pending. |
 | NFR73 | Verification Expectations | e0b208ef5e3d | covered | `7-9` | `tests/tools/run-release-package-gates.ps1` `tests/tools/run-security-redaction-ci-gates.ps1` | `C0` | — | Security | Not release-blocking; automated evidence current. |
+| NFR74 | Edge Security & Deployment Hardening | 28d62bb85938 | reference-pending | `13-2` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Security / Platform | Release-blocking: admitted 2026-09-15; no gate yet proves bearer credentials are refused outside HTTPS or the approved loopback development boundary. |
+| NFR75 | Edge Security & Deployment Hardening | cc8faceb7806 | reference-pending | `13-1` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Security / Provider | Release-blocking: admitted 2026-09-15; the Forgejo SSRF egress guard for private, loopback, link-local, and metadata-service destinations is not yet implemented. |
+| NFR76 | Edge Security & Deployment Hardening | ee39dbdb2132 | reference-pending | `13-2` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Security | Release-blocking: admitted 2026-09-15; fail-safe deny-by-default on absent, stale, malformed, or unavailable authority has no runtime evidence. |
+| NFR77 | Edge Security & Deployment Hardening | 19b6e583fc18 | reference-pending | `13-3` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Security / CLI | Release-blocking: admitted 2026-09-15; owner-only credential-file permissions and the never-emitted guarantee for CLI/MCP material are unproven. |
+| NFR78 | Edge Security & Deployment Hardening | fc7939fedd5e | reference-pending | `13-6` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Security / Contracts | Release-blocking: admitted 2026-09-15; untrusted repository and workspace content has no validation or neutralization boundary evidence. |
+| NFR79 | Durable Operation & Release Evidence | b2ca2100e0bb | reference-pending | `12-1` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Persistence / Delivery | Release-blocking: admitted 2026-09-15; restart survival of accepted mutations, transitions, and evidence depends on the Epic 12 durable data plane. |
+| NFR80 | Durable Operation & Release Evidence | ef07bd19d773 | reference-pending | `12-2` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Persistence / Platform | Release-blocking: admitted 2026-09-15; multi-replica convergence without seed-local or replica-local assumptions has no durable-projection evidence. |
+| NFR81 | Durable Operation & Release Evidence | e8b7f269bb58 | reference-pending | `13-4` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Platform / Operations | Release-blocking: admitted 2026-09-15; readiness still reports from configuration and seed data rather than actual dependency health. |
+| NFR82 | Durable Operation & Release Evidence | cbd65b548407 | reference-pending | `13-5` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Operations / Observability | Release-blocking: admitted 2026-09-15; release-significant metrics and alerts have no demonstrated emission or fault-path evidence. |
+| NFR83 | Durable Operation & Release Evidence | 9a7923c3f997 | reference-pending | `7-16` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Release Readiness | Release-blocking: admitted 2026-09-15; this bridge classifies rows as covered, release-validation, and reference-pending only, and does not yet carry the automated, operational, and approval-bound classification with a named owner for every non-automated item. |
+| NFR84 | Durable Operation & Release Evidence | 0e45d081e066 | reference-pending | `13-6` | — | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` | — | Test / Security | Release-blocking: admitted 2026-09-15; release verification does not yet cover safe denial, endpoint validation, credential handling, and untrusted-content boundaries as one edge-security set. |
 <!-- /nfr-traceability-table -->
 
-## Nine-category coverage rollup
+## Eleven-category coverage rollup
 
-Every PRD/architecture NFR category is represented; the counts sum to the full 73-bullet inventory.
+Every PRD/architecture NFR category is represented; the counts sum to the full 84-bullet inventory.
 
 <!-- nfr-category-rollup -->
 | Category | NFR range | Count | Representative evidence |
@@ -135,6 +146,8 @@ Every PRD/architecture NFR category is represented; the counts sum to the full 7
 | Data Retention & Cleanup | NFR60–NFR64 | 5 | `tests/tools/run-retention-deletion-gates.ps1` `docs/exit-criteria/c3-retention.md` |
 | Operations-Console Accessibility | NFR65–NFR69 | 5 | `tests/tools/run-accessibility-ci-gates.ps1` `docs/ux/ops-console-accessibility-and-no-mutation-verification.md` |
 | Verification Expectations | NFR70–NFR73 | 4 | `tests/tools/run-nfr-traceability-gates.ps1` `tests/tools/run-capacity-calibration-gates.ps1` |
+| Edge Security & Deployment Hardening | NFR74–NFR78 | 5 | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` |
+| Durable Operation & Release Evidence | NFR79–NFR84 | 6 | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` |
 <!-- /nfr-category-rollup -->
 
 ## BDD-required release-review evidence rollup
@@ -224,8 +237,8 @@ Do not initialize nested submodules.
 ## Reviewer handoff and rerun rules
 
 A reviewer should run the local validation command above, confirm the report reports `status: passed` with
-`diagnostic_policy: metadata-only`, and confirm the traceability table still contains exactly 73 rows that
-align one-for-one with the PRD and `epics.md` `NFR1` through `NFR73`. Confirm every reference-pending row keeps
+`diagnostic_policy: metadata-only`, and confirm the traceability table still contains exactly 84 rows that
+align one-for-one with the PRD and `epics.md` `NFR1` through `NFR84`. Confirm every reference-pending row keeps
 an owner and a release-blocking note, and that the report `release_blocking_gaps` stay in sync with the
 reference-pending rows. Rerun the gate after any change to the PRD NFR inventory, the `epics.md` NFR
 inventory, the architecture exit criteria, or any cited gate, exit-criteria, or release-validation artifact.

@@ -1,13 +1,13 @@
 {
   "gate": "nfr-traceability",
-  "status": "passed",
-  "exit_code": 0,
+  "status": "failed",
+  "exit_code": 1,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
-  "source_commit": "33f0e114bd0b2a2a21865a84043aa65cbb187bfe",
+  "source_commit": "1621358e7924fd3c58eac653473fc9196c84b190",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-  "nfr_total": 73,
-  "category_total": 9,
+  "nfr_total": 84,
+  "category_total": 11,
   "canonical_inputs": [
     "_bmad-output/planning-artifacts/prd.md",
     "_bmad-output/planning-artifacts/epics.md",
@@ -106,6 +106,83 @@
       "owner": "Tech Lead / Delivery",
       "consuming_story": "7-11",
       "gap": "downstream-retention-implementation-and-conformance-evidence"
+    },
+    {
+      "nfr": "NFR74",
+      "criterion": "",
+      "owner": "Security / Platform",
+      "consuming_story": "13-2",
+      "gap": "bearer-credential-https-or-approved-loopback-boundary-evidence"
+    },
+    {
+      "nfr": "NFR75",
+      "criterion": "",
+      "owner": "Security / Provider",
+      "consuming_story": "13-1",
+      "gap": "provider-endpoint-prohibited-destination-egress-guard-evidence"
+    },
+    {
+      "nfr": "NFR76",
+      "criterion": "",
+      "owner": "Security",
+      "consuming_story": "13-2",
+      "gap": "deny-by-default-on-absent-stale-malformed-unavailable-authority-evidence"
+    },
+    {
+      "nfr": "NFR77",
+      "criterion": "",
+      "owner": "Security / CLI",
+      "consuming_story": "13-3",
+      "gap": "owner-only-cli-mcp-credential-storage-and-non-emission-evidence"
+    },
+    {
+      "nfr": "NFR78",
+      "criterion": "",
+      "owner": "Security / Contracts",
+      "consuming_story": "13-6",
+      "gap": "untrusted-repository-and-workspace-content-neutralization-evidence"
+    },
+    {
+      "nfr": "NFR79",
+      "criterion": "",
+      "owner": "Persistence / Delivery",
+      "consuming_story": "12-1",
+      "gap": "restart-survival-of-accepted-mutations-transitions-and-evidence"
+    },
+    {
+      "nfr": "NFR80",
+      "criterion": "",
+      "owner": "Persistence / Platform",
+      "consuming_story": "12-2",
+      "gap": "multi-replica-convergence-without-replica-local-correctness-assumptions"
+    },
+    {
+      "nfr": "NFR81",
+      "criterion": "",
+      "owner": "Platform / Operations",
+      "consuming_story": "13-4",
+      "gap": "readiness-reports-actual-dependency-health-not-configuration-or-seed"
+    },
+    {
+      "nfr": "NFR82",
+      "criterion": "",
+      "owner": "Operations / Observability",
+      "consuming_story": "13-5",
+      "gap": "release-significant-metric-and-alert-emission-and-fault-path-evidence"
+    },
+    {
+      "nfr": "NFR83",
+      "criterion": "",
+      "owner": "Release Readiness",
+      "consuming_story": "7-16",
+      "gap": "automated-operational-approval-bound-evidence-classification-with-owners"
+    },
+    {
+      "nfr": "NFR84",
+      "criterion": "",
+      "owner": "Test / Security",
+      "consuming_story": "13-6",
+      "gap": "edge-security-release-verification-coverage-evidence"
     }
   ]
 }

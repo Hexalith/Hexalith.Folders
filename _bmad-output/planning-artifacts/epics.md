@@ -149,7 +149,7 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 - NFR5: Secrets and sensitive payloads must be redacted at source, with automated sanitizer tests and forbidden-field scanning in CI.
 - NFR6: Authorization denials must use safe error shapes that avoid unauthorized resource enumeration.
 - NFR7: Every mutation and asynchronous side effect must revalidate current tenant, folder, delegated-actor, binding, and credential authority before touching a protected resource; revocation fails closed and changes any held lock to revoked/inaccessible.
-- NFR8: Paths, repository names, branch names, and commit messages are tenant-sensitive by default. Authorized tenant members and tenant-scoped operators with need-to-know may view them; cross-tenant/external diagnostics redact them. A tenant confidential override replaces cleartext at audit/projection write time with a stable tenant-scoped correlation token that preserves equality/linkage across authorized incident records but cannot reveal the original value. Redacted, hidden, unknown, missing, stale, and unavailable remain visibly distinct.
+- NFR8: Paths, repository names, branch names, and commit messages are tenant-sensitive by default. Authorized tenant members and tenant-scoped operators with need-to-know may view them; cross-tenant/external diagnostics redact them. A tenant confidential override replaces cleartext at event write, before persistence, with a stable tenant-scoped correlation token that preserves equality/linkage across authorized incident records but cannot reveal the original value; no cleartext confidential value is ever made durable. Redacted, hidden, unknown, missing, stale, and unavailable remain visibly distinct.
 - NFR9: Credential references must be validated and displayed only as non-secret identifiers or status indicators.
 - NFR10: Provider credentials and repository bindings must be tenant-scoped and must not be reused across tenants, even if repository URLs appear identical.
 - NFR11: Provider credentials must use the least privilege required for supported lifecycle operations and must be validated against required provider capabilities before use.
@@ -210,7 +210,7 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 
 - NFR52: Every successful, denied, failed, retried, or duplicate operation—including lock, file, commit, provider-readiness, and status-transition operations—must be traceable by tenant, actor, task ID, operation ID, correlation ID, folder, provider, repository binding, timestamp, result, duration, state transition, and sanitized error category where applicable.
 - NFR53: Audit data must be metadata-only and sufficient to reconstruct what happened without exposing file contents or secrets.
-- NFR54: Paths, commit messages, repository names, and branch names are tenant-sensitive by default under C9; authorized tenant/scoped-operator views may display them, cross-tenant/external diagnostics redact them, and a tenant confidential override stores only the stable tenant-scoped correlation token at audit/projection write time. Confidential incident reconstruction links operations through that token and operation/correlation identity; it does not promise recovery of the original cleartext. Provider payloads, file bodies, secrets, and generated context remain forbidden.
+- NFR54: Paths, commit messages, repository names, and branch names are tenant-sensitive by default under C9; authorized tenant/scoped-operator views may display them, cross-tenant/external diagnostics redact them, and a tenant confidential override stores only the stable tenant-scoped correlation token, substituted at event write so cleartext never becomes durable. Confidential incident reconstruction links operations through that token and operation/correlation identity; it does not promise recovery of the original cleartext. Provider payloads, file bodies, secrets, and generated context remain forbidden.
 - NFR55: Operations-console views are projection-first, read-only, and limited to lifecycle, status, readiness, lock, failure, provider, and audit metadata. During projection degradation, the bounded incident view may expose redacted event evidence only to an actor with incident-admin permission and normal tenant/folder access. The view must include a persistent warning, last checkpoint, correlation ID, and time window.
 - NFR56: Rebuilding read-model views from an empty read model must produce deterministic status, audit, and timeline results from the same ordered event stream, excluding explicitly nondeterministic generated values.
 - NFR57: Lifecycle events must appear in status/audit views within a defined status-freshness target under normal operation.
@@ -239,6 +239,17 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 - NFR71: Security, tenant isolation, idempotency, provider contract, read-model determinism, and cross-surface contract compatibility NFRs must have automated tests.
 - NFR72: Performance, accessibility, retention, backup/recovery, and operations-console usability NFRs must have release validation evidence before MVP acceptance.
 - NFR73: Security verification must include dependency/package scanning, generated artifact review, and least-privilege provider credential validation.
+- NFR74: Bearer credentials must be accepted only over HTTPS or an explicitly approved loopback development boundary.
+- NFR75: Provider endpoints must deny private, loopback, link-local, metadata-service, and otherwise prohibited destinations unless an approved deployment policy explicitly allows them.
+- NFR76: Protected endpoints and internal service boundaries must deny by default when authority is absent, stale, malformed, or unavailable.
+- NFR77: Local CLI and MCP credential material must use owner-only storage and must never be emitted to logs, telemetry, diagnostics, or generated artifacts.
+- NFR78: Repository and workspace content is untrusted input and must not control commands, paths, templates, or rendered active content without validation or neutralization.
+- NFR79: Accepted mutations, their state transitions, and their required evidence must survive process restart.
+- NFR80: Supported multi-replica deployments must converge on one authoritative state without seed-local or replica-local correctness assumptions.
+- NFR81: Readiness must report actual dependency health and must not report ready from configuration or seed data alone.
+- NFR82: Every release-significant metric and alert must have demonstrated emission, a named owner, and fault-path evidence.
+- NFR83: Release evidence must be classified as automated, operational, approval-bound, or reference-pending, with a named owner for every non-automated item.
+- NFR84: Release verification must cover edge-security behavior including safe denial, endpoint validation, credential handling, and untrusted-content boundaries.
 
 ### Additional Requirements
 

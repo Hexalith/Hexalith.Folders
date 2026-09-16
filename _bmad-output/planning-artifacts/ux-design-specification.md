@@ -33,12 +33,53 @@ implementationReadinessPatchedAt: "2026-05-12"
 completedArtifacts:
   uxDesignSpecification: "_bmad-output/planning-artifacts/ux-design-specification.md"
   designDirections: "_bmad-output/planning-artifacts/ux-design-directions.html"
+lastUpdatedAt: "2026-09-16"
+openDecisions:
+  - "PD11 role attestation (Product, Architecture, Security) and the FolderStateTransitions.cs correction"
+  - "PD8 FieldDisclosure.Withheld member not yet implemented"
+  - "12 [ASSUMPTION] tags awaiting confirmation"
+  - "upstream digests recomputed at the relocking commit"
+updateProvenance:
+  proposal: "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md"
+  proposalStatus: "approved"
+  appliedSection: "5.3 behavior-visible corrections"
+  sponsorApproval: "Jerome, 2026-09-15T16:08:21+02:00, response `continue`, covering the recommended disposition for A1 through A8"
+  roleSignoffs: "pending; sponsor approval does not substitute the Product, Architecture, Security, Operations, Test, Delivery, or Legal attestations"
+  proposalDigest: "sha256:5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104"
+  prdDigest: "sha256:0d6f1ab858e5774a87e0a639ceb521b0fc7e57a93f48297bf69ec53fd5788158"
+  prdDigestTakenAt: "2026-09-16, uncommitted working tree"
+  architectureDigest: "sha256:f7b5a8d2a503bdee37f9833724a8896289930f1d8ecfc16453efa60b139900b1"
+  architectureDigestTakenAt: "2026-09-16, uncommitted working tree"
+  upstreamLockstepNote: "Proposal sections 5.1 and 5.2 are applied. Both digests are working-tree snapshots taken while prd.md, architecture.md, and epics.md were uncommitted, so they must be recomputed and rewritten here at the commit that relocks the set, before the general execution freeze can be removed under proposal section 9."
 ---
 
 # UX Design Specification Hexalith.Folders
 
-**Author:** Jerome
-**Date:** 2026-05-11
+**Author:** Jerome **Date:** 2026-05-11 **Last updated:** 2026-09-16
+
+---
+
+## Update Record 2026-09-16
+
+This revision applies section 5.3 of the approved `sprint-change-proposal-2026-09-15.md`. It changes interaction contracts and admits three read-only evidence sections with seven new register rows. It does not relax the MVP read-only boundary, and it adds no mutation, repair, content-preview, or credential-reveal affordance.
+
+Applied from proposal section 5.3:
+
+1. A confidential override is presented as a stored correlation reference and never as recoverable cleartext.
+2. Withheld, redacted, unknown, and missing values stay visibly and semantically distinct, and read-model availability stays a separate axis rather than a sixth disclosure outcome.
+3. `unknown_provider_outcome` presents as automatically recovering while bounded confirmation continues, and escalates to `reconciliation_required` only when those checks cannot establish the outcome.
+4. Authority-unavailable and resource-unavailable errors are non-disclosing while retaining an operator-safe correlation reference.
+5. Provenance is updated to the approved proposal and to the resulting PRD and architecture digests.
+
+Also added: durability evidence and indexing status as workspace-detail sections, and hardening evidence as a provider-view section, adding UX-DR33 through UX-DR39 to the register.
+
+**Open lockstep deltas, deliberately not hidden by this document.**
+
+- This specification leads the shipped code on two points, both owned by the approved A5/PD8 and A7/PD11 decisions: `FolderStateTransitions.cs` maps `UnknownProviderOutcome` to `AwaitingHuman` where this document now requires an auto-recovering presentation, and `FieldDisclosure` has four members where this document now requires five. Neither is a defect in the code; both are scheduled corrections that remain unimplemented while the general execution freeze is retained.
+- The operator disposition for `unknown_provider_outcome` is decided but not yet attested or implemented. PD11 in `prd.md` is a sponsor-approved decision selecting option (a): `unknown_provider_outcome` is automatically recovering during bounded provider checks and escalates to `reconciliation_required` only when those checks cannot establish the result. The former three-way split between the C6 mapping's `awaiting-human`, the architecture's `auto-recovering`, and the PRD's `auto-reconciling` is retained in that table only as superseded history. This document follows the approved decision. What remains open is the Product, Architecture, and Security attestation, and the lockstep correction of `FolderStateTransitions.cs`.
+- The upstream digests recorded above were taken from an uncommitted working tree. `prd.md`, `epics.md`, and `architecture.md` all carried uncommitted changes when this revision was written, so those digests identify a snapshot rather than a committed authority and must be recomputed at the relocking commit.
+
+Content marked `[ASSUMPTION]` is an inference drawn while drafting, not an elicited requirement. Each one is open for correction and none may be treated as approved UX authority until confirmed. Content marked `[NOTE FOR UX]` is a reconciliation owed to this document by a named upstream artifact; it is actioned by the next UX revision after that artifact lands, and is removed once the reconciliation is done.
 
 ---
 
@@ -115,34 +156,38 @@ These identifiers are the authoritative UX-DR traceability set for Epic 6 and re
 | UX-DR7 | Implement a Metadata-Only Folder Tree or table that shows permitted path metadata, type, policy-safe size metadata or size class, last known operation, changed-path status, accessibility state, and redaction marker without exposing file contents or raw diffs. |
 | UX-DR8 | Implement a Diagnostic Timeline component for diagnosis and audit views showing timestamp, event category, actor/task/correlation metadata, result, state transition, reason category, retry or escalation posture, and safe detail text. |
 | UX-DR9 | Implement a Trust Matrix component comparing tenant boundary, provider readiness, workspace lifecycle, lock state, folder metadata visibility, and audit traceability with state label, icon, reason summary, last updated time, and link to supporting evidence. |
-| UX-DR10 | Implement a Redaction And Inaccessibility State component that distinguishes redacted, inaccessible, denied, unknown, missing, unavailable, stale, and failed data. |
+| UX-DR10 | Implement a Redaction And Inaccessibility State component that distinguishes redacted, withheld, inaccessible, denied, unknown, missing, unavailable, stale, and failed data. |
 | UX-DR11 | Preserve the MVP read-only boundary in every UI flow: no mutation controls, repair actions, file editing, raw diff display, credential reveal, unrestricted file browsing, or unauthorized resource confirmation. |
 | UX-DR12 | Present folder metadata only as orientation and evidence; never make the console feel like a file manager or content browser. |
 | UX-DR13 | Use canonical state vocabulary consistently across search results, trust summaries, tables, timelines, detail panels, empty states, denied states, and redaction states. |
 | UX-DR14 | Every status indicator must include readable text, icon or shape cue, semantic color, accessible label, and optional tooltip or detail link when meaning is not obvious; color must never be the only signal. |
-| UX-DR15 | Visually and semantically distinguish ready, locked, dirty, committed, failed, inaccessible, delayed, unknown, redacted, stale, missing, unavailable, denied, and archived states. |
+| UX-DR15 | Visually and semantically distinguish ready, locked, dirty, committed, failed, inaccessible, delayed, unknown, redacted, withheld, stale, missing, unavailable, denied, and archived states. |
 | UX-DR16 | Use restrained Fluent UI-based visual foundations: neutral surfaces, high-contrast text, semantic status colors, compact typography, and an 8px spacing base suitable for dense operational work. |
 | UX-DR17 | Use cards only for distinct repeated items, summary blocks, and focused panels; avoid nested cards and decorative section cards. |
-| UX-DR18 | Structure workspace detail pages with predictable sections for overview, folder metadata, diagnosis, audit trail, provider readiness, lock/task history, and access evidence. |
+| UX-DR18 | Structure workspace detail pages with predictable sections for overview, folder metadata, diagnosis, audit trail, provider readiness, lock/task history, access evidence, durability evidence, and indexing status. |
 | UX-DR19 | Make current diagnosis and historical audit evidence connected from the workspace page rather than forcing users into disconnected pages for related evidence. |
 | UX-DR20 | Provide safe empty states that distinguish no matches, insufficient filter scope, unavailable read model, and denied access without leaking unauthorized resource existence. |
 | UX-DR21 | Provide denied states with safe reason category, allowed correlation ID evidence, and escalation posture without confirming unauthorized resource existence beyond policy. |
-| UX-DR22 | Provide redacted states that are visibly different from missing, unknown, unavailable, failed, and denied data; redaction must not be silently hidden or represented as truncation. |
+| UX-DR22 | Provide redacted states that are visibly different from withheld, missing, unknown, unavailable, failed, and denied data; redaction must not be silently hidden or represented as truncation. |
 | UX-DR23 | Limit forms to search, filtering, sorting, and view preferences; forms must not submit domain mutations. |
 | UX-DR24 | Use dialogs only for read-only detail expansion, safe identifier copy confirmation, filter configuration, and explanatory evidence; dialogs must trap focus, restore focus on close, and have accessible titles. |
 | UX-DR25 | Preserve layout stability during loading states and label what is loading: search results, workspace summary, folder metadata, provider readiness, audit timeline, or access evidence. |
 | UX-DR26 | Show stale or delayed data with freshness timestamps and read-model status; do not present stale evidence as current without labeling it. |
-| UX-DR27 | Display safe identifiers such as task ID, operation ID, correlation ID, commit reference, and credential reference identifier in monospace with safe copy affordances only. |
+| UX-DR27 | Display safe identifiers such as task ID, operation ID, correlation ID, commit reference, credential reference identifier, and confidential-override correlation reference in monospace with safe copy affordances only. |
 | UX-DR28 | Support desktop-first layouts with persistent navigation, global search, trust summaries, multi-column evidence panels, metadata tables, and side-by-side diagnosis or audit sections. |
 | UX-DR29 | Provide tablet and mobile fallback layouts that stack evidence panels, collapse persistent navigation, preserve search and filters, prioritize tenant/workspace/state/risk signal, and do not break core lookup or high-level trust review. |
 | UX-DR30 | Target WCAG 2.2 AA with keyboard access for search, filters, result selection, tabs, tables, tree expansion, detail panels, and dialogs; visible focus; semantic headings and landmarks; accessible names; sufficient contrast; zoom resilience; and screen-reader meaningful redaction/denial/status labels. |
 | UX-DR31 | Test the UI at desktop, tablet, and mobile fallback widths, at 125%, 150%, and 200% browser zoom, and with dense identifiers and long paths in tables, timelines, metadata trees, and trust summaries. |
 | UX-DR32 | Validate accessibility with automated checks, keyboard-only walkthroughs for the three critical journeys, screen reader review, forced-colors/high-contrast checks where supported, color-blindness review, and focus management checks. |
+| UX-DR33 | Present a tenant-confidential override as a stored correlation reference only. The console must never display, reconstruct, or promise recovery of the cleartext value, and must not imply that any actor, including a tenant administrator, can reveal it. |
+| UX-DR34 | Distinguish five field-disclosure outcomes with distinct text, accessible label, and non-color cue: visible, redacted, withheld, unknown, and missing. Architecture S-6 calls the fifth outcome `absent`; it is the same outcome as the shipped `Missing` member, and `Missing` is the normative render token here so no surface invents a sixth term. Withheld must be distinguishable from redacted because redaction is a policy decision that an authorized actor could reverse, whereas a withheld value has no durable cleartext to reveal. Availability of the read model is a separate axis and must not be collapsed into any disclosure outcome. |
+| UX-DR35 | Present `unknown_provider_outcome` as automatically recovering for as long as bounded provider confirmation is still running, showing that confirmation is in progress and what its bound is. Use the canonical disposition `auto-recovering`; `auto-reconciling` is not a member of the disposition vocabulary and must not be rendered. Escalate the presentation to `reconciliation_required`, and to the `awaiting-human` disposition, only once those checks have ended without establishing the outcome. |
+| UX-DR36 | Present protected-operation denial and authority unavailability as two distinct non-disclosing outcomes, matching the two envelopes in architecture S-7. A denial is terminal for the caller and must not invite a retry; an authority outage is transient and must invite one. Neither may reveal protected-resource existence, tenant relationship, or authorization reasoning, and both must expose an operator-safe correlation reference. |
+| UX-DR37 | Provide a durability evidence section on workspace detail that distinguishes provider-confirmed durable state from locally staged or unconfirmed state, so an operator never reads staged work as persisted. |
+| UX-DR38 | Provide an indexing status section on workspace detail that fails safe: when the read model is unavailable it must state that indexing status is unavailable rather than implying an empty or complete index, and it must never surface indexed body content, raw paths, snippets, or source URIs. |
+| UX-DR39 | Provide a hardening evidence section on the provider view carrying the release-hardening signals owned by Epic 13, presented as metadata-only evidence with no configuration, repair, or credential-reveal affordance. |
 
-FR58 UX alignment addendum: Memories search-index coverage is a backend discovery capability for
-authorized folder metadata. Current UX obligations are limited to preserving existing browse/search,
-status, removal, archive, and governance signals without adding content preview surfaces or bypassing
-Folders authorization and tenant trimming.
+FR58 UX alignment addendum: Memories search-index coverage is a backend discovery capability for authorized folder metadata. Current UX obligations are limited to preserving existing browse/search, status, removal, archive, and governance signals without adding content preview surfaces or bypassing Folders authorization and tenant trimming.
 
 ## Desired Emotional Response
 
@@ -316,7 +361,7 @@ Search results should show enough context to choose safely: tenant, folder, work
 
 Opening a workspace should reveal a trust summary first. The summary should show resource identity, tenant scope, authorization posture, current state, provider readiness, lock state, dirty state, last commit reference, latest failure reason, and last updated timestamp.
 
-Supporting tabs or sections should provide folder metadata list, diagnostic timeline, provider/readiness evidence, task and lock history, audit records, and access/authorization evidence.
+Supporting tabs or sections should provide folder metadata list, diagnostic timeline, provider/readiness evidence, task and lock history, audit records, access/authorization evidence, durability evidence, and indexing status (UX-DR18 is the single authoritative list).
 
 Feedback should be immediate and explicit. Empty states, denied states, redacted states, stale read-model states, failed provider states, and unavailable data states must each explain what is known, what is not shown, and why.
 
@@ -396,7 +441,7 @@ Six directions were explored:
 
 The chosen direction is Resource Detail Console as the base structure, with selected elements from Finder Split View, Trust Matrix, and Audit Timeline First.
 
-The MVP should use a resource-centered workspace detail layout: global search and state-first filters lead users to a workspace; the workspace detail page opens with identity, tenant scope, authorization posture, and a trust summary; supporting sections expose folder metadata, diagnosis, provider readiness, access evidence, and audit history.
+The MVP should use a resource-centered workspace detail layout: global search and state-first filters lead users to a workspace; the workspace detail page opens with identity, tenant scope, authorization posture, and a trust summary; supporting sections expose folder metadata, diagnosis, provider readiness, access evidence, audit history, durability evidence, and indexing status.
 
 ### Design Rationale
 
@@ -421,8 +466,12 @@ The primary workspace detail page should include:
 - Diagnostic evidence section for current failures, blocked states, stale data, lock conflicts, provider readiness issues, and commit outcomes.
 - Audit timeline connecting authorization checks, readiness checks, lock events, file metadata changes, commit attempts, denials, retries, and status transitions.
 - Access evidence view showing effective permission state and safe denial outcomes without leaking unauthorized resource existence.
+- Durability evidence section distinguishing provider-confirmed durable state from locally staged or unconfirmed state, with projection freshness.
+- Indexing status section reporting whether the workspace is discoverable through authorized metadata search, failing safe when the read model is unavailable.
 
-Use Fluent UI components for navigation, search, filters, command bars, tabs, tables, badges, tooltips, dialogs, empty states, and accessible status indicators. Custom components should be limited to workspace trust summary, trust matrix, metadata-only folder tree, diagnostic timeline, and redaction/inaccessibility states.
+UX-DR18 is the authoritative list of workspace-detail sections; this bullet list and the two section summaries above must be edited with it.
+
+Use Fluent UI components for navigation, search, filters, command bars, tabs, tables, badges, tooltips, dialogs, empty states, and accessible status indicators. Custom components should be limited to workspace trust summary, trust matrix, metadata-only folder tree, diagnostic timeline, redaction/inaccessibility states, durability evidence, indexing status, and hardening evidence.
 
 ## User Journey Flows
 
@@ -442,10 +491,16 @@ flowchart TD
   H -->|Folder orientation| I["Open metadata-only folder list"]
   H -->|Failure context| J["Open diagnosis section"]
   H -->|History| K["Open audit timeline"]
+  H -->|Is this really persisted?| M["Open durability evidence: confirmed durable state vs staged work, projection freshness"]
+  H -->|Is this discoverable?| N["Open indexing status: indexed, pending, removed, archived, or status unavailable"]
   I --> L["User reaches defensible conclusion"]
   J --> L
   K --> L
+  M --> L
+  N --> L
 ```
+
+Steps M and N are where the durability evidence and indexing status sections are reached. They are branches of this journey rather than a separate flow, which keeps UX-DR32's three critical journeys intact.
 
 ### Journey 2: Prove Tenant Isolation And Safe Folder Visibility
 
@@ -478,13 +533,19 @@ flowchart TD
   D -->|Commit| G["Open commit attempt evidence"]
   D -->|Authorization| H["Open access evidence"]
   D -->|Read model| I["Open freshness and unavailable-state detail"]
+  D -->|Durability| L["Open durability evidence: is the state persisted or only staged?"]
+  D -->|Platform hardening| M["Open provider hardening evidence: authority reachability, revocation posture, call budgets"]
   E --> J["Review audit timeline"]
   F --> J
   G --> J
   H --> J
   I --> J
+  L --> J
+  M --> J
   J --> K["User identifies current state and escalation posture"]
 ```
+
+Steps L and M are where the durability evidence and hardening evidence sections are reached during diagnosis. Like Journey 1, they extend this journey rather than adding a fourth.
 
 ### Journey Patterns
 
@@ -586,15 +647,29 @@ These components cover the general operational-console structure. Custom work sh
 
 #### Redaction And Inaccessibility State
 
-**Purpose:** Standardize how the UI distinguishes redacted, inaccessible, unknown, missing, unavailable, and failed states.
+**Purpose:** Standardize how the UI distinguishes redacted, withheld, inaccessible, unknown, missing, unavailable, and failed states.
 
-**Usage:** Use anywhere safe visibility boundaries appear, especially folder metadata, audit evidence, provider diagnostics, and access checks.
+**Usage:** Use anywhere safe visibility boundaries appear, especially folder metadata, audit evidence, provider diagnostics, access checks, and tenant-confidential overrides.
 
-**Anatomy:** State label, icon, reason category, safe explanation, and optional link to policy or access evidence.
+**Anatomy:** State label, icon, reason category, safe explanation, optional correlation reference with a safe copy affordance, and optional link to policy or access evidence.
 
-**States:** Redacted, inaccessible, denied, unknown, missing, unavailable, stale, failed.
+**States:** Redacted, withheld, inaccessible, denied, unknown, missing, unavailable, stale, failed.
 
-**Accessibility:** Must communicate the difference between hidden-by-policy and absent data.
+**Accessibility:** Must communicate the difference between hidden-by-policy data, data with no durable cleartext, and missing data. Redacted and withheld require separate accessible labels; sharing one label defeats the distinction for screen-reader users.
+
+**Disclosure contract.** The component renders five field-disclosure outcomes and owns the rendering for all of them; callers pass a computed disclosure outcome and must not fork the rendering.
+
+| Outcome | Operator meaning | Value emitted |
+| --- | --- | --- |
+| Visible | Disclosed to this audience. | Yes |
+| Redacted | A tenant or audience policy hides an existing value; an authorized actor may be able to release it. | Never |
+| Withheld | No durable cleartext exists; the correlation reference is the whole of what was stored. | Never; the correlation reference is shown instead |
+| Unknown | Not yet in the read model. | Never |
+| Missing | No value was ever recorded. | Never |
+
+The value is emitted only in the visible branch, so a non-visible field cannot leak even when a caller mistakenly supplies one.
+
+`[NOTE FOR UX]` The shipped `FieldDisclosure` enum has four members and does not yet carry `Withheld`. Adding it is a lockstep code, rendering, and test change owned by the A5/PD8 implementation story. This document specifies the contract; it does not implement it.
 
 ### Component Implementation Strategy
 
@@ -611,13 +686,14 @@ Phase 1 components:
 - Workspace Trust Summary.
 - Tenant Scope Banner.
 - Metadata-Only Folder Tree.
-- Redaction And Inaccessibility State.
+- Redaction And Inaccessibility State, including the withheld outcome.
 
 Phase 2 components:
 
 - Diagnostic Timeline.
 - Trust Matrix.
 - Provider Readiness Evidence panel.
+- Indexing Status section, which has a shipped facade behind it.
 - Access Evidence panel.
 
 Phase 3 components:
@@ -625,6 +701,58 @@ Phase 3 components:
 - Saved workspace filters.
 - Cross-surface operation evidence viewer.
 - Optional dark operations theme.
+- Durability Evidence section, which follows the Epic 12 durable data plane.
+- Hardening Evidence section, which follows the Epic 13 release-hardening evidence set.
+
+The three sections added on 2026-09-16 are phased by the readiness of what they report rather than by UI complexity: Indexing Status has a shipped facade behind it and sits in Phase 2, while Durability Evidence and Hardening Evidence report on work that Epics 12 and 13 have not yet delivered and cannot be built truthfully before it exists.
+
+## Workspace And Provider Evidence Sections
+
+These three sections were admitted on 2026-09-16 by sponsor approval of recommendations A1/PD1 and A2/PD3, which brought Epics 12 and 13 into release authority, together with the FR58 recall facade already shipped under Epic 10. All three are sections on existing detail pages rather than new top-level destinations, which keeps the resource-first spine of UX-DR3 and the predictable-section contract of UX-DR18 intact and adds no navigation. All three inherit the MVP read-only boundary of UX-DR11 without exception.
+
+Epic 12 and Epic 13 are admitted to release authority by decisions A1/PD1 and A2/PD3, but neither decision specifies console behavior. The signal lists below are therefore drafting inferences, marked `[ASSUMPTION]`, and are open for correction. The framing questions each section answers are settled; the specific fields are not.
+
+### Durability Evidence Section
+
+**Page.** Workspace detail. **Owner.** Epic 12, NFR79 through NFR81, gated by OQ11. **Question it answers.** Is this workspace's state actually persisted, or does it only look persisted?
+
+This section exists because a control plane whose data plane is not durable will present confident state that cannot survive a restart. The operator needs to tell provider-confirmed durable state apart from locally staged or unconfirmed state without inferring it from other sections.
+
+- `[ASSUMPTION]` Durable write position for the workspace's stream, with the timestamp of the last confirmed durable write.
+- `[ASSUMPTION]` Projection freshness for each read model backing this page, as a lag figure and an as-of timestamp, so a stale panel elsewhere on the page is explainable from here.
+- `[ASSUMPTION]` Git round-trip evidence: the bound remote and ref, the last provider-confirmed commit reference, and whether local staged work exists beyond it.
+- `[ASSUMPTION]` Replay or cursor state where a read model is rebuilding, presented as an info state rather than a failure.
+
+Staged and confirmed must never share a visual treatment. Where durability cannot be established, the section must use the unavailability envelope and the unknown disclosure outcome rather than implying that nothing is persisted. Absence of evidence is not evidence of loss.
+
+The section is metadata-only. Stream positions, projection names, and commit references are safe identifiers under UX-DR27; event payloads, file contents, and diffs are not displayed at any point.
+
+### Indexing Status Section
+
+**Page.** Workspace detail. **Owner.** Epic 10, FR58. **Question it answers.** Is this workspace's metadata discoverable through search right now, and if not, why not?
+
+This section is the operator-facing half of the authorized metadata-token recall facade. Search results without a status panel are untrustworthy: an operator cannot distinguish a workspace that is genuinely absent from the index from one whose indexing status simply could not be read.
+
+- Indexed state for the workspace, distinguishing indexed, not yet indexed, removed from the index, and archived-but-retained.
+- The as-of timestamp of the indexing signal, so a lag between a mutation and its appearance in search is legible rather than mysterious.
+- `[ASSUMPTION]` The last index-affecting event category for this workspace, as a reason category and not as a payload.
+
+This section must fail safe and say so. When the read model is unavailable, it must state that indexing status is unavailable. It must never render that condition as an empty index, as a complete index, or as a workspace that is absent from search, because each of those is a claim the console cannot substantiate. The same rule governs the search surface itself: an unavailable facade returns no items and must label that result as unavailable rather than as no matches, which is the distinction UX-DR20 already requires of empty states.
+
+The Memories search facade security-trims results to the tenant, folder, and workspace scope before they reach the console, and the Folders read path hydrates them from authoritative reads. The console adds no content preview. Indexed body content, raw paths, snippets, source URIs, and hidden-resource existence are out of scope for this section and for the search surface, and remain so until a separate C9-backed approval admits body-content recall.
+
+### Hardening Evidence Section
+
+**Page.** Provider view. **Owner.** Epic 13. **Question it answers.** Are the release-hardening guarantees this tenant depends on currently holding?
+
+- `[ASSUMPTION]` Authority-service reachability and the age of the last successful authority evidence, since stale authority evidence is what triggers the non-disclosing unavailability envelope.
+- `[ASSUMPTION]` Revocation propagation posture, expressed as whether propagation is within its approved bound rather than as a raw countdown.
+- `[ASSUMPTION]` Provider call-budget and readiness posture drawn from the approved provider compatibility catalog, as a within-bound or exceeded signal per governed provider.
+- `[ASSUMPTION]` Capacity and saturation signals that would degrade the guarantees above, presented as a degraded-but-serving disposition where the console can still answer.
+
+This section reports and must never act. It carries no configuration control, no credential reveal, no rotation or repair affordance, and no raw credential, token, or endpoint secret. Where a hardening signal is itself unavailable, the section uses the non-disclosing unavailability envelope, because the health of the authority path is exactly the kind of detail that helps an unauthorized caller.
+
+`[NOTE FOR UX]` The NFR74 through NFR84 inventory now exists: `prd.md` carries the eleven bullets in two new categories, `epics.md` mirrors them as numbered rows, and `docs/exit-criteria/nfr-traceability.md` is relocked at 84. Every one of those rows entered as an owned, reference-pending, release-blocking gap, so the inventory records requirements rather than evidence. This section's signals should now be reconciled against the real rows, and each `[ASSUMPTION]` above resolved or removed. Note that Epic 13's evidence splits across two questions: OQ12 gates NFR74-NFR78 and NFR82-NFR84, and OQ11 gates NFR79-NFR81 for Epic 12 durability, which is the section above rather than this one.
 
 ## UX Consistency Patterns
 
@@ -650,7 +778,9 @@ Every state indicator must include:
 - Accessible label.
 - Optional tooltip or detail link when the meaning is not obvious.
 
-Use success states for ready, committed, synchronized, and policy-valid outcomes. Use warning states for dirty, delayed, stale, near-expiry, and attention-needed outcomes. Use error states for failed, denied, inaccessible, provider-failed, and commit-failed outcomes. Use info states for preparing, locked, pending, and in-progress outcomes. Use neutral states for unknown, unavailable, not configured, redacted, archived, and inactive outcomes.
+Use success states for ready, committed, synchronized, and policy-valid outcomes. Use warning states for dirty, delayed, stale, near-expiry, and attention-needed outcomes. Use error states for failed, denied, inaccessible, provider-failed, and commit-failed outcomes. Use info states for preparing, locked, pending, and in-progress outcomes. Use neutral states for unknown (the field-disclosure outcome), unavailable, not configured, redacted, withheld, archived, and inactive outcomes. The lifecycle state `unknown_provider_outcome` is not governed by this list; its treatment is the following paragraph.
+
+Do not use an error state for `unknown_provider_outcome` while bounded provider confirmation is still running. That condition is automatically recovering and takes an info state until confirmation ends, at which point an unresolved outcome becomes `reconciliation_required` and takes an error state.
 
 ### Form Patterns
 
@@ -666,7 +796,7 @@ Validation should focus on query syntax, invalid identifiers, unsupported filter
 
 Navigation should be resource-first. Users start from search or filtered lists, then open a workspace detail page.
 
-Workspace detail pages should keep tenant, folder, workspace, provider, task, and authorization context visible. Supporting evidence should be organized into predictable sections: overview, folder metadata, diagnosis, audit trail, provider readiness, lock/task history, and access evidence.
+Workspace detail pages should keep tenant, folder, workspace, provider, task, and authorization context visible. Supporting evidence should be organized into predictable sections: overview, folder metadata, diagnosis, audit trail, provider readiness, lock/task history, access evidence, durability evidence, and indexing status.
 
 Use tabs or section navigation for evidence views. Do not force users into separate disconnected pages for diagnosis and audit when the evidence belongs to the same workspace.
 
@@ -686,7 +816,42 @@ Empty states should explain what is known and what the user can safely do next, 
 
 Denied states must not confirm unauthorized resource existence beyond policy. They should show safe reason category, correlation ID when allowed, and escalation posture.
 
-Redacted states must be visually distinct from missing, unknown, unavailable, and failed states. The UI must not silently hide redaction.
+Redacted states must be visually distinct from withheld, missing, unknown, unavailable, and failed states. The UI must not silently hide redaction.
+
+The console carries five field-disclosure outcomes, and each one answers a different operator question. A visible value is disclosed to this audience. A redacted value exists but a tenant or audience policy hides it, so an authorized actor could in principle reverse that decision. A withheld value has no durable cleartext at all, so no actor can reveal it. An unknown value is not yet in the read model. A missing value was never recorded. Collapsing any two of these misleads the operator about what recovery is possible. The normative definitions and render tokens live in the disclosure-contract table under Redaction And Inaccessibility State; this paragraph explains that table and must not restate it differently.
+
+Read-model availability is a separate axis from disclosure. An unavailable read model means the console cannot currently answer, which is not a statement about whether a value exists, is hidden, or is withheld. The two axes must remain independently legible; an unavailable read model must never be rendered as a missing value.
+
+### Confidential Override And Withheld Values
+
+The event-write path substitutes a correlation token for a tenant-confidential override at write time, under the shared tokenizer that architecture S-6 pins; `FolderAuditSanitizer` is a read-path sanitizer and is not that tokenizer. Cleartext confidential values never become durable, so the console has nothing to redact and nothing to reveal.
+
+The console must therefore present a confidential override as a stored correlation reference and nothing more. It must show the correlation reference in monospace with a safe copy affordance, state plainly that no cleartext value exists in any store, and route the operator to the escalation path that can act on the reference. It must never display a partial, masked, truncated, hashed, or reconstructed form of the original value, because each of those implies the value survived somewhere.
+
+The withheld presentation must not reuse the redaction copy. Redaction tells the operator that policy hides a value that exists and that an administrator may be able to release; applied to a confidential override that message is false and sends the operator on an escalation that cannot succeed. Withheld must carry its own text, its own accessible label, and its own non-color cue.
+
+### Provider Outcome Recovery Presentation
+
+`unknown_provider_outcome` means the outcome of a provider call is not yet established, not that it failed. While bounded confirmation is still running, the console must present the workspace as automatically recovering: it must name that confirmation is in progress, must show the bound that confirmation is working within, and must not offer a retry, repair, or discard affordance.
+
+Only when those bounded checks end without establishing the outcome does the presentation escalate to `reconciliation_required` and to an awaiting-human disposition. The escalation must be visible as a change of state rather than a silent relabel, because the operator's next action differs on each side of it.
+
+The console must not present an unconfirmed outcome as either success or failure at any point. A commit is shown as successful only on provider-confirmed durable update of the bound remote and ref.
+
+### Non-Disclosing Denial And Unavailability Envelopes
+
+Architecture S-7 defines **two** envelopes, both evaluated before any protected-resource lookup, and the console must render them as two distinct outcomes. Collapsing them hides a real outage behind a denial, which is the failure mode S-7 exists to prevent.
+
+| Condition | Envelope | Console presentation | Operator's next move |
+| --- | --- | --- | --- |
+| Post-authorization denial | 404, category `authorization`, code `tenant_access_denied` or `resource_unavailable`, `retryable: false` | Denied state. Safe reason category, escalation posture, correlation reference. | Verify tenant context and authorization. Retrying unchanged will not help, and the console must not invite it. |
+| Authority absent, stale, malformed, or unavailable | 503, category `availability`, code `authority_unavailable`, `retryable: true`, `details.visibility: redacted` | Unavailable state, on the availability axis rather than the disclosure axis. | Retry after backoff. The console must say the request could not be evaluated, not that it was refused. |
+
+Within each envelope the presentation must not vary in a way that reveals whether a resource exists, whether it belongs to another tenant, or how authorization reasoned. Status, category, code, message, and detail keys stay fixed per envelope. The distinction the operator may see is between *refused* and *could not be evaluated*; the distinction the operator may never see is *which resource* or *whose tenant*.
+
+Both envelopes must surface an operator-safe correlation reference, copyable and monospaced like every other safe identifier. It is the only thread the operator follows.
+
+This presentation is deliberately less informative than an operator would prefer, because a variation that helps a legitimate operator narrow the cause is the same variation that lets an unauthorized caller probe for resources in another tenant. That cost is paid once, at the denial; it must not be paid twice by making an outage look like a denial.
 
 ### Modal And Overlay Patterns
 
@@ -752,11 +917,11 @@ Accessibility requirements:
 - Accessible names for icons, status indicators, filters, copy buttons, and tabs.
 - Status indicators that use text and icon or shape cues in addition to color.
 - Sufficient contrast for text, borders, status indicators, and focus states.
-- Screen-reader meaningful labels for redacted, inaccessible, unknown, unavailable, failed, delayed, dirty, locked, ready, and committed states.
+- Screen-reader meaningful labels for redacted, withheld, inaccessible, unknown, unavailable, failed, delayed, dirty, locked, ready, and committed states.
 - No motion dependency for understanding state changes.
 - Usable zoom behavior at common browser zoom levels.
 
-The UI must clearly distinguish redacted data from unknown, missing, unavailable, failed, and denied states. This is both accessibility and security-critical.
+The UI must clearly distinguish redacted data from withheld, unknown, missing, unavailable, failed, and denied states. This is both accessibility and security-critical. Withheld carries a distinct accessible label because a screen-reader user who hears the redaction label will pursue an escalation that cannot release the value.
 
 ### Testing Strategy
 
@@ -772,7 +937,7 @@ Accessibility testing should include:
 
 - Automated checks with axe or equivalent tooling.
 - Keyboard-only walkthroughs for the three critical journeys.
-- Screen reader review for workspace summary, folder metadata list, denied states, redaction states, and audit timeline.
+- Screen reader review for workspace summary, folder metadata list, denied states, redaction states, withheld states, and audit timeline.
 - Forced-colors or high-contrast mode checks where supported.
 - Color-blindness review for semantic states.
 - Focus management checks for dialogs, tabs, filters, and detail panels.

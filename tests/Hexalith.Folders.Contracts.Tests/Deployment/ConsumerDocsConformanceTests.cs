@@ -539,7 +539,7 @@ public sealed partial class ConsumerDocsConformanceTests
     public void WorkspaceLifecycleDiagramEventLabelsEqualC6EventVocabulary()
     {
         HashSet<string> matrixEvents = ParseC6EventVocabulary();
-        matrixEvents.Count.ShouldBe(23, "C6 must enumerate the canonical 23-event vocabulary.");
+        matrixEvents.Count.ShouldBe(24, "C6 must enumerate the canonical 24-event vocabulary.");
 
         string diagram = ReadText(WorkspaceDiagramPath);
         HashSet<string> diagramEvents = StateTransitionEvent().Matches(diagram)
@@ -554,7 +554,7 @@ public sealed partial class ConsumerDocsConformanceTests
     public void WorkspaceLifecycleDiagramEdgesEqualArchitectureC6Matrix()
     {
         HashSet<string> matrixEdges = ParseArchitectureC6Transitions();
-        matrixEdges.Count.ShouldBe(34, "C6 architecture matrix must enumerate the canonical 34 positive transition edges.");
+        matrixEdges.Count.ShouldBe(41, "C6 architecture matrix must enumerate the canonical 41 positive transition edges.");
 
         string diagram = ReadText(WorkspaceDiagramPath);
         HashSet<string> diagramEdges = DiagramTransitionEdge().Matches(diagram)

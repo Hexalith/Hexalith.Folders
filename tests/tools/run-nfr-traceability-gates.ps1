@@ -26,10 +26,10 @@ $runnerMethods = @(
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocExists',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocNamesItsSourceAuthorities',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.PrdAndEpicsNfrInventoriesAlignOneForOne',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.TraceabilityTableHasSeventyThreeRowsMatchingPrdHashes',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.TraceabilityTableRowsMatchPrdBulletHashes',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.TraceabilityTableRowsCarryCategoryStatusAndConcreteEvidence',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ReferencePendingRowsAreOwnedAndSurfaceKnownGaps',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NineCategoryRollupCoversAllSeventyThreeNfrs',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.CategoryRollupCoversTheFullNfrInventory',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.BddRequiredEvidenceClassesArePresent',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocStaysMetadataOnlyWithOperatorBoilerplate',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.GovernanceEvidenceReferencePendingCriteriaStaySurfaced',
@@ -81,7 +81,21 @@ function Write-NfrTraceabilityReport {
         [ordered]@{ nfr = 'NFR54'; criterion = 'C9'; owner = 'Security / Projections'; consuming_story = '6-12'; gap = 'confidential-write-time-correlation-token-projection-evidence' },
         [ordered]@{ nfr = 'NFR58'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'live-alert-delivery-tooling-deferred' },
         [ordered]@{ nfr = 'NFR59'; criterion = ''; owner = 'Operations Runbook (Story 7.17)'; consuming_story = '7-17'; gap = 'backup-restore-tooling-and-recovery-drill-evidence-deferred' },
-        [ordered]@{ nfr = 'NFR60'; criterion = 'C3'; owner = 'Tech Lead / Delivery'; consuming_story = '7-11'; gap = 'downstream-retention-implementation-and-conformance-evidence' }
+        [ordered]@{ nfr = 'NFR60'; criterion = 'C3'; owner = 'Tech Lead / Delivery'; consuming_story = '7-11'; gap = 'downstream-retention-implementation-and-conformance-evidence' },
+        # NFR74-NFR84 were admitted to the PRD inventory on 2026-09-15 by sponsor approval of
+        # sprint-change-proposal-2026-09-15.md (A2b / linked PD6). Admission records the requirement; none of
+        # them has implementation evidence yet, so every one enters as an owned release-blocking gap.
+        [ordered]@{ nfr = 'NFR74'; criterion = ''; owner = 'Security / Platform'; consuming_story = '13-2'; gap = 'bearer-credential-https-or-approved-loopback-boundary-evidence' },
+        [ordered]@{ nfr = 'NFR75'; criterion = ''; owner = 'Security / Provider'; consuming_story = '13-1'; gap = 'provider-endpoint-prohibited-destination-egress-guard-evidence' },
+        [ordered]@{ nfr = 'NFR76'; criterion = ''; owner = 'Security'; consuming_story = '13-2'; gap = 'deny-by-default-on-absent-stale-malformed-unavailable-authority-evidence' },
+        [ordered]@{ nfr = 'NFR77'; criterion = ''; owner = 'Security / CLI'; consuming_story = '13-3'; gap = 'owner-only-cli-mcp-credential-storage-and-non-emission-evidence' },
+        [ordered]@{ nfr = 'NFR78'; criterion = ''; owner = 'Security / Contracts'; consuming_story = '13-6'; gap = 'untrusted-repository-and-workspace-content-neutralization-evidence' },
+        [ordered]@{ nfr = 'NFR79'; criterion = ''; owner = 'Persistence / Delivery'; consuming_story = '12-1'; gap = 'restart-survival-of-accepted-mutations-transitions-and-evidence' },
+        [ordered]@{ nfr = 'NFR80'; criterion = ''; owner = 'Persistence / Platform'; consuming_story = '12-2'; gap = 'multi-replica-convergence-without-replica-local-correctness-assumptions' },
+        [ordered]@{ nfr = 'NFR81'; criterion = ''; owner = 'Platform / Operations'; consuming_story = '13-4'; gap = 'readiness-reports-actual-dependency-health-not-configuration-or-seed' },
+        [ordered]@{ nfr = 'NFR82'; criterion = ''; owner = 'Operations / Observability'; consuming_story = '13-5'; gap = 'release-significant-metric-and-alert-emission-and-fault-path-evidence' },
+        [ordered]@{ nfr = 'NFR83'; criterion = ''; owner = 'Release Readiness'; consuming_story = '7-16'; gap = 'automated-operational-approval-bound-evidence-classification-with-owners' },
+        [ordered]@{ nfr = 'NFR84'; criterion = ''; owner = 'Test / Security'; consuming_story = '13-6'; gap = 'edge-security-release-verification-coverage-evidence' }
         # NFR65/66/68/69 (operations-console accessibility) were release-blocking manual gaps; Story 8.4 wired the
         # automated axe / WCAG 2.2 AA CI gate (accessibility-gates), so they move out of release-blocking gaps —
         # NFR66/68/69 to covered, NFR65 to release-validation (manual screen-reader review remains). Removing them
@@ -97,8 +111,8 @@ function Write-NfrTraceabilityReport {
         report_path = '_bmad-output/gates/nfr-traceability/latest.json'
         source_commit = Get-SourceCommit
         test_project = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        nfr_total = 73
-        category_total = 9
+        nfr_total = 84
+        category_total = 11
         canonical_inputs = @(
             '_bmad-output/planning-artifacts/prd.md',
             '_bmad-output/planning-artifacts/epics.md',

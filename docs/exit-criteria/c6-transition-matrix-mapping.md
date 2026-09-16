@@ -22,7 +22,7 @@ Every unlisted `(state, event)` pair rejects with canonical category `state_tran
 | `ready` | available, or `degraded-but-serving` when projection lag exceeds C2 | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `locked` | `degraded-but-serving` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `changes_staged` | `degraded-but-serving` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
-| `dirty` | `awaiting-human` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
+| `dirty` | `degraded-but-serving` while the originating task can resume or the workspace is clean, `awaiting-human` once staged changes are orphaned | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-09-15 |
 | `committed` | `auto-recovering` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `failed` | `terminal-until-intervention` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `inaccessible` | `terminal-until-intervention` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
@@ -33,7 +33,7 @@ Every unlisted `(state, event)` pair rejects with canonical category `state_tran
 
 The architecture event vocabulary copied for drift checking is:
 
-`RepositoryBindingRequested`, `RepositoryBound`, `RepositoryBindingFailed`, `ProviderOutcomeUnknown`, `WorkspacePrepared`, `WorkspacePreparationFailed`, `WorkspaceLocked`, `AuthRevocationDetected`, `TenantRevoked`, `RepositoryDeletedAtProvider`, `ReconciliationRequested`, `FileMutated`, `WorkspaceLockReleased`, `LockLeaseExpired`, `CommitSucceeded`, `CommitFailed`, `OperatorDiscardRequested`, `OperatorRetrySucceeded`, `ProviderReadinessValidated`, `ReconciliationCompletedClean`, `ReconciliationCompletedDirty`, `ReconciliationEscalated`, `OperatorMarkedFailed`.
+`RepositoryBindingRequested`, `RepositoryBound`, `RepositoryBindingFailed`, `ProviderOutcomeUnknown`, `WorkspacePrepared`, `WorkspacePreparationFailed`, `WorkspaceLocked`, `AuthRevocationDetected`, `TenantRevoked`, `RepositoryDeletedAtProvider`, `ReconciliationRequested`, `FileMutated`, `WorkspaceLockReleased`, `LockLeaseExpired`, `LockLeaseBecameStale`, `CommitSucceeded`, `CommitFailed`, `OperatorDiscardRequested`, `OperatorRetrySucceeded`, `ProviderReadinessValidated`, `ReconciliationCompletedClean`, `ReconciliationCompletedDirty`, `ReconciliationEscalated`, `OperatorMarkedFailed`.
 
 | Mapping area | Rule | Provenance | Approval state | Consuming future artifact | Review date |
 |---|---|---|---|---|---|
