@@ -1,6 +1,6 @@
 # Retention And Tenant Deletion
 
-Story 7.11 turns C3 retention and tenant-deletion policy into static release evidence. It does not add runtime deletion endpoints, background cleanup workers, provider cleanup automation, or UI mutation.
+Story 7.11 provides the existing static retention evidence; Story 4.22 owns the revised staged-content clock and cleanup trigger. This document does not add runtime deletion endpoints, background cleanup workers, provider cleanup automation, or UI mutation.
 
 ## Per-class C3 mapping
 
@@ -39,7 +39,7 @@ The latest report must carry the current full source commit, required C3 class c
 
 ## Approval rules
 
-C3 is `approved`: this artifact now contains explicit Legal + PM approval evidence (PM Jerome 2026-06-22; Legal Jérôme Piquot 2026-06-24, Louveciennes). `pwsh ./tests/tools/run-retention-deletion-gates.ps1` completes local static validation and now reports `status: passed` / `policy_status: approved`; before approval it reported `status: release-blocked` and live package publishing was required to fail before any package push. The C3 doc, governance evidence, the gate, release package validation, tests, and latest evidence were updated together in one commit.
+C3 is `superseded-pending-reapproval` for the temporary-working-files trigger. The 2026-06 Legal + PM record remains current for unaffected rows and historical for that superseded trigger. A7b requires Legal + Product + Security + Architecture approval of the final digest; until then live release is blocked. The governance vocabulary, gate, tests, release package validation, and latest evidence must be updated by Delivery to represent this state rather than falsely reporting `policy_status: approved`.
 
 In short: pending approval blocks live release while still allowing local static validation to produce bounded evidence.
 
@@ -53,7 +53,7 @@ The retention/deletion gate blocks release evidence for:
 - Missing required C3 class coverage.
 - Missing retention duration, cleanup trigger, operational evidence, tenant-deletion disposition, tenant-isolation implication, owner, authority, or review date.
 - Missing tenant-deletion behavior for `deleted`, `tombstoned`, `retained`, or `anonymized` records.
-- Pending Legal + PM approval for live release.
+- Pending A7b Legal + Product + Security + Architecture approval for the revised working-file trigger.
 - Stale source commit in checked evidence.
 - Unsafe diagnostic text, absolute evidence paths, malformed JSON/YAML/Markdown, or nested submodule setup.
 
@@ -63,7 +63,7 @@ Tenant deletion never authorizes cross-tenant lookup. Counts and records use ten
 
 Tenant deletion must not erase audit evidence required to reconstruct completed, failed, denied, retried, duplicate, or interrupted operations. Commit operation IDs inherit the C3 audit retention duration and remain scoped to the managed tenant.
 
-Temporary working files are disposable cache, not authoritative state. Cleanup records are metadata-only evidence and must not include file contents, provider payload bodies, raw diffs, credentials, environment dumps, production URLs, stack traces, or local absolute paths.
+Temporary working files are disposable cache, not authoritative state, but staged content is never discarded by a recovery timer or lifecycle transition. The non-destructive recovery deadline only gates return to `dirty`. Cleanup starts a separate P7D epoch after terminal task closure with no active task, runs no earlier than `stagedCleanupNotBefore`, rechecks terminal/no-active state, and remains blocked by legal hold. Legitimate resume cancels the epoch; later qualifying closure receives a fresh P7D window. Cleanup records are metadata-only evidence and must not include file contents, provider payload bodies, raw diffs, credentials, environment dumps, production URLs, stack traces, or local absolute paths.
 
 ## Rerun and recalibration rule
 

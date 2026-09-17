@@ -9,14 +9,14 @@ Give operators the recurring-cadence view of retention: when read-model compacti
 ## Preconditions
 
 - The acting principal is authorized for the managed tenant before any tenant-scoped retention evidence is read; tenant authority comes from authenticated context, never from a query parameter.
-- C3 retention durations are `approved`: explicit Legal + PM approval evidence is present (PM 2026-06-22; Legal 2026-06-24, Louveciennes), so the durations are production policy.
+- Unaffected C3 retention classes retain their recorded approvals. The temporary-working-files trigger is `superseded-pending-reapproval` and requires A7b (Legal + Product + Security + Architecture) before live release.
 - No retention step performs cross-tenant search, provider payload inspection, raw file inspection, or credential review.
 
 ## Procedure
 
 1. Confirm the retention class inventory against `../exit-criteria/c3-retention.md`; do not re-author the durations here.
 2. Confirm the deletion disposition behavior against the preserved `./tenant-deletion.md` disposition matrix; this runbook does not duplicate that matrix.
-3. Confirm operator cleanup and compaction cadence against `../operations/retention-and-tenant-deletion.md`: read-model views are rebuildable and may be dropped, temporary working files are disposable cache cleaned after terminal state, and audit and commit idempotency records are retained for the audit window.
+3. Confirm operator cleanup and compaction cadence against `../operations/retention-and-tenant-deletion.md`: read-model views are rebuildable and may be dropped; staged working files delete only after a terminal/no-active cleanup epoch has received its full P7D window, remains terminal/no-active, and has no legal hold; the separate recovery deadline never deletes; audit and commit idempotency records retain their approved windows.
 4. For a tenant under review, record only tenant-scoped synthetic identifiers (for example `tenant-001`, `folder-001`, `operation-001`); never copy raw records.
 
 ## Verification
@@ -25,7 +25,7 @@ Run the conformance gate `pwsh ./tests/tools/run-adr-runbook-docs-gates.ps1`, wh
 
 ## Escalation and handoff
 
-- C3 approval evidence is recorded (PM 2026-06-22; Legal 2026-06-24); should it ever go missing or stale, escalate to Legal + PM rather than silently treating the criterion as covered.
+- A7b is pending for the revised working-file trigger. Escalate to Legal + Product + Security + Architecture rather than treating the historical digest as current.
 - A failed cleanup or compaction cadence escalates to the on-call operator named in the alerts runbook (`./alerts.md`) with the tenant-scoped synthetic identifiers only.
 
 ## Related evidence

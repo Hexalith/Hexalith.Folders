@@ -21,7 +21,7 @@ Release-package revert:
 
 Container-image revert:
 
-3. Re-point each service deployment at the known-good image digest while keeping the stable Dapr app IDs unchanged: `eventstore`, `tenants`, `folders`, `folders-workers`, and `folders-ui`. The production Dapr access-control config names stay the same; only the image reference changes.
+3. Re-point each service deployment at the known-good image digest while keeping the stable Dapr app IDs unchanged: `eventstore`, `tenants`, `memories`, `folders`, `folders-workers`, and `folders-ui`. The production Dapr access-control config names stay the same; only the image reference changes.
 4. Restart each service so its Dapr sidecar re-attaches under the unchanged app ID.
 
 Post-rollback health verification:
@@ -30,7 +30,7 @@ Post-rollback health verification:
 6. Confirm `/health/ready` aggregates Dapr sidecar health, the Tenants degraded-mode flag, and projection lag; a `degraded-but-serving` readiness is acceptable while projections catch up.
 7. Confirm the five operational signals (`projection_lag`, `dead_letter_depth`, `provider_failure`, `stale_lock`, `cleanup_failure`) return to baseline; investigate any that do not.
 
-Backup/restore and recovery-drill tooling is `reference_pending` (NFR55, owner: Operations Runbook, consuming story `7-17`). MVP ships no backup automation; durable events, audit metadata, and commit idempotency records are authoritative, and projections are rebuildable from the event streams. This runbook documents the revert process, it does not claim point-in-time restore tooling exists.
+Backup/restore automation and its first drill remain `reference_pending` on `EXT-ES-RECOVERY` plus Story 13.7. Architecture I-11 fixes the regional-loss RPO/RTO, cross-region PITR, recovery-safety export/retention, isolated restore, and drill cadence in `./backup-restore.md`; this rollback runbook does not claim those mechanisms are implemented. A database recovery follows that runbook and is not an image rollback.
 
 ## Verification
 
@@ -45,6 +45,7 @@ Run the conformance gate `pwsh ./tests/tools/run-adr-runbook-docs-gates.ps1`, wh
 
 - `../operations/release-packages.md` - the published package set and release-tag model.
 - `../operations/container-images-and-dapr-app-ids.md` - the container image repositories and stable Dapr app IDs.
+- `./backup-restore.md` - authoritative data-recovery procedure and drill evidence.
 
 ## Forbidden evidence
 

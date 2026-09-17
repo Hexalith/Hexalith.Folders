@@ -5,7 +5,7 @@ This runbook defines the C3 tenant-deletion evidence posture for release review.
 ## Authorization prerequisites
 
 - Confirm the tenant-deletion request is approved by the authorized operator workflow.
-- Confirm Legal + PM approval state for C3 before treating retention durations as production policy.
+- Confirm the applicable C3 approval state. The revised temporary-working-files trigger requires A7b approval by Legal + Product + Security + Architecture; historical Legal + PM approval is not current for that row.
 - Confirm the acting principal is authorized for the managed tenant before reading tenant-scoped evidence.
 - Confirm no manual step performs cross-tenant search, provider payload inspection, raw file inspection, or credential review.
 
@@ -17,7 +17,7 @@ This runbook defines the C3 tenant-deletion evidence posture for release review.
 | Workspace status | tombstoned | automated compaction, manual exception review | Keep terminal status metadata for C3 status duration and tombstone task-local labels | Preserve completed, failed, denied, retried, duplicate, and interrupted status categories | Status keys remain tenant and folder scoped | `tenant-001` tombstoned `task-001` |
 | Provider correlation IDs | retained | automated provider-diagnostics compaction | Keep bounded request and operation identifiers without provider bodies | Preserve upstream status class and correlation category only | Correlation lookup requires tenant authorization | `tenant-001` retained `provider-ref-001` |
 | Read-model views | deleted | automated projection drop or rebuild | Delete rebuildable projection rows when events can rebuild authorized state | Reconstruction comes from retained events and audit metadata, not stale projection rows | Projection keys include tenant scope and fail closed when revoked | `tenant-001` deleted `projection-001` |
-| Temporary working files | deleted | automated cleanup worker after terminal state | Delete disposable working-copy cache after C3 working-file duration | Retain only cleanup metadata, task ID, outcome category, and timestamp | Working paths are tenant, folder, and task scoped | `tenant-001` deleted `workspace-cache-001` |
+| Temporary working files | deleted | automated cleanup only after the complete C3 predicate holds | Delete disposable cache no earlier than P7D after terminal/no-active cleanup start, while terminal/no-active remains true; legal hold blocks; the recovery deadline never deletes | Retain only task ID, recovery and cleanup clock metadata, terminal/no-active and hold proof, outcome, and timestamp | Working paths are tenant, folder, and task scoped; recovery timers and lifecycle transitions never delete content | `tenant-001` deleted `workspace-cache-001` |
 | Cleanup records | retained | automated retention compaction, manual failed-cleanup review | Keep cleanup attempts, failures, retryability, reason code, and correlation ID | Preserve cleanup lifecycle evidence without file contents | Cleanup evidence stays tenant-prefixed | `tenant-001` retained `cleanup-001` |
 | Folder metadata and soft-delete markers | tombstoned | automated archive workflow, manual legal-hold review | Tombstone folder identity and hierarchy metadata | Preserve audit-safe identifiers required by approved retention workflow | Folder identifiers stay opaque and tenant scoped | `tenant-001` tombstoned `folder-001` |
 | Auth claims copied into metadata | anonymized | automated alias removal, manual approval review | Retain transformed tenant claim and permission category; remove display alias | Preserve authoritative ID linkage while removing display alias | Payload tenant values are comparison inputs only | `tenant-001` anonymized `principal-001` |
@@ -26,7 +26,7 @@ This runbook defines the C3 tenant-deletion evidence posture for release review.
 
 ## Manual review checklist
 
-- Verify C3 is `approved` with the explicit Legal + PM approval records present (PM 2026-06-22; Legal 2026-06-24).
+- Verify unaffected C3 rows retain their approvals and that the revised temporary-working-files row has A7b approval before live use.
 - Verify deleted and tombstoned records are counted by tenant-scoped synthetic IDs only.
 - Verify retained records are metadata-only.
 - Verify anonymized records remove display aliases while preserving authoritative tenant-scoped IDs.

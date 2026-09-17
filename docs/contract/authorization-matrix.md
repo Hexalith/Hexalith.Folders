@@ -1,18 +1,19 @@
 # Canonical Authorization Matrix
 
-Status: OQ3 authorization-matrix decision approved; downstream runtime, Contract Spine, and incident-access evidence remain incomplete.
+Status: `superseded-pending-reapproval` — PD10 candidate is governing target state; runtime, Contract Spine, and incident-access evidence remain incomplete.
 
-Matrix version: `1.0.0`
+Matrix version: `2.0.0-candidate.1`
 
-Approved on: `2026-09-14`
+Historical approval: version `1.0.0`, approved `2026-09-14`; that digest is not current release authority.
 
-Approved by: `Administrator` for Security and PM
+Required A6b approval: Product + Architecture + Security against the final version `2.0.0` digest.
 
 Canonical matrix artifact: `docs/contract/authorization-matrix.md`
 
-Governance evidence: `docs/contract/oq3-authorization-evidence.yaml`
+Historical v1 governance evidence: `docs/contract/oq3-authorization-evidence.yaml`; Story 1.17 must replace it
+with final v2 digest approvals rather than editing the historical record in place.
 
-Denominator scope: 12 canonical access states, 11 protected operation families, 49 Contract Spine operations, and 8 FR8 scope dimensions.
+Denominator scope: 14 canonical access states, 11 protected operation families, 49 observed v1 operation identities, and 8 FR8 scope dimensions. The v2 gate replaces the observed v1 route/status inventory with the generated v2 inventory while preserving operation identity uniqueness.
 
 This contract-only document is the canonical OQ3 authorization denominator. It is the single inventory that the
 authorization completeness gate counts against: every canonical actor, every canonical negative access state,
@@ -25,23 +26,52 @@ transport classification with its own closed vocabulary (`mutating_command`, `qu
 `audit`, `operations_console_projection`) and is not repurposed here. The two vocabularies are deliberately
 disjoint, and generated parity rows are never hand-edited to satisfy this matrix.
 
+## PD10 Candidate Amendment (Governing Target)
+
+The approved September 15 proposal supersedes the v1 digest and fixes these rules for the candidate that A6b
+must reapprove:
+
+- Stale, unavailable, conflicting, or incomplete authority evidence routes to `authority-unavailable-503`.
+  Only fresh negative facts route to `safe-denial-404`.
+- The corrected external surface is `/api/v2`; `/api/v1` remains historical evidence and is not routed by the
+  supported production profile. The operation inventory below preserves the observed v1 paths so conformance
+  gaps stay auditable; v2 keeps each operation identity under the `/api/v2` prefix except for the explicit
+  parent-scope corrections below.
+- `GetTaskStatus` becomes `/api/v2/folders/{folderId}/tasks/{taskId}/status`.
+  `GetReadinessDiagnostics` becomes
+  `/api/v2/folders/{folderId}/ops-console/readiness-diagnostics`; `GetProjectionFreshness` becomes
+  `/api/v2/folders/{folderId}/ops-console/projection-freshness`. Fresh tenant and folder authority is
+  established before task or diagnostic-resource lookup.
+- `ListFolderAclEntries` requires folder `administer`; `GetEffectivePermissions` permits self-inspection under
+  folder read authority and may carry an optional task context; `ValidateProviderReadiness` requires tenant
+  folder-create authority and the architecture S-9 endpoint policy.
+- `visibility` is required on every v2 error. `redacted`, `withheld`, `unavailable`, and `absent` are distinct;
+  PD8 owns `withheld`. Post-authentication 403 and caller-visible `not_found`,
+  `cross_tenant_access_denied`, and `audit_access_denied` are absent from protected v2 responses.
+
+Within Story 1.17's scope, relock-only milestone `1.17-GENERATE` must generate the v2 Spine, client, CLI/MCP
+adapters and parity fixtures, status/error drift surface, `previous-spine.yaml`, C13 inventory, UI migration,
+and consumer-discovery evidence from this candidate. Product + Architecture + Security then perform A6b over
+the exact final matrix `2.0.0` digest. Section 9 conformance and A8 follow; the canonical Story 1.17 lifecycle
+row does not close before those gates. No generated artifact or lifecycle status is changed by this document update.
+
 ## What This Matrix Does Not Claim
 
-This is an approved design decision, not runtime evidence. Approval of this matrix does not claim any of the
+This is an approval-pending target decision, not runtime evidence. The historical v1 approval and this candidate do not claim any of the
 following, and none of the dependent stories may be closed because this package is approved:
 
 - Runtime authorization behavior, layering, or enforcement in a deployed environment.
 - C7 lock-renewal, authorization-revalidation, or revocation-effect timing evidence.
 - Story 12.1 durable events, repositories, or projections that a real authorization decision would read.
 - OQ9 incident-access evidence for the incident-evidence family.
-- Broad PD10 Contract Spine remediation. OQ3 records the observed Spine drift in the recorded conformance gaps
-  below and leaves the correction to PD10.
+- Completed PD10 Contract Spine remediation. The observed v1 drift stays recorded below; Story 1.17 closes it
+  in generated v2 artifacts and then obtains A6b approval.
 
 ## Canonical Access States
 
-Twelve canonical access states form the row dimension: the six canonical actors from the PRD Actors table and
-the six canonical negative cases. Two additional protected denial states, absent resource and insufficient
-scope, are routed by the same canonical outcome and are listed with the negative access states.
+Fourteen canonical access states form the row dimension: the six canonical actors from the PRD Actors table and
+all eight canonical negative states below, including absent resource and insufficient scope. The completeness
+gate counts exactly those 14 rows; none is an uncounted outcome case.
 
 ### Canonical Actors
 
@@ -66,14 +96,15 @@ row never subtracts an `allow` the same principal holds through another access s
 ### Canonical Negative Access States
 
 Every negative access state applies to all 11 operation families and is evaluated before any protected-resource
-observation. Each returns the exact canonical 404 safe denial and emits exactly one bounded metadata-only denial
-audit record.
+observation. Fresh negative facts return the exact canonical 404 safe denial; stale or otherwise unusable
+authority evidence returns the exact canonical 503 authority-unavailable outcome. Each emits exactly one bounded
+metadata-only denial audit record.
 
 | Negative access state | Condition | Evaluated at | Canonical outcome | Families covered |
 | --- | --- | --- | --- | --- |
 | `wrong-tenant` | The authoritative tenant context does not match the requested resource tenant. | tenant-access evaluation, before any protected-resource lookup | `safe-denial-404` | all-11 |
 | `revoked` | Tenant membership, folder grant, delegated authority, provider binding, or credential permission was revoked. | tenant-access and folder-ACL evaluation, and again at every pre-side-effect revalidation | `safe-denial-404` | all-11 |
-| `stale` | Identity, membership, delegation, or folder-ACL evidence is stale, conflicting, or incomplete. | authority-evidence evaluation, before any protected-resource lookup | `safe-denial-404` | all-11 |
+| `stale` | Identity, membership, delegation, or folder-ACL evidence is stale, conflicting, or incomplete. | authority-evidence evaluation, before any protected-resource lookup | `authority-unavailable-503` | all-11 |
 | `disabled` | The managed tenant or the principal is disabled. | tenant-access evaluation, before any protected-resource lookup | `safe-denial-404` | all-11 |
 | `unknown` | The managed tenant, principal, delegation, or target identity is unknown. | tenant-access and folder-ACL evaluation, before any protected-resource lookup | `safe-denial-404` | all-11 |
 | `hidden-resource` | The caller holds no applicable allow on the target folder or resource. | folder-ACL evaluation, before any protected-resource lookup | `safe-denial-404` | all-11 |
@@ -323,12 +354,12 @@ scope. A dimension that is silently absent from a decision is a failing conforma
 
 | Aspect | Status |
 | --- | --- |
-| Matrix design decision | approved |
+| Matrix design decision | candidate target; A6b reapproval pending |
 | Runtime authorization enforcement | incomplete |
 | Contract Spine conformance | incomplete |
 | Incident-evidence operation surface | absent |
 
-This matrix closes the OQ3 design decision only. It does not complete Story 12.1, Story 4.19, Story 4.20,
+This matrix resolves the PD10 architecture decision but does not close A6b or implementation. It does not complete Story 12.1, Story 4.19, Story 4.20,
 Story 4.21, Story 6.14, or Story 10.8, and it does not satisfy FR8, FR9, or FR10 runtime evidence.
 
 ## Recorded Conformance Gaps
@@ -352,5 +383,7 @@ owner, and a repository-relative evidence path.
 
 ## Reopen Policy
 
-Any change to the canonical matrix content, matrix version, SHA-256 digest, required authority set, approver
-identity, or approval date reopens Security and PM approval.
+The candidate becomes current release authority only when Product, Architecture, and Security approve the exact
+final `2.0.0` SHA-256 digest and the approval evidence manifest records all three identities and date. Any later
+change to canonical matrix content, version, digest, required authority set, approver identity, or approval date
+reopens the same three approvals. The version `1.0.0` approval remains historical evidence only.
