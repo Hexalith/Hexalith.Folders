@@ -5,110 +5,139 @@
 - **Intent:** Full sprint planning
 - **Readiness verdict:** **FAIL**
 - **Tracking generation:** Not run
+- **Supersedes:** Earlier 2026-09-17 assessment written before the architecture-to-delivery reconciliation
 
 ## Implementability Question
 
 Could a developer implement the current epics without inventing decisions that no authoritative artifact records?
 
-**No.** The planning set explicitly retains the general execution freeze, and the current authority, dependency,
-ownership, approval, and lifecycle records do not yet form one implementable plan.
+**No.** The September 17 architecture revision resolves or explicitly escalates the previously open Folders-owned
+mechanism decisions, but those decisions have not yet been propagated into the canonical epics, manifest,
+approval records, generated contract surfaces, or sprint tracker. The general execution hold remains active.
+
+## Change Since the Prior Assessment
+
+The architecture is no longer blocked on choosing the PD8 confidential-value boundary, PD10 authorization-v2
+behavior, PD11 guarded lifecycle, provider endpoint policy, HTTP protection, aggregate concurrency, event
+evolution, deployment topology, recovery model, or execution ordering. The current reconciliation records exact
+decisions, owning stories, ranks, and prerequisite edges.
+
+That closes the prior finding that developers had to invent those mechanisms. It does **not** make the plan
+implementable yet: Delivery must incorporate the decisions, named roles must approve the final authority digests,
+and the manifest must validate before A8 can remove the hold.
+
+Evidence:
+
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:3-23`
+- `_bmad-output/planning-artifacts/architecture.md:1910-1912`
 
 ## Findings
 
 ### Critical — Execution remains frozen
 
-The PRD records `implementationReadiness: not-ready`; Product, Architecture, Security, Operations, Test,
-Delivery, and Legal attestations remain pending; and the general execution freeze remains active. The approved
-2026-09-15 correction proposal requires every freeze-removal check to pass before sprint planning is rerun.
+The PRD records `implementationReadiness: not-ready`. Sponsor approval does not replace the Product,
+Architecture, Security, Operations, Test, Delivery, Contract/Delivery, and Legal attestations required by
+A1–A8. The approved correction proposal permits only the explicit relock-only package until the Section 9 gates
+pass and A8 removes the general hold.
 
 Evidence:
 
 - `_bmad-output/planning-artifacts/prd.md:88,161-169`
-- `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md:380-424,461-488`
+- `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md:389-411,465-489`
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:264-295`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml:47-53`
 
-Remediation: use `bmad-correct-course` to complete the approved authority-relock change set and record all
-required role attestations and freeze-removal evidence.
+Remediation: use `bmad-correct-course` to apply the approved relock package, collect exact-digest role
+attestations, run the Section 9 checks, and record the A8 freeze decision.
 
-### Critical — Dependency scheduling is not executable
+### Critical — Approved mechanisms do not yet have canonical story definitions
 
-The declared strictly-lower-rank rule is unsatisfiable by its own wave table. Several same-rank dependencies
-exist, several prerequisites are unranked, and Epic 13 remains unranked although rank-40 work depends on its
-evidence. The canonical manifest does not yet carry the proposed execution-wave model.
+The architecture and reconciliation reserve Stories 1.17, 4.22, 12.7, and 13.7 to own PD10, PD11, PD8, and the
+supported production/recovery profile. The reconciliation gives each story exact acceptance scope and requires
+Delivery to add it without renumbering completed history. None of the four story headings exists in the current
+`epics.md`, so requirements trace to proposed owners rather than executable canonical stories.
+
+Evidence:
+
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:27-121`
+- `_bmad-output/planning-artifacts/architecture.md:1693-1695,1829-1839`
+- `_bmad-output/planning-artifacts/epics.md` contains no `### Story 1.17`, `4.22`, `12.7`, or `13.7` definition
+
+Remediation: use `bmad-correct-course` to propagate the cross-artifact authority changes, then
+`bmad-create-epics-and-stories` to add the four approved definitions and their amendments without altering
+completed story identities.
+
+### Critical — Dependency scheduling is specified but not executable
+
+The September 17 reconciliation replaces the unsatisfiable interim wave model with strict ranks and exact
+prerequisite edges. The canonical manifest is still version 1, generated on 2026-08-04. It has no
+`execution_waves`, no `execution_rank` fields, no relock decision/milestone nodes, and no EventStore external
+dependency nodes. Until the required version-2 regeneration validates uniqueness, acyclicity, strict ordering,
+and accepted-terminal exemptions, the scheduler has no executable dependency authority.
 
 Evidence:
 
 - `_bmad-output/planning-artifacts/prd.md:165-167`
-- `_bmad-output/planning-artifacts/planning-story-manifest.yaml:1-24`
-- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-16.md:103-105`
+- `_bmad-output/planning-artifacts/planning-story-manifest.yaml:1-3`
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:122-271`
 
-Remediation: use `bmad-create-epics-and-stories` to establish executable ranks and prerequisite edges, then
-regenerate and validate the manifest.
+Remediation: use `bmad-create-epics-and-stories` to regenerate and validate the complete manifest after the
+canonical epics are amended. Regenerate the whole file; do not patch disputed rows only.
 
-### Critical — Required mechanisms have no owning stories
+### Critical — Approval-bound security and lifecycle authority is not relocked
 
-PD8, PD10, and PD11 are absent from `epics.md` as owned delivery work. This leaves the confidentiality tier,
-authorization-spine correction, and guard-discriminated lifecycle without executable owners. The PD11 gap is
-a live defect: the current pair-keyed transition gate can accept behavior that destroys staged work.
-
-Evidence:
-
-- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-16.md:38-48`
-- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-16.md:93-105`
-
-Remediation: use `bmad-correct-course` for the cross-artifact ownership decision and
-`bmad-create-epics-and-stories` to add the approved owning stories without renumbering completed history.
-
-### Critical — Security and lifecycle authority is not relocked
-
-OQ3 requires reapproval after PD10, the C6 guard changes remain approval-pending under A7b, and the approved
-authorization matrix gives contradictory outcomes for stale authority: a safe-denial 404 in one place and a
-retryable authority-unavailable 503 in another. Generated and cross-surface contracts also retain vocabulary
-that PD10 removes.
+The technical choices are now explicit, but their release authority remains pending. OQ3 is
+`superseded-pending-reapproval` until A6b signs authorization matrix 2.0.0; the PD8/C9 and PD11/C6/C3 digests
+still require A5, A7, and A7b approval; and the v2 OpenAPI, generated client, CLI/MCP parity artifacts,
+`previous-spine.yaml`, C13 inventory, documentation, and tests have not been regenerated as one conformance
+change. Implementing ordinary stories before this relock would consume non-current security and lifecycle
+authority.
 
 Evidence:
 
-- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-16.md:54-73`
-- `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md:391-400`
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:249-270,273-295`
+- `_bmad-output/planning-artifacts/architecture.md:717-736,1910-1912`
 
-Remediation: use `bmad-architecture` to resolve the technical authority conflicts, followed by
-`bmad-correct-course` to propagate and approve the resulting contract, lifecycle, and governance changes.
+Remediation: use `bmad-correct-course` to execute the approved authority relock and capture the required A5,
+A6, A6b, A7, and A7b records. Use `bmad-architecture` only if an approver materially changes a decided mechanism.
 
-### High — Manifest and tracker are stale and disagree with approved lifecycle outcomes
+### High — External EventStore prerequisites lack accepted ownership and release evidence
 
-The manifest remains the 2026-08-04 snapshot. It validates a 73-NFR, 154-story inventory and retains known
-status conflicts rather than the September authority. The sprint tracker still records Story 10.8 as `done`
-and Story 10.9 as `review`, while the approved reconciliation requires 10.8 to become `in-progress` and 10.9
-to become `done` only under its narrowed metadata-only safety scope. The planning-recovery action remains open.
-
-Evidence:
-
-- `_bmad-output/planning-artifacts/planning-story-manifest.yaml:3-24,437-468`
-- `_bmad-output/implementation-artifacts/sprint-status.yaml:196-212,257-271`
-- `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md`, Section 6
-
-Remediation: after the authority relock, regenerate the manifest and reconcile `sprint-status.yaml` through
-the deterministic sprint-planning flow. Do not hand-edit only the disputed rows.
-
-### High — Architecture still carries downstream-blocking open decisions
-
-Eleven routed questions remain, including the PD8 operational boundary, provider-endpoint SSRF policy,
-deny-by-default HTTP binding, aggregate write concurrency, event-payload evolution, deployment topology,
-backup and restore, PD10 migration, staged-content retention, wave scheduling, and missing story ownership.
-These gaps require developers to invent security, durability, or release behavior for affected stories.
+The executable plan depends on `EXT-ES-EVENT-EVOLUTION` and `EXT-ES-RECOVERY`. The architecture specifies the
+required capabilities, but the EventStore repository owners, issue or story references, release version or
+digest, evidence paths, and acceptance statuses remain unresolved escalation fields. Stories 12.1–12.2 and
+13.5/13.7 cannot independently complete until those platform prerequisites are accepted.
 
 Evidence:
 
-- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-16.md:89-105`
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:243-248,291-295`
+- `_bmad-output/planning-artifacts/architecture.md:1910-1912`
 
-Remediation: use `bmad-architecture` for the technical decisions and `bmad-correct-course` for decisions that
-cross Product, Security, Legal, Delivery, UX, and governance authority.
+Remediation: use `bmad-correct-course` to assign the external owners and evidence identifiers and to record the
+accepted EventStore release boundaries before dependent stories become eligible.
+
+### High — Manifest and sprint tracker remain stale by design
+
+The manifest retains its August 4 inventory. The tracker preserves the active execution-control hold and still
+records Story 10.8 as `done` and Story 10.9 as `review`, while the approved reconciliation requires 10.8
+`in-progress` and 10.9 `done` only under its narrowed metadata-only scope. Those values must be reconciled from
+the completed authority package, not hand-edited in isolation.
+
+Evidence:
+
+- `_bmad-output/planning-artifacts/planning-story-manifest.yaml:1-3`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml:47-53,196-205`
+- `_bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md:224-271`
+
+Remediation: after the epics, approvals, external nodes, and version-2 manifest are complete, rerun
+`bmad-sprint-planning` so the deterministic generator reconciles statuses and preserves truthful lifecycle
+history.
 
 ## Gate Decision
 
-Sprint tracking was not generated or refreshed because readiness is **FAIL**. Preserve the existing execution
-hold and the open planning-recovery action until the freeze-removal gate in the approved 2026-09-15 proposal
-passes in full.
+Sprint tracking was not generated or refreshed because readiness is **FAIL**. Preserve the general execution
+hold and the open planning-recovery action. Only the explicitly authorized relock-only package may proceed until
+the proposal's Section 9 checks pass and A8 records hold removal.
 
-After remediation, rerun `bmad-sprint-planning`. A future PASS means the plan is internally consistent and
-executable; it does not imply that all OQ5-OQ13 release evidence is complete.
+After remediation, rerun `bmad-sprint-planning`. A future PASS means the planning authority is internally
+consistent and implementable; it does not imply that OQ5–OQ13 runtime and release evidence is complete.
