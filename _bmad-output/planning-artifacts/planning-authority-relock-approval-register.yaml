@@ -1,0 +1,321 @@
+schema_version: '1.0.0'
+register_id: folders-planning-authority-relock-2026-09-17
+status: pre-generation-approved-post-generation-pending
+prepared_on: '2026-09-17'
+digest_algorithm: sha256
+digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
+approval_policy:
+  infer_approval: false
+  accept_blanket_sponsor_approval_as_role_attestation: false
+  require_named_human_approver: true
+  require_approval_date: true
+  require_exact_payload_digest_match: true
+  reject_generic_approver_tokens: true
+  reopen_on_payload_or_bound_artifact_digest_change: true
+
+sponsor_routing_record:
+  proposal_path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md
+  proposal_sha256: 5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104
+  sponsor: Jerome
+  response: continue
+  approved_at: '2026-09-15T16:08:21+02:00'
+  scope: Sponsor approval of the recommended A1-A8 routing and dispositions.
+  role_attestation_effect: none
+
+pre_generation_attestation:
+  approver: Jerome
+  approved_on: '2026-09-17'
+  source: Explicit confirmation in the active bmad-correct-course approval exchange.
+  represented_authorities: [Product, Architecture, Security, Test, Operations, Contract/Delivery, Delivery, Legal]
+  approved_gates: [A1, A2, A4, A5, A6, A7, A7b]
+  excluded_gates: [A2b, A3, A6b, A8]
+  exclusion_reason: Post-generation payloads cannot be approved until their required exact output digests exist.
+
+records:
+  - gate_id: A1
+    authority_ids: [PD1, OQ11]
+    manifest_node: DEC-A1
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md
+    decision_payload_sha256: a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd
+    required_authorities: [Product, Architecture, Security, Test]
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd
+      - authority: Test
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd
+
+  - gate_id: A2
+    authority_ids: [PD3, OQ12, OQ13]
+    manifest_node: DEC-A2
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md
+    decision_payload_sha256: 81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435
+    required_authorities: [Product, Architecture, Security, Operations, Test]
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435
+      - authority: Operations
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435
+      - authority: Test
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435
+
+  - gate_id: A2b
+    authority_ids: [PD6]
+    manifest_node: DEC-A2B
+    stage: post-RELOCK-PLANNING
+    approval_readiness: awaiting-generated-target-digests
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md
+    decision_payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
+    required_authorities: [Product, Architecture, Security, Operations, Test]
+    required_bound_artifacts:
+      - path: _bmad-output/planning-artifacts/prd.md
+        sha256: pending-RELOCK-PLANNING
+      - path: _bmad-output/planning-artifacts/epics.md
+        sha256: pending-RELOCK-PLANNING
+      - path: docs/exit-criteria/nfr-traceability.md
+        sha256: pending-RELOCK-PLANNING
+    approval_status: pending
+    approvals: []
+
+  - gate_id: A3
+    authority_ids: [PD4]
+    manifest_node: DEC-A3
+    stage: post-RELOCK-PLANNING
+    approval_readiness: awaiting-generated-target-digests
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md
+    decision_payload_sha256: a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e
+    required_authorities: [Product, Architecture, Delivery]
+    required_bound_artifacts:
+      - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+        sha256: pending-RELOCK-PLANNING
+      - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+        sha256: pending-RELOCK-PLANNING
+    approval_status: pending
+    approvals: []
+
+  - gate_id: A4
+    authority_ids: [PD5]
+    manifest_node: DEC-A4
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md
+    decision_payload_sha256: 114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce
+    required_authorities: [Product, Security, Architecture]
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce
+
+  - gate_id: A5
+    authority_ids: [C9, PD8]
+    manifest_node: DEC-A5-C9
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md
+    decision_payload_sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+    required_authorities: [Product, Architecture, Security]
+    required_conformance_binding: Final C9 governance artifact must reproduce this policy and record this digest.
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+
+  - gate_id: A6
+    authority_ids: [PD10]
+    manifest_node: DEC-A6-PD10
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md
+    decision_payload_sha256: 0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355
+    required_authorities: [Product, Architecture, Security, Contract/Delivery]
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355
+      - authority: Contract/Delivery
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355
+
+  - gate_id: A6b
+    authority_ids: [OQ3, PD10]
+    manifest_node: DEC-A6B-OQ3
+    stage: post-1.17-GENERATE
+    approval_readiness: awaiting-generated-target-digests
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
+    decision_payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+    required_authorities: [Product, Architecture, Security]
+    required_bound_artifacts:
+      - path: docs/contract/authorization-matrix.md
+        required_version: '2.0.0'
+        sha256: pending-1.17-GENERATE
+      - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+        sha256: pending-1.17-GENERATE
+    superseded_digest: 5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7
+    approval_status: pending
+    approvals: []
+
+  - gate_id: A7
+    authority_ids: [C6, PD11]
+    manifest_node: DEC-A7-C6
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md
+    decision_payload_sha256: b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f
+    required_authorities: [Product, Architecture, Security]
+    required_conformance_binding: Architecture, C6 mapping, lifecycle diagram, v2 enum, code, UI disposition mapping, and tests must reproduce this digest-bound model.
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f
+
+  - gate_id: A7b
+    authority_ids: [C3, PD11]
+    manifest_node: DEC-A7B-C3
+    stage: pre-generation
+    approval_readiness: ready-for-human-decision
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md
+    decision_payload_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+    required_authorities: [Legal, Product, Security, Architecture]
+    required_conformance_binding: Final C3 governance artifact must reproduce this trigger, clock, resume, P7D, and legal-hold policy and record this digest.
+    approval_status: approved
+    approvals:
+      - authority: Legal
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-17'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+
+  - gate_id: A8
+    authority_ids: [freeze]
+    manifest_node: DEC-A8-HOLD
+    stage: post-RELOCK-SECTION9
+    approval_readiness: awaiting-generated-target-digests-and-passing-gate
+    decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+    decision_payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    required_authorities: [Product, Architecture, Delivery]
+    required_bound_artifacts:
+      - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+        sha256: pending-RELOCK-SECTION9
+      - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+        sha256: pending-RELOCK-SECTION9
+      - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+        sha256: pending-authorized-tracker-reconciliation
+    approval_status: pending
+    approvals: []
+
+recording_rules:
+  - A human approval record must contain authority, approver, approved_on, payload_version, and payload_sha256.
+  - A post-output record must also contain every required bound artifact path and its exact SHA-256 digest.
+  - One person may sign multiple authorities only when the record explicitly states the authority represented for each signature; identity alone never implies a role.
+  - Sponsor routing does not populate any approvals list.
+  - A payload or bound-artifact digest change invalidates the affected records and returns the gate to pending.
+  - A8 cannot be recorded before every earlier required record is complete and RELOCK-SECTION9 is passing.

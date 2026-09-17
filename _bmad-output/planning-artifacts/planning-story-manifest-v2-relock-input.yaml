@@ -1,0 +1,428 @@
+schema_version: '1.0.0'
+artifact_id: folders-planning-authority-relock-v2-input
+status: approved-pre-generation-relock-input
+prepared_on: '2026-09-17'
+purpose: >-
+  Machine-readable, complete delta contract for regenerating planning-story-manifest.yaml
+  as version 2 after the canonical epics are corrected. This file is an input to
+  bmad-create-epics-and-stories, not the canonical manifest and not execution authority.
+
+approval_binding:
+  register_path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+  register_sha256: 9360e4b87a91179a7f7357c58a2d38118b436724a8a5f440fa4e226b048d1b95
+  approved_pre_generation_gates: [A1, A2, A4, A5, A6, A7, A7b]
+  pending_post_generation_gates: [A2b, A3, A6b, A8]
+
+governing_inputs:
+  - path: _bmad-output/planning-artifacts/implementation-readiness.md
+    sha256: 1cd954f81ba2551e400c4bbddcc5df48a9961835f5da2dbbef076aca254db690
+  - path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md
+    sha256: 5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256: 74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e
+  - path: _bmad-output/planning-artifacts/reconcile-architecture-downstream-2026-09-17.md
+    sha256: 788b79be90c9c17606af23d6c436ef67cc272757937bbc47e57d61f1aa63a8cd
+
+target_manifest:
+  manifest_version: 2
+  revision: folders-planning-authority-relock-2026-09-17
+  generated_on: '2026-09-17'
+  regenerate_whole_file: true
+  supersedes_snapshot:
+    path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    manifest_version: 1
+    generated_on: '2026-08-04'
+    sha256: 206b979040164375b2281b213d3756db02fc3e2e33e8c85587572ae721076e22
+  general_execution_hold: true
+  sprint_status_regeneration_authorized: false
+  lifecycle_field: story_lifecycle_status
+  historical_status_field: workflow_snapshot_status
+  inventories:
+    canonical_story_identities: 158
+    inventory_rows_including_aliases: 159
+    alias_rows:
+      - 2.8b
+    functional_requirements:
+      first: FR1
+      last: FR58
+      count: 58
+    non_functional_requirements:
+      first: NFR1
+      last: NFR84
+      count: 84
+    classifications:
+      product: 86
+      technical_enabler: 41
+      release_governance: 24
+      security_operations_hardening: 7
+  lifecycle_reconciliation:
+    preserve_frozen_evidence: true
+    rows:
+      '3.10': done
+      '3.11': done
+      '3.12': done
+      '3.13': done
+      '10.7': done
+      '10.8': in-progress
+      '10.9': done
+      '11.2': done
+      '11.3': done
+      '11.4': review
+    new_story_rows:
+      '1.17': backlog
+      '4.22': backlog
+      '12.7': backlog
+      '13.7': backlog
+    rules:
+      - Do not rewrite a frozen story specification or completed evidence snapshot.
+      - Treat a frozen specification status as workflow_snapshot_status only.
+      - Preserve completed component evidence when a canonical lifecycle row remains or becomes nonterminal.
+      - Recompute lifecycle totals from authoritative rows; do not copy version-1 counters.
+      - Remove the duplicate 3.2 inventory row without changing the canonical Story 3.2 identity.
+
+status_dimensions:
+  required:
+    - decision_status
+    - execution_authorization_status
+    - delivery_evidence_status
+  decision_status_vocabulary_additions:
+    - superseded-pending-reapproval
+  rules:
+    - A design approval never implies execution authorization.
+    - Execution authorization never implies delivery evidence.
+    - OQ3 remains superseded-pending-reapproval until DEC-A6B-OQ3 is accepted.
+    - OQ8-DESIGN is accepted-terminal and rankless; OQ8-EVIDENCE is an open rank-50 delivery node.
+
+accepted_terminal_references:
+  OQ1:
+    evidence_path: docs/exit-criteria/c7-lock-authorization-timing.md
+  OQ2:
+    evidence_path: docs/contract/oq2-file-policy-evidence.yaml
+  OQ4:
+    evidence_path: docs/contract/oq4-provider-compatibility-evidence.yaml
+  OQ8-DESIGN:
+    evidence_path: docs/exit-criteria/oq8-idempotency-design.md
+  C1:
+    evidence_path: docs/exit-criteria/c1-capacity.md
+  C4:
+    evidence_path: docs/exit-criteria/c4-input-limits.md
+  C5:
+    evidence_path: docs/exit-criteria/c5-scalability-quantifiers.md
+  '3.10':
+    evidence_path: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+  '3.11':
+    evidence_path: _bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior.md
+  '3.12':
+    evidence_path: _bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md
+  '3.13':
+    evidence_path: _bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md
+  '10.6':
+    evidence_path: _bmad-output/implementation-artifacts/10-6-replace-fail-closed-content-materializer-with-metadata-derived.md
+  '10.7':
+    evidence_path: _bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md
+  '11.2':
+    evidence_path: _bmad-output/implementation-artifacts/11-2-land-platform-prerequisite-apis-in-shared-modules.md
+  '11.3':
+    evidence_path: _bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md
+
+external_nodes:
+  EXT-ES-EVENT-EVOLUTION:
+    node_type: external-platform-release
+    execution_rank: 1
+    prerequisites: []
+    repository: references/Hexalith.EventStore
+    repository_owner: Hexalith.EventStore platform maintainers
+    accountable_role: EventStore Platform Architect
+    delivery_role: EventStore Epic 6 owner
+    source_work_references:
+      - EventStore Story 6.5 — Event Versioning And Upcasting Spec
+      - EventStore Story 6.6 — Event Versioning And Upcasting Implementation
+    release_identifier: hexalith-eventstore-event-evolution-v1
+    observed_repository_commit: b5541259058320a0a7f1db19038709cbd02dad85
+    release_version_or_commit: pending-platform-publication
+    evidence_paths:
+      specification: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-event-versioning-upcasting.md
+      acceptance_record: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-event-evolution-v1.yaml
+      source_story_authority: references/Hexalith.EventStore/_bmad-output/planning-artifacts/epics.md
+    required_evidence:
+      - Stable URI logical event type independent of CLR and assembly names.
+      - Positive eventPayloadSchemaVersion distinct from EventStore MetadataVersion.
+      - Deterministic complete upcaster registry and fail-closed chain validation.
+      - Closed legacy EventTypeName alias inventory with retained historical byte fixtures.
+      - Replay and projection proof that preserves historical bytes.
+    acceptance_status: pending
+    acceptance_reason: >-
+      EventStore Stories 6.5 and 6.6 are backlog at the observed commit, the required
+      specification is absent, and the repository documents that no formal upcaster pipeline exists.
+    placeholder_acceptance_forbidden: true
+
+  EXT-ES-RECOVERY:
+    node_type: external-platform-release
+    execution_rank: 2
+    prerequisites: []
+    repository: references/Hexalith.EventStore
+    repository_owner: Hexalith.EventStore platform maintainers
+    accountable_role: EventStore Platform Operations Lead
+    delivery_role: EventStore recovery release owner
+    source_work_references:
+      - External escalation EXT-ES-RECOVERY/2026-09-17
+      - EventStore restored-backup admission and crypto-shredding contracts from historical Story 22.7c
+    release_identifier: hexalith-eventstore-production-recovery-v1
+    observed_repository_commit: b5541259058320a0a7f1db19038709cbd02dad85
+    release_version_or_commit: pending-platform-publication
+    evidence_paths:
+      platform_profile: references/Hexalith.EventStore/deploy/dapr/statestore-postgresql.yaml
+      restored_backup_contract: references/Hexalith.EventStore/docs/guides/payload-protection-and-crypto-shredding.md
+      acceptance_record: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-recovery-v1.yaml
+      escalation_record: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md
+    required_evidence:
+      - Dapr state.postgresql component generation v2 actor-state and replay compatibility.
+      - Transactional actor-state behavior under the supported multi-replica profile.
+      - Physical backup and cross-region WAL/PITR restore proof.
+      - Signed metadata-only recovery-safety export with KMS signer and monotonic watermark.
+      - Idempotent restored-backup admission and post-backup deletion/legal-hold replay.
+      - Failure on export gap, corruption, loss, or incompatible control state.
+    acceptance_status: pending
+    acceptance_reason: >-
+      The observed EventStore production authority deliberately selects state.postgresql v1,
+      while Folders requires v2, and backup creation, validation, and restore remain deferred.
+    placeholder_acceptance_forbidden: true
+
+execution_waves:
+  - rank: 0
+    nodes: [DEC-A1, DEC-A2, DEC-A4, DEC-A5-C9, DEC-A6-PD10, DEC-A7-C6, DEC-A7B-C3]
+    accepted_terminal_nodes: [OQ1, OQ2, OQ4, OQ8-DESIGN]
+  - rank: 1
+    nodes: [EXT-ES-EVENT-EVOLUTION]
+  - rank: 2
+    nodes: [EXT-ES-RECOVERY]
+  - rank: 3
+    nodes: [RELOCK-PLANNING]
+  - rank: 4
+    nodes: [DEC-A2B, DEC-A3, 1.17-GENERATE]
+  - rank: 5
+    nodes: [DEC-A6B-OQ3]
+  - rank: 6
+    nodes: [RELOCK-SECTION9]
+  - rank: 7
+    nodes: [DEC-A8-HOLD]
+  - rank: 10
+    nodes: ['1.17']
+  - rank: 11
+    nodes: ['4.22', '11.4', '11.5', '11.6', '11.7', '11.8', '11.9', '11.10', '11.11', '11.14', '11.16', '13.1', '13.2', '13.3', '13.6']
+  - rank: 12
+    nodes: ['11.12', '11.17', '11.18', '11.19']
+  - rank: 13
+    nodes: ['11.13']
+  - rank: 14
+    nodes: ['11.20']
+  - rank: 20
+    nodes: ['12.1']
+  - rank: 21
+    nodes: ['12.2', '12.3', '12.6']
+  - rank: 22
+    nodes: ['12.7']
+  - rank: 30
+    nodes: ['11.15', '12.4', '12.5', '13.4', '13.5']
+  - rank: 31
+    nodes: ['3.14', '11.21']
+  - rank: 40
+    nodes: ['4.18', '6.12', '6.13', '13.7']
+  - rank: 41
+    nodes: ['4.19', '4.20']
+  - rank: 42
+    nodes: ['4.21', '5.8', '5.10', '10.8']
+  - rank: 43
+    nodes: ['5.9', '5.11', '6.14']
+  - rank: 50
+    nodes: [OQ8-EVIDENCE, OQ9-EVIDENCE, OQ11-EVIDENCE, OQ12-EVIDENCE, OQ13-EVIDENCE]
+  - rank: 51
+    nodes: [OQ5-EVIDENCE, OQ6-EVIDENCE, OQ7-EVIDENCE]
+  - rank: 60
+    nodes: [OQ10-EVIDENCE]
+
+relock_nodes:
+  RELOCK-PLANNING:
+    node_type: relock-milestone
+    execution_rank: 3
+    execution_authorization_status: relock-only
+    delivery_evidence_status: open
+    prerequisites: [DEC-A1, DEC-A2, DEC-A4, DEC-A5-C9, DEC-A6-PD10, DEC-A7-C6, DEC-A7B-C3]
+    allowed_artifacts:
+      - _bmad-output/planning-artifacts/prd.md
+      - _bmad-output/planning-artifacts/epics.md
+      - _bmad-output/planning-artifacts/ux-design-specification.md
+      - _bmad-output/planning-artifacts/planning-story-manifest.yaml
+      - docs/exit-criteria/nfr-traceability.md
+      - docs/exit-criteria/c3-retention.md
+      - docs/exit-criteria/c6-transition-matrix-mapping.md
+      - C9 governance and exact approval records
+  1.17-GENERATE:
+    node_type: relock-milestone
+    execution_rank: 4
+    execution_authorization_status: relock-only
+    delivery_evidence_status: open
+    prerequisites: [RELOCK-PLANNING, DEC-A6-PD10]
+    produces:
+      - Final authorization matrix 2.0.0 candidate for DEC-A6B-OQ3.
+      - V2 OpenAPI, server, client, CLI, MCP, UI, parity, previous-spine, C13, docs, and tests candidate set.
+    prohibitions:
+      - Do not expose v2 routes.
+      - Do not publish a release.
+      - Do not close Story 1.17.
+  RELOCK-SECTION9:
+    node_type: relock-milestone
+    execution_rank: 6
+    execution_authorization_status: relock-only
+    delivery_evidence_status: open
+    prerequisites: [RELOCK-PLANNING, DEC-A2B, DEC-A3, 1.17-GENERATE, DEC-A6B-OQ3]
+    produces:
+      - Complete Section 9 conformance result bound to approved digests.
+  DEC-A8-HOLD:
+    node_type: approval-decision
+    execution_rank: 7
+    prerequisites: [RELOCK-SECTION9]
+    effect_when_accepted: Set general_execution_hold to false and close the planning-recovery action in the same change.
+    effect_while_pending: Keep general_execution_hold true and every ordinary nonterminal row held.
+
+exact_prerequisites:
+  DEC-A1: []
+  DEC-A2: []
+  DEC-A4: []
+  DEC-A5-C9: []
+  DEC-A6-PD10: []
+  DEC-A7-C6: []
+  DEC-A7B-C3: []
+  EXT-ES-EVENT-EVOLUTION: []
+  EXT-ES-RECOVERY: []
+  RELOCK-PLANNING: [DEC-A1, DEC-A2, DEC-A4, DEC-A5-C9, DEC-A6-PD10, DEC-A7-C6, DEC-A7B-C3]
+  DEC-A2B: [RELOCK-PLANNING]
+  DEC-A3: [RELOCK-PLANNING]
+  1.17-GENERATE: [RELOCK-PLANNING, DEC-A6-PD10]
+  DEC-A6B-OQ3: [1.17-GENERATE]
+  RELOCK-SECTION9: [RELOCK-PLANNING, DEC-A2B, DEC-A3, 1.17-GENERATE, DEC-A6B-OQ3]
+  DEC-A8-HOLD: [RELOCK-SECTION9]
+  '1.17': [DEC-A8-HOLD, 1.17-GENERATE, DEC-A6B-OQ3]
+  '4.22': [DEC-A8-HOLD, '1.17', DEC-A7-C6, DEC-A7B-C3]
+  '11.4': [DEC-A8-HOLD, '1.17']
+  '11.5': [DEC-A8-HOLD, 'accepted:11.2']
+  '11.6': [DEC-A8-HOLD, '1.17']
+  '11.7': [DEC-A8-HOLD]
+  '11.8': [DEC-A8-HOLD, 'accepted:11.2']
+  '11.9': [DEC-A8-HOLD, 'accepted:11.2']
+  '11.10': [DEC-A8-HOLD, 'accepted:11.2']
+  '11.11': [DEC-A8-HOLD, 'accepted:11.2']
+  '11.14': [DEC-A8-HOLD, 'accepted:11.2']
+  '11.16': [DEC-A8-HOLD, 'accepted:11.3']
+  '13.1': [DEC-A8-HOLD, '1.17']
+  '13.2': [DEC-A8-HOLD, '1.17']
+  '13.3': [DEC-A8-HOLD]
+  '13.6': [DEC-A8-HOLD, '1.17']
+  '11.12': [DEC-A8-HOLD, '1.17', 'accepted:11.2']
+  '11.17': [DEC-A8-HOLD, '11.7']
+  '11.18': [DEC-A8-HOLD, '11.7']
+  '11.19': [DEC-A8-HOLD, '11.11']
+  '11.13': [DEC-A8-HOLD, '11.8', '11.9', '11.10', '11.11', '11.12', '11.14']
+  '11.20': [DEC-A8-HOLD, '11.9', '11.13']
+  '12.1': [DEC-A8-HOLD, EXT-ES-EVENT-EVOLUTION, 'accepted:OQ1', 'accepted:OQ2', DEC-A6B-OQ3, 'accepted:OQ4']
+  '12.2': [DEC-A8-HOLD, '12.1', EXT-ES-EVENT-EVOLUTION]
+  '12.3': [DEC-A8-HOLD, '12.1']
+  '12.6': [DEC-A8-HOLD, '12.1', 'accepted:OQ8-DESIGN']
+  '12.7': [DEC-A8-HOLD, '12.1', DEC-A5-C9]
+  '11.15': [DEC-A8-HOLD, 'accepted:11.2']
+  '12.4': [DEC-A8-HOLD, 'accepted:3.11', 'accepted:3.13', '12.1', '12.2', '12.3', '12.7']
+  '12.5': [DEC-A8-HOLD, 'accepted:10.6', '12.1', '12.2', '12.3', '12.7']
+  '13.4': [DEC-A8-HOLD, '12.1', '12.2', '13.2']
+  '13.5': [DEC-A8-HOLD, EXT-ES-RECOVERY, '12.1', '12.2']
+  '3.14': [DEC-A8-HOLD, 'accepted:3.10', 'accepted:3.12', '12.1', '12.2', '12.4']
+  '11.21': [DEC-A8-HOLD, '11.13', '11.14', '11.15', '11.16', '11.17', '11.18', '11.19', '11.20']
+  '4.18': [DEC-A8-HOLD, '4.22', '12.1', '12.2']
+  '6.12': [DEC-A8-HOLD, '4.22', '12.1', '12.2']
+  '6.13': [DEC-A8-HOLD, '3.14', '12.4', '12.5']
+  '13.7': [DEC-A8-HOLD, EXT-ES-RECOVERY, '12.1', '12.2', '13.1', '13.2', '13.3', '13.4', '13.5', '13.6']
+  '4.19': [DEC-A8-HOLD, DEC-A7-C6, '4.18', '4.22', '12.1', '12.2', '12.3', '12.6']
+  '4.20': [DEC-A8-HOLD, 'accepted:OQ2', DEC-A6B-OQ3, '1.17', '4.18', '12.1', '12.2', '12.3', '12.6', '12.7']
+  '4.21': [DEC-A8-HOLD, '4.18', '4.19', '4.20', '4.22', '12.4']
+  '5.8': [DEC-A8-HOLD, '4.19']
+  '5.10': [DEC-A8-HOLD, '4.19']
+  '10.8': [DEC-A8-HOLD, 'accepted:10.7', '4.20', '11.15', '12.1', '12.2', '12.3', '12.5']
+  '5.9': [DEC-A8-HOLD, '4.20', '4.21', '12.6']
+  '5.11': [DEC-A8-HOLD, '4.20', '4.21', '12.6']
+  '6.14': [DEC-A8-HOLD, '4.18', '4.21', '6.12', '6.13']
+  OQ8-EVIDENCE: [DEC-A8-HOLD, '12.6']
+  OQ9-EVIDENCE: [DEC-A8-HOLD, '6.14']
+  OQ11-EVIDENCE: [DEC-A8-HOLD, '3.14', '4.18', '4.19', '4.20', '4.21', '12.1', '12.2', '12.3', '12.4', '12.5', '12.6', '12.7']
+  OQ12-EVIDENCE: [DEC-A8-HOLD, '13.1', '13.2', '13.3', '13.4', '13.5', '13.6', '13.7']
+  OQ13-EVIDENCE: [DEC-A8-HOLD, '13.7', 'accepted:C1', 'accepted:C4', 'accepted:C5']
+  OQ5-EVIDENCE: [DEC-A8-HOLD, '10.8', OQ11-EVIDENCE]
+  OQ6-EVIDENCE: [DEC-A8-HOLD, '4.18', '6.12', '6.13', '6.14', OQ11-EVIDENCE]
+  OQ7-EVIDENCE: [DEC-A8-HOLD, '4.19', '4.22', OQ11-EVIDENCE]
+  OQ10-EVIDENCE: [DEC-A8-HOLD, OQ5-EVIDENCE, OQ6-EVIDENCE, OQ7-EVIDENCE, OQ8-EVIDENCE, OQ9-EVIDENCE, OQ11-EVIDENCE, OQ12-EVIDENCE, OQ13-EVIDENCE]
+
+ordinary_execution_control:
+  universal_prerequisite: DEC-A8-HOLD
+  applies_to:
+    - Every ordinary story at rank 10 or later.
+    - Every delivery-evidence node at rank 10 or later.
+  expansion_required: true
+  status_while_hold_true: held
+  relock_only_nodes:
+    - RELOCK-PLANNING
+    - 1.17-GENERATE
+    - RELOCK-SECTION9
+  relock_lane_prohibitions:
+    - No production v2 exposure or publication.
+    - No story lifecycle closure.
+    - No OQ5-OQ13 runtime evidence generation.
+
+validation_rules:
+  - id: V2-001
+    rule: Parse as YAML and require manifest_version exactly 2.
+  - id: V2-002
+    rule: Require every canonical story identity exactly once; permit only the declared 2.8b alias row.
+  - id: V2-003
+    rule: Require 158 canonical story identities and 159 inventory rows including aliases.
+  - id: V2-004
+    rule: Require exact FR1-FR58 and NFR1-NFR84 identities with no gap, duplicate, or renumbering.
+  - id: V2-005
+    rule: Require every scheduled nonterminal node to carry exactly one integer execution_rank.
+  - id: V2-006
+    rule: Reject a missing prerequisite node or duplicate prerequisite edge.
+  - id: V2-007
+    rule: Reject cycles in the expanded prerequisite graph.
+  - id: V2-008
+    rule: Reject an unresolved prerequisite whose rank is equal to or later than the dependent rank.
+  - id: V2-009
+    rule: Reject an unranked nonterminal prerequisite.
+  - id: V2-010
+    rule: Permit a rankless terminal prerequisite only when accepted evidence_path exists and validates.
+  - id: V2-011
+    rule: Require DEC-A8-HOLD as an explicitly expanded edge on every ordinary story and delivery-evidence node at rank 10 or later.
+  - id: V2-012
+    rule: Require general_execution_hold true until RELOCK-SECTION9 is accepted and A8 contains all required exact-digest approvals.
+  - id: V2-013
+    rule: Reject ordinary execution_authorization_status other than held while the general hold is true.
+  - id: V2-014
+    rule: Limit relock-only authorization to the three declared relock nodes and their artifact allow-lists.
+  - id: V2-015
+    rule: Reject accepted external nodes without repository owner, accountable role, source work or escalation reference, release_identifier, immutable release version or commit, evidence path, and acceptance record.
+  - id: V2-016
+    rule: Reject an external acceptance record containing placeholder, pending, unknown, TODO, TBD, or self-declared approval values.
+  - id: V2-017
+    rule: Require story_lifecycle_status as the only current lifecycle field and classify frozen specification status only as workflow_snapshot_status.
+  - id: V2-018
+    rule: Require separate decision_status, execution_authorization_status, and delivery_evidence_status on every decision or evidence node.
+  - id: V2-019
+    rule: Require OQ3 superseded-pending-reapproval until an accepted exact-digest DEC-A6B-OQ3 record exists for matrix 2.0.0.
+  - id: V2-020
+    rule: Reject any edge from 12.6 to OQ8-EVIDENCE; require accepted OQ8-DESIGN to precede 12.6 and OQ8-EVIDENCE to follow it.
+  - id: V2-021
+    rule: Require the four new story IDs as backlog without renumbering or deleting any completed historical identity.
+  - id: V2-022
+    rule: Require the lifecycle reconciliation journal and preserve every cited frozen evidence artifact byte-for-byte.
+  - id: V2-023
+    rule: Require governance status superseded-pending-reapproval in schema, data, and both affected conformance tests in one Delivery change.
+  - id: V2-024
+    rule: Require status-code and error-vocabulary fingerprints in previous-spine and regenerate OpenAPI, client, CLI/MCP parity, C13, docs, and tests as one v2 candidate set.
+  - id: V2-025
+    rule: Reject sprint-status regeneration or a general hold change in the bmad-create-epics-and-stories pass.
