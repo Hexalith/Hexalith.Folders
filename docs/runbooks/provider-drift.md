@@ -1,6 +1,6 @@
 # Provider Drift Runbook
 
-This runbook is the operator-facing response to provider schema drift detected by the nightly oasdiff lane. It is metadata-only and uses synthetic examples only. It cross-links the authoritative drift sources rather than restating their classification tables.
+This runbook is the operator-facing response to provider schema drift detected by the nightly drift lane (`tests/tools/run-nightly-drift-gates.ps1` driving `tests/tools/forgejo-drift/`). It is metadata-only and uses synthetic examples only. It cross-links the authoritative drift sources rather than restating their classification tables.
 
 ## Purpose
 

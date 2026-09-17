@@ -94,6 +94,6 @@ lease reaches the C7 expired-to-stale boundary (`LockLeaseBecameStale`); only or
 `awaiting-human`. Four pairs are guard-discriminated and the diagram cannot show the guard, so the edge
 labels alone do not determine the outcome: `changes_staged`+`CommitFailed` (retryable with no confirmed
 remote effect goes to `dirty`, known non-retryable to `failed`), `inaccessible`+`ProviderReadinessValidated`
-(staged content inside the C3 window goes to `dirty`, otherwise `ready`), `dirty`+`WorkspaceLocked` (the
-originating task only), and `dirty`+`LockLeaseBecameStale` (clean only — a `dirty` workspace holding staged
+(staged content inside the C3 window goes to `dirty`, otherwise `ready`), `dirty`+`WorkspaceLocked` (staged content present
+AND the server-resolved originating task — both conjuncts), and `dirty`+`LockLeaseBecameStale` (clean only — a `dirty` workspace holding staged
 changes rejects it). See architecture.md §"Workspace State Transition Matrix (C6 — Enumerated)".

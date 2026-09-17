@@ -10,7 +10,7 @@ This index enumerates the maintenance runbooks under `docs/runbooks/`, one row p
 | `retention.md` | retention | Operator retention and cleanup cadence; cross-links the C3 sources. |
 | `alerts.md` | alerts | On-call triage of the five operational signals; live delivery `reference_pending`. |
 | `rollback.md` | rollback | Release-package and container-image revert with post-rollback health verification. |
-| `provider-drift.md` | provider drift | Operator response to additive, breaking, and unknown oasdiff drift. |
+| `provider-drift.md` | provider drift | Operator response to additive, breaking, and unknown provider schema drift. |
 | `reconciliation.md` | reconciliation | Decision tree for ambiguous provider outcomes with no silent retry. |
 | `incident-mode.md` | incident-mode operations | Last-resort `/_admin/incident-stream` read path and disposition labels. |
 

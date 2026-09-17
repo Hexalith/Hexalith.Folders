@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architecture Validation — Hexalith.Folders</title>
+<style>
+:root{
+  --bg:#fbfaf8; --panel:#ffffff; --ink:#1c1b19; --muted:#6b6862; --line:#e5e1d9;
+  --crit:#b4232b; --crit-bg:#fdf0f0; --high:#b5600f; --high-bg:#fdf5ec;
+  --med:#7a6a1f; --med-bg:#fbf8ea; --low:#5a5a5a; --low-bg:#f4f3f1;
+  --good:#1f6b48; --good-bg:#eef7f1; --accent:#2c4a7c; --code:#f3f1ec;
+}
+:root:not([data-theme="light"]){ @media (prefers-color-scheme: dark){
+  --bg:#16151a; --panel:#1e1d23; --ink:#e9e7e2; --muted:#9b968d; --line:#33313a;
+  --crit:#f0868c; --crit-bg:#2c1b1e; --high:#e6a765; --high-bg:#2a2019;
+  --med:#cfc07a; --med-bg:#26241a; --low:#a9a49b; --low-bg:#232228;
+  --good:#7ec8a0; --good-bg:#18241e; --accent:#8fb0e0; --code:#26252c;
+}}
+:root[data-theme="dark"]{
+  --bg:#16151a; --panel:#1e1d23; --ink:#e9e7e2; --muted:#9b968d; --line:#33313a;
+  --crit:#f0868c; --crit-bg:#2c1b1e; --high:#e6a765; --high-bg:#2a2019;
+  --med:#cfc07a; --med-bg:#26241a; --low:#a9a49b; --low-bg:#232228;
+  --good:#7ec8a0; --good-bg:#18241e; --accent:#8fb0e0; --code:#26252c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.6 ui-serif,Georgia,"Iowan Old Style",serif;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:60rem;margin:0 auto;padding:0 16px 6rem}
+header{padding:3.5rem 0 2rem;border-bottom:1px solid var(--line)}
+h1{font-size:2rem;line-height:1.2;margin:0 0 .5rem;letter-spacing:-.015em}
+.sub{color:var(--muted);font-size:.95rem;margin:0}
+.meta{margin:1.5rem 0 0;font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  font-size:.8rem;color:var(--muted);line-height:1.9}
+.meta b{color:var(--ink);font-weight:600}
+.verdict{margin:2rem 0;padding:1.5rem 1.75rem;border-radius:10px;
+  background:var(--crit-bg);border:1px solid var(--crit);border-left-width:5px}
+.verdict .tag{font-family:ui-monospace,monospace;font-size:.75rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--crit);font-weight:700;display:block;margin-bottom:.5rem}
+.verdict p{margin:0;font-size:1.05rem}
+h2{font-size:1.3rem;margin:3.5rem 0 1rem;letter-spacing:-.01em;
+  padding-bottom:.4rem;border-bottom:1px solid var(--line)}
+h3{font-size:1.02rem;margin:2rem 0 .5rem}
+p{margin:0 0 1rem}
+table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.88rem;
+  font-family:ui-sans-serif,system-ui,sans-serif}
+th{text-align:left;font-weight:600;font-size:.72rem;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);padding:.5rem .6rem;
+  border-bottom:1px solid var(--line)}
+td{padding:.6rem;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+code,.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.85em;
+  background:var(--code);padding:.1em .38em;border-radius:4px}
+.pill{display:inline-block;font-family:ui-sans-serif,system-ui,sans-serif;font-size:.68rem;
+  font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.16rem .5rem;
+  border-radius:20px;white-space:nowrap}
+.p-crit{background:var(--crit-bg);color:var(--crit);border:1px solid var(--crit)}
+.p-high{background:var(--high-bg);color:var(--high);border:1px solid var(--high)}
+.p-med{background:var(--med-bg);color:var(--med);border:1px solid var(--med)}
+.p-low{background:var(--low-bg);color:var(--low);border:1px solid var(--low)}
+.p-good{background:var(--good-bg);color:var(--good);border:1px solid var(--good)}
+.cv{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:1.25rem 1.5rem;margin:1.25rem 0}
+.cv-h{display:flex;flex-wrap:wrap;gap:.6rem;align-items:baseline;margin-bottom:.35rem}
+.cv-h .id{font-family:ui-monospace,monospace;font-weight:700;color:var(--accent);font-size:.9rem}
+.cv-h .ttl{font-weight:600;font-size:1.05rem;flex:1;min-width:14rem}
+.cv-src{font-family:ui-monospace,monospace;font-size:.75rem;color:var(--muted);
+  margin:0 0 .85rem;padding-bottom:.6rem;border-bottom:1px dashed var(--line)}
+.cv p:last-child{margin-bottom:0}
+blockquote{margin:1rem 0;padding:.6rem 0 .6rem 1.1rem;border-left:3px solid var(--line);
+  color:var(--muted);font-style:italic}
+ul,ol{margin:0 0 1rem;padding-left:1.3rem}
+li{margin-bottom:.45rem}
+.tier{border-left:4px solid var(--accent);padding:.15rem 0 .15rem 1.1rem;margin:1.5rem 0}
+.tier h3{margin-top:0;color:var(--accent)}
+.good-box{background:var(--good-bg);border:1px solid var(--good);border-left-width:5px;
+  border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+.good-box h2{margin-top:0;border:none;color:var(--good)}
+.note{color:var(--muted);font-size:.9rem}
+footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.85rem}
+@media(max-width:640px){h1{font-size:1.55rem}.wrap{padding:0 16px 4rem}
+  table{font-size:.8rem}td,th{padding:.45rem .35rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Architecture Validation Report</h1>
+  <p class="sub">Hexalith.Folders — Reviewer Gate, Validate intent — 16 September 2026</p>
+  <p class="meta">
+    <b>Target</b> _bmad-output/planning-artifacts/architecture.md — 1857 lines<br>
+    <b>Document state</b> status: complete · updated: 2026-09-15 · reconciledTo: sprint-change-proposal-2026-09-15<br>
+    <b>Scope</b> whole document · six lenses · ratified by Jerome<br>
+    <b>Changes made</b> none — this run edited no project file
+  </p>
+</header>
+
+<div class="verdict">
+  <span class="tag">Gate verdict — Fail</span>
+  <p>The document is directionally sound and materially better than on 2026-09-15, but cannot yet be accepted as mechanism authority: the flagship PD10 denial-envelope correction names wire values that exist in no vocabulary, PD11&rsquo;s guard-discriminated lifecycle model landed in one paragraph while four other normative statements still contradict it, and the document&rsquo;s own <code>✅ Validation Results</code> section certifies coverage the body no longer supports.</p>
+</div>
+
+<table>
+<thead><tr><th>Lens</th><th>Verdict</th><th class="n">Crit</th><th class="n">High</th><th class="n">Med</th><th class="n">Low</th></tr></thead>
+<tbody>
+<tr><td>Adversarial divergence <span class="note">(configured floor)</span></td><td><span class="pill p-crit">Fail</span></td><td class="n">3</td><td class="n">5</td><td class="n">4</td><td class="n">0</td></tr>
+<tr><td>Technology currency <span class="note">(configured floor)</span></td><td><span class="pill p-crit">Fail</span></td><td class="n">0</td><td class="n">6</td><td class="n">6</td><td class="n">3</td></tr>
+<tr><td>Rubric walker</td><td><span class="pill p-crit">Fail</span></td><td class="n">3</td><td class="n">9</td><td class="n">7</td><td class="n">2</td></tr>
+<tr><td>Security &amp; authorization</td><td><span class="pill p-crit">Fail</span></td><td class="n">1</td><td class="n">8</td><td class="n">8</td><td class="n">3</td></tr>
+<tr><td>Code reality / brownfield</td><td><span class="pill p-crit">Fail</span></td><td class="n">4</td><td class="n">4</td><td class="n">4</td><td class="n">2</td></tr>
+<tr><td>Authority conformance</td><td><span class="pill p-high">Pass w/ findings</span></td><td class="n">1</td><td class="n">5</td><td class="n">5</td><td class="n">3</td></tr>
+<tr><td><b>Total</b></td><td><b>Fail</b></td><td class="n"><b>12</b></td><td class="n"><b>37</b></td><td class="n"><b>34</b></td><td class="n"><b>13</b></td></tr>
+</tbody></table>
+
+<p class="note">Mechanical pass (<code>lint_spine.py</code>): <b>clean</b> — all 9 hits are false positives (a quoted <code>"TBD"</code> inside a <em>resolved</em> C0 row; <code>{tenant}</code>/<code>{domain}</code>/<code>{env}</code> are intended pattern placeholders).</p>
+
+<h2>The one-paragraph story</h2>
+<p>Two failure modes account for almost every critical finding, and they are opposites.</p>
+<p><b>The 2026-09-15 amendment is honest but incompletely propagated.</b> Three lenses independently verified the new <em>Current reality</em> table (<code>:240–243</code>) row by row and could not falsify it; the five routed <code>Open —</code> items, the planning-consistency invariant and the per-row NFR ownership recital all check out. But each fix <em>landed in one paragraph and left its contradiction standing elsewhere in the same document</em> — the most dangerous shape for a spine, because a reviewer who checks the amended paragraph reasonably believes the item is closed.</p>
+<p><b>The unamended 2026-05 strata were never re-verified.</b> Every code-reality critical, and both &ldquo;named technology that does not exist&rdquo; findings, sit in material written in May and carried forward untouched: the project tree, the requirements-to-structure mapping, the I-3/I-8/C10 enforcement rows, and the version block stamped <em>&ldquo;verified on NuGet 2026-05-09&rdquo;</em>.</p>
+
+<h2>Convergence — where independent lenses agreed</h2>
+<p>Findings corroborated by lenses that did not see each other&rsquo;s work. These carry the most weight in the gate.</p>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-1</span><span class="ttl">S-7&rsquo;s denial envelope names a vocabulary that does not exist</span><span class="pill p-crit">4 lenses</span></div>
+  <p class="cv-src">AUTH-1 (critical) · SEC-3 (high) · ADV-4 (high) · RUB-5 (high) — amplified by SEC-2, SEC-4, SEC-5, ADV-5, SEC-19</p>
+  <p><code>architecture.md:640</code> claims both envelopes are <em>&ldquo;fully named so the C13 <code>cli_exit_code</code> / <code>mcp_failure_kind</code> columns stay derivable&rdquo;</em>, then names category <code>authorization</code> / code <code>tenant_access_denied</code> for the 404 and category <code>availability</code> / code <code>authority_unavailable</code> / action <code>retry_after_backoff</code> for the 503.</p>
+  <ul>
+    <li>The approved OQ3 matrix (<code>authorization-matrix.md:145–146</code>) says 404 → category <code>tenant_access_denied</code>, code <code>resource_unavailable</code>, action <code>no_action</code>; 503 → <code>read_model_unavailable</code> / <code>projection_unavailable</code> / <code>retry</code>.</li>
+    <li><code>prd.md:611,1156</code> and <code>sprint-change-proposal-2026-09-15.md:321–323</code> agree with the matrix.</li>
+    <li>Neither <code>authorization</code>, <code>availability</code> nor <code>authority_unavailable</code> appears in the closed canonical vocabulary (<code>parity-contract.schema.json</code> <code>$defs</code>, nor <code>HexalithFoldersClient.g.cs:13324</code>).</li>
+    <li>The architecture <b>contradicts itself</b> — its own CLI exit-code table at <code>:691</code> maps exit 66 to canonical category <code>tenant_access_denied</code>.</li>
+  </ul>
+  <p><b>Highest-priority finding in the gate.</b> <code>:645</code> states <em>&ldquo;Release generation and parity gates consume only the corrected, reapproved matrix&rdquo;</em> — so if an implementer takes S-7&rsquo;s values as the correction, the regenerated surface will not match the artifact A6b must reapprove, and CLI derives exit 1 / non-retryable while MCP derives retryable for the same outage.</p>
+</div>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-2</span><span class="ttl">PD11&rsquo;s guard model landed in one paragraph; four normative statements still contradict it</span><span class="pill p-crit">5 lenses</span></div>
+  <p class="cv-src">ADV-1, ADV-2 (critical) · RUB-4, REAL-5, REAL-7, AUTH-4 (high) · ADV-9, ADV-10, ADV-11, AUTH-9, RUB-15, RUB-17 (medium)</p>
+  <p><code>:436–437</code> keys the C6 gate on <code>(state, event, guard)</code> and explains precisely why a two-tuple gate is unsafe. But <code>:358</code>, <code>:1065</code>, <code>:1066</code> and the <b>co-normative</b> <code>c6-transition-matrix-mapping.md:14,41</code> are all still pair-keyed — and that mapping document contains zero occurrences of &ldquo;guard&rdquo;, &ldquo;resolution&rdquo; or &ldquo;retryable&rdquo;. <code>:420</code> declares all of these &ldquo;express <b>one</b> model&rdquo;.</p>
+  <p>The live gate <code>FolderStateTransitionsTests.cs:82</code> is pair-keyed and <b>passes the implementation that routes every <code>CommitFailed</code> to <code>failed</code></b>, destroying staged work — the exact outcome <code>:437</code> warns about. Code reality sharpens it: <code>FolderStateTransitions.cs:90-91,107-108</code> does not <em>reject</em> two of the five new transitions, it <b>accepts them onto the other branch</b>, so the reality table understates the gap in the dangerous direction.</p>
+  <p><b>ADV-2 is the sharpest instance.</b> <code>dirty</code> + <code>WorkspaceLocked</code> is declared guard-discriminated with only one branch, under a rule that guards are &ldquo;evaluated server-side from durable state, never from caller input&rdquo; — while no declared durable field carries the staging task&rsquo;s identity (<code>stagedBy*</code> → 0 hits across <code>src/</code>). One reading makes the workspace permanently unlockable with no cleanup path; the other lets any principal naming the caller-supplied <code>X-Hexalith-Task-Id</code> resume and commit another principal&rsquo;s staged changes.</p>
+</div>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-3</span><span class="ttl">The ✅ validation section certifies coverage that does not exist</span><span class="pill p-crit">4 lenses</span></div>
+  <p class="cv-src">RUB-1 (critical) · AUTH-5 (high) · SEC-16, REAL-12, RUB-13, RUB-14, AUTH-11, AUTH-13</p>
+  <p><code>:58</code> correctly says <b>eleven</b> NFR categories. <code>:1708</code>, under a heading stamped <em>&ldquo;Requirements Coverage Validation ✅&rdquo;</em>, enumerates <b>nine</b> and asserts every category is bound to <em>&ldquo;at least one CI gate or runbook&rdquo;</em> — while all eleven NFR74–NFR84 rows in <code>nfr-traceability.md</code> carry <code>—</code> for automated gates. The two new bands are paraphrased once at <code>:272</code> and bound to no mechanism anywhere, contradicting the document&rsquo;s own planning-consistency invariant at <code>:253</code>.</p>
+</div>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-4</span><span class="ttl">Present-tense claims about CI mechanisms and technologies that do not exist</span><span class="pill p-crit">3 lenses</span></div>
+  <p class="cv-src">REAL-2, REAL-3, REAL-4 (critical) · TECH-5, TECH-6 (high) · REAL-8, TECH-11, RUB-10</p>
+  <p>All unlabelled, all in the 2026-05 strata, all counted among the shipped gates at <code>:1799</code>/<code>:1826</code>:</p>
+  <table>
+  <thead><tr><th>Claim</th><th>Line</th><th>Reality</th></tr></thead>
+  <tbody>
+  <tr><td>I-3: <code>daprd</code> in a kind cluster + property-based negative generator, <b>blocks merge</b></td><td>731</td><td>0 hits for <code>kind</code>/<code>daprd</code> repo-wide; real gate is a static-fixture xUnit suite, and <code>policy-conformance.yml:3-6</code> is <b>schedule-only</b> so it cannot block anything</td></tr>
+  <tr><td>I-8: per-tenant token buckets + 429 chaos gate</td><td>736</td><td>No <code>RateLimiting/</code>, no <code>*TokenBucket*</code>; what exists is read-only posture <em>evidence</em>, not enforcement</td></tr>
+  <tr><td>C10: <code>Caching/TenantPrefixedCacheKey.cs</code> + a ci.yml lint job</td><td>349</td><td>Neither exists; real gate is <code>GovernanceCompletenessGateTests:1383</code> over <code>cache-key-exceptions.yaml</code> — and the governance YAML already says so</td></tr>
+  <tr><td>Testcontainers in the <em>non-negotiable</em> stack</td><td>80, 547, 577</td><td>Zero usage in Folders</td></tr>
+  <tr><td><code>oasdiff</code> as the C12 drift classifier + <code>tests/tools/oasdiff/</code></td><td>351, 755, 1043, 1516, 1714, 1799</td><td>Exists nowhere; real lane is <code>run-nightly-drift-gates.ps1</code> + <code>tests/tools/forgejo-drift/</code> — already propagated into three <code>docs/</code> files</td></tr>
+  </tbody></table>
+</div>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-5</span><span class="ttl">&ldquo;49 of 50 protected operations&rdquo; reproduces from nothing</span><span class="pill p-high">4 lenses</span></div>
+  <p class="cv-src">AUTH-2 (high) · REAL-9, ADV-12 (medium) · SEC-18 (low)</p>
+  <p><code>:241</code> says 50. Every source says 49 — <code>authorization-matrix.md:15,341</code>, <code>prd.md:1156</code>, three test pins, <code>parity-contract.yaml</code> — including <code>architecture.md:640</code> itself, four hundred lines later. Both surviving hard-coded denominators sit in the sentences that forbid hard-coded denominators.</p>
+</div>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-6</span><span class="ttl">PD8&rsquo;s carve-out relocates durable cleartext rather than removing it</span><span class="pill p-crit">2 lenses + carry</span></div>
+  <p class="cv-src">SEC-1 (critical) · RUB-8, RUB-6 (high) · adversarial prior-F2 &ldquo;not closed&rdquo;</p>
+  <p><code>:639</code> guarantees <em>&ldquo;Cleartext confidential values are never made durable&rdquo;</em> and explains why read-time redaction is unacceptable:</p>
+  <blockquote>every later reader — replay, export, backup, incident dump — becomes a disclosure path the redaction rule never reaches</blockquote>
+  <p>Then <code>:643</code> carves out &ldquo;the operational fields the lock identity and provider executor consume, which stay cleartext inside the tenant&rsquo;s own execution boundary&rdquo;. All three named consumers (lock identity, Story 12.4 Git executor, NFR79 restart recovery) require the value to be <b>durable</b> — in the same shared Dapr state store, with no separate store, key, encryption requirement or export prohibition named. A tenant-prefixed key in a shared Redis is not an execution boundary; &ldquo;never emitted&rdquo; constrains egress and says nothing about snapshots, backups, replicas or operator access.</p>
+</div>
+
+<div class="cv">
+  <div class="cv-h"><span class="id">CV-7</span><span class="ttl">The corrections have no owner</span><span class="pill p-high">4 lenses</span></div>
+  <p class="cv-src">RUB-9, AUTH-6 (high) · adversarial prior-F7 · SEC-16 · code-reality note 4</p>
+  <p><code>epics.md</code> contains <b>zero</b> occurrences of PD8, PD10 or PD11 (verified independently by two lenses). No story owns the PD10 spine correction — which <code>:276</code> states plainly and honestly — while Story 13.2 owns NFR76 and would build a second deny-by-default shape beside it. NFR74 is credited to Epic 13 but no Epic 13 story owns it.</p>
+</div>
+
+<h2>Critical findings <span class="note">(12)</span></h2>
+<table>
+<thead><tr><th>ID</th><th>Lens</th><th>Finding</th><th>Anchor</th></tr></thead>
+<tbody>
+<tr><td class="mono"><b>AUTH-1</b></td><td>Authority</td><td>S-7 names a denial vocabulary contradicting the approved OQ3 matrix, the PRD and the ratified proposal; the invented tokens are in no enum</td><td class="mono">:640</td></tr>
+<tr><td class="mono"><b>ADV-1</b></td><td>Adversarial</td><td><code>(state,event,guard)</code> keying exists in one paragraph; 4 normative statements stay pair-keyed and the live gate passes the staged-work-destroying build</td><td class="mono">:436 :358 :1065</td></tr>
+<tr><td class="mono"><b>ADV-2</b></td><td>Adversarial</td><td><code>dirty</code>+<code>WorkspaceLocked</code> declares a guard with one branch and a server-side-only rule no durable field satisfies — bricked workspace, or cross-principal takeover of staged work</td><td class="mono">:404 :436 :677</td></tr>
+<tr><td class="mono"><b>ADV-3</b></td><td>Adversarial</td><td>Cleanup has two mutually exclusive triggers (terminal <em>task</em> closure vs workspace <em>state</em>) — one unit deletes staged content at day 7, the other never</td><td class="mono">:430 vs :983</td></tr>
+<tr><td class="mono"><b>SEC-1</b></td><td>Security</td><td>The PD8 operational carve-out sanctions durable confidential cleartext in an unnamed, unencrypted, shared store — falsifying S-6&rsquo;s headline guarantee</td><td class="mono">:643 vs :639</td></tr>
+<tr><td class="mono"><b>REAL-1</b></td><td>Code reality</td><td><code>Hexalith.Folders.EventStore</code> — a real deployable project hosting the A-9 adapters and serving the <code>eventstore</code> app id — has <b>0 occurrences</b> in 1857 lines</td><td class="mono">:1548 :1724</td></tr>
+<tr><td class="mono"><b>REAL-2</b></td><td>Code reality</td><td>I-3&rsquo;s merge-blocking live-sidecar policy gate does not exist; the real workflow is schedule-only</td><td class="mono">:731</td></tr>
+<tr><td class="mono"><b>REAL-3</b></td><td>Code reality</td><td>I-8&rsquo;s per-tenant token buckets and 429 chaos gate do not exist and are counted as shipped</td><td class="mono">:736</td></tr>
+<tr><td class="mono"><b>REAL-4</b></td><td>Code reality</td><td>C10&rsquo;s pinned artifact and ci.yml lint job do not exist; the governance YAML already records the real gate</td><td class="mono">:349</td></tr>
+<tr><td class="mono"><b>RUB-1</b></td><td>Rubric</td><td>The NFR coverage claim is false — 9 of the document&rsquo;s own 11 categories, two bands bound to nothing, under a ✅</td><td class="mono">:1708 vs :58</td></tr>
+<tr><td class="mono"><b>RUB-2</b></td><td>Rubric</td><td><b>Disaster recovery / backup / restore is a silent dimension</b> — <code>disaster</code>/<code>RTO</code>/<code>RPO</code> all 0 hits, against P7Y admission records a restore could resurrect</td><td class="mono">—</td></tr>
+<tr><td class="mono"><b>RUB-3</b></td><td>Rubric</td><td><b>Event-payload schema evolution and data migration are silent</b> — <code>upcast</code>/<code>schema evolution</code>/<code>event version</code> all 0 hits, in an event-sourced system currently adding a lifecycle event</td><td class="mono">prd.md:651</td></tr>
+</tbody></table>
+
+<h2>High findings <span class="note">(37)</span></h2>
+
+<h3>Adversarial divergence</h3>
+<p><code>ADV-4</code> S-7 tokens outside the canonical vocabulary so CLI and MCP disagree on retryability · <code>ADV-5</code> <code>visibility</code> declared closed twice at two different closures on a field A-8 requires everywhere · <code>ADV-6</code> D-9&rsquo;s 413 retry header collides with a reserved request-side name, and <code>epics.md</code> encodes the colliding spelling · <code>ADV-7</code> three &ldquo;current deployed behaviour&rdquo; anchors are false at HEAD and two rank-30 stories will encode the opposite · <code>ADV-8</code> the semantic-indexing bridge has two writers (10.7 projection, 12.5 reconciler) with no arbitration — a replay empties every search result.</p>
+
+<h3>Technology currency</h3>
+<p><code>TECH-1</code> MCP SDK pinned <code>1.3.0</code> in four places; repo builds <code>2.2.0</code> · <code>TECH-2</code> Aspire pinned <code>13.4.6</code>; repo is on <code>13.5.3</code> — the same SDK-vs-Hosting mismatch class as the Epic 9 DCP blocker · <code>TECH-3</code> EventStore/Tenants &ldquo;3.15.1&rdquo; vs actual <code>3.104.0</code>/<code>5.7.0</code> · <code>TECH-4</code> the package-management decision is inverted — <code>:523</code> forbids exactly what <code>release-packages.yml:131-134</code> does · <code>TECH-5</code> Testcontainers mandated, unused · <code>TECH-6</code> <code>oasdiff</code> named in six places, absent from the repo.</p>
+
+<h3>Rubric walker</h3>
+<p><code>RUB-4</code> the declared C6 three-way lockstep has no gate and the named gate does not read the document it claims to compare · <code>RUB-5</code> S-7&rsquo;s envelopes are not named anywhere the C13 columns are derived from · <code>RUB-6</code> <code>withheld</code> and the <code>confidential</code> tier never reach the UX contract or F-5 · <code>RUB-7</code> degraded mode is decided twice in opposite directions (S-7/NFR76 deny-on-stale vs concern #20 serve-under-bounded-staleness) · <code>RUB-8</code> S-6&rsquo;s tokenizer has no owner component, no key management, and its gate points at the file S-6 says is <em>not</em> the tokenizer · <code>RUB-9</code> PD8/PD11 code-landing work is unowned at every rank while rank-30 stories list it as prerequisite · <code>RUB-10</code> structure mapping presented as complete: no home for three new mechanisms, no NFR mapping, 12 of 22 concerns · <code>RUB-11</code> write-concurrency control on the aggregate stream undecided against an NFR requiring multi-replica convergence · <code>RUB-12</code> no deployment profile, environment inventory or replica/scaling decision.</p>
+
+<h3>Security &amp; authorization</h3>
+<p><code>SEC-2</code> the &ldquo;single 404&rdquo; is two codes chosen by an unspecified predicate, re-creating the oracle inside the envelope · <code>SEC-3</code> invented categories break the derivability claimed in the same sentence and would redden <code>AuthorizationMatrixContractTests:202-213</code> · <code>SEC-4</code> absent/malformed authority routed to a <b>retryable</b> 503, inverting NFR76 deny-by-default, dropping the 401 and creating pre-auth retry amplification · <code>SEC-5</code> the remediation is scoped to <code>category</code> while the live 404 still discriminates existence through <code>code</code>, the <code>type</code> URI, <code>retryReasonCode</code>, <code>layer</code> and <code>timingBucket</code> · <code>SEC-6</code> S-7 and S-8 are jointly unsatisfiable for task-derived scope · <code>SEC-7</code> S-8&rsquo;s &ldquo;never caller-supplied&rdquo; rule is broken by <code>ValidateProviderReadiness</code>, the known SSRF sink, and no destination-denial decision exists · <code>SEC-8</code> tokenizer truncation width unspecified; rotation silently destroys the evidence joins · <code>SEC-9</code> no deny-by-default authorization binding for the HTTP surface.</p>
+
+<h3>Code reality</h3>
+<p><code>REAL-5</code> the reality table understates PD11 in the dangerous direction (two transitions accepted, not rejected) · <code>REAL-6</code> Story 12.4 is pointed at a <code>NotImplementedException</code> that is not in the Git write path — provider writes are implemented; the real gap is fail-closed Server composition · <code>REAL-7</code> <code>FolderWorkspaceDirtyResolution</code> discriminates a different pair than the four named · <code>REAL-8</code> five FR blocks and three concerns routed to paths that do not exist.</p>
+
+<h3>Authority conformance</h3>
+<p><code>AUTH-2</code> &ldquo;49 of 50&rdquo; · <code>AUTH-3</code> <code>:181</code> still frames Story 10.9 as the body-content follow-up that PD5/A4 abolished · <code>AUTH-4</code> <code>unknown_provider_outcome</code> disposition diverges across the three artifacts declared to &ldquo;express one model&rdquo; · <code>AUTH-5</code> nine-category coverage claim after the 84-row relock · <code>AUTH-6</code> Epic 13 credited with NFR74 but no story owns it.</p>
+
+<h2>Medium and low <span class="note">(47)</span></h2>
+<p>34 medium and 13 low across the six reports — counts, hard-coded denominators, stale cross-references, the <code>visibility</code> wire position, escape hatches with no enumerated set, cost as an unowned dimension, undocumented <code>LibGit2Sharp</code>/Fluent-UI/Redis/JSON-serializer decisions, and editorial residue. Full detail per lens in the review files listed below.</p>
+
+<h2>Cross-lens conflicts, reconciled</h2>
+<p>Honest disagreements between lenses, resolved on the evidence rather than averaged:</p>
+<ol>
+<li><b>&ldquo;Named tech is verified-current&rdquo;</b> — the rubric walker scored this <b>PASS</b>, the technology lens <b>FAIL</b>. The rubric checked the document&rsquo;s <em>internal</em> consistency (genuinely clean — every technology appears at the same version everywhere); the technology lens checked against <code>Directory.Packages.props</code>. <b>The technology lens is correct</b>; the rubric&rsquo;s PASS on checklist item 4 is superseded by TECH-1–TECH-6.</li>
+<li><b>Size of the canonical error vocabulary</b> — adversarial says 46 members, authority says 50 in <code>parity-contract.schema.json</code> and 49 in the generated client. The authority lens reproduced its counts from the fixtures directly and is the better source. The disagreement does not affect the finding: all four lenses agree the S-7 tokens are absent from <em>every</em> candidate vocabulary.</li>
+</ol>
+
+<h2>Prior-gate closure <span class="note">(2026-09-15 → 2026-09-16)</span></h2>
+<p>The fixes applied on 2026-09-15 were <b>real and verified</b>, but partial. Each lens tracked its own prior series; the numbering is per-lens and is not merged here.</p>
+<ul>
+<li><b>Authority conformance</b> — the prior CRITICAL is <b>closed, verified by execution</b>: <code>Contracts.Tests</code> runs <b>314/314, 0 failed</b>, and the C6 lockstep (diagram + mapping doc + pinned counts 34→41, 23→24) landed in <code>de281e7</code>. Prior F2/F3/F4/F4b/F5/F8/F9 closed; F6, F10, F12 still open.</li>
+<li><b>Rubric</b> — all three prior criticals <b>fixed</b>; this run&rsquo;s failure set is new, not a regression.</li>
+<li><b>Adversarial</b> — of 18 prior findings: <b>3 fully closed</b> (S-6 derivation, F4, NFR ownership), <b>5 half-closed</b>, <b>10 not closed</b>. Two are worse than before: F5 was <em>restated with non-existent tokens</em> (→ ADV-4) and F11 was <em>promoted to critical</em> by PD11 making the pair guard-discriminated (→ ADV-2).</li>
+<li><b>Security</b> — S-6 derivation, <code>visibility</code> enumeration, honesty labels and A-11 migration are genuinely fixed; the OQ2 schema supersession and the hard-coded denominator are not.</li>
+<li><b>Code reality</b> — every 2026-09-15 addition carries its label and survives verification. All failures are in material written in 2026-05.</li>
+<li><b>Technology</b> — the prior manifest finding is fixed-as-documented (<code>:206</code> now honestly states the regeneration is owed).</li>
+</ul>
+
+<div class="good-box">
+<h2>What is strong — a fix pass must not undo it</h2>
+<ol>
+<li><b>The honesty convention works and is accurate.</b> The <em>Current reality</em> table (<code>:240–243</code>) was verified row by row by two lenses; not one row could be falsified. The planning-consistency invariant (<code>:253</code>) and <em>&ldquo;admission is not implementation evidence&rdquo;</em> (<code>:278</code>) are exactly the rules that stop a control-plane shell being reported as a product.</li>
+<li><b>Five routed <code>Open —</code> items</b> (<code>:214</code>, <code>:276</code>, <code>:432</code>, <code>:643</code>, <code>:651</code>), four naming their owner. Converting a contradiction into a routed open question is the right disposition.</li>
+<li><b>Every digest, count and ownership cell reproduces byte-exact</b> — OQ3 <code>5ffabd71…</code>, C12 <code>5799e090…</code>, C7 30/15/60/60, NFR 84/11, C6 41 edges / 24 events / 11 states, all eleven NFR74–84 owner cells, §7.1 edge-for-edge with zero dropped edges, §7.2 10/10 and §7.3 8/8 homed. The <code>reconciledTo</code> claim is substantially true.</li>
+<li><b>The guard dimension itself (<code>:436–437</code>) is good architecture</b> — four guard-discriminated pairs identified, server-side evaluation required, retryable classification assigned to one shared classifier so GitHub and Forgejo cannot disagree. It needs <b>propagating, not rewriting</b>.</li>
+<li><b>A-9 / D-7 idempotency</b> remains the strongest section and is the template S-6 and S-7 should be written against — S-6 now correctly cites it as precedent.</li>
+<li><b>The <code>{C3, C4, C7, C12}</code> hard-pin, the NFR row statuses, the 41/24 C6 pins and the governance YAML statuses are all handled correctly.</b> Do not touch them.</li>
+<li><b>Repo currency is genuinely good.</b> Octokit 14.0.0, LibGit2Sharp 0.32.0, NSwag 14.7.1, xunit.v3 4.0.1, Dapr 1.18.7, SDK 10.0.401 and the Forgejo support matrix are all at or within one release of current. The gap is doc-vs-repo, not repo-vs-world.</li>
+</ol>
+</div>
+
+<h2>Recommended disposition</h2>
+
+<div class="tier">
+<h3>Tier 1 — before the PD10 spine regeneration consumes S-7 <span class="pill p-crit">blocks A6b</span></h3>
+<p>AUTH-1 / SEC-3: restate S-7&rsquo;s envelopes verbatim from <code>authorization-matrix.md:144-147</code>, all three outcomes including 401, one code for the 404, no invented categories. SEC-2, SEC-4, SEC-5 ride the same edit. This is the one finding that can propagate a wrong wire value into the artifact A6b must reapprove.</p>
+</div>
+
+<div class="tier">
+<h3>Tier 2 — before any Epic 4 / Epic 12 lifecycle story starts</h3>
+<p>ADV-1: propagate the triple keying to <code>:358</code>, <code>:1065</code>, <code>:1066</code> and the C6 mapping artifact in one change set, with an explicit default rule for unenumerated guard branches. ADV-2: declare the durable <code>stagedByTaskId</code>/<code>stagedByPrincipal</code> fields the guard requires. ADV-3: correct <code>:983</code> to the task-closure vocabulary. REAL-5: correct the reality table in the <em>strict</em> direction.</p>
+</div>
+
+<div class="tier">
+<h3>Tier 3 — decide, or declare open with an owner</h3>
+<p>SEC-1 PD8 operational boundary (HMAC the lock key; re-derive the executor&rsquo;s ref at call time; name the control set for any surviving cleartext) · RUB-2 disaster recovery · RUB-3 event-payload schema evolution · RUB-11 write concurrency · RUB-12 deployment envelope · SEC-7/SEC-9 destination policy and deny-by-default binding.</p>
+</div>
+
+<div class="tier">
+<h3>Tier 4 — mechanical sweep, no lockstep cost</h3>
+<p>All version pins (TECH-1–TECH-4, one version × N sites — and consider citing <code>Directory.Packages.props</code> as the owner rather than copying numbers forward), the two non-existent technologies, REAL-1&rsquo;s missing project, the ✅ validation section, the &ldquo;49 of 50&rdquo; denominators, and the remaining single-sentence authority edits.</p>
+</div>
+
+<p><b>Structural recommendation</b> — three lenses converged on it independently: give §Complete Project Directory Structure, §Requirements to Structure Mapping and the I-3/I-8/C10 enforcement rows the same treatment the 2026-09-15 amendment received — a per-entry as-built-vs-target marker, or one banner declaring the tree the <em>target</em> layout and naming <code>Hexalith.Folders.slnx</code> as the authoritative as-built inventory. And stop embedding <code>file.cs:line</code> claims in the prose; replace with a pointer plus a conformance test, so the document cannot silently go stale against the tree again.</p>
+
+<h2>Review artifacts</h2>
+<table>
+<thead><tr><th>Lens</th><th>Full review</th></tr></thead>
+<tbody>
+<tr><td>Adversarial divergence</td><td class="mono">reviews/review-adversarial-2026-09-16.md <span class="note">511 lines</span></td></tr>
+<tr><td>Technology currency</td><td class="mono">reviews/review-technology-2026-09-16.md <span class="note">306 lines · 40-row verification table</span></td></tr>
+<tr><td>Rubric walker</td><td class="mono">reviews/review-rubric-2026-09-16.md <span class="note">443 lines · 31-row dimension sweep</span></td></tr>
+<tr><td>Security &amp; authorization</td><td class="mono">reviews/review-security-2026-09-16.md <span class="note">478 lines · focus-area coverage table</span></td></tr>
+<tr><td>Code reality / brownfield</td><td class="mono">reviews/review-code-reality-2026-09-16.md <span class="note">372 lines · 37-row claim probe</span></td></tr>
+<tr><td>Authority conformance</td><td class="mono">reviews/review-authority-conformance-2026-09-16.md <span class="note">324 lines · full reproduction table</span></td></tr>
+</tbody></table>
+
+<footer>
+<p>Reviewer Gate — bmad-architecture, Validate intent · 16 September 2026 · run workspace <code>architecture-folders-2026-07-19/</code><br>
+<b>No file under <code>src/</code>, <code>tests/</code>, <code>docs/</code> or <code>architecture.md</code> was modified by this run.</b></p>
+</footer>
+
+</div>
+</body>
+</html>
