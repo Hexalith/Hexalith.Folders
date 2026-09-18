@@ -35,7 +35,8 @@ $artifactPaths = @(
     'docs/operations/retention-and-tenant-deletion.md',
     'docs/runbooks/tenant-deletion.md',
     'docs/exit-criteria/c0-c13-governance-evidence.yaml',
-    '.github/workflows/release-packages.yml',
+    '.github/workflows/ci.yml',
+    '.github/workflows/release.yml',
     'tests/tools/run-release-package-gates.ps1',
     'deploy/nuget/release-packages.yaml'
 )
@@ -226,7 +227,7 @@ function Assert-ArtifactExists {
 function Assert-NoRecursiveSubmoduleSetup {
     $recursiveToken = '--' + 'recursive'
     $recursiveCommand = 'git submodule update --init ' + $recursiveToken
-    foreach ($relativePath in @('.github/workflows/release-packages.yml', 'tests/tools', 'docs', 'deploy', 'src')) {
+    foreach ($relativePath in @('.github/workflows/release.yml', 'tests/tools', 'docs', 'deploy', 'src')) {
         $fullPath = Join-Path $repositoryRoot $relativePath
         if (-not (Test-Path $fullPath)) {
             continue
@@ -385,18 +386,23 @@ function Assert-GovernanceEvidence {
 }
 
 function Assert-ReleaseReadiness {
-    $workflow = Get-Content -Raw -Path (Join-Path $repositoryRoot '.github/workflows/release-packages.yml')
+    $ci = Get-Content -Raw -Path (Join-Path $repositoryRoot '.github/workflows/ci.yml')
+    $release = Get-Content -Raw -Path (Join-Path $repositoryRoot '.github/workflows/release.yml')
     $packageGate = Get-Content -Raw -Path (Join-Path $repositoryRoot 'tests/tools/run-release-package-gates.ps1')
     $manifest = Get-Content -Raw -Path (Join-Path $repositoryRoot 'deploy/nuget/release-packages.yaml')
 
-    foreach ($expected in @(
-            './tests/tools/run-retention-deletion-gates.ps1',
-            '_bmad-output/gates/retention-deletion/latest.json',
-            'c3-retention-approval-blocks-live-publish')) {
-        if (-not ($workflow.Contains($expected, [StringComparison]::Ordinal) `
-                -or $packageGate.Contains($expected, [StringComparison]::Ordinal) `
-                -or $manifest.Contains($expected, [StringComparison]::Ordinal))) {
-            Fail-Gate -Category 'release-readiness' -Reason "release-readiness-drift expected=$expected"
+    if (-not $ci.Contains('./tests/tools/run-retention-deletion-gates.ps1', [StringComparison]::Ordinal)) {
+        Fail-Gate -Category 'release-readiness' -Reason 'missing-blocking-ci-retention-gate'
+    }
+
+    foreach ($artifact in @(
+            [ordered]@{ path = '.github/workflows/release.yml'; content = $release },
+            [ordered]@{ path = 'tests/tools/run-release-package-gates.ps1'; content = $packageGate },
+            [ordered]@{ path = 'deploy/nuget/release-packages.yaml'; content = $manifest })) {
+        foreach ($forbidden in @('run-retention-deletion-gates.ps1', '_bmad-output/gates/retention-deletion/latest.json')) {
+            if ($artifact.content.Contains($forbidden, [StringComparison]::Ordinal)) {
+                Fail-Gate -Category 'release-readiness' -Reason "stale-package-coupling path=$($artifact.path) value=$forbidden"
+            }
         }
     }
 

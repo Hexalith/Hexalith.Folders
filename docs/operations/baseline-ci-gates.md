@@ -1,28 +1,28 @@
 # Baseline CI Gates
 
-Story 7.4 defines the pull-request baseline lane for mechanical repository health. The stable required status-check name is `baseline-build-and-unit-gates`; branch protection is configured outside this repository, but this job name is intentionally stable so maintainers can require it.
+Story 7.4 defines the pull-request baseline lane for mechanical repository health. The stable Folders-specific status-check name is `folders-specialized-gates`; branch protection is configured outside this repository.
 
-The workflow is `.github/workflows/ci.yml`. It runs for `pull_request` and pushes to `main`, `next`, `alpha`, and `beta`. Checkout uses `submodules: false`; the workflow then initializes only the documented root-level build submodules and never initializes nested submodules recursively:
+The workflow is `.github/workflows/ci.yml`. It runs for pull requests and pushes to `main`. Checkout uses `submodules: false`; the workflow then initializes only root-declared submodules and never initializes nested submodules recursively:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
+git -c submodule.recurse=false submodule update --init
 ```
 
 ## Gate Categories
 
 `tests/tools/run-baseline-ci-gates.ps1` exposes these failure categories:
 
-- `dependency-mode`: evaluates the UI test project in unqualified/default, explicit Debug, and explicit Release/package modes and blocks unless the global source/package properties and representative source-availability flags agree.
-- `restore`: `dotnet restore Hexalith.Folders.slnx -p:NuGetAudit=false`
-- `build`: `dotnet build Hexalith.Folders.slnx --no-restore`
-- `format`: `dotnet format whitespace Hexalith.Folders.slnx --verify-no-changes --no-restore --include ./src/ ./tests/ ./samples/`
-- `lint`: `dotnet format analyzers Hexalith.Folders.slnx --verify-no-changes --no-restore --severity warn --include ./src/ ./tests/ ./samples/`
+- `dependency-mode`: verifies local default/Debug source mode plus explicit Release and `CI=true` package-reference modes.
+- `restore`: `dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1`
+- `build`: `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1`
+- `format`: `dotnet format whitespace Hexalith.Folders.CI.slnx --verify-no-changes --no-restore --include ./src/ ./tests/ ./samples/`
+- `lint`: `dotnet format analyzers Hexalith.Folders.CI.slnx --verify-no-changes --no-restore --severity warn --include ./src/ ./tests/ ./samples/`
 - `unit-tests`: explicit hermetic unit-test project allow-list
 - `package-mode-restore`: fresh explicit Release/package restore of `Hexalith.Folders.UI.Tests`.
 - `package-mode-build`: explicit Release/package build of `Hexalith.Folders.UI.Tests` without reusing source-mode assets.
 - `package-mode-test`: executes the UI tests against `Hexalith.FrontComposer.Testing` from its NuGet package, including `InMemoryStorageService` consumption.
 
-The `build` gate needs the root-level submodule working trees present (the `Hexalith.Folders.Server`/`Workers`/`AppHost` host projects reference sibling submodule source). Those submodules are independent repositories with their own formatting standards (for example, CRLF line-endings), so the `format` and `lint` gates are deliberately scoped with `--include ./src/ ./tests/ ./samples/` to evaluate only this repository's own code. The exact `./src/` path form matters: a bare `--include src tests` matches no files and makes the gate pass vacuously.
+CI and Release builds resolve Hexalith dependencies from centrally pinned NuGet packages. Local default/Debug development may still use root-declared source dependencies. Those submodules are independent repositories with their own formatting standards, so the `format` and `lint` gates are deliberately scoped with `--include ./src/ ./tests/ ./samples/` to evaluate only this repository's code.
 
 ## Unit Allow-List
 
@@ -38,14 +38,11 @@ The baseline lane runs these projects only:
 - `tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj`
 - `samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj`
 
-Several projects use baseline-safe filters so the lane stays focused on mechanical health:
+Microsoft.Testing.Platform runs full-project entries without a selector. The two deliberately selected entries execute the already-built xUnit v3 assemblies directly, never project-level `dotnet test --filter`:
 
-- `tests/Hexalith.Folders.Tests` excludes two stale provider-boundary guard methods that need provider-scope cleanup outside Story 7.4.
-- `tests/Hexalith.Folders.Contracts.Tests` runs smoke, baseline CI, release package, retention/deletion, production observability, and consumer documentation conformance checks only. Broader contract, parity, security, and provider cleanup belongs to later Epic 7 consolidation stories.
-- `tests/Hexalith.Folders.Client.Tests` excludes isolated regeneration tests that perform their own restore and can be affected by NuGet audit network access.
-- `tests/Hexalith.Folders.Testing.Tests` excludes scaffold/deferred-artifact policy checks that track broader repository governance drift.
-- `tests/Hexalith.Folders.Workers.Tests` excludes tenant subscription endpoint tests that bind local sockets; worker endpoint coverage belongs in a lane with socket-capable test hosts.
-- `samples/Hexalith.Folders.Sample.Tests` runs hermetic SDK lifecycle example checks with a fake handler and no AppHost, Dapr, provider, or network dependency.
+- `Hexalith.Folders.Contracts.Tests.dll` uses repeated `-class` selectors for the deployment-governance allow-list.
+- `Hexalith.Folders.Client.Tests.dll` uses two `-method-` exclusions for the out-of-process regeneration checks already owned by the contract/parity gate.
+- Folders, CLI, MCP, Testing, UI, Workers, and sample tests run as complete projects.
 
 Excluded from this lane:
 
@@ -54,15 +51,16 @@ Excluded from this lane:
 - `tests/load/Hexalith.Folders.LoadTests`
 - `tests/Hexalith.Folders.LoadTests.Tests`
 
-Container publish, live Dapr policy, provider drift, Playwright browser, capacity, release artifact upload, and live registry gates are intentionally outside the baseline lane.
+Capacity smoke/calibration, retention/deletion, NFR traceability, contract/parity, security, safety, governance, accessibility, and browser checks are separate blocking steps/jobs for the same CI commit. Package sealing does not trust checked-in gate reports.
 
 ## Cache Inputs
 
-`actions/setup-dotnet@v5` uses `global-json-file: global.json` and NuGet caching. Cache dependency paths are:
+`actions/setup-dotnet@v6.0.0` uses `global-json-file: global.json` and NuGet caching. Cache dependency paths are:
 
 - `Directory.Packages.props`
 - `global.json`
 - `nuget.config`
+- `references/Hexalith.Builds/Props/Directory.Packages.props`
 - `**/*.csproj`
 
 ## Diagnostics

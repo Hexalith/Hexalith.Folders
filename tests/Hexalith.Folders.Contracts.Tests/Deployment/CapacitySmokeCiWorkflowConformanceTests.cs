@@ -71,34 +71,28 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
     {
         YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
 
-        GetScalar(workflow, "name").ShouldBe("baseline-ci");
+        GetScalar(workflow, "name").ShouldBe("CI");
         GetScalar(GetMapping(workflow, "permissions"), "contents").ShouldBe("read");
 
         YamlMappingNode jobs = GetMapping(workflow, "jobs");
-        GetMapping(jobs, "baseline-build-and-unit-gates");
-        GetMapping(jobs, "contract-and-parity-gates");
-        GetMapping(jobs, "security-and-redaction-gates");
-        YamlMappingNode capacityJob = GetMapping(jobs, "capacity-smoke-gates");
+        GetMapping(jobs, "ci");
+        YamlMappingNode capacityJob = GetMapping(jobs, "folders-specialized-gates");
 
-        GetScalar(capacityJob, "name").ShouldBe("capacity-smoke-gates");
+        GetScalar(capacityJob, "name").ShouldBe("folders-specialized-gates");
         GetScalar(capacityJob, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(capacityJob, "actions/checkout@v6");
+        YamlMappingNode checkout = FindStep(capacityJob, "actions/checkout@v7.0.1");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
         YamlMappingNode submodules = GetSequence(capacityJob, "steps").Children.Cast<YamlMappingNode>()
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), "Initialize root-level build submodules", StringComparison.Ordinal));
+                && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        foreach (string module in _rootBuildSubmodules)
-        {
-            submoduleCommand.ShouldContain(module, Case.Sensitive);
-        }
 
-        YamlMappingNode setupDotnet = FindStep(capacityJob, "actions/setup-dotnet@v5");
+        YamlMappingNode setupDotnet = FindStep(capacityJob, "actions/setup-dotnet@v6.0.0");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");
@@ -110,8 +104,8 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
 
         string workflowText = ReadText(WorkflowPath);
         workflowText.ShouldContain("./tests/tools/run-capacity-smoke-ci-gates.ps1");
-        workflowText.ShouldContain("dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false");
-        workflowText.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore -m:1");
+        workflowText.ShouldContain("./tests/tools/run-baseline-ci-gates.ps1");
+        workflowText.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
         workflowText.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
         workflowText.ShouldNotContain("upload-artifact", Case.Insensitive);
         workflowText.ShouldNotContain("playwright install", Case.Insensitive);
@@ -128,7 +122,7 @@ public sealed partial class CapacitySmokeCiWorkflowConformanceTests
         script.ShouldContain(ReportPath);
         script.ShouldContain("$LASTEXITCODE");
         script.ShouldContain(LoadProjectPath);
-        script.ShouldContain("'run', '--no-build', '--project', $loadProjectPath");
+        script.ShouldContain("'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath");
         script.ShouldContain("--self-check");
         script.ShouldContain("--profile', 'quick'");
         script.ShouldContain("--run-id', 'capacity-smoke-ci'");

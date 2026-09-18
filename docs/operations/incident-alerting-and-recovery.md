@@ -152,4 +152,4 @@ A reviewer should run the local validation command above, confirm the report rep
 C3/tenant-deletion sources. Rerun the gate after any change to the observability manifest, the incident-stream
 guardrails, or the cross-linked retention artifacts. The static gate runs in the `contract-spine` CI lane and
 through the baseline CI Contracts.Tests filter; it is not promoted to a new top-level `ci.yml` lane, to
-`release-packages.yml`, or to scheduled workflows.
+`release.yml`, or to scheduled workflows.

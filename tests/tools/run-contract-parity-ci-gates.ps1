@@ -146,15 +146,7 @@ function Invoke-ContractParityGate {
         $exitCode = 0
     }
     else {
-        $arguments = @('test', $gate.project_path, '--no-restore', '--no-build', '--filter', $gate.filter)
-        $output = & dotnet @arguments 2>&1
-        $exitCode = $LASTEXITCODE
-        $output | ForEach-Object { Write-Host $_ }
-        $joinedOutput = $output -join [Environment]::NewLine
-        if ($exitCode -ne 0 -and ($joinedOutput -match 'System\.Net\.Sockets\.SocketException.*Permission denied' -or
-                $joinedOutput -match 'Testing with VSTest target is no longer supported')) {
-            $exitCode = Invoke-XunitInProcessFallback -Gate $Gate
-        }
+        $exitCode = Invoke-XunitAssembly -Gate $Gate
     }
 
     $status = if ($exitCode -eq 0) { 'passed' } else { 'failed' }
@@ -168,27 +160,56 @@ function Invoke-ContractParityGate {
     }
 }
 
-function Invoke-XunitInProcessFallback {
+function Invoke-XunitAssembly {
     param(
         [Parameter(Mandatory = $true)]$Gate
     )
 
-    Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) vstest-unavailable=true fallback=xunit-in-process"
     $projectDirectory = Split-Path -Parent (Join-Path $repositoryRoot $Gate.project_path)
     $projectName = [System.IO.Path]::GetFileNameWithoutExtension($Gate.project_path)
-    $runnerPath = Join-Path $projectDirectory "bin/Debug/net10.0/$projectName"
+    $runnerPath = Join-Path $projectDirectory "bin/Release/net10.0/$projectName.dll"
     if (-not (Test-Path $runnerPath)) {
-        Write-Error "CONTRACT-PARITY-CI-PREREQUISITE-DRIFT: xUnit in-process runner not found at repository-relative project output for $($Gate.project_path). Build the solution before running this gate."
+        Write-Host "CONTRACT-PARITY-CI-PREREQUISITE-DRIFT: xUnit test assembly not found at repository-relative project output for $($Gate.project_path). Build the solution before running this gate."
         return 1
     }
 
-    $runnerArguments = @('-noLogo', '-noColor')
-    foreach ($class in $Gate.runner_classes) {
-        $runnerArguments += @('-class', $class)
+    $selectorPrefix = 'FullyQualifiedName~'
+    $selectors = @($Gate.filter -split '\|')
+    if ($selectors.Count -eq 0 -or @($selectors | Where-Object { -not $_.StartsWith($selectorPrefix, [StringComparison]::Ordinal) }).Count -gt 0) {
+        Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) status=failed reason=invalid-selector-contract"
+        return 1
     }
 
-    & $runnerPath @runnerArguments 2>&1 | ForEach-Object { Write-Host $_ }
-    return $LASTEXITCODE
+    $qualifiedSelectors = @($selectors | ForEach-Object { $_.Substring($selectorPrefix.Length) })
+    foreach ($class in $Gate.runner_classes) {
+        if (@($qualifiedSelectors | Where-Object { $_ -eq $class -or $_.StartsWith("$class.", [StringComparison]::Ordinal) }).Count -eq 0) {
+            Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) status=failed reason=unmapped-runner-class class=$class"
+            return 1
+        }
+    }
+
+    foreach ($selector in $qualifiedSelectors) {
+        $selectorArguments = @('-noLogo', '-noColor')
+        if ($Gate.runner_classes -contains $selector) {
+            $selectorArguments += @('-class', $selector)
+        }
+        else {
+            $selectorArguments += @('-method', $selector)
+        }
+
+        $runnerOutput = & dotnet $runnerPath @selectorArguments 2>&1
+        $runnerExitCode = $LASTEXITCODE
+        $runnerOutput | ForEach-Object { Write-Host $_ }
+        if ($runnerExitCode -ne 0) {
+            return $runnerExitCode
+        }
+        if (-not (($runnerOutput -join [Environment]::NewLine) -match 'Total:\s+[1-9]\d*')) {
+            Write-Host "CONTRACT-PARITY-CI category=$($Gate.category) status=failed reason=test-selection-drift selector=$selector observed=0"
+            return 1
+        }
+    }
+
+    return 0
 }
 
 try {

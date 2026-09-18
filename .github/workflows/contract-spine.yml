@@ -32,10 +32,10 @@ jobs:
           global-json-file: global.json
 
       - name: Restore
-        run: dotnet restore Hexalith.Folders.slnx
+        run: dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
 
       - name: Build
-        run: dotnet build Hexalith.Folders.slnx --no-restore
+        run: dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
 
       - name: Run contract spine gates
         shell: pwsh

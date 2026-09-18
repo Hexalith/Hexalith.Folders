@@ -8,21 +8,21 @@ internal sealed record ProviderOperationSourceResolutionResult<T>(
     TimeSpan? RetryAfter)
     where T : class
 {
-    private static readonly IReadOnlyDictionary<string, ProviderFailureCategory?> AllowedReasonCodes =
+    private static readonly IReadOnlyDictionary<string, ProviderFailureCategory?> _allowedReasonCodes =
         new Dictionary<string, ProviderFailureCategory?>(StringComparer.Ordinal)
-    {
-        ["operation_source_unavailable"] = null,
-        ["provider_file_mutation_source_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
-        ["provider_commit_source_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
-        ["provider_operation_status_source_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
-        ["provider_unavailable"] = ProviderFailureCategory.ProviderUnavailable,
-        ["provider_configuration_missing"] = ProviderFailureCategory.ProviderConfigurationMissing,
-        ["provider_permission_insufficient"] = ProviderFailureCategory.ProviderPermissionInsufficient,
-        ["provider_validation_failed"] = ProviderFailureCategory.ProviderValidationFailed,
-        ["provider_conflict"] = ProviderFailureCategory.ProviderConflict,
-        ["provider_rate_limited"] = ProviderFailureCategory.ProviderRateLimited,
-        ["reconciliation_required"] = ProviderFailureCategory.ReconciliationRequired,
-    };
+        {
+            ["operation_source_unavailable"] = null,
+            ["provider_file_mutation_source_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
+            ["provider_commit_source_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
+            ["provider_operation_status_source_unconfigured"] = ProviderFailureCategory.ProviderConfigurationMissing,
+            ["provider_unavailable"] = ProviderFailureCategory.ProviderUnavailable,
+            ["provider_configuration_missing"] = ProviderFailureCategory.ProviderConfigurationMissing,
+            ["provider_permission_insufficient"] = ProviderFailureCategory.ProviderPermissionInsufficient,
+            ["provider_validation_failed"] = ProviderFailureCategory.ProviderValidationFailed,
+            ["provider_conflict"] = ProviderFailureCategory.ProviderConflict,
+            ["provider_rate_limited"] = ProviderFailureCategory.ProviderRateLimited,
+            ["reconciliation_required"] = ProviderFailureCategory.ReconciliationRequired,
+        };
 
     public TimeSpan? SafeRetryAfter
         => IsSafeFailureCategory(FailureCategory)
@@ -82,6 +82,6 @@ internal sealed record ProviderOperationSourceResolutionResult<T>(
 
     private static bool IsSafeReasonCode(string? value, ProviderFailureCategory category)
         => value is { Length: > 0 and <= 128 }
-            && AllowedReasonCodes.TryGetValue(value, out ProviderFailureCategory? expectedCategory)
+            && _allowedReasonCodes.TryGetValue(value, out ProviderFailureCategory? expectedCategory)
             && (expectedCategory is null || expectedCategory == category);
 }

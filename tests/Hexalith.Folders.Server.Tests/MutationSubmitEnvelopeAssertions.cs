@@ -13,6 +13,7 @@ internal static class MutationSubmitEnvelopeAssertions
         submitted.IdempotencyKey.ShouldBe(idempotencyKey);
         submitted.MessageId.ShouldNotBe(idempotencyKey);
         submitted.MessageId.Length.ShouldBe(26);
+        submitted.MessageId.ShouldBe(submitted.MessageId.ToLowerInvariant());
         _ = UniqueIdHelper.ExtractTimestamp(submitted.MessageId);
     }
 }

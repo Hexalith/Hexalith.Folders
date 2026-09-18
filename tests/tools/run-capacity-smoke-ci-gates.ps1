@@ -303,14 +303,14 @@ try {
     Assert-LoadHarnessAssembly
 
     Invoke-CapacityCommand -Category 'harness-self-check' -Arguments @(
-        'run', '--no-build', '--project', $loadProjectPath, '--',
+        'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath, '--',
         '--self-check',
         '--profile', 'quick',
         '--report-folder', $selfCheckRelativePath
     )
 
     Invoke-CapacityCommand -Category 'quick-lifecycle-smoke' -Arguments @(
-        'run', '--no-build', '--project', $loadProjectPath, '--',
+        'run', '--no-build', '--configuration', 'Release', '--project', $loadProjectPath, '--',
         '--profile', 'quick',
         '--run-id', 'capacity-smoke-ci',
         '--report-folder', $smokeReportRelativePath

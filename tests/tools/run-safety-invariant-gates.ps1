@@ -35,26 +35,22 @@ function Write-SafetyReport {
 }
 
 function Invoke-SafetyTests {
-    # Keep a native non-zero exit from dotnet test as a returnable code (do not let it throw
-    # under Stop) so the xUnit v3 in-process fallback below is reliably reached.
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+    if (-not (Test-Path $testAssembly)) {
+        Write-Host 'SAFETY-PREREQUISITE-DRIFT: safety test assembly is missing. Build the Release test project before running this gate.'
+        return 1
+    }
+
     $PSNativeCommandUseErrorActionPreference = $false
-    dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests | Out-Host
-    if ($LASTEXITCODE -eq 0) {
-        return 0
+    $output = & dotnet $testAssembly -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests 2>&1
+    $exitCode = $LASTEXITCODE
+    $output | ForEach-Object { Write-Host $_ }
+    if ($exitCode -eq 0 -and -not (($output -join [Environment]::NewLine) -match 'Total:\s+[1-9]\d*')) {
+        Write-Host 'SAFETY-PREREQUISITE-DRIFT: safety test selection executed zero tests.'
+        return 1
     }
 
-    # Match the extensionless ELF runner on Linux and the .exe runner on Windows; the regex
-    # excludes .dll/.pdb/.json artifacts that a bare -Filter pattern would otherwise miss/include.
-    $testExecutable = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin') -Recurse -File -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -match '^Hexalith\.Folders\.Contracts\.Tests(\.exe)?$' -and $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-        Select-Object -First 1
-
-    if ($null -eq $testExecutable) {
-        return $LASTEXITCODE
-    }
-
-    & $testExecutable.FullName -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests | Out-Host
-    return $LASTEXITCODE
+    return $exitCode
 }
 
 try {
@@ -65,24 +61,22 @@ try {
     Write-SafetyReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx
+        dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true
         if ($LASTEXITCODE -ne 0) {
             Write-SafetyReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
 
-        dotnet build Hexalith.Folders.slnx --no-restore
+        dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror
         if ($LASTEXITCODE -ne 0) {
             Write-SafetyReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
     }
     else {
-        $testAssembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin') -Recurse -Filter 'Hexalith.Folders.Contracts.Tests.dll' -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-            Select-Object -First 1
+        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
 
-        if ($null -eq $testAssembly) {
+        if (-not (Test-Path $testAssembly)) {
             Write-Error 'SAFETY-PREREQUISITE-DRIFT: safety test assembly is missing. Run the safety gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'
             Write-SafetyReport -Status 'failed' -ExitCode 1
             exit 1

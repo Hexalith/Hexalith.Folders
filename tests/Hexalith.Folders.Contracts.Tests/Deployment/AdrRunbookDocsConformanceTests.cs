@@ -29,7 +29,7 @@ public sealed partial class AdrRunbookDocsConformanceTests
     private const string CiWorkflowPath = ".github/workflows/ci.yml";
     private const string NightlyDriftWorkflowPath = ".github/workflows/nightly-drift.yml";
     private const string PolicyConformanceWorkflowPath = ".github/workflows/policy-conformance.yml";
-    private const string ReleaseWorkflowPath = ".github/workflows/release-packages.yml";
+    private const string ReleaseWorkflowPath = ".github/workflows/release.yml";
     private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
     private const string ReleaseGatePath = "tests/tools/run-release-package-gates.ps1";
     private const string ReportPath = "_bmad-output/gates/adr-runbook-docs/latest.json";

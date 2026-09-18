@@ -23,17 +23,19 @@ public sealed class ContractSpineCiGateTests
         workflow.ShouldContain("submodules: false");
         workflow.ShouldContain("actions/setup-dotnet@v5");
         workflow.ShouldContain("global-json-file: global.json");
-        workflow.ShouldContain("dotnet restore Hexalith.Folders.slnx");
-        workflow.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
+        workflow.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");
+        workflow.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");
         workflow.ShouldContain("./tests/tools/run-contract-spine-gates.ps1 -NoRestore");
         workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
         workflow.ShouldNotContain("dotnet publish", Case.Insensitive);
         workflow.ShouldNotContain("semantic-release", Case.Insensitive);
         workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
 
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
-        script.ShouldContain("tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll");
+        script.ShouldContain("tests/Hexalith.Folders.Client.Tests/bin/Release/net10.0/Hexalith.Folders.Client.Tests.dll");
+        script.ShouldContain("selector executed zero tests");
         script.ShouldContain("$LASTEXITCODE");
+        script.ShouldNotContain("--filter", Case.Sensitive);
         script.ShouldNotContain("--recursive", Case.Insensitive);
     }
 
@@ -120,8 +122,8 @@ public sealed class ContractSpineCiGateTests
             "prerequisite-drift",
         ];
 
-        documentation.ShouldContain("dotnet restore Hexalith.Folders.slnx");
-        documentation.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
+        documentation.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");
+        documentation.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");
         documentation.ShouldContain(".\\tests\\tools\\run-contract-spine-gates.ps1 -NoRestore");
         documentation.ShouldContain("Server OpenAPI emission");
         documentation.ShouldContain("Story 1.15");

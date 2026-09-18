@@ -207,4 +207,4 @@ A reviewer should run the local validation command above, confirm
 technical-state catalog stay synchronized with `DispositionLabelMapper`. Rerun the gate after any change to
 the console routes, the disposition mapper, or the cross-linked UX sources. The static gate runs in the
 `contract-spine` CI lane and through the baseline CI Contracts.Tests filter; it is not promoted to a new
-top-level `ci.yml` lane, to `release-packages.yml`, or to scheduled workflows.
+top-level `ci.yml` lane, to `release.yml`, or to scheduled workflows.

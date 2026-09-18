@@ -84,33 +84,28 @@ public sealed partial class SecurityRedactionCiWorkflowConformanceTests
     {
         YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
 
-        GetScalar(workflow, "name").ShouldBe("baseline-ci");
+        GetScalar(workflow, "name").ShouldBe("CI");
         GetScalar(GetMapping(workflow, "permissions"), "contents").ShouldBe("read");
 
         YamlMappingNode jobs = GetMapping(workflow, "jobs");
-        GetMapping(jobs, "baseline-build-and-unit-gates");
-        GetMapping(jobs, "contract-and-parity-gates");
-        YamlMappingNode securityJob = GetMapping(jobs, "security-and-redaction-gates");
+        GetMapping(jobs, "ci");
+        YamlMappingNode securityJob = GetMapping(jobs, "folders-specialized-gates");
 
-        GetScalar(securityJob, "name").ShouldBe("security-and-redaction-gates");
+        GetScalar(securityJob, "name").ShouldBe("folders-specialized-gates");
         GetScalar(securityJob, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(securityJob, "actions/checkout@v6");
+        YamlMappingNode checkout = FindStep(securityJob, "actions/checkout@v7.0.1");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
         YamlMappingNode submodules = GetSequence(securityJob, "steps").Children.Cast<YamlMappingNode>()
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), "Initialize root-level build submodules", StringComparison.Ordinal));
+                && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        foreach (string module in _rootBuildSubmodules)
-        {
-            submoduleCommand.ShouldContain(module, Case.Sensitive);
-        }
 
-        YamlMappingNode setupDotnet = FindStep(securityJob, "actions/setup-dotnet@v5");
+        YamlMappingNode setupDotnet = FindStep(securityJob, "actions/setup-dotnet@v6.0.0");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");
@@ -139,12 +134,15 @@ public sealed partial class SecurityRedactionCiWorkflowConformanceTests
         script.ShouldContain("$ErrorActionPreference = 'Stop'");
         script.ShouldContain(ReportPath);
         script.ShouldContain("$LASTEXITCODE");
-        script.ShouldContain("@('test', $gate.project_path, '--no-restore', '--no-build', '--filter', $gate.filter)", Case.Sensitive);
+        script.ShouldContain("bin/Release/net10.0/$projectName.dll", Case.Sensitive);
+        script.ShouldContain("$runnerArguments += @('-method', $method)", Case.Sensitive);
+        script.ShouldContain("& dotnet $runnerPath @runnerArguments", Case.Sensitive);
         script.ShouldNotContain("@('test', 'Hexalith.Folders.slnx'", Case.Sensitive);
         script.ShouldNotContain("@('test', 'tests'", Case.Sensitive);
+        script.ShouldNotContain("--filter", Case.Sensitive);
         script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
-        // `dotnet test --filter` and the xUnit fallback both exit 0 on a zero/partial filter match,
+        // The xUnit assembly runner exits 0 on a zero/partial selector match,
         // so the gate must fail closed unless the observed count equals the expected method count.
         // Guard the runtime check against silent removal (avoids vacuous PR-gate passes).
         script.ShouldContain("Get-ExecutedTestCount", Case.Sensitive);

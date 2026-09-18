@@ -18,7 +18,8 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
     private const string GateScriptPath = "tests/tools/run-retention-deletion-gates.ps1";
     private const string PackageGatePath = "tests/tools/run-release-package-gates.ps1";
     private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
-    private const string WorkflowPath = ".github/workflows/release-packages.yml";
+    private const string WorkflowPath = ".github/workflows/release.yml";
+    private const string CiWorkflowPath = ".github/workflows/ci.yml";
     private const string ManifestPath = "deploy/nuget/release-packages.yaml";
     private const string ReportPath = "_bmad-output/gates/retention-deletion/latest.json";
 
@@ -166,25 +167,19 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
     }
 
     [Fact]
-    public void ReleaseReadinessShouldRequireRetentionDeletionEvidenceBeforePublish()
+    public void RetentionDeletionEvidenceShouldRemainIndependentFromSealedPackagePublication()
     {
         string workflow = ReadText(WorkflowPath);
+        string ci = ReadText(CiWorkflowPath);
         string packageGate = ReadText(PackageGatePath);
         string manifest = ReadText(ManifestPath);
 
-        workflow.ShouldContain("./tests/tools/run-retention-deletion-gates.ps1", Case.Sensitive);
-        workflow.IndexOf("Run capacity calibration gates", StringComparison.Ordinal)
-            .ShouldBeLessThan(workflow.IndexOf("Run retention deletion gates", StringComparison.Ordinal));
-        workflow.IndexOf("Run retention deletion gates", StringComparison.Ordinal)
-            .ShouldBeLessThan(workflow.IndexOf("Run safety gates", StringComparison.Ordinal));
+        workflow.ShouldNotContain("run-retention-deletion-gates.ps1", Case.Sensitive);
         workflow.ShouldNotContain("pull_request", Case.Insensitive);
-
-        packageGate.ShouldContain("_bmad-output/gates/retention-deletion/latest.json", Case.Sensitive);
-        packageGate.ShouldContain("stale-retention-deletion-evidence", Case.Sensitive);
-        packageGate.ShouldContain("c3-retention-approval-blocks-live-publish", Case.Sensitive);
-        packageGate.ShouldContain("$Mode -eq 'Publish'", Case.Sensitive);
-
-        manifest.ShouldContain("- _bmad-output/gates/retention-deletion/latest.json", Case.Sensitive);
+        ci.ShouldContain("./tests/tools/run-retention-deletion-gates.ps1", Case.Sensitive);
+        packageGate.ShouldNotContain("retention-deletion", Case.Sensitive);
+        packageGate.ShouldContain("tools/release-packages.json", Case.Sensitive);
+        manifest.ShouldContain("inventoryPath: tools/release-packages.json", Case.Sensitive);
     }
 
     [Fact]

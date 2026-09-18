@@ -60,13 +60,16 @@ inputDocuments:
   - "_bmad-output/planning-artifacts/review-rubric.md"
   - "_bmad-output/planning-artifacts/review-adversarial-general.md"
   - "_bmad-output/planning-artifacts/review-post-finalization-drift.md"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md"
+  - "_bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml"
+  - "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml"
 documentCounts:
   productBriefs: 1
   research: 3
   brainstorming: 1
   projectDocs: 0
   projectContext: 1
-  changeProposals: 23
+  changeProposals: 24
   readinessReports: 4
   reconciliations: 3
   planningManifests: 1
@@ -81,16 +84,18 @@ releaseMode: phased
 title: 'Product Requirements Document — Hexalith.Folders'
 status: final
 created: '2026-05-05'
-updated: '2026-09-16'
+updated: '2026-09-18'
 finalized: '2026-07-15'
 completedAt: '2026-05-07'
-lastEdited: '2026-09-16'
+lastEdited: '2026-09-18'
 implementationReadiness: not-ready
 implementationReadinessAssessedAt: '2026-08-04'
 implementationReadinessSource: '_bmad-output/planning-artifacts/implementation-readiness-report-2026-08-04.md'
 productMvpDecision: durable-repository-round-trip-required
 productMvpDecisionRatifiedAt: '2026-07-14'
 editHistory:
+  - date: '2026-09-18'
+    changes: 'Generated the planning-authority relock candidate from the approved September 17 pre-generation inputs. Replaced the obsolete unsatisfiable-wave statement with the validated version-2 execution ranks and exact prerequisite graph; recorded A1, A2, A4, A5, A6, A7, and A7b as exact-payload approved; retained A2b, A3, A6b, and A8 as post-generation pending; preserved completed evidence and stable story identities; and kept the general execution hold active. This edit creates approval-bound candidate outputs only and neither exposes v2 nor authorizes ordinary story execution.'
   - date: '2026-09-16'
     changes: 'Applied the 2026-09-15 reviewer gate (rubric walker 1 critical / 5 high / 6 medium / 3 low; proposal-drift 2 critical / 4 high / 4 medium / 3 low), which found that the section 5.1 replacement decisions had reached the decision log but not the normative body. Propagated PD8 to event-write replacement in the C9 row and, through a deliberate exception to the PD6 reservation, in the hash-pinned NFR8 and NFR54 bullets, relocked in lockstep with epics.md and the traceability hashes; propagated PD11 into the completion model so a cleaned-up workspace returns to ready rather than staying inaccessible, and replaced the non-vocabulary auto-reconciling disposition. Marked OQ3 reopened under A6b with its superseded digest and the C3 row reference-pending the A7b Legal reapproval. Carried the Epic 12 and Epic 13 admission into Must-Have Capabilities and MVP Acceptance Evidence, split NFR74-NFR84 evidence ownership across OQ11 and OQ12, gave OQ11 an explicit statement that it does not supersede Technical Success or SM1, bound OQ13 to the already-approved C1/C4/C5 and SM4/SM5 envelope, and recorded the strictly-lower-rank prerequisite rule as open because it is unsatisfiable by the wave table it governs. Stated that the resolved decisions describe required target state rather than current behavior, restored the rejected options as superseded history, named the sponsor approver, and wired the two new NFR categories into Verification Expectations as prose so the pinned NFR70-NFR73 bullets were not renumbered.'
   - date: '2026-09-15'
@@ -162,11 +167,11 @@ This PRD is final as a product contract; the implementation is not ready for pro
 
 Evidence ownership for the eleven new requirements follows the release question that gates each one. OQ11, the Epic 12 question, gates NFR79–NFR81, which are properties the durable substrate must provide. OQ12 and OQ13 are the Epic 13 questions, and OQ12 gates NFR74–NFR78 and NFR82–NFR84.
 
-Epic and story numbers are stable identities, not execution order: the scheduling authority is the `execution_rank` wave model, under which Epics 4, 6, and 10 depend on Epic 12 foundations. The accompanying rule that no item may depend on an equal or later rank is **open, not settled product direction**, because as written it is not satisfiable by the §7.1 wave table it governs. That table places Stories 12.2, 12.3, and 12.6 behind 12.1 at the same rank 10, 4.21 behind 4.19–4.20 at rank 30, and 6.14 behind 6.12–6.13 at rank 30; it leaves Stories 3.11, 3.13, 10.6, 10.7, and 11.15 unranked while rank 20–30 items depend on them; and it leaves all of Epic 13 unranked while rank 40 depends on Epic 13 evidence. `architecture.md` routes that conflict to Delivery and PM and publishes an interim wave table as transitional authority.
+Epic and story numbers are stable identities, not execution order. The version-2 planning manifest is the scheduling authority: its ranks 0–60, exact prerequisite edges, accepted-terminal evidence references, external EventStore nodes, and explicitly expanded `DEC-A8-HOLD` edges form a validated acyclic graph. Every unresolved prerequisite has a strictly lower rank; only accepted-terminal prerequisites with validated evidence remain rankless. The earlier §7.1 wave table and its unsatisfied-rank analysis remain decision history and are superseded for execution scheduling by `planning-story-manifest-v2-relock-input.yaml` and the regenerated `planning-story-manifest.yaml`.
 
-The wave model is currently published only in §7.1 of the proposal and that interim table; `planning-story-manifest.yaml` still carries its `generated_on: '2026-08-04'` snapshot and does not yet declare `execution_waves` or `execution_rank`, and becomes the lifecycle and dependency control only when it is regenerated.
+`planning-story-manifest.yaml` is now fully regenerated as version 2 and carries the authoritative execution waves, ranks, exact prerequisite graph, external nodes, and reconciled lifecycle rows. It remains a held planning candidate: A2b, A3, A6b, and A8 are pending, so the graph does not authorize ordinary execution or v2 exposure.
 
-The 2026-09-15 admission is sponsor-approved only; the Product, Architecture, Security, Operations, Test, Delivery, and Legal attestations named in the proposal remain pending, and the general execution freeze stays in force until its freeze-removal gate passes. Completed contract, adapter, authorization, governance, accessibility, topology, and fail-safe foundations remain valid increments, but they do not complete or release the product MVP. Release remains blocked until the durable repository-backed lifecycle is complete and every Open Release Item is closed with approved production evidence. Safe-empty, seed-only, unavailable, no-op, fake-backed, numerically mapped, structural, or documentation-only evidence may prove safety or contract shape but does not prove positive runtime capability.
+The September 17 approval register records named-role, exact-payload approvals for pre-generation gates A1, A2, A4, A5, A6, A7, and A7b. Post-generation gates A2b, A3, A6b, and A8 remain pending and no approval is inferred for them. The general execution hold therefore remains in force. Completed contract, adapter, authorization, governance, accessibility, topology, and fail-safe foundations remain valid increments, but they do not complete or release the product MVP. Release remains blocked until the durable repository-backed lifecycle is complete and every Open Release Item is closed with approved production evidence. Safe-empty, seed-only, unavailable, no-op, fake-backed, numerically mapped, structural, or documentation-only evidence may prove safety or contract shape but does not prove positive runtime capability.
 
 ## Success Criteria
 
@@ -1065,7 +1070,7 @@ The four bullets above are `NFR70`–`NFR73`. They predate the two categories ad
 
 ### Edge Security and Deployment Hardening
 
-*The five bullets below are `NFR74`–`NFR78`, in order. Admitted 2026-09-15 by sponsor approval of `sprint-change-proposal-2026-09-15.md` (recommendation A2b, linked to PD6) and gated by OQ12. Admission records the requirement; it is not evidence that the requirement is met.*
+*The five bullets below are `NFR74`–`NFR78`, in order. Historically admitted on 2026-09-15 through sponsor routing and retained by the approved A2/PD3 pre-generation payload; the post-generation A2b/PD6 exact-output approval remains pending. They are gated by OQ12. Admission records the requirement; it is not evidence that the requirement is met.*
 
 - Bearer credentials must be accepted only over HTTPS or an explicitly approved loopback development boundary.
 - Provider endpoints must deny private, loopback, link-local, metadata-service, and otherwise prohibited destinations unless an approved deployment policy explicitly allows them.
@@ -1075,7 +1080,7 @@ The four bullets above are `NFR70`–`NFR73`. They predate the two categories ad
 
 ### Durable Operation and Release Evidence
 
-*The six bullets below are `NFR79`–`NFR84`, in order. Admitted 2026-09-15 by sponsor approval of `sprint-change-proposal-2026-09-15.md` (recommendation A2b, linked to PD6); `NFR79`–`NFR81` are gated by OQ11 and `NFR82`–`NFR84` by OQ12. Admission records the requirement; it is not evidence that the requirement is met.*
+*The six bullets below are `NFR79`–`NFR84`, in order. Historically admitted on 2026-09-15 through sponsor routing and retained by the approved A2/PD3 pre-generation payload; the post-generation A2b/PD6 exact-output approval remains pending. `NFR79`–`NFR81` are gated by OQ11 and `NFR82`–`NFR84` by OQ12. Admission records the requirement; it is not evidence that the requirement is met.*
 
 - Accepted mutations, their state transitions, and their required evidence must survive process restart.
 - Supported multi-replica deployments must converge on one authoritative state without seed-local or replica-local correctness assumptions.
@@ -1086,7 +1091,7 @@ The four bullets above are `NFR70`–`NFR73`. They predate the two categories ad
 
 ## Open Release Items
 
-OQ1 closed the lock timing parameter on 2026-09-12, OQ2 and OQ3 closed the canonical file-policy design and the canonical authorization matrix on 2026-09-14, and OQ4 closed the supported-provider compatibility catalog on 2026-09-15; OQ3 then reopened on 2026-09-15, because the PD10 spine corrections supersede the matrix it approved. A closure may refine the affected requirements within the fail-closed invariants above, but it may not weaken those invariants or the approved scope. OQ5–OQ13 close implementation and release evidence, and every still-open item must close before release acceptance. OQ11 (Epic 12) and OQ12–OQ13 (Epic 13) were admitted on 2026-09-15 by sponsor approval of `sprint-change-proposal-2026-09-15.md`, which closed the PD1 and PD3 inventory gap; their role attestations remain pending. OQ5, OQ6, and OQ7 depend on OQ11.
+OQ1 closed the lock timing parameter on 2026-09-12, OQ2 and OQ3 closed the canonical file-policy design and the canonical authorization matrix on 2026-09-14, and OQ4 closed the supported-provider compatibility catalog on 2026-09-15; OQ3 then reopened on 2026-09-15 because the PD10 spine corrections supersede the matrix it approved. A closure may refine the affected requirements within the fail-closed invariants above, but it may not weaken those invariants or the approved scope. OQ5–OQ13 close implementation and release evidence, and every still-open item must close before release acceptance. OQ11 (Epic 12) and OQ12–OQ13 (Epic 13) are retained by the exact-payload approvals for A1 and A2. A2b still awaits the exact post-planning PRD, epics, and NFR-traceability digests; A3, A6b, and A8 also remain pending at their stated post-generation gates. OQ5, OQ6, and OQ7 depend on OQ11.
 
 | ID | Decision/evidence still open | Delivery owner | Blocking consequence and revisit condition | Canonical evidence and accountable approvers |
 | --- | --- | --- | --- | --- |
@@ -1140,11 +1145,11 @@ An open item closes only when its canonical evidence exists, every accountable a
 
 ### PM decisions resolved
 
-*Resolved 2026-09-15.* Sponsor approval by Jerome of `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md` recorded the disposition of recommendations A1–A8 with the response `continue`. That approval binds the product direction below and authorizes routing to the named owners; it does **not** substitute the sponsor for the Product, Architecture, Security, Operations, Test, Delivery, or Legal roles, whose attestations remain required inputs to the proposal's freeze-removal gate. Until those attestations are recorded, each decision below is sponsor-approved with attestation pending, and the general execution freeze stays in force.
+*Relocked for candidate generation 2026-09-17.* The September 15 sponsor routing remains historical authority for direction. The separate exact-digest approval register records Jerome as the named approver for each represented authority on A1, A2, A4, A5, A6, A7, and A7b. A2b, A3, A6b, and A8 remain pending because their post-generation bound-artifact digests or conformance result do not yet have the required approvals. The general execution hold stays in force.
 
 Each approved decision states the **target state that the product now requires**, not current implementation behavior: PD8, PD10, and PD11 in particular describe rules the Contract Spine, the C3 and C6 records, the transition code, and the tests must be corrected to express, and `architecture.md` records that none of the three is implemented yet. The superseded question and the options recorded before the decision are retained verbatim as history and are not deleted.
 
-The Record column carries the **proposal's** digest, which is the authority that was approved; the **resulting** authority digests for `prd.md` and `epics.md` are recorded in `_bmad-output/planning-artifacts/.memlog.md` for this revision, because a digest of this document cannot be stored inside it. The proposal's §5.5 manifest regeneration and §9 freeze-removal gate consume those digests.
+The Record column preserves the September 15 routing provenance. Current approval truth is `_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml`: its pre-generation records bind the immutable decision-payload digests, while its post-generation records stay empty until the exact generated artifact digests are separately approved.
 
 | ID | Decision approved (sponsor, 2026-09-15) | Superseded question retained as history | Approvers and attestation status | Record |
 | --- | --- | --- | --- | --- |
@@ -1155,6 +1160,22 @@ The Record column carries the **proposal's** digest, which is the authority that
 | PD8 | Option (a), event write: a tenant-confidential override is replaced by a stable correlation token before persistence. Cleartext confidential values are never made durable and therefore cannot be made safe later by projection-time redaction. Rendering must still distinguish withheld, redacted, unavailable, and absent. | Fix the point at which a confidential-override value is replaced by its correlation token: at event write, or only at audit/projection write with the incident view applying replacement on read. **Options as recorded before the decision:** (a) Event write (no cleartext ever durable); (b) audit/projection write plus read-time replacement in the incident view, proven by OQ9. The C9 row states (b) as the latest permitted point. | Product, Architecture, Security — **attestation pending** | Sponsor approval A5 by Jerome (sponsor; not a role attestation), recorded 2026-09-15 16:08:21+02:00 with response `continue`. Proposal `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md`, SHA-256 `5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104`. |
 | PD10 | Option (a): the Contract Spine is amended under the ten authorization-spine rules in §7.2 of the proposal — authority evaluated before resource lookup on all 49 protected operations; one 404 `tenant_access_denied`/`resource_unavailable` safe-denial shape with the caller-visible `not_found`, `cross_tenant_access_denied`, and `audit_access_denied` distinctions removed from protected responses; one non-disclosing 503 envelope carrying `details.visibility: redacted`, available to every protected operation and evaluated before lookup; folder scope for `GetReadinessDiagnostics` and `GetProjectionFreshness`; folder `administer` for `ListFolderAclEntries`; self-inspection with folder read authority and optional task context for `GetEffectivePermissions`; current tenant, bound-folder read authority, and task scope for `GetTaskStatus`; `ValidateProviderReadiness` tenant-level under folder-create authority; structured authorization metadata whose provider, repository, ref, and task dimensions are derived from an already authorized folder/task/binding and never accepted as raw authority-bearing locators; and a required visibility field with MVP release reasons limited to approved values such as `caller_completed`. OpenAPI, the generated client, CLI/MCP parity, the previous-spine comparison, the C13 inventory, docs, and tests are regenerated, and release generation and parity gates consume only the corrected, **reapproved** matrix; the superseded `1.0.0` digest must not be reused as release evidence. OQ3 is reapproved against the resulting digest (A6b). | Correct the Contract Spine where it conflicts with product-owned invariants introduced or clarified on 2026-09-08: the leaking categories are declared as caller-visible responses on 24 of 49 operations (`not_found` on 22, `cross_tenant_access_denied` on six, `audit_access_denied` on four); the safe denial is declared as two status-distinct envelopes (403 and 404) on 46 of 49 operations and must collapse to one status per operation; `details.visibility` is not a required closed field; the FR44 family-to-category mapping does not exist; the release-reason enum is broader than MVP; and the permission representation was settled by OQ3 on 2026-09-14 in favour of retaining the three Spine levels, whose per-operation mapping is published in `docs/contract/authorization-matrix.md`. **Options as recorded before the decision:** (a) Amend the Spine and regenerate the SDK, C13 inventory, and parity evidence before the release snapshot; (b) if any item is contested, escalate to PM for a product-rule change under a stable ID. | Product, Architecture, Security, Contract/Delivery — **attestation pending**; OQ3 reapproval by Product, Architecture, and Security also pending | Sponsor approval A6 and A6b by Jerome (sponsor; not a role attestation), recorded 2026-09-15 16:08:21+02:00 with response `continue`. Proposal `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md`, SHA-256 `5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104`. |
 | PD11 | Option (a): the architecture matrix, C6 mapping, C3 policy, code, and tests express one model under §7.3 — an originating task re-acquiring a `dirty` workspace with staged changes goes to `changes_staged` under a new lock instance; a retryable commit failure with no confirmed remote effect returns `changes_staged` to `dirty` while a known non-retryable failure goes to `failed`; `changes_staged` plus detected authorization revocation goes to `inaccessible` with staged changes preserved; restored readiness returns `inaccessible` to `dirty` when staged content remains inside the C3 window and otherwise to `ready`; a clean `dirty` workspace whose lock becomes stale returns to `ready` and unlocked; `unknown_provider_outcome` is automatically recovering during bounded provider checks and escalates to `reconciliation_required` only when those checks cannot establish the result; and C3 temporary cleanup starts only after terminal task closure with no active task, not on lock expiry or cancellation alone, retaining the approved seven-day window unless Legal approves a different one. Operator discard, retry-success, and mark-failed transitions are reserved post-MVP operations that fail closed in MVP code. | Re-approve the C6 transition matrix (mapping, architecture matrix, and `FolderStateTransitions.cs`) in the direction of this PRD's completion model, or amend the completion model under stable IDs where the PM accepts the matrix's behaviour. Scope: originating-task resume out of `dirty`; retryable commit failure staying `dirty` versus `failed`; revocation with staged changes; restored authority; clean `dirty` to `ready` at `stale` (A21); the `unknown_provider_outcome` disposition (mapping `awaiting-human`, architecture `auto-recovering`, PRD auto-reconciling); the operator discard/retry/mark-failed events (with PD2); and the C3 record's lock-expiry and cancellation cleanup triggers. **Options as recorded before the decision:** (a) Amend and re-approve C6 and C3 to match this PRD; (b) PM accepts specific matrix behaviours and the completion model is amended. | Product, Architecture, Security — **attestation pending**; the C3 cleanup-trigger reapproval (A7b) additionally requires Legal — **pending** | Sponsor approval A7 and A7b by Jerome (sponsor; not a role attestation), recorded 2026-09-15 16:08:21+02:00 with response `continue`. Proposal `_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md`, SHA-256 `5d12ae4dd4e8f306b8dde5caf8f187d13e40c1fabc6d8e56c0757e24f2004104`. |
+
+The Approvers and Record columns above preserve the September 15 routing snapshot and its then-pending language. They are historical, not the current approval ledger. Current exact-payload status is:
+
+| Decision | Current gate | Status |
+| --- | --- | --- |
+| PD1 | A1 | Approved on 2026-09-17 by the named Product, Architecture, Security, and Test signatures. |
+| PD3 admission | A2 | Approved on 2026-09-17 by the named Product, Architecture, Security, Operations, and Test signatures. |
+| PD6 output relock | A2b | Pending exact post-planning PRD, epics, and NFR-traceability digests; no approval inferred. |
+| PD4 lifecycle reconciliation | A3 | Pending exact post-planning lifecycle and manifest digests; no approval inferred. |
+| PD5 | A4 | Approved on 2026-09-17 by the named Product, Security, and Architecture signatures. |
+| PD8 / C9 | A5 | Approved on 2026-09-17 by the named Product, Architecture, and Security signatures. |
+| PD10 candidate generation | A6 | Approved on 2026-09-17 by the named Product, Architecture, Security, and Contract/Delivery signatures. |
+| PD10 matrix 2.0.0 | A6b | Pending generated matrix and conformance-set digests; no approval inferred. |
+| PD11 / C6 | A7 | Approved on 2026-09-17 by the named Product, Architecture, and Security signatures. |
+| PD11 / C3 | A7b | Approved on 2026-09-17 by the named Legal, Product, Security, and Architecture signatures. |
+| Execution hold | A8 | Pending a passing Section 9 result and all required final digests; the hold remains active. |
 
 ### PM decisions pending
 

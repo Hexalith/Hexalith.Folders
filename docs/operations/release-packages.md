@@ -1,99 +1,86 @@
 # Release Packages
 
-Story 7.9 publishes the NuGet package lane only from a GitHub release event. Package publishing is not part of PR CI, scheduled drift, policy conformance, contract-spine validation, or container archive validation.
+Folders uses the shared Hexalith manual semantic-release path. Ordinary pushes and pull requests run CI only; publication starts only from `.github/workflows/release.yml` through `workflow_dispatch`.
 
-## Package Set
+## Package Inventory
 
-The release package manifest is `deploy/nuget/release-packages.yaml`. The pushed package set is explicit and ordered:
+`tools/release-packages.json` is the single source of truth for the exact five-package release set:
 
-| Package ID | Project path | Purpose |
-| --- | --- | --- |
-| `Hexalith.Folders.Contracts` | `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` | Contract assembly and Contract Spine metadata. |
-| `Hexalith.Folders` | `src/Hexalith.Folders/Hexalith.Folders.csproj` | Core package required for `Hexalith.Folders.Testing` dependency closure. |
-| `Hexalith.Folders.Client` | `src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj` | Canonical typed SDK generated from the OpenAPI Contract Spine. |
-| `Hexalith.Folders.Aspire` | `src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj` | Reusable Aspire orchestration helpers for local and release validation topologies. |
-| `Hexalith.Folders.Testing` | `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj` | Shared consumer test helpers. |
+| Package | Project |
+| --- | --- |
+| `Hexalith.Folders.Contracts` | `src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj` |
+| `Hexalith.Folders` | `src/Hexalith.Folders/Hexalith.Folders.csproj` |
+| `Hexalith.Folders.Client` | `src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj` |
+| `Hexalith.Folders.Aspire` | `src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj` |
+| `Hexalith.Folders.Testing` | `src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj` |
 
-`Hexalith.Folders.ServiceDefaults` and `Hexalith.Folders.Cli` remain packable for their own distribution concerns, but they are excluded from the Story 7.9 push set. Host, server, workers, UI, MCP, samples, and tooling projects stay out of package publishing unless the manifest adds an explicit supported package role.
+`deploy/nuget/release-packages.yaml` is the deployment policy and points to that JSON inventory; it does not repeat the package list. `Hexalith.Folders.Cli` and `Hexalith.Folders.ServiceDefaults` remain outside the public inventory. Adding either requires a separate product decision.
 
-## Release Trigger And Version Policy
+## Release Preconditions
 
-The release workflow is `.github/workflows/release-packages.yml`. It runs on `release: published` and supports `workflow_dispatch` dry-run validation. Release publishing requires an immutable tag in strict `v`-prefixed SemVer form such as `v1.2.3`, `v1.2.3-alpha.1`, or `v1.2.3+build.5`.
+The release fails closed unless all of these conditions hold:
 
-Branch names, mutable labels, `latest`, non-`v` tags, blank versions, and invalid SemVer are rejected before packing or publishing. The package version is the release tag without the leading `v`.
+- the dispatch selected the current `main` tip;
+- the exact-source commit has a successful completed `push` run of `ci.yml`;
+- the reusable `domain-release.yml` reference and `builds-execution-sha` are the same reviewed full Hexalith.Builds commit;
+- the protected `production` environment grants operator approval;
+- the repository-level `HEXALITH_RELEASE_PUBLISH_ENABLED` variable is exactly the lowercase string `true`;
+- the `NUGET_API_KEY` secret is available explicitly to the reusable workflow;
+- the caller declares exactly five packages and `tools/release-packages.json` still contains exactly five unique IDs/projects;
+- NuGet.org does not already contain the proposed version for any package.
+
+The protected environment is the publication authority for this repository. The reusable workflow therefore declares `require-publication-authority: false` explicitly; partial or accidental use of the separate issue-comment authority mode is rejected by the local preflight.
+
+Publication remains frozen until maintainers configure the repository variable, protected environment, and secret. This implementation does not create or configure them. As delivered, no package, tag, or GitHub Release has been created.
+
+## Semantic Release Lifecycle
+
+Conventional Commits determine the next version and release notes. Commit messages and prospective squash titles are checked by `.github/workflows/commitlint.yml`. Semantic Release uses `v<version>` tags and runs these phases:
+
+1. `verifyRelease` verifies the NuGet credential and re-proves live `main`, exact-source push CI, immutable Builds identity, protected-environment mode, manifest count, and destination absence.
+2. `prepare` invokes `tests/tools/run-release-package-gates.ps1` to pack and seal all five Release/package-mode packages.
+3. `publish` repeats the external preflight immediately before the first write, then publishes the prepared packages to NuGet.org.
+4. `@semantic-release/github` creates the GitHub Release and attaches all five `.nupkg`/`.snupkg` pairs.
+
+The publisher deliberately does not use `--skip-duplicate`. An occupied version is immutable evidence of a release collision, so publication stops instead of skipping or overwriting it. GitHub Packages is not a publication destination.
 
 ## Local Dry Run
 
-Run the same package gate locally without feed credentials:
+Restore and build Release/package-mode assets, then run the same manifest-driven validation without publication credentials:
 
 ```powershell
-pwsh ./tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId 0123456789abcdef0123456789abcdef01234567
-```
-
-The gate restores, builds, and packs in one explicit Release/package dependency mode by default (`Configuration=Release`, `UseNuGetDeps=true`). It never reuses default Debug/source assets for package output. It packs only manifest-listed projects, validates `.nupkg` and `.snupkg` outputs, and writes package artifacts under `_bmad-output/gates/release-packages/packages/`.
-
-When an explicit Release/package restore and build already ran in the same job, use:
-
-```powershell
+dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
+dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
 pwsh ./tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId 0123456789abcdef0123456789abcdef01234567 -SkipRestoreBuild
 ```
 
-The evidence report is `_bmad-output/gates/release-packages/latest.json`.
+The gate delegates packing and validation to:
 
-## Feed Configuration And Publish Shape
+- `scripts/pack-release-packages.py` for manifest-driven Release/package-mode packing;
+- `scripts/validate-nuget-packages.py` for exact inventory, metadata, symbols, archive safety, and dependency closure;
+- `scripts/validate-consumer-package-references.py` for isolated package-only consumer restore/build validation.
 
-GitHub Packages publishing uses `GITHUB_TOKEN` with minimum permissions:
+Exactly five `.nupkg` and five `.snupkg` files are written to `nupkgs/`. The metadata-only report is `_bmad-output/gates/release-packages/latest.json`.
 
-```yaml
-permissions:
-  contents: read
-  packages: write
-```
+## CI and Supply-Chain Policy
 
-The release publish job calls `dotnet nuget push` with an explicit source, API key environment variable, and `--skip-duplicate`. Duplicate skipping is intentional so rerunning the same immutable release can complete when packages already exist on the configured feed.
+`.github/workflows/ci.yml` delegates standard Release/Microsoft.Testing.Platform build, test, coverage, and consumer validation to Hexalith.Builds. The Folders contract/parity, security/redaction, capacity smoke and calibration, retention/deletion, NFR traceability, safety, governance, accessibility, and end-to-end gates remain additive and blocking for the same commit. CI and release builds select centrally pinned NuGet dependencies through the standard `CI=true` MSBuild property; local Debug development may retain source dependencies.
 
-For NuGet.org or another feed, configure an explicitly named repository secret and pass its environment variable name to `-ApiKeyEnvironmentVariable`. Do not put credentials in `nuget.config`, package metadata, evidence reports, docs examples, or logs.
-
-## Traceability Contract
-
-Every package is traced to:
-
-- release tag and package version;
-- full source commit through `RepositoryCommit` and `SourceRevisionId`;
-- `FoldersContractMetadata.ContractVersion` from `src/Hexalith.Folders.Contracts/FoldersContractMetadata.cs`;
-- OpenAPI spine path `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`;
-- package manifest `deploy/nuget/release-packages.yaml`;
-- release evidence report `_bmad-output/gates/release-packages/latest.json`;
-- same-run gate evidence paths for baseline, contract/parity, security/redaction, capacity smoke, retention/deletion, safety, and governance checks.
-
-`ContractVersion = "0.0.0-scaffold"` is allowed for local dry-run package validation, but it blocks live `Publish` mode until the contract version is advanced intentionally.
-
-## Failure Categories
-
-The release package gate fails closed under these categories:
-
-- `version-policy`: invalid SemVer, mutable labels, or release tag mismatch.
-- `source-revision-policy`: blank, short, `local`, `NO_VCS`, or non-SHA source revision.
-- `manifest-package-set`: missing package, wrong push set, missing project, or unintentional packability drift.
-- `restore-build`: restore/build prerequisite failure when not skipped by same-run CI setup.
-- `package-build`: `dotnet pack` failure.
-- `package-metadata`: missing repository, license, readme, source commit, or other required NuGet metadata.
-- `symbol-packages`: missing `.snupkg` output for a pushed package.
-- `dependency-closure`: a pushed package depends on another `Hexalith.Folders*` package outside the push set.
-- `release-evidence`: missing Contract Spine evidence, stale release evidence, C3 retention approval blocking live publish, or placeholder contract version in live publish mode.
-- `metadata-only-report`: absolute paths or unsafe diagnostic material in generated evidence.
-- `publish`: missing feed source, missing API key environment variable, or `dotnet nuget push` failure.
-
-## Submodule Policy
-
-CI checkout uses `submodules: false`. Initialize only root-level build submodules:
+Checkout uses `submodules: false`, then initializes only root-declared dependencies with:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants
+git -c submodule.recurse=false submodule update --init
 ```
 
-Nested recursive submodule initialization is forbidden unless explicitly requested for nested submodule work.
+NuGet audit stays enabled. Dependabot covers NuGet, npm, and GitHub Actions; CodeQL and dependency review use the shared Hexalith workflows.
 
-## Metadata-Only Evidence
+## Failure Handling
 
-Reports, docs, workflow logs, packages, and generated evidence must stay metadata-only. Do not include feed credentials, tenant data, provider payloads, raw file contents, local absolute paths, environment dumps, or raw diffs.
+- A non-main or stale dispatch, missing exact-source CI proof, or changed Builds identity stops before protected credentials are available.
+- A missing environment, release variable, or `NUGET_API_KEY` prevents publication.
+- Any manifest, package metadata, symbols, archive, dependency closure, or consumer validation drift stops before publication.
+- Any existing NuGet.org version stops the release; do not add `--skip-duplicate` or move an existing tag to bypass the collision.
+- NuGet.org has no atomic multi-package transaction. If a transient service failure occurs after one or more packages were accepted, stop the run and treat the version as an immutable partial-publication incident. Do not retry or skip the occupied packages. Record the accepted package IDs, deprecate the incomplete version where possible, create a corrective Conventional Commit so semantic-release calculates a new version, and publish the complete five-package set under that new version.
+- If `main` advances while a release is pending, the reusable workflow and local preflight fail it as stale. Run CI for the new tip before dispatching again.
+
+Diagnostics and retained reports are metadata-only: never include credentials, tenant data, provider payloads, raw file content, environment dumps, local absolute paths, or diffs.

@@ -7,8 +7,8 @@ Story 1.14 wires the blocking gates for the Contract Spine, generated SDK client
 Run the workflow-equivalent lane from the repository root:
 
 ```powershell
-dotnet restore Hexalith.Folders.slnx
-dotnet build Hexalith.Folders.slnx --no-restore
+dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
+dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
 .\tests\tools\run-contract-spine-gates.ps1 -NoRestore
 ```
 

@@ -1,0 +1,164 @@
+schema_version: '1.0.0'
+artifact_id: folders-lifecycle-reconciliation-2026-09-17
+status: generated-awaiting-A3-approval
+reconciliation_date: '2026-09-17'
+generated_on: '2026-09-18'
+digest_algorithm: sha256
+digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
+
+authority:
+  change_proposal:
+    path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md
+    sha256: dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37
+  relock_input:
+    path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
+    sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
+  approval_register:
+    path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 9360e4b87a91179a7f7357c58a2d38118b436724a8a5f440fa4e226b048d1b95
+  superseded_manifest:
+    path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    manifest_version: 1
+    generated_on: '2026-08-04'
+    pre_relock_sha256: 206b979040164375b2281b213d3756db02fc3e2e33e8c85587572ae721076e22
+
+controls:
+  preserve_stable_story_ids: true
+  preserve_completed_evidence: true
+  rewrite_frozen_story_specifications: false
+  general_execution_hold: true
+  sprint_status_regeneration_authorized: false
+  sprint_status:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    modified_by_relock: false
+    sha256_before_and_after: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+  current_lifecycle_field: story_lifecycle_status
+  historical_snapshot_field: workflow_snapshot_status
+
+reconciliation_rules:
+  - Frozen specification status is retained only as workflow_snapshot_status and never overrides the canonical lifecycle row.
+  - Completed evidence remains accepted when the canonical lifecycle status is done.
+  - Completed component evidence remains preserved when the canonical lifecycle row is nonterminal.
+  - The duplicate version-1 Story 3.2 inventory row is removed without changing the canonical Story 3.2 identity.
+  - New stories are added at backlog without renumbering any historical story.
+  - Lifecycle totals are recomputed from the authoritative version-2 rows.
+
+lifecycle_totals:
+  canonical_story_identities: 158
+  canonical:
+    done: 111
+    backlog: 44
+    in-progress: 2
+    review: 1
+  inventory_rows_including_aliases: 159
+  inventory_including_aliases:
+    done: 112
+    backlog: 44
+    in-progress: 2
+    review: 1
+  aliases:
+    - id: 2.8b
+      canonical_story_id: '2.8'
+      story_lifecycle_status: done
+      disposition: superseded-alias-absorbed-by-2.8-history-preserved
+
+reconciled_rows:
+  - story_id: '3.10'
+    version_1_lifecycle_status: in-progress
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/3-10-github-repository-provisioning-binding-and-branch-ref-behavior.md
+    evidence_sha256: cf3ec77c9ca4ecdc5c6ac216a2b0a2a74e8152bad545eeb0e99c71c417a741f4
+    treatment: Canonical completion accepted; frozen evidence preserved byte-for-byte.
+  - story_id: '3.11'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/spec-3-11-github-file-mutation-commit-status-and-failure-behavior.md
+    evidence_sha256: 2a54eac94dbfc6f76a84b1206543421e7f61832b684576cdff788289f440f676
+    treatment: Canonical completion accepted; frozen evidence preserved byte-for-byte.
+  - story_id: '3.12'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: done
+    workflow_snapshot_status: in-progress
+    evidence_path: _bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md
+    evidence_sha256: 9b2a850e457626c78aacd2d35359c5d67c39ac0f00d131deafb23a7673edc2db
+    treatment: Canonical completion overrides the historical snapshot; frozen evidence preserved byte-for-byte.
+  - story_id: '3.13'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md
+    evidence_sha256: 140c5e7a0865004c74ff41f72a2d34b09f3679a927e268854e00d80567215a49
+    treatment: Canonical completion accepted; frozen evidence preserved byte-for-byte.
+  - story_id: '10.7'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/spec-10-7-eventstore-backed-search-bridge-and-deployed-server-registration.md
+    evidence_sha256: cf9d87385e001828203ee5e5d5e1546045e4b9030e36eb0f9e5408667266498a
+    treatment: Canonical completion accepted; frozen evidence preserved byte-for-byte.
+  - story_id: '10.8'
+    version_1_lifecycle_status: ready-for-dev
+    story_lifecycle_status: in-progress
+    workflow_snapshot_status: in-progress
+    evidence_path: _bmad-output/implementation-artifacts/10-8-real-produce-index-authorize-hydrate-redact-search-round-trip.md
+    evidence_sha256: 48225833db27e342ec77ead786df05ed31a072ff966542db8f83b75dbc243125
+    treatment: Canonical work remains nonterminal; existing component evidence is preserved.
+  - story_id: '10.9'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    canonical_title: Preserve Metadata-Only Indexing Until C9 Body-Content Approval
+    historical_snapshot_title: Authorized body-content materialization — C9 gated
+    evidence_path: _bmad-output/implementation-artifacts/spec-10-9-authorized-body-content-materialization-c9-gated.md
+    evidence_sha256: 98f668d4aa0213d89f7a48bf17e36f7500b534a5c4be7c00feba71fa9116cbab
+    treatment: The A4-approved narrowed story is complete; the historical specification remains immutable evidence.
+  - story_id: '11.2'
+    version_1_lifecycle_status: review
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/11-2-land-platform-prerequisite-apis-in-shared-modules.md
+    evidence_sha256: 33df794192bd9f4560b7478386368238f59099f6267434fb89642031a19c1101
+    treatment: Canonical completion accepted; frozen evidence preserved byte-for-byte.
+  - story_id: '11.3'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: done
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/spec-11-3-apply-wire-preserving-repository-hygiene.md
+    evidence_sha256: 60a17116f390bae4d58d06e7212f0f28b2abb5b828499d43db4c8861f36190e6
+    treatment: Canonical completion accepted; frozen evidence preserved byte-for-byte.
+  - story_id: '11.4'
+    version_1_lifecycle_status: backlog
+    story_lifecycle_status: review
+    workflow_snapshot_status: done
+    evidence_path: _bmad-output/implementation-artifacts/spec-11-4-consolidate-server-transport-envelope-and-route-helper-duplication.md
+    evidence_sha256: 97b77577c069e9bab454ec0d0d95019d4bb332ea910c6b820258c7ff3bf35714
+    treatment: Canonical review remains nonterminal; completed component evidence is preserved without closing the story.
+
+new_story_rows:
+  - story_id: '1.17'
+    story_lifecycle_status: backlog
+    title: Publish the PD10 v2 Authorization Contract Spine
+  - story_id: '4.22'
+    story_lifecycle_status: backlog
+    title: Implement the PD11 Guard-Discriminated Lifecycle
+  - story_id: '12.7'
+    story_lifecycle_status: backlog
+    title: Protect Confidential Operational Values
+  - story_id: '13.7'
+    story_lifecycle_status: backlog
+    title: Deliver the Supported Production Profile and Recovery Drill
+
+approval_binding:
+  gate_id: A3
+  authority_ids: [PD4]
+  manifest_node: DEC-A3
+  approval_status: pending
+  approvals: []
+  required_bound_artifacts:
+    - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+      sha256: pending-post-generation-approval-binding
+    - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+      sha256: pending-post-generation-approval-binding
+  statement: Generation of this journal does not grant or imply A3 approval.

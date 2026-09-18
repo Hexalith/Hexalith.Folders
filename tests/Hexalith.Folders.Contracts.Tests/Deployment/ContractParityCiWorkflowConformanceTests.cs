@@ -71,33 +71,29 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
     {
         YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
 
-        GetScalar(workflow, "name").ShouldBe("baseline-ci");
+        GetScalar(workflow, "name").ShouldBe("CI");
         GetScalar(GetMapping(workflow, "permissions"), "contents").ShouldBe("read");
 
         YamlMappingNode jobs = GetMapping(workflow, "jobs");
-        YamlMappingNode baselineJob = GetMapping(jobs, "baseline-build-and-unit-gates");
-        YamlMappingNode contractJob = GetMapping(jobs, "contract-and-parity-gates");
+        YamlMappingNode baselineJob = GetMapping(jobs, "ci");
+        YamlMappingNode contractJob = GetMapping(jobs, "folders-specialized-gates");
 
-        GetScalar(baselineJob, "name").ShouldBe("baseline-build-and-unit-gates");
-        GetScalar(contractJob, "name").ShouldBe("contract-and-parity-gates");
+        GetScalar(baselineJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main");
+        GetScalar(contractJob, "name").ShouldBe("folders-specialized-gates");
         GetScalar(contractJob, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(contractJob, "actions/checkout@v6");
+        YamlMappingNode checkout = FindStep(contractJob, "actions/checkout@v7.0.1");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
         YamlMappingNode submodules = GetSequence(contractJob, "steps").Children.Cast<YamlMappingNode>()
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), "Initialize root-level build submodules", StringComparison.Ordinal));
+                && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        foreach (string module in _rootBuildSubmodules)
-        {
-            submoduleCommand.ShouldContain(module, Case.Sensitive);
-        }
 
-        YamlMappingNode setupDotnet = FindStep(contractJob, "actions/setup-dotnet@v5");
+        YamlMappingNode setupDotnet = FindStep(contractJob, "actions/setup-dotnet@v6.0.0");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");
@@ -126,9 +122,16 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         script.ShouldContain("$ErrorActionPreference = 'Stop'");
         script.ShouldContain(ReportPath);
         script.ShouldContain("$LASTEXITCODE");
-        script.ShouldContain("@('test', $gate.project_path, '--no-restore', '--no-build', '--filter', $gate.filter)", Case.Sensitive);
+        script.ShouldContain("bin/Release/net10.0/$projectName.dll", Case.Sensitive);
+        script.ShouldContain("$selectors = @($Gate.filter -split '\\|')", Case.Sensitive);
+        script.ShouldContain("foreach ($selector in $qualifiedSelectors)", Case.Sensitive);
+        script.ShouldContain("$selectorArguments += @('-method', $selector)", Case.Sensitive);
+        script.ShouldContain("& dotnet $runnerPath @selectorArguments", Case.Sensitive);
+        script.ShouldContain("reason=unmapped-runner-class", Case.Sensitive);
+        script.ShouldContain("test-selection-drift", Case.Sensitive);
         script.ShouldNotContain("@('test', 'Hexalith.Folders.slnx'", Case.Sensitive);
         script.ShouldNotContain("@('test', 'tests'", Case.Sensitive);
+        script.ShouldNotContain("--filter", Case.Sensitive);
         script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
         foreach (string category in _categories)

@@ -1,0 +1,26 @@
+{
+  "branches": ["main"],
+  "tagFormat": "v${version}",
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/exec",
+      {
+        "verifyReleaseCmd": "bash scripts/validate-release-secrets.sh && bash scripts/validate-publication-preflight.sh ${nextRelease.version} verify",
+        "prepareCmd": "pwsh -NoProfile -File ./tests/tools/run-release-package-gates.ps1 -Version ${nextRelease.version} -SourceRevisionId $GITHUB_SHA -SkipRestoreBuild",
+        "publishCmd": "bash scripts/validate-release-secrets.sh && bash scripts/validate-publication-preflight.sh ${nextRelease.version} publish && pwsh -NoProfile -File ./tests/tools/run-release-package-gates.ps1 -Version ${nextRelease.version} -ReleaseTag v${nextRelease.version} -SourceRevisionId $GITHUB_SHA -Mode Publish -FeedSource https://api.nuget.org/v3/index.json -ApiKeyEnvironmentVariable NUGET_API_KEY -SkipRestoreBuild -SkipPack"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          "nupkgs/*.nupkg",
+          "nupkgs/*.snupkg"
+        ],
+        "successCommentCondition": false
+      }
+    ]
+  ]
+}

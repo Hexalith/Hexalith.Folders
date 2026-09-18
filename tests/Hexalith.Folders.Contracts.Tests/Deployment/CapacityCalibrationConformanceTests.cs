@@ -93,7 +93,7 @@ public sealed partial class CapacityCalibrationConformanceTests
             script.ShouldContain(required, Case.Sensitive);
         }
 
-        script.ShouldContain("dotnet run --no-build --project $loadProjectPath -- --profile release-calibration", Case.Sensitive);
+        script.ShouldContain("dotnet run --no-build --configuration Release --project $loadProjectPath -- --profile release-calibration", Case.Sensitive);
 
         foreach (string step in RequiredSteps)
         {
@@ -135,22 +135,19 @@ public sealed partial class CapacityCalibrationConformanceTests
     }
 
     [Fact]
-    public void ReleaseWorkflowAndPackageGateShouldRequireCapacityCalibrationBeforePublishing()
+    public void CapacityCalibrationShouldRemainARepositoryGateWithoutCouplingPackagePublication()
     {
-        string workflow = ReadText(".github/workflows/release-packages.yml");
+        string workflow = ReadText(".github/workflows/release.yml");
+        string ci = ReadText(".github/workflows/ci.yml");
         string packageGate = ReadText("tests/tools/run-release-package-gates.ps1");
         string manifest = ReadText("deploy/nuget/release-packages.yaml");
 
-        workflow.ShouldContain("./tests/tools/run-capacity-calibration-gates.ps1", Case.Sensitive);
-        workflow.ShouldContain("Run capacity calibration gates", Case.Sensitive);
+        ci.ShouldContain("./tests/tools/run-capacity-smoke-ci-gates.ps1", Case.Sensitive);
+        ci.ShouldContain("./tests/tools/run-capacity-calibration-gates.ps1", Case.Sensitive);
+        workflow.ShouldNotContain("run-capacity-calibration-gates.ps1", Case.Sensitive);
         workflow.ShouldNotContain("pull_request", Case.Insensitive);
-
-        packageGate.ShouldContain("_bmad-output/gates/capacity-calibration/latest.json", Case.Sensitive);
-        packageGate.ShouldContain("stale-capacity-calibration-evidence", Case.Sensitive);
-        packageGate.ShouldContain("missing-capacity-target-comparison", Case.Sensitive);
-        packageGate.ShouldContain("missing-release-evidence", Case.Sensitive);
-
-        manifest.ShouldContain("- _bmad-output/gates/capacity-calibration/latest.json", Case.Sensitive);
+        packageGate.ShouldNotContain("capacity-calibration", Case.Sensitive);
+        manifest.ShouldContain("inventoryPath: tools/release-packages.json", Case.Sensitive);
     }
 
     [Fact]

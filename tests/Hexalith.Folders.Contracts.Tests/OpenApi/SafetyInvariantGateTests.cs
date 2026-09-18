@@ -424,19 +424,20 @@ public sealed class SafetyInvariantGateTests
         workflow.ShouldContain("./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild");
         // AC 5: safety gate must run even when an earlier step fails so leakage cannot hide behind a contract regression.
         workflow.ShouldContain("if: ${{ !cancelled() }}");
-        workflow.ShouldContain("dotnet restore Hexalith.Folders.slnx");
-        workflow.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
+        workflow.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");
+        workflow.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");
         workflow.ShouldNotContain("upload-artifact", Case.Insensitive);
         workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
 
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
-        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests");
-        script.ShouldContain("dotnet restore Hexalith.Folders.slnx");
-        script.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll");
+        script.ShouldContain("-class Hexalith.Folders.Contracts.Tests.OpenApi.SafetyInvariantGateTests");
+        script.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true");
+        script.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror");
         script.ShouldContain("[Alias('NoRestore')]");
         script.ShouldContain("SAFETY-PREREQUISITE-DRIFT");
         script.ShouldContain("Hexalith.Folders.Contracts.Tests.dll");
         script.ShouldContain("$LASTEXITCODE");
+        script.ShouldNotContain("--filter", Case.Sensitive);
         script.ShouldNotContain("--recursive", Case.Insensitive);
 
         documentation.ShouldContain(".\\tests\\tools\\run-safety-invariant-gates.ps1");

@@ -4,10 +4,19 @@ stepsCompleted:
   - step-02-design-epics
   - step-03-create-stories
   - step-04-final-validation
+  - step-01-validate-prerequisites-relock-2026-09-18
+  - step-02-design-epics-relock-2026-09-18
+  - step-03-create-stories-relock-2026-09-18
+  - step-04-final-validation-relock-2026-09-18
 inputDocuments:
   - "_bmad-output/planning-artifacts/prd.md"
   - "_bmad-output/planning-artifacts/architecture.md"
   - "_bmad-output/planning-artifacts/ux-design-specification.md"
+  - "_bmad-output/planning-artifacts/epics.md"
+  - "_bmad-output/planning-artifacts/planning-story-manifest.yaml"
+  - "_bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md"
+  - "_bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml"
+  - "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml"
 ---
 
 # Hexalith.Folders - Epic Breakdown
@@ -111,7 +120,7 @@ This document provides the complete epic and story breakdown for Hexalith.Folder
 
 - FR58: Developers and AI agents can search authorized metadata tokens derived from indexed mutation metadata and query indexing status through REST, SDK, CLI, and MCP. Before egress, every hit is security-trimmed to the current tenant/folder/workspace authority and hydrated against current Folders state; stale, archived, revoked, unauthorized, or hidden hits are dropped. Results expose only C9-classified metadata, opaque authorized identity, and indexing/status evidence—never raw paths, file bodies, snippets, source URIs, or hidden-resource existence. Index or facade unavailability is explicit and fail-safe.
 
-### NonFunctional Requirements
+### Non-Functional Requirements
 
 #### Security and Tenant Isolation
 
@@ -305,7 +314,7 @@ The following requirements are the current architecture-derived constraints for 
 - AR-PROVIDER-01: Implement `IGitProvider` capability-discoverable port; capability-discovery model accommodates N providers (not hardcoded for 2). Provider port surfaces credential references and capability metadata; provider-specific permission scoping lives inside the adapter.
 - AR-PROVIDER-02: Implement GitHub adapter (`Hexalith.Folders.Providers.GitHub`) using Octokit 14.0.0 with GitHub Apps fine-grained permissions; not surfaced beyond the provider port.
 - AR-PROVIDER-03: Implement Forgejo adapter (`Hexalith.Folders.Providers.Forgejo`) as a typed HttpClient wrapper, fed by per-version `swagger.v1.json` snapshots in `tests/contracts/forgejo/<version>/`, with Forgejo scoped tokens.
-- AR-PROVIDER-04: Maintain `tests/contracts/forgejo/supported-versions.json` test matrix (latest stable + latest LTS + n-1 minor + any pinned customer instance). Nightly oasdiff schema-diff job classifies additive (warn) vs breaking (fail).
+- AR-PROVIDER-04: Maintain `tests/contracts/forgejo/supported-versions.json` test matrix (latest stable + latest LTS + n-1 minor + any pinned customer instance). `tests/tools/run-nightly-drift-gates.ps1` drives `tests/tools/forgejo-drift/` and classifies additive drift as warning and breaking drift as failure.
 - AR-PROVIDER-05: Distinguish known provider failure (timeout / 401 / 403 / 404 / 409 / 429 / 5xx / branch-protection / missing-or-deleted repository / stale clone / credential revocation / drift) from unknown outcome; unknown outcome enters `reconciliation_required` state — never silent retry that could duplicate repositories, file changes, or commits.
 - AR-PROVIDER-06: Provider contract suite runs in two execution modes: hermetic-PR-gate (pinned fixtures, fast) AND live-nightly-drift (against real GitHub/Forgejo); fixture-to-failure-mode coverage matrix asserted in CI.
 
@@ -364,7 +373,7 @@ The following requirements are the current architecture-derived constraints for 
 
 - AR-PATTERN-01: Follow C# / domain naming tables (PascalCase types/methods/properties, camelCase locals/parameters; `{Concept}Aggregate`, `{Concept}State`, `{Verb}{Concept}` commands, `{Concept}{Verbed}` events, `{Concept}Projection`).
 - AR-PATTERN-02: JSON wire format: camelCase, ISO-8601-Z dates, string enums, NFC-normalized Unicode forward-slash workspace-root-relative paths, content referenced by `contentHash`+`byteLength`+`mediaType` (never inline in event payloads).
-- AR-PATTERN-03: HTTP header set: `Authorization: Bearer <jwt>`, `Idempotency-Key`, `X-Correlation-Id`, `X-Hexalith-Task-Id`, `X-Hexalith-Retry-As: stream`, `X-Hexalith-Freshness`. Errors `application/problem+json` (RFC 9457).
+- AR-PATTERN-03: HTTP header set: `Authorization: Bearer <jwt>`, `Idempotency-Key`, `X-Correlation-Id`, `X-Hexalith-Task-Id`, `X-Hexalith-Retry-As: stream`, `X-Hexalith-Freshness`. Request-side retry transport metadata remains distinct from the D-9 response header `X-Hexalith-Retry-Transport`. Errors use `application/problem+json` (RFC 9457).
 - AR-PATTERN-04: REST endpoint naming: lowercase hyphen-delimited path segments; capability-group prefixes (provider-readiness, folders, workspaces, files, commits, audit, ops-console, context queries); URL-versioned `/api/v1/...`.
 - AR-PATTERN-05: Pub/sub topics `{tenantId}.{domain}.events`; tenant subscription `system.tenants.events`; dead-letter `deadletter.{domain}.events`. Internal calls go through canonical command/query API (`POST /api/v1/commands`, `POST /api/v1/queries`), never direct aggregate HTTP.
 
@@ -1016,7 +1025,7 @@ So that missing artifacts or undeclared surface behavior block release claims.
 **Then** idempotency encoding equivalence, pattern-example compilation, tenant-prefixed cache-key exceptions, and parity schema/class completeness are checked
 **And** a new state, operation, guard branch, or parity dimension without corresponding evidence fails.
 
-### Story 1.17: Publish the PD10-Corrected Authorization v2 Contract Spine
+### Story 1.17: Publish the PD10 v2 Authorization Contract Spine
 
 **Requirements:** FR8–FR10, FR43–FR51; AR-CURRENT-02, AR-CURRENT-05, AR-CURRENT-10–AR-CURRENT-11, AR-CURRENT-23
 
@@ -1031,6 +1040,11 @@ So that protected operations fail safely and consistently before downstream stor
 **Then** `hexalith.folders.v2.yaml`, server endpoints/fallback policy, generated .NET SDK, CLI, MCP, UI contract consumption, previous-spine fingerprints, and C13 parity artifacts are regenerated in lockstep
 **And** v1 remains historical evidence and is not exposed by the supported production profile.
 
+**Given** authorization-matrix candidate `2.0.0`
+**When** the v2 authorization denominator is generated
+**Then** all fourteen canonical access states and every protected operation family are represented exactly once
+**And** `GetReadinessDiagnostics`, `GetProjectionFreshness`, and `GetTaskStatus` carry explicit folder scope; task lookup follows fresh folder authority and proves the task binding to that folder.
+
 **Given** any protected v2 operation
 **When** pre-lookup authorization outcomes are validated
 **Then** unauthenticated requests use `401`, fresh negative authority uses one byte-equivalent non-enumerating `404`, and unavailable/stale/conflicting authority uses one non-disclosing retryable `503`
@@ -1039,7 +1053,13 @@ So that protected operations fail safely and consistently before downstream stor
 **Given** protected v2 response schemas and adapter mappings
 **When** forbidden legacy outcomes are searched
 **Then** caller-visible `403`, `not_found`, `cross_tenant_access_denied`, and `audit_access_denied` are absent
-**And** every error carries the required visibility, correlation, retryability, client-action, and closed metadata-only detail fields.
+**And** every error carries the required visibility, correlation, retryability, client-action, and closed metadata-only detail fields
+**And** closed error-code, client-action, visibility, exit-code, and MCP failure-kind vocabularies map `read_model_unavailable` to CLI exit `73` and `concurrency_conflict` to CLI exit `77` plus MCP `concurrency_conflict`.
+
+**Given** the historical-v1 comparison fixture
+**When** previous-spine and C13 regeneration runs
+**Then** `previous-spine.yaml` records status-code and error-vocabulary fingerprints and the C13 denominator is regenerated with the complete v2 candidate set
+**And** consumer discovery blocks and escalates if any deployed external v1 consumer is found rather than inventing a migration window.
 
 **Given** the final generated authorization matrix and contract artifacts
 **When** A6b review occurs
@@ -1875,7 +1895,7 @@ So that a task reaches one trustworthy terminal or recovery state without duplic
 **And** deployed success, denial, wrong-tenant access, replay/conflict, provider failure, timeout/unknown outcome, reconciliation-budget boundary, metadata-only audit, and sensitive-data exclusion are proven end to end
 **And** mocks, NoOp executors, in-memory state, seed records, unavailable/safe-empty paths, or fake Git evidence alone cannot support completion.
 
-### Story 4.22: Implement the PD11 Total Guarded Lifecycle and Cleanup Rules
+### Story 4.22: Implement the PD11 Guard-Discriminated Lifecycle
 
 **Requirements:** FR13, FR24, FR29–FR31, FR37, FR40, FR45–FR46; AR-CURRENT-13–AR-CURRENT-14
 
@@ -1889,6 +1909,11 @@ So that retryable failures, authorization loss, resume, and deletion cannot disc
 **When** `FolderStateTransitions` and its generated/reference documentation are updated
 **Then** every allowed transition is keyed by the complete `(state, event, guard)` triple
 **And** every unlisted triple or unlisted branch of a known state/event pair rejects with `state_transition_invalid` rather than falling through.
+
+**Given** the five guard-discriminated state/event pairs approved by A7
+**When** confirmed commit/refusal, retryable/non-retryable commit failure, restored readiness, originating-task resume, or the inclusive C7 stale boundary is evaluated
+**Then** each guarded branch selects only its approved target and every omitted sibling branch rejects explicitly
+**And** `LockLeaseBecameStale` is the only event that moves an expired lock to stale.
 
 **Given** a retryable commit failure or loss of current authorization while changes are staged
 **When** the transition is evaluated
@@ -1910,9 +1935,20 @@ So that retryable failures, authorization loss, resume, and deletion cannot disc
 **Then** expiry may block restoration but never authorizes deletion
 **And** cleanup requires terminal task closure, no active task, a fresh P7D window, no legal hold, and cancellation on legitimate resume.
 
+**Given** staged work enters recovery or cleanup
+**When** durable lifecycle state is recorded
+**Then** it includes `stagedByTaskId`, `stagedByPrincipal`, `stagedRecoveryStartedAt`, `stagedRecoveryDeadline`, `stagedCleanupStartedAt`, and `stagedCleanupNotBefore`
+**And** task binding is resolved by the server rather than accepted from a raw caller locator.
+
+**Given** an unconfirmed external side effect
+**When** bounded provider confirmation runs
+**Then** `unknown_provider_outcome` is `auto-recovering` for at most five read-only checks within fifteen minutes and becomes `reconciliation_required`/`awaiting-human` only when those checks cannot establish the result
+**And** `OperatorDiscardRequested`, `OperatorRetrySucceeded`, and `OperatorMarkedFailed` are absent from the published MVP enum and active diagram, reject without state change, and are covered by negative tests.
+
 **Given** Story 1.17 is accepted and A7/A7b approve the exact C6/C3 correction digests
 **When** lifecycle code, tests, diagrams, UI disposition mapping, and retention artifacts are validated
 **Then** they express one model with coverage for every state/event/guard branch and cleanup boundary
+**And** the generated v2 enum, C6 mapping, lifecycle diagram, code, UI disposition mapping, and tests remain in lockstep
 **And** Story 4.22 is scheduled after Story 1.17 and the required decisions, with a strictly later execution rank.
 
 **Execution model:** Story 4.22 is an architecture-mandated governed acceptance aggregate. Each slice is independently reviewable and testable; the parent closes only after the approved C3/C6 digests and every slice agree.
@@ -2989,7 +3025,7 @@ So that current FR58 is proven without exposing raw paths, bodies, snippets, or 
 **Then** every unresolved prerequisite has a strictly lower execution rank and the accepted Story 10.7 edge retains its evidence reference
 **And** topology availability alone cannot satisfy or bypass any product prerequisite.
 
-### Story 10.9: Enforce the Metadata-Only Search Safety Guard
+### Story 10.9: Preserve Metadata-Only Indexing Until C9 Body-Content Approval
 
 **Requirements:** FR55, FR58; NFR4, NFR54, NFR78, NFR84
 
@@ -3367,6 +3403,16 @@ So that accepted lifecycle operations survive process restart and Production can
 **And** empty-checkpoint replay, host restart, append conflict/reread, equivalent/conflicting idempotency, wrong-tenant/authorization denial, corrupt/unavailable store, timeout, supported event-version evolution, and sensitive-data exclusion are proven
 **And** NoOp, in-memory, seed-only, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
 
+**Given** concurrent writers or a stale aggregate version
+**When** D-11 admission and append execute across supported replicas
+**Then** EventStore is the sole writer and command-state plus event append is transactional; one conflict permits at most one bounded full authorization-and-domain re-evaluation before append
+**And** blind append, provider-effect replay, or unbounded retry is forbidden, while exhausted conflict maps to HTTP `409`, CLI exit `77`, and MCP `concurrency_conflict` with multi-replica evidence.
+
+**Given** retained historical events and the external event-evolution release
+**When** event type and payload versions are validated
+**Then** logical event types are stable URI identifiers independent of CLR/assembly names and every payload uses a positive schema version distinct from EventStore `MetadataVersion`
+**And** the closed legacy `EventTypeName` alias registry retains one historical byte fixture per alias and no unregistered missing-version alias defaults to version 1.
+
 ### Story 12.2: Durable projections and task-completion pipeline
 
 **Requirements:** FR31, FR39, FR45–FR46; NFR79–NFR81
@@ -3382,6 +3428,11 @@ So that accepted work reaches trustworthy status after restart.
 **Then** their deterministic state, checkpoints, freshness, terminal task result, retry eligibility, and failure/recovery evidence persist across restart and duplicate delivery
 **And** tenant isolation, authorization denial, event duplication/order conflict, corrupt/unavailable state, timeout, empty stream/checkpoint, and retention boundaries produce safe canonical behavior with metadata-only evidence
 **And** transition-evidence, seven diagnostics, and search-bridge projections remain owned by Epics 4, 6, and 10; in-memory, seed, unavailable, NoOp, safe-empty, or fake-only proof cannot complete this story.
+
+**Given** `EXT-ES-EVENT-EVOLUTION` is accepted and retained history includes every governed payload generation
+**When** an empty-checkpoint rebuild runs
+**Then** it traverses every retained upcaster chain and every entry in the closed missing-version registry to produce current-semantic read models
+**And** historical event bytes are never rewritten or silently reclassified.
 
 ### Story 12.3: Durable workspace file-content store and content-read source
 
@@ -3399,6 +3450,11 @@ So that mutations, context queries, and commits operate on verified content afte
 **And** wrong-tenant/authorization denial, traversal/symlink/case boundary, binary/oversize/encoding limits, conflicting replay, corrupt/missing content, timeout/cancellation, restart, and retention/deletion evidence are attached without content in events/audit/telemetry
 **And** discarded, memory-only, seed, unavailable, safe-empty, NoOp, or fake content cannot satisfy completion.
 
+**Given** operational values are classified confidential
+**When** durable workspace content/state is recorded
+**Then** only Story 12.7 tokens or non-reversible opaque provider handles are durable
+**And** direct Dapr/database domain writes, sealed reversible values, and durable working-copy cleartext are rejected.
+
 ### Story 12.4: Real Git commit executor and provider write path
 
 **Requirements:** FR18, FR37, FR39–FR40; NFR23, NFR79
@@ -3415,6 +3471,11 @@ So that repository-backed work produces a provider-confirmed durable commit.
 **And** denial/wrong-tenant, lock/ref/path conflict, equivalent/conflicting replay, known provider failure, timeout/cancellation or unknown post-dispatch outcome, restart, and content/metadata boundary evidence prove no blind duplicate commit
 **And** mocks, fake Git, NoOp, in-memory, seed, unavailable, or safe-empty evidence cannot satisfy completion.
 
+**Given** a confidential target or writer identity
+**When** the executor evaluates provider capability before admission
+**Then** writer identity uses the immutable canonical Story 12.7 token and the target executes only through a capability-proven `opaque-handle-restartable` provider operation
+**And** any `cleartext-required` operation fails before admission with HTTP `422` and code `confidential_operation_not_durable`.
+
 ### Story 12.5: At-least-once Memories egress and reconciler
 
 **Requirements:** FR58; NFR79–NFR80; AR-CURRENT-18
@@ -3430,6 +3491,11 @@ So that indexing outages never roll back file truth and missed delivery can reco
 **Then** an outbox/checkpoint or equivalent durable mechanism preserves ordered egress intent, stable CloudEvent/idempotency identity prevents duplicate logical index units, failures expose retry/reconciliation status, and committed Folders truth is never rolled back
 **And** tenant routing, authorization/policy outcome, removal/archive, duplicate/conflict, Memories failure, timeout/unknown acknowledgement, poison/boundary, empty-checkpoint replay, restart, and metadata-only C9 exclusion are proven
 **And** in-memory queues, fire-and-forget, seed, NoOp, unavailable, safe-empty, or fake-only evidence cannot satisfy completion.
+
+**Given** a mutation carries confidential operational values
+**When** the Memories egress document, broker message, bridge state, or retry evidence is built
+**Then** the Story 12.7 tokenizer supplies the immutable canonical token and cleartext never enters the outbox, broker, bridge, or retry evidence
+**And** restart and duplicate-delivery proof preserves token identity without creating a reversible copy.
 
 ### Story 12.6: Implement durable all-mutations idempotency and expired-key precedence
 
@@ -3453,6 +3519,11 @@ So that retries cannot duplicate work and an expired key can never silently exec
 **Then** EventStore-owned admission state, fencing, checkpoints, and minimal expired tombstones converge without resurrecting a consumed key
 **And** OQ8 runtime evidence is produced after Story 12.6 rather than being treated as its prerequisite.
 
+**Given** the version-2 execution manifest
+**When** Story 12.6 is scheduled at rank 21
+**Then** accepted-terminal `OQ8-DESIGN`, not `OQ8-EVIDENCE`, is its design prerequisite
+**And** rank-50 `OQ8-EVIDENCE` follows Story 12.6.
+
 **Execution model:** Story 12.6 retains its ratified cross-repository parent ID. Delivery assigns the following bounded slices and does not treat component-only completion as parent closure.
 
 **Single-session slices:**
@@ -3463,7 +3534,7 @@ So that retries cannot duplicate work and an expired key can never silently exec
 - `12.6-D` — Integrate generated v2 mutation descriptors and read-side key rejection across Folders.
 - `12.6-E` — Prove restart, multi-replica race, crash-window, duplicate-effect, and OQ8 evidence scenarios.
 
-### Story 12.7: Enforce the PD8 Irreversible Confidential-Value Boundary
+### Story 12.7: Protect Confidential Operational Values
 
 **Requirements:** FR38, FR55; NFR8, NFR54, NFR77; AR-CURRENT-12
 
@@ -3476,26 +3547,30 @@ So that durable systems can correlate protected values without storing recoverab
 **Given** a C9-classified confidential value is presented to an operation
 **When** the request reaches the EventStore event-write confidentiality boundary
 **Then** an approved versioned tenant-scoped HMAC tokenizer replaces it before command admission, event persistence, audit, telemetry, projection, index egress, or diagnostic emission
-**And** no durable facility receives cleartext, ciphertext, an encrypted reversible form, or sufficient material to reconstruct the value.
+**And** the same event-write tokenizer supplies the canonical token to events, evidence, lock identity, Memories egress, and exports
+**And** no EventStore record, secret store, working copy, retry record, backup, or other durable facility receives cleartext, ciphertext, an encrypted reversible form, or sufficient material to reconstruct the value.
 
 **Given** a tokenization key rotates or an input matches an older alias
 **When** correlation is evaluated during the governed overlap window
 **Then** alias-safe matching produces the approved immutable correlation identity without rewriting historical events or revealing the input
+**And** active-key aliases change atomically and an old alias retires only after live alias coverage plus every old lease and retry has closed
 **And** expiration or removal of an alias fails safely without converting withheld data into missing or visible data.
 
 **Given** a requested operation would require later recovery, unsealing, or provider use of confidential cleartext
 **When** capability validation runs
-**Then** the operation fails before idempotency admission or any durable side effect with the canonical safe policy result
+**Then** provider operations are classified as `opaque-handle-restartable` or `cleartext-required`, and a `cleartext-required` operation fails before idempotency admission or any durable side effect with HTTP `422` and code `confidential_operation_not_durable`
 **And** product/UI text does not promise that any actor, including a tenant administrator, can reveal or recover the value.
 
 **Given** tokenized evidence is returned to an authorized diagnostic surface
 **When** disclosure state is rendered
 **Then** only the correlation reference is exposed and the state is `withheld`, distinct from visible, redacted, unknown, and `Missing`
+**And** `redacted` copy states that policy hides an otherwise durable value, while `withheld` states that no durable cleartext exists to reveal
 **And** no raw provider/repository/ref/task locator is treated as authority.
 
 **Given** held locks, staged work, restart/replay, key rotation, provider handoff, and index publication are tested
 **When** sentinel confidential values traverse the real durable path
 **Then** token identity remains stable where policy allows correlation and no sentinel cleartext or reversible form appears in events, state, logs, traces, metrics, audit, projections, files, queues, indexes, or errors
+**And** held-lock rotation, restart/replay, collision handling, transient-memory, and sentinel tests are included in the A5/C9 evidence
 **And** completion requires deployed evidence rather than fake, in-memory, seed, or source-inspection-only proof.
 
 **Given** the execution manifest is regenerated
@@ -3536,6 +3611,11 @@ So that tenant-controlled base URLs cannot turn the service into an SSRF proxy.
 **Then** scheme/host/port policy and `ConnectCallback`-level IP checks reject loopback, RFC1918/private, link-local, multicast, unspecified, rebinding, redirect, and provider-metadata destinations before credentials or HTTP bytes are sent
 **And** allowed public endpoints, denial, DNS failure, timeout, IPv4/IPv6 and redirect boundaries, tenant isolation, safe audit, and sensitive-value exclusion are proven in deployed transport tests.
 
+**Given** Octokit or Forgejo readiness and later provider calls
+**When** the shared S-9 destination policy resolves and connects
+**Then** every normalized address is checked, the approved address is connect-pinned, TLS validates the original host, `UseProxy=false`, and credential-bearing redirects are rejected
+**And** approved private-destination exceptions are explicit, bounded, and covered together with credential sentinels by positive and negative tests.
+
 ### Story 13.2: Fail-safe fallback authorization policy and sidecar-only app port
 
 **Requirements:** FR9–FR10; NFR74, NFR76, NFR84
@@ -3548,8 +3628,13 @@ So that missing policy or network bypass cannot expose Folders operations.
 
 **Given** route authorization metadata is absent/malformed or a caller attempts direct app-port access
 **When** the deployed Server evaluates policy and network exposure
-**Then** fallback policy denies, only the approved sidecar path can reach the app port, and authenticated/authorized sidecar traffic retains canonical behavior
-**And** missing policy, wrong app ID, direct network, wrong tenant, timeout/sidecar failure, startup misconfiguration, and port-boundary evidence are attached with one safe denial audit and no hidden-resource leak.
+**Then** fallback policy denies, only liveness is publicly exposed, Dapr callback listeners are loopback-isolated, and authenticated/authorized sidecar traffic retains canonical behavior
+**And** missing policy, wrong app ID, direct public or pod-network access, wrong tenant, timeout/sidecar failure, startup misconfiguration, and port-boundary evidence are attached with one safe denial audit and no hidden-resource leak.
+
+**Given** a protected workload is deployed with a Dapr sidecar
+**When** app-token authentication is configured
+**Then** the same per-workload Kubernetes secret is bound to `dapr.io/app-token-secret` and application `APP_API_TOKEN`, and `dapr-api-token` is compared in constant time
+**And** absent, wrong, missing, and correct secret behavior is proven together with mTLS, app-ID, topic, public-ingress, and direct-pod denial controls.
 
 **Given** bearer credentials or authoritative authorization evidence are evaluated
 **When** transport is not HTTPS/approved loopback or authority is stale, malformed, conflicting, or unavailable
@@ -3598,7 +3683,8 @@ So that failures are observable and stateful services use governed retry/timeout
 
 **Given** Stories 12.1–12.2 supply durable state and `EXT-ES-RECOVERY` publishes PostgreSQL v2 actor-state compatibility and recovery capability, and five alert instruments plus production `statestore`/Resiliency requirements are declared
 **When** the deployed topology starts and representative success/failure conditions execute
-**Then** each instrument emits bounded tenant-safe signals with documented thresholds/routing, the production state store is durable and correctly scoped, and resiliency policies apply only approved retries, timeouts, and circuit behavior
+**Then** each instrument emits bounded tenant-safe signals with documented thresholds/routing, authoritative state uses highly available PostgreSQL `state.postgresql` v2, pub/sub uses a separate durable replicated broker, and resiliency policies apply only approved retries, timeouts, and circuit behavior
+**And** Redis is never the authoritative state store
 **And** alert-fire/recovery, store restart, conflict, outage, timeout, retry exhaustion, tenant isolation, configuration-boundary, and sensitive-label evidence are attached without using in-memory or fake components as production proof.
 
 ### Story 13.6: Rate limiting, timeouts, body caps, and sensitive-value filter convergence
@@ -3618,10 +3704,10 @@ So that abusive input is bounded and redaction cannot drift between surfaces.
 
 **Given** provider calls encounter quota pressure or untrusted repository/workspace content reaches a rendering, path, command, or template boundary
 **When** rate-limit and content-neutralization controls run
-**Then** per-tenant/user and background/global budgets enforce bounded retry/backoff behavior, synthetic 429 storms prove bounded queues and timely signaling, and content cannot control commands, escape paths, inject templates, or render active payloads
+**Then** I-8 tenant and global provider token buckets enforce bounded retry/backoff behavior, a bounded synthetic 429 storm proves bounded queues and timely signaling, and content cannot control commands, escape paths, inject templates, or render active payloads
 **And** provider rate-limit chaos and the named content-neutralization policy become real gates rather than reference-only targets.
 
-### Story 13.7: Prove the Supported Production Profile and Regional Recovery Drill
+### Story 13.7: Deliver the Supported Production Profile and Recovery Drill
 
 **Requirements:** No new product FR; NFR74–NFR84; AR-CURRENT-20, AR-CURRENT-22
 
@@ -3632,9 +3718,9 @@ So that hardening, durability, recovery, and capacity claims rest on reproducibl
 **Acceptance Criteria:**
 
 **Given** Stories 13.1–13.6 and 12.1–12.2 are accepted and `EXT-ES-RECOVERY` publishes versioned, digest-bound PostgreSQL v2 actor-state, physical-backup, recovery-safety-export, and restored-backup-admission capabilities
-**When** the preproduction profile is deployed
-**Then** it is single-region Kubernetes with Dapr sidecars, deny-by-default mTLS policy, at least two replicas each for EventStore, Server, Workers, and UI, external highly available PostgreSQL v2 transactional actor state, and a separate durable Redis Streams-compatible broker
-**And** placement/control-plane, ingress, pooler, broker persistence/replication, topology spread, anti-affinity, and disruption budgets have no unsupported singleton dependency.
+**When** production and preproduction profiles are rendered and the preproduction profile is deployed
+**Then** both provide stable app IDs, Dapr mTLS/default-deny policy, per-workload app-token callback-listener isolation, resource envelopes, topology spread, and disruption budgets; the deployed profile has at least two replicas each for EventStore, Server, Workers, and UI, external highly available PostgreSQL v2 transactional actor state, and a separate durable Redis Streams-compatible broker
+**And** fail-start validation rejects missing or unsafe configuration, while Dapr control plane, ingress, database endpoint/pooler, and durable broker have no unsupported singleton dependency.
 
 **Given** the supported profile starts, scales, restarts, and loses individual dependencies
 **When** readiness, convergence, and alert evidence is collected
@@ -3644,12 +3730,17 @@ So that hardening, durability, recovery, and capacity claims rest on reproducibl
 **Given** continuous WAL/PITR and encrypted daily recovery points are copied to the independent recovery region/account
 **When** a total serving-region loss drill executes
 **Then** EventStore authoritative state meets RPO ≤5 minutes and RTO ≤4 hours, including separately controlled key recovery and pre-authorized recovery capacity
-**And** same-region-only backups or a logical export alone cannot satisfy the drill.
+**And** recovery points are retained for 35 days; same-region-only backups or a logical export alone cannot satisfy the drill.
+
+**Given** EventStore publishes the recovery-safety export
+**When** the export is produced, transferred, monitored, or restored
+**Then** it is signed by a separately controlled KMS signer, carries a monotonic watermark, retains active-hold state, and emits an alert when lag exceeds five minutes
+**And** export gap, corruption, loss, incompatible control state, or failed key custody blocks recovery admission.
 
 **Given** committed deletion and legal-hold dispositions exist after the restored backup point
 **When** restored-backup admission evaluates the signed recovery-safety export
 **Then** it verifies the integrity chain and monotonic watermark, reapplies later dispositions idempotently, rebuilds projections, and fails closed before traffic on any gap or corruption
-**And** the metadata-only export remains an evidence mechanism rather than a second domain-write API.
+**And** it restores required control state and reconciles rebuilt projections before traffic; the metadata-only export remains an evidence mechanism rather than a second domain-write API.
 
 **Given** the restored profile is available
 **When** OQ12 and OQ13 verification runs against the same commit and declared environment
@@ -3659,7 +3750,8 @@ So that hardening, durability, recovery, and capacity claims rest on reproducibl
 **Given** release evidence is assembled
 **When** each artifact is classified
 **Then** every item is marked automated, operational, approval-bound, or reference-pending with a named owner and exact source/digest
-**And** Story 13.7 produces the supported-profile, backup, restore, drill, OQ12, and OQ13 inputs without claiming that admission or target mechanisms alone are evidence.
+**And** Story 13.7 extends `backup-restore.md`, ADR 0007 I-10/I-11, the required runbook/ADR section inventory, and metadata-only negative controls
+**And** it produces distinct OQ12 and OQ13 evidence packages for their separate approver role sets without claiming that admission or target mechanisms alone are evidence.
 
 **Given** the execution manifest is regenerated
 **When** Story 13.7 is scheduled

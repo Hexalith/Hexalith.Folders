@@ -193,23 +193,27 @@ public sealed class GovernanceCompletenessGateTests
         workflow.ShouldContain("global-json-file: global.json");
         workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
 
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
-        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests");
-        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests");
-        script.ShouldContain("-class Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll");
+        script.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true");
+        script.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror");
+        script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.GovernanceCompletenessGateTests'", Case.Sensitive);
+        script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests'", Case.Sensitive);
         script.ShouldContain("docs/contract/authorization-matrix.md", Case.Sensitive);
         script.ShouldContain("docs/contract/oq3-authorization-evidence.yaml", Case.Sensitive);
-        script.ShouldContain("FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests");
-        script.ShouldContain("-class Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests");
+        script.ShouldContain("'Hexalith.Folders.Contracts.Tests.OpenApi.ProviderCompatibilityCatalogContractTests'", Case.Sensitive);
+        script.ShouldContain("foreach ($testClass in $governanceClasses)", Case.Sensitive);
+        script.ShouldContain("-class $testClass", Case.Sensitive);
+        script.ShouldContain("class selection executed zero tests", Case.Sensitive);
         script.ShouldContain("docs/contract/provider-compatibility-catalog.md", Case.Sensitive);
         script.ShouldContain("docs/contract/oq4-provider-compatibility-evidence.yaml", Case.Sensitive);
-        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Debug");
+        script.ShouldContain("tests/Hexalith.Folders.Contracts.Tests/bin/Release");
         script.ShouldContain("tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj");
         script.ShouldContain("_bmad-output/gates/governance-completeness/latest.json");
         script.ShouldContain("$LASTEXITCODE");
         script.ShouldContain("#Requires -Version 7");
         script.ShouldContain("utf8NoBOM");
         script.ShouldContain(c7DecisionPath, Case.Sensitive);
+        script.ShouldNotContain("--filter", Case.Sensitive);
         script.ShouldNotContain("--recursive", Case.Insensitive);
 
         documentation.ShouldContain(".\\tests\\tools\\run-governance-completeness-gates.ps1");

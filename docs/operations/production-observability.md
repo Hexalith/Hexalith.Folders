@@ -81,7 +81,7 @@ Use these rerun rules to decide when to rerun the gate:
 - Rerun the gate after any change to the observability manifest, the ServiceDefaults exporter/health
   wiring, the operational-signal instruments, the dead-letter topic declaration, or the governance C2 row.
 - The static gate runs in the `contract-spine` CI lane and through the baseline CI Contracts.Tests filter;
-  it must not be promoted to a new top-level `ci.yml` lane, to `release-packages.yml`, or to scheduled
+  it must not be promoted to a new top-level `ci.yml` lane, to `release.yml`, or to scheduled
   workflows unless a live exporter/alert smoke is explicitly added.
 - CI checkout keeps `submodules: false`; the gate never performs network calls, provider credentials
   resolution, or nested submodule initialization.

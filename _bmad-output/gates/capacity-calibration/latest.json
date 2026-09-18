@@ -14,7 +14,7 @@
   ],
   "profile_name": "release-calibration",
   "run_id": "capacity-calibration",
-  "source_commit": "3b9fa9fd6fac25acc3119a81c96b15cce635fd20",
+  "source_commit": "3dd121eadd3e952850be69ec3b7cfda6fd549925",
   "required_measured_steps": [
     "prepare_workspace",
     "acquire_workspace_lock",
@@ -59,11 +59,11 @@
       "exit_code": 0
     }
   ],
-  "elapsed_ms": 13366,
+  "elapsed_ms": 14042,
   "hardware_profile": {
     "runner_profile": "local-hermetic",
     "target_hardware_profile": "github-actions-ubuntu-latest-or-local-hermetic",
-    "processor_count": 16,
+    "processor_count": 24,
     "process_architecture": "X64",
     "os_architecture": "X64",
     "os_family": "linux",
@@ -105,43 +105,43 @@
   "latency_stats": {
     "commit_workspace": {
       "count": 18,
-      "min_ms": 0.032,
-      "p50_ms": 0.036,
-      "p95_ms": 4.657,
-      "p99_ms": 4.657,
-      "max_ms": 4.657
+      "min_ms": 0.038,
+      "p50_ms": 0.072,
+      "p95_ms": 4.888,
+      "p99_ms": 4.888,
+      "max_ms": 4.888
     },
     "mutate_workspace_file": {
       "count": 18,
-      "min_ms": 0.042,
-      "p50_ms": 0.048,
-      "p95_ms": 5.553,
-      "p99_ms": 5.553,
-      "max_ms": 5.553
+      "min_ms": 0.052,
+      "p50_ms": 0.09,
+      "p95_ms": 5.199,
+      "p99_ms": 5.199,
+      "max_ms": 5.199
     },
     "read_workspace_status": {
       "count": 18,
-      "min_ms": 0.013,
-      "p50_ms": 0.02,
-      "p95_ms": 3.274,
-      "p99_ms": 3.274,
-      "max_ms": 3.274
+      "min_ms": 0.016,
+      "p50_ms": 0.036,
+      "p95_ms": 3.414,
+      "p99_ms": 3.414,
+      "max_ms": 3.414
     },
     "acquire_workspace_lock": {
       "count": 18,
-      "min_ms": 0.018,
-      "p50_ms": 0.028,
-      "p95_ms": 1.576,
-      "p99_ms": 1.576,
-      "max_ms": 1.576
+      "min_ms": 0.024,
+      "p50_ms": 0.038,
+      "p95_ms": 1.714,
+      "p99_ms": 1.714,
+      "max_ms": 1.714
     },
     "prepare_workspace": {
       "count": 18,
-      "min_ms": 0.042,
-      "p50_ms": 0.065,
-      "p95_ms": 8.24,
-      "p99_ms": 8.24,
-      "max_ms": 8.24
+      "min_ms": 0.064,
+      "p50_ms": 0.089,
+      "p95_ms": 9.285,
+      "p99_ms": 9.285,
+      "max_ms": 9.285
     }
   },
   "throughput": {
@@ -153,10 +153,10 @@
   "freshness_observations": {
     "commit_to_status_read_ms": {
       "count": 18,
-      "p50_ms": 0.022,
-      "p95_ms": 4.069,
-      "p99_ms": 4.069,
-      "max_ms": 4.069,
+      "p50_ms": 0.041,
+      "p95_ms": 4.524,
+      "p99_ms": 4.524,
+      "max_ms": 4.524,
       "scope": "hermetic_commit_to_status_read"
     }
   },
@@ -194,7 +194,7 @@
     "c2": {
       "max_commit_to_status_read_freshness_ms": {
         "target": 500,
-        "observed": 4.069,
+        "observed": 4.524,
         "units": "milliseconds",
         "comparator": "observed_less_than_or_equal_target",
         "passed": true

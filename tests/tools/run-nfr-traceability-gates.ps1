@@ -20,8 +20,7 @@ $repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
 $reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/nfr-traceability'
 $reportPath = Join-Path $reportDirectory 'latest.json'
 $pushed = $false
-$usedXunitFallback = $false
-$testFilter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests'
+$testClass = 'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests'
 $runnerMethods = @(
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocExists',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityDocNamesItsSourceAuthorities',
@@ -35,9 +34,9 @@ $runnerMethods = @(
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.GovernanceEvidenceReferencePendingCriteriaStaySurfaced',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGateScriptFailsClosedAndEmitsBoundedEvidence',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGatePreservesNativeFailureExitWithoutEchoingOutput',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ContractSpineWorkflowAndBaselineCiWireNfrTraceabilityGate',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ReleasePackageWiringRequiresNfrTraceabilityEvidence',
-    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGateRunsOnlyInReleasePrerequisiteJob',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ContractSpineAndBlockingCiWireNfrTraceabilityGate',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.ReleasePackageWiringUsesSealedArtifactEvidenceRatherThanLegacyNfrReports',
+    'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityGateDoesNotRunInsideExactSourceReleaseJobs',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NfrTraceabilityLatestReportStaysMetadataOnlyAndMatchesDoc',
     'Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests.NegativeControlsRejectVacuousAndUnsafeNfrTraceabilityEvidence'
 )
@@ -120,7 +119,7 @@ function Write-NfrTraceabilityReport {
             'docs/exit-criteria/c0-c13-governance-evidence.yaml',
             'docs/exit-criteria/nfr-traceability.md',
             'tests/tools/run-release-package-gates.ps1',
-            '.github/workflows/release-packages.yml'
+            '.github/workflows/release.yml'
         )
         surfaces = @(
             'prd-nfr-inventory',
@@ -153,41 +152,6 @@ function Get-ExecutedTestCount {
     return $total
 }
 
-function Invoke-XunitInProcessFallback {
-    $script:usedXunitFallback = $true
-    Write-Host 'NFR-TRACEABILITY category=static-nfr-traceability vstest-unavailable=true fallback=xunit-in-process'
-    $runnerDirectory = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0'
-    $runnerFileName = 'Hexalith.Folders.Contracts.Tests'
-    if ($IsWindows) {
-        $runnerFileName += '.exe'
-    }
-
-    $runnerPath = Join-Path $runnerDirectory $runnerFileName
-    if (-not (Test-Path $runnerPath)) {
-        Write-NfrTraceabilityReport -Status 'failed' -ExitCode 1
-        Write-Error 'NFR-TRACEABILITY-GATE-VACUOUS: xUnit in-process runner missing for NfrTraceabilityConformanceTests.'
-        exit 1
-    }
-
-    $runnerOutput = & $runnerPath -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests 2>&1
-    $runnerExitCode = $LASTEXITCODE
-
-    [int]$executedTests = Get-ExecutedTestCount -Output $runnerOutput
-    if ($executedTests -lt $runnerMethods.Count) {
-        Write-NfrTraceabilityReport -Status 'failed' -ExitCode 1
-        Write-Error "NFR-TRACEABILITY-GATE-VACUOUS: expected $($runnerMethods.Count) NFR traceability conformance facts but $executedTests executed."
-        exit 1
-    }
-
-    if ($runnerExitCode -ne 0) {
-        Write-Host "NFR-TRACEABILITY category=static-nfr-traceability fallback-native-test-failed=true exit_code=$runnerExitCode"
-        Write-NfrTraceabilityReport -Status 'failed' -ExitCode $runnerExitCode
-        exit $runnerExitCode
-    }
-
-    Write-Host "NFR-TRACEABILITY category=static-nfr-traceability fallback-executed=$executedTests"
-}
-
 try {
     Push-Location $repositoryRoot
     $pushed = $true
@@ -196,14 +160,14 @@ try {
     Write-NfrTraceabilityReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+        dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
         $restoreExitCode = $LASTEXITCODE
         if ($restoreExitCode -ne 0) {
             Write-NfrTraceabilityReport -Status 'failed' -ExitCode $restoreExitCode
             exit $restoreExitCode
         }
 
-        dotnet build Hexalith.Folders.slnx --no-restore -m:1
+        dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
         $buildExitCode = $LASTEXITCODE
         if ($buildExitCode -ne 0) {
             Write-NfrTraceabilityReport -Status 'failed' -ExitCode $buildExitCode
@@ -217,35 +181,26 @@ try {
         Remove-Item $trxPath -Force
     }
 
-    $testOutput = dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter $testFilter --results-directory $reportDirectory --logger "trx;LogFileName=$trxName" 2>&1
+    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll'
+    if (-not (Test-Path $runnerPath)) {
+        Write-NfrTraceabilityReport -Status 'failed' -ExitCode 1
+        Write-Error 'NFR-TRACEABILITY-GATE-VACUOUS: built xUnit v3 Contracts.Tests assembly is missing.'
+        exit 1
+    }
+
+    $testOutput = & dotnet $runnerPath -noLogo -noColor -class $testClass -result-trx $trxPath 2>&1
     $testExitCode = $LASTEXITCODE
     if ($testExitCode -ne 0) {
-        $testFailure = $testOutput -join [Environment]::NewLine
-        if ($testFailure -match 'System\.Net\.Sockets\.SocketException.*Permission denied' -or
-            $testFailure -match 'Testing with VSTest target is no longer supported by Microsoft\.Testing\.Platform') {
-            Invoke-XunitInProcessFallback
-        }
-        else {
-            Write-Host "NFR-TRACEABILITY category=static-nfr-traceability native-test-failed=true exit_code=$testExitCode"
-            Write-NfrTraceabilityReport -Status 'failed' -ExitCode $testExitCode
-            exit $testExitCode
-        }
-    }
-    else {
-        $testOutput | ForEach-Object { Write-Host $_ }
+        Write-Host "NFR-TRACEABILITY category=static-nfr-traceability native-test-failed=true exit_code=$testExitCode"
+        Write-NfrTraceabilityReport -Status 'failed' -ExitCode $testExitCode
+        exit $testExitCode
     }
 
-    # Fail closed if the namespace/type filter ever drifts and silently matches zero conformance facts
-    # (VSTest exits 0 on an empty filter), which would otherwise let this load-bearing gate pass vacuously.
-    [int]$executedTests = 0
-    if (-not $usedXunitFallback -and (Test-Path $trxPath)) {
-        [xml]$trx = Get-Content -Raw -Path $trxPath
-        $executedTests = [int]$trx.TestRun.ResultSummary.Counters.total
-    }
-
-    if (-not $usedXunitFallback -and $executedTests -lt $runnerMethods.Count) {
+    $testOutput | ForEach-Object { Write-Host $_ }
+    [int]$executedTests = Get-ExecutedTestCount -Output $testOutput
+    if ($executedTests -lt $runnerMethods.Count) {
         Write-NfrTraceabilityReport -Status 'failed' -ExitCode 1
-        Write-Error "NFR-TRACEABILITY-GATE-VACUOUS: expected at least $($runnerMethods.Count) NFR traceability conformance facts but $executedTests executed. The --filter no longer matches the NfrTraceabilityConformanceTests type; restore the filter or namespace."
+        Write-Error "NFR-TRACEABILITY-GATE-VACUOUS: expected at least $($runnerMethods.Count) NFR traceability conformance facts but $executedTests executed. The -class selector no longer matches the NfrTraceabilityConformanceTests type; restore the selector or namespace."
         exit 1
     }
 

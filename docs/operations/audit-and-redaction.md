@@ -277,4 +277,4 @@ and the redaction vocabularies stay synchronized with the DTOs, `FolderAuditObse
 and `FieldDisclosure`. Rerun the gate after any change to the audit projection DTOs, the observation enums, the
 sanitizer blocklist, or the redaction enums. The static gate runs in the `contract-spine` CI lane and through
 the baseline CI Contracts.Tests filter; it is not promoted to a new top-level `ci.yml` lane, to
-`release-packages.yml`, or to scheduled workflows.
+`release.yml`, or to scheduled workflows.

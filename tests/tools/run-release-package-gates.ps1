@@ -1,60 +1,30 @@
 #Requires -Version 7
 
+[CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$Version,
     [string]$ReleaseTag = '',
     [string]$SourceRevisionId = '',
     [ValidateSet('DryRun', 'Publish')][string]$Mode = 'DryRun',
     [string]$FeedSource = '',
-    [string]$ApiKeyEnvironmentVariable = 'GITHUB_TOKEN',
-    [switch]$SkipRestoreBuild
+    [string]$ApiKeyEnvironmentVariable = 'NUGET_API_KEY',
+    [switch]$SkipRestoreBuild,
+    [switch]$SkipPack
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
-    Write-Error 'RELEASE-PACKAGES-PREREQUISITE-DRIFT: dotnet SDK not found on PATH. Install .NET SDK per global.json before running the release package gate.'
-    exit 1
-}
-
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-
 $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$toolsParent = Join-Path $scriptRoot '..'
-$repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
-$manifestRelativePath = 'deploy/nuget/release-packages.yaml'
+$repositoryRoot = (Resolve-Path (Join-Path $scriptRoot '../..')).ProviderPath
+$manifestRelativePath = 'tools/release-packages.json'
 $manifestPath = Join-Path $repositoryRoot $manifestRelativePath
-$gateRelativePath = '_bmad-output/gates/release-packages'
-$reportDirectory = Join-Path $repositoryRoot $gateRelativePath
-$packagesDirectory = Join-Path $reportDirectory 'packages'
-$latestReportPath = Join-Path $reportDirectory 'latest.json'
-$contractMetadataRelativePath = 'src/Hexalith.Folders.Contracts/FoldersContractMetadata.cs'
-$openApiRelativePath = 'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml'
-$expectedPushedPackages = @(
-    'Hexalith.Folders.Contracts',
-    'Hexalith.Folders',
-    'Hexalith.Folders.Client',
-    'Hexalith.Folders.Aspire',
-    'Hexalith.Folders.Testing'
-)
-$epicMandatedPackages = @(
-    'Hexalith.Folders.Contracts',
-    'Hexalith.Folders.Client',
-    'Hexalith.Folders.Aspire',
-    'Hexalith.Folders.Testing'
-)
-$evidencePaths = @(
-    '_bmad-output/gates/baseline-ci/latest.json',
-    '_bmad-output/gates/contract-parity-ci/latest.json',
-    '_bmad-output/gates/security-redaction-ci/latest.json',
-    '_bmad-output/gates/capacity-smoke-ci/latest.json',
-    '_bmad-output/gates/capacity-calibration/latest.json',
-    '_bmad-output/gates/retention-deletion/latest.json',
-    '_bmad-output/gates/safety-invariants/latest.json',
-    '_bmad-output/gates/governance-completeness/latest.json',
-    '_bmad-output/gates/nfr-traceability/latest.json'
-)
+$policyRelativePath = 'deploy/nuget/release-packages.yaml'
+$policyPath = Join-Path $repositoryRoot $policyRelativePath
+$packagesRelativePath = 'nupkgs'
+$packagesDirectory = Join-Path $repositoryRoot $packagesRelativePath
+$reportRelativePath = '_bmad-output/gates/release-packages/latest.json'
+$reportPath = Join-Path $repositoryRoot $reportRelativePath
 $categories = @(
     'version-policy',
     'source-revision-policy',
@@ -63,13 +33,15 @@ $categories = @(
     'package-build',
     'package-metadata',
     'symbol-packages',
+    'archive-safety',
     'dependency-closure',
-    'release-evidence',
+    'consumer-validation',
     'metadata-only-report',
     'publish'
 )
 $results = @()
 $packageReports = @()
+$manifestPackages = @()
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
 
 function Add-Result {
@@ -86,48 +58,33 @@ function Add-Result {
     }
 }
 
-function Get-ContractVersion {
-    $metadataPath = Join-Path $repositoryRoot $contractMetadataRelativePath
-    $metadata = Get-Content -Raw -Path $metadataPath
-    $match = [regex]::Match($metadata, 'ContractVersion\s*=\s*"(?<value>[^"]+)"')
-    if (-not $match.Success) {
-        Fail-Gate -Category 'release-evidence' -Reason 'missing-contract-version'
-    }
-
-    return $match.Groups['value'].Value
-}
-
-function Write-ReleasePackageReport {
+function Write-Report {
     param(
         [Parameter(Mandatory = $true)][string]$Status,
         [int]$ExitCode = 0
     )
 
-    $contractVersion = Get-ContractVersion
-    $payload = [ordered]@{
+    $reportDirectory = Split-Path -Parent $reportPath
+    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
+    [ordered]@{
         gate = 'release-packages'
         status = $Status
         mode = $Mode
         exit_code = $ExitCode
-        report_path = '_bmad-output/gates/release-packages/latest.json'
+        report_path = $reportRelativePath
         diagnostic_policy = 'metadata-only'
         categories = $categories
         package_version = $Version
         release_tag = $ReleaseTag
         source_revision_id = $SourceRevisionId
-        contract_version = $contractVersion
-        contract_metadata_path = $contractMetadataRelativePath
-        openapi_spine_path = $openApiRelativePath
         package_manifest_path = $manifestRelativePath
-        package_output_path = '_bmad-output/gates/release-packages/packages'
-        release_evidence_paths = $evidencePaths
-        pushed_package_ids = $expectedPushedPackages
-        package_reports = $script:packageReports
-        results = $script:results
+        package_policy_path = $policyRelativePath
+        package_output_path = $packagesRelativePath
+        pushed_package_ids = @($manifestPackages | ForEach-Object { $_.id })
+        package_reports = $packageReports
+        results = $results
         elapsed_ms = [int64]$elapsed.ElapsedMilliseconds
-    }
-
-    $payload | ConvertTo-Json -Depth 8 | Set-Content -Path $latestReportPath -Encoding utf8NoBOM
+    } | ConvertTo-Json -Depth 8 | Set-Content -Path $reportPath -Encoding utf8NoBOM
 }
 
 function Fail-Gate {
@@ -138,174 +95,85 @@ function Fail-Gate {
     )
 
     Add-Result -Category $Category -Status 'failed' -ExitCode $ExitCode
-    Write-ReleasePackageReport -Status 'failed' -ExitCode $ExitCode
+    Write-Report -Status 'failed' -ExitCode $ExitCode
     Write-Error "RELEASE-PACKAGES-FAILED: category=$Category reason=$Reason"
     exit $ExitCode
 }
 
-function Assert-StrictSemVer {
-    if ($Version -match '^(?:v|latest$|main$|master$|next$|alpha$|beta$)') {
-        Fail-Gate -Category 'version-policy' -Reason 'mutable-or-prefixed-version'
-    }
-
-    $semVerPattern = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$'
-    if ($Version -notmatch $semVerPattern) {
-        Fail-Gate -Category 'version-policy' -Reason 'invalid-semver'
-    }
-
-    if ($ReleaseTag.Length -gt 0) {
-        if ($ReleaseTag -ne "v$Version") {
-            Fail-Gate -Category 'version-policy' -Reason 'release-tag-version-mismatch'
-        }
-
-        if ($ReleaseTag -notmatch "^v$([regex]::Escape($Version))$") {
-            Fail-Gate -Category 'version-policy' -Reason 'invalid-release-tag'
-        }
-    }
-
-    Add-Result -Category 'version-policy' -Status 'passed' -ExitCode 0
-}
-
-function Assert-SourceRevisionId {
-    if ([string]::IsNullOrWhiteSpace($SourceRevisionId)) {
-        # Assign to script scope so the resolved SHA propagates to packing and metadata
-        # assertions; a plain assignment here would only create a function-local copy.
-        $script:SourceRevisionId = (& git -C $repositoryRoot rev-parse HEAD 2>$null).Trim()
-    }
-
-    if ($SourceRevisionId -notmatch '^[0-9a-fA-F]{40}$') {
-        Fail-Gate -Category 'source-revision-policy' -Reason 'source-revision-id-must-be-full-sha'
-    }
-
-    if ($SourceRevisionId -in @('local', 'NO_VCS')) {
-        Fail-Gate -Category 'source-revision-policy' -Reason 'forbidden-source-revision-id'
-    }
-
-    Add-Result -Category 'source-revision-policy' -Status 'passed' -ExitCode 0
-}
-
-function ConvertTo-BoolValue {
-    param([Parameter(Mandatory = $true)][string]$Value)
-    return [bool]::Parse($Value.Trim())
-}
-
-function Read-ReleasePackageManifest {
-    if (-not (Test-Path $manifestPath)) {
-        Fail-Gate -Category 'manifest-package-set' -Reason 'missing-manifest'
-    }
-
-    $items = @()
-    $section = ''
-    $current = $null
-    foreach ($line in Get-Content -Path $manifestPath) {
-        if ($line -match '^(releaseSet|excludedPackableProjects):\s*$') {
-            if ($null -ne $current) {
-                $items += $current
-                $current = $null
-            }
-
-            $section = $Matches[1]
-            continue
-        }
-
-        if ($line -match '^[A-Za-z].*:\s*$') {
-            if ($null -ne $current) {
-                $items += $current
-                $current = $null
-            }
-
-            $section = ''
-            continue
-        }
-
-        if ($section -in @('releaseSet', 'excludedPackableProjects') -and $line -match '^\s{2}-\s+packageId:\s*(?<value>.+?)\s*$') {
-            if ($null -ne $current) {
-                $items += $current
-            }
-
-            $current = [ordered]@{
-                section = $section
-                packageId = $Matches['value']
-            }
-            continue
-        }
-
-        if ($null -ne $current -and $line -match '^\s{4}(?<key>[A-Za-z0-9_]+):\s*(?<value>.*)$') {
-            $key = $Matches['key']
-            $value = $Matches['value'].Trim().Trim('"')
-            if ($key -in @('pushedInStory79', 'symbolPackageRequired')) {
-                $current[$key] = ConvertTo-BoolValue -Value $value
-            }
-            else {
-                $current[$key] = $value
-            }
-        }
-    }
-
-    if ($null -ne $current) {
-        $items += $current
-    }
-
-    return $items
-}
-
-function Assert-ManifestPackageSet {
-    param([Parameter(Mandatory = $true)][array]$ManifestItems)
-
-    $pushed = @($ManifestItems | Where-Object { $_.section -eq 'releaseSet' -and $_.pushedInStory79 -eq $true })
-    $pushedIds = @($pushed | ForEach-Object { $_.packageId })
-    foreach ($actual in $pushedIds) {
-        if ($expectedPushedPackages -notcontains $actual) {
-            Fail-Gate -Category 'manifest-package-set' -Reason "unexpected-package package_id=$actual"
-        }
-    }
-
-    foreach ($expected in $expectedPushedPackages) {
-        if ($pushedIds -notcontains $expected) {
-            Fail-Gate -Category 'manifest-package-set' -Reason "missing-package package_id=$expected"
-        }
-    }
-
-    foreach ($required in $epicMandatedPackages) {
-        if ($pushedIds -notcontains $required) {
-            Fail-Gate -Category 'manifest-package-set' -Reason "missing-epic-package package_id=$required"
-        }
-    }
-
-    foreach ($item in $pushed) {
-        $projectPath = Join-Path $repositoryRoot $item.projectPath
-        if (-not (Test-Path $projectPath)) {
-            Fail-Gate -Category 'manifest-package-set' -Reason "missing-project package_id=$($item.packageId)"
-        }
-
-        $project = Get-Content -Raw -Path $projectPath
-        if ($project -notmatch '<IsPackable>true</IsPackable>') {
-            Fail-Gate -Category 'manifest-package-set' -Reason "project-not-packable package_id=$($item.packageId)"
-        }
-    }
-
-    foreach ($excluded in @($ManifestItems | Where-Object { $_.section -eq 'excludedPackableProjects' })) {
-        if ($excluded.pushedInStory79 -ne $false -or $excluded.publishMode -ne 'excluded') {
-            Fail-Gate -Category 'manifest-package-set' -Reason "excluded-project-marked-push package_id=$($excluded.packageId)"
-        }
-    }
-
-    Add-Result -Category 'manifest-package-set' -Status 'passed' -ExitCode 0
-    return $pushed
-}
-
-function Invoke-DotNet {
+function Invoke-CommandChecked {
     param(
         [Parameter(Mandatory = $true)][string]$Category,
+        [Parameter(Mandatory = $true)][string]$Executable,
         [Parameter(Mandatory = $true)][string[]]$Arguments
     )
 
     Write-Host "RELEASE-PACKAGES category=$Category status=running"
-    & dotnet @Arguments
-    $exitCode = $LASTEXITCODE
-    if ($exitCode -ne 0) {
-        Fail-Gate -Category $Category -Reason "dotnet-command-failed exit_code=$exitCode" -ExitCode $exitCode
+    & $Executable @Arguments
+    if ($LASTEXITCODE -ne 0) {
+        Fail-Gate -Category $Category -Reason "command-failed exit_code=$LASTEXITCODE" -ExitCode $LASTEXITCODE
     }
+}
+
+function Assert-VersionAndSource {
+    $semVerPattern = '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$'
+    if ($Version -notmatch $semVerPattern) {
+        Fail-Gate -Category 'version-policy' -Reason 'invalid-semver'
+    }
+    if ($ReleaseTag.Length -gt 0 -and $ReleaseTag -cne "v$Version") {
+        Fail-Gate -Category 'version-policy' -Reason 'release-tag-version-mismatch'
+    }
+    Add-Result -Category 'version-policy' -Status 'passed' -ExitCode 0
+
+    if ([string]::IsNullOrWhiteSpace($SourceRevisionId)) {
+        $script:SourceRevisionId = (& git -C $repositoryRoot rev-parse HEAD).Trim()
+    }
+    if ($SourceRevisionId -cnotmatch '^[0-9a-f]{40}$') {
+        Fail-Gate -Category 'source-revision-policy' -Reason 'source-revision-id-must-be-lowercase-full-sha'
+    }
+    Add-Result -Category 'source-revision-policy' -Status 'passed' -ExitCode 0
+}
+
+function Read-AndValidateManifest {
+    if (-not (Test-Path $manifestPath) -or -not (Test-Path $policyPath)) {
+        Fail-Gate -Category 'manifest-package-set' -Reason 'missing-release-package-contract'
+    }
+    try {
+        $manifest = Get-Content -Raw -Path $manifestPath | ConvertFrom-Json
+    }
+    catch {
+        Fail-Gate -Category 'manifest-package-set' -Reason 'malformed-json-manifest'
+    }
+    $packages = @($manifest.packages)
+    if ($packages.Count -ne 5) {
+        Fail-Gate -Category 'manifest-package-set' -Reason 'expected-exactly-five-packages'
+    }
+    $ids = @($packages | ForEach-Object { [string]$_.id })
+    $projects = @($packages | ForEach-Object { [string]$_.project })
+    if (@($ids | Sort-Object -Unique).Count -ne 5 -or @($projects | Sort-Object -Unique).Count -ne 5) {
+        Fail-Gate -Category 'manifest-package-set' -Reason 'duplicate-package-id-or-project'
+    }
+    foreach ($package in $packages) {
+        if ($package.id -notmatch '^Hexalith\.Folders(?:\.[A-Za-z0-9._-]+)?$') {
+            Fail-Gate -Category 'manifest-package-set' -Reason 'package-id-outside-folders-scope'
+        }
+        $projectPath = Join-Path $repositoryRoot $package.project
+        if (-not (Test-Path $projectPath) -or $package.project -notmatch '^src/.+\.csproj$') {
+            Fail-Gate -Category 'manifest-package-set' -Reason "invalid-package-project package_id=$($package.id)"
+        }
+    }
+    $policy = Get-Content -Raw -Path $policyPath
+    foreach ($required in @(
+        'inventoryPath: tools/release-packages.json',
+        'expectedPackageCount: 5',
+        'feed: https://api.nuget.org/v3/index.json',
+        'duplicatePolicy: fail'
+    )) {
+        if (-not $policy.Contains($required, [StringComparison]::Ordinal)) {
+            Fail-Gate -Category 'manifest-package-set' -Reason 'release-policy-drift'
+        }
+    }
+    $script:manifestPackages = $packages
+    Add-Result -Category 'manifest-package-set' -Status 'passed' -ExitCode 0
 }
 
 function Invoke-RestoreBuild {
@@ -313,260 +181,78 @@ function Invoke-RestoreBuild {
         Add-Result -Category 'restore-build' -Status 'skipped-same-run-prerequisite' -ExitCode 0
         return
     }
-
-    Invoke-DotNet -Category 'restore-build' -Arguments @('restore', 'Hexalith.Folders.slnx', '-p:Configuration=Release', '-p:UseNuGetDeps=true', '-m:1', '-p:NuGetAudit=false')
-    Invoke-DotNet -Category 'restore-build' -Arguments @('build', 'Hexalith.Folders.slnx', '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore', '-m:1')
+    Invoke-CommandChecked -Category 'restore-build' -Executable 'dotnet' -Arguments @(
+        'restore',
+        'Hexalith.Folders.CI.slnx',
+        '-p:Configuration=Release',
+        '-p:UseNuGetDeps=true',
+        '-m:1'
+    )
+    Invoke-CommandChecked -Category 'restore-build' -Executable 'dotnet' -Arguments @(
+        'build',
+        'Hexalith.Folders.CI.slnx',
+        '--configuration',
+        'Release',
+        '-p:UseNuGetDeps=true',
+        '--no-restore',
+        '-warnaserror',
+        '-m:1'
+    )
     Add-Result -Category 'restore-build' -Status 'passed' -ExitCode 0
 }
 
-function Invoke-Packages {
-    param([Parameter(Mandatory = $true)][array]$Packages)
-
-    if (Test-Path $packagesDirectory) {
-        Remove-Item -Recurse -Force -Path $packagesDirectory
-    }
-
-    New-Item -ItemType Directory -Force -Path $packagesDirectory | Out-Null
-    foreach ($package in $Packages) {
-        Invoke-DotNet -Category 'package-build' -Arguments @(
-            'pack',
-            $package.projectPath,
-            '-c',
-            'Release',
-            '-p:UseNuGetDeps=true',
-            '--no-restore',
-            '-m:1',
-            '-o',
-            $packagesDirectory,
-            "/p:PackageVersion=$Version",
-            "/p:Version=$Version",
-            "/p:RepositoryCommit=$SourceRevisionId",
-            "/p:SourceRevisionId=$SourceRevisionId",
-            '/p:ContinuousIntegrationBuild=true',
-            '/p:PublishRepositoryUrl=true',
-            '/p:EmbedUntrackedSources=true',
-            '/p:IncludeSymbols=true',
-            '/p:SymbolPackageFormat=snupkg'
+function Invoke-PackAndValidate {
+    if (-not $SkipPack) {
+        Invoke-CommandChecked -Category 'package-build' -Executable 'python3' -Arguments @(
+            'scripts/pack-release-packages.py',
+            $packagesRelativePath,
+            $Version,
+            '--source-revision',
+            $SourceRevisionId
         )
+        Add-Result -Category 'package-build' -Status 'passed' -ExitCode 0
+    }
+    else {
+        Add-Result -Category 'package-build' -Status 'skipped-prepared-artifacts' -ExitCode 0
     }
 
-    Add-Result -Category 'package-build' -Status 'passed' -ExitCode 0
-}
-
-function Read-NuspecText {
-    param([Parameter(Mandatory = $true)][string]$PackagePath)
-
-    $archive = [System.IO.Compression.ZipFile]::OpenRead($PackagePath)
-    try {
-        $entry = $archive.Entries | Where-Object { $_.FullName.EndsWith('.nuspec', [StringComparison]::OrdinalIgnoreCase) } | Select-Object -First 1
-        if ($null -eq $entry) {
-            Fail-Gate -Category 'package-metadata' -Reason "missing-nuspec package_path=$PackagePath"
-        }
-
-        $reader = [System.IO.StreamReader]::new($entry.Open())
-        try {
-            return $reader.ReadToEnd()
-        }
-        finally {
-            $reader.Dispose()
-        }
-    }
-    finally {
-        $archive.Dispose()
-    }
-}
-
-function Assert-MetadataOnlyString {
-    param(
-        [Parameter(Mandatory = $true)][string]$Value,
-        [Parameter(Mandatory = $true)][string]$Category
+    Invoke-CommandChecked -Category 'package-metadata' -Executable 'python3' -Arguments @(
+        'scripts/validate-nuget-packages.py',
+        $packagesRelativePath,
+        '--version',
+        $Version,
+        '--source-revision',
+        $SourceRevisionId
     )
-
-    if ($Value -match '^(?:[A-Za-z]:[\\/]|/|\\\\)') {
-        Fail-Gate -Category $Category -Reason 'absolute-path-diagnostic'
+    foreach ($category in @('package-metadata', 'symbol-packages', 'archive-safety', 'dependency-closure')) {
+        Add-Result -Category $category -Status 'passed' -ExitCode 0
     }
 
-    if ($Value -match '(?i)secrets\.|authorization:|bearer\s+|access_token|refresh_token|api[_-]?key|password\s*=|token\s*=|BEGIN [A-Z ]*PRIVATE KEY|diff --git|raw file contents|provider payload|environment dump|local absolute path') {
-        Fail-Gate -Category $Category -Reason 'credential-or-unsafe-diagnostic'
-    }
-}
+    Invoke-CommandChecked -Category 'consumer-validation' -Executable 'python3' -Arguments @(
+        'scripts/validate-consumer-package-references.py',
+        $packagesRelativePath
+    )
+    Add-Result -Category 'consumer-validation' -Status 'passed' -ExitCode 0
 
-function Assert-PackageMetadata {
-    param([Parameter(Mandatory = $true)][array]$Packages)
-
-    $contractVersion = Get-ContractVersion
-    foreach ($package in $Packages) {
-        $nupkgName = "$($package.packageId).$Version.nupkg"
-        $snupkgName = "$($package.packageId).$Version.snupkg"
-        $nupkgPath = Join-Path $packagesDirectory $nupkgName
-        $snupkgPath = Join-Path $packagesDirectory $snupkgName
-        if (-not (Test-Path $nupkgPath)) {
-            Fail-Gate -Category 'package-metadata' -Reason "missing-nupkg package_id=$($package.packageId)"
-        }
-
-        if ($package.symbolPackageRequired -eq $true -and -not (Test-Path $snupkgPath)) {
-            Fail-Gate -Category 'symbol-packages' -Reason "missing-snupkg package_id=$($package.packageId)"
-        }
-
-        $nuspec = Read-NuspecText -PackagePath $nupkgPath
-        foreach ($expected in @(
-            "<id>$($package.packageId)</id>",
-            "<version>$Version</version>",
-            '<authors>Hexalith Contributors</authors>',
-            '<license type="expression">MIT</license>',
-            '<projectUrl>https://github.com/Hexalith/Hexalith.Folders</projectUrl>',
-            '<repository type="git" url="https://github.com/Hexalith/Hexalith.Folders"',
-            "commit=`"$SourceRevisionId`"",
-            '<readme>README.md</readme>',
-            '<tags>folders'
-        )) {
-            if (-not $nuspec.Contains($expected, [StringComparison]::Ordinal)) {
-                Fail-Gate -Category 'package-metadata' -Reason "metadata-drift package_id=$($package.packageId)"
-            }
-        }
-
-        Assert-MetadataOnlyString -Value $nuspec -Category 'package-metadata'
-
-        $script:packageReports += [ordered]@{
-            package_id = $package.packageId
-            role = $package.role
-            project_path = $package.projectPath
-            package_path = "$gateRelativePath/packages/$nupkgName"
-            symbol_package_path = "$gateRelativePath/packages/$snupkgName"
+    $script:packageReports = @($manifestPackages | ForEach-Object {
+        [ordered]@{
+            package_id = $_.id
+            project_path = $_.project
+            package_path = "$packagesRelativePath/$($_.id).$Version.nupkg"
+            symbol_package_path = "$packagesRelativePath/$($_.id).$Version.snupkg"
             version = $Version
             source_revision_id = $SourceRevisionId
-            contract_version = $contractVersion
-            openapi_spine_path = $openApiRelativePath
-            publish_mode = $package.publishMode
         }
-    }
-
-    Add-Result -Category 'package-metadata' -Status 'passed' -ExitCode 0
-    Add-Result -Category 'symbol-packages' -Status 'passed' -ExitCode 0
-}
-
-function Assert-DependencyClosure {
-    param([Parameter(Mandatory = $true)][array]$Packages)
-
-    $pushedIds = @($Packages | ForEach-Object { $_.packageId })
-    foreach ($package in $Packages) {
-        $nupkgPath = Join-Path $packagesDirectory "$($package.packageId).$Version.nupkg"
-        $nuspec = Read-NuspecText -PackagePath $nupkgPath
-        foreach ($match in [regex]::Matches($nuspec, '<dependency id="(?<id>Hexalith\.Folders(?:\.[^"]+)?)"')) {
-            $dependencyId = $match.Groups['id'].Value
-            if ($pushedIds -notcontains $dependencyId) {
-                Fail-Gate -Category 'dependency-closure' -Reason "missing-pushed-dependency package_id=$($package.packageId) dependency_id=$dependencyId"
-            }
-        }
-    }
-
-    Add-Result -Category 'dependency-closure' -Status 'passed' -ExitCode 0
-}
-
-function Assert-ReleaseEvidence {
-    $contractVersion = Get-ContractVersion
-    if ($Mode -eq 'Publish' -and $contractVersion -eq '0.0.0-scaffold') {
-        Fail-Gate -Category 'release-evidence' -Reason 'contract-version-placeholder-blocks-live-publish'
-    }
-
-    if (-not (Test-Path (Join-Path $repositoryRoot $openApiRelativePath))) {
-        Fail-Gate -Category 'release-evidence' -Reason 'missing-openapi-spine'
-    }
-
-    foreach ($relativePath in $evidencePaths) {
-        $fullPath = Join-Path $repositoryRoot $relativePath
-        if (-not (Test-Path $fullPath)) {
-            Fail-Gate -Category 'release-evidence' -Reason "missing-release-evidence path=$relativePath"
-        }
-
-        try {
-            $evidence = Get-Content -Raw -Path $fullPath | ConvertFrom-Json
-        }
-        catch {
-            Fail-Gate -Category 'release-evidence' -Reason "malformed-release-evidence path=$relativePath"
-        }
-
-        if ($relativePath -eq '_bmad-output/gates/capacity-calibration/latest.json') {
-            if ($evidence.status -ne 'passed') {
-                Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
-            }
-
-            if ($evidence.source_commit -ne $SourceRevisionId) {
-                Fail-Gate -Category 'release-evidence' -Reason 'stale-capacity-calibration-evidence'
-            }
-
-            foreach ($criterion in @('c1', 'c2', 'c5')) {
-                if ($null -eq $evidence.target_comparison.$criterion) {
-                    Fail-Gate -Category 'release-evidence' -Reason "missing-capacity-target-comparison criterion=$criterion"
-                }
-            }
-
-            continue
-        }
-
-        if ($relativePath -eq '_bmad-output/gates/retention-deletion/latest.json') {
-            if ($evidence.source_commit -ne $SourceRevisionId) {
-                Fail-Gate -Category 'release-evidence' -Reason 'stale-retention-deletion-evidence'
-            }
-
-            if ($evidence.policy_status -eq 'reference_pending') {
-                # Approval state is authoritative: pending Legal + PM approval blocks live publish
-                # regardless of the gate's status field, so a tampered or future report that pairs
-                # reference_pending with status=passed cannot slip a live release through.
-                if ($Mode -eq 'Publish') {
-                    Fail-Gate -Category 'release-evidence' -Reason 'c3-retention-approval-blocks-live-publish'
-                }
-
-                if ($evidence.status -notin @('release-blocked', 'passed')) {
-                    Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
-                }
-
-                continue
-            }
-
-            if ($evidence.status -ne 'passed') {
-                Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
-            }
-
-            continue
-        }
-
-        if ($relativePath -eq '_bmad-output/gates/nfr-traceability/latest.json') {
-            if ($evidence.status -ne 'passed') {
-                Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
-            }
-
-            # Every release-blocking NFR gap must name an owner; an unowned gap blocks the release review.
-            foreach ($gap in @($evidence.release_blocking_gaps)) {
-                if ([string]::IsNullOrWhiteSpace($gap.owner)) {
-                    Fail-Gate -Category 'release-evidence' -Reason 'nfr-traceability-unowned-release-blocking-gap'
-                }
-            }
-
-            # Live publish requires same-commit NFR traceability evidence; dry-run accepts the checked-in report.
-            if ($Mode -eq 'Publish' -and $evidence.source_commit -ne $SourceRevisionId) {
-                Fail-Gate -Category 'release-evidence' -Reason 'stale-nfr-traceability-evidence'
-            }
-
-            continue
-        }
-
-        if ($evidence.status -ne 'passed') {
-            Fail-Gate -Category 'release-evidence' -Reason "failed-release-evidence path=$relativePath"
-        }
-    }
-
-    Add-Result -Category 'release-evidence' -Status 'passed' -ExitCode 0
+    })
 }
 
 function Assert-MetadataOnlyReport {
-    Write-ReleasePackageReport -Status 'validating' -ExitCode 0
-    $json = Get-Content -Raw -Path $latestReportPath
-    Assert-MetadataOnlyString -Value $json -Category 'metadata-only-report'
-    if ($json -match [regex]::Escape($repositoryRoot)) {
-        Fail-Gate -Category 'metadata-only-report' -Reason 'absolute-repository-path-in-report'
+    Write-Report -Status 'validating'
+    $report = Get-Content -Raw -Path $reportPath
+    if ($report.Contains($repositoryRoot, [StringComparison]::Ordinal) -or
+        $report -match '(?i)authorization:|bearer\s+|api[_-]?key|password\s*=|token\s*=|BEGIN [A-Z ]*PRIVATE KEY|diff --git|provider payload') {
+        Fail-Gate -Category 'metadata-only-report' -Reason 'unsafe-report-content'
     }
-
     Add-Result -Category 'metadata-only-report' -Status 'passed' -ExitCode 0
 }
 
@@ -575,50 +261,46 @@ function Invoke-Publish {
         Add-Result -Category 'publish' -Status 'skipped-dry-run' -ExitCode 0
         return
     }
-
-    if ([string]::IsNullOrWhiteSpace($FeedSource)) {
-        Fail-Gate -Category 'publish' -Reason 'missing-feed-source'
+    if ($env:GITHUB_ACTIONS -cne 'true' -or $ReleaseTag.Length -eq 0) {
+        Fail-Gate -Category 'publish' -Reason 'publish-requires-guarded-github-release-context'
     }
-
+    if ($FeedSource -cne 'https://api.nuget.org/v3/index.json') {
+        Fail-Gate -Category 'publish' -Reason 'publish-feed-must-be-nuget-org'
+    }
     $apiKey = [Environment]::GetEnvironmentVariable($ApiKeyEnvironmentVariable)
     if ([string]::IsNullOrWhiteSpace($apiKey)) {
         Fail-Gate -Category 'publish' -Reason 'missing-api-key-environment-variable'
     }
-
-    foreach ($package in Get-ChildItem -Path $packagesDirectory -Filter '*.nupkg' | Where-Object { $_.Name -notlike '*.symbols.nupkg' }) {
-        Invoke-DotNet -Category 'publish' -Arguments @(
+    foreach ($package in $manifestPackages) {
+        $archive = Join-Path $packagesDirectory "$($package.id).$Version.nupkg"
+        Invoke-CommandChecked -Category 'publish' -Executable 'dotnet' -Arguments @(
             'nuget',
             'push',
-            $package.FullName,
+            $archive,
             '--source',
             $FeedSource,
             '--api-key',
-            $apiKey,
-            '--skip-duplicate',
-            '--no-symbols'
+            $apiKey
         )
     }
-
     Add-Result -Category 'publish' -Status 'passed' -ExitCode 0
 }
 
+$pushedLocation = $false
 try {
     Push-Location $repositoryRoot
-    New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
-    Assert-StrictSemVer
-    Assert-SourceRevisionId
-    $manifestItems = Read-ReleasePackageManifest
-    $packages = Assert-ManifestPackageSet -ManifestItems $manifestItems
+    $pushedLocation = $true
+    Assert-VersionAndSource
+    Read-AndValidateManifest
     Invoke-RestoreBuild
-    Invoke-Packages -Packages $packages
-    Assert-PackageMetadata -Packages $packages
-    Assert-DependencyClosure -Packages $packages
-    Assert-ReleaseEvidence
+    Invoke-PackAndValidate
     Assert-MetadataOnlyReport
     Invoke-Publish
-    Write-ReleasePackageReport -Status 'passed' -ExitCode 0
+    Write-Report -Status 'passed'
     Write-Host 'RELEASE-PACKAGES status=passed'
 }
 finally {
-    Pop-Location
+    if ($pushedLocation) {
+        Pop-Location
+    }
 }

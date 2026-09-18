@@ -275,7 +275,7 @@ function Assert-NoRecursiveSubmoduleSetup {
     $recursiveToken = '--' + 'recursive'
     $recurseSubmodulesToken = '--' + 'recurse-submodules'
     foreach ($relativePath in @(
-            '.github/workflows/release-packages.yml',
+            '.github/workflows/release.yml',
             'docs/operations/capacity-calibration.md',
             'tests/load/README.md',
             'docs/exit-criteria/c0-c13-governance-evidence.yaml')) {
@@ -323,7 +323,7 @@ function Assert-MetadataOnlyReportFiles {
 
 function Invoke-CapacityCommand {
     Write-Host 'CAPACITY-CALIBRATION category=release-calibration-run status=running'
-    & dotnet run --no-build --project $loadProjectPath -- --profile release-calibration --run-id capacity-calibration --report-folder $calibrationReportRelativePath
+    & dotnet run --no-build --configuration Release --project $loadProjectPath -- --profile release-calibration --run-id capacity-calibration --report-folder $calibrationReportRelativePath
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
         Add-Result -Category 'release-calibration-run' -Status 'failed' -ExitCode $exitCode

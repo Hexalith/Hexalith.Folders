@@ -12,13 +12,12 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class ReleasePackageConformanceTests
 {
-    private const string WorkflowPath = ".github/workflows/release-packages.yml";
-    private const string ManifestPath = "deploy/nuget/release-packages.yaml";
-    private const string GateScriptPath = "tests/tools/run-release-package-gates.ps1";
-    private const string OperatorDocPath = "docs/operations/release-packages.md";
+    private const string BuildsExecutionSha = "b93e9889e9e7b67036837015b4b2b115e326c4da";
+    private const string ManifestPath = "tools/release-packages.json";
+    private const string PolicyPath = "deploy/nuget/release-packages.yaml";
     private const string ReportPath = "_bmad-output/gates/release-packages/latest.json";
 
-    private static readonly string[] ExpectedPushedPackages =
+    private static readonly string[] _expectedPackages =
     [
         "Hexalith.Folders.Contracts",
         "Hexalith.Folders",
@@ -27,344 +26,255 @@ public sealed partial class ReleasePackageConformanceTests
         "Hexalith.Folders.Testing",
     ];
 
-    private static readonly string[] EpicMandatedPackages =
-    [
-        "Hexalith.Folders.Contracts",
-        "Hexalith.Folders.Client",
-        "Hexalith.Folders.Aspire",
-        "Hexalith.Folders.Testing",
-    ];
-
-    private static readonly string[] RootBuildSubmodules =
-    [
-        "references/Hexalith.AI.Tools",
-        "references/Hexalith.Builds",
-        "references/Hexalith.Commons",
-        "references/Hexalith.EventStore",
-        "references/Hexalith.FrontComposer",
-        "references/Hexalith.Memories",
-        "references/Hexalith.PolymorphicSerializations",
-        "references/Hexalith.Tenants",
-    ];
-
     [Fact]
-    public void ReleaseWorkflowShouldUseReleaseOnlyTriggersAndStableSetup()
+    public void CiWorkflowShouldUseSharedReleaseMtpValidationAndRetainFoldersGates()
     {
-        YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
-
-        workflow.GetReleaseScalar("name").ShouldBe("release-packages");
+        YamlMappingNode workflow = LoadSingleYamlDocument(".github/workflows/ci.yml");
         YamlMappingNode triggers = workflow.GetReleaseMapping("on");
-        triggers.Children.ContainsKey(new YamlScalarNode("release")).ShouldBeTrue();
-        triggers.Children.ContainsKey(new YamlScalarNode("workflow_dispatch")).ShouldBeTrue();
-        triggers.Children.ContainsKey(new YamlScalarNode("pull_request")).ShouldBeFalse();
-        triggers.Children.ContainsKey(new YamlScalarNode("push")).ShouldBeFalse();
-        triggers.GetReleaseMapping("release").GetReleaseSequence("types").Children.Select(static x => x.ToString()).ShouldBe(["published"]);
-        workflow.GetReleaseMapping("permissions").GetReleaseScalar("contents").ShouldBe("read");
+        triggers.GetReleaseMapping("push").GetReleaseSequence("branches").Children.Select(static value => value.ToString()).ShouldBe(["main"]);
+        triggers.GetReleaseMapping("pull_request").GetReleaseSequence("branches").Children.Select(static value => value.ToString()).ShouldBe(["main"]);
 
-        YamlMappingNode dispatchInputs = triggers.GetReleaseMapping("workflow_dispatch").GetReleaseMapping("inputs");
-        dispatchInputs.GetReleaseMapping("dry_run_version").GetReleaseScalar("type").ShouldBe("string");
-        dispatchInputs.GetReleaseMapping("dry_run_source_revision_id").GetReleaseScalar("type").ShouldBe("string");
+        YamlMappingNode shared = workflow.GetReleaseMapping("jobs").GetReleaseMapping("ci");
+        shared.GetReleaseScalar("uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main");
+        YamlMappingNode inputs = shared.GetReleaseMapping("with");
+        inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
+        inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");
+        inputs.GetReleaseScalar("run-consumer-validation").ShouldBe("true");
+        inputs.GetReleaseScalar("run-coverage-gate").ShouldBe("true");
+        inputs.GetReleaseScalar("coverage-minimum-line").ShouldBe("80");
+        inputs.GetReleaseScalar("coverage-required-branch").ShouldBe("100");
+        inputs.GetReleaseScalar("coverage-isolation-targets")
+            .ShouldContain("src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs", Case.Sensitive);
+        inputs.GetReleaseScalar("unit-test-projects")
+            .ShouldContain("tests/Hexalith.Folders.Contracts.Tests", Case.Sensitive);
 
-        YamlMappingNode jobs = workflow.GetReleaseMapping("jobs");
-        foreach (string jobName in new[] { "release-prerequisite-gates", "release-package-conformance", "publish-packages" })
+        string text = ReadText(".github/workflows/ci.yml");
+        foreach (string retainedGate in new[]
         {
-            YamlMappingNode job = jobs.GetReleaseMapping(jobName);
-            job.GetReleaseScalar("runs-on").ShouldBe("ubuntu-latest");
-            YamlMappingNode checkout = FindStep(job, "actions/checkout@v6");
-            checkout.GetReleaseMapping("with").GetReleaseScalar("fetch-depth").ShouldBe("0");
-            checkout.GetReleaseMapping("with").GetReleaseScalar("submodules").ShouldBe("false");
-
-            YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v5");
-            YamlMappingNode setupWith = setupDotnet.GetReleaseMapping("with");
-            setupWith.GetReleaseScalar("global-json-file").ShouldBe("global.json");
-            setupWith.GetReleaseScalar("cache").ShouldBe("true");
-
-            string submoduleCommand = FindNamedStep(job, "Initialize root-level build submodules").GetReleaseScalar("run");
-            submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
-            submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-            foreach (string module in RootBuildSubmodules)
-            {
-                submoduleCommand.ShouldContain(module, Case.Sensitive);
-            }
-        }
-    }
-
-    [Fact]
-    public void ReleaseWorkflowShouldProveGatesBeforePublishAndUseMinimumPermissions()
-    {
-        YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
-        YamlMappingNode jobs = workflow.GetReleaseMapping("jobs");
-        YamlMappingNode publishJob = jobs.GetReleaseMapping("publish-packages");
-
-        publishJob.GetReleaseSequence("needs").Children.Select(static x => x.ToString())
-            .ShouldBe(["release-prerequisite-gates", "release-package-conformance"]);
-        publishJob.GetReleaseScalar("if").ShouldContain("needs.release-prerequisite-gates.result == 'success'", Case.Sensitive);
-        publishJob.GetReleaseScalar("if").ShouldContain("needs.release-package-conformance.result == 'success'", Case.Sensitive);
-        publishJob.GetReleaseMapping("permissions").GetReleaseScalar("contents").ShouldBe("read");
-        publishJob.GetReleaseMapping("permissions").GetReleaseScalar("packages").ShouldBe("write");
-        publishJob.GetReleaseMapping("permissions").Children.Keys.Select(static key => key.ToString()).Order(StringComparer.Ordinal)
-            .ShouldBe(["contents", "packages"]);
-
-        foreach (string jobName in new[] { "release-package-conformance", "publish-packages" })
-        {
-            YamlMappingNode packageJob = jobs.GetReleaseMapping(jobName);
-            FindNamedStep(packageJob, "Restore").GetReleaseScalar("run")
-                .ShouldBe("dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false");
-            FindNamedStep(packageJob, "Build").GetReleaseScalar("run")
-                .ShouldBe("dotnet build Hexalith.Folders.slnx -c Release -p:UseNuGetDeps=true --no-restore -m:1");
-        }
-
-        string workflowText = ReadText(WorkflowPath);
-        foreach (string command in new[]
-        {
-            "dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false",
-            "dotnet build Hexalith.Folders.slnx --no-restore -m:1",
-            "dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false",
-            "dotnet build Hexalith.Folders.slnx -c Release -p:UseNuGetDeps=true --no-restore -m:1",
-            "./tests/tools/run-contract-parity-ci-gates.ps1",
-            "./tests/tools/run-security-redaction-ci-gates.ps1",
-            "./tests/tools/run-capacity-smoke-ci-gates.ps1",
-            "./tests/tools/run-retention-deletion-gates.ps1",
-            "./tests/tools/run-safety-invariant-gates.ps1 -SkipRestoreBuild",
-            "./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild",
-            "./tests/tools/run-release-package-gates.ps1",
-            "-Mode Publish",
-            "-FeedSource 'https://nuget.pkg.github.com/Hexalith/index.json'",
-            "-ApiKeyEnvironmentVariable GITHUB_TOKEN",
+            "run-baseline-ci-gates.ps1",
+            "run-contract-parity-ci-gates.ps1",
+            "run-security-redaction-ci-gates.ps1",
+            "run-capacity-smoke-ci-gates.ps1",
+            "run-safety-invariant-gates.ps1",
+            "run-governance-completeness-gates.ps1",
+            "run-accessibility-ci-gates.ps1",
+            "run-e2e-ci-gates.ps1",
         })
         {
-            workflowText.ShouldContain(command, Case.Sensitive);
+            text.ShouldContain(retainedGate, Case.Sensitive);
         }
 
-        workflowText.ShouldNotContain("upload-artifact", Case.Insensitive);
-        workflowText.ShouldNotContain("id-token:", Case.Insensitive);
-        workflowText.ShouldNotContain("pull-requests:", Case.Insensitive);
-        workflowText.ShouldNotContain("deployments:", Case.Insensitive);
-        workflowText.ShouldNotContain("checks:", Case.Insensitive);
-        workflowText.ShouldNotContain("statuses:", Case.Insensitive);
-        workflowText.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+        text.ShouldContain("submodules: false", Case.Sensitive);
+        text.ShouldContain("git -c submodule.recurse=false submodule update --init", Case.Sensitive);
+        text.ShouldContain("python3 -m unittest discover -s scripts/tests -p 'test_*.py'", Case.Sensitive);
+        text.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
+        text.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+        text.ShouldNotContain("dotnet nuget push", Case.Insensitive);
+        text.ShouldNotContain("packages: write", Case.Insensitive);
     }
 
     [Fact]
-    public void PackageManifestShouldDeclareDeterministicReleaseSetAndScopeDrift()
+    public void ReleaseWorkflowShouldBeManualExactSourceProtectedAndImmutable()
     {
-        YamlMappingNode manifest = LoadSingleYamlDocument(ManifestPath);
-        manifest.GetReleaseScalar("kind").ShouldBe("ReleasePackageManifest");
+        YamlMappingNode workflow = LoadSingleYamlDocument(".github/workflows/release.yml");
+        YamlMappingNode triggers = workflow.GetReleaseMapping("on");
+        triggers.Children.Keys.Select(static key => key.ToString()).ShouldBe(["workflow_dispatch"]);
+        workflow.GetReleaseMapping("concurrency").GetReleaseScalar("group").ShouldBe("release-production");
+        workflow.GetReleaseMapping("concurrency").GetReleaseScalar("cancel-in-progress").ShouldBe("false");
 
-        ReleasePackage[] releaseSet = manifest.GetReleaseSequence("releaseSet").Children.Cast<YamlMappingNode>().Select(ParseReleasePackage).ToArray();
-        releaseSet.Where(static p => p.PushedInStory79).Select(static p => p.PackageId).ShouldBe(ExpectedPushedPackages);
+        YamlMappingNode jobs = workflow.GetReleaseMapping("jobs");
+        YamlMappingNode verifySource = jobs.GetReleaseMapping("verify-source");
+        string sourceProof = verifySource.GetReleaseSequence("steps").Children.Cast<YamlMappingNode>()
+            .Single().GetReleaseScalar("run");
+        sourceProof.ShouldContain("refs/heads/main", Case.Sensitive);
+        sourceProof.ShouldContain("event=push", Case.Sensitive);
+        sourceProof.ShouldContain("head_sha=\"$DISPATCH_SHA\"", Case.Sensitive);
+        sourceProof.ShouldContain("conclusion == \"success\"", Case.Sensitive);
 
-        foreach (string packageId in EpicMandatedPackages)
+        YamlMappingNode release = jobs.GetReleaseMapping("release");
+        release.GetReleaseScalar("needs").ShouldBe("verify-source");
+        release.GetReleaseScalar("uses").ShouldBe(
+            $"Hexalith/Hexalith.Builds/.github/workflows/domain-release.yml@{BuildsExecutionSha}");
+        YamlMappingNode inputs = release.GetReleaseMapping("with");
+        inputs.GetReleaseScalar("builds-execution-sha").ShouldBe(BuildsExecutionSha);
+        inputs.GetReleaseScalar("environment-name").ShouldBe("production");
+        inputs.GetReleaseScalar("source-branch").ShouldBe("main");
+        inputs.GetReleaseScalar("source-ci-workflow").ShouldBe("ci.yml");
+        inputs.GetReleaseScalar("package-manifest").ShouldBe(ManifestPath);
+        inputs.GetReleaseScalar("expected-package-count").ShouldBe("5");
+        inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");
+        inputs.GetReleaseScalar("publish-containers").ShouldBe("false");
+        inputs.GetReleaseScalar("require-publication-authority").ShouldBe("false");
+        release.GetReleaseMapping("secrets").GetReleaseScalar("NUGET_API_KEY").ShouldBe("${{ secrets.NUGET_API_KEY }}");
+
+        string text = ReadText(".github/workflows/release.yml");
+        text.ShouldNotContain("secrets: inherit", Case.Insensitive);
+        text.ShouldNotContain("nuget.pkg.github.com", Case.Insensitive);
+    }
+
+    [Fact]
+    public void JsonManifestShouldBeTheSingleExactFivePackageInventory()
+    {
+        using JsonDocument document = JsonDocument.Parse(ReadText(ManifestPath));
+        JsonElement[] packages = document.RootElement.GetProperty("packages").EnumerateArray().ToArray();
+        packages.Select(static package => package.GetProperty("id").GetString()).ShouldBe(_expectedPackages);
+        packages.Select(static package => package.GetProperty("project").GetString()).Distinct(StringComparer.Ordinal).Count().ShouldBe(5);
+
+        foreach (JsonElement package in packages)
         {
-            releaseSet.ShouldContain(p => p.PackageId == packageId && p.PushedInStory79);
-        }
-
-        ReleasePackage core = releaseSet.Single(static p => p.PackageId == "Hexalith.Folders");
-        core.DependencyRationale.ShouldContain("dependency closure", Case.Insensitive);
-
-        ReleasePackage[] excluded = manifest.GetReleaseSequence("excludedPackableProjects").Children.Cast<YamlMappingNode>().Select(ParseReleasePackage).ToArray();
-        excluded.Select(static p => p.PackageId).Order(StringComparer.Ordinal)
-            .ShouldBe(["Hexalith.Folders.Cli", "Hexalith.Folders.ServiceDefaults"]);
-        excluded.All(static p => p.PublishMode == "excluded" && !p.PushedInStory79).ShouldBeTrue();
-
-        foreach (ReleasePackage package in releaseSet)
-        {
-            XDocument project = XDocument.Load(RepositoryPath(package.ProjectPath));
+            string projectPath = package.GetProperty("project").GetString().ShouldNotBeNull();
+            XDocument project = XDocument.Load(RepositoryPath(projectPath));
             GetProperty(project, "IsPackable").ShouldBe("true");
         }
 
-        foreach (string projectPath in manifest.GetReleaseSequence("nonPackageableProjects").Children.Select(static x => x.ToString()))
-        {
-            XDocument project = XDocument.Load(RepositoryPath(projectPath));
-            GetOptionalProperty(project, "IsPackable").ShouldNotBe("true");
-        }
+        YamlMappingNode policy = LoadSingleYamlDocument(PolicyPath);
+        policy.GetReleaseScalar("kind").ShouldBe("ReleasePackagePolicy");
+        policy.GetReleaseScalar("inventoryPath").ShouldBe(ManifestPath);
+        policy.GetReleaseScalar("expectedPackageCount").ShouldBe("5");
+        policy.GetReleaseScalar("feed").ShouldBe("https://api.nuget.org/v3/index.json");
+        policy.GetReleaseScalar("symbolsRequired").ShouldBe("true");
+        policy.GetReleaseScalar("duplicatePolicy").ShouldBe("fail");
+        policy.Children.ContainsKey(new YamlScalarNode("releaseSet")).ShouldBeFalse(
+            "The deployment policy must point to the JSON inventory rather than duplicate its package list.");
+        policy.GetReleaseSequence("excludedPackableProjects").Children.Select(static value => value.ToString())
+            .ShouldBe([
+                "src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj",
+                "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
+            ]);
     }
 
     [Fact]
-    public void PackageMetadataShouldCarryTraceabilityAndAspireShouldBePackable()
+    public void ReleaseToolingShouldSealValidateConsumeAndFailOnDuplicateVersions()
     {
-        string directoryBuildProps = ReadText("Directory.Build.props");
-        foreach (string required in new[]
-        {
-            "<Deterministic>true</Deterministic>",
-            "<PublishRepositoryUrl>true</PublishRepositoryUrl>",
-            "<EmbedUntrackedSources>true</EmbedUntrackedSources>",
-            "<IncludeSymbols>true</IncludeSymbols>",
-            "<SymbolPackageFormat>snupkg</SymbolPackageFormat>",
-            "<PackageLicenseExpression>MIT</PackageLicenseExpression>",
-            "<PackageProjectUrl>https://github.com/Hexalith/Hexalith.Folders</PackageProjectUrl>",
-            "<RepositoryUrl>https://github.com/Hexalith/Hexalith.Folders</RepositoryUrl>",
-            "<RepositoryType>git</RepositoryType>",
-            "<PackageReadmeFile>README.md</PackageReadmeFile>",
-        })
-        {
-            directoryBuildProps.ShouldContain(required, Case.Sensitive);
-        }
+        string gate = ReadText("tests/tools/run-release-package-gates.ps1");
+        string contract = ReadText("scripts/release_package_contract.py");
+        string packer = ReadText("scripts/pack-release-packages.py");
+        string validator = ReadText("scripts/validate-nuget-packages.py");
+        string consumer = ReadText("scripts/validate-consumer-package-references.py");
+        string preflight = ReadText("scripts/validate-publication-preflight.sh");
+        string releaseConfig = ReadText(".releaserc.json");
 
-        XDocument aspireProject = XDocument.Load(RepositoryPath("src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj"));
-        GetProperty(aspireProject, "IsPackable").ShouldBe("true");
-        GetProperty(aspireProject, "Description").ShouldNotBeNullOrWhiteSpace();
-        GetProperty(aspireProject, "PackageTags").ShouldContain("aspire", Case.Insensitive);
+        gate.ShouldContain("tools/release-packages.json", Case.Sensitive);
+        gate.ShouldContain("scripts/pack-release-packages.py", Case.Sensitive);
+        gate.ShouldContain("scripts/validate-nuget-packages.py", Case.Sensitive);
+        gate.ShouldContain("scripts/validate-consumer-package-references.py", Case.Sensitive);
+        gate.ShouldContain("Hexalith.Folders.CI.slnx", Case.Sensitive);
+        gate.ShouldContain("UseNuGetDeps=true", Case.Sensitive);
+        gate.ShouldContain("https://api.nuget.org/v3/index.json", Case.Sensitive);
+        gate.ShouldContain("dotnet", Case.Sensitive);
+        gate.ShouldContain("nuget", Case.Sensitive);
+        gate.ShouldContain("push", Case.Sensitive);
+        gate.ShouldNotContain("--skip-duplicate", Case.Insensitive);
+        gate.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
 
-        string combined = directoryBuildProps + ReadText("src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj");
-        ForbiddenCredentialPattern().IsMatch(combined).ShouldBeFalse();
+        contract.ShouldContain("testzip()", Case.Sensitive);
+        contract.ShouldContain("unsafe archive path", Case.Sensitive);
+        contract.ShouldContain("unpublished Folders dependencies", Case.Sensitive);
+        contract.ShouldContain("read_symbol_metadata", Case.Sensitive);
+        contract.ShouldContain("noncanonical Folders dependency ID", Case.Sensitive);
+        contract.ShouldContain("instead of release version", Case.Sensitive);
+        contract.ShouldContain(".snupkg", Case.Sensitive);
+        packer.ShouldContain("UseHexalithProjectReferences=false", Case.Sensitive);
+        packer.ShouldContain("repository-owned package directory", Case.Sensitive);
+        packer.ShouldNotContain("UseFoldersSourceDependencies", Case.Sensitive);
+        validator.ShouldContain("validate_packages", Case.Sensitive);
+        consumer.ShouldContain("PackageReference", Case.Sensitive);
+        consumer.ShouldContain("packageSourceMapping", Case.Sensitive);
+        consumer.ShouldContain("Hexalith.Folders*", Case.Sensitive);
+        consumer.ShouldNotContain("ProjectReference", Case.Sensitive);
+
+        preflight.ShouldContain("event=push", Case.Sensitive);
+        preflight.ShouldContain("v3-flatcontainer", Case.Sensitive);
+        preflight.ShouldContain("already contains", Case.Sensitive);
+        preflight.ShouldContain("protected-environment approval as publication authority", Case.Sensitive);
+        releaseConfig.ShouldContain("@semantic-release/commit-analyzer", Case.Sensitive);
+        releaseConfig.ShouldContain("@semantic-release/release-notes-generator", Case.Sensitive);
+        releaseConfig.ShouldContain("@semantic-release/github", Case.Sensitive);
+        releaseConfig.ShouldContain("nupkgs/*.nupkg", Case.Sensitive);
+        releaseConfig.ShouldContain("nupkgs/*.snupkg", Case.Sensitive);
+        releaseConfig.ShouldNotContain("--skip-duplicate", Case.Insensitive);
     }
 
     [Fact]
-    public void ReleasePackageGateScriptShouldFailClosedAndKeepPublishingExplicit()
+    public void MtpAndSupplyChainConfigurationShouldRemainEnabled()
     {
-        string script = ReadText(GateScriptPath);
+        using JsonDocument globalJson = JsonDocument.Parse(ReadText("global.json"));
+        globalJson.RootElement.GetProperty("test").GetProperty("runner").GetString()
+            .ShouldBe("Microsoft.Testing.Platform");
+        ReadText("Directory.Build.targets")
+            .ShouldContain("Microsoft.Testing.Extensions.CodeCoverage", Case.Sensitive);
 
-        foreach (string required in new[]
+        string dependabot = ReadText(".github/dependabot.yml");
+        foreach (string ecosystem in new[] { "nuget", "npm", "github-actions" })
         {
-            "#Requires -Version 7",
-            "Set-StrictMode -Version Latest",
-            "$ErrorActionPreference = 'Stop'",
-            "_bmad-output/gates/release-packages/latest.json",
-            "_bmad-output/gates/release-packages/packages",
-            "deploy/nuget/release-packages.yaml",
-            "PackageVersion=$Version",
-            "RepositoryCommit=$SourceRevisionId",
-            "SourceRevisionId=$SourceRevisionId",
-            "ContinuousIntegrationBuild=true",
-            "IncludeSymbols=true",
-            "SymbolPackageFormat=snupkg",
-            "'-p:Configuration=Release'",
-            "'-p:UseNuGetDeps=true'",
-            "-m:1",
-            "dotnet",
-            "nuget",
-            "push",
-            "--source",
-            "--api-key",
-            "--skip-duplicate",
-            "--no-symbols",
-            "$LASTEXITCODE",
-            "ContractVersion",
-            "0.0.0-scaffold",
-            "unexpected-package",
-            "contract-version-placeholder-blocks-live-publish",
-            "_bmad-output/gates/retention-deletion/latest.json",
-            "stale-retention-deletion-evidence",
-            "c3-retention-approval-blocks-live-publish",
+            dependabot.ShouldContain($"package-ecosystem: {ecosystem}", Case.Sensitive);
+        }
+
+        foreach (string workflow in new[]
+        {
+            ".github/workflows/commitlint.yml",
+            ".github/workflows/codeql.yml",
+            ".github/workflows/dependency-review.yml",
         })
         {
-            script.ShouldContain(required, Case.Sensitive);
+            string text = ReadText(workflow);
+            text.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/", Case.Sensitive);
+            text.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
+            text.ShouldNotContain("packages: write", Case.Insensitive);
         }
 
-        foreach (string packageId in ExpectedPushedPackages)
-        {
-            script.ShouldContain(packageId, Case.Sensitive);
-        }
-
-        script.ShouldContain("^[0-9a-fA-F]{40}$", Case.Sensitive);
-        script.ShouldContain("invalid-semver", Case.Sensitive);
-        script.IndexOf("unexpected-package", StringComparison.Ordinal).ShouldBeLessThan(
-            script.IndexOf("Invoke-RestoreBuild", StringComparison.Ordinal),
-            "The release gate must reject a manifest with extra pushed packages before restore, pack, or publish can run.");
-        script.ShouldNotContain("dotnet pack Hexalith.Folders.slnx", Case.Insensitive);
-        script.ShouldNotContain("nuget.config", Case.Insensitive);
-        script.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-    }
-
-    [Fact]
-    public void NonReleaseWorkflowsShouldNotPublishPackagesOrRequestPackageWrite()
-    {
-        foreach (string path in new[]
-        {
-            ".github/workflows/ci.yml",
-            ".github/workflows/contract-spine.yml",
-            ".github/workflows/nightly-drift.yml",
-            ".github/workflows/policy-conformance.yml",
-        })
-        {
-            string workflow = ReadText(path);
-            workflow.ShouldNotContain("dotnet nuget push", Case.Insensitive);
-            workflow.ShouldNotContain("dotnet pack", Case.Insensitive);
-            workflow.ShouldNotContain("packages: write", Case.Insensitive);
-            workflow.ShouldNotContain("run-release-package-gates.ps1", Case.Insensitive);
-        }
+        ReadText("package.json").ShouldContain("@commitlint/config-conventional", Case.Sensitive);
+        File.Exists(RepositoryPath("package-lock.json")).ShouldBeTrue();
+        File.Exists(RepositoryPath("commitlint.config.mjs")).ShouldBeTrue();
     }
 
     [Fact]
     public void ReleasePackageReportShouldStayMetadataOnlyWhenPresent()
     {
-        string fullReportPath = RepositoryPath(ReportPath);
-        if (!File.Exists(fullReportPath))
+        if (!File.Exists(RepositoryPath(ReportPath)))
         {
             return;
         }
 
         using JsonDocument document = JsonDocument.Parse(ReadText(ReportPath));
         JsonElement root = document.RootElement;
-
         RequiredString(root, "gate").ShouldBe("release-packages");
         RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
         RequiredString(root, "report_path").ShouldBe(ReportPath);
-        ReadStringArray(root, "pushed_package_ids").ShouldBe(ExpectedPushedPackages);
-        RequiredString(root, "source_revision_id").Length.ShouldBe(40);
-        RequiredString(root, "openapi_spine_path").ShouldBe("src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml");
+        ReadStringArray(root, "pushed_package_ids").ShouldBe(_expectedPackages);
         AssertMetadataOnlyJson(root);
     }
 
     [Fact]
-    public void ReleasePackageDocumentationShouldDefineMaintainerHandoff()
+    public void ReleaseDocumentationShouldDescribeTheGuardedOperatorHandoff()
     {
-        string documentation = ReadText(OperatorDocPath);
-
-        foreach (string packageId in ExpectedPushedPackages)
+        string documentation = ReadText("docs/operations/release-packages.md");
+        foreach (string package in _expectedPackages)
         {
-            documentation.ShouldContain(packageId, Case.Sensitive);
+            documentation.ShouldContain(package, Case.Sensitive);
         }
-
         foreach (string required in new[]
         {
-            "release: published",
             "workflow_dispatch",
-            "v1.2.3",
-            "0.0.0-local.1",
-            "tests/tools/run-release-package-gates.ps1",
-            "_bmad-output/gates/release-packages/latest.json",
-            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
-            "GITHUB_TOKEN",
-            "contents: read",
-            "packages: write",
-            "dotnet nuget push",
+            "current `main`",
+            "exact-source",
+            "production",
+            "HEXALITH_RELEASE_PUBLISH_ENABLED",
+            "NUGET_API_KEY",
+            "NuGet.org",
+            "tools/release-packages.json",
+            "no package, tag, or GitHub Release",
             "--skip-duplicate",
-            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
-            "PR CI",
-            "scheduled drift",
-            "policy conformance",
-            "container archive validation",
+            "scripts/validate-consumer-package-references.py",
+            "immutable partial-publication incident",
             "metadata-only",
         })
         {
             documentation.ShouldContain(required, Case.Sensitive);
         }
-
-        documentation.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+        documentation.ShouldNotContain("nuget.pkg.github.com", Case.Insensitive);
         ForbiddenCredentialPattern().IsMatch(documentation).ShouldBeFalse();
     }
-
-    private static YamlMappingNode FindStep(YamlMappingNode job, string uses)
-        => job.GetReleaseSequence("steps").Children.Cast<YamlMappingNode>()
-            .Single(step => step.Children.TryGetValue(new YamlScalarNode("uses"), out YamlNode? value)
-                && string.Equals(value.ToString(), uses, StringComparison.Ordinal));
-
-    private static YamlMappingNode FindNamedStep(YamlMappingNode job, string name)
-        => job.GetReleaseSequence("steps").Children.Cast<YamlMappingNode>()
-            .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), name, StringComparison.Ordinal));
-
-    private static ReleasePackage ParseReleasePackage(YamlMappingNode node)
-        => new(
-            node.GetReleaseScalar("packageId"),
-            node.GetReleaseScalar("projectPath"),
-            node.GetReleaseScalar("role"),
-            node.GetReleaseScalar("publishMode"),
-            node.GetReleaseScalar("dependencyRationale"),
-            bool.Parse(node.GetReleaseScalar("pushedInStory79")),
-            bool.Parse(node.GetReleaseScalar("symbolPackageRequired")));
 
     private static YamlMappingNode LoadSingleYamlDocument(string relativePath)
     {
@@ -388,15 +298,12 @@ public sealed partial class ReleasePackageConformanceTests
             {
                 return candidate;
             }
-
             if (File.Exists(Path.Combine(directory, "Hexalith.Folders.slnx")))
             {
                 return candidate;
             }
-
             directory = Directory.GetParent(directory)?.FullName;
         }
-
         return Path.Combine(AppContext.BaseDirectory, relativePath);
     }
 
@@ -407,20 +314,17 @@ public sealed partial class ReleasePackageConformanceTests
         return element.Value;
     }
 
-    private static string? GetOptionalProperty(XDocument document, string name)
-        => document.Descendants(name).SingleOrDefault()?.Value;
-
     private static string RequiredString(JsonElement element, string propertyName)
     {
         element.TryGetProperty(propertyName, out JsonElement property).ShouldBeTrue($"Missing JSON property '{propertyName}'.");
-        property.ValueKind.ShouldBe(JsonValueKind.String, $"JSON property '{propertyName}' must be a string.");
+        property.ValueKind.ShouldBe(JsonValueKind.String);
         return property.GetString().ShouldNotBeNull();
     }
 
     private static string[] ReadStringArray(JsonElement element, string propertyName)
     {
         element.TryGetProperty(propertyName, out JsonElement property).ShouldBeTrue($"Missing JSON property '{propertyName}'.");
-        property.ValueKind.ShouldBe(JsonValueKind.Array, $"JSON property '{propertyName}' must be an array.");
+        property.ValueKind.ShouldBe(JsonValueKind.Array);
         return property.EnumerateArray().Select(static item => item.GetString().ShouldNotBeNull()).ToArray();
     }
 
@@ -433,21 +337,17 @@ public sealed partial class ReleasePackageConformanceTests
                 {
                     AssertMetadataOnlyJson(property.Value);
                 }
-
                 break;
-
             case JsonValueKind.Array:
                 foreach (JsonElement item in element.EnumerateArray())
                 {
                     AssertMetadataOnlyJson(item);
                 }
-
                 break;
-
             case JsonValueKind.String:
                 string value = element.GetString().ShouldNotBeNull();
-                RootedPathPattern().IsMatch(value).ShouldBeFalse($"Release package report value must not contain an absolute path: {value}");
-                ForbiddenReportDiagnosticPattern().IsMatch(value).ShouldBeFalse($"Release package report value must stay metadata-only: {value}");
+                RootedPathPattern().IsMatch(value).ShouldBeFalse();
+                ForbiddenReportDiagnosticPattern().IsMatch(value).ShouldBeFalse();
                 break;
         }
     }
@@ -460,15 +360,6 @@ public sealed partial class ReleasePackageConformanceTests
 
     [GeneratedRegex(@"ghp_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|\bclient_secret\b|\bprivate_key\b|BEGIN [A-Z ]*PRIVATE KEY|\bpassword\s*=|\btoken\s*=", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex ForbiddenCredentialPattern();
-
-    private sealed record ReleasePackage(
-        string PackageId,
-        string ProjectPath,
-        string Role,
-        string PublishMode,
-        string DependencyRationale,
-        bool PushedInStory79,
-        bool SymbolPackageRequired);
 }
 
 internal static class ReleasePackageYamlNodeExtensions
@@ -476,8 +367,7 @@ internal static class ReleasePackageYamlNodeExtensions
     public static string GetReleaseScalar(this YamlMappingNode node, string key)
     {
         node.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue($"Missing YAML scalar key '{key}'.");
-        YamlScalarNode scalar = value.ShouldBeOfType<YamlScalarNode>();
-        return scalar.Value.ShouldNotBeNull();
+        return value.ShouldBeOfType<YamlScalarNode>().Value.ShouldNotBeNull();
     }
 
     public static YamlMappingNode GetReleaseMapping(this YamlMappingNode node, string key)

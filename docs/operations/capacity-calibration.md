@@ -1,14 +1,14 @@
 # Capacity Calibration
 
-Story 7.10 pins the release targets for C1 capacity, C2 status freshness, and C5 scalability quantifiers. This lane is separate from the Story 7.7 `capacity-smoke-gates` PR check.
+Story 7.10 pins the release targets for C1 capacity, C2 status freshness, and C5 scalability quantifiers. CI runs this hermetic calibration after the faster Story 7.7 `capacity-smoke-gates` check so both validate the same commit.
 
 ## Local command
 
 Build first, then run the calibration gate:
 
 ```powershell
-dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
-dotnet build Hexalith.Folders.slnx --no-restore -m:1
+dotnet restore Hexalith.Folders.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
+dotnet build Hexalith.Folders.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
 pwsh ./tests/tools/run-capacity-calibration-gates.ps1
 ```
 
@@ -58,9 +58,9 @@ The latest report must have `status: passed`, `profile_name: release-calibration
 
 ## Smoke versus release calibration
 
-`capacity-smoke-gates` is a PR confidence check. It runs the `quick` profile and proves the harness can execute the lifecycle/status path with metadata-only evidence. It does not carry release targets and cannot satisfy C1, C2, or C5.
+`capacity-smoke-gates` is the fast PR confidence check. It runs the `quick` profile and proves the harness can execute the lifecycle/status path with metadata-only evidence. It does not carry release targets and cannot satisfy C1, C2, or C5.
 
-`capacity-calibration` is release evidence. It runs the `release-calibration` profile and fails closed when target artifacts or same-commit evidence are missing, malformed, stale, unsafe, non-numeric, or inconsistent.
+`capacity-calibration` is blocking same-commit CI evidence used by release review. It runs the `release-calibration` profile and fails closed when target artifacts or same-commit evidence are missing, malformed, stale, unsafe, non-numeric, or inconsistent. Package sealing consumes neither checked-in calibration reports nor stale report state.
 
 ## C2 ownership
 

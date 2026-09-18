@@ -314,10 +314,12 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
 
         foreach (string jobName in new[]
                  {
-                     "baseline-build-and-unit-gates",
-                     "contract-and-parity-gates",
-                     "security-and-redaction-gates",
-                     "capacity-smoke-gates",
+                     "Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main",
+                     "folders-specialized-gates",
+                     "run-baseline-ci-gates.ps1",
+                     "run-contract-parity-ci-gates.ps1",
+                     "run-security-redaction-ci-gates.ps1",
+                     "run-capacity-smoke-ci-gates.ps1",
                  })
         {
             ci.ShouldContain(jobName, Case.Sensitive);
@@ -404,7 +406,8 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         }
 
         string workflowText = ReadText(workflowPath);
-        workflowText.ShouldContain("dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false");
+        workflowText.ShouldContain("dotnet restore Hexalith.Folders.slnx -m:1");
+        workflowText.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
         workflowText.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore -m:1");
         workflowText.ShouldContain($"./{expectedScript}");
         workflowText.ShouldNotContain("run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild", Case.Insensitive);

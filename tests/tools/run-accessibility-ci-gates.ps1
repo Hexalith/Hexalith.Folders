@@ -26,7 +26,11 @@ $repositoryRoot = (Resolve-Path (Join-Path $toolsParent '..')).ProviderPath
 $reportDirectory = Join-Path $repositoryRoot '_bmad-output/gates/accessibility'
 $reportPath = Join-Path $reportDirectory 'latest.json'
 $e2eProject = 'tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj'
-$accessibilityNamespace = 'Hexalith.Folders.UI.E2E.Tests.Accessibility'
+$accessibilityClasses = @(
+    'Hexalith.Folders.UI.E2E.Tests.Accessibility.ConsoleAxeWcagGateTests',
+    'Hexalith.Folders.UI.E2E.Tests.Accessibility.ConsoleKeyboardFocusGateTests',
+    'Hexalith.Folders.UI.E2E.Tests.Accessibility.ConsoleZoomReflowGateTests'
+)
 $pushed = $false
 
 function Write-AccessibilityReport {
@@ -47,26 +51,28 @@ function Write-AccessibilityReport {
 }
 
 function Invoke-AccessibilityTests {
-    # Keep a native non-zero exit from dotnet test as a returnable code (do not let it throw under Stop) so the
-    # xUnit v3 in-process fallback below is reliably reached.
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
+    if (-not (Test-Path $testAssembly)) {
+        Write-Host 'ACCESSIBILITY-PREREQUISITE-DRIFT: UI E2E test assembly is missing. Build the Release test project before running this gate.'
+        return 1
+    }
+
     $PSNativeCommandUseErrorActionPreference = $false
-    dotnet test $e2eProject --no-build --filter "FullyQualifiedName~$accessibilityNamespace" | Out-Host
-    if ($LASTEXITCODE -eq 0) {
-        return 0
+    foreach ($testClass in $accessibilityClasses) {
+        $output = & dotnet $testAssembly -noLogo -noColor -class $testClass 2>&1
+        $exitCode = $LASTEXITCODE
+        $output | ForEach-Object { Write-Host $_ }
+        if ($exitCode -ne 0) {
+            return $exitCode
+        }
+
+        if (-not (($output -join [Environment]::NewLine) -match 'Total:\s+[1-9]\d*')) {
+            Write-Host "ACCESSIBILITY-PREREQUISITE-DRIFT: accessibility class selection executed zero tests class=$testClass"
+            return 1
+        }
     }
 
-    # Match the extensionless ELF runner on Linux and the .exe runner on Windows; the regex excludes
-    # .dll/.pdb/.json artifacts that a bare -Filter pattern would otherwise miss/include.
-    $testExecutable = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin') -Recurse -File -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -match '^Hexalith\.Folders\.UI\.E2E\.Tests(\.exe)?$' -and $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-        Select-Object -First 1
-
-    if ($null -eq $testExecutable) {
-        return $LASTEXITCODE
-    }
-
-    & $testExecutable.FullName -noLogo -noColor -namespace $accessibilityNamespace | Out-Host
-    return $LASTEXITCODE
+    return 0
 }
 
 try {
@@ -77,24 +83,22 @@ try {
     Write-AccessibilityReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx
+        dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true
         if ($LASTEXITCODE -ne 0) {
             Write-AccessibilityReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
 
-        dotnet build Hexalith.Folders.slnx --no-restore
+        dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror
         if ($LASTEXITCODE -ne 0) {
             Write-AccessibilityReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
     }
     else {
-        $testAssembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin') -Recurse -Filter 'Hexalith.Folders.UI.E2E.Tests.dll' -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-            Select-Object -First 1
+        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
 
-        if ($null -eq $testAssembly) {
+        if (-not (Test-Path $testAssembly)) {
             Write-Error 'ACCESSIBILITY-PREREQUISITE-DRIFT: UI E2E test assembly is missing. Run the accessibility gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'
             Write-AccessibilityReport -Status 'failed' -ExitCode 1
             exit 1

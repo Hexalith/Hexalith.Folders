@@ -1,0 +1,24 @@
+{
+  "packages": [
+    {
+      "id": "Hexalith.Folders.Contracts",
+      "project": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj"
+    },
+    {
+      "id": "Hexalith.Folders",
+      "project": "src/Hexalith.Folders/Hexalith.Folders.csproj"
+    },
+    {
+      "id": "Hexalith.Folders.Client",
+      "project": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj"
+    },
+    {
+      "id": "Hexalith.Folders.Aspire",
+      "project": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj"
+    },
+    {
+      "id": "Hexalith.Folders.Testing",
+      "project": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj"
+    }
+  ]
+}

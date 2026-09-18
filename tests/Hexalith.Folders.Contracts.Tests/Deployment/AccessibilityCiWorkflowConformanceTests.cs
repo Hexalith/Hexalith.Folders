@@ -48,21 +48,17 @@ public sealed partial class AccessibilityCiWorkflowConformanceTests
         GetScalar(job, "name").ShouldBe(JobName);
         GetScalar(job, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(job, "actions/checkout@v6");
+        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7.0.1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
         YamlMappingNode submodules = GetSequence(job, "steps").Children.Cast<YamlMappingNode>()
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), "Initialize root-level build submodules", StringComparison.Ordinal));
+                && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        foreach (string module in _rootBuildSubmodules)
-        {
-            submoduleCommand.ShouldContain(module, Case.Sensitive);
-        }
 
-        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v5");
+        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6.0.0");
         GetScalar(GetMapping(setupDotnet, "with"), "global-json-file").ShouldBe("global.json");
 
         // The job must provision the browser and then run the gate with -SkipBrowserInstall — both via pwsh.
@@ -113,7 +109,11 @@ public sealed partial class AccessibilityCiWorkflowConformanceTests
             "-SkipBrowserInstall",
             "install-playwright.ps1",
             "-SkipBuild",
-            "FullyQualifiedName~",
+            "Hexalith.Folders.CI.slnx",
+            "--configuration Release",
+            "-p:UseNuGetDeps=true",
+            "bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll",
+            "& dotnet $testAssembly -noLogo -noColor -class $testClass",
             AccessibilityNamespace,
         })
         {
@@ -125,6 +125,8 @@ public sealed partial class AccessibilityCiWorkflowConformanceTests
         script.ShouldNotContain("dotnet publish", Case.Insensitive);
         script.ShouldNotContain("docker", Case.Insensitive);
         script.ShouldNotContain("secrets.", Case.Insensitive);
+        script.ShouldNotContain("--filter", Case.Sensitive);
+        script.ShouldNotContain("-namespace", Case.Sensitive);
     }
 
     [Fact]

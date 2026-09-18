@@ -354,9 +354,13 @@ public sealed class TenantFolderProviderContractGroupTests
             [
                 ".github/workflows/ci.yml",
                 ".github/workflows/contract-spine.yml",
+                ".github/workflows/codeql.yml",
+                ".github/workflows/commitlint.yml",
+                ".github/workflows/dependency-review.yml",
                 ".github/workflows/nightly-drift.yml",
                 ".github/workflows/policy-conformance.yml",
-                ".github/workflows/release-packages.yml",
+                ".github/workflows/release.yml",
+                ".github/dependabot.yml",
             ];
 
             workflowFiles

@@ -48,26 +48,24 @@ function Write-E2eReport {
 }
 
 function Invoke-E2eTests {
-    # Keep a native non-zero exit from dotnet test as a returnable code (do not let it throw under Stop) so the
-    # xUnit v3 in-process fallback below is reliably reached.
+    $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
+    if (-not (Test-Path $testAssembly)) {
+        Write-Host 'E2E-PREREQUISITE-DRIFT: Release UI E2E test assembly is missing.'
+        return 1
+    }
+
     $PSNativeCommandUseErrorActionPreference = $false
-    dotnet test $e2eProject --no-build | Out-Host
-    if ($LASTEXITCODE -eq 0) {
-        return 0
+    $output = & dotnet $testAssembly -noLogo -noColor 2>&1
+    $exitCode = $LASTEXITCODE
+    $output | ForEach-Object { Write-Host $_ }
+    if ($exitCode -ne 0) {
+        return $exitCode
     }
-
-    # Match the extensionless ELF runner on Linux and the .exe runner on Windows; the regex excludes
-    # .dll/.pdb/.json artifacts that a bare -Filter pattern would otherwise miss/include.
-    $testExecutable = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin') -Recurse -File -ErrorAction SilentlyContinue |
-        Where-Object { $_.Name -match '^Hexalith\.Folders\.UI\.E2E\.Tests(\.exe)?$' -and $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-        Select-Object -First 1
-
-    if ($null -eq $testExecutable) {
-        return $LASTEXITCODE
+    if (-not (($output -join [Environment]::NewLine) -match 'Total:\s+[1-9]\d*')) {
+        Write-Host 'E2E-PREREQUISITE-DRIFT: full UI E2E selection executed zero tests.'
+        return 1
     }
-
-    & $testExecutable.FullName -noLogo -noColor | Out-Host
-    return $LASTEXITCODE
+    return 0
 }
 
 try {
@@ -78,24 +76,22 @@ try {
     Write-E2eReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx
+        dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true
         if ($LASTEXITCODE -ne 0) {
             Write-E2eReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
 
-        dotnet build Hexalith.Folders.slnx --no-restore
+        dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror
         if ($LASTEXITCODE -ne 0) {
             Write-E2eReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
     }
     else {
-        $testAssembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin') -Recurse -Filter 'Hexalith.Folders.UI.E2E.Tests.dll' -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-            Select-Object -First 1
+        $testAssembly = Join-Path $repositoryRoot 'tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Hexalith.Folders.UI.E2E.Tests.dll'
 
-        if ($null -eq $testAssembly) {
+        if (-not (Test-Path $testAssembly)) {
             Write-Error 'E2E-PREREQUISITE-DRIFT: UI E2E test assembly is missing. Run the E2E gate without -SkipRestoreBuild, or run the shared restore/build lane before using -SkipRestoreBuild.'
             Write-E2eReport -Status 'failed' -ExitCode 1
             exit 1

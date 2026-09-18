@@ -35,7 +35,7 @@ public sealed partial class NfrTraceabilityConformanceTests
     private const string PolicyConformanceWorkflowPath = ".github/workflows/policy-conformance.yml";
     private const string BaselineGatePath = "tests/tools/run-baseline-ci-gates.ps1";
     private const string ReleaseGatePath = "tests/tools/run-release-package-gates.ps1";
-    private const string ReleaseWorkflowPath = ".github/workflows/release-packages.yml";
+    private const string ReleaseWorkflowPath = ".github/workflows/release.yml";
     private const string ReportPath = "_bmad-output/gates/nfr-traceability/latest.json";
     private const string TestSourcePath = "tests/Hexalith.Folders.Contracts.Tests/Deployment/NfrTraceabilityConformanceTests.cs";
 
@@ -338,14 +338,13 @@ public sealed partial class NfrTraceabilityConformanceTests
             "Push-Location",
             "Pop-Location",
             "GATE-VACUOUS",
-            "xunit",
+            "built xUnit v3 Contracts.Tests assembly",
             "$testExitCode = $LASTEXITCODE",
-            "$runnerFileName += '.exe'",
+            "Hexalith.Folders.Contracts.Tests.dll",
+            "& dotnet $runnerPath -noLogo -noColor -class $testClass",
             "native-test-failed=true exit_code=$testExitCode",
-            "Testing with VSTest target is no longer supported by Microsoft\\.Testing\\.Platform",
             "source_commit",
             "release_blocking_gaps",
-            $"FullyQualifiedName~{ConformanceFqn}",
         })
         {
             script.ShouldContain(required, Case.Sensitive);
@@ -436,9 +435,10 @@ public sealed partial class NfrTraceabilityConformanceTests
     }
 
     [Fact]
-    public void ContractSpineWorkflowAndBaselineCiWireNfrTraceabilityGate()
+    public void ContractSpineAndBlockingCiWireNfrTraceabilityGate()
     {
         string workflow = ReadText(WorkflowPath);
+        string ci = ReadText(CiWorkflowPath);
         workflow.ShouldContain("./tests/tools/run-nfr-traceability-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
         workflow.ShouldContain("submodules: false", Case.Sensitive);
         workflow.ShouldContain("contents: read", Case.Sensitive);
@@ -450,9 +450,10 @@ public sealed partial class NfrTraceabilityConformanceTests
         providerStep.ShouldBeGreaterThanOrEqualTo(0, "the provider-error-docs step must remain wired.");
         nfrStep.ShouldBeGreaterThan(providerStep, "the nfr-traceability step must come after provider-error-docs.");
 
-        // Lane separation (AC12): the static gate belongs to contract-spine, never to the PR ci.yml lane nor
-        // to the scheduled / policy workflows. Each must stay free of the focused gate.
-        foreach (string isolatedLane in new[] { CiWorkflowPath, NightlyDriftWorkflowPath, PolicyConformanceWorkflowPath })
+        ci.ShouldContain("./tests/tools/run-nfr-traceability-gates.ps1 -SkipRestoreBuild", Case.Sensitive);
+
+        // The static gate is blocking in ordinary CI but remains separate from scheduled/policy workflows.
+        foreach (string isolatedLane in new[] { NightlyDriftWorkflowPath, PolicyConformanceWorkflowPath })
         {
             ReadText(isolatedLane).ShouldNotContain("run-nfr-traceability-gates.ps1", Case.Sensitive,
                 $"{isolatedLane} must not run the focused NFR traceability gate (lane separation).");
@@ -462,61 +463,23 @@ public sealed partial class NfrTraceabilityConformanceTests
     }
 
     [Fact]
-    public void ReleasePackageWiringRequiresNfrTraceabilityEvidence()
+    public void ReleasePackageWiringUsesSealedArtifactEvidenceRatherThanLegacyNfrReports()
     {
-        // The static gate runs as a release-readiness prerequisite so the committed report is current.
-        ReadText(ReleaseWorkflowPath).ShouldContain("./tests/tools/run-nfr-traceability-gates.ps1", Case.Sensitive);
+        ReadText(ReleaseWorkflowPath).ShouldNotContain("run-nfr-traceability-gates.ps1", Case.Sensitive);
 
         string releaseGate = ReadText(ReleaseGatePath);
-        foreach (string required in new[]
-        {
-            ReportPath,
-            "release_blocking_gaps",
-            "nfr-traceability-unowned-release-blocking-gap",
-            "stale-nfr-traceability-evidence",
-        })
-        {
-            releaseGate.ShouldContain(required, Case.Sensitive);
-        }
-
-        // The evidence path must sit inside the release evidence set so it cannot be dropped silently.
-        int evidenceArray = releaseGate.IndexOf("$evidencePaths", StringComparison.Ordinal);
-        evidenceArray.ShouldBeGreaterThanOrEqualTo(0, "the release gate must declare an evidence-path set.");
-        int pathInArray = releaseGate.IndexOf($"'{ReportPath}'", evidenceArray, StringComparison.Ordinal);
-        pathInArray.ShouldBeGreaterThan(evidenceArray, "the nfr-traceability report must be a required release-evidence path.");
-
-        // AC13: live publish must fail-close on stale same-commit NFR evidence. Assert the guarding condition is
-        // structurally present inside the NFR-scoped block and precedes the Fail-Gate reason, so the staleness
-        // check cannot be neutered while leaving the reason string behind.
-        int nfrScopeStart = releaseGate.IndexOf(
-            "$relativePath -eq '_bmad-output/gates/nfr-traceability/latest.json'", StringComparison.Ordinal);
-        nfrScopeStart.ShouldBeGreaterThan(0, "the release gate must scope NFR-specific checks to the nfr-traceability report.");
-        string nfrScope = releaseGate[nfrScopeStart..];
-        Match staleGuard = NfrStaleSameCommitGuard().Match(nfrScope);
-        staleGuard.Success.ShouldBeTrue(
-            "live Publish must guard the stale-evidence failure on Mode=Publish and a same-commit source_commit check.");
-        int staleReason = nfrScope.IndexOf("stale-nfr-traceability-evidence", StringComparison.Ordinal);
-        staleReason.ShouldBeGreaterThan(staleGuard.Index,
-            "the stale-evidence Fail-Gate must be guarded by the same-commit staleness condition.");
+        releaseGate.ShouldNotContain(ReportPath, Case.Sensitive);
+        releaseGate.ShouldContain("validate-nuget-packages.py", Case.Sensitive);
+        releaseGate.ShouldContain("validate-consumer-package-references.py", Case.Sensitive);
     }
 
     [Fact]
-    public void NfrTraceabilityGateRunsOnlyInReleasePrerequisiteJob()
+    public void NfrTraceabilityGateDoesNotRunInsideExactSourceReleaseJobs()
     {
-        // AC13: the focused gate is wired as a release *prerequisite*. It must not be silently relocated into the
-        // package-conformance or publish jobs, which would let publish proceed without the prerequisite gate.
-        YamlMappingNode root = LoadSingleYamlDocument(ReleaseWorkflowPath).ShouldBeOfType<YamlMappingNode>();
-        YamlMappingNode jobs = root.Children[new YamlScalarNode("jobs")].ShouldBeOfType<YamlMappingNode>();
-
-        JobRunCommands(jobs, "release-prerequisite-gates")
-            .ShouldContain("run-nfr-traceability-gates.ps1", Case.Sensitive,
-                "the NFR traceability gate must run in the release-prerequisite-gates job.");
-        JobRunCommands(jobs, "release-package-conformance")
-            .ShouldNotContain("run-nfr-traceability-gates.ps1", Case.Sensitive,
-                "the NFR traceability gate must not be relocated into the release-package-conformance job.");
-        JobRunCommands(jobs, "publish-packages")
-            .ShouldNotContain("run-nfr-traceability-gates.ps1", Case.Sensitive,
-                "the NFR traceability gate must not be relocated into the publish-packages job.");
+        string workflow = ReadText(ReleaseWorkflowPath);
+        workflow.ShouldContain("verify-source:", Case.Sensitive);
+        workflow.ShouldContain("uses: Hexalith/Hexalith.Builds/.github/workflows/domain-release.yml@", Case.Sensitive);
+        workflow.ShouldNotContain("run-nfr-traceability-gates.ps1", Case.Sensitive);
     }
 
     [Fact]

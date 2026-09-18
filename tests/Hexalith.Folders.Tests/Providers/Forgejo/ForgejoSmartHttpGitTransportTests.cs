@@ -15,7 +15,7 @@ namespace Hexalith.Folders.Tests.Providers.Forgejo;
 [Collection(ForgejoNativeOperationGateCollection.Name)]
 public sealed class ForgejoSmartHttpGitTransportTests
 {
-    private static readonly SemaphoreSlim NativePermitVerificationGate = new(1, 1);
+    private static readonly SemaphoreSlim _nativePermitVerificationGate = new(1, 1);
 
     [Fact]
     public void NativeRuntimeBuildsExactOrderedTreeWithoutChangingUnrelatedPaths()
@@ -163,7 +163,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     }
 
     [Fact]
-    public async Task UserCancelledExceptionPreservesTheCallbackSelectedCeiling()
+    public async Task UserCancelledExceptionPreservesTheCallbackSelectedCeilingAsync()
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -215,7 +215,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task CommitCrossingTransportCeilingFailsBeforeDispatchAndCleansExactlyOnce(bool crossDiskCeiling)
+    public async Task CommitCrossingTransportCeilingFailsBeforeDispatchAndCleansExactlyOnceAsync(bool crossDiskCeiling)
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -270,7 +270,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     }
 
     [Fact]
-    public async Task CleanupFailureBeforeDispatchReturnsAllowListedFailureWithoutLeakingPath()
+    public async Task CleanupFailureBeforeDispatchReturnsAllowListedFailureWithoutLeakingPathAsync()
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -318,7 +318,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task PartialSetupAndUnexpectedExecutionFailuresCleanExactlyOnce(bool failDuringSetup)
+    public async Task PartialSetupAndUnexpectedExecutionFailuresCleanExactlyOnceAsync(bool failDuringSetup)
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -338,7 +338,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
                         temporaryPath = repository.Info.Path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                         throw new InvalidOperationException("setup failure");
                     }
-                    : null,
+                : null,
                 BeforeFetch = failDuringSetup
                     ? (path, _) => temporaryPath = path
                     : (path, _) =>
@@ -387,7 +387,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task StageAndCommitUseTheProductionAmbientConfigurationScannerBeforeFetch(bool commit)
+    public async Task StageAndCommitUseTheProductionAmbientConfigurationScannerBeforeFetchAsync(bool commit)
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -449,7 +449,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task PreExistingTemporaryPathIsNeverClaimedOrDeleted(bool commit)
+    public async Task PreExistingTemporaryPathIsNeverClaimedOrDeletedAsync(bool commit)
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -497,7 +497,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     }
 
     [Fact]
-    public async Task StageCreatesTheProductionTemporaryDirectoryWithCurrentUserOnlyProtection()
+    public async Task StageCreatesTheProductionTemporaryDirectoryWithCurrentUserOnlyProtectionAsync()
     {
         ProviderGitOperationResolvedTarget target = Target(new string('a', 40));
         AdvertisementHandler handler = new(target);
@@ -543,7 +543,7 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public async Task DeclaredAndStreamedAdvertisementOverflowHaveTheSameClassification(bool declaredLength)
+    public async Task DeclaredAndStreamedAdvertisementOverflowHaveTheSameClassificationAsync(bool declaredLength)
     {
         byte[] oversized = new byte[(1024 * 1024) + 1];
         HttpContent content = declaredLength
@@ -569,16 +569,16 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task TimedOutOrCancelledNativeWorkerRetainsPermitUntilExactlyOnceCleanup(bool cancelCaller)
+    public async Task TimedOutOrCancelledNativeWorkerRetainsPermitUntilExactlyOnceCleanupAsync(bool cancelCaller)
     {
-        await NativePermitVerificationGate.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        await _nativePermitVerificationGate.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
         try
         {
             await VerifyTimedOutOrCancelledNativeWorkerAsync(cancelCaller).ConfigureAwait(true);
         }
         finally
         {
-            NativePermitVerificationGate.Release();
+            _nativePermitVerificationGate.Release();
         }
     }
 
@@ -669,16 +669,16 @@ public sealed class ForgejoSmartHttpGitTransportTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public async Task TimedOutOrCancelledCommitWorkerRetainsPermitUntilExactlyOnceCleanup(bool cancelCaller)
+    public async Task TimedOutOrCancelledCommitWorkerRetainsPermitUntilExactlyOnceCleanupAsync(bool cancelCaller)
     {
-        await NativePermitVerificationGate.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+        await _nativePermitVerificationGate.WaitAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
         try
         {
             await VerifyTimedOutOrCancelledCommitWorkerAsync(cancelCaller).ConfigureAwait(true);
         }
         finally
         {
-            NativePermitVerificationGate.Release();
+            _nativePermitVerificationGate.Release();
         }
     }
 

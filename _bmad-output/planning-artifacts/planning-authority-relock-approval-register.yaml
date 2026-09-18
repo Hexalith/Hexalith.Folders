@@ -1,7 +1,8 @@
 schema_version: '1.0.0'
 register_id: folders-planning-authority-relock-2026-09-17
-status: pre-generation-approved-post-generation-pending
+status: planning-output-approved-later-gates-pending
 prepared_on: '2026-09-17'
+last_updated_on: '2026-09-18'
 digest_algorithm: sha256
 digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
 approval_policy:
@@ -30,6 +31,29 @@ pre_generation_attestation:
   approved_gates: [A1, A2, A4, A5, A6, A7, A7b]
   excluded_gates: [A2b, A3, A6b, A8]
   exclusion_reason: Post-generation payloads cannot be approved until their required exact output digests exist.
+
+post_generation_planning_output_attestation:
+  approver: Jerome
+  approved_on: '2026-09-18'
+  source: Explicit confirmation in the active planning-authority relock exchange after final digest presentation.
+  represented_authorities:
+    A2b: [Product, Architecture, Security, Operations, Test]
+    A3: [Product, Architecture, Delivery]
+  approved_gates: [A2b, A3]
+  excluded_gates: [A6b, A8]
+  exclusion_reason: A6b still requires the generated authorization-matrix 2.0.0 and conformance-set digests; A8 still requires a passing Section 9 result and its final bound artifacts.
+  immutable_bound_artifacts:
+    - path: _bmad-output/planning-artifacts/prd.md
+      sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+    - path: _bmad-output/planning-artifacts/epics.md
+      sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+    - path: docs/exit-criteria/nfr-traceability.md
+      sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+    - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+      sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+    - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+      sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+  snapshot_semantics: The approved planning artifacts remain immutable generation snapshots; this register is the current decision overlay and supersedes their embedded generation-time pending status without rewriting their approved bytes.
 
 records:
   - gate_id: A1
@@ -103,35 +127,125 @@ records:
     authority_ids: [PD6]
     manifest_node: DEC-A2B
     stage: post-RELOCK-PLANNING
-    approval_readiness: awaiting-generated-target-digests
+    approval_readiness: exact-bound-artifacts-approved
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md
     decision_payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
     required_authorities: [Product, Architecture, Security, Operations, Test]
     required_bound_artifacts:
       - path: _bmad-output/planning-artifacts/prd.md
-        sha256: pending-RELOCK-PLANNING
+        sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
       - path: _bmad-output/planning-artifacts/epics.md
-        sha256: pending-RELOCK-PLANNING
+        sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
       - path: docs/exit-criteria/nfr-traceability.md
-        sha256: pending-RELOCK-PLANNING
-    approval_status: pending
-    approvals: []
+        sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/prd.md
+            sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+          - path: _bmad-output/planning-artifacts/epics.md
+            sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+          - path: docs/exit-criteria/nfr-traceability.md
+            sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/prd.md
+            sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+          - path: _bmad-output/planning-artifacts/epics.md
+            sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+          - path: docs/exit-criteria/nfr-traceability.md
+            sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+      - authority: Security
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/prd.md
+            sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+          - path: _bmad-output/planning-artifacts/epics.md
+            sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+          - path: docs/exit-criteria/nfr-traceability.md
+            sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+      - authority: Operations
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/prd.md
+            sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+          - path: _bmad-output/planning-artifacts/epics.md
+            sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+          - path: docs/exit-criteria/nfr-traceability.md
+            sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+      - authority: Test
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/prd.md
+            sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+          - path: _bmad-output/planning-artifacts/epics.md
+            sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+          - path: docs/exit-criteria/nfr-traceability.md
+            sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
 
   - gate_id: A3
     authority_ids: [PD4]
     manifest_node: DEC-A3
     stage: post-RELOCK-PLANNING
-    approval_readiness: awaiting-generated-target-digests
+    approval_readiness: exact-bound-artifacts-approved
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md
     decision_payload_sha256: a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e
     required_authorities: [Product, Architecture, Delivery]
     required_bound_artifacts:
       - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
-        sha256: pending-RELOCK-PLANNING
+        sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
       - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
-        sha256: pending-RELOCK-PLANNING
-    approval_status: pending
-    approvals: []
+        sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+    approval_status: approved
+    approvals:
+      - authority: Product
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+            sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+          - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+            sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+      - authority: Architecture
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+            sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+          - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+            sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+      - authority: Delivery
+        approver: Jerome
+        approved_on: '2026-09-18'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e
+        bound_artifacts:
+          - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+            sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+          - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+            sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
 
   - gate_id: A4
     authority_ids: [PD5]

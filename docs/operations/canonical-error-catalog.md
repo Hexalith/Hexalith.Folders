@@ -274,4 +274,4 @@ client-action tokens, CLI exit codes, and MCP failure-kind rules stay synchroniz
 the gate after any change to the generated client enums, the parity oracle, `FolderCanonicalErrorMapper`,
 `FoldersExitCodes` / `ErrorProjection`, or `FailureKindProjection`. The static gate runs in the
 `contract-spine` CI lane and through the baseline CI Contracts.Tests filter; it is not promoted to a new
-top-level `ci.yml` lane, to `release-packages.yml`, or to scheduled workflows.
+top-level `ci.yml` lane, to `release.yml`, or to scheduled workflows.

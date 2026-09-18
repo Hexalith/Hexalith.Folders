@@ -24,7 +24,7 @@ public sealed class GitHubDriftConformanceTests
     private const string ManifestRelativePath = "tests/contracts/github/pinned-profile.json";
     private const string CatalogRelativePath = "docs/contract/provider-compatibility-catalog.md";
     private const string PackagePinRelativePath = "references/Hexalith.Builds/Props/Directory.Packages.props";
-    private const string LibGit2SharpPinRelativePath = "Directory.Packages.props";
+    private const string LibGit2SharpPinRelativePath = PackagePinRelativePath;
     private const string NightlyDriftScriptRelativePath = "tests/tools/run-nightly-drift-gates.ps1";
     private const string ExpectedSchemaVersion = "github-pinned-profile-v1";
     private const string ExpectedDriftLane = "pinned-profile-manifest-plus-failure-mode-coverage-matrix";

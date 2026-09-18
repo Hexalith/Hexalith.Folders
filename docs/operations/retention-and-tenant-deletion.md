@@ -1,5 +1,7 @@
 # Retention And Tenant Deletion
 
+Ordinary push and pull-request CI runs `tests/tools/run-retention-deletion-gates.ps1` as a blocking same-commit policy check. The semantic-release package lane remains independent and does not accept a checked-in retention report as package-sealing evidence.
+
 Story 7.11 provides the existing static retention evidence; Story 4.22 owns the revised staged-content clock and cleanup trigger. This document does not add runtime deletion endpoints, background cleanup workers, provider cleanup automation, or UI mutation.
 
 ## Per-class C3 mapping
@@ -33,7 +35,7 @@ Release reviewers inspect:
 - `docs/exit-criteria/c0-c13-governance-evidence.yaml`
 - `_bmad-output/gates/retention-deletion/latest.json`
 - `deploy/nuget/release-packages.yaml`
-- `.github/workflows/release-packages.yml`
+- `.github/workflows/release.yml`
 
 The latest report must carry the current full source commit, required C3 class coverage, tenant-deletion disposition rows, release evidence paths, bounded validation categories, and `diagnostic_policy: metadata-only`.
 

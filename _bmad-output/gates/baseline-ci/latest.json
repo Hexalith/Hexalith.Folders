@@ -1,9 +1,9 @@
 {
   "gate": "baseline-ci",
-  "status": "passed",
+  "status": "failed",
   "report_path": "_bmad-output/gates/baseline-ci/latest.json",
   "diagnostic_policy": "metadata-only",
-  "solution": "Hexalith.Folders.slnx",
+  "solution": "Hexalith.Folders.CI.slnx",
   "categories": [
     "dependency-mode",
     "restore",
@@ -18,39 +18,69 @@
   "unit_test_projects": [
     {
       "project_path": "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     },
     {
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.ContractsSmokeTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests"
+      "runner_arguments": [
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.ContractsSmokeTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests"
+      ]
     },
     {
       "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
-      "filter": "FullyQualifiedName!~Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration&FullyQualifiedName!~Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGenerationTargetRegeneratesWhenContractSpineChanges"
+      "runner_arguments": [
+        "-method-",
+        "Hexalith.Folders.Client.Tests.ClientGenerationTests.GeneratedClientAndHelpersMatchIsolatedRegeneration",
+        "-method-",
+        "Hexalith.Folders.Client.Tests.ClientGenerationTests.HelperGenerationTargetRegeneratesWhenContractSpineChanges"
+      ]
     },
     {
       "project_path": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     },
     {
       "project_path": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     },
     {
       "project_path": "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     },
     {
       "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     },
     {
       "project_path": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     },
     {
       "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
-      "filter": ""
+      "runner_arguments": []
     }
   ],
   "results": [
@@ -69,6 +99,12 @@
     {
       "category": "dependency-mode",
       "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj [release-package]",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "dependency-mode",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj [ci-package]",
       "status": "passed",
       "exit_code": 0
     },
@@ -93,68 +129,8 @@
     {
       "category": "unit-tests",
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "unit-tests",
-      "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "package-mode-restore",
-      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "package-mode-build",
-      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
-    },
-    {
-      "category": "package-mode-test",
-      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
-      "status": "passed",
-      "exit_code": 0
+      "status": "failed",
+      "exit_code": 1
     }
   ]
 }

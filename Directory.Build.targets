@@ -1,5 +1,14 @@
 <Project>
 
+  <!-- Microsoft.Testing.Platform's --coverage switch is provided by this extension.
+       Add it after each project body so the root props path remains stable across ProjectReference builds. -->
+  <ItemGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Tests'))">
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>compile; runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <!--
     Container image defaults (.NET SDK container support).
     Opt in per service with:

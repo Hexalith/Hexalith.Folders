@@ -1,10 +1,10 @@
 {
   "gate": "nfr-traceability",
-  "status": "failed",
-  "exit_code": 1,
+  "status": "passed",
+  "exit_code": 0,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
-  "source_commit": "1621358e7924fd3c58eac653473fc9196c84b190",
+  "source_commit": "3dd121eadd3e952850be69ec3b7cfda6fd549925",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
   "nfr_total": 84,
   "category_total": 11,
@@ -15,7 +15,7 @@
     "docs/exit-criteria/c0-c13-governance-evidence.yaml",
     "docs/exit-criteria/nfr-traceability.md",
     "tests/tools/run-release-package-gates.ps1",
-    ".github/workflows/release-packages.yml"
+    ".github/workflows/release.yml"
   ],
   "surfaces": [
     "prd-nfr-inventory",

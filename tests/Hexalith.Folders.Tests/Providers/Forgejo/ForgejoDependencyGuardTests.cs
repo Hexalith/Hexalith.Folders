@@ -91,12 +91,19 @@ public sealed class ForgejoDependencyGuardTests
         string root = FindRepositoryRoot();
         string projectFile = File.ReadAllText(Path.Combine(root, "src", "Hexalith.Folders", "Hexalith.Folders.csproj"));
         string centralPackages = File.ReadAllText(Path.Combine(root, "Directory.Packages.props"));
+        string sharedCentralPackages = File.ReadAllText(Path.Combine(
+            root,
+            "references",
+            "Hexalith.Builds",
+            "Props",
+            "Directory.Packages.props"));
 
         projectFile.ShouldNotContain("Forgejo", Case.Sensitive);
         projectFile.ShouldNotContain("Gitea", Case.Sensitive);
         projectFile.ShouldNotContain("Version=", Case.Sensitive);
         projectFile.ShouldContain("<PackageReference Include=\"LibGit2Sharp\" />", Case.Sensitive);
-        centralPackages.ShouldContain("<PackageVersion Include=\"LibGit2Sharp\" Version=\"0.32.0\" />", Case.Sensitive);
+        centralPackages.ShouldContain("references/Hexalith.Builds/Props/Directory.Packages.props", Case.Sensitive);
+        sharedCentralPackages.ShouldContain("<PackageVersion Include=\"LibGit2Sharp\" Version=\"0.32.0\" />", Case.Sensitive);
         ForgejoSmartHttpGitTransport.IsPinnedNativeProfileAvailable().ShouldBeTrue();
     }
 

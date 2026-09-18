@@ -384,4 +384,4 @@ codes, provider failure categories, and supported Forgejo versions stay synchron
 Rerun the gate after any change to the provider abstractions, the GitHub or Forgejo adapters, the readiness
 sources, or `ForgejoSupportedVersionCatalog`. The static gate runs in the `contract-spine` CI lane and through
 the baseline CI Contracts.Tests filter; it is not promoted to a new top-level `ci.yml` lane, to
-`release-packages.yml`, or to scheduled workflows.
+`release.yml`, or to scheduled workflows.

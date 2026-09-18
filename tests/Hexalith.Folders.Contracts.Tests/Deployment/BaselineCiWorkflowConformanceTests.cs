@@ -41,18 +41,6 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
     ];
 
-    private static readonly string[] _rootBuildSubmodules =
-    [
-        "references/Hexalith.AI.Tools",
-        "references/Hexalith.Builds",
-        "references/Hexalith.Commons",
-        "references/Hexalith.EventStore",
-        "references/Hexalith.FrontComposer",
-        "references/Hexalith.Memories",
-        "references/Hexalith.PolymorphicSerializations",
-        "references/Hexalith.Tenants",
-    ];
-
     private static readonly string[] _excludedBaselineLanes =
     [
         "tests/Hexalith.Folders.IntegrationTests",
@@ -66,37 +54,60 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         "run-governance-completeness-gates.ps1",
     ];
 
+    private static readonly string[] _baselineContractClasses =
+    [
+        "Hexalith.Folders.Contracts.Tests.ContractsSmokeTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.CapacityCalibrationConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.CapacitySmokeCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ContractParityCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.SecurityRedactionCiWorkflowConformanceTests",
+    ];
+
     [Fact]
     public void BaselineWorkflowShouldUseStableTriggersCheckoutSdkAndCache()
     {
         YamlMappingNode workflow = LoadSingleYamlDocument(WorkflowPath);
 
-        GetScalar(workflow, "name").ShouldBe("baseline-ci");
+        GetScalar(workflow, "name").ShouldBe("CI");
         YamlMappingNode trigger = GetMapping(workflow, "on");
         trigger.Children.ContainsKey(new YamlScalarNode("pull_request")).ShouldBeTrue();
-        GetSequence(GetMapping(trigger, "push"), "branches").Children.Select(static n => n.ToString()).ShouldBe(["main", "next", "alpha", "beta"]);
+        GetSequence(GetMapping(trigger, "push"), "branches").Children.Select(static n => n.ToString()).ShouldBe(["main"]);
         GetScalar(GetMapping(workflow, "permissions"), "contents").ShouldBe("read");
 
-        YamlMappingNode job = GetMapping(GetMapping(workflow, "jobs"), "baseline-build-and-unit-gates");
-        GetScalar(job, "name").ShouldBe("baseline-build-and-unit-gates");
+        YamlMappingNode jobs = GetMapping(workflow, "jobs");
+        YamlMappingNode sharedJob = GetMapping(jobs, "ci");
+        GetScalar(sharedJob, "uses").ShouldBe("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main");
+        YamlMappingNode sharedInputs = GetMapping(sharedJob, "with");
+        GetScalar(sharedInputs, "solution").ShouldBe("Hexalith.Folders.CI.slnx");
+        GetScalar(sharedInputs, "test-platform").ShouldBe("microsoft-testing-platform");
+
+        YamlMappingNode job = GetMapping(jobs, "folders-specialized-gates");
         GetScalar(job, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(job, "actions/checkout@v6");
+        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7.0.1");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
         YamlMappingNode submodules = GetSequence(job, "steps").Children.Cast<YamlMappingNode>()
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
-                && string.Equals(value.ToString(), "Initialize root-level build submodules", StringComparison.Ordinal));
+                && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
-        foreach (string module in _rootBuildSubmodules)
-        {
-            submoduleCommand.ShouldContain(module, Case.Sensitive);
-        }
 
-        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v5");
+        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6.0.0");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");
@@ -110,7 +121,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("run"), out YamlNode? value)
                 && string.Equals(value.ToString(), "./tests/tools/run-baseline-ci-gates.ps1", StringComparison.Ordinal));
         GetScalar(runStep, "shell").ShouldBe("pwsh");
-        GetScalar(runStep, "timeout-minutes").ShouldBe("25");
+        GetScalar(runStep, "timeout-minutes").ShouldBe("45");
     }
 
     [Fact]
@@ -118,11 +129,8 @@ public sealed partial class BaselineCiWorkflowConformanceTests
     {
         string workflow = ReadText(WorkflowPath);
 
-        foreach (string category in _baselineCategories)
-        {
-            workflow.ShouldContain(category, Case.Sensitive);
-        }
-
+        workflow.ShouldContain("Hexalith/Hexalith.Builds/.github/workflows/domain-ci.yml@main", Case.Sensitive);
+        workflow.ShouldContain("test-platform: microsoft-testing-platform", Case.Sensitive);
         workflow.ShouldContain("./tests/tools/run-baseline-ci-gates.ps1");
         workflow.ShouldNotContain("secrets.", Case.Insensitive);
         workflow.ShouldNotContain("services:", Case.Insensitive);
@@ -137,16 +145,21 @@ public sealed partial class BaselineCiWorkflowConformanceTests
     public void BaselineGateScriptShouldRunRestoreBuildFormatLintAndAllowListedUnitTests()
     {
         string script = ReadText(GateScriptPath);
+        string buildProperties = ReadText("Directory.Build.props");
 
         script.ShouldContain("#Requires -Version 7");
         script.ShouldContain("Set-StrictMode -Version Latest");
         script.ShouldContain("$ErrorActionPreference = 'Stop'");
-        script.ShouldContain("Hexalith.Folders.slnx");
-        script.ShouldContain("Invoke-BaselineCommand -Category 'restore' -Arguments @('restore', 'Hexalith.Folders.slnx'");
-        script.ShouldContain("Invoke-BaselineCommand -Category 'build' -Arguments @('build', 'Hexalith.Folders.slnx', '--no-restore'");
-        script.ShouldContain("Assert-DependencyMode -Label 'default'", Case.Sensitive);
-        script.ShouldContain("Assert-DependencyMode -Label 'debug' -AdditionalArguments @('-p:Configuration=Debug')", Case.Sensitive);
+        script.ShouldContain("Hexalith.Folders.CI.slnx");
+        script.ShouldContain("Invoke-BaselineCommand -Category 'restore' -Arguments @('restore', 'Hexalith.Folders.CI.slnx'");
+        script.ShouldContain("Invoke-BaselineCommand -Category 'build' -Arguments @('build', 'Hexalith.Folders.CI.slnx', '--configuration', 'Release', '-p:UseNuGetDeps=true', '--no-restore'");
+        script.ShouldContain("Assert-DependencyMode -Label 'default' -AdditionalArguments @('-p:CI=false')", Case.Sensitive);
+        script.ShouldContain("Assert-DependencyMode -Label 'debug' -AdditionalArguments @('-p:CI=false', '-p:Configuration=Debug')", Case.Sensitive);
         script.ShouldContain("Assert-DependencyMode -Label 'release-package' -AdditionalArguments @('-p:Configuration=Release', '-p:UseNuGetDeps=true')", Case.Sensitive);
+        script.ShouldContain("Assert-DependencyMode -Label 'ci-package' -AdditionalArguments @('-p:CI=true')", Case.Sensitive);
+        buildProperties.ShouldContain("'$(CI)' == 'true'", Case.Sensitive);
+        buildProperties.ShouldContain("'$(UseHexalithProjectReferences)' == 'true'", Case.Sensitive);
+        buildProperties.ShouldNotContain("UseFoldersSourceDependencies", Case.Sensitive);
         foreach (string propertyName in new[]
         {
             "UseHexalithProjectReferences",
@@ -168,9 +181,9 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         script.ShouldContain("Invoke-BaselineCommand -Category 'package-mode-test'", Case.Sensitive);
         script.ShouldContain("@('test', $packageModeProject, '-c', 'Release', '-p:UseNuGetDeps=true', '--no-restore', '--no-build')", Case.Sensitive);
         script.ShouldContain("--no-restore");
-        script.ShouldContain("Invoke-BaselineCommand -Category 'format' -Arguments @('format', 'whitespace', 'Hexalith.Folders.slnx'");
+        script.ShouldContain("Invoke-BaselineCommand -Category 'format' -Arguments @('format', 'whitespace', 'Hexalith.Folders.CI.slnx'");
         script.ShouldContain("--verify-no-changes");
-        script.ShouldContain("Invoke-BaselineCommand -Category 'lint' -Arguments @('format', 'analyzers', 'Hexalith.Folders.slnx'");
+        script.ShouldContain("Invoke-BaselineCommand -Category 'lint' -Arguments @('format', 'analyzers', 'Hexalith.Folders.CI.slnx'");
         script.ShouldContain("--severity");
 
         // Format/lint must be scoped to this repository's own source. The host build needs
@@ -178,8 +191,11 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         // repositories with their own formatting standards and must not be evaluated by
         // this baseline gate. The exact './src/' form is required: a bare 'src tests'
         // include matches no files and would make the gate pass vacuously.
-        script.ShouldContain("@('format', 'whitespace', 'Hexalith.Folders.slnx', '--verify-no-changes', '--no-restore', '--include', './src/', './tests/', './samples/')", Case.Sensitive);
-        script.ShouldContain("@('format', 'analyzers', 'Hexalith.Folders.slnx', '--verify-no-changes', '--no-restore', '--severity', 'warn', '--include', './src/', './tests/', './samples/')", Case.Sensitive);
+        script.ShouldContain("@('format', 'whitespace', 'Hexalith.Folders.CI.slnx', '--verify-no-changes', '--no-restore', '--include', './src/', './tests/', './samples/')", Case.Sensitive);
+        script.ShouldContain("@('format', 'analyzers', 'Hexalith.Folders.CI.slnx', '--verify-no-changes', '--no-restore', '--severity', 'warn', '--include', './src/', './tests/', './samples/')", Case.Sensitive);
+
+        string ciSolution = ReadText("Hexalith.Folders.CI.slnx");
+        ciSolution.ShouldNotContain("Project Path=\"references/", Case.Sensitive);
 
         script.ShouldContain("_bmad-output/gates/baseline-ci/latest.json");
         script.ShouldContain("$LASTEXITCODE");
@@ -214,24 +230,43 @@ public sealed partial class BaselineCiWorkflowConformanceTests
             .Select(static match => match.Groups["value"].Value)
             .ShouldBe(_baselineUnitProjects);
 
-        script.ShouldContain("@('test', $testProject.project_path, '--no-restore', '--no-build')");
+        script.ShouldContain("@('test', $testProject.project_path, '--configuration', 'Release'", Case.Sensitive);
+        script.ShouldContain("'--report-xunit-trx'", Case.Sensitive);
+        script.ShouldContain("$testAssembly", Case.Sensitive);
+        script.ShouldContain("foreach ($testClass in $testProject.runner_classes)", Case.Sensitive);
+        script.ShouldContain("Invoke-BaselineSelectedClass", Case.Sensitive);
+        script.ShouldContain("reason=test-selection-drift", Case.Sensitive);
+        script.ShouldContain("'-class'", Case.Sensitive);
+        script.ShouldContain("'-method-'", Case.Sensitive);
+        script.ShouldContain("'-result-trx'", Case.Sensitive);
         script.ShouldNotContain("@('test', 'Hexalith.Folders.slnx'", Case.Sensitive);
         script.ShouldNotContain("@('test', 'tests'", Case.Sensitive);
+        script.ShouldNotContain("--filter", Case.Sensitive);
+        script.ShouldNotContain("filter =", Case.Sensitive);
+    }
 
-        foreach (Match match in FilterAssignmentPattern().Matches(script))
-        {
-            string filter = match.Groups["value"].Value;
-            filter.ShouldNotContain("IntegrationTests", Case.Sensitive);
-            filter.ShouldNotContain("UI.E2E", Case.Sensitive);
-            filter.ShouldNotContain("LoadTests", Case.Sensitive);
-            filter.ShouldNotContain("Playwright", Case.Sensitive);
-        }
+    [Fact]
+    public void BaselineRunnerFailsWhenAnyConfiguredClassSelectsZeroTests()
+    {
+        string script = ReadText(GateScriptPath);
+        string contractsBlock = GetProjectBlock(script, "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
+        Regex classPattern = new("'(?<value>Hexalith\\.Folders\\.Contracts\\.Tests(?:\\.[A-Za-z0-9_]+)+)'", RegexOptions.CultureInvariant);
+
+        classPattern.Matches(contractsBlock)
+            .Cast<Match>()
+            .Select(static match => match.Groups["value"].Value)
+            .ShouldBe(_baselineContractClasses);
+        script.ShouldContain("foreach ($testClass in $testProject.runner_classes)", Case.Sensitive);
+        script.ShouldContain("'-class',", Case.Sensitive);
+        script.ShouldContain("$TestClass", Case.Sensitive);
+        script.ShouldContain("Total:\\s+[1-9]\\d*", Case.Sensitive);
+        script.ShouldContain("reason=test-selection-drift", Case.Sensitive);
     }
 
     [Fact]
     public void BaselineGateScriptShouldNotReMaskNowGreenTestsWithFailOpenFilters()
     {
-        // Story 8.5 (AC2/AC4/AC6, Risk R3) regression guard, realizing the 7.18 AC6 "no fail-open --filter" principle.
+        // Story 8.5 (AC2/AC4/AC6, Risk R3) regression guard, realizing the 7.18 AC6 no-fail-open-selection principle.
         // The story REMOVED the obsolete masks that hid now-green tests (Folders.Tests provider-boundary guards,
         // Testing.Tests governance/scaffold, Workers.Tests TenantSubscriptionEndpointShould) but added no test that
         // they STAY removed — so a future PR could silently re-add e.g. a `FullyQualifiedName!~` exclusion naming one
@@ -245,43 +280,39 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         string[] projectPaths = ProjectPathAssignmentPattern().Matches(script)
             .Select(static match => match.Groups["value"].Value)
             .ToArray();
-        string[] filters = FilterAssignmentPattern().Matches(script)
-            .Select(static match => match.Groups["value"].Value)
-            .ToArray();
-
-        // The two assignment lists are parallel ($unitTestProjects declares project_path then filter per entry, in
-        // order), so a 1:1 zip is well-defined only when both lists align with the canonical project allow-list.
         projectPaths.ShouldBe(_baselineUnitProjects);
-        filters.Length.ShouldBe(projectPaths.Length);
 
-        Dictionary<string, string> filterByProject = projectPaths
-            .Zip(filters)
-            .ToDictionary(static pair => pair.First, static pair => pair.Second, StringComparer.Ordinal);
-
-        // AC4 (provider-boundary guards), AC2 (governance/scaffold), AC6 (TenantSubscriptionEndpointShould re-included):
-        // these three projects run with an EMPTY filter so the baseline lane exercises every test, never a subset.
-        filterByProject["tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj"].ShouldBe(string.Empty);
-        filterByProject["tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj"].ShouldBe(string.Empty);
-        filterByProject["tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj"].ShouldBe(string.Empty);
-
-        // No baseline filter may name any of the formerly-masked, now-green tests — a re-mask (the exact 7.18 AC6
-        // anti-pattern) names one of these in a `FullyQualifiedName!~` exclusion.
-        foreach (string filter in filters)
+        // These three projects must still run every test through project-level MTP execution.
+        foreach (string fullProject in new[]
         {
-            filter.ShouldNotContain(string.Concat("Octo", "kitReferencesStayInsideGitHubProviderBoundary"), Case.Sensitive);
-            filter.ShouldNotContain("ProviderAbstractionsShouldNotReferenceOutOfScopeRuntimeOrAdapterDependencies", Case.Sensitive);
-            filter.ShouldNotContain("ScaffoldContractTests", Case.Sensitive);
-            filter.ShouldNotContain("ExitCriteriaDecisionArtifact", Case.Sensitive);
-            filter.ShouldNotContain("FixtureContractTests", Case.Sensitive);
-            filter.ShouldNotContain("TenantSubscriptionEndpointShould", Case.Sensitive);
+            "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
+            "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
+            "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+        })
+        {
+            string block = GetProjectBlock(script, fullProject);
+            block.ShouldContain("runner_arguments = @()", Case.Sensitive);
+            block.ShouldNotContain("'-class'", Case.Sensitive);
+            block.ShouldNotContain("'-method-'", Case.Sensitive);
         }
 
-        // The only sanctioned non-empty filters are deliberate division-of-labor allow-lists, not fail-open masks:
-        // Contracts.Tests is an inclusion (~) allow-list; Client.Tests is the documented env-gated codegen exclusion.
-        filterByProject["tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj"]
-            .ShouldContain("FullyQualifiedName~", Case.Sensitive);
-        filterByProject["tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj"]
-            .ShouldContain("GeneratedClientAndHelpersMatchIsolatedRegeneration", Case.Sensitive);
+        string contractsBlock = GetProjectBlock(script, "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj");
+        contractsBlock.ShouldContain("runner_classes = @(", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.ContractsSmokeTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.CapacityCalibrationConformanceTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.CapacitySmokeCiWorkflowConformanceTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.ContractParityCiWorkflowConformanceTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests", Case.Sensitive);
+        contractsBlock.ShouldContain("Hexalith.Folders.Contracts.Tests.Deployment.SecurityRedactionCiWorkflowConformanceTests", Case.Sensitive);
+
+        string clientBlock = GetProjectBlock(script, "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj");
+        clientBlock.ShouldContain("'-method-'", Case.Sensitive);
+        clientBlock.ShouldContain("GeneratedClientAndHelpersMatchIsolatedRegeneration", Case.Sensitive);
+        clientBlock.ShouldContain("HelperGenerationTargetRegeneratesWhenContractSpineChanges", Case.Sensitive);
+
+        script.ShouldNotContain("--filter", Case.Sensitive);
     }
 
     [Fact]
@@ -300,7 +331,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         RequiredString(root, "gate").ShouldBe("baseline-ci");
         RequiredString(root, "diagnostic_policy").ShouldBe("metadata-only");
         RequiredString(root, "report_path").ShouldBe(reportPath);
-        RequiredString(root, "solution").ShouldBe("Hexalith.Folders.slnx");
+        RequiredString(root, "solution").ShouldBe("Hexalith.Folders.CI.slnx");
         ReadStringArray(root, "categories").ShouldBe(_baselineCategories);
 
         JsonElement unitProjects = root.GetProperty("unit_test_projects");
@@ -317,7 +348,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
     {
         string documentation = ReadText(OperatorDocPath);
 
-        documentation.ShouldContain("baseline-build-and-unit-gates");
+        documentation.ShouldContain("folders-specialized-gates");
         documentation.ShouldContain("branch protection");
         documentation.ShouldContain("metadata-only");
         documentation.ShouldContain("Directory.Packages.props");
@@ -340,10 +371,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
             documentation.ShouldContain(excluded, Case.Sensitive);
         }
 
-        foreach (string module in _rootBuildSubmodules)
-        {
-            documentation.ShouldContain(module, Case.Sensitive);
-        }
+        documentation.ShouldContain("git -c submodule.recurse=false submodule update --init", Case.Sensitive);
     }
 
     [Fact]
@@ -456,6 +484,16 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         return Path.GetRelativePath(root, fullPath).Replace(Path.DirectorySeparatorChar, '/');
     }
 
+    private static string GetProjectBlock(string script, string projectPath)
+    {
+        int projectIndex = script.IndexOf($"project_path = '{projectPath}'", StringComparison.Ordinal);
+        projectIndex.ShouldBeGreaterThanOrEqualTo(0, $"Missing baseline project entry for {projectPath}.");
+        int nextProjectIndex = script.IndexOf("\n    [ordered]@{", projectIndex + projectPath.Length, StringComparison.Ordinal);
+        int endIndex = nextProjectIndex >= 0 ? nextProjectIndex : script.IndexOf("\n)\n", projectIndex, StringComparison.Ordinal);
+        endIndex.ShouldBeGreaterThan(projectIndex, $"Could not bound baseline project entry for {projectPath}.");
+        return script[projectIndex..endIndex];
+    }
+
     private static string GetScalar(YamlMappingNode node, string key)
     {
         node.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? value).ShouldBeTrue($"Missing YAML scalar key '{key}'.");
@@ -479,9 +517,6 @@ public sealed partial class BaselineCiWorkflowConformanceTests
 
     [GeneratedRegex(@"project_path\s*=\s*'(?<value>[^']+)'", RegexOptions.CultureInvariant)]
     private static partial Regex ProjectPathAssignmentPattern();
-
-    [GeneratedRegex(@"filter\s*=\s*'(?<value>[^']*)'", RegexOptions.CultureInvariant)]
-    private static partial Regex FilterAssignmentPattern();
 
     [GeneratedRegex(@"^(?:[A-Za-z]:[\\/]|/|\\\\)", RegexOptions.CultureInvariant)]
     private static partial Regex RootedPathPattern();

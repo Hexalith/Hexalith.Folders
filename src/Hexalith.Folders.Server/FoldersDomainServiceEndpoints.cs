@@ -1495,7 +1495,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1649,7 +1649,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1823,7 +1823,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1980,7 +1980,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: providerBindingRef,
@@ -2215,7 +2215,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: body.FolderId!,
@@ -2352,7 +2352,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2489,7 +2489,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2634,7 +2634,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2778,7 +2778,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -2923,7 +2923,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -3080,7 +3080,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -3206,7 +3206,7 @@ public static class FoldersDomainServiceEndpoints
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: UniqueIdHelper.GenerateSortableUniqueStringId(),
+                    MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -3327,6 +3327,9 @@ public static class FoldersDomainServiceEndpoints
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= 80
         && CommitMessageClassificationRegex.IsMatch(value);
+
+    private static string GenerateCanonicalMessageId()
+        => UniqueIdHelper.GenerateSortableUniqueStringId().ToLowerInvariant();
 
     private static FileMutationTransportValidation ValidateFileMutationRequest(FileMutationHttpRequest? body)
     {

@@ -43,7 +43,7 @@ jobs:
             **/*.csproj
 
       - name: Restore
-        run: dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+        run: dotnet restore Hexalith.Folders.slnx -m:1
 
       - name: Build
         run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
