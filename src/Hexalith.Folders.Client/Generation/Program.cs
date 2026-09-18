@@ -768,6 +768,6 @@ internal static class SpecialFields
         // Entry: path_metadata (AddFile, ChangeFile, RemoveFile equivalence; typed PathMetadata object).
         [("FileMutationRequest", "path_metadata")] = new FieldModel("path_metadata", "PathMetadata is not null", "PathMetadata"),
         // Entry: path_policy_class (derives from PathMetadata.PathPolicyClass; declared spine-side as a top-level equivalence entry on all three file-mutation operations).
-        [("FileMutationRequest", "path_policy_class")] = new FieldModel("path_policy_class", "PathMetadata is not null && PathMetadata.PathPolicyClass is not null", "PathMetadata?.PathPolicyClass"),
+        [("FileMutationRequest", "path_policy_class")] = new FieldModel("path_policy_class", "PathMetadata is not null", "PathMetadata?.PathPolicyClass"),
     };
 }

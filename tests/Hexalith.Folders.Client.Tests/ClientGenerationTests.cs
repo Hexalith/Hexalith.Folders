@@ -62,6 +62,27 @@ public sealed class ClientGenerationTests
     }
 
     [Fact]
+    public void RequiredNonNullableEnumFieldsDoNotEmitNullChecks()
+    {
+        string contractPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+        YamlMappingNode root = LoadYaml(contractPath);
+        YamlMappingNode pathMetadata = RequiredMapping(RequiredMapping(RequiredMapping(root, "components"), "schemas"), "PathMetadata");
+        ReadStringSequence(pathMetadata, "required").ShouldContain("pathPolicyClass");
+        YamlMappingNode pathPolicyClassSchema = RequiredMapping(RequiredMapping(pathMetadata, "properties"), "pathPolicyClass");
+        RequiredScalar(pathPolicyClassSchema, "type").ShouldBe("string");
+        ReadStringSequence(pathPolicyClassSchema, "enum").ShouldNotBeEmpty();
+
+        PropertyInfo pathPolicyClass = typeof(PathMetadata).GetProperty(nameof(PathMetadata.PathPolicyClass)).ShouldNotBeNull();
+        pathPolicyClass.PropertyType.ShouldBe(typeof(PathMetadataPathPolicyClass));
+        Nullable.GetUnderlyingType(pathPolicyClass.PropertyType).ShouldBeNull();
+
+        string generatedPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
+        string generated = File.ReadAllText(generatedPath);
+        generated.ShouldContain("new IdempotencyField(\"path_policy_class\", PathMetadata is not null, PathMetadata?.PathPolicyClass),");
+        generated.ShouldNotContain("PathMetadata.PathPolicyClass is not null");
+    }
+
+    [Fact]
     public void MutatingRequestsExposeIdempotencyHelpersAndQueriesDoNot()
     {
         OpenApiOperation[] operations = LoadOperations().ToArray();
@@ -482,7 +503,7 @@ public sealed class ClientGenerationTests
             {
                 NormalizedPath = "docs/readme.md",
                 DisplayName = "readme.md",
-                PathPolicyClass = "metadata_only",
+                PathPolicyClass = PathMetadataPathPolicyClass.Metadata_only,
                 UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
             },
             ContentHashReference = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",

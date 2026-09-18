@@ -13,7 +13,7 @@ public static class HexalithFoldersGeneratedArtifacts
 {
     public const string ContractSpineSha256 = "a953a7d3bf6e3b1f99542ba8d20720047c1aa316d7a80d6725a28e96f834c420";
     public const string GenerationConfigurationSha256 = "9e125282c0394f9862d0c7b7b54fbb0ec79480a1d995655dd7538b775b549f1d";
-    public const string GeneratedHelpersSha256 = "634ffb2c0d25a274fb38ab04fa5dce10d00fa039e2aa3df881c8da0ec047aef7";
+    public const string GeneratedHelpersSha256 = "1c7239195d108fdde160395d597c55df7aaa3d34b344038348f7d3f51691418a";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -372,7 +372,7 @@ public partial class FileMutationRequest
                         new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
-                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
                         new IdempotencyField("task_id", true, taskId),
                         new IdempotencyField("workspace_id", true, workspaceId),
                     })
@@ -386,7 +386,7 @@ public partial class FileMutationRequest
                         new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
-                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
                         new IdempotencyField("task_id", true, taskId),
                         new IdempotencyField("workspace_id", true, workspaceId),
                     })
@@ -399,7 +399,7 @@ public partial class FileMutationRequest
                         new IdempotencyField("file_operation_kind", true, ResolveFileMutationOperationKindWireValue()),
                         new IdempotencyField("operation_id", OperationId is not null, OperationId),
                         new IdempotencyField("path_metadata", PathMetadata is not null, PathMetadata),
-                        new IdempotencyField("path_policy_class", PathMetadata is not null && PathMetadata.PathPolicyClass is not null, PathMetadata?.PathPolicyClass),
+                        new IdempotencyField("path_policy_class", PathMetadata is not null, PathMetadata?.PathPolicyClass),
                         new IdempotencyField("task_id", true, taskId),
                         new IdempotencyField("workspace_id", true, workspaceId),
                     })
