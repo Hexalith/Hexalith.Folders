@@ -66,7 +66,7 @@ Exactly five `.nupkg` and five `.snupkg` files are written to `nupkgs/`. The met
 
 `.github/workflows/ci.yml` delegates standard Release/Microsoft.Testing.Platform build, test, coverage, and consumer validation to Hexalith.Builds. The Folders contract/parity, security/redaction, capacity smoke and calibration, retention/deletion, NFR traceability, safety, governance, accessibility, and end-to-end gates remain additive and blocking for the same commit. CI and release builds select centrally pinned NuGet dependencies through the standard `CI=true` MSBuild property; local Debug development may retain source dependencies.
 
-Checkout uses `submodules: false`, then initializes only root-declared dependencies with:
+Checkout uses `submodules: false`, then initializes only root-declared dependencies with the command below. Do not initialize nested submodules by default.
 
 ```text
 git -c submodule.recurse=false submodule update --init

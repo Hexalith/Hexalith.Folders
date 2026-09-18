@@ -1,6 +1,6 @@
 <Project>
 
-  <!-- Microsoft.Testing.Platform's --coverage switch is provided by this extension.
+  <!-- Microsoft.Testing.Platform coverage collection is provided by this extension.
        Add it after each project body so the root props path remains stable across ProjectReference builds. -->
   <ItemGroup Condition="$([System.String]::Copy('$(MSBuildProjectName)').EndsWith('Tests'))">
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage">

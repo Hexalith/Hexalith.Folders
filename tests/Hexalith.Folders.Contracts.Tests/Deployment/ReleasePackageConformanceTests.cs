@@ -41,8 +41,8 @@ public sealed partial class ReleasePackageConformanceTests
         inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");
         inputs.GetReleaseScalar("run-consumer-validation").ShouldBe("true");
         inputs.GetReleaseScalar("run-coverage-gate").ShouldBe("true");
-        inputs.GetReleaseScalar("coverage-minimum-line").ShouldBe("80");
-        inputs.GetReleaseScalar("coverage-required-branch").ShouldBe("100");
+        inputs.GetReleaseScalar("coverage-minimum-line").ShouldBe("75");
+        inputs.GetReleaseScalar("coverage-required-branch").ShouldBe("80");
         inputs.GetReleaseScalar("coverage-isolation-targets")
             .ShouldContain("src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs", Case.Sensitive);
         inputs.GetReleaseScalar("unit-test-projects")

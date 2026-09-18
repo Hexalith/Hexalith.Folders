@@ -22,31 +22,24 @@
     },
     {
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
-      "runner_arguments": [
-        "-class",
+      "runner_classes": [
         "Hexalith.Folders.Contracts.Tests.ContractsSmokeTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
-        "-class",
         "Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests",
-        "-class",
-        "Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests"
+        "Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.CapacityCalibrationConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.CapacitySmokeCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ContractParityCiWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests",
+        "Hexalith.Folders.Contracts.Tests.Deployment.SecurityRedactionCiWorkflowConformanceTests"
       ]
     },
     {
@@ -129,6 +122,28 @@
     {
       "category": "unit-tests",
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.ContractsSmokeTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.BaselineCiWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
       "status": "failed",
       "exit_code": 1
     }

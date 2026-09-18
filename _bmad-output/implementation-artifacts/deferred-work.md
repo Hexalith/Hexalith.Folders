@@ -2742,3 +2742,21 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-oq4-publish-canonical-provider-compatibility-catalog.md`
   summary: PD6's reserved lockstep relock now partially overlaps shipped work — provider timeout/retry/backoff ceilings were published into PRD FR prose outside the relock.
   evidence: `_bmad-output/planning-artifacts/prd.md:1104` reserves "add provider timeout/retry/backoff ceilings" for one lockstep change of `prd.md`, `epics.md` NFR1-NFR73 and the `docs/exit-criteria/nfr-traceability.md` hashes. This change published those ceilings as `CC1`-`CC12` into `prd.md:612` while touching none of the 73 hash-pinned NFR bullets, so the relock's remaining scope has shrunk and should be restated before it is executed.
+
+## Deferred from: code review of spec-folders-ci-cd-reference-alignment.md (2026-09-18)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-folders-ci-cd-reference-alignment.md`
+  summary: Reconcile the preserved C3/C6/OQ3/OQ4 planning, approval, and digest artifacts before requiring the aligned CI lanes to be green.
+  evidence: The final baseline runner passes dependency-mode probes, format/analyzers, 1960 Folders tests (one explicit skip), and the new baseline/release conformance classes, then fails two C3 retention assertions because the policy remains `superseded-pending-reapproval`. The governance runner fails two OQ3/OQ4 digest/approval assertions; the contract-spine namespace reports four related failures out of 111. The full Testing.Tests assembly reports two related C3 artifact-shape/approval failures. These inputs were concurrent user-owned work and were preserved.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-folders-ci-cd-reference-alignment.md`
+  summary: Reconcile REST/SDK authorization behavior with the contract-parity expectations for successful and conflicting archive mutations.
+  evidence: The hardened contract/parity runner selects every configured Release-assembly class/method non-vacuously. Nine of eleven categories pass; `rest-sdk-golden-parity` fails one of 16 tests and `mixed-surface-handoff` fails five of eight because expected HTTP 202/409 outcomes are observed as authorization-denied HTTP 403. The behavior predates and is outside the CI/CD alignment scope.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-folders-ci-cd-reference-alignment.md`
+  summary: Reconcile the full UI E2E expectations with the current FrontComposer-rendered operations-console markup.
+  evidence: After removal of the unsafe arbitrary-test fallback, the exact Release UI E2E assembly executes all 63 tests and reports 36 failures. Representative responsive/smoke failures observe two `h1` elements where the tests require one. The FrontComposer/UI drift is preserved external work; the aligned gate now exposes it instead of masking it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-folders-ci-cd-reference-alignment.md`
+  summary: Reconcile the root scaffold-policy tests with the concurrent SDK, solution inventory, and AppHost dependency changes.
+  evidence: The final full Testing.Tests assembly executes 68 tests with five failures: two C3 governance failures recorded above plus three scaffold failures (`global.json` 10.0.401 versus expected 10.0.400, AppHost now referencing Hexalith.Folders.EventStore, and solution inventory now including the EventStore source/test projects). These concurrent user-owned changes were not reverted.

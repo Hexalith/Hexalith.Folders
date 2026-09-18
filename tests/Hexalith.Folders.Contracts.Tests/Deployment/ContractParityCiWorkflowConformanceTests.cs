@@ -171,6 +171,16 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
             script.ShouldContain(fragment, Case.Sensitive);
         }
 
+        foreach (string serverVsSpineMethod in new[]
+        {
+            "ServerVsSpineGateFailsClosedUntilSingleNonSelfServerSourceExists",
+            "ServerVsSpineSourceResolutionRejectsSelfReferenceAndAmbiguity",
+            "ServerVsSpineComparisonDetectsPublicContractDrift",
+        })
+        {
+            script.ShouldContain($"ContractSpineCiGateTests.{serverVsSpineMethod}", Case.Sensitive);
+        }
+
         foreach (string excluded in _excludedLanes)
         {
             script.ShouldNotContain(excluded, Case.Insensitive);

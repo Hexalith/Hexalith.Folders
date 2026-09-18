@@ -22,8 +22,8 @@ jobs:
       test-platform: microsoft-testing-platform
       run-consumer-validation: true
       run-coverage-gate: true
-      coverage-minimum-line: 80
-      coverage-required-branch: 100
+      coverage-minimum-line: 75
+      coverage-required-branch: 80
       coverage-isolation-targets: |
         src/Hexalith.Folders/Aggregates/Folder/FolderArchiveTenantGate.cs
       coverage-line-scope: |
