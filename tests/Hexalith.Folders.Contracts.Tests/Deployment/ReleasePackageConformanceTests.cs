@@ -144,6 +144,24 @@ public sealed partial class ReleasePackageConformanceTests
     }
 
     [Fact]
+    public void StableReleaseShouldUseStableDaprIntegration()
+    {
+        XDocument packages = XDocument.Load(RepositoryPath("Directory.Packages.props"));
+        XElement daprIntegration = packages.Descendants("PackageVersion")
+            .Single(element => string.Equals(
+                (string?)element.Attribute("Update"),
+                "CommunityToolkit.Aspire.Hosting.Dapr",
+                StringComparison.Ordinal));
+        string version = ((string?)daprIntegration.Attribute("Version")).ShouldNotBeNull();
+
+        version.ShouldBe("13.0.0");
+        version.ShouldNotContain("-", Case.Sensitive, "a stable Folders.Aspire release cannot depend on a prerelease integration package");
+        ((string?)daprIntegration.Attribute("Condition")).ShouldBe(
+            "'$(MSBuildProjectName)' == 'Hexalith.Folders.Aspire'",
+            "the stable release override must not downgrade AppHost or test graphs that consume EventStore.Aspire's newer preview dependency");
+    }
+
+    [Fact]
     public void ReleaseToolingShouldSealValidateConsumeAndFailOnDuplicateVersions()
     {
         string gate = ReadText("tests/tools/run-release-package-gates.ps1");

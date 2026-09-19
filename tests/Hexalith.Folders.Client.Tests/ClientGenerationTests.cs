@@ -20,6 +20,9 @@ namespace Hexalith.Folders.Client.Tests;
 public sealed class ClientGenerationTests
 {
     private static readonly string RepositoryRoot = LocateRepositoryRoot();
+    private static readonly string BuildConfiguration = typeof(ClientGenerationTests).Assembly
+        .GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration
+        ?? throw new InvalidOperationException("The test assembly does not declare its build configuration.");
 
     [Fact]
     public void NswagConfigurationUsesContractSpineAsOnlyInput()
@@ -367,7 +370,7 @@ public sealed class ClientGenerationTests
             string configuration = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
             ProcessResult generation = RunProcess(
                 "dotnet",
-                $"run --project \"{project}\" --no-build -- --repository-root \"{RepositoryRoot}\" --contract \"{contract}\" --configuration \"{configuration}\" --output \"{output}\" --client \"{client}\"",
+                $"run --project \"{project}\" --configuration \"{BuildConfiguration}\" -- --repository-root \"{RepositoryRoot}\" --contract \"{contract}\" --configuration \"{configuration}\" --output \"{output}\" --client \"{client}\"",
                 RepositoryRoot,
                 120_000);
 
@@ -1040,6 +1043,13 @@ public sealed class ClientGenerationTests
     private static void CopyRepositoryFile(string relativePath, string destinationRoot)
     {
         string source = Path.Combine(RepositoryRoot, relativePath);
+        const string buildsPrefix = "references/Hexalith.Builds/";
+        if (!File.Exists(source) && relativePath.StartsWith(buildsPrefix, StringComparison.Ordinal))
+        {
+            string siblingBuildsRoot = Path.GetFullPath(Path.Combine(RepositoryRoot, "..", "Hexalith.Builds"));
+            source = Path.Combine(siblingBuildsRoot, relativePath[buildsPrefix.Length..]);
+        }
+
         string destination = Path.Combine(destinationRoot, relativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? destinationRoot);
         File.Copy(source, destination);
