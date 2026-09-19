@@ -34,7 +34,7 @@ public sealed class ClientGenerationTests
             .GetProperty("codeGenerators")
             .GetProperty("openApiToCSharpClient");
 
-        fromDocument.GetProperty("url").GetString().ShouldBe("../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml");
+        fromDocument.GetProperty("url").GetString().ShouldBe("../../src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml");
         fromDocument.TryGetProperty("newLineBehavior", out _).ShouldBeFalse();
         generator.GetProperty("newLineBehavior").GetString().ShouldBe("LF");
         generator.GetProperty("output").GetString().ShouldBe("Generated/HexalithFoldersClient.g.cs");
@@ -233,7 +233,7 @@ public sealed class ClientGenerationTests
         HexalithFoldersGeneratedArtifacts.VerifyCurrentDetailed(RepositoryRoot).IsCurrent.ShouldBeTrue();
         HexalithFoldersGeneratedArtifacts.VerifyCurrent("relative-root").ShouldBeFalse();
 
-        string spine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+        string spine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"));
         string configuration = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json"));
         string helpers = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs"));
 
@@ -256,7 +256,7 @@ public sealed class ClientGenerationTests
                 "global.json",
                 "references/Hexalith.Builds/Props/Directory.Packages.props",
                 "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
-                "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+                "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
                 "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
                 "src/Hexalith.Folders.Client/nswag.json",
                 "src/Hexalith.Folders.Client/Generation/Hexalith.Folders.Client.Generation.csproj",
@@ -300,8 +300,8 @@ public sealed class ClientGenerationTests
         try
         {
             string output = Path.Combine(tempRoot, "HexalithFoldersIdempotencyHelpers.g.cs");
-            string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v1.yaml");
-            string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+            string mutatedSpine = Path.Combine(tempRoot, "hexalith.folders.v2.yaml");
+            string originalSpine = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"));
             File.WriteAllText(mutatedSpine, originalSpine + "\n# controlled regeneration input change\n", Encoding.UTF8);
 
             string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Hexalith.Folders.Client.csproj");
@@ -363,7 +363,7 @@ public sealed class ClientGenerationTests
             File.WriteAllText(client, "// deliberately unrecognized generated-client shape\n", Encoding.UTF8);
 
             string project = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "Hexalith.Folders.Client.Generation.csproj");
-            string contract = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+            string contract = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
             string configuration = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
             ProcessResult generation = RunProcess(
                 "dotnet",
@@ -1096,7 +1096,7 @@ public sealed class ClientGenerationTests
 
     private static IReadOnlyList<OpenApiOperation> LoadOperations()
     {
-        YamlMappingNode root = YamlContractLoader.LoadYaml(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"));
+        YamlMappingNode root = YamlContractLoader.LoadYaml(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"));
         List<OpenApiOperation> operations = [];
 
         foreach (KeyValuePair<YamlNode, YamlNode> pathEntry in RequiredMapping(root, "paths").Children)

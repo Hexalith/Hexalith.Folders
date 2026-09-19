@@ -12,7 +12,7 @@ namespace Hexalith.Folders.UI.Services;
 /// <c>retryable</c>, <c>clientAction</c>); it never surfaces the raw body, a stack trace, or a
 /// <c>taskId</c> off the error body (not an A-8 extension). Displayed explanations come from
 /// <see cref="ConsoleStatusText.ResolveErrorExplanation(string)"/> (our safe copy), never the server
-/// message, so <c>not_found</c> and <c>*_denied</c> can never be expanded into an existence oracle.
+/// message, so denial categories can never be expanded into an existence oracle.
 /// </summary>
 public static class ConsoleErrorPresenter
 {

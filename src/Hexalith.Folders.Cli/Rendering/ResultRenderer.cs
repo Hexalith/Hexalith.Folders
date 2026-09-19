@@ -146,5 +146,5 @@ internal static class ResultRenderer
         string CorrelationId,
         bool Retryable,
         string ClientAction,
-        System.Collections.Generic.Dictionary<string, string> Details);
+        Details Details);
 }

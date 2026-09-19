@@ -195,7 +195,7 @@ public sealed class OperationTimelinePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"audit_access_denied","correlationId":"corr-y","retryable":false}""";
+        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -206,7 +206,7 @@ public sealed class OperationTimelinePageTests
         rendered.WaitForAssertion(() =>
             rendered.Find("[data-testid=\"console-error-panel\"]").ShouldNotBeNull());
 
-        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("audit_access_denied");
+        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
         rendered.FindAll("[data-testid=\"console-page-operation-timeline-table\"]").ShouldBeEmpty();
         rendered.ShouldHaveNoMutationAffordances();
     }

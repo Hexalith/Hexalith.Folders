@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using Hexalith.Folders.Client.Generated;
 
 namespace Hexalith.Folders.Mcp.Errors;
@@ -36,7 +34,7 @@ internal sealed record McpFailure
     public string? Message { get; init; }
 
     /// <summary>Gets optional metadata-only detail key/value pairs (post-SDK only).</summary>
-    public IReadOnlyDictionary<string, string>? Details { get; init; }
+    public Details? Details { get; init; }
 
     /// <summary>
     /// Builds the pre-SDK <c>usage_error</c> failure (missing required field or invalid configuration). No
@@ -86,7 +84,7 @@ internal sealed record McpFailure
         Retryable = problem.Retryable,
         ClientAction = FailureKindProjection.ClientAction(problem.ClientAction),
         Message = problem.Message,
-        Details = problem.Details is { Count: > 0 } ? problem.Details : null,
+        Details = problem.Details,
     };
 
     /// <summary>

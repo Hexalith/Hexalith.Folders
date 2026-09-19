@@ -85,12 +85,12 @@ public sealed class ConsoleErrorPresenterTests
     public void FromException_DoesNotReadTaskIdFromBody()
     {
         // taskId is not a canonical A-8 Problem Details extension; the presenter must not surface it.
-        const string body = """{"category":"not_found","taskId":"task-should-not-leak"}""";
+        const string body = """{"category":"tenant_access_denied","taskId":"task-should-not-leak"}""";
         HexalithFoldersApiException exception = new("nf", 404, body, _noHeaders, innerException: null);
 
         ConsoleErrorView view = ConsoleErrorPresenter.FromException(exception, "corr-fallback");
 
-        view.ReasonToken.ShouldBe("not_found");
+        view.ReasonToken.ShouldBe("tenant_access_denied");
         view.SafeExplanation.ShouldNotContain("task-should-not-leak");
     }
 }

@@ -7,7 +7,7 @@ Status: Story 1.12 implementation note.
 NSwag generates the typed client and DTO surface from:
 
 ```text
-src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
 ```
 
 The generated output lives under:

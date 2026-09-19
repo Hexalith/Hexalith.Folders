@@ -72,9 +72,8 @@
             "tenant_authorized",
             "tenant_access_denied",
             "folder_acl_denied",
-            "audit_access_denied",
             "credential_missing",
-            "safe_not_found"
+            "safe_denial"
           ]
         },
         "error_code_set": {
@@ -254,9 +253,7 @@
         "credential_reference_missing",
         "credential_reference_invalid",
         "tenant_access_denied",
-        "cross_tenant_access_denied",
         "folder_acl_denied",
-        "audit_access_denied",
         "validation_error",
         "workspace_locked",
         "lock_conflict",
@@ -287,7 +284,6 @@
         "repository_conflict",
         "duplicate_binding",
         "reconciliation_required",
-        "not_found",
         "state_transition_invalid",
         "read_model_unavailable",
         "projection_stale",
@@ -296,7 +292,8 @@
         "file_policy_unavailable",
         "failed_operation",
         "redacted",
-        "internal_error"
+        "internal_error",
+        "concurrency_conflict"
       ]
     },
     "cli_exit_code": {
@@ -315,7 +312,8 @@
         73,
         74,
         75,
-        76
+        76,
+        77
       ]
     },
     "mcp_failure_kind": {
@@ -326,9 +324,7 @@
         "credential_missing",
         "credential_reference_invalid",
         "tenant_access_denied",
-        "cross_tenant_access_denied",
         "folder_acl_denied",
-        "audit_access_denied",
         "workspace_locked",
         "lock_conflict",
         "lock_expired",
@@ -359,7 +355,6 @@
         "duplicate_binding",
         "unsupported_provider_capability",
         "reconciliation_required",
-        "not_found",
         "state_transition_invalid",
         "read_model_unavailable",
         "projection_stale",
@@ -368,7 +363,8 @@
         "file_policy_unavailable",
         "failed_operation",
         "redacted",
-        "internal_error"
+        "internal_error",
+        "concurrency_conflict"
       ]
     },
     "ownership": {

@@ -2,9 +2,10 @@
 title: 'Generate the PD10 v2 relock candidate set'
 type: 'feature'
 created: '2026-09-19'
-status: 'draft'
+status: 'in-progress'
 route: 'dispatch'
 review_loop_iteration: 0
+baseline_commit: '3f1056d998ac4688f36eb869c516812c1a4ddb71'
 context:
   - '{project-root}/_bmad-output/implementation-artifacts/epic-1-context.md'
   - '{project-root}/references/Hexalith.AI.Tools/hexalith-llm-instructions.md'
@@ -80,4 +81,3 @@ The relock candidate is a parallel v2 surface, not an in-place v1 migration. Can
 - `dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root . --contract src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml --output tests/fixtures/parity-contract.yaml` -- C13 and fingerprints regenerate without drift.
 - Focused builds/direct xUnit v3 class runs for changed Contracts, Server, Client, CLI, MCP, and UI test classes -- all pass with zero warnings/errors.
 - `pwsh ./tests/tools/run-contract-spine-gates.ps1 -NoRestore` and `pwsh ./tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` -- candidate contract/generation/parity gates pass.
-

@@ -82,9 +82,14 @@ internal static class Oq2ProblemProjection
             CorrelationId = value.CorrelationId,
             Retryable = retryable,
             ClientAction = clientAction,
-            Details = new Dictionary<string, string>(StringComparer.Ordinal)
+            Details = new Details
             {
-                ["visibility"] = visibility,
+                Visibility = visibility switch
+                {
+                    "redacted" => DetailsVisibility.Redacted,
+                    "metadata_only" => DetailsVisibility.Metadata_only,
+                    _ => throw new InvalidOperationException($"Unsupported exact problem visibility '{visibility}'."),
+                },
             },
         };
 }

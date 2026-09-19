@@ -1,6 +1,6 @@
 {
   "gate": "baseline-ci",
-  "status": "failed",
+  "status": "passed",
   "report_path": "_bmad-output/gates/baseline-ci/latest.json",
   "diagnostic_policy": "metadata-only",
   "solution": "Hexalith.Folders.CI.slnx",
@@ -102,6 +102,18 @@
       "exit_code": 0
     },
     {
+      "category": "restore",
+      "project_path": "",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "build",
+      "project_path": "",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
       "category": "format",
       "project_path": "",
       "status": "passed",
@@ -144,8 +156,159 @@
       "category": "unit-tests",
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
       "selector": "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
-      "status": "failed",
-      "exit_code": 1
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.ProductionObservabilityConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.ConsumerDocsConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.OperationsAuditDocsConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.AccessibilityCiWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.E2eCiWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.CapacityCalibrationConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.CapacitySmokeCiWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.ContractParityCiWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.ScheduledDriftAndPolicyWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "selector": "Hexalith.Folders.Contracts.Tests.Deployment.SecurityRedactionCiWorkflowConformanceTests",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "unit-tests",
+      "project_path": "samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-mode-restore",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-mode-build",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "package-mode-test",
+      "project_path": "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+      "status": "passed",
+      "exit_code": 0
     }
   ]
 }

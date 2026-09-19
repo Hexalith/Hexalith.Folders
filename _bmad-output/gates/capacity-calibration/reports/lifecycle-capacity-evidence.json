@@ -1,7 +1,7 @@
 {
   "run_id": "capacity-calibration",
-  "utc_timestamp": "2026-09-18T17:25:36.3642602+00:00",
-  "git_commit": "3dd121eadd3e952850be69ec3b7cfda6fd549925",
+  "utc_timestamp": "2026-09-19T09:46:21.6724986+00:00",
+  "git_commit": "3f1056d998ac4688f36eb869c516812c1a4ddb71",
   "target_framework": ".NETCoreApp,Version=v10.0",
   "n_bomber_version": "6.6.0\u002B51ccd43b39c4651a9408e02b52fbd4fefa660351",
   "scenario_names": [
@@ -67,43 +67,43 @@
   "step_latency_statistics": {
     "commit_workspace": {
       "count": 18,
-      "min_ms": 0.038,
-      "p50_ms": 0.072,
-      "p95_ms": 4.888,
-      "p99_ms": 4.888,
-      "max_ms": 4.888
+      "min_ms": 0.043,
+      "p50_ms": 0.101,
+      "p95_ms": 10.088,
+      "p99_ms": 10.088,
+      "max_ms": 10.088
     },
     "mutate_workspace_file": {
       "count": 18,
-      "min_ms": 0.052,
-      "p50_ms": 0.09,
-      "p95_ms": 5.199,
-      "p99_ms": 5.199,
-      "max_ms": 5.199
+      "min_ms": 0.07,
+      "p50_ms": 0.152,
+      "p95_ms": 16.285,
+      "p99_ms": 16.285,
+      "max_ms": 16.285
     },
     "read_workspace_status": {
       "count": 18,
-      "min_ms": 0.016,
-      "p50_ms": 0.036,
-      "p95_ms": 3.414,
-      "p99_ms": 3.414,
-      "max_ms": 3.414
+      "min_ms": 0.023,
+      "p50_ms": 0.048,
+      "p95_ms": 7.401,
+      "p99_ms": 7.401,
+      "max_ms": 7.401
     },
     "acquire_workspace_lock": {
       "count": 18,
-      "min_ms": 0.024,
-      "p50_ms": 0.038,
-      "p95_ms": 1.714,
-      "p99_ms": 1.714,
-      "max_ms": 1.714
+      "min_ms": 0.039,
+      "p50_ms": 0.083,
+      "p95_ms": 8.231,
+      "p99_ms": 8.231,
+      "max_ms": 8.231
     },
     "prepare_workspace": {
       "count": 18,
-      "min_ms": 0.064,
-      "p50_ms": 0.089,
-      "p95_ms": 9.285,
-      "p99_ms": 9.285,
-      "max_ms": 9.285
+      "min_ms": 0.105,
+      "p50_ms": 0.156,
+      "p95_ms": 33.476,
+      "p99_ms": 33.476,
+      "max_ms": 33.476
     }
   },
   "throughput": {
@@ -115,10 +115,10 @@
   "freshness_observations": {
     "commit_to_status_read_ms": {
       "count": 18,
-      "p50_ms": 0.041,
-      "p95_ms": 4.524,
-      "p99_ms": 4.524,
-      "max_ms": 4.524,
+      "p50_ms": 0.073,
+      "p95_ms": 9.284,
+      "p99_ms": 9.284,
+      "max_ms": 9.284,
       "scope": "hermetic_commit_to_status_read"
     }
   },
@@ -156,7 +156,7 @@
     "c2": {
       "max_commit_to_status_read_freshness_ms": {
         "target": 500,
-        "observed": 4.524,
+        "observed": 9.284,
         "units": "milliseconds",
         "comparator": "observed_less_than_or_equal_target",
         "passed": true

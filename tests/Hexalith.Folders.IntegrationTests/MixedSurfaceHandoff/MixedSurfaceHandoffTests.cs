@@ -686,9 +686,9 @@ public sealed class MixedSurfaceHandoffTests
         // behavior: layered authorization denies the archive at the folder-ACL layer and the wire surfaces
         // the canonical SAFE DENIAL — HTTP 404 not_found_to_caller — on every surface, NOT a distinct
         // folder_acl_denied. This is the deliberate zero-cross-tenant-leakage invariant: an ACL-denied
-        // resource is externally indistinguishable from a non-existent one (SafeAuthorizationDenialMapping
-        // FolderAclDenied → 404 not_found_to_caller). This test pins the four-surface PARITY of that safe
-        // denial (REST/SDK 404, CLI exit 73, MCP kind not_found).
+        // resource is externally indistinguishable from a non-existent one. The production v1 REST leg
+        // retains its historical not_found category, while the test-only candidate transport verifies the
+        // v2 SDK/CLI/MCP replacement tenant_access_denied/resource_unavailable envelope.
         //
         // The canonical folder_acl_denied → 403 surfacing (the case where the aggregate-gate ACL rejection
         // is the propagated outcome) is proven where it actually applies: the gateway-hop mapping
@@ -731,7 +731,7 @@ public sealed class MixedSurfaceHandoffTests
             .ConfigureAwait(true);
         sdkException.StatusCode.ShouldBe((int)HttpStatusCode.NotFound, "SDK ACL denial must surface the safe denial 404.");
         ProblemDetails sdkProblem = ((HexalithFoldersApiException<ProblemDetails>)sdkException).Result;
-        ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("not_found", "SDK must surface the canonical safe-denial not_found category.");
+        ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("tenant_access_denied", "The v2 SDK must surface the canonical non-enumerating safe denial.");
 
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
@@ -743,8 +743,8 @@ public sealed class MixedSurfaceHandoffTests
             "--idempotency-key", "key_acl_cli_0000000000000",
             "--correlation-id", correlationId,
             "--request", requestJson).ConfigureAwait(true);
-        cliOutcome.ExitCode.ShouldBe(73, $"CLI ACL safe denial must surface exit 73 (NotFound). StdErr: {cliOutcome.StdErr}");
-        cliOutcome.StdErr.ShouldContain("not_found", customMessage: "CLI stderr must carry the canonical not_found safe-denial category.");
+        cliOutcome.ExitCode.ShouldBe(66, $"CLI ACL safe denial must surface exit 66 (AccessDenied). StdErr: {cliOutcome.StdErr}");
+        cliOutcome.StdErr.ShouldContain("tenant_access_denied", customMessage: "CLI stderr must carry the canonical v2 safe-denial category.");
 
         // ----- MCP -----
         string mcpResultJson = await FolderTools.ArchiveFolder(
@@ -756,12 +756,12 @@ public sealed class MixedSurfaceHandoffTests
             requestJson: requestJson,
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResultJson);
-        mcpJson.Value<string>("kind").ShouldBe("not_found", $"MCP must surface failure kind not_found (safe denial). Envelope: {mcpResultJson}");
+        mcpJson.Value<string>("kind").ShouldBe("tenant_access_denied", $"MCP must surface the v2 safe-denial failure kind. Envelope: {mcpResultJson}");
 
-        // ===== Cross-surface byte-for-byte category equivalence: every surface returns the SAME safe denial. =====
+        // The v1 route remains byte-stable while all generated v2 adapter surfaces agree with one another.
         restCategory.ShouldBe("not_found");
-        cliOutcome.StdErr.ShouldContain(restCategory);
-        mcpJson.Value<string>("kind").ShouldBe(restCategory);
+        cliOutcome.StdErr.ShouldContain("tenant_access_denied");
+        mcpJson.Value<string>("kind").ShouldBe("tenant_access_denied");
     }
 
     // =====================================================================================================
@@ -1082,14 +1082,14 @@ public sealed class MixedSurfaceHandoffTests
             Uri hostUri = new("http://localhost");
 
             HttpClient httpClient = app.GetTestClient();
-            HttpClient sdkHttpClient = app.GetTestClient();
+            HttpClient sdkHttpClient = V2CandidateTestClient.Create(app);
             IClient sdkClient = new GeneratedSdkClient(sdkHttpClient);
 
             // MCP pipeline bound to a SECOND IClient pointing at the same in-process host so the MCP
             // transport plumbing is exercised end-to-end (not just the SDK leg of the pipeline). The MCP
             // TestSupport.Token is a non-secret stub; the in-process MutableTenantAndClaimContext does not
             // validate bearers, so the resolved token is only used to exercise credential plumbing.
-            HttpClient mcpHttpClient = app.GetTestClient();
+            HttpClient mcpHttpClient = V2CandidateTestClient.Create(app);
             IClient mcpClient = new GeneratedSdkClient(mcpHttpClient);
             ToolPipeline mcpPipeline = TestSupport.Pipeline(mcpClient, token: TestSupport.Token);
 
@@ -1120,7 +1120,7 @@ public sealed class MixedSurfaceHandoffTests
                 {
                     _ = baseAddress;
                     _ = token; // exercised but unused by the in-process MutableTenantAndClaimContext.
-                    return new GeneratedSdkClient(App.GetTestClient());
+                    return new GeneratedSdkClient(V2CandidateTestClient.Create(App));
                 },
             };
 

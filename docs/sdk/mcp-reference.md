@@ -153,10 +153,10 @@ Two read-only resources are exposed via `[McpServerResource]` URI templates:
 
 ## Failure-kind catalog
 
-The authoritative MCP failure-kind catalog is the **46** `outcome_mapping.mcp_failure_kind` values from the
+The authoritative MCP failure-kind catalog is the **44** `outcome_mapping.mcp_failure_kind` values from the
 parity oracle (`tests/fixtures/parity-contract.yaml`) — each equal verbatim to its `CanonicalErrorCategory`
 name in snake_case — **plus the 2 pre-SDK kinds** `usage_error` and `credential_missing` (emitted before any
-HTTP call, for client-side usage and missing-credential failures). That is **48** kinds total.
+HTTP call, for client-side usage and missing-credential failures). That is **46** kinds total.
 
 Do not use the abridged 13-row architecture summary; it misspells `unknown_provider_outcome`. The success
 mapping (`none`) is not a failure kind. OQ2's `range_unsatisfiable` and `file_policy_unavailable` mappings are
@@ -168,13 +168,12 @@ falls back to `internal_error`.
 ```text
 usage_error
 credential_missing
-audit_access_denied
 authentication_failure
 authorization_revocation_detected
 branch_ref_policy_invalid
 commit_failed
+concurrency_conflict
 credential_reference_invalid
-cross_tenant_access_denied
 dirty_workspace
 duplicate_binding
 failed_operation
@@ -188,7 +187,6 @@ internal_error
 lock_conflict
 lock_expired
 lock_not_owned
-not_found
 path_validation_failed
 projection_stale
 projection_unavailable

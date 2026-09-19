@@ -7,7 +7,7 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 public sealed class ContractSpineCiGateTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
-    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string PreviousSpinePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "previous-spine.yaml");
     private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
     private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-contract-spine-gates.ps1");
@@ -56,7 +56,7 @@ public sealed class ContractSpineCiGateTests
     [Fact]
     public void ServerVsSpineSourceResolutionRejectsSelfReferenceAndAmbiguity()
     {
-        GateDiagnostic selfReference = EvaluateServerSource(["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"]);
+        GateDiagnostic selfReference = EvaluateServerSource(["src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"]);
         GateDiagnostic ambiguous = EvaluateServerSource(["src/Hexalith.Folders.Server/openapi/a.yaml", "src/Hexalith.Folders.Server/openapi/b.yaml"]);
 
         selfReference.Category.ShouldBe("prerequisite-drift");
@@ -74,7 +74,7 @@ public sealed class ContractSpineCiGateTests
         (string Name, string Content)[] mutations =
         [
             ("operation id", ReplaceOnce(original, "operationId: CreateFolder", "operationId: CreateFolderRenamed")),
-            ("path", ReplaceOnce(original, "  /api/v1/folders:", "  /api/v1/folders-renamed:")),
+            ("path", ReplaceOnce(original, "  /api/v2/folders:", "  /api/v2/folders-renamed:")),
             ("required header", ReplaceOnce(original, "#/components/parameters/IdempotencyKey", "#/components/parameters/CorrelationId")),
             ("Problem Details category", ReplaceOnce(original, "validation_error", "validation_error_changed")),
             ("extension metadata", ReplaceOnce(original, "x-hexalith-read-consistency:", "x-hexalith-read-consistency-disabled:")),
@@ -159,7 +159,7 @@ public sealed class ContractSpineCiGateTests
             .Where(path =>
             {
                 string relative = ToRepositoryPath(path);
-                if (string.Equals(relative, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml", StringComparison.Ordinal))
+                if (string.Equals(relative, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml", StringComparison.Ordinal))
                 {
                     return false;
                 }
@@ -200,9 +200,9 @@ public sealed class ContractSpineCiGateTests
             return new("server-vs-spine", "prerequisite-drift", "src/Hexalith.Folders.Server", "No repository-local server OpenAPI source exists yet; add offline server emission before comparing server output with the Contract Spine.");
         }
 
-        if (repositoryRelativeCandidates.Any(candidate => string.Equals(candidate, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml", StringComparison.Ordinal)))
+        if (repositoryRelativeCandidates.Any(candidate => string.Equals(candidate, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml", StringComparison.Ordinal)))
         {
-            return new("server-vs-spine", "prerequisite-drift", "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml", "Server OpenAPI source resolution pointed at the Contract Spine itself.");
+            return new("server-vs-spine", "prerequisite-drift", "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml", "Server OpenAPI source resolution pointed at the Contract Spine itself.");
         }
 
         if (repositoryRelativeCandidates.Count > 1)

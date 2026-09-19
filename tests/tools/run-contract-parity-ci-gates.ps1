@@ -32,14 +32,14 @@ $testGates = @(
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
         filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpineGateFailsClosedUntilSingleNonSelfServerSourceExists|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpineSourceResolutionRejectsSelfReferenceAndAmbiguity|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpineComparisonDetectsPublicContractDrift|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests'
         runner_classes = @('Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests', 'Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests')
-        artifact_paths = @('src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml', 'src/Hexalith.Folders.Server')
+        artifact_paths = @('src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml', 'src/Hexalith.Folders.Server')
     },
     [ordered]@{
         category = 'previous-spine'
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
         filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.PreviousSpineBaselinePinsCurrentOperationInventory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.PreviousSpineBaselineCoversEveryCurrentOperation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForEmptyBaselineWithoutOverride|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForApprovedDeprecationWithoutEvidence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDanglingDeprecationApprovalSource'
         runner_classes = @('Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests', 'Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests')
-        artifact_paths = @('tests/fixtures/previous-spine.yaml', 'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml')
+        artifact_paths = @('tests/fixtures/previous-spine.yaml', 'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml')
     },
     [ordered]@{
         category = 'generated-client'

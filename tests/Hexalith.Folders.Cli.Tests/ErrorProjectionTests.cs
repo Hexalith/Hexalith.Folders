@@ -28,9 +28,8 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.Credential_missing, 65)]
     [InlineData(CanonicalErrorCategory.Credential_reference_invalid, 65)]
     [InlineData(CanonicalErrorCategory.Tenant_access_denied, 66)]
-    [InlineData(CanonicalErrorCategory.Cross_tenant_access_denied, 66)]
     [InlineData(CanonicalErrorCategory.Folder_acl_denied, 66)]
-    [InlineData(CanonicalErrorCategory.Audit_access_denied, 66)]
+    [InlineData(CanonicalErrorCategory.Authorization_revocation_detected, 66)]
     [InlineData(CanonicalErrorCategory.Workspace_locked, 67)]
     [InlineData(CanonicalErrorCategory.Lock_conflict, 67)]
     [InlineData(CanonicalErrorCategory.Lock_expired, 67)]
@@ -58,17 +57,16 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.File_operation_failed, 70)]
     [InlineData(CanonicalErrorCategory.Unknown_provider_outcome, 71)]
     [InlineData(CanonicalErrorCategory.Reconciliation_required, 72)]
-    [InlineData(CanonicalErrorCategory.Read_model_unavailable, 72)]
-    [InlineData(CanonicalErrorCategory.Projection_stale, 72)]
-    [InlineData(CanonicalErrorCategory.Projection_unavailable, 72)]
+    [InlineData(CanonicalErrorCategory.Read_model_unavailable, 73)]
+    [InlineData(CanonicalErrorCategory.Projection_stale, 73)]
+    [InlineData(CanonicalErrorCategory.Projection_unavailable, 73)]
     [InlineData(CanonicalErrorCategory.Workspace_not_ready, 72)]
     [InlineData(CanonicalErrorCategory.Workspace_preparation_failed, 72)]
     [InlineData(CanonicalErrorCategory.Dirty_workspace, 72)]
     [InlineData(CanonicalErrorCategory.File_policy_unavailable, 72)]
-    [InlineData(CanonicalErrorCategory.Not_found, 73)]
-    [InlineData(CanonicalErrorCategory.Authorization_revocation_detected, 73)]
     [InlineData(CanonicalErrorCategory.State_transition_invalid, 74)]
     [InlineData(CanonicalErrorCategory.Redacted, 75)]
+    [InlineData(CanonicalErrorCategory.Concurrency_conflict, 77)]
     [InlineData(CanonicalErrorCategory.Query_timeout, 1)]
     [InlineData(CanonicalErrorCategory.Internal_error, 1)]
     public void ProjectsCategoryToCanonicalExitCode(CanonicalErrorCategory category, int expectedExitCode)
@@ -80,7 +78,7 @@ public sealed class ErrorProjectionTests
         foreach (CanonicalErrorCategory category in Enum.GetValues<CanonicalErrorCategory>())
         {
             int exit = ErrorProjection.Project(category);
-            exit.ShouldBeOneOf(0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76);
+            exit.ShouldBeOneOf(0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77);
         }
     }
 }

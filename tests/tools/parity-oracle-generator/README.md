@@ -11,7 +11,7 @@ dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.Parity
 Optional arguments:
 
 ```text
---contract <path-to-hexalith.folders.v1.yaml>
+--contract <path-to-hexalith.folders.v2.yaml>
 --schema <path-to-parity-contract.schema.json>
 --previous-spine <path-to-previous-spine.yaml>
 --output <path-to-parity-contract.yaml>

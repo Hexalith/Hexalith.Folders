@@ -254,7 +254,7 @@ public sealed class GoldenLifecycleParityTests
             sdkProblem.ShouldNotBeNull();
             sdkProblem.CorrelationId.ShouldBe("correlation-sdk-neg");
             sdkProblem.Details.ShouldNotBeNull();
-            sdkProblem.Details["visibility"].ShouldBe("metadata_only");
+            sdkProblem.Details.Visibility.ShouldBe(DetailsVisibility.Metadata_only);
 
             // Cross-surface category equivalence: REST and SDK emit the same canonical category for the
             // same provoked failure. Resolve the SDK's typed Category to its snake_case wire value via the
@@ -1105,7 +1105,7 @@ public sealed class GoldenLifecycleParityTests
             HttpClient httpClient = app.GetTestClient();
             // The SDK client points at the same in-process host. Per the generated Client constructor,
             // the HttpClient's BaseAddress is what's used; no other DI plumbing is required for the test.
-            IClient sdkClient = new GeneratedSdkClient(app.GetTestClient());
+            IClient sdkClient = new GeneratedSdkClient(V2CandidateTestClient.Create(app));
 
             return new TestHost(app, httpClient, sdkClient, gateway, repository, tenantStore, permissions, lifecycleReadModel);
         }
@@ -1291,7 +1291,7 @@ public sealed class GoldenLifecycleParityTests
             eventStoreClientFactory = app.GetTestClient;
 
             HttpClient httpClient = app.GetTestClient();
-            IClient sdkClient = new GeneratedSdkClient(app.GetTestClient());
+            IClient sdkClient = new GeneratedSdkClient(V2CandidateTestClient.Create(app));
 
             return new GoldenLifecycleHost(
                 app,

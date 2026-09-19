@@ -16,7 +16,7 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 public sealed class ParityOracleGeneratorTests
 {
     private static readonly string _repositoryRootPath = FindRepositoryRoot();
-    private static readonly string _openApiFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string _openApiFilePath = Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string _oracleFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "parity-contract.yaml");
     private static readonly string _schemaFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "parity-contract.schema.json");
     private static readonly string _previousSpineFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "previous-spine.yaml");
@@ -172,7 +172,7 @@ public sealed class ParityOracleGeneratorTests
     public void GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing()
     {
         string temp = NewTempDirectory("hexalith-parity-negative");
-        string mutatedContract = Path.Combine(temp, "hexalith.folders.v1.yaml");
+        string mutatedContract = Path.Combine(temp, "hexalith.folders.v2.yaml");
         string contract = File.ReadAllText(_openApiFilePath);
         File.WriteAllText(mutatedContract, contract.Replace("x-hexalith-idempotency-equivalence:", "x-disabled-idempotency-equivalence:", StringComparison.Ordinal), Encoding.UTF8);
 
@@ -186,10 +186,10 @@ public sealed class ParityOracleGeneratorTests
     public void GeneratorFailsClosedForDuplicateIdempotencyFields()
     {
         string temp = NewTempDirectory("hexalith-parity-duplicate");
-        string mutatedContract = Path.Combine(temp, "hexalith.folders.v1.yaml");
+        string mutatedContract = Path.Combine(temp, "hexalith.folders.v2.yaml");
         string contract = NormalizeLineEndings(File.ReadAllText(_openApiFilePath));
-        string before = "        - parent_folder_id\n        - request_schema_version";
-        string after = "        - parent_folder_id\n        - parent_folder_id\n        - request_schema_version";
+        string before = "      - parent_folder_id\n      - request_schema_version";
+        string after = "      - parent_folder_id\n      - parent_folder_id\n      - request_schema_version";
         int firstIndex = contract.IndexOf(before, StringComparison.Ordinal);
         firstIndex.ShouldBeGreaterThanOrEqualTo(0, customMessage: "Test fixture anchor not found in OpenAPI; adjust the anchor.");
         contract.IndexOf(before, firstIndex + 1, StringComparison.Ordinal).ShouldBe(-1, "Test fixture anchor matches more than one operation; adjust the anchor so the mutation is targeted.");

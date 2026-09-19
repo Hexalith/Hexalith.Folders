@@ -243,13 +243,14 @@ public sealed class ContractRulesArtifactTests
         failureKinds.ShouldContain("credential_missing");
         failureKinds.ShouldContain("tenant_access_denied");
         failureKinds.ShouldContain("folder_acl_denied");
-        failureKinds.ShouldContain("audit_access_denied");
+        failureKinds.ShouldNotContain("audit_access_denied");
         failureKinds.ShouldContain("input_limit_exceeded");
         failureKinds.ShouldContain("response_limit_exceeded");
         failureKinds.ShouldContain("query_timeout");
         failureKinds.ShouldContain("read_model_unavailable");
         failureKinds.ShouldContain("idempotency_conflict");
         failureKinds.ShouldContain("idempotency_key_expired");
+        failureKinds.ShouldContain("concurrency_conflict");
         // Story 1.13 P-26 collapsed the duplicate spelling 'provider_outcome_unknown' to the canonical
         // 'unknown_provider_outcome'. Both still describe the same failure kind.
         failureKinds.ShouldContain("unknown_provider_outcome");

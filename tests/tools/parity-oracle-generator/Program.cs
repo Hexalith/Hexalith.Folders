@@ -11,7 +11,7 @@ if (options.InitializeBaseline)
 {
     YamlMappingNode rootForBaseline = LoadYaml(options.ContractPath);
     IReadOnlyList<OperationModel> baselineOps = EnumerateOperations(rootForBaseline, new List<Diagnostic>()).OrderBy(o => o.OperationId, StringComparer.Ordinal).ToArray();
-    string baselineYaml = RenderBaseline(baselineOps);
+    string baselineYaml = RenderBaseline(baselineOps, options.ContractPath);
     Directory.CreateDirectory(Path.GetDirectoryName(options.PreviousSpinePath) ?? ".");
     File.WriteAllText(options.PreviousSpinePath, baselineYaml, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
     Console.WriteLine($"Wrote baseline with {baselineOps.Count} operations to {options.PreviousSpinePath}");
@@ -120,6 +120,12 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 .Distinct(StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)
                 .ToArray();
+            string[] statusCodes = RequiredMapping(operation, "responses").Children.Keys
+                .OfType<YamlScalarNode>()
+                .Select(node => node.Value ?? string.Empty)
+                .Where(value => Regex.IsMatch(value, "^[1-5][0-9][0-9]$", RegexOptions.CultureInvariant))
+                .Order(StringComparer.Ordinal)
+                .ToArray();
             string? readConsistency = ReadConsistencyClass(operation);
             bool hasIdempotencyKey = HasIdempotencyKey(parameters, operation);
             string correlationHeader = ReadNestedScalar(operation, "x-hexalith-correlation", "correlationHeader") ?? "X-Correlation-Id";
@@ -137,6 +143,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 HasIdempotencyKey: hasIdempotencyKey,
                 IdempotencyFields: idempotencyFields,
                 ReadConsistencyClass: readConsistency,
+                StatusCodes: statusCodes,
                 ErrorCategories: errorCategories,
                 AuditMetadataKeys: auditKeys,
                 CorrelationHeader: correlationHeader,
@@ -320,6 +327,27 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         string method = ReadFlexibleScalar(operation, "method", "http_method").ToLowerInvariant();
         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
         string identity = method + " " + path + " " + operationId;
+
+        if (operation.Children.ContainsKey(new YamlScalarNode("status_codes")))
+        {
+            OperationModel current = currentByOperationId.TryGetValue(operationId, out OperationModel? currentOperation)
+                ? currentOperation
+                : throw new InvalidOperationException($"previous-spine-drift: operation '{operationId}' has fingerprints but no current operation.");
+            string[] previousStatusCodes = ReadStringSequence(operation, "status_codes").Order(StringComparer.Ordinal).ToArray();
+            string[] previousCategories = ReadStringSequence(operation, "canonical_error_categories").Order(StringComparer.Ordinal).ToArray();
+            string statusFingerprint = ReadFlexibleScalar(operation, "status_code_fingerprint_sha256");
+            string errorFingerprint = ReadFlexibleScalar(operation, "error_vocabulary_fingerprint_sha256");
+            if (!previousStatusCodes.SequenceEqual(current.StatusCodes, StringComparer.Ordinal)
+                || statusFingerprint != Fingerprint(current.StatusCodes))
+            {
+                throw new InvalidOperationException($"previous-spine-drift: status-code surface changed for '{operationId}'.");
+            }
+            if (!previousCategories.SequenceEqual(current.ErrorCategories, StringComparer.Ordinal)
+                || errorFingerprint != Fingerprint(current.ErrorCategories))
+            {
+                throw new InvalidOperationException($"previous-spine-drift: error vocabulary changed for '{operationId}'.");
+            }
+        }
 
         if (currentIdentities.Contains(identity))
         {
@@ -511,18 +539,23 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
     builder.Append("    synthetic_data_only: true\n");
 }
 
-static string RenderBaseline(IReadOnlyList<OperationModel> operations)
+static string RenderBaseline(IReadOnlyList<OperationModel> operations, string contractPath)
 {
     StringBuilder builder = new();
-    builder.Append("version: captured-baseline\n");
-    builder.Append("source_marker: captured-from-openapi\n");
-    builder.Append("intent: First captured Contract Spine baseline for symmetric drift detection.\n");
+    builder.Append("version: pd10-v2-candidate-baseline\n");
+    builder.Append("source_marker: generated-from-pd10-v2-openapi\n");
+    builder.Append("contract_sha256: ").Append(Sha256OfFile(contractPath)).Append('\n');
+    string historicalV1Path = Path.Combine(Path.GetDirectoryName(contractPath)!, "hexalith.folders.v1.yaml");
+    if (File.Exists(historicalV1Path))
+    {
+        builder.Append("historical_v1_sha256: ").Append(Sha256OfFile(historicalV1Path)).Append('\n');
+    }
+    builder.Append("intent: PD10 v2 baseline with route, status-code, and canonical-error fingerprints for symmetric drift detection.\n");
     builder.Append("ownership:\n");
     builder.Append("  owner_workstream: Phase 1 Contract Spine and drift-detection stories\n");
     builder.Append("  future_test_use: Symmetric drift detection input for parity-oracle generation.\n");
     builder.Append("  known_omissions:\n");
-    builder.Append("    - No request/response schema fingerprints\n");
-    builder.Append("    - No status-code surface\n");
+    builder.Append("    - Request and success-payload schema fingerprints remain outside this operation-surface baseline.\n");
     builder.Append("  mutation_rules:\n");
     builder.Append("    - Replace via the generator's --initialize-baseline command after intentional contract changes.\n");
     builder.Append("    - Add explicit deprecation entries for intentionally removed or renamed operations.\n");
@@ -536,6 +569,18 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations)
         builder.Append("  - operation_id: ").Append(Quote(operation.OperationId)).Append('\n');
         builder.Append("    method: ").Append(Quote(operation.Method)).Append('\n');
         builder.Append("    path: ").Append(Quote(operation.Path)).Append('\n');
+        builder.Append("    status_codes:\n");
+        foreach (string statusCode in operation.StatusCodes)
+        {
+            builder.Append("      - ").Append(Quote(statusCode)).Append('\n');
+        }
+        builder.Append("    canonical_error_categories:\n");
+        foreach (string category in operation.ErrorCategories)
+        {
+            builder.Append("      - ").Append(Quote(category)).Append('\n');
+        }
+        builder.Append("    status_code_fingerprint_sha256: ").Append(Fingerprint(operation.StatusCodes)).Append('\n');
+        builder.Append("    error_vocabulary_fingerprint_sha256: ").Append(Fingerprint(operation.ErrorCategories)).Append('\n');
     }
 
     return builder.ToString();
@@ -1031,6 +1076,8 @@ static string RequiredScalar(YamlMappingNode mapping, string key)
 static string Sha256(string value) =>
     Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
 
+static string Fingerprint(IEnumerable<string> values) => Sha256(string.Join("\n", values));
+
 // Read the file's UTF-8 bytes (BOM-stripped) and normalize line endings to LF before hashing.
 // Using one read avoids TOCTOU between LoadYaml() and the provenance hash, and BOM stripping keeps
 // the hash stable across machines whose editors insert/preserve BOM differently.
@@ -1107,7 +1154,7 @@ internal sealed record GeneratorOptions(
         string repositoryRoot = Path.GetFullPath(parsed.TryGetValue("--repository-root", out string? rootArg) ? rootArg : LocateRepositoryRoot());
         return new GeneratorOptions(
             RepositoryRoot: repositoryRoot,
-            ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))),
+            ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"))),
             SchemaPath: Path.GetFullPath(parsed.GetValueOrDefault("--schema", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.schema.json"))),
             PreviousSpinePath: Path.GetFullPath(parsed.GetValueOrDefault("--previous-spine", Path.Combine(repositoryRoot, "tests", "fixtures", "previous-spine.yaml"))),
             OutputPath: Path.GetFullPath(parsed.GetValueOrDefault("--output", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.yaml"))),
@@ -1153,6 +1200,7 @@ internal sealed record OperationModel(
     bool HasIdempotencyKey,
     IReadOnlyList<string> IdempotencyFields,
     string? ReadConsistencyClass,
+    IReadOnlyList<string> StatusCodes,
     IReadOnlyList<string> ErrorCategories,
     IReadOnlyList<string> AuditMetadataKeys,
     string CorrelationHeader,
@@ -1254,7 +1302,7 @@ internal static class GeneratorConstants
             ["lock_expired"] = new(67, "lock_expired", "none"),
             ["lock_not_owned"] = new(67, "lock_not_owned", "none"),
             ["stale_workspace"] = new(67, "stale_workspace", "none"),
-            ["authorization_revocation_detected"] = new(73, "authorization_revocation_detected", "none"),
+            ["authorization_revocation_detected"] = new(66, "authorization_revocation_detected", "none"),
             ["workspace_not_ready"] = new(72, "workspace_not_ready", "none"),
             ["workspace_preparation_failed"] = new(72, "workspace_preparation_failed", "none"),
             ["dirty_workspace"] = new(72, "dirty_workspace", "none"),
@@ -1278,11 +1326,12 @@ internal static class GeneratorConstants
             ["repository_conflict"] = new(70, "repository_conflict", "none"),
             ["duplicate_binding"] = new(70, "duplicate_binding", "none"),
             ["reconciliation_required"] = new(72, "reconciliation_required", "none"),
-            ["not_found"] = new(73, "not_found", "none"),
+            ["not_found"] = new(66, "not_found", "none"),
             ["state_transition_invalid"] = new(74, "state_transition_invalid", "none"),
-            ["read_model_unavailable"] = new(72, "read_model_unavailable", "none"),
-            ["projection_stale"] = new(72, "projection_stale", "none"),
-            ["projection_unavailable"] = new(72, "projection_unavailable", "none"),
+            ["read_model_unavailable"] = new(73, "read_model_unavailable", "none"),
+            ["projection_stale"] = new(73, "projection_stale", "none"),
+            ["projection_unavailable"] = new(73, "projection_unavailable", "none"),
+            ["concurrency_conflict"] = new(77, "concurrency_conflict", "none"),
             ["range_unsatisfiable"] = new(69, "range_unsatisfiable", "none"),
             ["file_policy_unavailable"] = new(72, "file_policy_unavailable", "none"),
             ["failed_operation"] = new(70, "failed_operation", "none"),

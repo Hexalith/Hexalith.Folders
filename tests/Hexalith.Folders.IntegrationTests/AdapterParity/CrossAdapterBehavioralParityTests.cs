@@ -35,7 +35,7 @@ namespace Hexalith.Folders.IntegrationTests.AdapterParity;
 /// </summary>
 public sealed class CrossAdapterBehavioralParityTests
 {
-    private static readonly int[] CanonicalCliExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76];
+    private static readonly int[] CanonicalCliExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77];
 
     /// <summary>
     /// The MCP failure-kind vocabulary the cross-adapter assertions accept: every canonical post-SDK category
@@ -157,8 +157,8 @@ public sealed class CrossAdapterBehavioralParityTests
             }
         }
 
-        oracleCategories.Count.ShouldBe(46);
-        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(49);
+        oracleCategories.Count.ShouldBe(44);
+        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(47);
     }
 
     // =====================================================================================================
@@ -459,12 +459,12 @@ public sealed class CrossAdapterBehavioralParityTests
         // Status codes pair the oracle's category with a CreateRepositoryBackedFolder-declared response so the
         // SDK reads the body as ProblemDetails (typed projection). The category in the body drives the kind.
         data.Add("authentication_failure", 401, 65, "authentication_failure", false, "check_credentials");
-        data.Add("folder_acl_denied", 403, 66, "folder_acl_denied", false, "no_action");
+        data.Add("folder_acl_denied", 409, 66, "folder_acl_denied", false, "no_action");
         data.Add("idempotency_conflict", 409, 68, "idempotency_conflict", false, "revise_request");
         data.Add("idempotency_key_expired", 409, 76, "idempotency_key_expired", false, "refresh_state_then_submit_with_new_key");
         data.Add("validation_error", 422, 69, "validation_error", false, "revise_request");
         data.Add("workspace_locked", 409, 67, "workspace_locked", true, "retry");
-        data.Add("not_found", 404, 73, "not_found", false, "no_action");
+        data.Add("tenant_access_denied", 404, 66, "tenant_access_denied", false, "no_action");
         data.Add("unknown_provider_outcome", 503, 71, "unknown_provider_outcome", false, "wait_for_reconciliation");
 
         return data;
@@ -514,7 +514,13 @@ public sealed class CrossAdapterBehavioralParityTests
 
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResult);
         mcpJson.Value<string>("kind").ShouldBe(expectedMcpFailureKind);
-        mcpJson.Value<string>("code").ShouldBe(category); // server code echoed verbatim
+        string expectedCode = category switch
+        {
+            "authentication_failure" => "authentication_required",
+            "tenant_access_denied" => "resource_unavailable",
+            _ => category,
+        };
+        mcpJson.Value<string>("code").ShouldBe(expectedCode); // exact envelopes use their canonical code.
         mcpJson.Value<bool>("retryable").ShouldBe(serverRetryable);
         mcpJson.Value<string>("clientAction").ShouldBe(serverClientAction);
         mcpJson.Value<string>("correlationId").ShouldBe(ServerCorrelation); // server-supplied correlation echoed
@@ -590,10 +596,37 @@ public sealed class CrossAdapterBehavioralParityTests
 
     private static string BuildProblemJson(string category, int httpStatus, string serverCorrelation, bool retryable, string clientAction)
     {
-        string retryableJson = retryable ? "true" : "false";
-        return $$"""
-            {"type":"about:blank","title":"{{category}}","status":{{httpStatus}},"category":"{{category}}","code":"{{category}}","message":"Synthetic problem","correlationId":"{{serverCorrelation}}","retryable":{{retryableJson}},"clientAction":"{{clientAction}}"}
-            """;
+        string code = category switch
+        {
+            "authentication_failure" => "authentication_required",
+            "tenant_access_denied" => "resource_unavailable",
+            _ => category,
+        };
+        string title = category switch
+        {
+            "authentication_failure" => "Authentication required",
+            "tenant_access_denied" => "Access unavailable",
+            _ => category,
+        };
+        string message = category switch
+        {
+            "authentication_failure" => "Authentication is required to access this resource.",
+            "tenant_access_denied" => "The requested resource is unavailable.",
+            _ => "Synthetic problem",
+        };
+        return Newtonsoft.Json.JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title,
+            status = httpStatus,
+            category,
+            code,
+            message,
+            correlationId = serverCorrelation,
+            retryable,
+            clientAction,
+            details = new { visibility = "redacted" },
+        });
     }
 
     // =====================================================================================================
@@ -715,11 +748,11 @@ public sealed class CrossAdapterBehavioralParityTests
         // category string surfaces verbatim on BOTH surfaces. No adapter may localize/translate/abbreviate
         // ("ACL denied", "AccessDenied") or hide the category vocabulary.
         const string category = "folder_acl_denied";
-        string problemJson = BuildProblemJson(category, 403, ServerCorrelation, retryable: false, clientAction: "no_action");
+        string problemJson = BuildProblemJson(category, 409, ServerCorrelation, retryable: false, clientAction: "no_action");
 
         // ---- CLI ----
         CliTestHarness cliHarness = new();
-        _ = cliHarness.UseRealClient(HttpStatusCode.Forbidden, problemJson);
+        _ = cliHarness.UseRealClient(HttpStatusCode.Conflict, problemJson);
         int cliExit = await cliHarness.RunAsync(
             "folder", "create-repo-backed",
             "--base-address", CliBaseAddress,
@@ -739,7 +772,7 @@ public sealed class CrossAdapterBehavioralParityTests
         cliStdErr.ShouldNotContain("\"ACL denied\"");
 
         // ---- MCP ----
-        TestSupport.CapturingHandler mcpHandler = new(HttpStatusCode.Forbidden, problemJson, "application/problem+json");
+        TestSupport.CapturingHandler mcpHandler = new(HttpStatusCode.Conflict, problemJson, "application/problem+json");
         ToolPipeline mcpPipeline = TestSupport.Pipeline(TestSupport.RealClient(mcpHandler));
         string mcpResult = await FolderTools.CreateRepositoryBackedFolder(
             mcpPipeline,

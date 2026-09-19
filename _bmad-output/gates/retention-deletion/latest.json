@@ -5,7 +5,7 @@
   "exit_code": 0,
   "report_path": "_bmad-output/gates/retention-deletion/latest.json",
   "diagnostic_policy": "metadata-only",
-  "source_commit": "c04d7a9d2a78660e74b2123422eacfc06caf0746",
+  "source_commit": "3f1056d998ac4688f36eb869c516812c1a4ddb71",
   "required_data_classes": [
     "Audit metadata",
     "Workspace status",
@@ -102,5 +102,5 @@
       "exit_code": 0
     }
   ],
-  "elapsed_ms": 2730
+  "elapsed_ms": 3036
 }

@@ -4,7 +4,7 @@ Status: Story 7.13 consumer reference.
 
 This is the consumer-facing reference for the Hexalith.Folders REST surface and the typed SDK that
 mirrors it. It is **rendered from the single Contract Spine**
-`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` (OpenAPI 3.1.0, title
+`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml` (OpenAPI 3.1.0, title
 "Hexalith.Folders API", version `v1`). No server-side Swagger/Redoc/`MapOpenApi` middleware exists and none
 is added; the spine YAML is the only source. The operation and tag inventory below is asserted **equal to the
 parsed spine** by `ConsumerDocsConformanceTests`, so this document cannot silently drift from the contract.

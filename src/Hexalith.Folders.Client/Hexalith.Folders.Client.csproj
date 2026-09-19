@@ -23,7 +23,7 @@
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />
   </ItemGroup>
   <PropertyGroup>
-    <HexalithFoldersContractSpine>$(MSBuildProjectDirectory)/../Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml</HexalithFoldersContractSpine>
+    <HexalithFoldersContractSpine>$(MSBuildProjectDirectory)/../Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml</HexalithFoldersContractSpine>
     <HexalithFoldersGeneratedClient>$(MSBuildProjectDirectory)/Generated/HexalithFoldersClient.g.cs</HexalithFoldersGeneratedClient>
     <HexalithFoldersGeneratedHelpers>$(MSBuildProjectDirectory)/Generated/HexalithFoldersIdempotencyHelpers.g.cs</HexalithFoldersGeneratedHelpers>
     <HexalithFoldersHelperGeneratorProject>$(MSBuildProjectDirectory)/Generation/Hexalith.Folders.Client.Generation.csproj</HexalithFoldersHelperGeneratorProject>

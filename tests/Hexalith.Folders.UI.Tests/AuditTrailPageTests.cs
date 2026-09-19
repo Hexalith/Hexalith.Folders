@@ -81,7 +81,7 @@ public sealed class AuditTrailPageTests
 
         AuditRecord record = VisibleRecord();
         record.ResultStatus = CanonicalErrorCategory.Failed_operation;
-        record.SanitizedErrorCategory = CanonicalErrorCategory.Audit_access_denied;
+        record.SanitizedErrorCategory = CanonicalErrorCategory.Tenant_access_denied;
         StubList(client, Page(truncated: false, cursor: null, record));
 
         IRenderedComponent<AuditTrail> rendered = Render(ctx);
@@ -90,7 +90,7 @@ public sealed class AuditTrailPageTests
             rendered.Find("[data-testid=\"console-page-audit-trail-row\"]").ShouldNotBeNull());
 
         rendered.Find("[data-testid=\"console-page-audit-trail-result\"]").TextContent.ShouldBe("failed_operation");
-        rendered.Find("[data-testid=\"console-page-audit-trail-error-category\"]").TextContent.ShouldBe("audit_access_denied");
+        rendered.Find("[data-testid=\"console-page-audit-trail-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
     }
 
     [Fact]
@@ -210,7 +210,7 @@ public sealed class AuditTrailPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"audit_access_denied","correlationId":"corr-y","retryable":false}""";
+        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
@@ -221,7 +221,7 @@ public sealed class AuditTrailPageTests
         rendered.WaitForAssertion(() =>
             rendered.Find("[data-testid=\"console-error-panel\"]").ShouldNotBeNull());
 
-        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("audit_access_denied");
+        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
         rendered.FindAll("[data-testid=\"console-page-audit-trail-table\"]").ShouldBeEmpty();
         rendered.ShouldHaveNoMutationAffordances();
     }

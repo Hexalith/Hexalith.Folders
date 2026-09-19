@@ -157,7 +157,7 @@ The root `folders` command exposes **7 top-level groups**. Each leaf maps to one
 
 ## Exit codes
 
-The CLI uses the canonical sysexits-style table `{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 1}` from
+The CLI uses the canonical sysexits-style table `{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 1}` from
 `src/Hexalith.Folders.Cli/FoldersExitCodes.cs`, projected per canonical error category by
 `src/Hexalith.Folders.Cli/Errors/ErrorProjection.cs`. This is deliberately **not** the
 `Hexalith.EventStore.Admin.Cli` `Success=0/Degraded=1/Error=2` scheme. Every row is verified against the parity
@@ -168,17 +168,18 @@ oracle (`tests/fixtures/parity-contract.yaml`).
 | `0` | `Success` | `success` |
 | `64` | `UsageError` | `client_configuration_error` (pre-SDK usage/config error; no HTTP call made — also the exit for a query command given `--idempotency-key`) |
 | `65` | `CredentialMissing` | `credential_missing`, `authentication_failure`, `credential_reference_invalid` |
-| `66` | `AccessDenied` | `tenant_access_denied`, `cross_tenant_access_denied`, `folder_acl_denied`, `audit_access_denied` |
+| `66` | `AccessDenied` | `tenant_access_denied`, `folder_acl_denied` |
 | `67` | `LockConflict` | `workspace_locked`, `lock_conflict`, `lock_expired`, `lock_not_owned`, `stale_workspace` |
 | `68` | `IdempotencyConflict` | `idempotency_conflict` |
 | `69` | `ValidationError` | `validation_error`, `input_limit_exceeded`, `path_validation_failed`, `branch_ref_policy_invalid`, `response_limit_exceeded`, `range_unsatisfiable` |
 | `70` | `ProviderFailure` | `provider_failure_known`, `provider_unavailable`, `provider_rate_limited`, `provider_readiness_failed`, `provider_permission_insufficient`, `repository_binding_unavailable`, `repository_conflict`, `duplicate_binding`, `unsupported_provider_capability`, `failed_operation`, `commit_failed`, `file_operation_failed` |
 | `71` | `UnknownProviderOutcome` | `unknown_provider_outcome` (surfaced truthfully, never hidden) |
-| `72` | `ReconciliationRequired` | `reconciliation_required`, `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `file_policy_unavailable`, `workspace_not_ready`, `workspace_preparation_failed`, `dirty_workspace` |
-| `73` | `NotFound` | `not_found`, `authorization_revocation_detected` |
+| `72` | `ReconciliationRequired` | `reconciliation_required`, `file_policy_unavailable`, `workspace_not_ready`, `workspace_preparation_failed`, `dirty_workspace` |
+| `73` | `AuthorityUnavailable` | `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `authorization_revocation_detected` |
 | `74` | `StateTransitionInvalid` | `state_transition_invalid` |
 | `75` | `Redacted` | `redacted` (visibly distinct from missing/unknown) |
 | `76` | `IdempotencyKeyExpired` | `idempotency_key_expired` (refresh state, then submit with a new key) |
+| `77` | `ConcurrencyConflict` | `concurrency_conflict` (refresh authoritative state before an explicit retry decision) |
 | `1` | `InternalError` | `internal_error`, `query_timeout`, and any category not present in the oracle — the documented drift fallback |
 
 ## Examples

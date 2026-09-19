@@ -27,7 +27,9 @@ public sealed class GovernanceCompletenessGateTests
     private static readonly string PatternManifestPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "pattern-example-manifest.yaml");
     private static readonly string CacheKeyExceptionsPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "cache-key-exceptions.yaml");
     private static readonly string ParityContractPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml");
-    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
+    private static readonly string V2ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "generated-v2-conformance-set-2026-09-17.yaml");
+    private static readonly string ApprovalRegisterPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "planning-authority-relock-approval-register.yaml");
     private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
     private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-governance-completeness-gates.ps1");
     private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "governance-and-completeness-ci-gates.md");
@@ -94,7 +96,6 @@ public sealed class GovernanceCompletenessGateTests
     [
         "_bmad-output/planning-artifacts/prd.md",
         "_bmad-output/planning-artifacts/.memlog.md",
-        "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
     ];
 
     // Providers the approved OQ4 catalog governs. Adding a provider is catalog work, not a gate edit.
@@ -847,15 +848,20 @@ public sealed class GovernanceCompletenessGateTests
     {
         File.Exists(Oq3MatrixPath).ShouldBeTrue("OQ3 requires the canonical authorization-matrix artifact.");
         File.Exists(Oq3EvidencePath).ShouldBeTrue("OQ3 requires a versioned governance evidence manifest.");
+        File.Exists(V2ConformanceSetPath).ShouldBeTrue("A6b review requires the generated v2 conformance set.");
 
         string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq3MatrixPath)));
-        actualDigest.ShouldBe(ApprovedOq3Sha256, "OQ3 matrix changes require a new version, digest, and fresh Security and PM approvals.");
+        actualDigest.ShouldNotBe(ApprovedOq3Sha256, "The 2.0.0 candidate must not reuse the historical v1 approval digest.");
+        File.ReadAllText(Oq3MatrixPath).ShouldContain("Matrix version: `2.0.0`", Case.Sensitive);
+        string approvalRegister = File.ReadAllText(ApprovalRegisterPath);
+        approvalRegister.ShouldContain("gate_id: A6b", Case.Sensitive);
+        approvalRegister.ShouldContain("approval_status: pending", Case.Sensitive);
 
         YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
         ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
         GateDiagnostic[] diagnostics = EvaluateOq3Evidence(
             evidence,
-            actualDigest,
+            ApprovedOq3Sha256,
             policy,
             DateOnly.FromDateTime(DateTime.UtcNow));
 

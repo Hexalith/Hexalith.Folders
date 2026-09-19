@@ -4,7 +4,7 @@
   "exit_code": 0,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/nfr-traceability/latest.json",
-  "source_commit": "3dd121eadd3e952850be69ec3b7cfda6fd549925",
+  "source_commit": "3f1056d998ac4688f36eb869c516812c1a4ddb71",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
   "nfr_total": 84,
   "category_total": 11,

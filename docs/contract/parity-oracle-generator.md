@@ -16,7 +16,7 @@ tests/fixtures/parity-contract.yaml
 
 ## Inputs
 
-- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
+- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml`
 - `tests/fixtures/parity-contract.schema.json`
 - `tests/fixtures/previous-spine.yaml`
 - `docs/contract/idempotency-and-parity-rules.md`
