@@ -290,6 +290,8 @@ function Get-GovernanceCriterionBlock {
 function Assert-C3Policy {
     $c3 = Get-Content -Raw -Path (Join-Path $repositoryRoot 'docs/exit-criteria/c3-retention.md')
     $legalApproval = 'Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes'
+    $a7bApproval = 'A7b approved by Jerome for Legal + Product + Security + Architecture on 2026-09-17'
+    $a7bDigest = '1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1'
     if (-not $c3.Contains('policy status: approved', [StringComparison]::Ordinal)) {
         Fail-Gate -Category 'policy-source' -Reason 'missing-policy-status'
     }
@@ -317,7 +319,13 @@ function Assert-C3Policy {
             Fail-Gate -Category 'policy-source' -Reason "invalid-tenant-deletion-disposition class=$required"
         }
 
-        if (-not $row.'Approval state'.Contains($legalApproval, [StringComparison]::Ordinal)) {
+        if ($required -eq 'Temporary working files') {
+            if (-not $row.'Approval state'.Contains($a7bApproval, [StringComparison]::Ordinal) -or
+                -not $row.'Approval state'.Contains($a7bDigest, [StringComparison]::Ordinal)) {
+                Fail-Gate -Category 'policy-source' -Reason "unexpected-c3-a7b-approval-state class=$required"
+            }
+        }
+        elseif (-not $row.'Approval state'.Contains($legalApproval, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'policy-source' -Reason "unexpected-c3-approval-state class=$required"
         }
     }
@@ -330,7 +338,7 @@ function Assert-TenantDeletionDocs {
     foreach ($expected in @(
             'pwsh ./tests/tools/run-retention-deletion-gates.ps1',
             '_bmad-output/gates/retention-deletion/latest.json',
-            'pending approval blocks live release',
+            'approved design evidence does not clear live release until the separately governed runtime evidence is complete',
             'metadata-only',
             'git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants')) {
         if (-not $operations.Contains($expected, [StringComparison]::Ordinal)) {
@@ -371,7 +379,9 @@ function Assert-GovernanceEvidence {
             'status: approved',
             'artifact_path: docs/exit-criteria/c3-retention.md',
             'verification_command: .\tests\tools\run-retention-deletion-gates.ps1',
-            'Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes)',
+            'evidence_version: ''1.0.0-candidate.1''',
+            'evidence_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1',
+            'A7b was approved by Jerome for Legal, Product, Security, and Architecture on 2026-09-17',
             'open_policy_placeholders: []')) {
         if (-not $c3.Contains($expected, [StringComparison]::Ordinal)) {
             Fail-Gate -Category 'governance-evidence' -Reason "governance-evidence-drift expected=$expected"

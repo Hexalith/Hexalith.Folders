@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -20,6 +21,9 @@ public sealed class ParityOracleGeneratorTests
     private static readonly string _schemaFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "parity-contract.schema.json");
     private static readonly string _previousSpineFilePath = Path.Combine(_repositoryRootPath, "tests", "fixtures", "previous-spine.yaml");
     private static readonly string _generatorProjectPath = Path.Combine(_repositoryRootPath, "tests", "tools", "parity-oracle-generator", "Hexalith.Folders.ParityOracleGenerator.csproj");
+    private static readonly string _buildConfiguration = typeof(ParityOracleGeneratorTests).Assembly
+        .GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration
+        ?? throw new InvalidOperationException("The test assembly does not declare its build configuration.");
 
     [Fact]
     public void GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce()
@@ -403,7 +407,7 @@ operations:
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
+            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

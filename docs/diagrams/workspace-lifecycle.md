@@ -1,6 +1,6 @@
 # Workspace Lifecycle & Lock State Machine
 
-Status: PD11 governing target consumer reference; A7/A7b reapproval pending (metadata-only).
+Status: PD11 governing target consumer reference; A7/A7b approved on exact decision payloads (metadata-only; Story 4.22 runtime implementation remains deferred).
 
 This diagram renders the canonical **C6 workspace state machine** with **operator-disposition labels as the
 primary vocabulary** (per architecture rule F-4) and the technical state name as secondary metadata. States
@@ -23,7 +23,7 @@ whose source of truth is the architecture Workspace State Transition Matrix (C6 
 | `committed` | `auto-recovering` |
 | `failed` | `terminal-until-intervention` |
 | `inaccessible` | `terminal-until-intervention` |
-| `unknown_provider_outcome` | `auto-recovering` during the bounded ≤5 checks/15-minute reconciliation budget |
+| `unknown_provider_outcome` | `auto-recovering` during the bounded ≤5 checks/15-minute reconciliation budget; escalation to `reconciliation_required` becomes `awaiting-human` |
 | `reconciliation_required` | `awaiting-human` |
 
 ## State machine

@@ -41,9 +41,9 @@ The latest report must carry the current full source commit, required C3 class c
 
 ## Approval rules
 
-C3 is `superseded-pending-reapproval` for the temporary-working-files trigger. The 2026-06 Legal + PM record remains current for unaffected rows and historical for that superseded trigger. A7b requires Legal + Product + Security + Architecture approval of the final digest; until then live release is blocked. The governance vocabulary, gate, tests, release package validation, and latest evidence must be updated by Delivery to represent this state rather than falsely reporting `policy_status: approved`.
+C3 is approved for the temporary-working-files trigger under A7b. The 2026-06 Legal + PM record remains current for unaffected rows; Jerome approved the revised A7b payload for Legal + Product + Security + Architecture on 2026-09-17 at SHA-256 `1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1`. This design approval does not claim that deferred Story 4.22 runtime implementation or evidence is complete.
 
-In short: pending approval blocks live release while still allowing local static validation to produce bounded evidence.
+In short: approved design evidence does not clear live release until the separately governed runtime evidence is complete.
 
 Do not change `AuditTrailQueryHandler.RetentionClassToken` or `OperationTimelineQueryHandler.RetentionClassToken` from explicit reference-pending markers unless C3 contains approved retention class identifiers and all affected contracts, generated clients, fixtures, UI tests, and docs are updated from the authoritative source.
 
@@ -55,7 +55,7 @@ The retention/deletion gate blocks release evidence for:
 - Missing required C3 class coverage.
 - Missing retention duration, cleanup trigger, operational evidence, tenant-deletion disposition, tenant-isolation implication, owner, authority, or review date.
 - Missing tenant-deletion behavior for `deleted`, `tombstoned`, `retained`, or `anonymized` records.
-- Pending A7b Legal + Product + Security + Architecture approval for the revised working-file trigger.
+- Missing or mismatched A7b Legal + Product + Security + Architecture approval for the revised working-file trigger.
 - Stale source commit in checked evidence.
 - Unsafe diagnostic text, absolute evidence paths, malformed JSON/YAML/Markdown, or nested submodule setup.
 

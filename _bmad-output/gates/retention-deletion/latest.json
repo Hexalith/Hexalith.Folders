@@ -1,11 +1,11 @@
 {
   "gate": "retention-deletion",
-  "status": "failed",
-  "policy_status": "invalid",
-  "exit_code": 1,
+  "status": "passed",
+  "policy_status": "approved",
+  "exit_code": 0,
   "report_path": "_bmad-output/gates/retention-deletion/latest.json",
   "diagnostic_policy": "metadata-only",
-  "source_commit": "3dd121eadd3e952850be69ec3b7cfda6fd549925",
+  "source_commit": "c04d7a9d2a78660e74b2123422eacfc06caf0746",
   "required_data_classes": [
     "Audit metadata",
     "Workspace status",
@@ -14,7 +14,44 @@
     "Temporary working files",
     "Cleanup records"
   ],
-  "tenant_deletion_matrix_rows": [],
+  "tenant_deletion_matrix_rows": [
+    {
+      "data_class": "Audit metadata",
+      "disposition": "retained",
+      "automation": "automated retention, manual approval review",
+      "retention_behavior": "Keep C3 audit duration and remove display aliases when anonymization applies"
+    },
+    {
+      "data_class": "Workspace status",
+      "disposition": "tombstoned",
+      "automation": "automated compaction, manual exception review",
+      "retention_behavior": "Keep terminal status metadata for C3 status duration and tombstone task-local labels"
+    },
+    {
+      "data_class": "Provider correlation IDs",
+      "disposition": "retained",
+      "automation": "automated provider-diagnostics compaction",
+      "retention_behavior": "Keep bounded request and operation identifiers without provider bodies"
+    },
+    {
+      "data_class": "Read-model views",
+      "disposition": "deleted",
+      "automation": "automated projection drop or rebuild",
+      "retention_behavior": "Delete rebuildable projection rows when events can rebuild authorized state"
+    },
+    {
+      "data_class": "Temporary working files",
+      "disposition": "deleted",
+      "automation": "automated cleanup only after the complete C3 predicate holds",
+      "retention_behavior": "Delete disposable cache no earlier than P7D after terminal/no-active cleanup start, while terminal/no-active remains true; legal hold blocks; the recovery deadline never deletes"
+    },
+    {
+      "data_class": "Cleanup records",
+      "disposition": "retained",
+      "automation": "automated retention compaction, manual failed-cleanup review",
+      "retention_behavior": "Keep cleanup attempts, failures, retryability, reason code, and correlation ID"
+    }
+  ],
   "artifact_paths": [
     "docs/exit-criteria/c3-retention.md",
     "docs/operations/retention-and-tenant-deletion.md",
@@ -41,9 +78,29 @@
     },
     {
       "category": "policy-source",
-      "status": "failed",
-      "exit_code": 1
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "tenant-deletion-matrix",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "governance-evidence",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "release-readiness",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "metadata-only-report",
+      "status": "passed",
+      "exit_code": 0
     }
   ],
-  "elapsed_ms": 59
+  "elapsed_ms": 2730
 }

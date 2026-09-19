@@ -35,6 +35,10 @@ namespace Hexalith.Folders.Parity.Testing;
 /// <para>The <c>clientFactory</c> yields an <see cref="HttpClient"/> bound to the in-process host (a
 /// <c>TestServer</c> client or a loopback-Kestrel client); the <c>principalIdAccessor</c> is read per call so
 /// a host that mutates the acting principal mid-test is honored.</para>
+/// <para>The production EventStore admission layer replaces a caller idempotency key with a stable,
+/// protected execution message ID before routing the command. This in-process boundary has no admission
+/// store, so it uses the opaque caller idempotency key as the stable envelope message ID and falls back to
+/// the submitted transport message ID when no key is supplied.</para>
 /// <para>Successful round-trips propagate the <c>/process</c> result payload into the returned
 /// <see cref="SubmitCommandResponse"/> rather than discarding it, so endpoints that derive caller-visible
 /// fields from it (e.g. <c>idempotentReplay</c>) behave as they do over the production gateway. Two known
@@ -68,7 +72,7 @@ internal sealed class InProcessRejectionPropagatingGatewayClient(
         ProcessCalls++;
         using HttpClient client = clientFactory();
         CommandEnvelope envelope = new(
-            request.MessageId,
+            request.IdempotencyKey ?? request.MessageId,
             envelopeTenant,
             request.Domain,
             request.AggregateId,

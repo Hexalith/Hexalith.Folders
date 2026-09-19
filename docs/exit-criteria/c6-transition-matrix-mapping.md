@@ -1,11 +1,18 @@
 # C6 Transition Matrix Mapping
 
-status: governing target; superseded-pending-reapproval under A7 and A7b; implementation deferred to Story 4.22
+status: approved governing target under A7 and A7b; implementation deferred to Story 4.22
 decision owner: Architect
 approval authority: Product + Architecture + Security for A7; Legal + Product + Security + Architecture for the A7b retention integration
+decision version: 1.0.0-candidate.1
+approved on: 2026-09-17
+approved by: Jerome for every named A7 and A7b authority
+A7 decision payload: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md
+A7 decision payload sha256: b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f
+A7b decision payload: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md
+A7b decision payload sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
 source inputs: Architecture Workspace State Transition Matrix (C6 — Enumerated), Exit Criteria Operations Plan, error catalog, operations-console disposition model
 last reviewed: 2026-09-17
-open approvals: A7 requires Product + Architecture + Security on the final transition/disposition digest; A7b additionally requires Legal + Product + Security + Architecture on retention integration.
+open questions: none for the lifecycle and retention decisions; Story 4.22 implementation and evidence remain separately deferred.
 
 ## Decision
 
@@ -15,7 +22,7 @@ The matrix is keyed on `(state, event, guard)`, not on `(state, event)`. There a
 
 Every unlisted `(state, event, guard)` triple rejects with canonical category `state_transition_invalid`, leaves state unchanged, maps CLI exit code 74, maps MCP failure kind `state_transition_invalid`, and remains inspectable through idempotency record behavior. For a guard-discriminated pair, a guard branch that is not enumerated rejects under that same rule and is never silently routed to the sibling branch's outcome.
 
-### Guard Discriminators (PD11 — approval-pending under A7; retention branch also under A7b)
+### Guard Discriminators (PD11 — approved under A7; retention branch also approved under A7b)
 
 Guards are evaluated server-side from durable state, never from caller input (architecture S-8). The retryable/non-retryable classification is owned by the shared provider-outcome classifier so the GitHub and Forgejo adapters cannot disagree about the same failure.
 
@@ -38,11 +45,11 @@ Guards are evaluated server-side from durable state, never from caller input (ar
 | `ready` | available, or `degraded-but-serving` when projection lag exceeds C2 | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `locked` | `degraded-but-serving` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `changes_staged` | `degraded-but-serving` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
-| `dirty` | `degraded-but-serving` while the originating task can resume or the workspace is clean, `awaiting-human` once staged changes are orphaned | Architecture C6 state catalog | superseded-pending-reapproval under A7 | Story 4.22 `FolderStateTransitions.cs` and disposition labels | 2026-09-17 |
+| `dirty` | `degraded-but-serving` while the originating task can resume or the workspace is clean, `awaiting-human` once staged changes are orphaned | Architecture C6 state catalog | A7 approved 2026-09-17 | Story 4.22 `FolderStateTransitions.cs` and disposition labels | 2026-09-17 |
 | `committed` | `auto-recovering` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `failed` | `terminal-until-intervention` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 | `inaccessible` | `terminal-until-intervention` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
-| `unknown_provider_outcome` | `auto-recovering` during the bounded ≤5 checks/15-minute reconciliation budget; escalation to `reconciliation_required` becomes `awaiting-human` | Architecture C6 state catalog | approval-pending under A7 | Story 4.22 `FolderStateTransitions.cs` and disposition labels | 2026-09-17 |
+| `unknown_provider_outcome` | `auto-recovering` during the bounded ≤5 checks/15-minute reconciliation budget; escalation to `reconciliation_required` becomes `awaiting-human` | Architecture C6 state catalog | A7 approved 2026-09-17 | Story 4.22 `FolderStateTransitions.cs` and disposition labels | 2026-09-17 |
 | `reconciliation_required` | `awaiting-human` | Architecture C6 state catalog | approved | Story 4.1 `FolderStateTransitions.cs` and Story 6.3 disposition labels | 2026-05-11 |
 
 ### Event Vocabulary
@@ -57,11 +64,11 @@ published MVP events or valid edges. A separate negative fixture submits their r
 
 | Mapping area | Rule | Provenance | Approval state | Consuming future artifact | Review date |
 |---|---|---|---|---|---|
-| Positive transitions | Implement every Architecture C6 listed `(from, event, guard) -> to` row as a total switch expression or equivalent total mapping, with the guard as a first-class key | Architecture C6 valid transitions | approval-pending under A7/A7b | Story 4.22 `FolderStateTransitions.cs` and aggregate tests | 2026-09-17 |
-| Default rejection | Reject every unlisted `(state, event, guard)` triple with `state_transition_invalid`; state remains unchanged; an unenumerated guard branch rejects rather than falling through to its sibling | Architecture C6 default rejection rule | approved baseline; guard branch rule approval-pending under A7 | Story 4.22 aggregate tests and Story 5 CLI/MCP parity | 2026-09-17 |
+| Positive transitions | Implement every Architecture C6 listed `(from, event, guard) -> to` row as a total switch expression or equivalent total mapping, with the guard as a first-class key | Architecture C6 valid transitions | A7/A7b approved 2026-09-17 | Story 4.22 `FolderStateTransitions.cs` and aggregate tests | 2026-09-17 |
+| Default rejection | Reject every unlisted `(state, event, guard)` triple with `state_transition_invalid`; state remains unchanged; an unenumerated guard branch rejects rather than falling through to its sibling | Architecture C6 default rejection rule | approved under A7 | Story 4.22 aggregate tests and Story 5 CLI/MCP parity | 2026-09-17 |
 | Operator disposition | Source labels from the C6 state catalog; UI mapping must be generated from or tested against this catalog | Architecture C6 and F-4 operations-console model | approved | Story 6.3 `OperatorDispositionBadge` mapping | 2026-05-11 |
 | Idempotency inspection | Persist rejection/result visibility through idempotency behavior so duplicate requests return the same logical result | Architecture C6 and A-9 idempotency record behavior | approved | Story 4.11 idempotency propagation and Story 4.12 commit reconciliation | 2026-05-11 |
-| Aggregate coverage | Every state, every event, and every guard branch requires either positive transition coverage or explicit rejection coverage; a pair-keyed gate is insufficient because it passes a one-branch implementation of a guard-discriminated pair | Architecture C6 implementation enforcement | approval-pending under A7 | Story 4.22 aggregate test suite and CI gate | 2026-09-17 |
+| Aggregate coverage | Every state, every event, and every guard branch requires either positive transition coverage or explicit rejection coverage; a pair-keyed gate is insufficient because it passes a one-branch implementation of a guard-discriminated pair | Architecture C6 implementation enforcement | approved under A7 | Story 4.22 aggregate test suite and CI gate | 2026-09-17 |
 
 ## Rationale
 

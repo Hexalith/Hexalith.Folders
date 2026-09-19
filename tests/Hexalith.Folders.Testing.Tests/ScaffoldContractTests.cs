@@ -18,6 +18,7 @@ public sealed class ScaffoldContractTests
         "src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj",
         "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
+        "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj",
         "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj",
         "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
         "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
@@ -29,6 +30,7 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
         "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
         "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+        "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
         "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
         "tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj",
         "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
@@ -71,6 +73,7 @@ public sealed class ScaffoldContractTests
         "src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj",
         "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
+        "src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj",
         "src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj",
         "src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj",
         "src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj",
@@ -82,6 +85,7 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj",
         "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
         "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+        "tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj",
         "tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj",
         "tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj",
         "tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj",
@@ -176,13 +180,15 @@ public sealed class ScaffoldContractTests
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.UI", ["Hexalith.Folders.Client", "Hexalith.FrontComposer.Shell"]);
         AssertReferences(references, "Hexalith.Folders.Workers", ["Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Memories.Aspire", "Hexalith.Tenants.Aspire"]);
+        AssertReferences(references, "Hexalith.Folders.AppHost", ["Hexalith.EventStore.Aspire", "Hexalith.Folders.Aspire", "Hexalith.Folders.EventStore", "Hexalith.Folders.Server", "Hexalith.Folders.UI", "Hexalith.Folders.Workers", "Hexalith.Memories.Aspire", "Hexalith.Tenants.Aspire"]);
         AssertReferences(references, "Hexalith.Folders.Aspire", []);
         AssertReferences(references, "Hexalith.Folders.ServiceDefaults", []);
         AssertReferences(references, "Hexalith.Folders.Testing", ["Hexalith.Folders", "Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Sample", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Sample.Tests", ["Hexalith.Folders.Sample"]);
         AssertReferences(references, "Hexalith.Folders.Contracts.Tests", ["Hexalith.Folders.Aspire", "Hexalith.Folders.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway"]);
+        AssertReferences(references, "Hexalith.Folders.EventStore.Tests", ["Hexalith.Folders.EventStore", "Hexalith.Folders.Server"]);
         AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
         AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
@@ -304,7 +310,7 @@ public sealed class ScaffoldContractTests
             .ToArray();
 
         JsonElement sdk = globalJson.RootElement.GetProperty("sdk");
-        sdk.GetProperty("version").GetString().ShouldBe("10.0.400");
+        sdk.GetProperty("version").GetString().ShouldBe("10.0.401");
         sdk.GetProperty("rollForward").GetString().ShouldBe("latestPatch");
         sdk.GetProperty("allowPrerelease").GetBoolean().ShouldBeFalse();
 

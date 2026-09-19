@@ -9,7 +9,7 @@ Give operators the recurring-cadence view of retention: when read-model compacti
 ## Preconditions
 
 - The acting principal is authorized for the managed tenant before any tenant-scoped retention evidence is read; tenant authority comes from authenticated context, never from a query parameter.
-- Unaffected C3 retention classes retain their recorded approvals. The temporary-working-files trigger is `superseded-pending-reapproval` and requires A7b (Legal + Product + Security + Architecture) before live release.
+- Unaffected C3 retention classes retain their recorded approvals. The temporary-working-files trigger is approved under the exact A7b Legal + Product + Security + Architecture payload; Story 4.22 runtime implementation and evidence remain separately deferred.
 - No retention step performs cross-tenant search, provider payload inspection, raw file inspection, or credential review.
 
 ## Procedure
@@ -25,7 +25,7 @@ Run the conformance gate `pwsh ./tests/tools/run-adr-runbook-docs-gates.ps1`, wh
 
 ## Escalation and handoff
 
-- A7b is pending for the revised working-file trigger. Escalate to Legal + Product + Security + Architecture rather than treating the historical digest as current.
+- If the revised working-file trigger drifts from the approved A7b payload, escalate to Legal + Product + Security + Architecture and fail closed rather than treating the historical digest as current.
 - A failed cleanup or compaction cadence escalates to the on-call operator named in the alerts runbook (`./alerts.md`) with the tenant-scoped synthetic identifiers only.
 
 ## Related evidence

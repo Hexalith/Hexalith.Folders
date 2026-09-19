@@ -94,20 +94,37 @@ criteria:
     status: approved
     artifact_path: docs/exit-criteria/c3-retention.md
     verification_command: .\tests\tools\run-retention-deletion-gates.ps1
-    result_summary: Machine-validated retention and tenant-deletion evidence is present; PM approved 2026-06-22 (Jerome) and Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes); retention durations and tenant-deletion dispositions are approved for live release publishing.
+    evidence_version: '1.0.0-candidate.1'
+    evidence_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+    result_summary: Machine-validated retention and tenant-deletion evidence is present; A7b was approved by Jerome for Legal, Product, Security, and Architecture on 2026-09-17 with exact payload digest 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1; the policy decision is approved while Story 4.22 runtime implementation remains separately deferred.
     open_policy_placeholders: []
     approval:
       required_authorities:
-        - PM
         - Legal
+        - Product
+        - Security
+        - Architecture
       records:
-        - authority: PM
-          approver: Jerome
-          approved_on: '2026-06-22'
         - authority: Legal
-          approver: Jérôme Piquot
-          approved_on: '2026-06-24'
-          location: Louveciennes
+          approver: Jerome
+          approved_on: '2026-09-17'
+          evidence_version: '1.0.0-candidate.1'
+          evidence_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+        - authority: Product
+          approver: Jerome
+          approved_on: '2026-09-17'
+          evidence_version: '1.0.0-candidate.1'
+          evidence_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+        - authority: Security
+          approver: Jerome
+          approved_on: '2026-09-17'
+          evidence_version: '1.0.0-candidate.1'
+          evidence_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
+        - authority: Architecture
+          approver: Jerome
+          approved_on: '2026-09-17'
+          evidence_version: '1.0.0-candidate.1'
+          evidence_sha256: 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1
   - criterion_id: C4
     title: Input limit evidence
     owner: Architect

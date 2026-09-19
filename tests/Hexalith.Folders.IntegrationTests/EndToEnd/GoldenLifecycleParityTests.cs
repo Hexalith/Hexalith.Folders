@@ -1659,7 +1659,7 @@ public sealed class GoldenLifecycleParityTests
                 return Task.FromResult(new WorkspaceFileContextSourceResult(
                     WorkspaceFileContextSourceStatus.Available,
                     [new WorkspaceFileContextItem(
-                        new Hexalith.Folders.Aggregates.Folder.PathMetadata("docs/readme.md", "readme.md", "tenant_sensitive_document", "NFC"),
+                        new Hexalith.Folders.Aggregates.Folder.PathMetadata("docs/readme.md", "readme.md", "metadata_only", "NFC"),
                         "file",
                         1,
                         "tenant_sensitive",

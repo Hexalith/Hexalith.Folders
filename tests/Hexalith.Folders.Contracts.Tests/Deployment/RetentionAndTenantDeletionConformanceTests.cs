@@ -40,12 +40,10 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
 
         c3.ShouldContain("policy status: approved", Case.Sensitive);
 
-        // PM approval (Jerome) was recorded 2026-06-22 via the bmad-correct-course Sprint Change Proposal;
-        // Legal sign-off (Jérôme Piquot) was recorded 2026-06-24 at Louveciennes, clearing the sole remaining
-        // gate. These assertions keep the policy honest: the posture now records approved-for-live-release, and
-        // the approval record truthfully shows PM-approved + Legal-approved with the recorded signer and date.
+        // A7b relocks the revised temporary-working-files trigger to an exact payload approved by every
+        // required authority. The older Legal + PM records remain authoritative for unaffected rows.
         c3.ShouldContain("release posture: approved_for_live_release", Case.Sensitive);
-        c3.ShouldContain("approval record: PM approved (Jerome) 2026-06-22; Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes", Case.Sensitive);
+        c3.ShouldContain("approval record: A7b approved by Jerome for Legal + Product + Security + Architecture on 2026-09-17; payload SHA-256 1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1", Case.Sensitive);
         c3.ShouldContain("validation command: `pwsh ./tests/tools/run-retention-deletion-gates.ps1`", Case.Sensitive);
 
         MarkdownRow[] rows = ReadMarkdownRows(C3Path, "Retention class identifier");
@@ -61,10 +59,19 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             row["Tenant-isolation implication"].ShouldContain("tenant", Case.Insensitive);
             row["Observability evidence"].ShouldNotBeNullOrWhiteSpace();
             row["Owner"].ShouldBe("Tech Lead");
-            row["Authority"].ShouldBe("Legal + PM");
-            // Each required row records the exact Legal signer, date, and location alongside the PM approval.
-            row["Approval state"].ShouldContain("Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes", Case.Sensitive);
-            row["Review date"].ShouldBe("2026-05-11");
+            if (requiredClass == "Temporary working files")
+            {
+                row["Authority"].ShouldBe("Legal + Product + Security + Architecture");
+                row["Approval state"].ShouldContain("A7b approved by Jerome", Case.Sensitive);
+                row["Approval state"].ShouldContain("1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1", Case.Sensitive);
+                row["Review date"].ShouldBe("2026-09-17");
+            }
+            else
+            {
+                row["Authority"].ShouldBe("Legal + PM");
+                row["Approval state"].ShouldContain("Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes", Case.Sensitive);
+                row["Review date"].ShouldBe("2026-05-11");
+            }
         }
     }
 
@@ -78,7 +85,7 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             "dotnet build Hexalith.Folders.slnx --no-restore -m:1",
             "pwsh ./tests/tools/run-retention-deletion-gates.ps1",
             "_bmad-output/gates/retention-deletion/latest.json",
-            "pending approval blocks live release",
+            "approved design evidence does not clear live release until the separately governed runtime evidence is complete",
             "metadata-only",
             "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
         })
@@ -114,8 +121,10 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         c3.GetRetentionScalar("status").ShouldBe("approved");
         c3.GetRetentionScalar("artifact_path").ShouldBe(C3Path);
         c3.GetRetentionScalar("verification_command").ShouldBe(@".\tests\tools\run-retention-deletion-gates.ps1");
-        c3.GetRetentionScalar("result_summary").ShouldContain("Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes)", Case.Sensitive);
-        c3.GetRetentionScalar("result_summary").ShouldContain("approved for live release publishing", Case.Sensitive);
+        c3.GetRetentionScalar("evidence_version").ShouldBe("1.0.0-candidate.1");
+        c3.GetRetentionScalar("evidence_sha256").ShouldBe("1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1");
+        c3.GetRetentionScalar("result_summary").ShouldContain("A7b was approved by Jerome for Legal, Product, Security, and Architecture on 2026-09-17", Case.Sensitive);
+        c3.GetRetentionScalar("result_summary").ShouldContain("Story 4.22 runtime implementation remains separately deferred", Case.Sensitive);
         // PM approval (2026-06-22) and Legal approval (2026-06-24) are both recorded, so no open placeholder
         // remains. The empty-sequence assertion is the lockstep counterpart to the prior `.Single()` guard:
         // it throws if a stale placeholder is reintroduced after the criterion has been approved.
@@ -147,8 +156,9 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             "invalid-tenant-deletion-disposition",
             "missing-approved-release-posture",
             "stale-c3-legal-placeholder",
-            "Legal approved (Jérôme Piquot) 2026-06-24, Louveciennes",
-            "Legal approved 2026-06-24 (Jérôme Piquot, Louveciennes)",
+            "A7b approved by Jerome for Legal + Product + Security + Architecture on 2026-09-17",
+            "A7b was approved by Jerome for Legal, Product, Security, and Architecture on 2026-09-17",
+            "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
             "open_policy_placeholders: []",
             "recursive-submodule-setup",
             "unsafe-diagnostic-field",

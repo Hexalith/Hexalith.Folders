@@ -2,9 +2,10 @@
 title: 'Restore green Folders CI and publish the first NuGet release'
 type: 'bugfix'
 created: '2026-09-19'
-status: 'draft'
+status: 'in-progress'
 route: 'dispatch'
 review_loop_iteration: 0
+baseline_commit: 'e2881d901b3f12e3f9023617fe622c5f11254916'
 context:
   - '{project-root}/references/Hexalith.AI.Tools/hexalith-llm-instructions.md'
   - '{project-root}/docs/operations/release-packages.md'
@@ -68,6 +69,24 @@ context:
 
 ## Implementation Notes
 
+- Local Folders package-mode restore/build is clean. Testing passes 68/68, Integration passes
+  695/695, and the UI E2E suite passes 63/63 against the FrontComposer source correction. The
+  published FrontComposer `4.4.0` package still reproduces the expected 36 duplicate-heading
+  failures.
+- C3 and C6 were reconciled only from the existing digest-bound A7/A7b authority records. OQ3
+  remains fail-closed: the Contracts suite now has exactly three failures, all requiring the absent
+  generated PD10 v2 conformance set owned by the separate draft Story 1.17 specification. No A6b or
+  A8 approval was inferred or recorded.
+- FrontComposer exact-source CI run `35431134374` exposed a missing .NET SDK setup in the
+  dependency-governance job. The local repair installs the `global.json` SDK before affected-module
+  builds and adds a governance assertion. Three supplemental Quality regressions were also
+  diagnosed: an over-broad Fluent emitter scan, a stale EventStore helper-location assertion, and
+  one intentional test-identifier inventory addition; focused repaired checks pass 3/3.
+- FrontComposer's remaining supplemental Quality hold is not part of the approved heading-only
+  cross-repository scope: Story 11.25 deliberately keeps Gate 2c red until a genuine EventStore
+  `run-evidence.v4` / `apphost-smoke.v3` recapture replaces the preserved packet, while current
+  EventStore/Builds coordinates have advanced off its sealed tuple. Publication remains stopped.
+
 ## Spec Change Log
 
 ## Review Triage Log
@@ -80,3 +99,15 @@ context:
 - `pwsh ./tests/tools/run-release-package-gates.ps1 -Version <dry-run> -SourceRevisionId <sha>` -- exactly five sealed package/symbol pairs validate without publication.
 - `gh run view <ci-run> --repo Hexalith/Hexalith.Folders` -- exact-source push CI succeeds.
 - `gh run view <release-run> --repo Hexalith/Hexalith.Folders` -- Release succeeds; NuGet flat-container indexes and GitHub release assets match the manifest.
+
+**Current results:**
+
+- PASS -- `dotnet build Hexalith.Folders.CI.slnx` in Release/package mode, zero warnings/errors.
+- PASS -- Testing 68/68, Integration 695/695, UI unit lane, retention/deletion gates, and
+  FrontComposer-source UI E2E 63/63.
+- BLOCKED -- Contracts 311/314; the three remaining failures are the OQ3 A6b/PD10 v2 evidence
+  guards and correctly remain fail-closed.
+- PASS -- FrontComposer focused governance repair checks 3/3 and `actionlint
+  .github/workflows/ci.yml`.
+- BLOCKED -- no FrontComposer or Folders Release workflow was dispatched and no NuGet package was
+  published because the approved full-CI prerequisite is not yet satisfied.

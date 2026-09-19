@@ -145,7 +145,6 @@ public sealed class GovernanceCompletenessGateTests
     [
         "_bmad-output/planning-artifacts/prd.md",
         "_bmad-output/planning-artifacts/.memlog.md",
-        "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
     ];
 
     private static readonly string[] Criteria =
@@ -1123,6 +1122,18 @@ public sealed class GovernanceCompletenessGateTests
                 .Contains(ApprovedOq4Sha256, StringComparison.Ordinal)
                 .ShouldBeTrue(planningPath);
         }
+
+        // The planning manifest binds the OQ4 evidence manifest rather than duplicating the catalog digest.
+        // Validate that transitive chain explicitly so the approved planning artifact remains immutable.
+        const string planningManifestPath = "_bmad-output/planning-artifacts/planning-story-manifest.yaml";
+        YamlMappingNode planningManifest = LoadYamlMapping(
+            Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningManifestPath)));
+        YamlMappingNode oq4Decision = RequiredMapping(
+            RequiredMapping(planningManifest, "accepted_terminal_references"),
+            "OQ4");
+        RequiredScalar(oq4Decision, "evidence_path").ShouldBe("docs/contract/oq4-provider-compatibility-evidence.yaml");
+        RequiredScalar(oq4Decision, "evidence_sha256").ShouldBe(
+            Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq4EvidencePath))));
 
         // The LF pins are what make the approval-bound digest reproducible across checkouts. Without them a
         // Windows checkout produces CRLF bytes and the approval fails as an unexplained digest mismatch.
