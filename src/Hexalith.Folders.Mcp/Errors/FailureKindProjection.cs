@@ -6,7 +6,7 @@ namespace Hexalith.Folders.Mcp.Errors;
 /// The single canonical <see cref="CanonicalErrorCategory"/> → MCP failure-kind projection used by every
 /// tool and resource. Encoded verbatim from the deduplicated <c>outcome_mapping.mcp_failure_kind</c> column
 /// of the parity oracle (<c>tests/fixtures/parity-contract.yaml</c>), where <b>kind == the canonical
-/// category name verbatim</b> (one-to-one, 46 post-SDK values). Story 5.4 proves this map against that
+/// category name verbatim</b> (one-to-one, 44 post-SDK values). Story 5.4 proves this map against that
 /// oracle; this story encodes and unit-tests it directly.
 /// </summary>
 /// <remarks>
@@ -43,11 +43,10 @@ internal static class FailureKindProjection
         CanonicalErrorCategory.Credential_missing => "credential_missing",
         CanonicalErrorCategory.Credential_reference_invalid => "credential_reference_invalid",
         CanonicalErrorCategory.Tenant_access_denied => "tenant_access_denied",
-        CanonicalErrorCategory.Cross_tenant_access_denied => "cross_tenant_access_denied",
         CanonicalErrorCategory.Folder_acl_denied => "folder_acl_denied",
-        CanonicalErrorCategory.Audit_access_denied => "audit_access_denied",
         CanonicalErrorCategory.Validation_error => "validation_error",
         CanonicalErrorCategory.Idempotency_conflict => "idempotency_conflict",
+        CanonicalErrorCategory.Concurrency_conflict => "concurrency_conflict",
         CanonicalErrorCategory.Idempotency_key_expired => "idempotency_key_expired",
         CanonicalErrorCategory.Provider_readiness_failed => "provider_readiness_failed",
         CanonicalErrorCategory.Provider_permission_insufficient => "provider_permission_insufficient",
@@ -73,7 +72,6 @@ internal static class FailureKindProjection
         CanonicalErrorCategory.Provider_failure_known => "provider_failure_known",
         CanonicalErrorCategory.Unknown_provider_outcome => "unknown_provider_outcome",
         CanonicalErrorCategory.Reconciliation_required => "reconciliation_required",
-        CanonicalErrorCategory.Not_found => "not_found",
         CanonicalErrorCategory.State_transition_invalid => "state_transition_invalid",
         CanonicalErrorCategory.Input_limit_exceeded => "input_limit_exceeded",
         CanonicalErrorCategory.Response_limit_exceeded => "response_limit_exceeded",

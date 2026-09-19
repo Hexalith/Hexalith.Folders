@@ -90,7 +90,7 @@ public sealed class SourcingTests
         TestSupport.CapturedRequest request = handler.Requests.ShouldHaveSingleItem();
         request.CorrelationId.ShouldBe("corr-indexing-status");
         request.TaskId.ShouldBeNull();
-        request.Uri!.AbsolutePath.ShouldBe("/api/v1/folders/folder-a/indexing-status");
+        request.Uri!.AbsolutePath.ShouldBe("/api/v2/folders/folder-a/indexing-status");
     }
 
     [Fact]

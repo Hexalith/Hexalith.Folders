@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2";
-    public const string GenerationConfigurationSha256 = "50cf48e82504d08f309328a3c3eca940f71bef7ec8794aada4ae2ff2e872dbf8";
-    public const string GeneratedHelpersSha256 = "679ef8c351da8e7310e898a461daccec3e5e88d1cff4da2e745c2c3aa02f5092";
+    public const string ContractSpineSha256 = "e68a2d53a21faafa735dd03746aa4de643b44f68a239c5b6615445adf9c36031";
+    public const string GenerationConfigurationSha256 = "3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d";
+    public const string GeneratedHelpersSha256 = "bfe8c79b7720cf3496e04f824e2f1ac3420d47b355fbe6befca86c3d2f92304b";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -32,7 +32,7 @@ public static class HexalithFoldersGeneratedArtifacts
             return new(false, "repositoryRoot must be a fully qualified path");
         }
 
-        string spinePath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+        string spinePath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
         string configurationPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
         string helpersPath = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Client", "Generated", "HexalithFoldersIdempotencyHelpers.g.cs");
         try

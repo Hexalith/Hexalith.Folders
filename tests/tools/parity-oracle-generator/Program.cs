@@ -116,6 +116,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 .Distinct(StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)
                 .ToArray();
+            int[] responseStatusCodes = ReadResponseStatusCodes(operation).Distinct().Order().ToArray();
             string[] auditKeys = ReadAuditMetadataKeys(operation)
                 .Distinct(StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)
@@ -137,6 +138,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 HasIdempotencyKey: hasIdempotencyKey,
                 IdempotencyFields: idempotencyFields,
                 ReadConsistencyClass: readConsistency,
+                ResponseStatusCodes: responseStatusCodes,
                 ErrorCategories: errorCategories,
                 AuditMetadataKeys: auditKeys,
                 CorrelationHeader: correlationHeader,
@@ -293,6 +295,9 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         return;
     }
 
+    bool historicalV1Comparison = previous.Children.TryGetValue(new YamlScalarNode("comparison_profile"), out YamlNode? comparisonNode)
+        && comparisonNode is YamlScalarNode comparisonScalar
+        && string.Equals(comparisonScalar.Value, "historical-v1-to-pd10-v2", StringComparison.Ordinal);
     HashSet<string> previousOperationIds = new(StringComparer.Ordinal);
     foreach (YamlNode previousNode in operationsSeq)
     {
@@ -319,6 +324,11 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         string operationId = ReadFlexibleScalar(operation, "operation_id", "operationId");
         string method = ReadFlexibleScalar(operation, "method", "http_method").ToLowerInvariant();
         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
+        if (historicalV1Comparison)
+        {
+            ValidateHistoricalFingerprints(operation, operationId);
+            path = Pd10V2Path(operationId, path);
+        }
         string identity = method + " " + path + " " + operationId;
 
         if (currentIdentities.Contains(identity))
@@ -416,6 +426,7 @@ static string RenderOracle(IReadOnlyList<OperationModel> operations, IReadOnlyLi
     builder.Append("# generated_by: tests/tools/parity-oracle-generator\n");
     builder.Append("# contract_spine_sha256: ").Append(Sha256OfFile(options.ContractPath)).Append('\n');
     builder.Append("# parity_schema_sha256: ").Append(Sha256OfFile(options.SchemaPath)).Append('\n');
+    builder.Append("# previous_spine_sha256: ").Append(Sha256OfFile(options.PreviousSpinePath)).Append('\n');
     builder.Append("# source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract\n");
     builder.Append("# diagnostics_count: ").Append(diagnostics.Count.ToString(CultureInfo.InvariantCulture)).Append('\n');
 
@@ -454,6 +465,11 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
     builder.Append("  read_consistency_class: ").Append(Quote(operation.IsMutatingCommand ? "not_applicable" : operation.ReadConsistencyClass!)).Append('\n');
     builder.Append("  transport_parity:\n");
     builder.Append("    auth_outcome_class: ").Append(Quote(AuthOutcomeClass(operation))).Append('\n');
+    builder.Append("    http_status_set:\n");
+    foreach (int statusCode in operation.ResponseStatusCodes)
+    {
+        builder.Append("      - ").Append(statusCode.ToString(CultureInfo.InvariantCulture)).Append('\n');
+    }
     builder.Append("    error_code_set:\n");
     foreach (string category in operation.ErrorCategories)
     {
@@ -514,15 +530,15 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
 static string RenderBaseline(IReadOnlyList<OperationModel> operations)
 {
     StringBuilder builder = new();
-    builder.Append("version: captured-baseline\n");
-    builder.Append("source_marker: captured-from-openapi\n");
-    builder.Append("intent: First captured Contract Spine baseline for symmetric drift detection.\n");
+    builder.Append("version: historical-v1-fingerprint-baseline\n");
+    builder.Append("source_marker: captured-from-historical-v1-openapi\n");
+    builder.Append("comparison_profile: historical-v1-to-pd10-v2\n");
+    builder.Append("intent: Historical v1 route, status-code, and error-vocabulary fingerprints for PD10 v2 drift detection.\n");
     builder.Append("ownership:\n");
     builder.Append("  owner_workstream: Phase 1 Contract Spine and drift-detection stories\n");
     builder.Append("  future_test_use: Symmetric drift detection input for parity-oracle generation.\n");
     builder.Append("  known_omissions:\n");
-    builder.Append("    - No request/response schema fingerprints\n");
-    builder.Append("    - No status-code surface\n");
+    builder.Append("    - No request/response body schema fingerprints\n");
     builder.Append("  mutation_rules:\n");
     builder.Append("    - Replace via the generator's --initialize-baseline command after intentional contract changes.\n");
     builder.Append("    - Add explicit deprecation entries for intentionally removed or renamed operations.\n");
@@ -536,6 +552,16 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations)
         builder.Append("  - operation_id: ").Append(Quote(operation.OperationId)).Append('\n');
         builder.Append("    method: ").Append(Quote(operation.Method)).Append('\n');
         builder.Append("    path: ").Append(Quote(operation.Path)).Append('\n');
+        builder.Append("    status_codes:\n");
+        foreach (int statusCode in operation.ResponseStatusCodes)
+        {
+            builder.Append("      - ").Append(statusCode.ToString(CultureInfo.InvariantCulture)).Append('\n');
+        }
+        builder.Append("    error_categories:\n");
+        foreach (string category in operation.ErrorCategories)
+        {
+            builder.Append("      - ").Append(Quote(category)).Append('\n');
+        }
     }
 
     return builder.ToString();
@@ -543,12 +569,6 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations)
 
 static string AuthOutcomeClass(OperationModel operation)
 {
-    // Audit-access-denied is its own bucket distinct from generic ACL denial.
-    if (operation.ErrorCategories.Contains("audit_access_denied", StringComparer.Ordinal))
-    {
-        return "audit_access_denied";
-    }
-
     // Folder ACL and tenant access denials are the canonical "authorized but denied" outcomes for
     // operations that reach the tenant + folder authorization layers. They MUST be checked before
     // credential-missing so an operation declaring both does not collapse to the wrong bucket.
@@ -557,8 +577,7 @@ static string AuthOutcomeClass(OperationModel operation)
         return "folder_acl_denied";
     }
 
-    if (operation.ErrorCategories.Contains("tenant_access_denied", StringComparer.Ordinal) ||
-        operation.ErrorCategories.Contains("cross_tenant_access_denied", StringComparer.Ordinal))
+    if (operation.ErrorCategories.Contains("tenant_access_denied", StringComparer.Ordinal))
     {
         return "tenant_access_denied";
     }
@@ -573,10 +592,44 @@ static string AuthOutcomeClass(OperationModel operation)
         return "credential_missing";
     }
 
-    return operation.ErrorCategories.Contains("not_found", StringComparer.Ordinal)
-        ? "safe_not_found"
-        : "tenant_authorized";
+    return "tenant_authorized";
 }
+
+static IEnumerable<int> ReadResponseStatusCodes(YamlMappingNode operation)
+{
+    foreach (YamlNode key in RequiredMapping(operation, "responses").Children.Keys)
+    {
+        string value = key.AsScalar("response status").Value ?? string.Empty;
+        if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int statusCode)
+            || statusCode is < 100 or > 599)
+        {
+            throw new InvalidOperationException($"prerequisite-drift: response status '{value}' is not an explicit HTTP status code.");
+        }
+
+        yield return statusCode;
+    }
+}
+
+static void ValidateHistoricalFingerprints(YamlMappingNode operation, string operationId)
+{
+    int[] statuses = ReadIntSequence(operation, "status_codes").Distinct().Order().ToArray();
+    string[] categories = ReadStringSequence(operation, "error_categories").Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+    if (statuses.Length == 0 || categories.Length == 0)
+    {
+        throw new InvalidOperationException(
+            $"previous-spine-drift: historical operation '{operationId}' requires non-empty status_codes and error_categories fingerprints.");
+    }
+}
+
+static string Pd10V2Path(string operationId, string historicalPath)
+    => operationId switch
+    {
+        "GetTaskStatus" => "/api/v2/folders/{folderId}/tasks/{taskId}/status",
+        "GetReadinessDiagnostics" => "/api/v2/folders/{folderId}/ops-console/readiness-diagnostics",
+        "GetProjectionFreshness" => "/api/v2/folders/{folderId}/ops-console/projection-freshness",
+        _ when historicalPath.StartsWith("/api/v1", StringComparison.Ordinal) => "/api/v2" + historicalPath[7..],
+        _ => historicalPath,
+    };
 
 static string IdempotencyRule(OperationModel operation)
 {
@@ -768,6 +821,20 @@ static IReadOnlyList<string> ReadStringSequence(YamlMappingNode mapping, string 
     }
 
     return node.AsSequence(key).Children.Select(c => c.AsScalar(key).Value ?? string.Empty).ToArray();
+}
+
+static IReadOnlyList<int> ReadIntSequence(YamlMappingNode mapping, string key)
+{
+    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node))
+    {
+        return [];
+    }
+
+    return node.AsSequence(key).Children
+        .Select(item => int.TryParse(item.AsScalar(key).Value, NumberStyles.None, CultureInfo.InvariantCulture, out int value)
+            ? value
+            : throw new InvalidOperationException($"previous-spine-drift: '{key}' contains a non-integer value."))
+        .ToArray();
 }
 
 static string? ReadNestedScalar(YamlMappingNode mapping, string parent, string key)
@@ -1107,7 +1174,7 @@ internal sealed record GeneratorOptions(
         string repositoryRoot = Path.GetFullPath(parsed.TryGetValue("--repository-root", out string? rootArg) ? rootArg : LocateRepositoryRoot());
         return new GeneratorOptions(
             RepositoryRoot: repositoryRoot,
-            ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"))),
+            ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"))),
             SchemaPath: Path.GetFullPath(parsed.GetValueOrDefault("--schema", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.schema.json"))),
             PreviousSpinePath: Path.GetFullPath(parsed.GetValueOrDefault("--previous-spine", Path.Combine(repositoryRoot, "tests", "fixtures", "previous-spine.yaml"))),
             OutputPath: Path.GetFullPath(parsed.GetValueOrDefault("--output", Path.Combine(repositoryRoot, "tests", "fixtures", "parity-contract.yaml"))),
@@ -1153,6 +1220,7 @@ internal sealed record OperationModel(
     bool HasIdempotencyKey,
     IReadOnlyList<string> IdempotencyFields,
     string? ReadConsistencyClass,
+    IReadOnlyList<int> ResponseStatusCodes,
     IReadOnlyList<string> ErrorCategories,
     IReadOnlyList<string> AuditMetadataKeys,
     string CorrelationHeader,
@@ -1245,16 +1313,14 @@ internal static class GeneratorConstants
             ["credential_reference_missing"] = new(65, "credential_missing", "credential_missing"),
             ["credential_reference_invalid"] = new(65, "credential_reference_invalid", "credential_missing"),
             ["tenant_access_denied"] = new(66, "tenant_access_denied", "none"),
-            ["cross_tenant_access_denied"] = new(66, "cross_tenant_access_denied", "none"),
             ["folder_acl_denied"] = new(66, "folder_acl_denied", "none"),
-            ["audit_access_denied"] = new(66, "audit_access_denied", "none"),
             ["validation_error"] = new(69, "validation_error", "none"),
             ["workspace_locked"] = new(67, "workspace_locked", "none"),
             ["lock_conflict"] = new(67, "lock_conflict", "none"),
             ["lock_expired"] = new(67, "lock_expired", "none"),
             ["lock_not_owned"] = new(67, "lock_not_owned", "none"),
             ["stale_workspace"] = new(67, "stale_workspace", "none"),
-            ["authorization_revocation_detected"] = new(73, "authorization_revocation_detected", "none"),
+            ["authorization_revocation_detected"] = new(66, "authorization_revocation_detected", "none"),
             ["workspace_not_ready"] = new(72, "workspace_not_ready", "none"),
             ["workspace_preparation_failed"] = new(72, "workspace_preparation_failed", "none"),
             ["dirty_workspace"] = new(72, "dirty_workspace", "none"),
@@ -1262,6 +1328,7 @@ internal static class GeneratorConstants
             ["file_operation_failed"] = new(70, "file_operation_failed", "none"),
             ["path_validation_failed"] = new(69, "path_validation_failed", "none"),
             ["idempotency_conflict"] = new(68, "idempotency_conflict", "none"),
+            ["concurrency_conflict"] = new(77, "concurrency_conflict", "none"),
             ["idempotency_key_expired"] = new(76, "idempotency_key_expired", "none"),
             ["input_limit_exceeded"] = new(69, "input_limit_exceeded", "none"),
             ["response_limit_exceeded"] = new(69, "response_limit_exceeded", "none"),
@@ -1278,9 +1345,8 @@ internal static class GeneratorConstants
             ["repository_conflict"] = new(70, "repository_conflict", "none"),
             ["duplicate_binding"] = new(70, "duplicate_binding", "none"),
             ["reconciliation_required"] = new(72, "reconciliation_required", "none"),
-            ["not_found"] = new(73, "not_found", "none"),
             ["state_transition_invalid"] = new(74, "state_transition_invalid", "none"),
-            ["read_model_unavailable"] = new(72, "read_model_unavailable", "none"),
+            ["read_model_unavailable"] = new(73, "read_model_unavailable", "none"),
             ["projection_stale"] = new(72, "projection_stale", "none"),
             ["projection_unavailable"] = new(72, "projection_unavailable", "none"),
             ["range_unsatisfiable"] = new(69, "range_unsatisfiable", "none"),

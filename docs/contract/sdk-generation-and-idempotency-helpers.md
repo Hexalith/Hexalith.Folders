@@ -7,7 +7,7 @@ Status: Story 1.12 implementation note.
 NSwag generates the typed client and DTO surface from:
 
 ```text
-src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml
+src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
 ```
 
 The generated output lives under:
@@ -18,6 +18,9 @@ src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
 ```
 
 Generated files are not manually customized. Hexalith-specific helper logic is emitted as companion partials and shared helper code under `src/Hexalith.Folders.Client/Idempotency/`.
+
+The generated v2 client is an A6b-pending candidate. The supported production host does not route `/api/v2`;
+generation does not authorize deployment, publication, or consumer cutover.
 
 ## Rerun Command
 

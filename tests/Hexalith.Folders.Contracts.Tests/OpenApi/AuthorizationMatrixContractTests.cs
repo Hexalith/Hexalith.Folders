@@ -9,13 +9,13 @@ public sealed class AuthorizationMatrixContractTests
 {
     private const string MatrixRepositoryPath = "docs/contract/authorization-matrix.md";
     private const string PrdActorTablePath = "_bmad-output/planning-artifacts/prd.md";
-    private const string ApprovedMatrixVersion = "1.0.0";
-    private const string ApprovedMatrixDate = "2026-09-14";
+    private const string CandidateMatrixVersion = "2.0.0";
     private const string SafeDenialOutcome = "safe-denial-404";
+    private const string AuthorityUnavailableOutcome = "authority-unavailable-503";
 
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string MatrixPath = Path.Combine(RepositoryRoot, "docs", "contract", "authorization-matrix.md");
-    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string PrdPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "prd.md");
 
     private static readonly Regex AbsoluteWindowsDrivePathPattern = new(
@@ -170,10 +170,10 @@ public sealed class AuthorizationMatrixContractTests
     {
         string matrixText = File.ReadAllText(MatrixPath);
 
-        matrixText.ShouldContain($"Matrix version: `{ApprovedMatrixVersion}`", Case.Sensitive);
-        matrixText.ShouldContain($"Approved on: `{ApprovedMatrixDate}`", Case.Sensitive);
-        matrixText.ShouldContain("Approved by: `Administrator` for Security and PM", Case.Sensitive);
-        matrixText.ShouldContain("Governance evidence: `docs/contract/oq3-authorization-evidence.yaml`", Case.Sensitive);
+        matrixText.ShouldContain($"Matrix version: `{CandidateMatrixVersion}`", Case.Sensitive);
+        matrixText.ShouldContain("Status: `candidate-awaiting-a6b`", Case.Sensitive);
+        matrixText.ShouldContain("Required A6b approval: Product + Architecture + Security", Case.Sensitive);
+        matrixText.ShouldContain("Historical v1 governance evidence: `docs/contract/oq3-authorization-evidence.yaml`", Case.Sensitive);
 
         // S-4 authorization layering is preserved verbatim and never reordered by the matrix.
         matrixText.ShouldContain(
@@ -435,7 +435,7 @@ public sealed class AuthorizationMatrixContractTests
         }
 
         matrixText.ShouldContain("Runtime authorization enforcement | incomplete", Case.Sensitive);
-        matrixText.ShouldContain("Contract Spine conformance | incomplete", Case.Sensitive);
+        matrixText.ShouldContain("Contract Spine conformance | complete for the generated, non-routed v2 candidate", Case.Sensitive);
         matrixText.ShouldContain("Incident-evidence operation surface | absent", Case.Sensitive);
 
         // The retained incident-evidence family stays in the actor denominator with no current public operation.
@@ -493,31 +493,19 @@ public sealed class AuthorizationMatrixContractTests
     }
 
     [Fact]
-    public void AuthorizationMatrixGapCountsTrackTheContractSpineDeclarations()
+    public void AuthorizationMatrixCandidateClosesHistoricalContractVocabularyGaps()
     {
         MatrixDocument matrix = LoadMatrix();
         SpineOperation[] spine = LoadSpineOperations();
-        int total = spine.Length;
-
-        int forbidden = spine.Count(operation => operation.ResponseStatusCodes.Contains("403", StringComparer.Ordinal));
-        int notFoundStatus = spine.Count(operation => operation.ResponseStatusCodes.Contains("404", StringComparer.Ordinal));
-        int unavailableStatus = spine.Count(operation => operation.ResponseStatusCodes.Contains("503", StringComparer.Ordinal));
-
         string[] leakingCategories = ["not_found", "cross_tenant_access_denied", "audit_access_denied"];
-        int notFound = spine.Count(operation => operation.ErrorCategories.Contains("not_found", StringComparer.Ordinal));
-        int crossTenant = spine.Count(operation => operation.ErrorCategories.Contains("cross_tenant_access_denied", StringComparer.Ordinal));
-        int auditDenied = spine.Count(operation => operation.ErrorCategories.Contains("audit_access_denied", StringComparer.Ordinal));
-        int leaking = spine.Count(operation => leakingCategories.Any(category => operation.ErrorCategories.Contains(category, StringComparer.Ordinal)));
 
-        GapDescription(matrix, "G1").ShouldContain(
-            $"403 on {forbidden} of {total} operations and 404 on {notFoundStatus} of {total}",
-            Case.Sensitive);
-        GapDescription(matrix, "G2").ShouldContain(
-            $"on {leaking} of {total} operations: not_found on {notFound}, cross_tenant_access_denied on {crossTenant}, and audit_access_denied on {auditDenied}",
-            Case.Sensitive);
-        GapDescription(matrix, "G3").ShouldContain(
-            $"{unavailableStatus} of {total} operations declare a 503",
-            Case.Sensitive);
+        spine.Length.ShouldBe(49);
+        spine.ShouldAllBe(operation => operation.ResponseStatusCodes.Contains("401", StringComparer.Ordinal));
+        spine.ShouldAllBe(operation => operation.ResponseStatusCodes.Contains("404", StringComparer.Ordinal));
+        spine.ShouldAllBe(operation => operation.ResponseStatusCodes.Contains("503", StringComparer.Ordinal));
+        spine.ShouldAllBe(operation => !operation.ResponseStatusCodes.Contains("403", StringComparer.Ordinal));
+        spine.ShouldAllBe(operation => !leakingCategories.Any(category => operation.ErrorCategories.Contains(category, StringComparer.Ordinal)));
+        File.ReadAllText(MatrixPath).ShouldContain("generated v2 candidate closes `G1`, `G2`, `G3`", Case.Sensitive);
     }
 
     [Fact]
@@ -650,7 +638,8 @@ public sealed class AuthorizationMatrixContractTests
                 continue;
             }
 
-            if (row.Outcome != SafeDenialOutcome)
+            string expectedOutcome = row.State == "stale" ? AuthorityUnavailableOutcome : SafeDenialOutcome;
+            if (row.Outcome != expectedOutcome)
             {
                 add("oq3_denial_shape_mismatch", row.State);
             }

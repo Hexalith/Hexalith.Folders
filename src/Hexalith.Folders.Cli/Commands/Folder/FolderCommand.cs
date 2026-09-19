@@ -112,6 +112,7 @@ internal static class FolderCommand
                 ct))));
 
         Option<string> permsFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
+        Option<string?> permsTaskId = CommandOptions.TaskId();
         Option<string?> permsFreshness = CommandOptions.Freshness();
         command.Subcommands.Add(CommandFactory.Query(
             "effective-permissions",
@@ -119,11 +120,12 @@ internal static class FolderCommand
             pipeline,
             global,
             taskIdRequired: false,
-            [permsFolderId, permsFreshness],
+            [permsFolderId, permsTaskId, permsFreshness],
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetEffectivePermissionsAsync(
                 parseResult.GetValue(permsFolderId)!,
                 sourcing.CorrelationId,
                 CommandOptions.ParseFreshness(parseResult.GetValue(permsFreshness)),
+                parseResult.GetValue(permsTaskId)!,
                 ct))));
 
         command.Subcommands.Add(CreateAclCommand(pipeline, global));

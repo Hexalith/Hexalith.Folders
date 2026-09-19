@@ -4,10 +4,13 @@ Status: Story 7.13 consumer reference.
 
 This is the consumer-facing reference for the Hexalith.Folders REST surface and the typed SDK that
 mirrors it. It is **rendered from the single Contract Spine**
-`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml` (OpenAPI 3.1.0, title
-"Hexalith.Folders API", version `v1`). No server-side Swagger/Redoc/`MapOpenApi` middleware exists and none
+`src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml` (OpenAPI 3.1.0, title
+"Hexalith.Folders API", version `v2`). No server-side Swagger/Redoc/`MapOpenApi` middleware exists and none
 is added; the spine YAML is the only source. The operation and tag inventory below is asserted **equal to the
 parsed spine** by `ConsumerDocsConformanceTests`, so this document cannot silently drift from the contract.
+
+This reference describes the non-routed PD10 v2 candidate. It is deterministic A6b review evidence, not an
+available production endpoint or consumer-cutover authorization.
 
 All examples are **metadata-only**: identifiers are opaque, synthetic references and URLs use `.invalid`
 placeholders. Never place secrets, bearer tokens, raw file contents, base64 file bytes, diffs, provider
@@ -35,18 +38,16 @@ examples.
 
 ## Surface conventions
 
-- **Base server path:** `/api/v1`. Every operation path below is rooted there.
+- **Base server path:** `/api/v2`. Every operation path below is rooted there.
 - **Transports are parallel over one contract.** REST, the typed SDK (`Hexalith.Folders.Client`), the CLI, and
-  the MCP server are parallel adapters of the same 47 canonical operations; the SDK is the canonical typed
+  the MCP server are parallel adapters of the same 49 canonical operations; the SDK is the canonical typed
   client and the CLI/MCP wrap it. Vocabularies (error categories, exit codes, failure kinds) are 1:1 with the
   parity oracle and are never collapsed or renamed.
-- **Parity is wire-exercised, not just contractual.** The four-surface canonical-lifecycle parity claim is
-  gated on Stories 8.1–8.3 and is now satisfied: all 47 operations have REST server routes (8.1/8.2), and the
-  golden-lifecycle and mixed-surface scenarios are exercised end-to-end over the real transport across
-  REST/SDK/CLI/MCP (8.3) — including canonical cross-surface error parity (`idempotency_conflict` → HTTP 409 /
-  CLI exit 68 / MCP `idempotency_conflict`; `idempotency_key_expired` → HTTP 409 / CLI exit 76 / MCP
-  `idempotency_key_expired`; ACL denials as the safe denial `not_found_to_caller`). See the
-  [contract & parity CI gates](../contract/contract-parity-ci-gates.md) for the enforcing test lanes.
+- **Candidate parity is deterministic, not runtime evidence.** The 49 generated C13 rows bind REST, SDK, CLI,
+  MCP, and applicable UI semantics. The supported production host does not route `/api/v2`; A6b, Section 9,
+  and A8 remain later gates. Canonical mappings include `idempotency_conflict` → CLI 68 / MCP
+  `idempotency_conflict`, `read_model_unavailable` → CLI 73, and `concurrency_conflict` → CLI 77 / MCP
+  `concurrency_conflict`.
 
 ### Security
 
@@ -70,7 +71,7 @@ Mutating operations (`POST`/`PUT`) carry the canonical header triple:
 - **Query rule:** non-mutating (`GET`) operations MUST NOT accept `Idempotency-Key`. Supplying one is a
   client-side usage error.
 - **POST-as-query operations:** `ValidateProviderReadiness`
-  (`POST /api/v1/provider-readiness/validations`) and the context-query POSTs
+  (`POST /api/v2/provider-readiness/validations`) and the context-query POSTs
   (`GetFolderFileMetadata`, `SearchFolderFiles`, `GlobFolderFiles`, `ReadFileRange`) accept request bodies for
   evidence/query input but are read-only — they are **not** idempotency-keyed and exhibit snapshot-per-task
   read-consistency semantics.
@@ -90,8 +91,9 @@ spine `ProblemDetails` schema requires, in addition to `type`/`title`/`status`:
 | `clientAction` | One of `retry`, `revise_request`, `check_credentials`, `wait_for_reconciliation`, `contact_operator`, `no_action`, `refresh_state_then_submit_with_new_key`. |
 | `details.visibility` | Visibility class for the metadata-only `details` map; file contents, diffs, tokens, and unauthorized existence hints are forbidden. |
 
-Task-scoped failures may include `taskId` as optional metadata-only additional evidence, but it is not a
-required `ProblemDetails` property in the spine.
+Protected v2 failures do not expose task or resource identity. Every error requires a closed
+`details.visibility` value; fresh negative authority is one canonical 404 and unusable authority is one
+retryable canonical 503.
 
 The CLI projects `category` to an [exit code](./cli-reference.md#exit-codes) and the MCP server projects it to
 a [failure kind](./mcp-reference.md#failure-kind-catalog); both maps are 1:1 with the parity oracle.
@@ -109,10 +111,10 @@ Provider binding configuration and read-only readiness/support evidence. See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `ConfigureProviderBinding` | PUT | `/api/v1/provider-bindings/{providerBindingRef}` | Mutating; idempotency-keyed. |
-| `GetProviderBinding` | GET | `/api/v1/provider-bindings/{providerBindingRef}` | Read-only. |
-| `ValidateProviderReadiness` | POST | `/api/v1/provider-readiness/validations` | POST-as-query; read-only, not idempotency-keyed. |
-| `GetProviderSupportEvidence` | GET | `/api/v1/provider-readiness/support-evidence` | Read-only. |
+| `ConfigureProviderBinding` | PUT | `/api/v2/provider-bindings/{providerBindingRef}` | Mutating; idempotency-keyed. |
+| `GetProviderBinding` | GET | `/api/v2/provider-bindings/{providerBindingRef}` | Read-only. |
+| `ValidateProviderReadiness` | POST | `/api/v2/provider-readiness/validations` | POST-as-query; read-only, not idempotency-keyed. |
+| `GetProviderSupportEvidence` | GET | `/api/v2/provider-readiness/support-evidence` | Read-only. |
 
 ### Tag: `folders`
 
@@ -121,17 +123,17 @@ Folder identity, repository binding, ACL, branch-ref policy, and lifecycle statu
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `CreateFolder` | POST | `/api/v1/folders` | Mutating; idempotency-keyed. |
-| `CreateRepositoryBackedFolder` | POST | `/api/v1/folders/repository-backed` | Mutating; idempotency-keyed. |
-| `BindRepository` | POST | `/api/v1/folders/{folderId}/repository-bindings` | Mutating; idempotency-keyed. |
-| `GetRepositoryBinding` | GET | `/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}` | Read-only. |
-| `ArchiveFolder` | POST | `/api/v1/folders/{folderId}/archive` | Mutating; idempotency-keyed. |
-| `GetFolderLifecycleStatus` | GET | `/api/v1/folders/{folderId}/lifecycle-status` | Read-only. |
-| `GetEffectivePermissions` | GET | `/api/v1/folders/{folderId}/effective-permissions` | Read-only. |
-| `ListFolderAclEntries` | GET | `/api/v1/folders/{folderId}/acl` | Read-only. |
-| `UpdateFolderAclEntry` | PUT | `/api/v1/folders/{folderId}/acl/{aclEntryId}` | Mutating; idempotency-keyed. |
-| `ConfigureBranchRefPolicy` | PUT | `/api/v1/folders/{folderId}/branch-ref-policy` | Mutating; idempotency-keyed. |
-| `GetBranchRefPolicy` | GET | `/api/v1/folders/{folderId}/branch-ref-policy` | Read-only. |
+| `CreateFolder` | POST | `/api/v2/folders` | Mutating; idempotency-keyed. |
+| `CreateRepositoryBackedFolder` | POST | `/api/v2/folders/repository-backed` | Mutating; idempotency-keyed. |
+| `BindRepository` | POST | `/api/v2/folders/{folderId}/repository-bindings` | Mutating; idempotency-keyed. |
+| `GetRepositoryBinding` | GET | `/api/v2/folders/{folderId}/repository-bindings/{repositoryBindingId}` | Read-only. |
+| `ArchiveFolder` | POST | `/api/v2/folders/{folderId}/archive` | Mutating; idempotency-keyed. |
+| `GetFolderLifecycleStatus` | GET | `/api/v2/folders/{folderId}/lifecycle-status` | Read-only. |
+| `GetEffectivePermissions` | GET | `/api/v2/folders/{folderId}/effective-permissions` | Read-only. |
+| `ListFolderAclEntries` | GET | `/api/v2/folders/{folderId}/acl` | Read-only. |
+| `UpdateFolderAclEntry` | PUT | `/api/v2/folders/{folderId}/acl/{aclEntryId}` | Mutating; idempotency-keyed. |
+| `ConfigureBranchRefPolicy` | PUT | `/api/v2/folders/{folderId}/branch-ref-policy` | Mutating; idempotency-keyed. |
+| `GetBranchRefPolicy` | GET | `/api/v2/folders/{folderId}/branch-ref-policy` | Read-only. |
 
 ### Tag: `workspaces`
 
@@ -140,12 +142,12 @@ Workspace preparation, locking, and transition/retry evidence. See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `PrepareWorkspace` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation` | Mutating; idempotency-keyed. |
-| `LockWorkspace` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock` | Mutating; idempotency-keyed. |
-| `ReleaseWorkspaceLock` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release` | Mutating; idempotency-keyed. |
-| `GetWorkspaceLock` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock` | Read-only. |
-| `GetWorkspaceRetryEligibility` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility` | Read-only. |
-| `GetWorkspaceTransitionEvidence` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence` | Read-only. |
+| `PrepareWorkspace` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/preparation` | Mutating; idempotency-keyed. |
+| `LockWorkspace` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock` | Mutating; idempotency-keyed. |
+| `ReleaseWorkspaceLock` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock/release` | Mutating; idempotency-keyed. |
+| `GetWorkspaceLock` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock` | Read-only. |
+| `GetWorkspaceRetryEligibility` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility` | Read-only. |
+| `GetWorkspaceTransitionEvidence` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/transition-evidence` | Read-only. |
 
 ### Tag: `files`
 
@@ -154,9 +156,9 @@ File add/change/remove mutations against a locked workspace. See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `AddFile` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add` | Mutating; idempotency-keyed. |
-| `ChangeFile` | PUT | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change` | Mutating; idempotency-keyed. |
-| `RemoveFile` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove` | Mutating; idempotency-keyed. |
+| `AddFile` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/add` | Mutating; idempotency-keyed. |
+| `ChangeFile` | PUT | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/change` | Mutating; idempotency-keyed. |
+| `RemoveFile` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/remove` | Mutating; idempotency-keyed. |
 
 ### Tag: `commits`
 
@@ -165,9 +167,9 @@ Workspace commit and commit/provider evidence. See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `CommitWorkspace` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits` | Mutating; idempotency-keyed. |
-| `GetCommitEvidence` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence` | Read-only. |
-| `GetProviderOutcome` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome` | Read-only. |
+| `CommitWorkspace` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits` | Mutating; idempotency-keyed. |
+| `GetCommitEvidence` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence` | Read-only. |
+| `GetProviderOutcome` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome` | Read-only. |
 
 ### Tag: `query-status`
 
@@ -176,10 +178,10 @@ Workspace, task, reconciliation, and cleanup status queries. See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `GetWorkspaceStatus` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/status` | Read-only. |
-| `GetWorkspaceCleanupStatus` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status` | Read-only. |
-| `GetReconciliationStatus` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status` | Read-only. |
-| `GetTaskStatus` | GET | `/api/v1/tasks/{taskId}/status` | Read-only. |
+| `GetWorkspaceStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/status` | Read-only. |
+| `GetWorkspaceCleanupStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/cleanup/status` | Read-only. |
+| `GetReconciliationStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status` | Read-only. |
+| `GetTaskStatus` | GET | `/api/v2/folders/{folderId}/tasks/{taskId}/status` | Read-only; folder authority precedes task binding and lookup. |
 
 ### Tag: `audit`
 
@@ -188,10 +190,10 @@ Audit trail and operation-timeline reads. See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `ListAuditTrail` | GET | `/api/v1/folders/{folderId}/audit-trail` | Read-only. |
-| `GetAuditRecord` | GET | `/api/v1/folders/{folderId}/audit-trail/{auditRecordId}` | Read-only. |
-| `ListOperationTimeline` | GET | `/api/v1/folders/{folderId}/operation-timeline` | Read-only. |
-| `GetOperationTimelineEntry` | GET | `/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}` | Read-only. |
+| `ListAuditTrail` | GET | `/api/v2/folders/{folderId}/audit-trail` | Read-only. |
+| `GetAuditRecord` | GET | `/api/v2/folders/{folderId}/audit-trail/{auditRecordId}` | Read-only. |
+| `ListOperationTimeline` | GET | `/api/v2/folders/{folderId}/operation-timeline` | Read-only. |
+| `GetOperationTimelineEntry` | GET | `/api/v2/folders/{folderId}/operation-timeline/{timelineEntryId}` | Read-only. |
 
 ### Tag: `ops-console`
 
@@ -200,13 +202,13 @@ Story 7.14). See [audit & ops-console groups](../contract/audit-ops-console-cont
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `GetReadinessDiagnostics` | GET | `/api/v1/ops-console/readiness-diagnostics` | Read-only. |
-| `GetProjectionFreshness` | GET | `/api/v1/ops-console/projection-freshness` | Read-only. |
-| `GetProviderStatusDiagnostics` | GET | `/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics` | Read-only. |
-| `GetLockDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics` | Read-only. |
-| `GetDirtyStateDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics` | Read-only. |
-| `GetSyncStatusDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics` | Read-only. |
-| `GetFailedOperationDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics` | Read-only. |
+| `GetReadinessDiagnostics` | GET | `/api/v2/folders/{folderId}/ops-console/readiness-diagnostics` | Read-only; folder-scoped. |
+| `GetProjectionFreshness` | GET | `/api/v2/folders/{folderId}/ops-console/projection-freshness` | Read-only; folder-scoped. |
+| `GetProviderStatusDiagnostics` | GET | `/api/v2/folders/{folderId}/ops-console/provider-status-diagnostics` | Read-only. |
+| `GetLockDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics` | Read-only. |
+| `GetDirtyStateDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics` | Read-only. |
+| `GetSyncStatusDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics` | Read-only. |
+| `GetFailedOperationDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics` | Read-only. |
 
 ### Tag: `context-queries`
 
@@ -215,13 +217,13 @@ Read-only file-context queries (tree, metadata, search, glob, range-read). See
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `ListFolderFiles` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree` | Read-only. |
-| `GetFolderFileMetadata` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata` | POST-as-query; read-only. |
-| `SearchFolderFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search` | POST-as-query; read-only. |
-| `SearchFolderIndexedFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search` | POST-as-query; read-only; eventually-consistent search index. |
-| `GlobFolderFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob` | POST-as-query; read-only. |
-| `ReadFileRange` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read` | POST-as-query; read-only. |
-| `GetFolderIndexingStatus` | GET | `/api/v1/folders/{folderId}/indexing-status` | Read-only; eventually-consistent indexing-status projection. |
+| `ListFolderFiles` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/tree` | Read-only. |
+| `GetFolderFileMetadata` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/metadata` | POST-as-query; read-only. |
+| `SearchFolderFiles` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/search` | POST-as-query; read-only. |
+| `SearchFolderIndexedFiles` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/index-search` | POST-as-query; read-only; eventually-consistent search index. |
+| `GlobFolderFiles` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/glob` | POST-as-query; read-only. |
+| `ReadFileRange` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/range-read` | POST-as-query; read-only. |
+| `GetFolderIndexingStatus` | GET | `/api/v2/folders/{folderId}/indexing-status` | Read-only; eventually-consistent indexing-status projection. |
 
 ## SDK operation reference (typed client)
 

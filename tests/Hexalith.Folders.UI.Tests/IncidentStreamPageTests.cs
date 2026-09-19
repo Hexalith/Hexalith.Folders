@@ -301,18 +301,18 @@ public sealed class IncidentStreamPageTests
         using BunitContext _ctx = ctx;
 
         // AC #8: the incident-permission/ACL decision is the server's — surface the canonical token only.
-        const string body = """{"category":"audit_access_denied","correlationId":"corr-y","retryable":false}""";
+        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(new HexalithFoldersApiException("denied", 404, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<IncidentStream> rendered = RenderForFolder(ctx);
 
         rendered.WaitForAssertion(() =>
             rendered.Find("[data-testid=\"console-error-panel\"]").ShouldNotBeNull());
 
-        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("audit_access_denied");
+        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
         rendered.FindAll("[data-testid=\"console-page-incident-stream-table\"]").ShouldBeEmpty();
         rendered.Find("[data-testid=\"incident-degraded-mode-banner\"]").ShouldNotBeNull();
         rendered.FindAll("h1").Count.ShouldBe(1);
@@ -617,7 +617,7 @@ public sealed class IncidentStreamPageTests
         // AC #7: the supplementary effective-permissions read uses the swallow-denial TryReadAsync helper.
         // A denial on THAT read must not block the page — the authoritative gate is the primary timeline read,
         // which here succeeds, so the event table still renders (no error panel from the swallowed denial).
-        client.GetEffectivePermissionsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+        client.GetEffectivePermissionsAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new HexalithFoldersApiException("denied", 403, "{}", EmptyHeaders, innerException: null));
         StubList(client, Page(truncated: false, cursor: null, VisibleEntry()));
 
@@ -670,7 +670,7 @@ public sealed class IncidentStreamPageTests
         // load (via the swallow-denial TryReadAsync helper) and must receive the page's per-load token so the
         // F-7 Cancel affordance can abort it. Asserted via the CancellationToken overload of the read.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

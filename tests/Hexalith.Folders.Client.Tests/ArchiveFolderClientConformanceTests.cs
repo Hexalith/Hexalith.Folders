@@ -43,13 +43,13 @@ public sealed class ArchiveFolderClientConformanceTests
     {
         ArchiveFolderRequest request = new()
         {
-            RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
             ArchiveReasonCode = reasonCode,
         };
 
         string json = JsonConvert.SerializeObject(request);
 
-        json.ShouldContain("\"requestSchemaVersion\":\"v1\"");
+        json.ShouldContain("\"requestSchemaVersion\":\"v2\"");
         json.ShouldContain($"\"archiveReasonCode\":\"{expectedWireValue}\"");
     }
 }

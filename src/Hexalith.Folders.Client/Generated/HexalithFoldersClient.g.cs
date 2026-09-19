@@ -156,9 +156,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
+        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -167,9 +168,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Configure a provider binding reference without credential material.
@@ -955,12 +957,13 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns task lifecycle metadata after authorization-before-observation. Unknown, hidden, wrong-tenant, redacted, and projection-unavailable tasks use safe-denial or read-model-unavailable shapes without revealing task existence.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="taskId">Opaque task identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized task status.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
+        System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string folderId, string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -969,12 +972,13 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns task lifecycle metadata after authorization-before-observation. Unknown, hidden, wrong-tenant, redacted, and projection-unavailable tasks use safe-denial or read-model-unavailable shapes without revealing task existence.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="taskId">Opaque task identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized task status.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string folderId, string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Read authorized commit evidence.
@@ -1199,11 +1203,12 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only readiness diagnostics for the authorized diagnostic audience. Tenant authority comes from authentication context and EventStore envelopes; query input cannot enumerate hidden resources.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized readiness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
+        System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1212,11 +1217,12 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only readiness diagnostics for the authorized diagnostic audience. Tenant authority comes from authentication context and EventStore envelopes; query input cannot enumerate hidden resources.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized readiness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Read lock diagnostics.
@@ -1367,11 +1373,12 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only projection freshness diagnostics with watermarks, stale or unavailable reason codes, elapsed time, and diagnostic audience classification. Tenant authority is envelope-derived and cannot be changed by selectors.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized projection freshness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
+        System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -1380,11 +1387,12 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only projection freshness diagnostics with watermarks, stale or unavailable reason codes, elapsed time, and diagnostic audience classification. Tenant authority is envelope-derived and cannot be changed by selectors.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized projection freshness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -1478,8 +1486,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders"
-                    urlBuilder_.Append("api/v1/folders");
+                    // Operation Path: "api/v2/folders"
+                    urlBuilder_.Append("api/v2/folders");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -1534,14 +1542,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -1552,6 +1560,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1617,8 +1635,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/lifecycle-status"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/lifecycle-status"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/lifecycle-status");
 
@@ -1665,16 +1683,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -1692,7 +1700,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1771,8 +1779,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/archive"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/archive"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/archive");
 
@@ -1829,16 +1837,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -1857,6 +1855,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1928,8 +1936,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/acl"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/acl"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/acl");
                     urlBuilder_.Append('?');
@@ -1990,16 +1998,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2017,7 +2015,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2101,8 +2099,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/acl/{aclEntryId}"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/acl/{aclEntryId}"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/acl/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(aclEntryId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -2160,16 +2158,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2188,6 +2176,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2215,11 +2213,12 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
+        public virtual System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id)
         {
-            return GetEffectivePermissionsAsync(folderId, x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
+            return GetEffectivePermissionsAsync(folderId, x_Correlation_Id, x_Hexalith_Freshness, x_Hexalith_Task_Id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -2229,9 +2228,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id, System.Threading.CancellationToken cancellationToken)
         {
             if (folderId == null)
                 throw new System.ArgumentNullException("folderId");
@@ -2248,13 +2248,16 @@ namespace Hexalith.Folders.Client.Generated
 
                     if (x_Hexalith_Freshness != null)
                         request_.Headers.TryAddWithoutValidation("X-Hexalith-Freshness", ConvertToString(x_Hexalith_Freshness, System.Globalization.CultureInfo.InvariantCulture));
+
+                    if (x_Hexalith_Task_Id != null)
+                        request_.Headers.TryAddWithoutValidation("X-Hexalith-Task-Id", ConvertToString(x_Hexalith_Task_Id, System.Globalization.CultureInfo.InvariantCulture));
                     request_.Method = new System.Net.Http.HttpMethod("GET");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/effective-permissions"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/effective-permissions"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/effective-permissions");
 
@@ -2301,16 +2304,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2328,7 +2321,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2407,8 +2400,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/provider-bindings/{providerBindingRef}"
-                    urlBuilder_.Append("api/v1/provider-bindings/");
+                    // Operation Path: "api/v2/provider-bindings/{providerBindingRef}"
+                    urlBuilder_.Append("api/v2/provider-bindings/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(providerBindingRef, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -2464,14 +2457,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -2491,7 +2484,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider dependency is unavailable or readiness cannot be safely established.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2557,8 +2550,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/provider-bindings/{providerBindingRef}"
-                    urlBuilder_.Append("api/v1/provider-bindings/");
+                    // Operation Path: "api/v2/provider-bindings/{providerBindingRef}"
+                    urlBuilder_.Append("api/v2/provider-bindings/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(providerBindingRef, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -2604,16 +2597,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2631,7 +2614,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2699,8 +2682,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/provider-readiness/validations"
-                    urlBuilder_.Append("api/v1/provider-readiness/validations");
+                    // Operation Path: "api/v2/provider-readiness/validations"
+                    urlBuilder_.Append("api/v2/provider-readiness/validations");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -2745,16 +2728,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2782,7 +2755,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider dependency is unavailable or readiness cannot be safely established.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2847,8 +2820,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/provider-readiness/support-evidence"
-                    urlBuilder_.Append("api/v1/provider-readiness/support-evidence");
+                    // Operation Path: "api/v2/provider-readiness/support-evidence"
+                    urlBuilder_.Append("api/v2/provider-readiness/support-evidence");
                     urlBuilder_.Append('?');
                     if (cursor != null)
                     {
@@ -2903,14 +2876,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -2920,7 +2893,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2994,8 +2967,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/repository-backed"
-                    urlBuilder_.Append("api/v1/folders/repository-backed");
+                    // Operation Path: "api/v2/folders/repository-backed"
+                    urlBuilder_.Append("api/v2/folders/repository-backed");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -3050,16 +3023,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3097,7 +3060,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider dependency is unavailable or readiness cannot be safely established.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3176,8 +3139,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/repository-bindings"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/repository-bindings"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/repository-bindings");
 
@@ -3234,16 +3197,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3291,7 +3244,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider dependency is unavailable or readiness cannot be safely established.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3362,8 +3315,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/repository-bindings/{repositoryBindingId}"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/repository-bindings/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(repositoryBindingId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3411,16 +3364,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3438,7 +3381,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3517,8 +3460,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/branch-ref-policy"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/branch-ref-policy"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/branch-ref-policy");
 
@@ -3575,16 +3518,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3603,6 +3536,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3668,8 +3611,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/branch-ref-policy"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/branch-ref-policy"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/branch-ref-policy");
 
@@ -3716,16 +3659,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3743,7 +3676,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3834,8 +3767,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/preparation"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3894,16 +3827,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3941,7 +3864,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider readiness cannot be safely established, or provider outcome is unknown. Authorization-first contract \u2014 these distinguishable responses are only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4032,8 +3955,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/lock"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/lock"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4092,16 +4015,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4149,7 +4062,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider dependency is unavailable or readiness cannot be safely established.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4226,8 +4139,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/lock"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/lock"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4276,16 +4189,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4313,7 +4216,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4404,8 +4307,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/lock/release"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4464,16 +4367,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4521,7 +4414,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider dependency is unavailable or readiness cannot be safely established.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4597,8 +4490,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4647,16 +4540,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4674,7 +4557,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4756,8 +4639,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/transition-evidence"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4806,16 +4689,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4833,7 +4706,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4924,8 +4797,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/files/add"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -4984,24 +4857,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5066,12 +4929,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5162,8 +5025,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/files/change"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -5222,24 +5085,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5304,12 +5157,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5400,8 +5253,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/files/remove"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -5460,24 +5313,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5532,12 +5375,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5623,8 +5466,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/context/tree"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -5693,24 +5536,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5745,12 +5578,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5839,8 +5672,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/context/metadata"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -5899,24 +5732,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5951,12 +5774,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6045,8 +5868,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/context/search"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -6105,24 +5928,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6157,12 +5970,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6251,8 +6064,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/context/index-search"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -6311,16 +6124,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -6368,7 +6171,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6445,8 +6248,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/indexing-status"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/indexing-status"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/indexing-status");
 
@@ -6503,16 +6306,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -6530,7 +6323,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6619,8 +6412,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/context/glob"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -6679,24 +6472,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6731,12 +6514,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6825,8 +6608,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/context/range-read"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -6895,24 +6678,14 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
+                        if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileSafeResourceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<FileSafeResourceUnavailableProblem>("Exact non-enumerating outcome for every missing, excluded, restricted, sensitivity-denied, or unauthorized file path.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Safe denial for missing, excluded, restricted, sensitivity-denied, or unauthorized paths and resources. Every cause uses status 404 with category tenant_access_denied and code resource_unavailable and does not reveal protected resource existence, policy, class, path, or hidden counts.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6957,12 +6730,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7053,8 +6826,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/commits"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/commits"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -7113,16 +6886,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7160,7 +6923,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Provider or read-model dependency cannot produce a safe commit outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7237,8 +7000,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/status"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/status"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -7287,16 +7050,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7314,7 +7067,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7396,8 +7149,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/cleanup/status"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -7446,16 +7199,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7473,7 +7216,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7501,14 +7244,15 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns task lifecycle metadata after authorization-before-observation. Unknown, hidden, wrong-tenant, redacted, and projection-unavailable tasks use safe-denial or read-model-unavailable shapes without revealing task existence.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="taskId">Opaque task identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized task status.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
+        public virtual System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string folderId, string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
         {
-            return GetTaskStatusAsync(taskId, x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
+            return GetTaskStatusAsync(folderId, taskId, x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -7518,13 +7262,17 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns task lifecycle metadata after authorization-before-observation. Unknown, hidden, wrong-tenant, redacted, and projection-unavailable tasks use safe-denial or read-model-unavailable shapes without revealing task existence.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="taskId">Opaque task identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized task status.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<TaskStatus> GetTaskStatusAsync(string folderId, string taskId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
         {
+            if (folderId == null)
+                throw new System.ArgumentNullException("folderId");
+
             if (taskId == null)
                 throw new System.ArgumentNullException("taskId");
 
@@ -7545,8 +7293,10 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/tasks/{taskId}/status"
-                    urlBuilder_.Append("api/v1/tasks/");
+                    // Operation Path: "api/v2/folders/{folderId}/tasks/{taskId}/status"
+                    urlBuilder_.Append("api/v2/folders/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/tasks/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(taskId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/status");
 
@@ -7593,16 +7343,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7620,7 +7360,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7702,8 +7442,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -7754,16 +7494,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7781,7 +7511,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7863,8 +7593,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -7915,16 +7645,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7942,7 +7662,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8024,8 +7744,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -8076,16 +7796,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8103,7 +7813,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8181,8 +7891,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/audit-trail"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/audit-trail"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/audit-trail");
                     urlBuilder_.Append('?');
@@ -8243,16 +7953,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8280,7 +7980,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Audit projection unavailable.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8357,8 +8057,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/audit-trail/{auditRecordId}"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/audit-trail/{auditRecordId}"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/audit-trail/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(auditRecordId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -8406,16 +8106,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8443,7 +8133,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8521,8 +8211,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/operation-timeline"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/operation-timeline"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/operation-timeline");
                     urlBuilder_.Append('?');
@@ -8583,16 +8273,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8620,7 +8300,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8697,8 +8377,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/operation-timeline/{timelineEntryId}"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/operation-timeline/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(timelineEntryId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -8746,16 +8426,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8783,7 +8453,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8811,13 +8481,14 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only readiness diagnostics for the authorized diagnostic audience. Tenant authority comes from authentication context and EventStore envelopes; query input cannot enumerate hidden resources.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized readiness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
+        public virtual System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
         {
-            return GetReadinessDiagnosticsAsync(x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
+            return GetReadinessDiagnosticsAsync(folderId, x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -8827,12 +8498,16 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only readiness diagnostics for the authorized diagnostic audience. Tenant authority comes from authentication context and EventStore envelopes; query input cannot enumerate hidden resources.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized readiness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ReadinessDiagnostics> GetReadinessDiagnosticsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
         {
+            if (folderId == null)
+                throw new System.ArgumentNullException("folderId");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -8850,8 +8525,10 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/ops-console/readiness-diagnostics"
-                    urlBuilder_.Append("api/v1/ops-console/readiness-diagnostics");
+                    // Operation Path: "api/v2/folders/{folderId}/ops-console/readiness-diagnostics"
+                    urlBuilder_.Append("api/v2/folders/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/ops-console/readiness-diagnostics");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -8896,16 +8573,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8933,7 +8600,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9010,8 +8677,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -9060,16 +8727,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9097,7 +8754,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9174,8 +8831,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -9224,16 +8881,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9261,7 +8908,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9338,8 +8985,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -9388,16 +9035,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9425,7 +9062,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9497,8 +9134,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/ops-console/provider-status-diagnostics"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/ops-console/provider-status-diagnostics"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/ops-console/provider-status-diagnostics");
 
@@ -9545,16 +9182,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9582,7 +9209,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9659,8 +9286,8 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics"
-                    urlBuilder_.Append("api/v1/folders/");
+                    // Operation Path: "api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics"
+                    urlBuilder_.Append("api/v2/folders/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append("/workspaces/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(workspaceId, System.Globalization.CultureInfo.InvariantCulture)));
@@ -9709,16 +9336,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9746,7 +9363,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Read model is temporarily unavailable without leaking protected resource existence.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9774,13 +9391,14 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only projection freshness diagnostics with watermarks, stale or unavailable reason codes, elapsed time, and diagnostic audience classification. Tenant authority is envelope-derived and cannot be changed by selectors.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized projection freshness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
+        public virtual System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
         {
-            return GetProjectionFreshnessAsync(x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
+            return GetProjectionFreshnessAsync(folderId, x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -9790,12 +9408,16 @@ namespace Hexalith.Folders.Client.Generated
         /// <remarks>
         /// Returns read-only metadata-only projection freshness diagnostics with watermarks, stale or unavailable reason codes, elapsed time, and diagnostic audience classification. Tenant authority is envelope-derived and cannot be changed by selectors.
         /// </remarks>
+        /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Authorized projection freshness diagnostics.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProjectionFreshnessDiagnostics> GetProjectionFreshnessAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
         {
+            if (folderId == null)
+                throw new System.ArgumentNullException("folderId");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -9813,8 +9435,10 @@ namespace Hexalith.Folders.Client.Generated
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "api/v1/ops-console/projection-freshness"
-                    urlBuilder_.Append("api/v1/ops-console/projection-freshness");
+                    // Operation Path: "api/v2/folders/{folderId}/ops-console/projection-freshness"
+                    urlBuilder_.Append("api/v2/folders/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(folderId, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/ops-console/projection-freshness");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -9859,16 +9483,6 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Authentication failure (no valid token). Externally indistinguishable across all caller cases.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 403)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Authorization denied for an authenticated caller at a coarse resource or action boundary. File path-policy, sensitivity, missing-path, and unauthorized-path outcomes use the file-specific canonical 404 response instead.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
                         if (status_ == 404)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9896,7 +9510,7 @@ namespace Hexalith.Folders.Client.Generated
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Projection unavailable.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -10090,7 +9704,7 @@ namespace Hexalith.Folders.Client.Generated
         public ProblemDetailsClientAction ClientAction { get; set; }
 
         /// <summary>
-        /// Metadata-only details. File contents, diffs, tokens, secrets, and unauthorized existence hints are forbidden.
+        /// Closed metadata-only details. Every error requires visibility; keys outside the generated vocabulary are forbidden.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.Dictionary<string, string> Details { get; set; } = new System.Collections.Generic.Dictionary<string, string>();
@@ -13342,17 +12956,221 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
         Tenant_access_denied = 5,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"cross_tenant_access_denied")]
-        Cross_tenant_access_denied = 6,
+        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
+        Folder_acl_denied = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
+        Concurrency_conflict = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
+        Idempotency_conflict = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
+        Provider_readiness_failed = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
+        Provider_permission_insufficient = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
+        Provider_rate_limited = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
+        Repository_binding_unavailable = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
+        Branch_ref_policy_invalid = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
+        Workspace_not_ready = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
+        Workspace_preparation_failed = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
+        Workspace_locked = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
+        Lock_conflict = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
+        Lock_expired = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
+        Lock_not_owned = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
+        Stale_workspace = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
+        Authorization_revocation_detected = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
+        Repository_conflict = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
+        Duplicate_binding = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
+        Unsupported_provider_capability = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
+        Path_validation_failed = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
+        File_operation_failed = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
+        Dirty_workspace = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
+        Commit_failed = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
+        State_transition_invalid = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 36,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
+        Response_limit_exceeded = 37,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 38,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
+        Projection_stale = 40,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 41,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 42,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
+        Failed_operation = 44,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 45,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
+        Internal_error = 46,
+
+    }
+
+    /// <summary>
+    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CliExitCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"0")]
+        _0 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"1")]
+        _1 = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"64")]
+        _64 = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"65")]
+        _65 = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"66")]
+        _66 = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"67")]
+        _67 = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"68")]
+        _68 = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"69")]
+        _69 = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"70")]
+        _70 = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"71")]
+        _71 = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"72")]
+        _72 = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"73")]
+        _73 = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"74")]
+        _74 = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"75")]
+        _75 = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"76")]
+        _76 = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"77")]
+        _77 = 15,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum McpFailureKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"none")]
+        None = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
+        Authentication_failure = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
+        Usage_error = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
+        Client_configuration_error = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
+        Credential_missing = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
+        Credential_reference_invalid = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
         Folder_acl_denied = 7,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"audit_access_denied")]
-        Audit_access_denied = 8,
-
         [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 9,
+        Validation_error = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
+        Concurrency_conflict = 9,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
         Idempotency_conflict = 10,
@@ -13432,254 +13250,41 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 35,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"not_found")]
-        Not_found = 36,
-
         [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 37,
+        State_transition_invalid = 36,
 
         [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
-        Input_limit_exceeded = 38,
+        Input_limit_exceeded = 37,
 
         [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
-        Response_limit_exceeded = 39,
+        Response_limit_exceeded = 38,
 
         [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
-        Query_timeout = 40,
+        Query_timeout = 39,
 
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 41,
+        Read_model_unavailable = 40,
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 42,
+        Projection_stale = 41,
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 43,
+        Projection_unavailable = 42,
 
         [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 44,
+        Range_unsatisfiable = 43,
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 45,
+        File_policy_unavailable = 44,
 
         [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 46,
+        Failed_operation = 45,
 
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 47,
+        Redacted = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 48,
-
-    }
-
-    /// <summary>
-    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum CliExitCode
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"0")]
-        _0 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"1")]
-        _1 = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"64")]
-        _64 = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"65")]
-        _65 = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"66")]
-        _66 = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"67")]
-        _67 = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"68")]
-        _68 = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"69")]
-        _69 = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"70")]
-        _70 = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"71")]
-        _71 = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"72")]
-        _72 = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"73")]
-        _73 = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"74")]
-        _74 = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"75")]
-        _75 = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"76")]
-        _76 = 14,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum McpFailureKind
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"none")]
-        None = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
-        Authentication_failure = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
-        Usage_error = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
-        Client_configuration_error = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
-        Credential_missing = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
-        Credential_reference_invalid = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
-        Tenant_access_denied = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"cross_tenant_access_denied")]
-        Cross_tenant_access_denied = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
-        Folder_acl_denied = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"audit_access_denied")]
-        Audit_access_denied = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
-        Idempotency_key_expired = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
-        Provider_permission_insufficient = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 15,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
-        Provider_rate_limited = 16,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
-        Repository_binding_unavailable = 17,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
-        Branch_ref_policy_invalid = 18,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
-        Workspace_not_ready = 19,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 20,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 21,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
-        Lock_conflict = 22,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 23,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
-        Lock_not_owned = 24,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
-        Stale_workspace = 25,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 26,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 27,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 28,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
-        Unsupported_provider_capability = 29,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
-        Path_validation_failed = 30,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
-        File_operation_failed = 31,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 32,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 33,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 34,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 35,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 36,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"not_found")]
-        Not_found = 37,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 38,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
-        Input_limit_exceeded = 39,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
-        Response_limit_exceeded = 40,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
-        Query_timeout = 41,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 42,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 43,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 44,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 45,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 46,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 47,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 48,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 49,
+        Internal_error = 47,
 
     }
 
@@ -14333,8 +13938,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum CreateFolderRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14342,8 +13947,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum ArchiveFolderRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14378,8 +13983,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum UpdateFolderAclEntryRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14411,8 +14016,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum ConfigureProviderBindingRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14486,8 +14091,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum BranchRefPolicyRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14495,8 +14100,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum BranchRefPolicyRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14504,8 +14109,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum CreateRepositoryBackedFolderRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14513,8 +14118,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum BindRepositoryRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14554,21 +14159,6 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"caller_completed")]
         Caller_completed = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"caller_abandoned")]
-        Caller_abandoned = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"operator_requested")]
-        Operator_requested = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revoked")]
-        Authorization_revoked = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"task_cancelled")]
-        Task_cancelled = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_revoked")]
-        Lock_revoked = 5,
 
     }
 
@@ -15014,8 +14604,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum CommitWorkspaceRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 

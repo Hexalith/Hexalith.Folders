@@ -843,19 +843,23 @@ public sealed class GovernanceCompletenessGateTests
     }
 
     [Fact]
-    public void Oq3AuthorizationMatrixPackageBindsVersionDigestApprovalsAndRuntimePosture()
+    public void Oq3HistoricalApprovalRemainsBoundWhileV2CandidateAwaitsA6b()
     {
         File.Exists(Oq3MatrixPath).ShouldBeTrue("OQ3 requires the canonical authorization-matrix artifact.");
         File.Exists(Oq3EvidencePath).ShouldBeTrue("OQ3 requires a versioned governance evidence manifest.");
 
         string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq3MatrixPath)));
-        actualDigest.ShouldBe(ApprovedOq3Sha256, "OQ3 matrix changes require a new version, digest, and fresh Security and PM approvals.");
+        actualDigest.ShouldNotBe(ApprovedOq3Sha256, "the v2 candidate must reopen the historical v1 approval rather than silently inheriting it.");
+        string matrixText = File.ReadAllText(Oq3MatrixPath);
+        matrixText.ShouldContain("candidate-awaiting-a6b", Case.Sensitive);
+        matrixText.ShouldContain("Historical approval: version `1.0.0`", Case.Sensitive);
+        matrixText.ShouldContain("Required A6b approval: Product + Architecture + Security", Case.Sensitive);
 
         YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
         ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
         GateDiagnostic[] diagnostics = EvaluateOq3Evidence(
             evidence,
-            actualDigest,
+            ApprovedOq3Sha256,
             policy,
             DateOnly.FromDateTime(DateTime.UtcNow));
 
@@ -865,6 +869,12 @@ public sealed class GovernanceCompletenessGateTests
         }
 
         diagnostics.ShouldBeEmpty(string.Join(Environment.NewLine, diagnostics.Select(diagnostic => diagnostic.ToString())));
+
+        YamlMappingNode candidateManifest = LoadYamlMapping(Path.Combine(
+            RepositoryRoot,
+            "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"));
+        RequiredScalar(candidateManifest, "authorization_matrix_sha256").ShouldBe(actualDigest);
+        RequiredScalar(candidateManifest, "governance_status").ShouldBe("candidate-awaiting-a6b");
 
         string[] canonicalSurfaces = RequiredSequence(evidence, "canonical_surfaces").Children
             .Select(node => RequiredScalar(node, "canonical_surface"))
@@ -901,9 +911,15 @@ public sealed class GovernanceCompletenessGateTests
 
         foreach (string planningPath in Oq3DigestBoundPlanningArtifacts)
         {
-            File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningPath)))
-                .Contains(ApprovedOq3Sha256, StringComparison.Ordinal)
-                .ShouldBeTrue(planningPath);
+            string planningText = File.ReadAllText(Path.Combine(RepositoryRoot, NormalizeForFileSystem(planningPath)));
+            if (planningPath.EndsWith("planning-story-manifest.yaml", StringComparison.Ordinal))
+            {
+                planningText.ShouldContain("sha256: pending-1.17-GENERATE", Case.Sensitive);
+            }
+            else
+            {
+                planningText.Contains(ApprovedOq3Sha256, StringComparison.Ordinal).ShouldBeTrue(planningPath);
+            }
         }
     }
 

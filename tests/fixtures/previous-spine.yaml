@@ -1,168 +1,1153 @@
-version: captured-baseline
-source_marker: captured-from-openapi
-intent: First captured Contract Spine baseline for symmetric drift detection.
+version: historical-v1-fingerprint-baseline
+source_marker: captured-from-historical-v1-openapi
+comparison_profile: historical-v1-to-pd10-v2
+intent: Historical v1 route, status-code, and error-vocabulary fingerprints for PD10 v2 drift detection.
 ownership:
   owner_workstream: Phase 1 Contract Spine and drift-detection stories
   future_test_use: Symmetric drift detection input for parity-oracle generation.
   known_omissions:
-    - No request/response schema fingerprints
-    - No status-code surface
+    - No request/response body schema fingerprints
   mutation_rules:
     - Replace via the generator's --initialize-baseline command after intentional contract changes.
     - Add explicit deprecation entries for intentionally removed or renamed operations.
     - Add new operationIds to `approved_additions:` to acknowledge a sanctioned addition.
   non_policy_placeholder: true
   synthetic_data_only: true
-# Operation IDs added to the Contract Spine AFTER the captured baseline. Each entry is a deliberate
-# acknowledgment that the addition is intentional — the generator and the focused inventory test
-# both fail closed on unlisted additions to surface accidental scope creep.
-approved_additions:
-  - 'GetWorkspaceCleanupStatus'
+approved_additions: []
 operations:
   - operation_id: 'AddFile'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 410
+      - 413
+      - 422
+      - 423
+      - 428
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'file_operation_failed'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'path_validation_failed'
+      - 'provider_failure_known'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
   - operation_id: 'ArchiveFolder'
     method: 'post'
     path: '/api/v1/folders/{folderId}/archive'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'BindRepository'
     method: 'post'
     path: '/api/v1/folders/{folderId}/repository-bindings'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 422
+      - 429
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'duplicate_binding'
+      - 'failed_operation'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'provider_rate_limited'
+      - 'provider_readiness_failed'
+      - 'reconciliation_required'
+      - 'repository_conflict'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'unsupported_provider_capability'
+      - 'validation_error'
   - operation_id: 'ChangeFile'
     method: 'put'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 410
+      - 413
+      - 422
+      - 423
+      - 428
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'file_operation_failed'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'path_validation_failed'
+      - 'provider_failure_known'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
   - operation_id: 'CommitWorkspace'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'commit_failed'
+      - 'cross_tenant_access_denied'
+      - 'dirty_workspace'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+      - 'workspace_not_ready'
   - operation_id: 'ConfigureBranchRefPolicy'
     method: 'put'
     path: '/api/v1/folders/{folderId}/branch-ref-policy'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'ConfigureProviderBinding'
     method: 'put'
     path: '/api/v1/provider-bindings/{providerBindingRef}'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'credential_reference_invalid'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'provider_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'CreateFolder'
     method: 'post'
     path: '/api/v1/folders'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 409
+    error_categories:
+      - 'authentication_failure'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'CreateRepositoryBackedFolder'
     method: 'post'
     path: '/api/v1/folders/repository-backed'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'provider_readiness_failed'
+      - 'reconciliation_required'
+      - 'repository_conflict'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'unsupported_provider_capability'
+      - 'validation_error'
   - operation_id: 'GetAuditRecord'
     method: 'get'
     path: '/api/v1/folders/{folderId}/audit-trail/{auditRecordId}'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetBranchRefPolicy'
     method: 'get'
     path: '/api/v1/folders/{folderId}/branch-ref-policy'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetCommitEvidence'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetDirtyStateDiagnostics'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'dirty_workspace'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'stale_workspace'
+      - 'tenant_access_denied'
   - operation_id: 'GetEffectivePermissions'
     method: 'get'
     path: '/api/v1/folders/{folderId}/effective-permissions'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
   - operation_id: 'GetFailedOperationDiagnostics'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
   - operation_id: 'GetFolderFileMetadata'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata'
+    status_codes:
+      - 200
+      - 400
+      - 401
+      - 403
+      - 404
+      - 408
+      - 413
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'GetFolderIndexingStatus'
     method: 'get'
     path: '/api/v1/folders/{folderId}/indexing-status'
+    status_codes:
+      - 200
+      - 400
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'GetFolderLifecycleStatus'
     method: 'get'
     path: '/api/v1/folders/{folderId}/lifecycle-status'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
   - operation_id: 'GetLockDiagnostics'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'stale_workspace'
+      - 'tenant_access_denied'
+      - 'workspace_locked'
   - operation_id: 'GetOperationTimelineEntry'
     method: 'get'
     path: '/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetProjectionFreshness'
     method: 'get'
     path: '/api/v1/ops-console/projection-freshness'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetProviderBinding'
     method: 'get'
     path: '/api/v1/provider-bindings/{providerBindingRef}'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetProviderOutcome'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
   - operation_id: 'GetProviderStatusDiagnostics'
     method: 'get'
     path: '/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'provider_rate_limited'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
   - operation_id: 'GetProviderSupportEvidence'
     method: 'get'
     path: '/api/v1/provider-readiness/support-evidence'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
   - operation_id: 'GetReadinessDiagnostics'
     method: 'get'
     path: '/api/v1/ops-console/readiness-diagnostics'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'provider_rate_limited'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
   - operation_id: 'GetReconciliationStatus'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetRepositoryBinding'
     method: 'get'
     path: '/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetSyncStatusDiagnostics'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
   - operation_id: 'GetTaskStatus'
     method: 'get'
     path: '/api/v1/tasks/{taskId}/status'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetWorkspaceCleanupStatus'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetWorkspaceLock'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 410
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'stale_workspace'
+      - 'tenant_access_denied'
   - operation_id: 'GetWorkspaceRetryEligibility'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
   - operation_id: 'GetWorkspaceStatus'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/status'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
   - operation_id: 'GetWorkspaceTransitionEvidence'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
   - operation_id: 'GlobFolderFiles'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob'
+    status_codes:
+      - 200
+      - 400
+      - 401
+      - 403
+      - 404
+      - 408
+      - 413
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'ListAuditTrail'
     method: 'get'
     path: '/api/v1/folders/{folderId}/audit-trail'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
   - operation_id: 'ListFolderAclEntries'
     method: 'get'
     path: '/api/v1/folders/{folderId}/acl'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'ListFolderFiles'
     method: 'get'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree'
+    status_codes:
+      - 200
+      - 400
+      - 401
+      - 403
+      - 404
+      - 408
+      - 413
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'ListOperationTimeline'
     method: 'get'
     path: '/api/v1/folders/{folderId}/operation-timeline'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 409
+      - 503
+    error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
   - operation_id: 'LockWorkspace'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 410
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_conflict'
+      - 'lock_expired'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'validation_error'
+      - 'workspace_locked'
   - operation_id: 'PrepareWorkspace'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'branch_ref_policy_invalid'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_conflict'
+      - 'provider_readiness_failed'
+      - 'provider_unavailable'
+      - 'reconciliation_required'
+      - 'repository_binding_unavailable'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+      - 'workspace_preparation_failed'
   - operation_id: 'ReadFileRange'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read'
+    status_codes:
+      - 200
+      - 206
+      - 400
+      - 401
+      - 403
+      - 404
+      - 408
+      - 413
+      - 416
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'range_unsatisfiable'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'ReleaseWorkspaceLock'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 410
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'reconciliation_required'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'RemoveFile'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+      - 410
+      - 422
+      - 423
+      - 428
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'file_operation_failed'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'path_validation_failed'
+      - 'provider_failure_known'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
   - operation_id: 'SearchFolderFiles'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search'
+    status_codes:
+      - 200
+      - 400
+      - 401
+      - 403
+      - 404
+      - 408
+      - 413
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'SearchFolderIndexedFiles'
     method: 'post'
     path: '/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search'
+    status_codes:
+      - 200
+      - 400
+      - 401
+      - 403
+      - 404
+      - 408
+      - 413
+      - 422
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'UpdateFolderAclEntry'
     method: 'put'
     path: '/api/v1/folders/{folderId}/acl/{aclEntryId}'
+    status_codes:
+      - 202
+      - 400
+      - 401
+      - 403
+      - 404
+      - 409
+    error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
   - operation_id: 'ValidateProviderReadiness'
     method: 'post'
     path: '/api/v1/provider-readiness/validations'
+    status_codes:
+      - 200
+      - 401
+      - 403
+      - 404
+      - 429
+      - 503
+    error_categories:
+      - 'authentication_failure'
+      - 'credential_reference_invalid'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_permission_insufficient'
+      - 'provider_rate_limited'
+      - 'provider_readiness_failed'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'unsupported_provider_capability'

@@ -60,7 +60,7 @@ public partial class Workspace : ComponentBase, IDisposable
         // Advisory for the banner; a real authorization denial surfaces on the workspace-status read.
         try
         {
-            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, token).ConfigureAwait(false);
+            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, null!, token).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (_cts.IsCancellationRequested)
         {

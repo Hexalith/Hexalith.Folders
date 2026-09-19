@@ -72,7 +72,7 @@ public partial class Provider : ComponentBase, IDisposable
 
         // Advisory for the banner; a real authorization denial surfaces on the diagnostics read below.
         _permissions = await TryReadAsync(ct =>
-            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, ct), token).ConfigureAwait(false);
+            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, null!, ct), token).ConfigureAwait(false);
 
         // Primary read. Authorization-before-observation: a canonical denial here is the page-level safe denial.
         try

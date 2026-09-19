@@ -16,7 +16,7 @@ tests/fixtures/parity-contract.yaml
 
 ## Inputs
 
-- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`
+- `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml`
 - `tests/fixtures/parity-contract.schema.json`
 - `tests/fixtures/previous-spine.yaml`
 - `docs/contract/idempotency-and-parity-rules.md`
@@ -31,14 +31,16 @@ tests/fixtures/parity-contract.yaml
 | Idempotency and parity rules | Adapter semantics, sourcing rules, CLI and MCP behavioral parity expectations |
 | Architecture Adapter Parity Contract | Behavioral parity dimensions and bounded adapter expectations |
 | Parity row schema | Allowed row shape and enum bounds |
-| Previous spine baseline | Symmetric removal/deprecation comparison |
+| Previous spine baseline | Historical v1 route, status-code, and error-category fingerprints for symmetric comparison with v2 |
 | Story 1.12 helper provenance | Helper identity only; not hash construction policy |
 
 Conflicts fail as `prerequisite-drift`; the generator does not invent fallback policy.
 
 ## Deterministic Output Policy
 
-The generated YAML is a sequence of schema-valid rows sorted by `operation_id`. Output is UTF-8 without BOM, LF-only, timestamp-free, and metadata-only. Safe provenance is emitted as comments containing content hashes and source names, not local absolute paths.
+The generated YAML is a sequence of schema-valid rows sorted by `operation_id`. Each row includes its explicit
+HTTP status set and canonical error set. Output is UTF-8 without BOM, LF-only, timestamp-free, and metadata-only.
+Safe provenance is emitted as comments containing content hashes and source names, not local absolute paths.
 
 ## Validation
 

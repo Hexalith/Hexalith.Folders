@@ -136,7 +136,7 @@ public sealed class GoldenLifecycleParityTests
                 x_Hexalith_Task_Id: "task-sdk",
                 body: new ArchiveFolderRequest
                 {
-                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                     ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                 },
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -240,7 +240,7 @@ public sealed class GoldenLifecycleParityTests
                     x_Hexalith_Task_Id: "task-sdk-neg",
                     body: new ArchiveFolderRequest
                     {
-                        RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                        RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                         ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                     },
                     cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
@@ -364,7 +364,7 @@ public sealed class GoldenLifecycleParityTests
                 x_Hexalith_Task_Id: sdkTaskId,
                 body: new ArchiveFolderRequest
                 {
-                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                     ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                 },
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -731,7 +731,7 @@ public sealed class GoldenLifecycleParityTests
                 x_Hexalith_Task_Id: "task-create-sdk",
                 body: new CreateRepositoryBackedFolderRequest
                 {
-                    RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V2,
                     FolderId = "folder-create-sdk",
                     ProviderBindingRef = "provider-binding-a",
                     RepositoryProfileRef = "profile-a",
@@ -742,7 +742,7 @@ public sealed class GoldenLifecycleParityTests
                     },
                     BranchRefPolicy = new BranchRefPolicyRequest
                     {
-                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V1,
+                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
                         RepositoryBindingId = "binding-a",
                         PolicyRef = "branch_ref_policy_a",
                         DefaultRef = "branch_ref_primary",
@@ -1098,6 +1098,8 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.AddSingleton(timeProvider);
 
             WebApplication app = builder.Build();
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;
@@ -1286,6 +1288,8 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.AddSingleton<IProviderCapabilityEvidenceStore, RecordingProviderCapabilityEvidenceStore>();
 
             WebApplication app = builder.Build();
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;

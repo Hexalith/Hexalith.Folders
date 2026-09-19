@@ -195,18 +195,18 @@ public sealed class OperationTimelinePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"audit_access_denied","correlationId":"corr-y","retryable":false}""";
+        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(new HexalithFoldersApiException("denied", 404, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<OperationTimeline> rendered = Render(ctx);
 
         rendered.WaitForAssertion(() =>
             rendered.Find("[data-testid=\"console-error-panel\"]").ShouldNotBeNull());
 
-        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("audit_access_denied");
+        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
         rendered.FindAll("[data-testid=\"console-page-operation-timeline-table\"]").ShouldBeEmpty();
         rendered.ShouldHaveNoMutationAffordances();
     }
@@ -574,7 +574,7 @@ public sealed class OperationTimelinePageTests
         // permissions read too — invoked UNCONDITIONALLY on every load — so the F-7 Cancel affordance aborts
         // the whole in-flight load, not just the primary read.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]

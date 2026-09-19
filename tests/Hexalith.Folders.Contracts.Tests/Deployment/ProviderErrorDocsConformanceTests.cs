@@ -203,7 +203,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocGeneratedCategoryInventoryEqualsClient()
     {
         HashSet<string> generated = ParseGeneratedEnumValues("CanonicalErrorCategory");
-        generated.Count.ShouldBe(49, "the generated CanonicalErrorCategory must declare exactly 49 members.");
+        generated.Count.ShouldBe(47, "the PD10 v2 CanonicalErrorCategory must declare exactly 47 members.");
 
         HashSet<string> docCategories = FirstColumnBacktickTokens(ErrorDocPath, "<!-- generated-canonical-categories -->");
         AssertSetEquals(docCategories, generated, "error doc generated categories must equal the generated enum exactly.");
@@ -213,7 +213,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocOracleCategoryInventoryEqualsParityContract()
     {
         HashSet<string> oracle = ParseParityOracleCategories();
-        oracle.Count.ShouldBe(46, "the parity oracle must carry exactly 46 distinct canonical categories.");
+        oracle.Count.ShouldBe(44, "the PD10 v2 parity oracle must carry exactly 44 distinct canonical categories.");
 
         HashSet<string> docOracle = FirstColumnBacktickTokens(ErrorDocPath, "<!-- oracle-carried-categories -->");
         AssertSetEquals(docOracle, oracle, "error doc oracle categories must equal the parity oracle exactly.");
@@ -241,7 +241,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocCliExitCodesEqualFoldersExitCodes()
     {
         HashSet<string> codes = ParseCliExitCodes();
-        codes.Count.ShouldBe(15, "FoldersExitCodes must declare exactly 15 canonical exit-code values.");
+        codes.Count.ShouldBe(16, "FoldersExitCodes must declare exactly 16 canonical exit-code values.");
 
         HashSet<string> docCodes = FirstColumnBacktickTokens(ErrorDocPath, "<!-- cli-exit-codes -->");
         AssertSetEquals(docCodes, codes, "error doc CLI exit codes must equal FoldersExitCodes exactly.");

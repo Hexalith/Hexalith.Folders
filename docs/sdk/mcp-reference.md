@@ -7,6 +7,9 @@ that exposes the canonical Folders surface to MCP clients. It is an executable s
 process you launch, **not** a NuGet library — and it wraps the typed SDK (`Hexalith.Folders.Client`); it adds
 no behavior absent from the [Contract Spine](./api-reference.md).
 
+The checked-in tools consume the non-routed PD10 `/api/v2` candidate. They are review evidence only and must
+not be deployed against a production service before the later governance gates authorize exposure.
+
 The four-surface parity this reference relies on is **wire-exercised** end-to-end (REST/SDK/CLI/MCP), gated on
 Stories 8.1–8.3 — including canonical cross-surface error parity (`idempotency_conflict` → MCP failure kind
 `idempotency_conflict`). See [Surface conventions](./api-reference.md#surface-conventions) and the
@@ -119,7 +122,7 @@ Audit 4 = **49**.
 | `get-commit-evidence` | `GetCommitEvidence` | no | no |
 | `get-provider-outcome` | `GetProviderOutcome` | no | no |
 | `get-reconciliation-status` | `GetReconciliationStatus` | no | no |
-| `get-task-status` | `GetTaskStatus` | no | no |
+| `get-task-status` | `GetTaskStatus` | no | yes (folder-bound) |
 
 ### Diagnostics tools (`DiagnosticsTools.cs`)
 
@@ -153,10 +156,10 @@ Two read-only resources are exposed via `[McpServerResource]` URI templates:
 
 ## Failure-kind catalog
 
-The authoritative MCP failure-kind catalog is the **46** `outcome_mapping.mcp_failure_kind` values from the
+The authoritative MCP failure-kind catalog is the **44** `outcome_mapping.mcp_failure_kind` values from the
 parity oracle (`tests/fixtures/parity-contract.yaml`) — each equal verbatim to its `CanonicalErrorCategory`
 name in snake_case — **plus the 2 pre-SDK kinds** `usage_error` and `credential_missing` (emitted before any
-HTTP call, for client-side usage and missing-credential failures). That is **48** kinds total.
+HTTP call, for client-side usage and missing-credential failures). That is **46** kinds total.
 
 Do not use the abridged 13-row architecture summary; it misspells `unknown_provider_outcome`. The success
 mapping (`none`) is not a failure kind. OQ2's `range_unsatisfiable` and `file_policy_unavailable` mappings are
@@ -168,13 +171,12 @@ falls back to `internal_error`.
 ```text
 usage_error
 credential_missing
-audit_access_denied
 authentication_failure
 authorization_revocation_detected
 branch_ref_policy_invalid
 commit_failed
+concurrency_conflict
 credential_reference_invalid
-cross_tenant_access_denied
 dirty_workspace
 duplicate_binding
 failed_operation
@@ -188,7 +190,6 @@ internal_error
 lock_conflict
 lock_expired
 lock_not_owned
-not_found
 path_validation_failed
 projection_stale
 projection_unavailable

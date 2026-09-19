@@ -31,11 +31,10 @@ internal static class ErrorProjection
         // Pre-SDK usage error category, should the server ever echo it → 64.
         CanonicalErrorCategory.Client_configuration_error => FoldersExitCodes.UsageError,
 
-        // Tenant / folder / audit access denial → 66.
+        // Canonical safe denial → 66.
         CanonicalErrorCategory.Tenant_access_denied => FoldersExitCodes.AccessDenied,
-        CanonicalErrorCategory.Cross_tenant_access_denied => FoldersExitCodes.AccessDenied,
         CanonicalErrorCategory.Folder_acl_denied => FoldersExitCodes.AccessDenied,
-        CanonicalErrorCategory.Audit_access_denied => FoldersExitCodes.AccessDenied,
+        CanonicalErrorCategory.Authorization_revocation_detected => FoldersExitCodes.AccessDenied,
 
         // Lock contention → 67.
         CanonicalErrorCategory.Workspace_locked => FoldersExitCodes.LockConflict,
@@ -46,6 +45,9 @@ internal static class ErrorProjection
 
         // Idempotency conflict → 68.
         CanonicalErrorCategory.Idempotency_conflict => FoldersExitCodes.IdempotencyConflict,
+
+        // Aggregate expected-version conflict → 77.
+        CanonicalErrorCategory.Concurrency_conflict => FoldersExitCodes.ConcurrencyConflict,
 
         // Expired idempotency key → 76.
         CanonicalErrorCategory.Idempotency_key_expired => FoldersExitCodes.IdempotencyKeyExpired,
@@ -77,7 +79,6 @@ internal static class ErrorProjection
 
         // Reconciliation / read-model freshness pending → 72.
         CanonicalErrorCategory.Reconciliation_required => FoldersExitCodes.ReconciliationRequired,
-        CanonicalErrorCategory.Read_model_unavailable => FoldersExitCodes.ReconciliationRequired,
         CanonicalErrorCategory.Projection_stale => FoldersExitCodes.ReconciliationRequired,
         CanonicalErrorCategory.Projection_unavailable => FoldersExitCodes.ReconciliationRequired,
         CanonicalErrorCategory.Workspace_not_ready => FoldersExitCodes.ReconciliationRequired,
@@ -85,9 +86,8 @@ internal static class ErrorProjection
         CanonicalErrorCategory.Dirty_workspace => FoldersExitCodes.ReconciliationRequired,
         CanonicalErrorCategory.File_policy_unavailable => FoldersExitCodes.ReconciliationRequired,
 
-        // Not found / authorization revoked → 73.
-        CanonicalErrorCategory.Not_found => FoldersExitCodes.NotFound,
-        CanonicalErrorCategory.Authorization_revocation_detected => FoldersExitCodes.NotFound,
+        // Authority/read-model outage → 73.
+        CanonicalErrorCategory.Read_model_unavailable => FoldersExitCodes.ReadModelUnavailable,
 
         // Invalid lifecycle transition → 74.
         CanonicalErrorCategory.State_transition_invalid => FoldersExitCodes.StateTransitionInvalid,

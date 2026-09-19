@@ -1,0 +1,160 @@
+schema_version: 1
+candidate: 1.17-GENERATE
+matrix_version: 2.0.0
+governance_status: candidate-awaiting-a6b
+production_routed: false
+hash_algorithm: SHA-256
+authorization_matrix_sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+candidate_set_sha256: 535c675159047c0ff325995d351dafaa99aac13a1a542ba07a150f9a26ae27ed
+artifact_count: 75
+artifacts:
+  - path: docs/contract/authorization-matrix.md
+    sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+  - path: docs/contract/contract-parity-ci-gates.md
+    sha256: 0f9a77fb59ece0c666ca23337933940317b9d9ccd38469c5444f41f9a75262d0
+  - path: docs/contract/contract-spine-foundation.md
+    sha256: 7ff02057fa46a1ccc2e5ef6340fdb64ca53a1743e6a5282e7bdcedabd2e29f13
+  - path: docs/contract/parity-oracle-generator.md
+    sha256: ebefb09a32cfa59386a998c64d7f5175b309c2d276ba647281485125d678225d
+  - path: docs/contract/pd10-v2-candidate.md
+    sha256: 62cc54742272e147c49a98f38b94d7acb1cf21abeff8eee0a2aabb1969f9e4a8
+  - path: docs/contract/sdk-generation-and-idempotency-helpers.md
+    sha256: 1fd6f6e4c1d715f413c5c13e8c6733bba3b2004d53de16c9da2793313c616dff
+  - path: docs/operations/canonical-error-catalog.md
+    sha256: 0b600e57543aa070bd7da8be1313aefc732de6b84602d7bae5f9d41c9b741932
+  - path: docs/sdk/api-reference.md
+    sha256: 1a5630ae3e3ad5e4040ccf6fe9379cd6d57c4dccba86f58d05e4d8a5c66a8d9b
+  - path: docs/sdk/cli-reference.md
+    sha256: ef3113538396422b6098284ee44afdb0ddc2a25999495e48edc2a83cf23b8e2b
+  - path: docs/sdk/mcp-reference.md
+    sha256: d580c995c141c8bb4042e98f2d54da9f401ec81332897d38874f9bc136f46d1b
+  - path: docs/sdk/quickstart.md
+    sha256: 1952b1f1e287d178e727687f6296c79106b8f7d032de491338bc71d40002d584
+  - path: samples/Hexalith.Folders.Sample/FolderLifecycleSample.cs
+    sha256: 6d6a25ccc75b8b240107e253787c3cd764eb077755713ec9d6fdac16d124e601
+  - path: scripts/generate-pd10-v2-conformance-set.py
+    sha256: 0b7c165545fa019114e231aec412fd1f246cc989df0e09adeb4de44161ba3e9d
+  - path: scripts/generate-pd10-v2-contract.py
+    sha256: d47d7757c7f5b53e84c605c855923e241848e6fcdd1527230a67929f85b71b6a
+  - path: src/Hexalith.Folders.Cli/Commands/Commit/CommitCommand.cs
+    sha256: d93c4a6b4c206625bb496f4c72bb56d17109352bb01e2104d279eb6894b43f32
+  - path: src/Hexalith.Folders.Cli/Commands/Folder/FolderCommand.cs
+    sha256: b2cc74de1f3951ef58cf9848ee8ebb54cc3c2f627ad15eb33351f3159c694d52
+  - path: src/Hexalith.Folders.Cli/Errors/ErrorProjection.cs
+    sha256: 93a4c5ee01c43b92a32491316848882e5091a6128df1780df63c4ea9e70ad86e
+  - path: src/Hexalith.Folders.Cli/FoldersExitCodes.cs
+    sha256: 519012f54a96d1ea88a7009cb6ed8dfaa309f7c6dc50fe35c553212665e37eb1
+  - path: src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs
+    sha256: 5a0612dc8aa635ec0d80f943b9785f7e64c1ac72fe38da24fdced1a227f29b29
+  - path: src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs
+    sha256: 8d7c523782c29a4424fec74e10137235c6cf880a8b57560a5c6838f9f6975ea2
+  - path: src/Hexalith.Folders.Client/Generation/Program.cs
+    sha256: 73e7cce8f2dcb129eb34fc2191ad15c7eb8bf63333047db219a2c040a6a4ddd3
+  - path: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
+    sha256: 0863858a72c9faceee0f7953abfb6c9ff0389eb9400418708644f52d2c8b043f
+  - path: src/Hexalith.Folders.Client/nswag.json
+    sha256: 3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d
+  - path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
+    sha256: e68a2d53a21faafa735dd03746aa4de643b44f68a239c5b6615445adf9c36031
+  - path: src/Hexalith.Folders.Mcp/Errors/FailureKindProjection.cs
+    sha256: 42bc424c1f9ee20f8800737f1d0372989d2547a931b042efc6ed7e4724dd6035
+  - path: src/Hexalith.Folders.Mcp/Tools/CommitTools.cs
+    sha256: a16f7e1d3d93d0cc7f7d71c770f789f70b4bb248e2e3555531844e7564d4dbeb
+  - path: src/Hexalith.Folders.Mcp/Tools/DiagnosticsTools.cs
+    sha256: 55b3f69b7fa6444bd49027ef4aa7e9a7884f5ed3cf2d7e7dc87769d670794054
+  - path: src/Hexalith.Folders.Mcp/Tools/FolderTools.cs
+    sha256: 42cf05446c01869a9d5c17e8b54d7c5310c238a67294f37038fac7906c01add0
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10AuthorityEvidenceState.cs
+    sha256: a74735d484ede76daeb2290642b899f4422a964eea6449a3c870a230ac3f3a27
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10AuthorizationContext.cs
+    sha256: 0b2c34cf0d1d864b56349831172473076202679868592063b177993008c34668
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10AuthorizationOutcome.cs
+    sha256: dcd1eb6aca4ad4701770be75082d93fccd5a56bae051290b488bcedd18289ff5
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationExecutor.cs
+    sha256: 8fbc3f2447efd0d29dfc00a58cb7b033597d67b613d43b21859889b362b5dc81
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationResult.cs
+    sha256: ee02b2c7374847a99b6aed6e4f2d0a66ad581cc3a4159cbe4d8b35e7c941e496
+  - path: src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs
+    sha256: 69b9ee7b65af80e82d86b580a8032016e934947c031518dac95a1a5ebd81dacc
+  - path: src/Hexalith.Folders.UI/Components/ConsoleErrorPanel.razor
+    sha256: 4dc056c4e4e35d50346ef3d876457391b8be228f9b8ed96abceaf4c08d83a8b2
+  - path: src/Hexalith.Folders.UI/Components/Models/ConsoleErrorView.cs
+    sha256: 9c04eca5434b066cc422daac66b4b66bcae9aba5f8d139afb0c45bfbdebf3661
+  - path: src/Hexalith.Folders.UI/Components/Pages/AuditTrail.razor.cs
+    sha256: 7adee6c30681a290a822082dc143b379b5aa41e6679acf9424cb47e76d3e3d44
+  - path: src/Hexalith.Folders.UI/Components/Pages/FolderDetail.razor
+    sha256: f173dcab28e7558f5836c3007fd6180a0163180516800acea74d10564f256a05
+  - path: src/Hexalith.Folders.UI/Components/Pages/IncidentStream.razor.cs
+    sha256: 404b1e3268386c833f046e7cc29b55c4a80def938a13d1eb87adc78f79fbf554
+  - path: src/Hexalith.Folders.UI/Components/Pages/OperationTimeline.razor.cs
+    sha256: cc711e8887fdbad7740f3495ba548985d864e9bf197d89125df2dd6e339af46a
+  - path: src/Hexalith.Folders.UI/Components/Pages/Provider.razor.cs
+    sha256: ee613a4a5493d40ce85001ec6d9948734977facdca48a02fefcd94787a8f1245
+  - path: src/Hexalith.Folders.UI/Components/Pages/Workspace.razor.cs
+    sha256: 94ff608f91988c3916f2aace95c8ae2f226161e22d0509f7eb73dbc999e21acf
+  - path: src/Hexalith.Folders.UI/Services/ConsoleErrorDisposition.cs
+    sha256: 8798f91661463dd813204156a53af84cdc3ca4e9ea25da0955ee5b92c523bdfe
+  - path: src/Hexalith.Folders.UI/Services/ConsoleErrorPresenter.cs
+    sha256: 57f461fba3c5da0a901b986c286c139f8a63b702ab6e53d155f704e4a005b592
+  - path: src/Hexalith.Folders.UI/Services/ConsoleStatusText.cs
+    sha256: 3ae4449eb7a29705d4e01f2e9425e6a3142eb210ab2b58c6dc06a22cdf06a50c
+  - path: tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
+    sha256: c55157f749bb435ab9469d8014c82a56e4bdc49e7e6a742fb2ffc52b7084c6f5
+  - path: tests/Hexalith.Folders.Cli.Tests/ExitCodeWiringTests.cs
+    sha256: c87567642372d6b93ff9e1f10a64e2e56a0aeef8883e9f8a8632653c685eabbc
+  - path: tests/Hexalith.Folders.Cli.Tests/ParityOracleConformanceTests.cs
+    sha256: 771a389adebea93975a3ba3c51dc0d01de1800c012f5b521bab601f3b4940d8f
+  - path: tests/Hexalith.Folders.Client.Tests/ArchiveFolderClientConformanceTests.cs
+    sha256: 31c310754f22ab997c589b269fc148d3db608f5a87e768aa4417a3a21ac07a66
+  - path: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
+    sha256: f424e6859546adf79b462d01e67747478dbea08b0089a3e8b8e1023a1e84de53
+  - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ConsumerDocsConformanceTests.cs
+    sha256: 5850f27e81170e00d0314aa730f97a67f14328377efdc48199a29e233f9220ff
+  - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ContractParityCiWorkflowConformanceTests.cs
+    sha256: 824c3f08e01aeeba4a90c4a558e95732d0d5ec059d3af508d537c02e319b34d7
+  - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs
+    sha256: 6fcbb93dc9b5f11c5f4d7bb1387b1a4bdd0287569cbdd0895020740837c58ada
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs
+    sha256: d6634030dbb7d891b81c58630f4cc455f15f3a821d4380e54c9a89ea7c00e50c
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: f2dfe1286fe3e157815b8a1e23f31424709c3c86cc392cbac9ae902d0ac466b6
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
+    sha256: c24776a49abce91fbf9b473057bb7324329c9d8d5f6a5b3221085089de7d25f6
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10ConformanceSetTests.cs
+    sha256: b4476ec68a3fc7d35f7537788cc605a57f9326b63a1726cd42e765fbb1e15dc7
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs
+    sha256: e83292512f68741c8e9e3969f17e62687f47e2df89cf1866280f1a8b0df67a80
+  - path: tests/Hexalith.Folders.IntegrationTests/AdapterParity/CrossAdapterBehavioralParityTests.cs
+    sha256: cf94dcfa8d32df3a95888ae3331bda34e937a8b2cd7e080e6ef8d32a590e0c8a
+  - path: tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
+    sha256: c9f9f580fb2bd52e97651fabfc82fddbe9721d5eabc532d7703dbffd4d686c4b
+  - path: tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+    sha256: 644d6b7115992d7fa7c949289ad75bb3ae03fe44bbdd24b65b60e8dcb432a24f
+  - path: tests/Hexalith.Folders.Mcp.Tests/ParityOracleConformanceTests.cs
+    sha256: ff32be33fba801e92f2fcdcafa1a45f5f66e7eb48a7abecc8dfa07230f6d847a
+  - path: tests/Hexalith.Folders.Mcp.Tests/SourcingTests.cs
+    sha256: 5344f6dd5512a0e6c08131f0ed144d3ae44244808c89f9c17f9c718e612725e1
+  - path: tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationExecutorTests.cs
+    sha256: d86c1ad120204acb396cfb4a5c240144a259a9a31f8e65e965223232dd14fc7f
+  - path: tests/Hexalith.Folders.UI.Tests/AuditTrailPageTests.cs
+    sha256: 8253135e425f12107f130d715eac9cf7006419db760246ee2cb6dda303bf2017
+  - path: tests/Hexalith.Folders.UI.Tests/ConsoleErrorPresenterTests.cs
+    sha256: 39e363e5f723757800acf0206fbc845f9d90bbd93d7aa1a94ce0ddf9ab6a2f17
+  - path: tests/Hexalith.Folders.UI.Tests/FolderDetailPageTests.cs
+    sha256: f37ba3df614783c0d3d41c39fbcddd51daa5c9de0810243a668ccd321e189479
+  - path: tests/Hexalith.Folders.UI.Tests/IncidentStreamPageTests.cs
+    sha256: 5c2182c3becbf6786ff0146f88a8f802dfdb78cfe5f00fc33ac900d5847b72e9
+  - path: tests/Hexalith.Folders.UI.Tests/OperationTimelinePageTests.cs
+    sha256: 9538515d622f018d5cecb35200235818b3cb875a1b79f9266fb32c65242507e2
+  - path: tests/fixtures/parity-contract.schema.json
+    sha256: 3f586efded082b86fb72e38809a6a090efa40a04a26001eec8ad7f4a69ddb201
+  - path: tests/fixtures/parity-contract.yaml
+    sha256: 019edbbb0047c13187e021159f3b540900d9c04260f9f45ac0cd7dd7890b2ee4
+  - path: tests/fixtures/previous-spine.yaml
+    sha256: 500aa6646e95880fd9d6370ea54d46342d2e7cc49a4a23953ec4b6ff0676b955
+  - path: tests/tools/parity-oracle-generator/Program.cs
+    sha256: 38574da4da947329035e52bb1af9363a4c67474fc9b7646c4947a2d6ddb15bb0
+  - path: tests/tools/run-contract-parity-ci-gates.ps1
+    sha256: 1ce83405c94f1b50156da125e97bc2d69f091a054445f6c050b5645fb6299e10
+  - path: tests/tools/run-contract-spine-gates.ps1
+    sha256: 415668ce7b02fd76a5786f0f30904df467c959ab3ea54c88f822e99aefa347bc

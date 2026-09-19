@@ -75,10 +75,11 @@ internal static class CommitTools
     [Description("Inspect the status of a task by its identifier (query).")]
     public static Task<string> GetTaskStatus(
         ToolPipeline pipeline,
+        [Description("Opaque parent folder identifier used to authorize the task lookup.")] string folderId,
         [Description("Opaque identifier of the task to inspect (resource path identifier).")] string taskId,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetTaskStatusAsync(taskId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetTaskStatusAsync(folderId, taskId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
 }

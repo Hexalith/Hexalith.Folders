@@ -77,7 +77,8 @@ internal static class CommitCommand
 
         // task-status takes the task identifier as a PATH/resource parameter (not the header task-id);
         // it carries no idempotency key and no header task-id.
-        Option<string> taskResourceId = CommandOptions.RequiredId("--task-id", "Opaque task identifier to query.");
+        Option<string> taskFolderId = CommandOptions.RequiredId("--folder-id", "Opaque parent folder identifier used to authorize the task lookup.");
+        Option<string> taskResourceId = CommandOptions.RequiredId("--task-id", "Opaque task identifier to query after folder authorization.");
         Option<string?> taskFreshness = CommandOptions.Freshness();
         command.Subcommands.Add(CommandFactory.Query(
             "task-status",
@@ -85,8 +86,9 @@ internal static class CommitCommand
             pipeline,
             global,
             taskIdRequired: false,
-            [taskResourceId, taskFreshness],
+            [taskFolderId, taskResourceId, taskFreshness],
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetTaskStatusAsync(
+                parseResult.GetValue(taskFolderId)!,
                 parseResult.GetValue(taskResourceId)!,
                 sourcing.CorrelationId,
                 CommandOptions.ParseFreshness(parseResult.GetValue(taskFreshness)),

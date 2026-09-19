@@ -9,6 +9,15 @@ $scriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repositoryRoot = Resolve-Path (Join-Path $scriptRoot '..' '..')
 Push-Location $repositoryRoot
 try {
+    $candidateSpine = 'src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml'
+    $candidateManifest = '_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml'
+    foreach ($candidateArtifact in @($candidateSpine, $candidateManifest)) {
+        if (-not (Test-Path $candidateArtifact -PathType Leaf)) {
+            Write-Host "CONTRACT-SPINE-PREREQUISITE-DRIFT: PD10 v2 candidate artifact missing path=$candidateArtifact"
+            exit 1
+        }
+    }
+
     if (-not $NoRestore) {
         dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
         if ($LASTEXITCODE -ne 0) {

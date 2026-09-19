@@ -23,35 +23,20 @@ public static class ConsoleStatusText
     // Operator-facing safe explanations keyed by the canonical wire token. A string key (not an enum
     // switch) keeps this resilient to new categories: an unmapped category falls back to the generic
     // safe message rather than forcing a 47-arm switch that would drift. Two groups are present: the 12
-    // nominal categories Story 6.6 AC #10 enumerates, AND the tokens the server's
-    // FolderAuthorizationDenialMapper / file-path policy actually emit on the live denial path
-    // (not_found_to_caller, authorization_denied, policy_denied, policy_evidence_unavailable,
-    // path_policy_denied) — without these, a real folder/workspace/audit denial would fall through to the
-    // generic envelope instead of the per-category safe copy AC #10 requires. All denial copy is
-    // existence-neutral (not_found_to_caller mirrors not_found) so it never becomes a resource oracle.
+    // candidate categories that need distinct operator-facing treatment. Unknown or historical tokens
+    // fall through to the generic safe envelope and are never echoed into the DOM.
     private static readonly FrozenDictionary<string, string> _errorExplanations = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         ["authentication_failure"] = "Authentication could not be established for this request.",
         ["tenant_access_denied"] = "Access to this tenant scope was denied.",
-        ["cross_tenant_access_denied"] = "Access across tenant boundaries was denied.",
         ["folder_acl_denied"] = "Your effective folder permissions do not allow this view.",
-        ["audit_access_denied"] = "Access to audit evidence was denied.",
         ["read_model_unavailable"] = "The read model is currently unavailable and cannot answer this query.",
         ["projection_stale"] = "The projection is stale; data shown may lag the source of truth.",
         ["projection_unavailable"] = "The projection is unavailable and cannot answer this query.",
         ["response_limit_exceeded"] = "The result exceeded the response size budget; narrow the scope.",
         ["query_timeout"] = "The query timed out before completing; try again or narrow the scope.",
-        ["not_found"] = "No matching diagnostic evidence is available for this scope.",
         ["redacted"] = "The requested evidence is withheld by tenant policy.",
         ["internal_error"] = "An internal error prevented this view from rendering.",
-
-        // Tokens the server actually emits on the live denial path (FolderAuthorizationDenialMapper /
-        // file-path policy). Kept existence-neutral so *_denied and not-found read identically.
-        ["not_found_to_caller"] = "No matching diagnostic evidence is available for this scope.",
-        ["authorization_denied"] = "Your effective permissions do not allow this view.",
-        ["policy_denied"] = "Access is denied by tenant policy for this operation or resource.",
-        ["policy_evidence_unavailable"] = "Authorization evidence is temporarily unavailable; retry shortly.",
-        ["path_policy_denied"] = "Path policy denied the requested operation.",
     }.ToFrozenDictionary(StringComparer.Ordinal);
 
     /// <summary>Generic safe explanation used when a category has no specific operator-facing copy.</summary>
@@ -224,8 +209,8 @@ public static class ConsoleStatusText
 
     /// <summary>
     /// Whether <paramref name="reasonToken"/> is a known, vetted canonical category — the union of the
-    /// generated <see cref="CanonicalErrorCategory"/> wire tokens and the live-path denial tokens the
-    /// pages render. Used by the error presenter so an arbitrary Problem Details <c>category</c> string is
+    /// generated <see cref="CanonicalErrorCategory"/> wire tokens. Used by the error presenter so an
+    /// arbitrary Problem Details <c>category</c> string is
     /// never echoed into the operator's DOM verbatim (§3.9 — surface only vetted metadata).
     /// </summary>
     public static bool IsKnownReasonToken(string? reasonToken)

@@ -19,7 +19,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 /// </summary>
 public sealed partial class ConsumerDocsConformanceTests
 {
-    private const string SpinePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml";
+    private const string SpinePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml";
     private const string ParityPath = "tests/fixtures/parity-contract.yaml";
     private const string ExitCodesPath = "src/Hexalith.Folders.Cli/FoldersExitCodes.cs";
     private const string ManifestPath = "tests/fixtures/pattern-example-manifest.yaml";
@@ -99,7 +99,7 @@ public sealed partial class ConsumerDocsConformanceTests
     public void CliReferenceExitCodeRowsEqualFoldersExitCodes()
     {
         (HashSet<int> codes, Dictionary<string, int> byName) = ParseFoldersExitCodes();
-        codes.Count.ShouldBe(15, "FoldersExitCodes must define the canonical 15-code table.");
+        codes.Count.ShouldBe(16, "FoldersExitCodes must define the canonical 16-code v2 table.");
 
         string doc = ReadText(CliReferencePath);
         HashSet<int> docCodes = new();
@@ -163,7 +163,7 @@ public sealed partial class ConsumerDocsConformanceTests
     public void McpReferenceFailureKindCatalogEqualsOraclePlusPreSdkKinds()
     {
         HashSet<string> oracleKinds = ParseOracleFailureKinds();
-        oracleKinds.Count.ShouldBe(46, "The oracle must carry the canonical 46 outcome_mapping failure kinds.");
+        oracleKinds.Count.ShouldBe(44, "The oracle must carry the canonical 44 v2 outcome_mapping failure kinds.");
         oracleKinds.ShouldNotContain("none");
 
         HashSet<string> expected = new(oracleKinds, StringComparer.Ordinal);
@@ -172,7 +172,7 @@ public sealed partial class ConsumerDocsConformanceTests
             expected.Add(preSdk);
         }
 
-        expected.Count.ShouldBe(48);
+        expected.Count.ShouldBe(46);
 
         HashSet<string> docKinds = ParseDocFailureKinds(ReadText(McpReferencePath));
         AssertSetEquals(docKinds, expected, "MCP failure-kind catalog must equal the oracle set plus the 2 pre-SDK kinds.");
@@ -264,7 +264,7 @@ public sealed partial class ConsumerDocsConformanceTests
     {
         YamlMappingNode root = LoadSingleYamlDocument(SpinePath).ShouldBeOfType<YamlMappingNode>();
         Scalar(Mapping(root, "info"), "title").ShouldBe("Hexalith.Folders API");
-        Scalar(Mapping(root, "info"), "version").ShouldBe("v1");
+        Scalar(Mapping(root, "info"), "version").ShouldBe("v2");
 
         YamlMappingNode oidc = Mapping(Mapping(Mapping(root, "components"), "securitySchemes"), "oidcBearer");
         Scalar(oidc, "type").ShouldBe("openIdConnect");
@@ -274,7 +274,7 @@ public sealed partial class ConsumerDocsConformanceTests
         {
             "OpenAPI 3.1.0",
             "Hexalith.Folders API",
-            "version `v1`",
+            "version `v2`",
             "`oidcBearer`",
             "`type: openIdConnect`",
             "`Idempotency-Key`",
@@ -282,13 +282,12 @@ public sealed partial class ConsumerDocsConformanceTests
             "`X-Hexalith-Task-Id`",
             "non-mutating (`GET`) operations MUST NOT accept `Idempotency-Key`",
             "`ValidateProviderReadiness`",
-            "`POST /api/v1/provider-readiness/validations`",
+            "`POST /api/v2/provider-readiness/validations`",
             "`ProblemDetails`",
             "`category`",
             "`code`",
             "`message`",
             "`correlationId`",
-            "`taskId`",
             "`retryable`",
             "`clientAction`",
             "`details.visibility`",
@@ -1089,7 +1088,7 @@ public sealed partial class ConsumerDocsConformanceTests
 
     private static string Excerpt(string value) => value.Length <= 80 ? value : value[..80];
 
-    [GeneratedRegex(@"\|\s*`([A-Za-z]+)`\s*\|\s*(?:GET|POST|PUT|PATCH|DELETE)\s*\|\s*`(?:/api/v1[^`]*)`\s*\|")]
+    [GeneratedRegex(@"\|\s*`([A-Za-z]+)`\s*\|\s*(?:GET|POST|PUT|PATCH|DELETE)\s*\|\s*`(?:/api/v2[^`]*)`\s*\|")]
     private static partial Regex DocOperationRow();
 
     [GeneratedRegex(@"### Tag: `([a-z][a-z-]*)`")]

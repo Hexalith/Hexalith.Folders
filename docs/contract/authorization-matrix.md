@@ -1,8 +1,8 @@
 # Canonical Authorization Matrix
 
-Status: `superseded-pending-reapproval` — PD10 candidate is governing target state; runtime, Contract Spine, and incident-access evidence remain incomplete.
+Status: `candidate-awaiting-a6b` — the complete PD10 v2 candidate is generated; A6b approval and runtime evidence remain incomplete.
 
-Matrix version: `2.0.0-candidate.1`
+Matrix version: `2.0.0`
 
 Historical approval: version `1.0.0`, approved `2026-09-14`; that digest is not current release authority.
 
@@ -13,7 +13,7 @@ Canonical matrix artifact: `docs/contract/authorization-matrix.md`
 Historical v1 governance evidence: `docs/contract/oq3-authorization-evidence.yaml`; Story 1.17 must replace it
 with final v2 digest approvals rather than editing the historical record in place.
 
-Denominator scope: 14 canonical access states, 11 protected operation families, 49 observed v1 operation identities, and 8 FR8 scope dimensions. The v2 gate replaces the observed v1 route/status inventory with the generated v2 inventory while preserving operation identity uniqueness.
+Denominator scope: 14 canonical access states, 11 protected operation families, 49 generated v2 operation identities, and 8 FR8 scope dimensions. The v2 gate preserves operation identity uniqueness while replacing the historical v1 route/status inventory.
 
 This contract-only document is the canonical OQ3 authorization denominator. It is the single inventory that the
 authorization completeness gate counts against: every canonical actor, every canonical negative access state,
@@ -33,10 +33,9 @@ must reapprove:
 
 - Stale, unavailable, conflicting, or incomplete authority evidence routes to `authority-unavailable-503`.
   Only fresh negative facts route to `safe-denial-404`.
-- The corrected external surface is `/api/v2`; `/api/v1` remains historical evidence and is not routed by the
-  supported production profile. The operation inventory below preserves the observed v1 paths so conformance
-  gaps stay auditable; v2 keeps each operation identity under the `/api/v2` prefix except for the explicit
-  parent-scope corrections below.
+- The corrected candidate surface is `/api/v2`; `/api/v1` remains historical evidence. The operation inventory
+  below is the generated v2 denominator and keeps each operation identity under the `/api/v2` prefix except for
+  the explicit parent-scope corrections below.
 - `GetTaskStatus` becomes `/api/v2/folders/{folderId}/tasks/{taskId}/status`.
   `GetReadinessDiagnostics` becomes
   `/api/v2/folders/{folderId}/ops-console/readiness-diagnostics`; `GetProjectionFreshness` becomes
@@ -51,7 +50,7 @@ must reapprove:
 
 Within Story 1.17's scope, relock-only milestone `1.17-GENERATE` must generate the v2 Spine, client, CLI/MCP
 adapters and parity fixtures, status/error drift surface, `previous-spine.yaml`, C13 inventory, UI migration,
-and consumer-discovery evidence from this candidate. Product + Architecture + Security then perform A6b over
+and consumer-discovery evidence from this candidate. Product + Architecture + Security must now perform A6b over
 the exact final matrix `2.0.0` digest. Section 9 conformance and A8 follow; the canonical Story 1.17 lifecycle
 row does not close before those gates. No generated artifact or lifecycle status is changed by this document update.
 
@@ -64,8 +63,8 @@ following, and none of the dependent stories may be closed because this package 
 - C7 lock-renewal, authorization-revalidation, or revocation-effect timing evidence.
 - Story 12.1 durable events, repositories, or projections that a real authorization decision would read.
 - OQ9 incident-access evidence for the incident-evidence family.
-- Completed PD10 Contract Spine remediation. The observed v1 drift stays recorded below; Story 1.17 closes it
-  in generated v2 artifacts and then obtains A6b approval.
+- A6b approval or deployed PD10 runtime evidence. The historical v1 drift stays recorded below, while the
+  generated v2 artifacts close the contract-candidate portion only.
 
 ## Canonical Access States
 
@@ -287,55 +286,55 @@ scope. A dimension that is silently absent from a decision is a failing conforma
 
 | Operation | Method | Path | Family | Applicable scope dimensions | Not-applicable scope dimensions |
 | --- | --- | --- | --- | --- | --- |
-| `CreateFolder` | POST | `/api/v1/folders` | `folder-creation` | `tenant` `principal` `delegated-actor` `task` | `provider` `repository` `folder` `workspace` |
-| `GetFolderLifecycleStatus` | GET | `/api/v1/folders/{folderId}/lifecycle-status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `ArchiveFolder` | POST | `/api/v1/folders/{folderId}/archive` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
-| `ListFolderAclEntries` | GET | `/api/v1/folders/{folderId}/acl` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `UpdateFolderAclEntry` | PUT | `/api/v1/folders/{folderId}/acl/{aclEntryId}` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
-| `GetEffectivePermissions` | GET | `/api/v1/folders/{folderId}/effective-permissions` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `ConfigureProviderBinding` | PUT | `/api/v1/provider-bindings/{providerBindingRef}` | `provider-configuration` | `tenant` `principal` `delegated-actor` `provider` `task` | `repository` `folder` `workspace` |
-| `GetProviderBinding` | GET | `/api/v1/provider-bindings/{providerBindingRef}` | `provider-configuration` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
-| `ValidateProviderReadiness` | POST | `/api/v1/provider-readiness/validations` | `readiness-and-provider-evidence` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
-| `GetProviderSupportEvidence` | GET | `/api/v1/provider-readiness/support-evidence` | `readiness-and-provider-evidence` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
-| `CreateRepositoryBackedFolder` | POST | `/api/v1/folders/repository-backed` | `folder-administration` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `task` | `workspace` |
-| `BindRepository` | POST | `/api/v1/folders/{folderId}/repository-bindings` | `folder-administration` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `task` | `workspace` |
-| `GetRepositoryBinding` | GET | `/api/v1/folders/{folderId}/repository-bindings/{repositoryBindingId}` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` | `workspace` `task` |
-| `ConfigureBranchRefPolicy` | PUT | `/api/v1/folders/{folderId}/branch-ref-policy` | `folder-administration` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `task` | `workspace` |
-| `GetBranchRefPolicy` | GET | `/api/v1/folders/{folderId}/branch-ref-policy` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` | `workspace` `task` |
-| `PrepareWorkspace` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/preparation` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
-| `LockWorkspace` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
-| `GetWorkspaceLock` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
-| `ReleaseWorkspaceLock` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/lock/release` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
-| `GetWorkspaceRetryEligibility` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `GetWorkspaceTransitionEvidence` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/transition-evidence` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `AddFile` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/add` | `task-mutation` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `ChangeFile` | PUT | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/change` | `task-mutation` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `RemoveFile` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/files/remove` | `task-mutation` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `ListFolderFiles` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/tree` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `GetFolderFileMetadata` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/metadata` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `SearchFolderFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/search` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `SearchFolderIndexedFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/index-search` | `index-search` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `GetFolderIndexingStatus` | GET | `/api/v1/folders/{folderId}/indexing-status` | `index-search` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
-| `GlobFolderFiles` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/glob` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `ReadFileRange` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/context/range-read` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `CommitWorkspace` | POST | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
-| `GetWorkspaceStatus` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` | `provider` `repository` `task` |
-| `GetWorkspaceCleanupStatus` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/cleanup/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `GetTaskStatus` | GET | `/api/v1/tasks/{taskId}/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
-| `GetCommitEvidence` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
-| `GetProviderOutcome` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
-| `GetReconciliationStatus` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
-| `ListAuditTrail` | GET | `/api/v1/folders/{folderId}/audit-trail` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `GetAuditRecord` | GET | `/api/v1/folders/{folderId}/audit-trail/{auditRecordId}` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `ListOperationTimeline` | GET | `/api/v1/folders/{folderId}/operation-timeline` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `GetOperationTimelineEntry` | GET | `/api/v1/folders/{folderId}/operation-timeline/{timelineEntryId}` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
-| `GetReadinessDiagnostics` | GET | `/api/v1/ops-console/readiness-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
-| `GetLockDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
-| `GetDirtyStateDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `folder` `workspace` | `provider` `repository` `task` |
-| `GetFailedOperationDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `folder` `workspace` | `provider` `repository` `task` |
-| `GetProviderStatusDiagnostics` | GET | `/api/v1/folders/{folderId}/ops-console/provider-status-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` | `workspace` `task` |
-| `GetSyncStatusDiagnostics` | GET | `/api/v1/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
-| `GetProjectionFreshness` | GET | `/api/v1/ops-console/projection-freshness` | `console-view` | `tenant` `principal` `delegated-actor` | `provider` `repository` `folder` `workspace` `task` |
+| `CreateFolder` | POST | `/api/v2/folders` | `folder-creation` | `tenant` `principal` `delegated-actor` `task` | `provider` `repository` `folder` `workspace` |
+| `GetFolderLifecycleStatus` | GET | `/api/v2/folders/{folderId}/lifecycle-status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `ArchiveFolder` | POST | `/api/v2/folders/{folderId}/archive` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
+| `ListFolderAclEntries` | GET | `/api/v2/folders/{folderId}/acl` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `UpdateFolderAclEntry` | PUT | `/api/v2/folders/{folderId}/acl/{aclEntryId}` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
+| `GetEffectivePermissions` | GET | `/api/v2/folders/{folderId}/effective-permissions` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
+| `ConfigureProviderBinding` | PUT | `/api/v2/provider-bindings/{providerBindingRef}` | `provider-configuration` | `tenant` `principal` `delegated-actor` `provider` `task` | `repository` `folder` `workspace` |
+| `GetProviderBinding` | GET | `/api/v2/provider-bindings/{providerBindingRef}` | `provider-configuration` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
+| `ValidateProviderReadiness` | POST | `/api/v2/provider-readiness/validations` | `readiness-and-provider-evidence` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
+| `GetProviderSupportEvidence` | GET | `/api/v2/provider-readiness/support-evidence` | `readiness-and-provider-evidence` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
+| `CreateRepositoryBackedFolder` | POST | `/api/v2/folders/repository-backed` | `folder-administration` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `task` | `workspace` |
+| `BindRepository` | POST | `/api/v2/folders/{folderId}/repository-bindings` | `folder-administration` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `task` | `workspace` |
+| `GetRepositoryBinding` | GET | `/api/v2/folders/{folderId}/repository-bindings/{repositoryBindingId}` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` | `workspace` `task` |
+| `ConfigureBranchRefPolicy` | PUT | `/api/v2/folders/{folderId}/branch-ref-policy` | `folder-administration` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `task` | `workspace` |
+| `GetBranchRefPolicy` | GET | `/api/v2/folders/{folderId}/branch-ref-policy` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` | `workspace` `task` |
+| `PrepareWorkspace` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/preparation` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
+| `LockWorkspace` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
+| `GetWorkspaceLock` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
+| `ReleaseWorkspaceLock` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock/release` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
+| `GetWorkspaceRetryEligibility` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `GetWorkspaceTransitionEvidence` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/transition-evidence` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `AddFile` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/add` | `task-mutation` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `ChangeFile` | PUT | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/change` | `task-mutation` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `RemoveFile` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/remove` | `task-mutation` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `ListFolderFiles` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/tree` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `GetFolderFileMetadata` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/metadata` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `SearchFolderFiles` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/search` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `SearchFolderIndexedFiles` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/index-search` | `index-search` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `GetFolderIndexingStatus` | GET | `/api/v2/folders/{folderId}/indexing-status` | `index-search` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
+| `GlobFolderFiles` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/glob` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `ReadFileRange` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/range-read` | `context-read` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `CommitWorkspace` | POST | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits` | `task-mutation` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` `task` | none |
+| `GetWorkspaceStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` | `provider` `repository` `task` |
+| `GetWorkspaceCleanupStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/cleanup/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `GetTaskStatus` | GET | `/api/v2/folders/{folderId}/tasks/{taskId}/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `workspace` `task` | `provider` `repository` |
+| `GetCommitEvidence` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
+| `GetProviderOutcome` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
+| `GetReconciliationStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
+| `ListAuditTrail` | GET | `/api/v2/folders/{folderId}/audit-trail` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `GetAuditRecord` | GET | `/api/v2/folders/{folderId}/audit-trail/{auditRecordId}` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `ListOperationTimeline` | GET | `/api/v2/folders/{folderId}/operation-timeline` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `GetOperationTimelineEntry` | GET | `/api/v2/folders/{folderId}/operation-timeline/{timelineEntryId}` | `audit-read` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `GetReadinessDiagnostics` | GET | `/api/v2/folders/{folderId}/ops-console/readiness-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `folder` | `repository` `workspace` `task` |
+| `GetLockDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
+| `GetDirtyStateDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `folder` `workspace` | `provider` `repository` `task` |
+| `GetFailedOperationDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `folder` `workspace` | `provider` `repository` `task` |
+| `GetProviderStatusDiagnostics` | GET | `/api/v2/folders/{folderId}/ops-console/provider-status-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` | `workspace` `task` |
+| `GetSyncStatusDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics` | `console-view` | `tenant` `principal` `delegated-actor` `provider` `repository` `folder` `workspace` | `task` |
+| `GetProjectionFreshness` | GET | `/api/v2/folders/{folderId}/ops-console/projection-freshness` | `console-view` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
 
 ### Scope Dimension Rules
 
@@ -344,8 +343,8 @@ scope. A dimension that is silently absent from a decision is a failing conforma
 | `tenant` | Always. Every decision evaluates the authoritative managed tenant from the authenticated request and the EventStore envelope. |
 | `principal` | Always. Every decision evaluates the acting principal and its active group and role membership. |
 | `delegated-actor` | Always. Every decision evaluates the delegation conjunct so that a delegated caller can never exceed the delegating principal. |
-| `provider` | The decision must evaluate a provider binding tenant ownership, credential-reference scope, or capability policy, or the serializing lock identity that includes provider identity. Operations whose path or parameters name a provider carry Spine evidence; the remainder are derived from product rules and recorded in gap `G11`. |
-| `repository` | The decision must evaluate a repository binding tenant and folder ownership or its normalized target ref. Operations whose path or parameters name a repository carry Spine evidence; the remainder are derived from product rules and recorded in gap `G11`. |
+| `provider` | The decision must evaluate a provider binding tenant ownership, credential-reference scope, or capability policy, or the serializing lock identity that includes provider identity. The v2 authorization metadata records whether the dimension is path-bound or derived from an already-authorized folder, task, or binding. |
+| `repository` | The decision must evaluate a repository binding tenant and folder ownership or its normalized target ref. The v2 authorization metadata records whether the dimension is path-bound or derived from an already-authorized folder, task, or binding. |
 | `folder` | The operation declares a folder path parameter, carries a folder identity in its request body, or reaches its target through a task-to-workspace-to-folder binding. |
 | `workspace` | The operation declares a workspace path parameter, or the target is reached through the A5 task-to-workspace binding. |
 | `task` | The operation declares a task identity parameter or header. The task identity is a correlation key bound to the principal and delegation scope, never a bearer credential. |
@@ -354,18 +353,19 @@ scope. A dimension that is silently absent from a decision is a failing conforma
 
 | Aspect | Status |
 | --- | --- |
-| Matrix design decision | candidate target; A6b reapproval pending |
+| Matrix design decision | final `2.0.0` candidate; A6b approval pending |
 | Runtime authorization enforcement | incomplete |
-| Contract Spine conformance | incomplete |
+| Contract Spine conformance | complete for the generated, non-routed v2 candidate |
 | Incident-evidence operation surface | absent |
 
-This matrix resolves the PD10 architecture decision but does not close A6b or implementation. It does not complete Story 12.1, Story 4.19, Story 4.20,
+This matrix resolves the PD10 contract candidate but does not close A6b or runtime implementation. It does not complete Story 12.1, Story 4.19, Story 4.20,
 Story 4.21, Story 6.14, or Story 10.8, and it does not satisfy FR8, FR9, or FR10 runtime evidence.
 
-## Recorded Conformance Gaps
+## Historical V1 Conformance Gaps
 
-Observed deviations are recorded rather than disguised. Each gap names a bounded description, a downstream
-owner, and a repository-relative evidence path.
+The closed contract gaps below are retained as immutable comparison context for the historical v1 Spine. The
+generated v2 candidate closes `G1`, `G2`, `G3`, `G5`, `G8`, `G9`, `G10`, and `G11`; runtime/product gaps `G4`,
+`G6`, and `G7` remain open and are not claimed by this candidate.
 
 | Gap | Surface | Description | Downstream owner | Evidence path | Operations |
 | --- | --- | --- | --- | --- | --- |

@@ -31,7 +31,7 @@ public sealed class ParityOracleConformanceTests
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
 
-    private static readonly int[] CanonicalExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76];
+    private static readonly int[] CanonicalExitCodes = [0, 1, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77];
 
     // ---------------------------------------------------------------------------------------------------
     // AC #2 — post-SDK exit-code conformance, oracle-driven.
@@ -135,7 +135,7 @@ public sealed class ParityOracleConformanceTests
                 $"enum member '{member}' is absent from the oracle outcome_mapping and is not a documented exception — the oracle dropped a category or a new category needs handling.");
         }
 
-        oracleCategories.Count.ShouldBe(46); // 46 post-SDK categories carry an outcome_mapping row.
+        oracleCategories.Count.ShouldBe(44); // 44 v2 post-SDK categories carry an outcome_mapping row.
     }
 
     [Fact]

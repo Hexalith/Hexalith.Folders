@@ -7,6 +7,9 @@ distributed as a **.NET tool** (`PackAsTool=true`, `ToolCommandName=folders`) �
 `dotnet tool install`, not as a library reference. Every command maps 1:1 to a canonical operation; the CLI
 adds no behavior absent from the [Contract Spine](./api-reference.md).
 
+The checked-in adapter consumes the non-routed PD10 `/api/v2` candidate. It is review evidence only and must
+not be published or pointed at a production service before the later governance gates authorize exposure.
+
 The four-surface parity this reference relies on is **wire-exercised** end-to-end (REST/SDK/CLI/MCP), gated on
 Stories 8.1–8.3 — including canonical cross-surface error parity (`idempotency_conflict` → CLI exit 68). See
 [Surface conventions](./api-reference.md#surface-conventions) and the
@@ -157,7 +160,7 @@ The root `folders` command exposes **7 top-level groups**. Each leaf maps to one
 
 ## Exit codes
 
-The CLI uses the canonical sysexits-style table `{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 1}` from
+The CLI uses the canonical sysexits-style table `{0, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 1}` from
 `src/Hexalith.Folders.Cli/FoldersExitCodes.cs`, projected per canonical error category by
 `src/Hexalith.Folders.Cli/Errors/ErrorProjection.cs`. This is deliberately **not** the
 `Hexalith.EventStore.Admin.Cli` `Success=0/Degraded=1/Error=2` scheme. Every row is verified against the parity
@@ -168,14 +171,15 @@ oracle (`tests/fixtures/parity-contract.yaml`).
 | `0` | `Success` | `success` |
 | `64` | `UsageError` | `client_configuration_error` (pre-SDK usage/config error; no HTTP call made — also the exit for a query command given `--idempotency-key`) |
 | `65` | `CredentialMissing` | `credential_missing`, `authentication_failure`, `credential_reference_invalid` |
-| `66` | `AccessDenied` | `tenant_access_denied`, `cross_tenant_access_denied`, `folder_acl_denied`, `audit_access_denied` |
+| `66` | `AccessDenied` | `tenant_access_denied`, `folder_acl_denied`, `authorization_revocation_detected` |
 | `67` | `LockConflict` | `workspace_locked`, `lock_conflict`, `lock_expired`, `lock_not_owned`, `stale_workspace` |
 | `68` | `IdempotencyConflict` | `idempotency_conflict` |
+| `77` | `ConcurrencyConflict` | `concurrency_conflict` |
 | `69` | `ValidationError` | `validation_error`, `input_limit_exceeded`, `path_validation_failed`, `branch_ref_policy_invalid`, `response_limit_exceeded`, `range_unsatisfiable` |
 | `70` | `ProviderFailure` | `provider_failure_known`, `provider_unavailable`, `provider_rate_limited`, `provider_readiness_failed`, `provider_permission_insufficient`, `repository_binding_unavailable`, `repository_conflict`, `duplicate_binding`, `unsupported_provider_capability`, `failed_operation`, `commit_failed`, `file_operation_failed` |
 | `71` | `UnknownProviderOutcome` | `unknown_provider_outcome` (surfaced truthfully, never hidden) |
-| `72` | `ReconciliationRequired` | `reconciliation_required`, `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `file_policy_unavailable`, `workspace_not_ready`, `workspace_preparation_failed`, `dirty_workspace` |
-| `73` | `NotFound` | `not_found`, `authorization_revocation_detected` |
+| `72` | `ReconciliationRequired` | `reconciliation_required`, `projection_stale`, `projection_unavailable`, `file_policy_unavailable`, `workspace_not_ready`, `workspace_preparation_failed`, `dirty_workspace` |
+| `73` | `ReadModelUnavailable` | `read_model_unavailable` |
 | `74` | `StateTransitionInvalid` | `state_transition_invalid` |
 | `75` | `Redacted` | `redacted` (visibly distinct from missing/unknown) |
 | `76` | `IdempotencyKeyExpired` | `idempotency_key_expired` (refresh state, then submit with a new key) |

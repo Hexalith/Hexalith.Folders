@@ -1,6 +1,6 @@
 {
   "gate": "contract-parity-ci",
-  "status": "failed",
+  "status": "passed",
   "report_path": "_bmad-output/gates/contract-parity-ci/latest.json",
   "diagnostic_policy": "metadata-only",
   "categories": [
@@ -10,6 +10,7 @@
     "idempotency-helpers",
     "parity-oracle-schema",
     "parity-oracle-determinism",
+    "pd10-v2-conformance-set",
     "sdk-transport-parity",
     "rest-sdk-golden-parity",
     "cli-behavioral-parity",
@@ -26,7 +27,7 @@
         "Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests"
       ],
       "artifact_paths": [
-        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
         "src/Hexalith.Folders.Server"
       ]
     },
@@ -40,7 +41,7 @@
       ],
       "artifact_paths": [
         "tests/fixtures/previous-spine.yaml",
-        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"
       ]
     },
     {
@@ -89,6 +90,20 @@
       "artifact_paths": [
         "tests/fixtures/parity-contract.yaml",
         "tests/tools/parity-oracle-generator"
+      ]
+    },
+    {
+      "category": "pd10-v2-conformance-set",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests",
+      "runner_classes": [
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests"
+      ],
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+        "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
       ]
     },
     {
@@ -166,7 +181,7 @@
       "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
       "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpineGateFailsClosedUntilSingleNonSelfServerSourceExists|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpineSourceResolutionRejectsSelfReferenceAndAmbiguity|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.ServerVsSpineComparisonDetectsPublicContractDrift|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineFoundationTests",
       "artifact_paths": [
-        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml",
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
         "src/Hexalith.Folders.Server"
       ],
       "status": "passed",
@@ -178,7 +193,7 @@
       "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ContractSpineCiGateTests.PreviousSpineBaselinePinsCurrentOperationInventory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.PreviousSpineBaselineCoversEveryCurrentOperation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForEmptyBaselineWithoutOverride|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForApprovedDeprecationWithoutEvidence|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDanglingDeprecationApprovalSource",
       "artifact_paths": [
         "tests/fixtures/previous-spine.yaml",
-        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"
       ],
       "status": "passed",
       "exit_code": 0
@@ -228,6 +243,17 @@
       "exit_code": 0
     },
     {
+      "category": "pd10-v2-conformance-set",
+      "project_path": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
+      "filter": "FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests",
+      "artifact_paths": [
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+        "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+      ],
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
       "category": "sdk-transport-parity",
       "project_path": "tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj",
       "filter": "FullyQualifiedName~Hexalith.Folders.Client.Tests.TransportParityConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.ArchiveFolderClientConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.LifecycleStatusClientConformanceTests",
@@ -246,8 +272,8 @@
         "tests/fixtures/parity-contract.yaml",
         "tests/shared/Parity/GoldenLifecycle.cs"
       ],
-      "status": "failed",
-      "exit_code": 1
+      "status": "passed",
+      "exit_code": 0
     },
     {
       "category": "cli-behavioral-parity",
@@ -279,8 +305,8 @@
         "tests/fixtures/parity-contract.yaml",
         "tests/shared/Parity/MixedSurfaceScenario.cs"
       ],
-      "status": "failed",
-      "exit_code": 1
+      "status": "passed",
+      "exit_code": 0
     }
   ]
 }

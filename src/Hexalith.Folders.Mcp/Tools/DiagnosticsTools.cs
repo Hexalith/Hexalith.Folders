@@ -21,11 +21,12 @@ internal static class DiagnosticsTools
     [Description("Inspect tenant/provider readiness diagnostics (query).")]
     public static Task<string> GetReadinessDiagnostics(
         ToolPipeline pipeline,
+        [Description("Opaque folder identifier establishing diagnostic scope.")] string folderId,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetReadinessDiagnosticsAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetReadinessDiagnosticsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-provider-status-diagnostics")]
     [Description("Inspect provider status diagnostics for a folder (query).")]
@@ -90,9 +91,10 @@ internal static class DiagnosticsTools
     [Description("Inspect projection freshness diagnostics (query).")]
     public static Task<string> GetProjectionFreshness(
         ToolPipeline pipeline,
+        [Description("Opaque folder identifier establishing diagnostic scope.")] string folderId,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetProjectionFreshnessAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetProjectionFreshnessAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
 }

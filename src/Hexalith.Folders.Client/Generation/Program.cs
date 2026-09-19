@@ -389,7 +389,7 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("            return new(false, \"repositoryRoot must be a fully qualified path\");");
     code.AppendLine("        }");
     code.AppendLine();
-    code.AppendLine("        string spinePath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Contracts\", \"openapi\", \"hexalith.folders.v1.yaml\");");
+    code.AppendLine("        string spinePath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Contracts\", \"openapi\", \"hexalith.folders.v2.yaml\");");
     code.AppendLine("        string configurationPath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"nswag.json\");");
     code.AppendLine("        string helpersPath = Path.Combine(repositoryRoot, \"src\", \"Hexalith.Folders.Client\", \"Generated\", \"HexalithFoldersIdempotencyHelpers.g.cs\");");
     code.AppendLine("        try");
@@ -914,7 +914,7 @@ internal static class SpecialFields
     {
         // FileMutationRequest is the union schema for AddFile / ChangeFile / RemoveFile operations.
         // Each entry below appears under one or more of those operationId equivalence lists in
-        // src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml.
+        // src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml.
         //
         // Entry: content_hash_reference (AddFile, ChangeFile equivalence; absent for RemoveFile).
         [("FileMutationRequest", "content_hash_reference")] = new FieldModel("content_hash_reference", "ContentHashReference is not null", "ContentHashReference"),

@@ -23,7 +23,8 @@ public sealed class ExitCodeWiringTests
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
     [Theory]
-    [InlineData(CanonicalErrorCategory.Not_found, 73)]
+    [InlineData(CanonicalErrorCategory.Read_model_unavailable, 73)]
+    [InlineData(CanonicalErrorCategory.Concurrency_conflict, 77)]
     [InlineData(CanonicalErrorCategory.Workspace_locked, 67)]
     [InlineData(CanonicalErrorCategory.Validation_error, 69)]
     [InlineData(CanonicalErrorCategory.Unknown_provider_outcome, 71)]

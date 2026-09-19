@@ -60,6 +60,7 @@
       "additionalProperties": false,
       "required": [
         "auth_outcome_class",
+        "http_status_set",
         "error_code_set",
         "idempotency_key_rule",
         "audit_metadata_keys",
@@ -72,10 +73,18 @@
             "tenant_authorized",
             "tenant_access_denied",
             "folder_acl_denied",
-            "audit_access_denied",
-            "credential_missing",
-            "safe_not_found"
+            "credential_missing"
           ]
+        },
+        "http_status_set": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          }
         },
         "error_code_set": {
           "type": "array",
@@ -254,9 +263,7 @@
         "credential_reference_missing",
         "credential_reference_invalid",
         "tenant_access_denied",
-        "cross_tenant_access_denied",
         "folder_acl_denied",
-        "audit_access_denied",
         "validation_error",
         "workspace_locked",
         "lock_conflict",
@@ -271,6 +278,7 @@
         "file_operation_failed",
         "path_validation_failed",
         "idempotency_conflict",
+        "concurrency_conflict",
         "idempotency_key_expired",
         "input_limit_exceeded",
         "response_limit_exceeded",
@@ -287,7 +295,6 @@
         "repository_conflict",
         "duplicate_binding",
         "reconciliation_required",
-        "not_found",
         "state_transition_invalid",
         "read_model_unavailable",
         "projection_stale",
@@ -315,7 +322,8 @@
         73,
         74,
         75,
-        76
+        76,
+        77
       ]
     },
     "mcp_failure_kind": {
@@ -326,9 +334,7 @@
         "credential_missing",
         "credential_reference_invalid",
         "tenant_access_denied",
-        "cross_tenant_access_denied",
         "folder_acl_denied",
-        "audit_access_denied",
         "workspace_locked",
         "lock_conflict",
         "lock_expired",
@@ -336,6 +342,7 @@
         "stale_workspace",
         "authorization_revocation_detected",
         "idempotency_conflict",
+        "concurrency_conflict",
         "idempotency_key_expired",
         "validation_error",
         "input_limit_exceeded",
@@ -359,7 +366,6 @@
         "duplicate_binding",
         "unsupported_provider_capability",
         "reconciliation_required",
-        "not_found",
         "state_transition_invalid",
         "read_model_unavailable",
         "projection_stale",

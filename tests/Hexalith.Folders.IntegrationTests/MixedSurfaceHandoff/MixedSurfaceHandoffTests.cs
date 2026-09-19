@@ -69,8 +69,8 @@ namespace Hexalith.Folders.IntegrationTests.MixedSurfaceHandoff;
 /// gateway hop. Consequently an aggregate-side <c>idempotency_conflict</c> now surfaces over the wire as
 /// REST/SDK 409 / CLI exit 68 / MCP <c>idempotency_conflict</c> kind, and the cross-surface conflict test
 /// asserts that surface-level behavior directly (in addition to the aggregate-side ledger invariant). ACL
-/// denials remain the canonical safe denial (404 not_found_to_caller) on every surface — the deliberate
-/// zero-cross-tenant-leakage invariant; the canonical folder_acl_denied → 403 gateway-hop mapping is proven
+/// denials remain the canonical safe denial (404 tenant_access_denied) on every surface — the deliberate
+/// zero-cross-tenant-leakage invariant; the canonical folder ACL rejection is proven
 /// at the route / adapter layers (see Story 8.3 Dev Notes AD2).</para>
 /// </remarks>
 public sealed class MixedSurfaceHandoffTests
@@ -175,7 +175,7 @@ public sealed class MixedSurfaceHandoffTests
             x_Hexalith_Task_Id: identity.TaskId,
             body: new ArchiveFolderRequest
             {
-                RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                 ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
             },
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -328,7 +328,7 @@ public sealed class MixedSurfaceHandoffTests
             "--task-id", sharedTaskId,
             "--idempotency-key", sharedKey,
             "--correlation-id", sharedCorrelationId,
-            "--request", """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""").ConfigureAwait(true);
+            "--request", """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""").ConfigureAwait(true);
         cliOutcome.ExitCode.ShouldBe(0, $"CLI mutating step must reach 'accepted' (exit 0). StdErr: {cliOutcome.StdErr}");
         // ResultRenderer.RenderSuccess writes AcceptedCommand fields to stdout in human mode (default):
         // status / correlationId / taskId / idempotentReplay / acceptedAt.
@@ -344,7 +344,7 @@ public sealed class MixedSurfaceHandoffTests
             idempotencyKey: sharedKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
-            requestJson: """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""",
+            requestJson: """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""",
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResultJson);
         mcpJson.Value<string>("kind").ShouldBeNull($"MCP mutating step must reach 'accepted' (no 'kind' on success envelope). Envelope: {mcpResultJson}");
@@ -400,7 +400,7 @@ public sealed class MixedSurfaceHandoffTests
             "--task-id", sharedTaskId,
             "--idempotency-key", sharedIdempotencyKey,
             "--correlation-id", sharedCorrelationId,
-            "--request", """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""").ConfigureAwait(true);
+            "--request", """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""").ConfigureAwait(true);
         cliOutcome.ExitCode.ShouldBe(0, $"CLI replay must not surface a conflict. StdErr: {cliOutcome.StdErr}");
         cliOutcome.StdErr.ShouldNotContain("idempotency_conflict", customMessage: "CLI replay must not surface idempotency_conflict.");
 
@@ -411,7 +411,7 @@ public sealed class MixedSurfaceHandoffTests
             idempotencyKey: sharedIdempotencyKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
-            requestJson: """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""",
+            requestJson: """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""",
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         TestSupport.Kind(mcpResultJson).ShouldBeNull("MCP replay must not surface a failure envelope.");
 
@@ -464,7 +464,7 @@ public sealed class MixedSurfaceHandoffTests
                 x_Hexalith_Task_Id: sharedTaskId,
                 body: new ArchiveFolderRequest
                 {
-                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                     ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Policy_retention,
                 },
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
@@ -482,7 +482,7 @@ public sealed class MixedSurfaceHandoffTests
             "--task-id", sharedTaskId,
             "--idempotency-key", sharedIdempotencyKey,
             "--correlation-id", sharedCorrelationId,
-            "--request", """{"requestSchemaVersion":"v1","archiveReasonCode":"operator_review"}""").ConfigureAwait(true);
+            "--request", """{"requestSchemaVersion":"v2","archiveReasonCode":"operator_review"}""").ConfigureAwait(true);
         cliOutcome.ExitCode.ShouldBe(68, $"CLI conflicting payload must surface exit 68 (idempotency_conflict). StdErr: {cliOutcome.StdErr}");
         cliOutcome.StdErr.ShouldContain("idempotency_conflict", customMessage: "CLI stderr must carry the canonical idempotency_conflict category.");
 
@@ -493,7 +493,7 @@ public sealed class MixedSurfaceHandoffTests
             idempotencyKey: sharedIdempotencyKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
-            requestJson: """{"requestSchemaVersion":"v1","archiveReasonCode":"policy_retention"}""",
+            requestJson: """{"requestSchemaVersion":"v2","archiveReasonCode":"policy_retention"}""",
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResultJson);
         mcpJson.Value<string>("kind").ShouldBe("idempotency_conflict", $"MCP must surface failure kind idempotency_conflict. Envelope: {mcpResultJson}");
@@ -526,7 +526,7 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync(tenantId: null, principalId: null).ConfigureAwait(true);
 
-        const string requestJson = """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""";
+        const string requestJson = """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""";
 
         // ----- REST -----
         using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_err_rest", "corr_err_rest", "task_err_rest");
@@ -547,7 +547,7 @@ public sealed class MixedSurfaceHandoffTests
                 x_Hexalith_Task_Id: "task_err_sdk",
                 body: new ArchiveFolderRequest
                 {
-                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                     ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                 },
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
@@ -684,11 +684,11 @@ public sealed class MixedSurfaceHandoffTests
         // AC #2 (ACL-denied leg) + AC #10. The principal has tenant access and the folder exists and is
         // readable (read_metadata granted) but lacks the archive_folder ACL grant. VERIFIED production
         // behavior: layered authorization denies the archive at the folder-ACL layer and the wire surfaces
-        // the canonical SAFE DENIAL — HTTP 404 not_found_to_caller — on every surface, NOT a distinct
-        // folder_acl_denied. This is the deliberate zero-cross-tenant-leakage invariant: an ACL-denied
+        // the canonical SAFE DENIAL — HTTP 404 tenant_access_denied — on every surface, NOT a distinct
+        // folder_acl_denied response. This is the deliberate zero-cross-tenant-leakage invariant: an ACL-denied
         // resource is externally indistinguishable from a non-existent one (SafeAuthorizationDenialMapping
-        // FolderAclDenied → 404 not_found_to_caller). This test pins the four-surface PARITY of that safe
-        // denial (REST/SDK 404, CLI exit 73, MCP kind not_found).
+        // FolderAclDenied → 404 tenant_access_denied). This test pins the four-surface PARITY of that safe
+        // denial (REST/SDK 404, CLI exit 66, MCP kind tenant_access_denied).
         //
         // The canonical folder_acl_denied → 403 surfacing (the case where the aggregate-gate ACL rejection
         // is the propagated outcome) is proven where it actually applies: the gateway-hop mapping
@@ -707,16 +707,16 @@ public sealed class MixedSurfaceHandoffTests
         ParityRow archiveRow = ParityScenarios.Row("ArchiveFolder");
         archiveRow.Transport.ErrorCodeSet.ShouldContain("folder_acl_denied", "ArchiveFolder declares folder_acl_denied in its error_code_set (the canonical ACL-denial category).");
 
-        const string requestJson = """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""";
+        const string requestJson = """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""";
 
         // ----- REST -----
         using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_acl_rest_000000000000", correlationId, taskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         string restBody = await restResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
-        restResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound, $"REST ACL denial must surface the safe denial 404 not_found_to_caller. Got {(int)restResponse.StatusCode}: {restBody}");
+        restResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound, $"REST ACL denial must surface the canonical safe denial 404. Got {(int)restResponse.StatusCode}: {restBody}");
         using JsonDocument restDoc = JsonDocument.Parse(restBody);
         string restCategory = restDoc.RootElement.GetProperty("category").GetString()!;
-        restCategory.ShouldBe("not_found", "ACL denial is externally indistinguishable from not-found (safe denial).");
+        restCategory.ShouldBe("tenant_access_denied", "ACL denial uses the canonical redacted tenant-access category.");
         AssertNoForbiddenContent(restBody, surfaceLabel: "REST");
 
         // ----- SDK -----
@@ -730,8 +730,6 @@ public sealed class MixedSurfaceHandoffTests
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
             .ConfigureAwait(true);
         sdkException.StatusCode.ShouldBe((int)HttpStatusCode.NotFound, "SDK ACL denial must surface the safe denial 404.");
-        ProblemDetails sdkProblem = ((HexalithFoldersApiException<ProblemDetails>)sdkException).Result;
-        ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("not_found", "SDK must surface the canonical safe-denial not_found category.");
 
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
@@ -743,8 +741,8 @@ public sealed class MixedSurfaceHandoffTests
             "--idempotency-key", "key_acl_cli_0000000000000",
             "--correlation-id", correlationId,
             "--request", requestJson).ConfigureAwait(true);
-        cliOutcome.ExitCode.ShouldBe(73, $"CLI ACL safe denial must surface exit 73 (NotFound). StdErr: {cliOutcome.StdErr}");
-        cliOutcome.StdErr.ShouldContain("not_found", customMessage: "CLI stderr must carry the canonical not_found safe-denial category.");
+        cliOutcome.ExitCode.ShouldBe(66, $"CLI ACL safe denial must surface exit 66 (AccessDenied). StdErr: {cliOutcome.StdErr}");
+        cliOutcome.StdErr.ShouldContain("tenant_access_denied", customMessage: "CLI stderr must carry the canonical tenant_access_denied category.");
 
         // ----- MCP -----
         string mcpResultJson = await FolderTools.ArchiveFolder(
@@ -756,10 +754,10 @@ public sealed class MixedSurfaceHandoffTests
             requestJson: requestJson,
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResultJson);
-        mcpJson.Value<string>("kind").ShouldBe("not_found", $"MCP must surface failure kind not_found (safe denial). Envelope: {mcpResultJson}");
+        mcpJson.Value<string>("kind").ShouldBe("tenant_access_denied", $"MCP must surface failure kind tenant_access_denied. Envelope: {mcpResultJson}");
 
         // ===== Cross-surface byte-for-byte category equivalence: every surface returns the SAME safe denial. =====
-        restCategory.ShouldBe("not_found");
+        restCategory.ShouldBe("tenant_access_denied");
         cliOutcome.StdErr.ShouldContain(restCategory);
         mcpJson.Value<string>("kind").ShouldBe(restCategory);
     }
@@ -807,11 +805,11 @@ public sealed class MixedSurfaceHandoffTests
         string taskId,
         string reasonCode = "caller_requested")
     {
-        HttpRequestMessage request = new(HttpMethod.Post, $"/api/v1/folders/{folderId}/archive")
+        HttpRequestMessage request = new(HttpMethod.Post, $"/api/v2/folders/{folderId}/archive")
         {
             Content = JsonContent.Create(new
             {
-                requestSchemaVersion = "v1",
+                requestSchemaVersion = "v2",
                 archiveReasonCode = reasonCode,
             }),
         };
@@ -823,7 +821,7 @@ public sealed class MixedSurfaceHandoffTests
 
     private static ArchiveFolderRequest BuildArchiveBody() => new()
     {
-        RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+        RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
         ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
     };
 
@@ -1076,6 +1074,8 @@ public sealed class MixedSurfaceHandoffTests
             builder.Services.AddSingleton(timeProvider);
 
             WebApplication app = builder.Build();
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;

@@ -75,8 +75,17 @@ public static class ConsoleErrorPresenter
             ConsoleStatusText.ResolveErrorExplanation(reasonToken),
             correlationId,
             retryable,
-            clientAction);
+            clientAction,
+            ResolveDisposition(reasonToken));
     }
+
+    private static ConsoleErrorDisposition ResolveDisposition(string reasonToken)
+        => reasonToken switch
+        {
+            "tenant_access_denied" or "folder_acl_denied" => ConsoleErrorDisposition.Denied,
+            "read_model_unavailable" or "projection_stale" or "projection_unavailable" => ConsoleErrorDisposition.AuthorityUnavailable,
+            _ => ConsoleErrorDisposition.Failure,
+        };
 
     private static bool TryGetString(JsonElement root, string propertyName, out string? value)
     {
