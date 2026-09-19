@@ -55,7 +55,7 @@ jobs:
       - name: Run Dapr policy conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild -Configuration Release
 
       - name: Run production observability conformance gates
         shell: pwsh
