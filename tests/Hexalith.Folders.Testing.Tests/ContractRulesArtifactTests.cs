@@ -243,7 +243,17 @@ public sealed class ContractRulesArtifactTests
         failureKinds.ShouldContain("credential_missing");
         failureKinds.ShouldContain("tenant_access_denied");
         failureKinds.ShouldContain("folder_acl_denied");
-        failureKinds.ShouldContain("audit_access_denied");
+        foreach (string retiredExistenceOracle in new[]
+        {
+            "not_found",
+            "cross_tenant_access_denied",
+            "audit_access_denied"
+        })
+        {
+            failureKinds.ShouldNotContain(
+                retiredExistenceOracle,
+                $"PD10 v2 must not expose the retired existence-oracle failure kind {retiredExistenceOracle}.");
+        }
         failureKinds.ShouldContain("input_limit_exceeded");
         failureKinds.ShouldContain("response_limit_exceeded");
         failureKinds.ShouldContain("query_timeout");
@@ -276,6 +286,18 @@ public sealed class ContractRulesArtifactTests
         })
         {
             errorCategories.ShouldContain(category, $"canonical_error_category enum must include {category} so operation inventory rows validate.");
+        }
+
+        foreach (string retiredExistenceOracle in new[]
+        {
+            "not_found",
+            "cross_tenant_access_denied",
+            "audit_access_denied"
+        })
+        {
+            errorCategories.ShouldNotContain(
+                retiredExistenceOracle,
+                $"PD10 v2 must not expose the retired existence-oracle category {retiredExistenceOracle}.");
         }
     }
 
