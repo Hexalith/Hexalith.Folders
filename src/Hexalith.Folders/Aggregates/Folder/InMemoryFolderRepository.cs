@@ -558,6 +558,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         _taskStatusReadModel.Save(new TaskStatusReadModelSnapshot(
             state.ManagedTenantId,
+            state.FolderId,
             state.WorkspaceTaskId,
             currentState,
             TerminalStateFor(currentState),

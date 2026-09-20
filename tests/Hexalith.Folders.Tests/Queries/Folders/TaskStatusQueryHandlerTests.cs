@@ -260,6 +260,7 @@ public sealed class TaskStatusQueryHandlerTests
         string retryReason = "failed_operation")
         => new(
             ManagedTenantId: "tenant-a",
+            FolderId: "folder-a",
             TaskId: "task-a",
             CurrentState: currentState,
             TerminalState: terminalState,

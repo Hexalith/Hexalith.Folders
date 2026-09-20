@@ -2,6 +2,7 @@ using System.Globalization;
 
 using Hexalith.Folders.Cli.Infrastructure;
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 namespace Hexalith.Folders.Cli.Rendering;
 
@@ -57,7 +58,7 @@ internal static class ResultRenderer
         // Project from typed fields only — never echo problem.Response raw body, which could carry content.
         ProjectedProblem projected = new(
             problem.Category.ToString(),
-            problem.Code,
+            CanonicalErrorCodeProjection.WireValue(problem.Code),
             problem.Message,
             problem.CorrelationId,
             problem.Retryable,

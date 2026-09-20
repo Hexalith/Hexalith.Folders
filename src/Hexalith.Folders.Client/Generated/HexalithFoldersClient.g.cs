@@ -156,9 +156,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness);
+        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -167,9 +168,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Configure a provider binding reference without credential material.
@@ -1532,22 +1534,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -1562,12 +1564,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1673,32 +1675,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1827,22 +1829,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -1857,12 +1859,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1988,32 +1990,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2148,22 +2150,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -2178,12 +2180,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2211,11 +2213,12 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness)
+        public virtual System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id)
         {
-            return GetEffectivePermissionsAsync(folderId, x_Correlation_Id, x_Hexalith_Freshness, System.Threading.CancellationToken.None);
+            return GetEffectivePermissionsAsync(folderId, x_Correlation_Id, x_Hexalith_Freshness, x_Hexalith_Task_Id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -2225,9 +2228,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="folderId">Opaque tenant-scoped folder identifier. It is an addressable resource reference, not tenant authority.</param>
         /// <param name="x_Correlation_Id">Optional caller-provided correlation identifier; adapters may generate one when absent.</param>
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
+        /// <param name="x_Hexalith_Task_Id">Caller-provided task identity for task-scoped operations.</param>
         /// <returns>Metadata-only effective permission result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<EffectivePermissions> GetEffectivePermissionsAsync(string folderId, string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, string x_Hexalith_Task_Id, System.Threading.CancellationToken cancellationToken)
         {
             if (folderId == null)
                 throw new System.ArgumentNullException("folderId");
@@ -2244,6 +2248,9 @@ namespace Hexalith.Folders.Client.Generated
 
                     if (x_Hexalith_Freshness != null)
                         request_.Headers.TryAddWithoutValidation("X-Hexalith-Freshness", ConvertToString(x_Hexalith_Freshness, System.Globalization.CultureInfo.InvariantCulture));
+
+                    if (x_Hexalith_Task_Id != null)
+                        request_.Headers.TryAddWithoutValidation("X-Hexalith-Task-Id", ConvertToString(x_Hexalith_Task_Id, System.Globalization.CultureInfo.InvariantCulture));
                     request_.Method = new System.Net.Http.HttpMethod("GET");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
@@ -2289,32 +2296,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2442,22 +2449,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -2472,12 +2479,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2582,32 +2589,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2713,22 +2720,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 429)
@@ -2743,12 +2750,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2861,32 +2868,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3008,22 +3015,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3048,12 +3055,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3182,22 +3189,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3232,12 +3239,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3349,32 +3356,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3503,22 +3510,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3533,12 +3540,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3644,32 +3651,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3812,22 +3819,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -3852,12 +3859,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider readiness cannot be safely established, or provider outcome is unknown. Authorization-first contract \u2014 these distinguishable responses are only reachable after authentication and authorization succeed. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4000,22 +4007,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -4050,12 +4057,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4174,22 +4181,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 410)
@@ -4204,12 +4211,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4352,22 +4359,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -4402,12 +4409,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4525,32 +4532,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4674,32 +4681,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4842,22 +4849,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -4922,12 +4929,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5070,22 +5077,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5150,12 +5157,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5298,22 +5305,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -5368,12 +5375,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5521,22 +5528,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5571,12 +5578,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5717,22 +5724,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5767,12 +5774,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5913,22 +5920,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -5963,12 +5970,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6109,22 +6116,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6159,12 +6166,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6291,32 +6298,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6457,22 +6464,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6507,12 +6514,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6663,22 +6670,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 408)
@@ -6723,12 +6730,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6871,22 +6878,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -6911,12 +6918,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider or read-model dependency cannot produce a safe commit outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7035,32 +7042,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7184,32 +7191,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7328,32 +7335,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7479,32 +7486,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7630,32 +7637,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7781,32 +7788,32 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7938,22 +7945,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -7968,12 +7975,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Audit projection unavailable. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8091,22 +8098,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8121,12 +8128,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8258,22 +8265,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8288,12 +8295,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8411,22 +8418,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8441,12 +8448,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8558,22 +8565,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8588,12 +8595,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8712,22 +8719,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8742,12 +8749,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8866,22 +8873,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -8896,12 +8903,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9020,22 +9027,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9050,12 +9057,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9167,22 +9174,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9197,12 +9204,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9321,22 +9328,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9351,12 +9358,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9468,22 +9475,22 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 401)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Canonical unauthenticated response evaluated before protected lookup.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AuthenticationFailureProblem>("Authentication failed before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 404)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SafeDenialProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Byte-equivalent non-enumerating response for every fresh negative authority fact.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 409)
@@ -9498,12 +9505,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<ProblemDetails>("Protected operation unavailability. Authority-evidence failure uses the exact non-disclosing authority-unavailable branch.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Projection unavailable. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9681,7 +9688,8 @@ namespace Hexalith.Folders.Client.Generated
         public CanonicalErrorCategory Category { get; set; }
 
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Code { get; set; }
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CanonicalErrorCode Code { get; set; }
 
         [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Message { get; set; }
@@ -9697,7 +9705,7 @@ namespace Hexalith.Folders.Client.Generated
         public ProblemDetailsClientAction ClientAction { get; set; }
 
         /// <summary>
-        /// Metadata-only details. File contents, diffs, tokens, secrets, and unauthorized existence hints are forbidden.
+        /// Closed metadata-only details. Every error requires visibility; keys outside the generated vocabulary are forbidden.
         /// </summary>
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Details Details { get; set; } = new Details();
@@ -9725,7 +9733,8 @@ namespace Hexalith.Folders.Client.Generated
         public CanonicalErrorCategory Category { get; set; }
 
         [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Code { get; set; }
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CanonicalErrorCode Code { get; set; }
 
         [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Message { get; set; }
@@ -12982,212 +12991,8 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
         Validation_error = 7,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
-        Idempotency_key_expired = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
-        Provider_permission_insufficient = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
-        Provider_rate_limited = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
-        Repository_binding_unavailable = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
-        Branch_ref_policy_invalid = 15,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
-        Workspace_not_ready = 16,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 17,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 18,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
-        Lock_conflict = 19,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 20,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
-        Lock_not_owned = 21,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
-        Stale_workspace = 22,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 23,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 24,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 25,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
-        Unsupported_provider_capability = 26,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
-        Path_validation_failed = 27,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
-        File_operation_failed = 28,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 29,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 30,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 31,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 32,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 33,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 34,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
-        Input_limit_exceeded = 35,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
-        Response_limit_exceeded = 36,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
-        Query_timeout = 37,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 38,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 39,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 40,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 41,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 42,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 43,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 44,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 45,
-
         [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
-        Concurrency_conflict = 46,
-
-    }
-
-    /// <summary>
-    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum CliExitCode
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"0")]
-        _0 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"1")]
-        _1 = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"64")]
-        _64 = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"65")]
-        _65 = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"66")]
-        _66 = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"67")]
-        _67 = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"68")]
-        _68 = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"69")]
-        _69 = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"70")]
-        _70 = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"71")]
-        _71 = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"72")]
-        _72 = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"73")]
-        _73 = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"74")]
-        _74 = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"75")]
-        _75 = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"76")]
-        _76 = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"77")]
-        _77 = 15,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum McpFailureKind
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"none")]
-        None = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
-        Authentication_failure = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
-        Usage_error = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
-        Client_configuration_error = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
-        Credential_missing = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
-        Credential_reference_invalid = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
-        Tenant_access_denied = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
-        Folder_acl_denied = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 8,
+        Concurrency_conflict = 8,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
         Idempotency_conflict = 9,
@@ -13303,8 +13108,212 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
         Internal_error = 46,
 
+    }
+
+    /// <summary>
+    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CliExitCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"0")]
+        _0 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"1")]
+        _1 = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"64")]
+        _64 = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"65")]
+        _65 = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"66")]
+        _66 = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"67")]
+        _67 = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"68")]
+        _68 = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"69")]
+        _69 = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"70")]
+        _70 = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"71")]
+        _71 = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"72")]
+        _72 = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"73")]
+        _73 = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"74")]
+        _74 = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"75")]
+        _75 = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"76")]
+        _76 = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"77")]
+        _77 = 15,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum McpFailureKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"none")]
+        None = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
+        Authentication_failure = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
+        Usage_error = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
+        Client_configuration_error = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
+        Credential_missing = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
+        Credential_reference_invalid = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
+        Folder_acl_denied = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 8,
+
         [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
-        Concurrency_conflict = 47,
+        Concurrency_conflict = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
+        Idempotency_conflict = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
+        Provider_readiness_failed = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
+        Provider_permission_insufficient = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
+        Provider_rate_limited = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
+        Repository_binding_unavailable = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
+        Branch_ref_policy_invalid = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
+        Workspace_not_ready = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
+        Workspace_preparation_failed = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
+        Workspace_locked = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
+        Lock_conflict = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
+        Lock_expired = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
+        Lock_not_owned = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
+        Stale_workspace = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
+        Authorization_revocation_detected = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
+        Repository_conflict = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
+        Duplicate_binding = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
+        Unsupported_provider_capability = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
+        Path_validation_failed = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
+        File_operation_failed = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
+        Dirty_workspace = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
+        Commit_failed = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
+        State_transition_invalid = 36,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 37,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
+        Response_limit_exceeded = 38,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 40,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
+        Projection_stale = 41,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 42,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 44,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
+        Failed_operation = 45,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 46,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
+        Internal_error = 47,
 
     }
 
@@ -13447,6 +13456,255 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AuthenticationFailureProblem : ProblemDetails
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details9 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SafeDenialProblem : ProblemDetails
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details10 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class AuthorityUnavailableProblem : ProblemDetails
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Details11 Details { get; set; }
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class OperationSpecificUnavailableProblem : ProblemDetails
+    {
+
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
+
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
+            set { _additionalProperties = value; }
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CanonicalErrorCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_required")]
+        Authentication_required = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
+        Authorization_revocation_detected = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"c4_input_limit_exceeded")]
+        C4_input_limit_exceeded = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"c4_query_timeout")]
+        C4_query_timeout = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"c4_range_limit_exceeded")]
+        C4_range_limit_exceeded = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"c4_response_budget_exceeded")]
+        C4_response_budget_exceeded = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
+        Commit_failed = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
+        Concurrency_conflict = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"content_evidence_invalid")]
+        Content_evidence_invalid = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"d9_inline_limit_exceeded")]
+        D9_inline_limit_exceeded = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
+        Dirty_workspace = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
+        Duplicate_binding = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_content_limit_exceeded")]
+        File_content_limit_exceeded = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
+        Idempotency_conflict = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"invalid_sort")]
+        Invalid_sort = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
+        Lock_expired = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
+        Projection_stale = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
+        Provider_readiness_failed = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_reversed")]
+        Range_reversed = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
+        Repository_conflict = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"resource_unavailable")]
+        Resource_unavailable = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
+        State_transition_invalid = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tampered_cursor_or_changed_filter")]
+        Tampered_cursor_or_changed_filter = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
+        Workspace_locked = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
+        Workspace_preparation_failed = 33,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum ProblemDetailsClientAction
     {
 
@@ -13471,59 +13729,41 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"refresh_state_then_submit_with_new_key")]
         Refresh_state_then_submit_with_new_key = 6,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"do_not_retry")]
+        Do_not_retry = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"restart_query")]
+        Restart_query = 8,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Details
     {
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("attemptedTransition", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object AttemptedTransition { get; set; }
+        public string AttemptedTransition { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object ConfiguredLimit { get; set; }
+        public string ConfiguredLimit { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object CurrentState { get; set; }
+        public string CurrentState { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("dimension", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Dimension { get; set; }
+        public string Dimension { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("leaseStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object LeaseStatus { get; set; }
+        public string LeaseStatus { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("lockStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object LockStatus { get; set; }
+        public string LockStatus { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("rangeRule", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object RangeRule { get; set; }
+        public string RangeRule { get; set; }
 
-        /// <summary>
-        /// Bounded metadata-only detail field.
-        /// </summary>
         [Newtonsoft.Json.JsonProperty("unit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Unit { get; set; }
+        public string Unit { get; set; }
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
@@ -14016,8 +14256,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum CreateFolderRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14025,8 +14265,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum ArchiveFolderRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14061,8 +14301,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum UpdateFolderAclEntryRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14094,8 +14334,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum ConfigureProviderBindingRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14169,8 +14409,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum BranchRefPolicyRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14178,8 +14418,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum BranchRefPolicyRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14187,8 +14427,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum CreateRepositoryBackedFolderRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14196,8 +14436,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum BindRepositoryRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14697,8 +14937,8 @@ namespace Hexalith.Folders.Client.Generated
     public enum CommitWorkspaceRequestRequestSchemaVersion
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"v1")]
-        V1 = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"v2")]
+        V2 = 0,
 
     }
 
@@ -14843,6 +15083,33 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"unavailable")]
         Unavailable = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details9
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details10
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details11
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object Visibility { get; set; }
 
     }
 

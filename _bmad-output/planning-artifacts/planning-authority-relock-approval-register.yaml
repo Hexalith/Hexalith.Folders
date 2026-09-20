@@ -1,8 +1,8 @@
 schema_version: '1.0.0'
 register_id: folders-planning-authority-relock-2026-09-17
-status: planning-output-approved-later-gates-pending
+status: a6b-blocked-active-candidate-drift-a8-blocked
 prepared_on: '2026-09-17'
-last_updated_on: '2026-09-18'
+last_updated_on: '2026-09-20'
 digest_algorithm: sha256
 digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
 approval_policy:
@@ -41,7 +41,7 @@ post_generation_planning_output_attestation:
     A3: [Product, Architecture, Delivery]
   approved_gates: [A2b, A3]
   excluded_gates: [A6b, A8]
-  exclusion_reason: A6b still requires the generated authorization-matrix 2.0.0 and conformance-set digests; A8 still requires a passing Section 9 result and its final bound artifacts.
+  exclusion_reason: A6b now has exact generated authorization-matrix 2.0.0 and conformance-set digests but still requires explicit Product, Architecture, and Security approval; A8 still requires a passing Section 9 result and explicit Product, Architecture, and Delivery approval.
   immutable_bound_artifacts:
     - path: _bmad-output/planning-artifacts/prd.md
       sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
@@ -54,6 +54,68 @@ post_generation_planning_output_attestation:
     - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
       sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
   snapshot_semantics: The approved planning artifacts remain immutable generation snapshots; this register is the current decision overlay and supersedes their embedded generation-time pending status without rewriting their approved bytes.
+
+post_generation_a6b_attestation:
+  status: invalidated-by-bound-artifact-digest-change
+  approver: Jerome
+  approved_on: '2026-09-20'
+  source: Explicit yes in the active bmad-correct-course approval exchange after presentation of the exact A6b artifact digests.
+  represented_authorities: [Product, Architecture, Security]
+  approved_gates: [A6b]
+  excluded_gates: [A8]
+  exclusion_reason: The response also approved only the two-stage A8 ordering protocol; it did not approve A8 hold removal or supply A8 role signatures.
+  approved_bound_artifacts_at_presentation:
+    - path: docs/contract/authorization-matrix.md
+      version: '2.0.0'
+      sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+    - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+      sha256: 649ecfffd95b54ce086777496d612af2793e6b8d254d4985f35b0cbc85ae90ad
+      declared_candidate_set_sha256: 535c675159047c0ff325995d351dafaa99aac13a1a542ba07a150f9a26ae27ed
+      declared_authorization_matrix_sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+      artifact_count: 75
+  invalidated_on: '2026-09-20'
+  invalidation_reason: The current files no longer match either exact digest presented for approval. Register policy reopens A6b on any payload or bound-artifact digest change; approval is not transferred to the new bytes.
+  current_observation:
+    observed_at: '2026-09-20T11:50:04+02:00'
+    stability: fail-active-concurrent-candidate-drift
+    last_written_artifacts:
+      - path: docs/contract/authorization-matrix.md
+        version: '2.0.0'
+        sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+      - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+        sha256: c21708a467e29ebfe2d6c8be7e0211780f9abb3db51dc4420edbc1e614e9914c
+        declared_candidate_set_sha256: de6b210f452ec2b8cf2aab1ed7f95bf513df6b9cfa4b875bb1c93f2e365d6d79
+        declared_authorization_matrix_sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+        artifact_count: 116
+        matrix_binding_status: pass
+        reproduction_status: invalidated-by-subsequent-candidate-drift
+    drift_evidence:
+      - observed_at: '2026-09-20T11:49:44+02:00'
+        generated_file_sha256: c21708a467e29ebfe2d6c8be7e0211780f9abb3db51dc4420edbc1e614e9914c
+        declared_candidate_set_sha256: de6b210f452ec2b8cf2aab1ed7f95bf513df6b9cfa4b875bb1c93f2e365d6d79
+        artifact_count: 116
+      - observed_at: '2026-09-20T11:49:49+02:00'
+        generated_file_sha256: 478befcc63080625a1beb44c21033494d19369991f4389a22faa2818e4382b9d
+        declared_candidate_set_sha256: 77fd7b7442e2ececb24414eb197d26e5ce3964c761810f736d33688f902b2ffc
+        artifact_count: 116
+    validation:
+      full_solution_build: fail-7-compile-errors-in-concurrent-product-snapshot
+      last_focused_contract_test_run: fail-53-of-55-pass-2-conformance-drift-failures
+      superseded_snapshot_test_run: pass-55-of-55-before-subsequent-drift
+      current_candidate_validation: not-run-no-stable-candidate
+
+gate_ordering_amendment:
+  status: approved
+  approved_on: '2026-09-20'
+  approver: Jerome
+  scope: two-stage-a8-ordering-amendment-only
+  record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
+  record_sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
+  approval_effect:
+    a8_approved: false
+    sprint_status_regeneration_authorized: false
+    general_execution_hold: true
+    ordinary_story_execution_authorized: false
 
 records:
   - gate_id: A1
@@ -335,18 +397,71 @@ records:
     authority_ids: [OQ3, PD10]
     manifest_node: DEC-A6B-OQ3
     stage: post-1.17-GENERATE
-    approval_readiness: awaiting-generated-target-digests
+    approval_readiness: blocked-active-bound-artifact-drift
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
     decision_payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
     required_authorities: [Product, Architecture, Security]
-    required_bound_artifacts:
+    last_generated_bound_artifacts_not_approvable:
       - path: docs/contract/authorization-matrix.md
         required_version: '2.0.0'
-        sha256: pending-1.17-GENERATE
+        sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
       - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-        sha256: pending-1.17-GENERATE
+        sha256: c21708a467e29ebfe2d6c8be7e0211780f9abb3db51dc4420edbc1e614e9914c
+        declared_candidate_set_sha256: de6b210f452ec2b8cf2aab1ed7f95bf513df6b9cfa4b875bb1c93f2e365d6d79
+        declared_authorization_matrix_sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+        artifact_count: 116
+        matrix_binding_status: pass
+        reproduction_status: invalidated-by-subsequent-candidate-drift
     superseded_digest: 5ffabd71faea234d884b3c45506fd7c19db562b3353072c396aca206378c52d7
-    approval_status: pending
+    approval_status: blocked-before-reapproval
+    invalidated_approvals:
+      - authority: Product
+        status: invalidated-by-bound-artifact-digest-change
+        approver: Jerome
+        approved_on: '2026-09-20'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+        bound_artifacts:
+          - path: docs/contract/authorization-matrix.md
+            version: '2.0.0'
+            sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+          - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+            sha256: 649ecfffd95b54ce086777496d612af2793e6b8d254d4985f35b0cbc85ae90ad
+            declared_candidate_set_sha256: 535c675159047c0ff325995d351dafaa99aac13a1a542ba07a150f9a26ae27ed
+            artifact_count: 75
+      - authority: Architecture
+        status: invalidated-by-bound-artifact-digest-change
+        approver: Jerome
+        approved_on: '2026-09-20'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+        bound_artifacts:
+          - path: docs/contract/authorization-matrix.md
+            version: '2.0.0'
+            sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+          - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+            sha256: 649ecfffd95b54ce086777496d612af2793e6b8d254d4985f35b0cbc85ae90ad
+            declared_candidate_set_sha256: 535c675159047c0ff325995d351dafaa99aac13a1a542ba07a150f9a26ae27ed
+            artifact_count: 75
+      - authority: Security
+        status: invalidated-by-bound-artifact-digest-change
+        approver: Jerome
+        approved_on: '2026-09-20'
+        payload_version: '1.0.0-candidate.1'
+        payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+        bound_artifacts:
+          - path: docs/contract/authorization-matrix.md
+            version: '2.0.0'
+            sha256: 1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef
+          - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+            sha256: 649ecfffd95b54ce086777496d612af2793e6b8d254d4985f35b0cbc85ae90ad
+            declared_candidate_set_sha256: 535c675159047c0ff325995d351dafaa99aac13a1a542ba07a150f9a26ae27ed
+            artifact_count: 75
+    invalidation_effect:
+      reapproval_required: true
+      a8_blocked: true
+      sprint_status_regeneration_authorized: false
+      general_execution_hold: true
     approvals: []
 
   - gate_id: A7
@@ -412,17 +527,20 @@ records:
     authority_ids: [freeze]
     manifest_node: DEC-A8-HOLD
     stage: post-RELOCK-SECTION9
-    approval_readiness: awaiting-generated-target-digests-and-passing-gate
+    approval_readiness: governed-by-separate-a8-preparation-package
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
     decision_payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
     required_authorities: [Product, Architecture, Delivery]
     required_bound_artifacts:
       - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
-        sha256: pending-RELOCK-SECTION9
+        sha256: pending-a8-approval-recording
       - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
-        sha256: pending-RELOCK-SECTION9
+        sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
       - path: _bmad-output/implementation-artifacts/sprint-status.yaml
-        sha256: pending-authorized-tracker-reconciliation
+        sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+        binding_role: pre-authorization-input-only
+    preparation_package_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml
+    preparation_package_binding: Exact digest is recorded in the human-facing A8 request after this register snapshot and its pre-A8 Section 9 result are finalized.
     approval_status: pending
     approvals: []
 

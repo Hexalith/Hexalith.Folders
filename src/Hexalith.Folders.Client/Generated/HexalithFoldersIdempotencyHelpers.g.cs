@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "24827e5924a777502c6ba341723b3e1e3c49c7f49389dbd3a19375c747deec31";
+    public const string ContractSpineSha256 = "07f7e3f7959a6da609619aa76d7d9381a0cb62a469760cb866d050f9c9e8b4f0";
     public const string GenerationConfigurationSha256 = "3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d";
-    public const string GeneratedHelpersSha256 = "75638eb707d293a82a55d875bbe9bf7471e35e969efe6b3e2ff6f1ad121b1de2";
+    public const string GeneratedHelpersSha256 = "82f4ccb5415962c520615201f90db30e2bd94757ea817d74a4750e8489a081e2";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -375,10 +375,10 @@ public partial class FileContentEvidenceInvalidOrValidationProblem
     [System.Runtime.Serialization.OnDeserialized]
     private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
     {
-        bool exactSignal = string.Equals(Code, "content_evidence_invalid", System.StringComparison.Ordinal);
+        bool exactSignal = Code == CanonicalErrorCode.Content_evidence_invalid;
         if (exactSignal && (Status != 400
             || Category != CanonicalErrorCategory.Validation_error
-            || !string.Equals(Code, "content_evidence_invalid", System.StringComparison.Ordinal)
+            || Code != CanonicalErrorCode.Content_evidence_invalid
             || Retryable != false
             || ClientAction != ProblemDetailsClientAction.Revise_request))
         {
@@ -392,10 +392,10 @@ public partial class FileContentLimitExceededOrWorkspaceTransitionProblem
     [System.Runtime.Serialization.OnDeserialized]
     private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
     {
-        bool exactSignal = string.Equals(Code, "file_content_limit_exceeded", System.StringComparison.Ordinal) || Category == CanonicalErrorCategory.Input_limit_exceeded;
+        bool exactSignal = Code == CanonicalErrorCode.File_content_limit_exceeded || Category == CanonicalErrorCategory.Input_limit_exceeded;
         if (exactSignal && (Status != 422
             || Category != CanonicalErrorCategory.Input_limit_exceeded
-            || !string.Equals(Code, "file_content_limit_exceeded", System.StringComparison.Ordinal)
+            || Code != CanonicalErrorCode.File_content_limit_exceeded
             || Retryable != false
             || ClientAction != ProblemDetailsClientAction.Revise_request))
         {
@@ -409,10 +409,10 @@ public partial class FileMutationUnavailableProblem
     [System.Runtime.Serialization.OnDeserialized]
     private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
     {
-        bool exactSignal = string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal) || Category == CanonicalErrorCategory.File_policy_unavailable;
+        bool exactSignal = Code == CanonicalErrorCode.File_policy_unavailable || Category == CanonicalErrorCategory.File_policy_unavailable;
         if (exactSignal && (Status != 503
             || Category != CanonicalErrorCategory.File_policy_unavailable
-            || !string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal)
+            || Code != CanonicalErrorCode.File_policy_unavailable
             || Retryable != true
             || ClientAction != ProblemDetailsClientAction.Retry))
         {
@@ -426,10 +426,10 @@ public partial class FileContextUnavailableProblem
     [System.Runtime.Serialization.OnDeserialized]
     private void ValidateExactValuesAfterDeserialization(System.Runtime.Serialization.StreamingContext _)
     {
-        bool exactSignal = string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal) || Category == CanonicalErrorCategory.File_policy_unavailable;
+        bool exactSignal = Code == CanonicalErrorCode.File_policy_unavailable || Category == CanonicalErrorCategory.File_policy_unavailable;
         if (exactSignal && (Status != 503
             || Category != CanonicalErrorCategory.File_policy_unavailable
-            || !string.Equals(Code, "file_policy_unavailable", System.StringComparison.Ordinal)
+            || Code != CanonicalErrorCode.File_policy_unavailable
             || Retryable != true
             || ClientAction != ProblemDetailsClientAction.Retry))
         {

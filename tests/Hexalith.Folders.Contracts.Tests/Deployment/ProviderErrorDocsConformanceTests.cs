@@ -230,8 +230,8 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocClientActionTokensEqualGeneratedEnum()
     {
         HashSet<string> actions = ParseGeneratedEnumValues("ProblemDetailsClientAction");
-        AssertSetEquals(actions, ["retry", "revise_request", "check_credentials", "wait_for_reconciliation", "contact_operator", "no_action", "refresh_state_then_submit_with_new_key"],
-            "ProblemDetailsClientAction must declare exactly the 7 wire tokens.");
+        AssertSetEquals(actions, ["retry", "revise_request", "check_credentials", "wait_for_reconciliation", "contact_operator", "no_action", "refresh_state_then_submit_with_new_key", "do_not_retry", "restart_query"],
+            "ProblemDetailsClientAction must declare exactly the 9 wire tokens.");
 
         HashSet<string> docActions = FirstColumnBacktickTokens(ErrorDocPath, "<!-- client-action-tokens -->");
         AssertSetEquals(docActions, actions, "error doc client-action tokens must equal the generated enum exactly.");

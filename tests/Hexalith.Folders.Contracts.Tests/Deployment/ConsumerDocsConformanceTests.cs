@@ -19,7 +19,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 /// </summary>
 public sealed partial class ConsumerDocsConformanceTests
 {
-    private const string SpinePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml";
+    private const string SpinePath = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml";
     private const string ParityPath = "tests/fixtures/parity-contract.yaml";
     private const string ExitCodesPath = "src/Hexalith.Folders.Cli/FoldersExitCodes.cs";
     private const string ManifestPath = "tests/fixtures/pattern-example-manifest.yaml";
@@ -264,7 +264,7 @@ public sealed partial class ConsumerDocsConformanceTests
     {
         YamlMappingNode root = LoadSingleYamlDocument(SpinePath).ShouldBeOfType<YamlMappingNode>();
         Scalar(Mapping(root, "info"), "title").ShouldBe("Hexalith.Folders API");
-        Scalar(Mapping(root, "info"), "version").ShouldBe("v1");
+        Scalar(Mapping(root, "info"), "version").ShouldBe("v2");
 
         YamlMappingNode oidc = Mapping(Mapping(Mapping(root, "components"), "securitySchemes"), "oidcBearer");
         Scalar(oidc, "type").ShouldBe("openIdConnect");
@@ -274,7 +274,7 @@ public sealed partial class ConsumerDocsConformanceTests
         {
             "OpenAPI 3.1.0",
             "Hexalith.Folders API",
-            "version `v1`",
+            "version `v2`",
             "`oidcBearer`",
             "`type: openIdConnect`",
             "`Idempotency-Key`",
@@ -282,7 +282,7 @@ public sealed partial class ConsumerDocsConformanceTests
             "`X-Hexalith-Task-Id`",
             "non-mutating (`GET`) operations MUST NOT accept `Idempotency-Key`",
             "`ValidateProviderReadiness`",
-            "`POST /api/v1/provider-readiness/validations`",
+            "`POST /api/v2/provider-readiness/validations`",
             "`ProblemDetails`",
             "`category`",
             "`code`",
@@ -1089,7 +1089,7 @@ public sealed partial class ConsumerDocsConformanceTests
 
     private static string Excerpt(string value) => value.Length <= 80 ? value : value[..80];
 
-    [GeneratedRegex(@"\|\s*`([A-Za-z]+)`\s*\|\s*(?:GET|POST|PUT|PATCH|DELETE)\s*\|\s*`(?:/api/v1[^`]*)`\s*\|")]
+    [GeneratedRegex(@"\|\s*`([A-Za-z]+)`\s*\|\s*(?:GET|POST|PUT|PATCH|DELETE)\s*\|\s*`(?:/api/v2[^`]*)`\s*\|")]
     private static partial Regex DocOperationRow();
 
     [GeneratedRegex(@"### Tag: `([a-z][a-z-]*)`")]

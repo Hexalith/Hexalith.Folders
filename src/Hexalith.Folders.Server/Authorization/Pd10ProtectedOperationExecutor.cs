@@ -16,7 +16,7 @@ internal static class Pd10ProtectedOperationExecutor
     /// <returns>The closed authorization outcome and optional protected value.</returns>
     public static async ValueTask<Pd10ProtectedOperationResult<T>> ExecuteAsync<T>(
         Pd10AuthorizationContext context,
-        Func<CancellationToken, ValueTask<bool>>? verifyTaskFolderBinding,
+        Func<CancellationToken, ValueTask<Pd10TaskFolderBindingState>>? verifyTaskFolderBinding,
         Func<CancellationToken, ValueTask<T>> observeProtectedResource,
         CancellationToken cancellationToken = default)
     {
@@ -32,8 +32,13 @@ internal static class Pd10ProtectedOperationExecutor
         if (context.RequiresTaskFolderBinding)
         {
             ArgumentNullException.ThrowIfNull(verifyTaskFolderBinding);
-            bool isBound = await verifyTaskFolderBinding(cancellationToken).ConfigureAwait(false);
-            if (!isBound)
+            Pd10TaskFolderBindingState binding = await verifyTaskFolderBinding(cancellationToken).ConfigureAwait(false);
+            if (binding == Pd10TaskFolderBindingState.Unavailable)
+            {
+                return new(Pd10AuthorizationOutcome.AuthorityUnavailable, default);
+            }
+
+            if (binding != Pd10TaskFolderBindingState.Bound)
             {
                 return new(Pd10AuthorizationOutcome.SafeDenial, default);
             }

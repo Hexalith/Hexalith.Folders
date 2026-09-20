@@ -16,17 +16,21 @@ internal static class Oq2ProblemProjection
             return exception switch
             {
                 HexalithFoldersApiException<FileSafeResourceUnavailableProblem> value when value.StatusCode == 404 =>
-                    (ProjectExact(RoundTrip(value.Result), 404, CanonicalErrorCategory.Tenant_access_denied, "resource_unavailable", "Access unavailable", "The requested resource is unavailable.", false, ProblemDetailsClientAction.No_action, "redacted"), null),
+                    (ProjectExact(RoundTrip(value.Result), 404, CanonicalErrorCategory.Tenant_access_denied, CanonicalErrorCode.Resource_unavailable, "Access unavailable", "The requested resource is unavailable.", false, ProblemDetailsClientAction.No_action, "redacted"), null),
                 HexalithFoldersApiException<FileRangeUnsatisfiableProblem> value when value.StatusCode == 416 =>
-                    (ProjectExact(RoundTrip(value.Result), 416, CanonicalErrorCategory.Range_unsatisfiable, "range_unsatisfiable", "Range unsatisfiable", "The requested byte range cannot be satisfied.", false, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
+                    (ProjectExact(RoundTrip(value.Result), 416, CanonicalErrorCategory.Range_unsatisfiable, CanonicalErrorCode.Range_unsatisfiable, "Range unsatisfiable", "The requested byte range cannot be satisfied.", false, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
                 HexalithFoldersApiException<FilePolicyUnavailableProblem> value when value.StatusCode == 503 =>
-                    (ProjectExact(RoundTrip(value.Result), 503, CanonicalErrorCategory.File_policy_unavailable, "file_policy_unavailable", "File policy unavailable", "The file policy cannot be verified for this request.", true, ProblemDetailsClientAction.Retry, "redacted"), null),
+                    (ProjectExact(RoundTrip(value.Result), 503, CanonicalErrorCategory.File_policy_unavailable, CanonicalErrorCode.File_policy_unavailable, "File policy unavailable", "The file policy cannot be verified for this request.", true, ProblemDetailsClientAction.Retry, "redacted"), null),
                 HexalithFoldersApiException<FileContentEvidenceInvalidProblem> value when value.StatusCode == 400 =>
-                    (ProjectExact(RoundTrip(value.Result), 400, CanonicalErrorCategory.Validation_error, "content_evidence_invalid", "Content evidence invalid", "The supplied content evidence is not valid.", false, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
+                    (ProjectExact(RoundTrip(value.Result), 400, CanonicalErrorCategory.Validation_error, CanonicalErrorCode.Content_evidence_invalid, "Content evidence invalid", "The supplied content evidence is not valid.", false, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
                 HexalithFoldersApiException<FileInlineTransportRequiredProblem> value when value.StatusCode == 413 =>
-                    (ProjectExact(RoundTrip(value.Result), 413, CanonicalErrorCategory.Input_limit_exceeded, "d9_inline_limit_exceeded", "Inline payload too large", "The inline payload exceeds the configured D-9 boundary.", true, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
+                    (ProjectExact(RoundTrip(value.Result), 413, CanonicalErrorCategory.Input_limit_exceeded, CanonicalErrorCode.D9_inline_limit_exceeded, "Inline payload too large", "The inline payload exceeds the configured D-9 boundary.", true, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
                 HexalithFoldersApiException<FileContentLimitExceededProblem> value when value.StatusCode == 422 =>
-                    (ProjectExact(RoundTrip(value.Result), 422, CanonicalErrorCategory.Input_limit_exceeded, "file_content_limit_exceeded", "File content limit exceeded", "The file content exceeds the permitted maximum.", false, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
+                    (ProjectExact(RoundTrip(value.Result), 422, CanonicalErrorCategory.Input_limit_exceeded, CanonicalErrorCode.File_content_limit_exceeded, "File content limit exceeded", "The file content exceeds the permitted maximum.", false, ProblemDetailsClientAction.Revise_request, "metadata_only"), null),
+                HexalithFoldersApiException<AuthenticationFailureProblem> value => ProjectProblem(value, exception.StatusCode),
+                HexalithFoldersApiException<SafeDenialProblem> value => ProjectProblem(value, exception.StatusCode),
+                HexalithFoldersApiException<AuthorityUnavailableProblem> value => ProjectProblem(value, exception.StatusCode),
+                HexalithFoldersApiException<OperationSpecificUnavailableProblem> value => ProjectProblem(value, exception.StatusCode),
                 HexalithFoldersApiException<FileContentEvidenceInvalidOrValidationProblem> value => ProjectProblem(value, exception.StatusCode),
                 HexalithFoldersApiException<FileContentLimitExceededOrWorkspaceTransitionProblem> value => ProjectProblem(value, exception.StatusCode),
                 HexalithFoldersApiException<FileMutationUnavailableProblem> value => ProjectProblem(value, exception.StatusCode),
@@ -43,7 +47,9 @@ internal static class Oq2ProblemProjection
     private static (ProblemDetails? Problem, string? Diagnostic) ProjectProblem<T>(HexalithFoldersApiException<T> exception, int httpStatus)
         where T : ProblemDetails
     {
-        T problem = RoundTrip(exception.Result);
+        T typedProblem = RoundTrip(exception.Result);
+        ProblemDetails problem = JsonConvert.DeserializeObject<ProblemDetails>(JsonConvert.SerializeObject(typedProblem))
+            ?? throw new JsonSerializationException("The typed problem result could not be projected to ProblemDetails.");
         return problem.Status == httpStatus
             ? (problem, null)
             : (null, "http_status_mismatch");
@@ -66,7 +72,7 @@ internal static class Oq2ProblemProjection
         ExactFileProblem value,
         int status,
         CanonicalErrorCategory category,
-        string code,
+        CanonicalErrorCode code,
         string title,
         string message,
         bool retryable,

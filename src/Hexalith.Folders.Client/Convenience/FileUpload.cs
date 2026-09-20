@@ -27,7 +27,7 @@ public static class FileUpload
     /// <summary>The inclusive canonical per-file maximum for both inline and streamed evidence.</summary>
     public const int MaximumFileBytes = 1048576;
 
-    private const string RequestSchemaVersionV1 = "v1";
+    private const string RequestSchemaVersionV2 = "v2";
 
     /// <summary>
     /// Builds an inline (<c>PutFileInline</c>) file-mutation request from in-memory content.
@@ -86,7 +86,7 @@ public static class FileUpload
 
         FileMutationRequest request = new()
         {
-            RequestSchemaVersion = RequestSchemaVersionV1,
+            RequestSchemaVersion = RequestSchemaVersionV2,
             OperationId = operationId,
             PathMetadata = pathMetadata,
             FileOperationKind = fileOperationKind,
@@ -147,7 +147,7 @@ public static class FileUpload
 
         FileMutationRequest request = new()
         {
-            RequestSchemaVersion = RequestSchemaVersionV1,
+            RequestSchemaVersion = RequestSchemaVersionV2,
             OperationId = operationId,
             PathMetadata = pathMetadata,
             FileOperationKind = fileOperationKind,

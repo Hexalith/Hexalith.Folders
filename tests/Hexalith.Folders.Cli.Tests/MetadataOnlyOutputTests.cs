@@ -32,7 +32,7 @@ public sealed class MetadataOnlyOutputTests
         + "\"freshness\":{\"readConsistency\":\"read_your_writes\",\"observedAt\":\"2026-09-14T00:00:00Z\",\"projectionWatermark\":\"watermark_01HZY7Z6N7J4Q2X8\",\"stale\":false}}";
 
     private const string RangeReadRequestJson =
-        "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},"
+        "{\"requestSchemaVersion\":\"v2\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},"
         + "\"startOffset\":0,\"endOffset\":11}";
 
     [Theory]

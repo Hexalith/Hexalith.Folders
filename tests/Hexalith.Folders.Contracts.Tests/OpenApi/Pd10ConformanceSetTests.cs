@@ -14,6 +14,27 @@ public sealed class Pd10ConformanceSetTests
 {
     private const string ManifestPath = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
+    private static readonly string[] IndependentlyRequiredPaths =
+    [
+        ".github/workflows/ci.yml",
+        ".github/workflows/contract-spine.yml",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "scripts/generate-pd10-v2-contract.py",
+        "scripts/generate-v2-conformance-set.ps1",
+        "src/Hexalith.Folders.Client/Generation/Program.cs",
+        "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+        "tests/fixtures/parity-contract.schema.json",
+        "tests/fixtures/parity-contract.yaml",
+        "tests/fixtures/previous-spine.yaml",
+        "tests/tools/parity-oracle-generator/Program.cs",
+        "tests/tools/run-consumer-docs-gates.ps1",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "tests/tools/run-contract-spine-gates.ps1",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "tests/tools/run-provider-error-docs-gates.ps1",
+    ];
 
     [Fact]
     public void ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest()
@@ -29,8 +50,10 @@ public sealed class Pd10ConformanceSetTests
         {
             string path = Scalar(artifact, "path");
             string digest = Scalar(artifact, "sha256");
-            File.Exists(Path.Combine(RepositoryRoot, path)).ShouldBeTrue(path);
-            Sha256(Path.Combine(RepositoryRoot, path)).ShouldBe(digest, path);
+            string fullPath = Path.Combine(RepositoryRoot, path);
+            File.Exists(fullPath).ShouldBeTrue(path);
+            File.ReadAllBytes(fullPath).Length.ShouldBe(int.Parse(Scalar(artifact, "bytes")), path);
+            Sha256(fullPath).ShouldBe(digest, path);
             entries.Add((path, digest));
         }
 
@@ -43,6 +66,12 @@ public sealed class Pd10ConformanceSetTests
             .ShouldBe(Scalar(root, "candidate_set_sha256"));
         entries.Single(entry => entry.Path == "docs/contract/authorization-matrix.md").Digest
             .ShouldBe(Scalar(root, "authorization_matrix_sha256"));
+        foreach (string requiredPath in IndependentlyRequiredPaths)
+        {
+            entries.Select(entry => entry.Path).ShouldContain(requiredPath);
+        }
+        entries.Select(entry => entry.Path).ShouldAllBe(path =>
+            !path.StartsWith("_bmad-output/", StringComparison.Ordinal));
     }
 
     [Fact]

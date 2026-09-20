@@ -518,6 +518,7 @@ public sealed class CrossAdapterBehavioralParityTests
         {
             "authentication_failure" => "authentication_required",
             "tenant_access_denied" => "resource_unavailable",
+            "folder_acl_denied" => "resource_unavailable",
             _ => category,
         };
         mcpJson.Value<string>("code").ShouldBe(expectedCode); // exact envelopes use their canonical code.
@@ -600,6 +601,7 @@ public sealed class CrossAdapterBehavioralParityTests
         {
             "authentication_failure" => "authentication_required",
             "tenant_access_denied" => "resource_unavailable",
+            "folder_acl_denied" => "resource_unavailable",
             _ => category,
         };
         string title = category switch
@@ -764,8 +766,8 @@ public sealed class CrossAdapterBehavioralParityTests
 
         cliExit.ShouldBe(66);
         string cliStdErr = cliHarness.Console.StdErr;
-        // The canonical snake_case category must surface verbatim in CLI stderr (via the server-supplied
-        // problem.Code field which the CLI emits as `code: folder_acl_denied`).
+        // The canonical snake_case category must surface verbatim in CLI stderr independently from the
+        // safe-denial code (`resource_unavailable`).
         cliStdErr.ShouldContain(category);
         // And it must not be replaced by a localized / abbreviated form.
         cliStdErr.ShouldNotContain("AccessDenied");
@@ -784,7 +786,7 @@ public sealed class CrossAdapterBehavioralParityTests
 
         TestSupport.Kind(mcpResult).ShouldBe(category);
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResult);
-        mcpJson.Value<string>("code").ShouldBe(category);
+        mcpJson.Value<string>("code").ShouldBe("resource_unavailable");
         mcpResult.ShouldNotContain("AccessDenied");
         mcpResult.ShouldNotContain("ACL denied");
     }

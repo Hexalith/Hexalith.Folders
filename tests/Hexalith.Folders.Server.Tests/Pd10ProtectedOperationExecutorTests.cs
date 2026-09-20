@@ -75,7 +75,7 @@ public sealed class Pd10ProtectedOperationExecutorTests
     [Fact]
     public async Task TaskBindingFailureOccursAfterParentAuthorityAndBeforeProtectedRead()
     {
-        Probe probe = new() { TaskBelongsToFolder = false };
+        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.NotBound };
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
             new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresTaskFolderBinding: true),
@@ -89,7 +89,7 @@ public sealed class Pd10ProtectedOperationExecutorTests
     [Fact]
     public async Task FullyAuthorizedBoundTaskPerformsProtectedReadOnce()
     {
-        Probe probe = new() { TaskBelongsToFolder = true };
+        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.Bound };
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
             new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresTaskFolderBinding: true),
@@ -99,6 +99,20 @@ public sealed class Pd10ProtectedOperationExecutorTests
         result.Value.ShouldBe("observed");
         probe.BindingReads.ShouldBe(1);
         probe.ProtectedReads.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task UnavailableTaskBindingReturnsCanonical503BeforeProtectedRead()
+    {
+        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.Unavailable };
+
+        Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
+            new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresTaskFolderBinding: true),
+            probe);
+
+        result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthorityUnavailable);
+        probe.BindingReads.ShouldBe(1);
+        probe.ProtectedReads.ShouldBe(0);
     }
 
     private static ValueTask<Pd10ProtectedOperationResult<string>> ExecuteAsync(
@@ -115,13 +129,13 @@ public sealed class Pd10ProtectedOperationExecutorTests
 
         public int ProtectedReads { get; private set; }
 
-        public bool TaskBelongsToFolder { get; init; }
+        public Pd10TaskFolderBindingState BindingState { get; init; }
 
-        public ValueTask<bool> VerifyBindingAsync(CancellationToken cancellationToken)
+        public ValueTask<Pd10TaskFolderBindingState> VerifyBindingAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             BindingReads++;
-            return ValueTask.FromResult(TaskBelongsToFolder);
+            return ValueTask.FromResult(BindingState);
         }
 
         public ValueTask<string> ObserveAsync(CancellationToken cancellationToken)

@@ -1,4 +1,5 @@
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 namespace Hexalith.Folders.Mcp.Errors;
 
@@ -80,7 +81,7 @@ internal sealed record McpFailure
     {
         Kind = FailureKindProjection.Project(problem.Category),
         CorrelationId = string.IsNullOrWhiteSpace(problem.CorrelationId) ? correlationId : problem.CorrelationId,
-        Code = problem.Code,
+        Code = CanonicalErrorCodeProjection.WireValue(problem.Code),
         Retryable = problem.Retryable,
         ClientAction = FailureKindProjection.ClientAction(problem.ClientAction),
         Message = problem.Message,

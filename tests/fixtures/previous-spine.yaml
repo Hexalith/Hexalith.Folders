@@ -1,6 +1,6 @@
 version: pd10-v2-candidate-baseline
 source_marker: generated-from-pd10-v2-openapi
-contract_sha256: 24827e5924a777502c6ba341723b3e1e3c49c7f49389dbd3a19375c747deec31
+contract_sha256: 07f7e3f7959a6da609619aa76d7d9381a0cb62a469760cb866d050f9c9e8b4f0
 historical_v1_sha256: 3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2
 intent: PD10 v2 baseline with route, status-code, and canonical-error fingerprints for symmetric drift detection.
 ownership:
@@ -57,6 +57,43 @@ operations:
       - 'workspace_locked'
     status_code_fingerprint_sha256: 73871594fe7446fca98eedc06cf55d317cc4b16b61b6f539e70de68a93a176f5
     error_vocabulary_fingerprint_sha256: dd5995fb07c87469a641b7e2ab73d42bb5b33b6fde5dd0c0cb2a0d65def4ec54
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '410'
+      - '413'
+      - '422'
+      - '423'
+      - '428'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'file_operation_failed'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'path_validation_failed'
+      - 'provider_failure_known'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+    historical_v1_status_code_fingerprint_sha256: 46589420ea5999a98badea1f010809d98cb882d8387b68c4bfa20fbeb2d7be51
+    historical_v1_error_vocabulary_fingerprint_sha256: d5291efbb0f523f3f47ffb70efae4bf2cd6cac1ce5c2ad4de9852bfd1c85f3be
   - operation_id: 'ArchiveFolder'
     method: 'post'
     path: '/api/v2/folders/{folderId}/archive'
@@ -79,6 +116,23 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 03fae674c0eeaabc5c570c77715ad7488e83d8d542059fadc6ba5578de55ec92
     error_vocabulary_fingerprint_sha256: 3ba5db4089331c65fec8aaf1a925bccfac72e8048e62924ae09fe06fba99ab44
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 88144e7fd7fc45e06c5ab8cf9f4e45a476c6c730366a59cd10530b2b0d502575
+    historical_v1_error_vocabulary_fingerprint_sha256: ebe72b7a2a98537bf5b4b6ebe9f53cc7b6603b8cc23a0be0e4479ea5ab30393a
   - operation_id: 'BindRepository'
     method: 'post'
     path: '/api/v2/folders/{folderId}/repository-bindings'
@@ -110,6 +164,34 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: bc3525342b51896195eebb1d4624526503b76ada9e8c06cfed76a7c73f79515f
     error_vocabulary_fingerprint_sha256: 7a5bec9ca275336b4d5fd90512391c1e01d8affa30c4ed95cdb32b95a2be6d87
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '422'
+      - '429'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'duplicate_binding'
+      - 'failed_operation'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'provider_rate_limited'
+      - 'provider_readiness_failed'
+      - 'reconciliation_required'
+      - 'repository_conflict'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'unsupported_provider_capability'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: da9f36399a70d489039664c75f314443aa7ae770b629432a0eb0bc83509f636f
+    historical_v1_error_vocabulary_fingerprint_sha256: fa25a0104247832d257bdba154e3ec35edd228f4674a9e126a430d0d418f0892
   - operation_id: 'ChangeFile'
     method: 'put'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/change'
@@ -151,6 +233,43 @@ operations:
       - 'workspace_locked'
     status_code_fingerprint_sha256: 73871594fe7446fca98eedc06cf55d317cc4b16b61b6f539e70de68a93a176f5
     error_vocabulary_fingerprint_sha256: dd5995fb07c87469a641b7e2ab73d42bb5b33b6fde5dd0c0cb2a0d65def4ec54
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '410'
+      - '413'
+      - '422'
+      - '423'
+      - '428'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'file_operation_failed'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'path_validation_failed'
+      - 'provider_failure_known'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+    historical_v1_status_code_fingerprint_sha256: 46589420ea5999a98badea1f010809d98cb882d8387b68c4bfa20fbeb2d7be51
+    historical_v1_error_vocabulary_fingerprint_sha256: d5291efbb0f523f3f47ffb70efae4bf2cd6cac1ce5c2ad4de9852bfd1c85f3be
   - operation_id: 'CommitWorkspace'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits'
@@ -189,6 +308,42 @@ operations:
       - 'workspace_not_ready'
     status_code_fingerprint_sha256: 73aa4854cd509ff8ffc6d3ff50df2bdef46307164efd333bf69ea8bdf22fede4
     error_vocabulary_fingerprint_sha256: b605e7dc8b09a9450f85050e240fbe535371505a8b5a1fb44730f063fbdd4886
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'commit_failed'
+      - 'cross_tenant_access_denied'
+      - 'dirty_workspace'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+      - 'workspace_not_ready'
+    historical_v1_status_code_fingerprint_sha256: 9a1ef6b03213344188bd04517a18e44d285cce7caefba82e2bfbeef8729fbf1d
+    historical_v1_error_vocabulary_fingerprint_sha256: 148b22514d0ac87192ec8b7d347c8d63c0fa140a4a3fcefce29a4c7d69514ffa
   - operation_id: 'ConfigureBranchRefPolicy'
     method: 'put'
     path: '/api/v2/folders/{folderId}/branch-ref-policy'
@@ -211,6 +366,23 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 03fae674c0eeaabc5c570c77715ad7488e83d8d542059fadc6ba5578de55ec92
     error_vocabulary_fingerprint_sha256: 3ba5db4089331c65fec8aaf1a925bccfac72e8048e62924ae09fe06fba99ab44
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 88144e7fd7fc45e06c5ab8cf9f4e45a476c6c730366a59cd10530b2b0d502575
+    historical_v1_error_vocabulary_fingerprint_sha256: ebe72b7a2a98537bf5b4b6ebe9f53cc7b6603b8cc23a0be0e4479ea5ab30393a
   - operation_id: 'ConfigureProviderBinding'
     method: 'put'
     path: '/api/v2/provider-bindings/{providerBindingRef}'
@@ -234,6 +406,24 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 03fae674c0eeaabc5c570c77715ad7488e83d8d542059fadc6ba5578de55ec92
     error_vocabulary_fingerprint_sha256: 9c7a85097f968ac8a9cdcfef369c50ca180d75de044f80d6c8d18686b766de84
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'credential_reference_invalid'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'provider_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 4b3b52d4f8ac2d9a81b9d7acb9bed76f263bb8bb8ebdbf449f72c1d7f1768403
+    historical_v1_error_vocabulary_fingerprint_sha256: 060110de150a16a07acab802a96e149d3765b7c24d0212a35b882a1ccbb130a6
   - operation_id: 'CreateFolder'
     method: 'post'
     path: '/api/v2/folders'
@@ -255,6 +445,21 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 03fae674c0eeaabc5c570c77715ad7488e83d8d542059fadc6ba5578de55ec92
     error_vocabulary_fingerprint_sha256: 7e0cd5068eb7e02e7bf2c029c57f025d9f10a2871b2e9dc09b4c9d7c527c5fef
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '409'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 1e17fceb584708933e79c5adcac15b5298c1bbc0c2f9a7a72e0910e2de52e063
+    historical_v1_error_vocabulary_fingerprint_sha256: b02a1fb3eab44da58663863e7224beed65215c268e5f23997f865118b79e34a9
   - operation_id: 'CreateRepositoryBackedFolder'
     method: 'post'
     path: '/api/v2/folders/repository-backed'
@@ -283,6 +488,30 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 73aa4854cd509ff8ffc6d3ff50df2bdef46307164efd333bf69ea8bdf22fede4
     error_vocabulary_fingerprint_sha256: 7b7ba01655897c75b07b024b42dbc45b9f3712b7a57a395d8d2c6476789cd128
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'provider_readiness_failed'
+      - 'reconciliation_required'
+      - 'repository_conflict'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'unsupported_provider_capability'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 9a1ef6b03213344188bd04517a18e44d285cce7caefba82e2bfbeef8729fbf1d
+    historical_v1_error_vocabulary_fingerprint_sha256: ab5a6e5269056a83e3b641d5e0691ed9e875cf917c433fa73dfd371fee628a89
   - operation_id: 'GetAuditRecord'
     method: 'get'
     path: '/api/v2/folders/{folderId}/audit-trail/{auditRecordId}'
@@ -303,6 +532,26 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 2bcc3f1d43b936bb595ca467ef6c1f6b5529ff4b5b7c9c8822a6e8c16158d01d
   - operation_id: 'GetBranchRefPolicy'
     method: 'get'
     path: '/api/v2/folders/{folderId}/branch-ref-policy'
@@ -322,6 +571,25 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: f42a7415a57c28672f96ddc40b8da0e76b8e477f5a2f9f3ccc62fa1996b40e43
   - operation_id: 'GetCommitEvidence'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/evidence'
@@ -341,6 +609,24 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: ab817cc78443caf9ca07aff3ce018effc339bf8a5b4c843e5b01a36405a6ca78
   - operation_id: 'GetDirtyStateDiagnostics'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics'
@@ -364,6 +650,28 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 189375f96d2f70630f588f7800460fda88a4cd52836860b2a7876843cee7255a
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'dirty_workspace'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'stale_workspace'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 1a4878ef75a02a49b94c9f53771384e9a92293be2284867011c0188974a90ae7
   - operation_id: 'GetEffectivePermissions'
     method: 'get'
     path: '/api/v2/folders/{folderId}/effective-permissions'
@@ -382,6 +690,22 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: e2e1a1545539c9649bdf619c04fc2b35f8daf184d6906165e124315cc761bc25
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: e2e1a1545539c9649bdf619c04fc2b35f8daf184d6906165e124315cc761bc25
   - operation_id: 'GetFailedOperationDiagnostics'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/failed-operation-diagnostics'
@@ -407,6 +731,30 @@ operations:
       - 'unknown_provider_outcome'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 2086b40dd02f7df1a5ced954dfab41e7565d266081a1020a145e9d125dc63e37
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 05fd33ad5c72fe97e1b8f8f36859d716957883337ca12227473f1d3ff864d865
   - operation_id: 'GetFolderFileMetadata'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/metadata'
@@ -435,6 +783,32 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 202ad2cfd2d0db95abaf164756ef88e8acf761d5d73eaa075374f6c54a0b84be
     error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
+    historical_v1_status_codes:
+      - '200'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '408'
+      - '413'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: e65c17746cb1473d8265d3bde56e8a6e7ae37edf711ce3fd88b97b2efe450517
+    historical_v1_error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
   - operation_id: 'GetFolderIndexingStatus'
     method: 'get'
     path: '/api/v2/folders/{folderId}/indexing-status'
@@ -453,6 +827,22 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
     error_vocabulary_fingerprint_sha256: aa4776b4e47ca205d5794ee2068f2fa2cb1f9bf6bc87076a6678764bb325ed2f
+    historical_v1_status_codes:
+      - '200'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: ac614fd3e4f85ae2caa75c8d28a9c44e1fc298c541c14ff89139364101876bae
+    historical_v1_error_vocabulary_fingerprint_sha256: aa4776b4e47ca205d5794ee2068f2fa2cb1f9bf6bc87076a6678764bb325ed2f
   - operation_id: 'GetFolderLifecycleStatus'
     method: 'get'
     path: '/api/v2/folders/{folderId}/lifecycle-status'
@@ -471,6 +861,24 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: e2e1a1545539c9649bdf619c04fc2b35f8daf184d6906165e124315cc761bc25
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: f3dd83061c67860aeca548cbb67ea1dcec7b0063ecc23d0ee8d69528f90691ef
   - operation_id: 'GetLockDiagnostics'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics'
@@ -493,6 +901,27 @@ operations:
       - 'workspace_locked'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 2b5b54a6880b9e772e97b7e532a9230629e3aed53b78ce8125ddf4ae0f817e5f
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'stale_workspace'
+      - 'tenant_access_denied'
+      - 'workspace_locked'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 803497fa4af82fd3a22af7e03bdd63440c2cc58de8740ca704dd8fbf2e585897
   - operation_id: 'GetOperationTimelineEntry'
     method: 'get'
     path: '/api/v2/folders/{folderId}/operation-timeline/{timelineEntryId}'
@@ -513,6 +942,26 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 2bcc3f1d43b936bb595ca467ef6c1f6b5529ff4b5b7c9c8822a6e8c16158d01d
   - operation_id: 'GetProjectionFreshness'
     method: 'get'
     path: '/api/v2/folders/{folderId}/ops-console/projection-freshness'
@@ -533,6 +982,25 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 43cf23a89797c43887ae9e93b597bd07f5bc2a9c956741a6ad4f14da3b33b278
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 2e1f84a076178e367cfdccddab1748e66751d79cd4f2e363916557cf32f32b7d
   - operation_id: 'GetProviderBinding'
     method: 'get'
     path: '/api/v2/provider-bindings/{providerBindingRef}'
@@ -551,6 +1019,24 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: e27c35cd44daa809c0c69df4df7fed91b9a39cc172c3f3b2be0f269f3d3f2e45
   - operation_id: 'GetProviderOutcome'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/commits/{operationId}/provider-outcome'
@@ -574,6 +1060,28 @@ operations:
       - 'unknown_provider_outcome'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 03307f9c3075abcfba29fe4decf87efba6a0e0d1bd307157da5009494a7b7c8e
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: 59da101f69c367bd1fadd23acbf041db301e7542aaafec9e1e55f458678fa569
   - operation_id: 'GetProviderStatusDiagnostics'
     method: 'get'
     path: '/api/v2/folders/{folderId}/ops-console/provider-status-diagnostics'
@@ -598,6 +1106,29 @@ operations:
       - 'unknown_provider_outcome'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: c77629c2aaa690f7e74a122ca72962b05ac8315166a394fb86daf673a756c3c3
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'provider_rate_limited'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: d353c5c5438d5f4d70b1f6f6004881f78bfd29aa753ccfc63179c1d845a4ff58
   - operation_id: 'GetProviderSupportEvidence'
     method: 'get'
     path: '/api/v2/provider-readiness/support-evidence'
@@ -616,6 +1147,21 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: a7ba8687c31637541c9753a49e84eb9e4e74f9189591b48024edba81c3c1877b
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 751464ffd465a63a5edba09b6b67501194130c9ff762ce3f7d56f00e6318321c
+    historical_v1_error_vocabulary_fingerprint_sha256: a7ba8687c31637541c9753a49e84eb9e4e74f9189591b48024edba81c3c1877b
   - operation_id: 'GetReadinessDiagnostics'
     method: 'get'
     path: '/api/v2/folders/{folderId}/ops-console/readiness-diagnostics'
@@ -639,6 +1185,28 @@ operations:
       - 'unknown_provider_outcome'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 1e94b2ed581045f283d005adb431c8a7ea2fc335375a04cdab8a2a6f519e4b96
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'provider_rate_limited'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 8c0864111163fec665ab9697315177f12c07ed22a6f0420774328ef2360a0ebd
   - operation_id: 'GetReconciliationStatus'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status'
@@ -660,6 +1228,26 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 4470bcdd048890333513e20ba9354458e1e517591e21284f08a91f5afd6d6a60
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: 6ad12e60b2d4209ebabe3e3e1ee70640033c2838fe1d519ec59cfc69ceb97654
   - operation_id: 'GetRepositoryBinding'
     method: 'get'
     path: '/api/v2/folders/{folderId}/repository-bindings/{repositoryBindingId}'
@@ -679,6 +1267,25 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'cross_tenant_access_denied'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: f42a7415a57c28672f96ddc40b8da0e76b8e477f5a2f9f3ccc62fa1996b40e43
   - operation_id: 'GetSyncStatusDiagnostics'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/sync-status-diagnostics'
@@ -703,6 +1310,29 @@ operations:
       - 'unknown_provider_outcome'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: ea3e104e6b61202489ae8903e96bbb7f3782440f9b22f031e80857c0a5087a1c
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_failure_known'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'redacted'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 601d17b269fbc75e709ded2500f0d6e7df83e94db757823a92241099c5fe40b6
   - operation_id: 'GetTaskStatus'
     method: 'get'
     path: '/api/v2/folders/{folderId}/tasks/{taskId}/status'
@@ -721,6 +1351,23 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: 3ed69f0e2882fb187d9d7e66d563b9b11540d7fbd670b3a5d8609623788d9780
   - operation_id: 'GetWorkspaceCleanupStatus'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/cleanup/status'
@@ -740,6 +1387,24 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: ab817cc78443caf9ca07aff3ce018effc339bf8a5b4c843e5b01a36405a6ca78
   - operation_id: 'GetWorkspaceLock'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock'
@@ -761,6 +1426,26 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 1c862a28d25ba7b4044068d5f11f45053fbfc735b0ae2ba43764dea4089e2bbe
     error_vocabulary_fingerprint_sha256: 06d1172c3ecbc85f1dfa6e520030a263fa4dbdefc566353fce2b6b4ea6b79b5b
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '410'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'stale_workspace'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 6964dfef1ce8bd512368fd3e48fc7a4c77d05bacd6e66135beb372bfb195ac0e
+    historical_v1_error_vocabulary_fingerprint_sha256: 445f75658eca86467c12408bb174efc2e2a0da6d6f2ab59f37dd39f4888adf92
   - operation_id: 'GetWorkspaceRetryEligibility'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/retry-eligibility'
@@ -783,6 +1468,26 @@ operations:
       - 'unknown_provider_outcome'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 8ab64b7061a456e8171cb1287f1180e43c9c5f540f34c57a12060c2b420393d3
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'reconciliation_required'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: 8ab64b7061a456e8171cb1287f1180e43c9c5f540f34c57a12060c2b420393d3
   - operation_id: 'GetWorkspaceStatus'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/status'
@@ -802,6 +1507,24 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: 5e1c1364897dbda582a3e786cb5091b2ad93df16beaee1d1202a4eb50d7774d9
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: ab817cc78443caf9ca07aff3ce018effc339bf8a5b4c843e5b01a36405a6ca78
   - operation_id: 'GetWorkspaceTransitionEvidence'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/transition-evidence'
@@ -820,6 +1543,22 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: e2e1a1545539c9649bdf619c04fc2b35f8daf184d6906165e124315cc761bc25
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: e2e1a1545539c9649bdf619c04fc2b35f8daf184d6906165e124315cc761bc25
   - operation_id: 'GlobFolderFiles'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/glob'
@@ -848,6 +1587,32 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 202ad2cfd2d0db95abaf164756ef88e8acf761d5d73eaa075374f6c54a0b84be
     error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
+    historical_v1_status_codes:
+      - '200'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '408'
+      - '413'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: e65c17746cb1473d8265d3bde56e8a6e7ae37edf711ce3fd88b97b2efe450517
+    historical_v1_error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
   - operation_id: 'ListAuditTrail'
     method: 'get'
     path: '/api/v2/folders/{folderId}/audit-trail'
@@ -870,6 +1635,28 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 22a40e8ad298cbe3d0b36432a61ff641d257077c19627af0e4c380a9a6adea02
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 7c54c9bcd3cc97ab0c0e9591a981c35d87241781e515d7edcfc34e963cba3185
   - operation_id: 'ListFolderAclEntries'
     method: 'get'
     path: '/api/v2/folders/{folderId}/acl'
@@ -889,6 +1676,23 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 670d24d31d622b8e3c8164bcf550034c920a0b2411c5dae7b895b383cc73d4e2
     error_vocabulary_fingerprint_sha256: fadc1922a1d7bcc8956b4bdb8cdd23fc432f9da28daba470a86e93e4091f6d6f
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 1ad336a2352bc1bf4c04fdb04d4d57951470f619297d8e4fb0aca68f50560328
+    historical_v1_error_vocabulary_fingerprint_sha256: fadc1922a1d7bcc8956b4bdb8cdd23fc432f9da28daba470a86e93e4091f6d6f
   - operation_id: 'ListFolderFiles'
     method: 'get'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/tree'
@@ -917,6 +1721,32 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 202ad2cfd2d0db95abaf164756ef88e8acf761d5d73eaa075374f6c54a0b84be
     error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
+    historical_v1_status_codes:
+      - '200'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '408'
+      - '413'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: e65c17746cb1473d8265d3bde56e8a6e7ae37edf711ce3fd88b97b2efe450517
+    historical_v1_error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
   - operation_id: 'ListOperationTimeline'
     method: 'get'
     path: '/api/v2/folders/{folderId}/operation-timeline'
@@ -939,6 +1769,28 @@ operations:
       - 'tenant_access_denied'
     status_code_fingerprint_sha256: 462fd9974d7e218a2a63da235ad5866c6ba1026a2d08f523b187e342237193ba
     error_vocabulary_fingerprint_sha256: 22a40e8ad298cbe3d0b36432a61ff641d257077c19627af0e4c380a9a6adea02
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'audit_access_denied'
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'internal_error'
+      - 'not_found'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'redacted'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+    historical_v1_status_code_fingerprint_sha256: 62d7082245ef2fde372249a0d70b615a7eeedc7a547469e31e642d9dae933c93
+    historical_v1_error_vocabulary_fingerprint_sha256: 7c54c9bcd3cc97ab0c0e9591a981c35d87241781e515d7edcfc34e963cba3185
   - operation_id: 'LockWorkspace'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock'
@@ -970,6 +1822,34 @@ operations:
       - 'workspace_locked'
     status_code_fingerprint_sha256: ecebbfc9edf56c877c16de1bf55ff7c6d0d1babb93784de8ec6fba3e1142ca43
     error_vocabulary_fingerprint_sha256: 351d69c04582f810866d91f2275a49f0fe24a35b9c9763ab36f84c84c30b61b2
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '410'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_conflict'
+      - 'lock_expired'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'read_model_unavailable'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'validation_error'
+      - 'workspace_locked'
+    historical_v1_status_code_fingerprint_sha256: 56595e4a02eda6a3d46b09262b07365dad4fd87af3f9d9f0c9cc8a7ed47521ba
+    historical_v1_error_vocabulary_fingerprint_sha256: 35bd9a42edc0cb0424f82e471c65fd5931032a1d89c758ef2cdaaa7507e50355
   - operation_id: 'PrepareWorkspace'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/preparation'
@@ -1004,6 +1884,36 @@ operations:
       - 'workspace_preparation_failed'
     status_code_fingerprint_sha256: 73aa4854cd509ff8ffc6d3ff50df2bdef46307164efd333bf69ea8bdf22fede4
     error_vocabulary_fingerprint_sha256: 99e31f06171e73a108c6af9b402b1ce463bab0a6f6bb064f1644d7bf8257eeb7
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'branch_ref_policy_invalid'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_conflict'
+      - 'provider_readiness_failed'
+      - 'provider_unavailable'
+      - 'reconciliation_required'
+      - 'repository_binding_unavailable'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+      - 'workspace_preparation_failed'
+    historical_v1_status_code_fingerprint_sha256: 9a1ef6b03213344188bd04517a18e44d285cce7caefba82e2bfbeef8729fbf1d
+    historical_v1_error_vocabulary_fingerprint_sha256: 1640f548b0ece18322aea5842fb107acb1a4edd5875a0759f830034d7cd4210d
   - operation_id: 'ReadFileRange'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/range-read'
@@ -1035,6 +1945,35 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: fb8669eb6c0c0699e0ff9370a39658e6b0e8ff039cca2045f31129352a498641
     error_vocabulary_fingerprint_sha256: 1cf4abdce6742a5b321580a015792c8330cf4d2295be50ab63204f5258788ff1
+    historical_v1_status_codes:
+      - '200'
+      - '206'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '408'
+      - '413'
+      - '416'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'range_unsatisfiable'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 28f2201e6964a5074a63418f59bd9727537fc79cdbeff15d45968669fa15b256
+    historical_v1_error_vocabulary_fingerprint_sha256: 1cf4abdce6742a5b321580a015792c8330cf4d2295be50ab63204f5258788ff1
   - operation_id: 'ReleaseWorkspaceLock'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/lock/release'
@@ -1065,6 +2004,32 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: ecebbfc9edf56c877c16de1bf55ff7c6d0d1babb93784de8ec6fba3e1142ca43
     error_vocabulary_fingerprint_sha256: 090201675dff43df75bad1b43867b5b434f7475c03aad279ff7b6dc17a899184
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '410'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'reconciliation_required'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 56595e4a02eda6a3d46b09262b07365dad4fd87af3f9d9f0c9cc8a7ed47521ba
+    historical_v1_error_vocabulary_fingerprint_sha256: 0ecd5ac4060e96d6b36c08ee0ebc673c128d13041b5d0d015125b42afcf47982
   - operation_id: 'RemoveFile'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/files/remove'
@@ -1104,6 +2069,41 @@ operations:
       - 'workspace_locked'
     status_code_fingerprint_sha256: c52068a88653358117bbda2660b43fc6e2c2d6597cc2283cf80ea7d9062bdf34
     error_vocabulary_fingerprint_sha256: f42a9f62855ca05f69071a0bf15ad73d61e071cae687a6b5499cbf340c6f2c20
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+      - '410'
+      - '422'
+      - '423'
+      - '428'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'authorization_revocation_detected'
+      - 'failed_operation'
+      - 'file_operation_failed'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'lock_expired'
+      - 'lock_not_owned'
+      - 'path_validation_failed'
+      - 'provider_failure_known'
+      - 'reconciliation_required'
+      - 'stale_workspace'
+      - 'state_transition_invalid'
+      - 'tenant_access_denied'
+      - 'unknown_provider_outcome'
+      - 'validation_error'
+      - 'workspace_locked'
+    historical_v1_status_code_fingerprint_sha256: cc3b15a814ca88ce84ad10e427d99e875055db839b95ccd423d89160e0e2f517
+    historical_v1_error_vocabulary_fingerprint_sha256: faffbee163461b0a600edb66db4eff2e30833b3f623eabf68a05cd155684088a
   - operation_id: 'SearchFolderFiles'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/search'
@@ -1132,6 +2132,32 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 202ad2cfd2d0db95abaf164756ef88e8acf761d5d73eaa075374f6c54a0b84be
     error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
+    historical_v1_status_codes:
+      - '200'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '408'
+      - '413'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'file_policy_unavailable'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'path_validation_failed'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: e65c17746cb1473d8265d3bde56e8a6e7ae37edf711ce3fd88b97b2efe450517
+    historical_v1_error_vocabulary_fingerprint_sha256: 6419ed05273a6eb20592b0f3a25d3950f0f86e32e53ff7ff4439ac8f0b6ea1c8
   - operation_id: 'SearchFolderIndexedFiles'
     method: 'post'
     path: '/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/index-search'
@@ -1156,6 +2182,28 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 202ad2cfd2d0db95abaf164756ef88e8acf761d5d73eaa075374f6c54a0b84be
     error_vocabulary_fingerprint_sha256: 8b7cdd817239ba67ddc4ca0f9242504cedf43158204f688c194848bb3cd8ef34
+    historical_v1_status_codes:
+      - '200'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '408'
+      - '413'
+      - '422'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'input_limit_exceeded'
+      - 'internal_error'
+      - 'query_timeout'
+      - 'read_model_unavailable'
+      - 'response_limit_exceeded'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: e65c17746cb1473d8265d3bde56e8a6e7ae37edf711ce3fd88b97b2efe450517
+    historical_v1_error_vocabulary_fingerprint_sha256: 8b7cdd817239ba67ddc4ca0f9242504cedf43158204f688c194848bb3cd8ef34
   - operation_id: 'UpdateFolderAclEntry'
     method: 'put'
     path: '/api/v2/folders/{folderId}/acl/{aclEntryId}'
@@ -1178,6 +2226,23 @@ operations:
       - 'validation_error'
     status_code_fingerprint_sha256: 03fae674c0eeaabc5c570c77715ad7488e83d8d542059fadc6ba5578de55ec92
     error_vocabulary_fingerprint_sha256: 3ba5db4089331c65fec8aaf1a925bccfac72e8048e62924ae09fe06fba99ab44
+    historical_v1_status_codes:
+      - '202'
+      - '400'
+      - '401'
+      - '403'
+      - '404'
+      - '409'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'folder_acl_denied'
+      - 'idempotency_conflict'
+      - 'idempotency_key_expired'
+      - 'internal_error'
+      - 'tenant_access_denied'
+      - 'validation_error'
+    historical_v1_status_code_fingerprint_sha256: 88144e7fd7fc45e06c5ab8cf9f4e45a476c6c730366a59cd10530b2b0d502575
+    historical_v1_error_vocabulary_fingerprint_sha256: ebe72b7a2a98537bf5b4b6ebe9f53cc7b6603b8cc23a0be0e4479ea5ab30393a
   - operation_id: 'ValidateProviderReadiness'
     method: 'post'
     path: '/api/v2/provider-readiness/validations'
@@ -1202,3 +2267,25 @@ operations:
       - 'unsupported_provider_capability'
     status_code_fingerprint_sha256: 54645555fc9e387af6c938ecaaa771194fdc576c2ee9fcb740118badb6be23a0
     error_vocabulary_fingerprint_sha256: e4ebb73490933c1685a8f0b22d2dfea895e93dc32ebcacf7c8058c1bc143b0c6
+    historical_v1_status_codes:
+      - '200'
+      - '401'
+      - '403'
+      - '404'
+      - '429'
+      - '503'
+    historical_v1_canonical_error_categories:
+      - 'authentication_failure'
+      - 'credential_reference_invalid'
+      - 'internal_error'
+      - 'projection_stale'
+      - 'projection_unavailable'
+      - 'provider_permission_insufficient'
+      - 'provider_rate_limited'
+      - 'provider_readiness_failed'
+      - 'provider_unavailable'
+      - 'read_model_unavailable'
+      - 'tenant_access_denied'
+      - 'unsupported_provider_capability'
+    historical_v1_status_code_fingerprint_sha256: 222d2adf83661d91641b1e09bd20f08cd211ce8822d590c3c4ca5e83a175ad29
+    historical_v1_error_vocabulary_fingerprint_sha256: e4ebb73490933c1685a8f0b22d2dfea895e93dc32ebcacf7c8058c1bc143b0c6

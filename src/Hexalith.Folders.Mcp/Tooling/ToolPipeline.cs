@@ -116,7 +116,7 @@ internal sealed class ToolPipeline
         string correlation = CorrelationAndTaskId.ResolveCorrelationId(correlationId);
 
         string? resolvedTaskId = null;
-        if (taskIdRequired)
+        if (!string.IsNullOrWhiteSpace(taskId))
         {
             try
             {
@@ -124,8 +124,12 @@ internal sealed class ToolPipeline
             }
             catch (InvalidOperationException)
             {
-                return Failure(McpFailure.UsageError(correlation, "A task ID is required for this query tool; supply taskId."));
+                return Failure(McpFailure.UsageError(correlation, "The supplied taskId is invalid."));
             }
+        }
+        else if (taskIdRequired)
+        {
+            return Failure(McpFailure.UsageError(correlation, "A task ID is required for this query tool; supply taskId."));
         }
 
         if (!TryResolveCredential(correlation, out string failure))

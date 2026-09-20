@@ -136,6 +136,28 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
     }
 
     [Fact]
+    public async Task CandidateFolderScopedReadinessDenialShortCircuitsTenantDiagnosticRead()
+    {
+        CountingOpsConsoleDiagnosticsReadModel readModel = new(SeededReadModel());
+        await using WebApplication app = BuildApp(
+            readModel,
+            useCandidateSeam: true,
+            permissionsReadModel: PermissionReadModel("view_operations_console"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v2/folders/folder-denied/ops-console/readiness-diagnostics");
+        request.Headers.Add("X-Correlation-Id", "correlation-a");
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound, json);
+        json.ShouldContain("\"code\":\"resource_unavailable\"");
+        json.ShouldNotContain("folder-denied", Case.Sensitive);
+        readModel.Calls.ShouldBe(0, "folder authorization must complete before the tenant-scoped historical diagnostic read");
+    }
+
+    [Fact]
     public async Task DiagnosticsResponsesShouldNotLeakLookupKeys()
     {
         // The [JsonIgnore] tenant/folder/workspace lookup keys must never reach the wire.
@@ -444,7 +466,9 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
         DateTimeOffset? tenantLastEvent = null,
         string? tenantId = "tenant-a",
         string? principalId = "user-a",
-        bool principalEnrolled = true)
+        bool principalEnrolled = true,
+        bool useCandidateSeam = false,
+        IEffectivePermissionsReadModel? permissionsReadModel = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -453,7 +477,7 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
         builder.WebHost.UseTestServer();
         builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(Now));
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore(tenantLastEvent ?? Now.AddMinutes(-1), principalEnrolled));
-        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(PermissionReadModel());
+        builder.Services.AddSingleton(permissionsReadModel ?? PermissionReadModel());
         builder.Services.AddSingleton<IOpsConsoleDiagnosticsReadModel>(readModel);
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<ITenantContextAccessor>(new StaticTenantContextAccessor(tenantId, principalId));
@@ -462,6 +486,11 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
         WebApplication app = builder.Build();
+        if (useCandidateSeam)
+        {
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
+        }
         app.MapFoldersServerEndpoints();
         return app;
     }
@@ -545,7 +574,7 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
         return store;
     }
 
-    private static InMemoryEffectivePermissionsReadModel PermissionReadModel()
+    private static InMemoryEffectivePermissionsReadModel PermissionReadModel(string actionToken = "read_metadata")
     {
         InMemoryEffectivePermissionsReadModel readModel = new();
         readModel.Save(new EffectivePermissionsReadModelSnapshot(
@@ -558,7 +587,7 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
                 new(
                     EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
                     EffectivePermissionPrincipal.User("user-a"),
-                    "read_metadata",
+                    actionToken,
                     Sequence: 1,
                     EffectiveAt: Now),
             ],
@@ -595,6 +624,38 @@ public sealed class OpsConsoleDiagnosticsEndpointTests
 
         public Task<ProjectionFreshnessDiagnosticsView?> GetProjectionFreshnessAsync(string managedTenantId, CancellationToken cancellationToken = default)
             => throw new InvalidOperationException("read model unavailable");
+    }
+
+    private sealed class CountingOpsConsoleDiagnosticsReadModel(IOpsConsoleDiagnosticsReadModel inner) : IOpsConsoleDiagnosticsReadModel
+    {
+        public int Calls { get; private set; }
+
+        public Task<ReadinessDiagnosticsView?> GetReadinessAsync(string managedTenantId, CancellationToken cancellationToken = default)
+            => Count(inner.GetReadinessAsync(managedTenantId, cancellationToken));
+
+        public Task<LockDiagnosticsView?> GetLockAsync(string managedTenantId, string folderId, string workspaceId, CancellationToken cancellationToken = default)
+            => Count(inner.GetLockAsync(managedTenantId, folderId, workspaceId, cancellationToken));
+
+        public Task<DirtyStateDiagnosticsView?> GetDirtyStateAsync(string managedTenantId, string folderId, string workspaceId, CancellationToken cancellationToken = default)
+            => Count(inner.GetDirtyStateAsync(managedTenantId, folderId, workspaceId, cancellationToken));
+
+        public Task<FailedOperationDiagnosticsView?> GetFailedOperationAsync(string managedTenantId, string folderId, string workspaceId, CancellationToken cancellationToken = default)
+            => Count(inner.GetFailedOperationAsync(managedTenantId, folderId, workspaceId, cancellationToken));
+
+        public Task<ProviderStatusDiagnosticsView?> GetProviderStatusAsync(string managedTenantId, string folderId, CancellationToken cancellationToken = default)
+            => Count(inner.GetProviderStatusAsync(managedTenantId, folderId, cancellationToken));
+
+        public Task<SyncStatusDiagnosticsView?> GetSyncStatusAsync(string managedTenantId, string folderId, string workspaceId, CancellationToken cancellationToken = default)
+            => Count(inner.GetSyncStatusAsync(managedTenantId, folderId, workspaceId, cancellationToken));
+
+        public Task<ProjectionFreshnessDiagnosticsView?> GetProjectionFreshnessAsync(string managedTenantId, CancellationToken cancellationToken = default)
+            => Count(inner.GetProjectionFreshnessAsync(managedTenantId, cancellationToken));
+
+        private Task<T> Count<T>(Task<T> task)
+        {
+            Calls++;
+            return task;
+        }
     }
 
     private sealed class StaticTenantContextAccessor(string? authoritativeTenantId, string? principalId) : ITenantContextAccessor

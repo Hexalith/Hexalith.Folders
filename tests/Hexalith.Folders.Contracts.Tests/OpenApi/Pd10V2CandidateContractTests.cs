@@ -88,11 +88,12 @@ public sealed class Pd10V2CandidateContractTests
             .ShouldBe("/api/v2/folders/{folderId}/ops-console/projection-freshness");
 
         Operation effectivePermissions = operations.Single(operation => operation.OperationId == "GetEffectivePermissions");
-        effectivePermissions.ParameterReferences.ShouldNotContain("#/components/parameters/TaskId");
+        effectivePermissions.ParameterReferences.ShouldContain("#/components/parameters/TaskId");
 
         string program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Program.cs"));
         program.ShouldNotContain("/api/v2", Case.Sensitive);
         program.ShouldNotContain("MapPd10V2", Case.Sensitive);
+        program.ShouldNotContain("UsePd10V2CandidateCompatibilitySeam", Case.Sensitive);
     }
 
     [Fact]

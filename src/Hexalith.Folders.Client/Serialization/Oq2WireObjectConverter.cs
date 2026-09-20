@@ -188,7 +188,7 @@ public sealed class Oq2WireObjectConverter : JsonConverter
             ["requestSchemaVersion", "fileOperationKind", "transportOperation", "operationId", "pathMetadata", "contentHashReference", "byteLength", "inlineContent", "streamDescriptor"],
             ["requestSchemaVersion", "fileOperationKind", "transportOperation", "operationId", "pathMetadata"],
             typeName);
-        RequireValue(value, "requestSchemaVersion", "v1");
+        RequireValue(value, "requestSchemaVersion", "v2");
         string kind = RequireString(value, "fileOperationKind");
         string transport = RequireString(value, "transportOperation");
         if (!new[] { "add", "change", "remove" }.Contains(kind, StringComparer.Ordinal))

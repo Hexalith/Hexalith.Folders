@@ -133,7 +133,7 @@ internal sealed class CommandPipeline
         EmitCorrelation(correlationId);
 
         string? taskId = null;
-        if (taskIdRequired)
+        if (!string.IsNullOrWhiteSpace(taskIdOption))
         {
             try
             {
@@ -141,8 +141,12 @@ internal sealed class CommandPipeline
             }
             catch (InvalidOperationException)
             {
-                return UsageError(global, correlationId, "A task ID is required for this query; supply --task-id <id>.");
+                return UsageError(global, correlationId, "The supplied --task-id is invalid.");
             }
+        }
+        else if (taskIdRequired)
+        {
+            return UsageError(global, correlationId, "A task ID is required for this query; supply --task-id <id>.");
         }
 
         if (!TryResolveBaseAddress(global, out Uri? baseAddress))

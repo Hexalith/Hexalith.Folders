@@ -136,7 +136,7 @@ public sealed class GoldenLifecycleParityTests
                 x_Hexalith_Task_Id: "task-sdk",
                 body: new ArchiveFolderRequest
                 {
-                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                     ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                 },
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -230,8 +230,8 @@ public sealed class GoldenLifecycleParityTests
             archive.Transport.ErrorCodeSet.ShouldContain(restCategory, $"REST category '{restCategory}' is outside ArchiveFolder error_code_set.");
             AssertCanonicalProblemShape(restRoot, expectCorrelation: "correlation-rest-neg");
 
-            // SDK run: HexalithFoldersApiException<ProblemDetails> carries the deserialized problem body
-            // via the typed Result property (the stream-based reader leaves the raw Response empty).
+            // SDK run: the exact authentication response is generated as its narrowed subtype; the
+            // generated exception projection exposes the common canonical ProblemDetails view.
             HexalithFoldersApiException sdkException = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
                 await host.SdkClient.ArchiveFolderAsync(
                     folderId: "folder-a",
@@ -240,21 +240,21 @@ public sealed class GoldenLifecycleParityTests
                     x_Hexalith_Task_Id: "task-sdk-neg",
                     body: new ArchiveFolderRequest
                     {
-                        RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                        RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                         ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                     },
                     cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
                 .ConfigureAwait(true);
 
             sdkException.StatusCode.ShouldBe((int)HttpStatusCode.Unauthorized);
-            sdkException.ShouldBeAssignableTo<HexalithFoldersApiException<ProblemDetails>>(
-                "SDK must surface the RFC 9457 problem as the typed HexalithFoldersApiException<ProblemDetails>.");
+            sdkException.ShouldBeAssignableTo<HexalithFoldersApiException<AuthenticationFailureProblem>>(
+                "SDK must surface the exact authentication branch as its generated typed exception.");
 
-            ProblemDetails sdkProblem = ((HexalithFoldersApiException<ProblemDetails>)sdkException).Result;
+            ProblemDetails sdkProblem = sdkException.ProblemDetails!;
             sdkProblem.ShouldNotBeNull();
             sdkProblem.CorrelationId.ShouldBe("correlation-sdk-neg");
             sdkProblem.Details.ShouldNotBeNull();
-            sdkProblem.Details.Visibility.ShouldBe(DetailsVisibility.Metadata_only);
+            sdkProblem.Details.Visibility.ShouldBe(DetailsVisibility.Redacted);
 
             // Cross-surface category equivalence: REST and SDK emit the same canonical category for the
             // same provoked failure. Resolve the SDK's typed Category to its snake_case wire value via the
@@ -364,7 +364,7 @@ public sealed class GoldenLifecycleParityTests
                 x_Hexalith_Task_Id: sdkTaskId,
                 body: new ArchiveFolderRequest
                 {
-                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = ArchiveFolderRequestRequestSchemaVersion.V2,
                     ArchiveReasonCode = ArchiveFolderRequestArchiveReasonCode.Caller_requested,
                 },
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -731,7 +731,7 @@ public sealed class GoldenLifecycleParityTests
                 x_Hexalith_Task_Id: "task-create-sdk",
                 body: new CreateRepositoryBackedFolderRequest
                 {
-                    RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V1,
+                    RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V2,
                     FolderId = "folder-create-sdk",
                     ProviderBindingRef = "provider-binding-a",
                     RepositoryProfileRef = "profile-a",
@@ -742,7 +742,7 @@ public sealed class GoldenLifecycleParityTests
                     },
                     BranchRefPolicy = new BranchRefPolicyRequest
                     {
-                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V1,
+                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
                         RepositoryBindingId = "binding-a",
                         PolicyRef = "branch_ref_policy_a",
                         DefaultRef = "branch_ref_primary",

@@ -1,0 +1,72 @@
+schema_version: '1.0.0'
+artifact_id: folders-story-3-14-lifecycle-reconciliation-2026-09-20
+status: reconciled-non-destructively
+reconciled_on: '2026-09-20'
+digest_algorithm: sha256
+digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
+
+authority:
+  canonical_story_definition:
+    path: _bmad-output/planning-artifacts/epics.md
+    anchor: Story-3.14
+    sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+  execution_manifest:
+    path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    manifest_version: 2
+    revision: folders-planning-authority-relock-2026-09-17
+    sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+  lifecycle_tracker:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+
+canonical_state:
+  story_id: '3.14'
+  title: Complete asynchronous repository creation and binding
+  authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-3.14
+  story_lifecycle_status: backlog
+  execution_rank: 31
+  execution_authorization_status: held
+  delivery_evidence_status: open
+  prerequisites:
+    - DEC-A8-HOLD
+    - accepted:3.10
+    - accepted:3.12
+    - '12.1'
+    - '12.2'
+    - '12.4'
+
+preserved_workflow_snapshots:
+  - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding.md
+    sha256: d21aa8200d1b322dc2487eac26c274c63d2062739f015f3129501e8a9170d652
+    created: '2026-09-12'
+    workflow_snapshot_status: blocked
+    authority_effect: historical-workflow-snapshot-only
+    modification: none
+  - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding-2.md
+    sha256: 5eec57125efe867f8ae2ffbf916b233d20248e7888b9a994f8f9a07447a765ee
+    created: '2026-09-20'
+    workflow_snapshot_status: ready-for-dev
+    authority_effect: historical-workflow-snapshot-only
+    modification: none
+
+resolution:
+  - Neither frozen specification controls current lifecycle or execution authorization.
+  - The manifest's backlog and held values are canonical and agree with the unchanged sprint tracker backlog value.
+  - The epics anchor remains the sole canonical Story 3.14 definition; both specifications remain immutable supporting snapshots.
+  - No source implementation, story task, completed evidence, or sprint-status value is changed by this reconciliation.
+  - The dependent Story 3.14 node cannot become executable until DEC-A8-HOLD and every remaining manifest prerequisite are accepted terminal.
+
+controls:
+  frozen_specifications_modified: false
+  frozen_specifications_deleted: false
+  sprint_status_modified: false
+  general_execution_hold_preserved: true
+  sprint_status_regeneration_authorized: false
+  approval_inference_forbidden: true
+
+human_decisions:
+  required_for_canonical_lifecycle: false
+  required_to_modify_or_delete_either_specification: true
+  pending_execution_gates:
+    - A6b
+    - A8

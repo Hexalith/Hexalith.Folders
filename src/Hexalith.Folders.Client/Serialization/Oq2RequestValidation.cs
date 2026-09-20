@@ -54,7 +54,7 @@ internal static class Oq2RequestValidation
         if (!Enum.IsDefined(request.FileOperationKind)
             || !Enum.IsDefined(expectedKind)
             || request.FileOperationKind != expectedKind
-            || request.RequestSchemaVersion != "v1"
+            || request.RequestSchemaVersion != "v2"
             || !OpaqueIdentifier.IsMatch(request.OperationId ?? string.Empty))
         {
             throw new JsonSerializationException("File mutation identity or operation kind is noncanonical.");

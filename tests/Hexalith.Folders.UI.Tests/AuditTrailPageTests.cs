@@ -608,7 +608,7 @@ public sealed class AuditTrailPageTests
         // ListAuditTrailAsync read but into the supplementary TryReadAsync reads too — proven here via
         // GetEffectivePermissionsAsync, the unconditional advisory scope-banner read that runs on every load.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(static value => value == null)!, Arg.Any<CancellationToken>());
     }
 
     private static IRenderedComponent<AuditTrail> Render(BunitContext ctx)

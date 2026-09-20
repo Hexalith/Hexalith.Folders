@@ -428,11 +428,58 @@ public sealed class WorkspaceStatusEndpointTests
         root.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
     }
 
+    [Theory]
+    [InlineData("matching", HttpStatusCode.OK, 2)]
+    [InlineData("mismatched", HttpStatusCode.NotFound, 1)]
+    [InlineData("stale", HttpStatusCode.ServiceUnavailable, 1)]
+    [InlineData("unavailable", HttpStatusCode.ServiceUnavailable, 1)]
+    public async Task CandidateTaskStatusVerifiesFreshTaskToFolderBindingBeforeHistoricalObservation(
+        string evidence,
+        HttpStatusCode expectedStatus,
+        int expectedReadModelCalls)
+    {
+        TaskStatusReadModelResult result = evidence switch
+        {
+            "matching" => TaskStatusReadModelResult.Available(TaskSnapshot("folder-a", stale: false)),
+            "mismatched" => TaskStatusReadModelResult.Available(TaskSnapshot("folder-b", stale: false)),
+            "stale" => TaskStatusReadModelResult.Available(TaskSnapshot("folder-a", stale: true)),
+            "unavailable" => TaskStatusReadModelResult.Unavailable("projection_unavailable", Now),
+            _ => throw new ArgumentOutOfRangeException(nameof(evidence), evidence, "Unknown task-binding evidence."),
+        };
+        CountingTaskStatusReadModel readModel = new(new FixedTaskStatusReadModel(result));
+        await using WebApplication app = BuildApp(
+            StatusReadModel(),
+            readModel,
+            useCandidateSeam: true,
+            permissionsReadModel: PermissionReadModel("query_status"));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateEvidenceRequest("/api/v2/folders/folder-a/tasks/task-a/status");
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(expectedStatus, json);
+        readModel.Calls.ShouldBe(expectedReadModelCalls, "binding must short-circuit the historical task read unless fresh identities match exactly");
+        if (expectedStatus == HttpStatusCode.NotFound)
+        {
+            json.ShouldContain("\"code\":\"resource_unavailable\"");
+            json.ShouldNotContain("folder-b", Case.Sensitive);
+        }
+        else if (expectedStatus == HttpStatusCode.ServiceUnavailable)
+        {
+            json.ShouldContain("\"code\":\"projection_unavailable\"");
+            json.ShouldContain("\"visibility\":\"redacted\"");
+        }
+    }
+
     private static WebApplication BuildApp(
         IWorkspaceStatusReadModel statusReadModel,
         ITaskStatusReadModel? taskStatusReadModel = null,
         string? tenantId = "tenant-a",
-        string? principalId = "user-a")
+        string? principalId = "user-a",
+        bool useCandidateSeam = false,
+        IEffectivePermissionsReadModel? permissionsReadModel = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -454,7 +501,7 @@ public sealed class WorkspaceStatusEndpointTests
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore());
         builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
-        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(PermissionReadModel());
+        builder.Services.AddSingleton(permissionsReadModel ?? PermissionReadModel());
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
         builder.Services.RemoveAll<IWorkspaceStatusReadModel>();
@@ -463,6 +510,11 @@ public sealed class WorkspaceStatusEndpointTests
         builder.Services.AddSingleton(taskStatusReadModel ?? TaskStatusReadModel("failed"));
 
         WebApplication app = builder.Build();
+        if (useCandidateSeam)
+        {
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
+        }
         app.MapFoldersServerEndpoints();
         return app;
     }
@@ -502,7 +554,7 @@ public sealed class WorkspaceStatusEndpointTests
         return store;
     }
 
-    private static InMemoryEffectivePermissionsReadModel PermissionReadModel()
+    private static InMemoryEffectivePermissionsReadModel PermissionReadModel(string actionToken = "read_workspace_status")
     {
         InMemoryEffectivePermissionsReadModel readModel = new();
         readModel.Save(new EffectivePermissionsReadModelSnapshot(
@@ -512,7 +564,7 @@ public sealed class WorkspaceStatusEndpointTests
             LifecycleState: EffectivePermissionsFolderLifecycleState.Active,
             EvidenceRows:
             [
-                new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), "read_workspace_status", Sequence: 1, EffectiveAt: Now),
+                new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), actionToken, Sequence: 1, EffectiveAt: Now),
             ],
             Freshness: new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
@@ -535,9 +587,16 @@ public sealed class WorkspaceStatusEndpointTests
     private static InMemoryTaskStatusReadModel TaskStatusReadModel(string state)
     {
         InMemoryTaskStatusReadModel readModel = new(new FixedUtcClock(Now));
+        readModel.Save(TaskSnapshot("folder-a", stale: false, state));
+        return readModel;
+    }
+
+    private static TaskStatusReadModelSnapshot TaskSnapshot(string folderId, bool stale, string state = "failed")
+    {
         WorkspaceStatusReadModelSnapshot snapshot = StatusSnapshot(state);
-        readModel.Save(new TaskStatusReadModelSnapshot(
+        return new TaskStatusReadModelSnapshot(
             ManagedTenantId: snapshot.ManagedTenantId,
+            FolderId: folderId,
             TaskId: snapshot.AcceptedCommandState?.TaskId ?? "task-a",
             CurrentState: snapshot.CurrentState,
             TerminalState: snapshot.CurrentState is "committed" or "failed" or "inaccessible" ? snapshot.CurrentState : null,
@@ -545,9 +604,8 @@ public sealed class WorkspaceStatusEndpointTests
             LastFailureCategory: snapshot.LastFailureCategory,
             RetryEligibility: snapshot.RetryEligibility,
             RetryAfter: snapshot.RetryAfter,
-            Freshness: snapshot.Freshness with { ReadConsistency = "eventually_consistent" },
-            EvidenceScope: snapshot.EvidenceScope with { ActionToken = TaskStatusQueryHandler.ActionToken }));
-        return readModel;
+            Freshness: snapshot.Freshness with { ReadConsistency = "eventually_consistent", Stale = stale, ReasonCode = stale ? "projection_stale" : null },
+            EvidenceScope: snapshot.EvidenceScope with { ActionToken = TaskStatusQueryHandler.ActionToken });
     }
 
     private static WorkspaceStatusReadModelResult ReadModelOutcome(string outcome)
@@ -640,6 +698,14 @@ public sealed class WorkspaceStatusEndpointTests
     {
         public Task<WorkspaceStatusReadModelResult> GetAsync(
             WorkspaceStatusReadModelRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(result);
+    }
+
+    private sealed class FixedTaskStatusReadModel(TaskStatusReadModelResult result) : ITaskStatusReadModel
+    {
+        public Task<TaskStatusReadModelResult> GetAsync(
+            TaskStatusReadModelRequest request,
             CancellationToken cancellationToken = default)
             => Task.FromResult(result);
     }

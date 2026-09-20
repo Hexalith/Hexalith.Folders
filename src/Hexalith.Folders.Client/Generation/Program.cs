@@ -702,10 +702,11 @@ static void RenderConditionalExactProblemValidator(
     string categorySignal = categoryIsDiscriminator
         ? $" || Category == CanonicalErrorCategory.{categoryMember}"
         : string.Empty;
-    code.AppendLine($"        bool exactSignal = string.Equals(Code, \"{exactCode}\", System.StringComparison.Ordinal){categorySignal};");
+    string exactCodeMember = char.ToUpperInvariant(exactCode[0]) + exactCode[1..];
+    code.AppendLine($"        bool exactSignal = Code == CanonicalErrorCode.{exactCodeMember}{categorySignal};");
     code.AppendLine($"        if (exactSignal && (Status != {status}");
     code.AppendLine($"            || Category != CanonicalErrorCategory.{categoryMember}");
-    code.AppendLine($"            || !string.Equals(Code, \"{exactCode}\", System.StringComparison.Ordinal)");
+    code.AppendLine($"            || Code != CanonicalErrorCode.{exactCodeMember}");
     code.AppendLine($"            || Retryable != {retryable.ToString().ToLowerInvariant()}");
     code.AppendLine($"            || ClientAction != ProblemDetailsClientAction.{actionMember}))");
     code.AppendLine("        {");

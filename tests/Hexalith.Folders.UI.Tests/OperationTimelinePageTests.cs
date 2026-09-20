@@ -574,7 +574,7 @@ public sealed class OperationTimelinePageTests
         // permissions read too — invoked UNCONDITIONALLY on every load — so the F-7 Cancel affordance aborts
         // the whole in-flight load, not just the primary read.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>());
+            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(static value => value == null)!, Arg.Any<CancellationToken>());
     }
 
     [Fact]

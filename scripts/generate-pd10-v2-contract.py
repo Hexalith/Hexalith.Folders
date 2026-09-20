@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import json
 import re
 from pathlib import Path
 from typing import Any
@@ -45,7 +46,61 @@ ACCESS_STATES = [
     "absent-resource",
     "insufficient-scope",
 ]
-VISIBILITY_VALUES = ["redacted", "metadata_only", "unavailable", "absent", "withheld"]
+VISIBILITY_VALUES = ["redacted", "metadata_only", "withheld", "unavailable", "absent"]
+CLIENT_ACTION_VALUES = [
+    "retry",
+    "revise_request",
+    "check_credentials",
+    "wait_for_reconciliation",
+    "contact_operator",
+    "no_action",
+    "refresh_state_then_submit_with_new_key",
+    "do_not_retry",
+    "restart_query",
+]
+
+EXACT_AUTHORIZATION_PROBLEMS = {
+    "AuthenticationFailureProblem": {
+        "type": "about:blank",
+        "title": "Authentication required",
+        "status": 401,
+        "category": "authentication_failure",
+        "code": "authentication_required",
+        "message": "Authentication is required.",
+        "retryable": False,
+        "clientAction": "check_credentials",
+        "visibility": "redacted",
+    },
+    "SafeDenialProblem": {
+        "type": "about:blank",
+        "title": "Resource not available",
+        "status": 404,
+        "category": "tenant_access_denied",
+        "code": "resource_unavailable",
+        "message": "The requested resource is unavailable.",
+        "retryable": False,
+        "clientAction": "no_action",
+        "visibility": "redacted",
+    },
+    "AuthorityUnavailableProblem": {
+        "type": "about:blank",
+        "title": "Authorization evidence unavailable",
+        "status": 503,
+        "category": "read_model_unavailable",
+        "code": "projection_unavailable",
+        "message": "Authorization evidence is temporarily unavailable.",
+        "retryable": True,
+        "clientAction": "retry",
+        "visibility": "redacted",
+    },
+}
+
+AUTHORITY_UNAVAILABLE_SCHEMA_REF = "#/components/schemas/AuthorityUnavailableProblem"
+OPERATION_SPECIFIC_UNAVAILABLE_SCHEMA_REF = "#/components/schemas/OperationSpecificUnavailableProblem"
+AUTHORITY_AWARE_FILE_UNAVAILABLE_SCHEMA_REFS = {
+    "#/components/schemas/FileMutationUnavailableProblem",
+    "#/components/schemas/FileContextUnavailableProblem",
+}
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -139,12 +194,14 @@ def transform_operation(
     operation: dict[str, Any],
     operation_id: str,
     matrix: dict[str, Any],
+    component_responses: dict[str, Any],
 ) -> None:
     responses = operation.setdefault("responses", {})
+    existing_unavailable = copy.deepcopy(responses.get("503"))
     responses.pop("403", None)
     responses["401"] = {"$ref": "#/components/responses/AuthenticationFailure401"}
     responses["404"] = {"$ref": "#/components/responses/SafeDenial404"}
-    responses["503"] = {"$ref": "#/components/responses/AuthorityUnavailable503"}
+    responses["503"] = response_with_authority_unavailable(existing_unavailable, component_responses)
 
     categories = [
         category
@@ -160,11 +217,15 @@ def transform_operation(
     operation["x-hexalith-operation-family"] = matrix["family"]
 
     authorization = operation.setdefault("x-hexalith-authorization", {})
+    authorization["candidateVersion"] = "2.0.0"
+    authorization["operationFamily"] = matrix["family"]
     authorization["requirement"] = requirement_for(operation_id, str(authorization.get("requirement", "")))
     authorization["tenantAuthority"] = "authentication-context-and-eventstore-envelope"
     authorization["evaluationOrder"] = EVALUATION_ORDER
     authorization["scopeDimensions"] = matrix["applicable"]
     authorization["notApplicableScopeDimensions"] = matrix["not_applicable"]
+    authorization["requiredScopes"] = matrix["applicable"]
+    authorization["notApplicableScopes"] = matrix["not_applicable"]
     authorization["derivedScopeDimensions"] = [
         dimension
         for dimension in matrix["applicable"]
@@ -172,12 +233,51 @@ def transform_operation(
     ]
     authorization["safeDenial"] = "safe-denial-404"
     authorization["authorityUnavailable"] = "authority-unavailable-503"
+    authorization["freshNegativeOutcome"] = "safe-denial-404"
+    authorization["unusableAuthorityOutcome"] = "authority-unavailable-503"
     authorization["protectedLookupAfterAuthorization"] = True
+    authorization["taskBinding"] = (
+        "task.folderId == route.folderId" if operation_id == "GetTaskStatus" else "not-applicable"
+    )
 
     if "{folderId}" in matrix["path"]:
         ensure_parameter(operation, "#/components/parameters/FolderId", prepend=True)
     if operation_id == "GetEffectivePermissions":
         ensure_parameter(operation, "#/components/parameters/TaskId")
+
+
+def response_with_authority_unavailable(
+    existing: dict[str, Any] | None,
+    component_responses: dict[str, Any],
+) -> dict[str, Any]:
+    if existing is None:
+        return {"$ref": "#/components/responses/ProtectedOperationUnavailable503"}
+
+    response = copy.deepcopy(existing)
+    reference = response.get("$ref")
+    if isinstance(reference, str) and reference.startswith("#/components/responses/"):
+        response_name = reference.rsplit("/", 1)[-1]
+        response = copy.deepcopy(component_responses[response_name])
+
+    media_type = response.get("content", {}).get("application/problem+json")
+    if not isinstance(media_type, dict) or not isinstance(media_type.get("schema"), dict):
+        raise ValueError("Operation-specific 503 response must declare an application/problem+json schema.")
+
+    schema = media_type["schema"]
+    schema_reference = schema.get("$ref")
+    if schema_reference not in AUTHORITY_AWARE_FILE_UNAVAILABLE_SCHEMA_REFS:
+        if schema_reference != "#/components/schemas/ProblemDetails":
+            raise ValueError(
+                "Operation-specific 503 response has an unsupported historical schema: "
+                f"{schema_reference!r}."
+            )
+        media_type["schema"] = {"$ref": OPERATION_SPECIFIC_UNAVAILABLE_SCHEMA_REF}
+
+    response["description"] = (
+        f"{response.get('description', 'Operation-specific service-unavailable response')} "
+        "The exact authority-unavailable branch is emitted only before protected observation."
+    )
+    return response
 
 
 def collect_detail_keys(node: Any, keys: set[str]) -> None:
@@ -203,6 +303,64 @@ def collect_error_codes(node: Any, codes: set[str]) -> None:
             collect_error_codes(item, codes)
 
 
+def normalize_problem_examples(node: Any) -> None:
+    if isinstance(node, dict):
+        if isinstance(node.get("category"), str) and isinstance(node.get("code"), str):
+            details = node.get("details")
+            if isinstance(details, dict):
+                for key, value in list(details.items()):
+                    if key == "visibility" or isinstance(value, str):
+                        continue
+                    if isinstance(value, (dict, list)):
+                        details[key] = json.dumps(value, sort_keys=True, separators=(",", ":"))
+                    elif isinstance(value, bool):
+                        details[key] = "true" if value else "false"
+                    elif value is None:
+                        details[key] = "null"
+                    else:
+                        details[key] = str(value)
+        for value in node.values():
+            normalize_problem_examples(value)
+    elif isinstance(node, list):
+        for item in node:
+            normalize_problem_examples(item)
+
+
+def exact_problem_schema(values: dict[str, Any]) -> dict[str, Any]:
+    exact_properties = {
+        key: {"const": value}
+        for key, value in values.items()
+        if key != "visibility"
+    }
+    exact_properties["details"] = {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["visibility"],
+        "properties": {"visibility": {"const": values["visibility"]}},
+    }
+    return {
+        "allOf": [
+            {"$ref": "#/components/schemas/ProblemDetails"},
+            {
+                "type": "object",
+                "properties": exact_properties,
+            },
+        ],
+        "x-hexalith-exact-envelope": exact_properties,
+    }
+
+
+def exact_problem_response(schema_name: str, description: str) -> dict[str, Any]:
+    return {
+        "description": description,
+        "content": {
+            "application/problem+json": {
+                "schema": {"$ref": f"#/components/schemas/{schema_name}"},
+            }
+        },
+    }
+
+
 def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict[str, Any]:
     contract = copy.deepcopy(source)
     contract["info"]["version"] = "v2"
@@ -212,7 +370,7 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         "established before every protected observation. This document is generated for A6b review and is "
         "not selected by the supported production profile."
     )
-    contract["servers"] = [{"url": "/api/v2", "description": "Candidate-only surface; not production-routed before A6b, Section 9, and A8."}]
+    contract["servers"] = [{"url": "/", "description": "Candidate-only surface; not production-routed before A6b, Section 9, and A8."}]
 
     generated_paths: dict[str, Any] = {}
     observed: set[str] = set()
@@ -227,8 +385,15 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
             if method != expected["method"]:
                 raise ValueError(f"Method mismatch for {operation_id}: {method} != {expected['method']}.")
             candidate_operation = copy.deepcopy(operation)
-            transform_operation(candidate_operation, operation_id, expected)
-            generated_paths.setdefault(expected["path"], {})[method] = candidate_operation
+            transform_operation(candidate_operation, operation_id, expected, source["components"]["responses"])
+            candidate_path_item = generated_paths.setdefault(expected["path"], {})
+            if method in candidate_path_item:
+                existing_id = candidate_path_item[method].get("operationId", "unknown")
+                raise ValueError(
+                    f"Duplicate generated route {method.upper()} {expected['path']}: "
+                    f"{existing_id} and {operation_id}."
+                )
+            candidate_path_item[method] = candidate_operation
             observed.add(operation_id)
     missing = sorted(set(matrix) - observed)
     if missing:
@@ -238,33 +403,55 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
     components = contract["components"]
     responses = components["responses"]
     responses.pop("SafeAuthorizationDenial403", None)
-    responses["AuthenticationFailure401"] = copy.deepcopy(responses["SafeAuthorizationDenial401"])
-    responses["SafeDenial404"] = copy.deepcopy(responses["SafeAuthorizationDenial404"])
-    responses["AuthorityUnavailable503"] = {
-        "description": "Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.",
-        "content": {
-            "application/problem+json": {
-                "schema": {"$ref": "#/components/schemas/ProblemDetails"},
-                "examples": {"synthetic": {"$ref": "#/components/examples/AuthorityUnavailable503"}},
-            }
-        },
-    }
+    responses["AuthenticationFailure401"] = exact_problem_response(
+        "AuthenticationFailureProblem",
+        "Authentication failed before protected observation.",
+    )
+    responses["SafeDenial404"] = exact_problem_response(
+        "SafeDenialProblem",
+        "Non-enumerating denial emitted before protected observation.",
+    )
+    responses["ProtectedOperationUnavailable503"] = exact_problem_response(
+        "AuthorityUnavailableProblem",
+        "Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.",
+    )
+    responses.pop("AuthorityUnavailable503", None)
     components["examples"].pop("SafeDenial403Forbidden", None)
-    components["examples"]["AuthorityUnavailable503"] = {
-        "summary": "Canonical non-disclosing authority-unavailable response emitted before protected lookup.",
-        "value": {
-            "type": "about:blank",
-            "title": "Authority temporarily unavailable",
-            "status": 503,
-            "category": "read_model_unavailable",
-            "code": "projection_unavailable",
-            "message": "Authorization evidence is temporarily unavailable.",
-            "correlationId": "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
-            "retryable": True,
-            "clientAction": "retry",
-            "details": {"visibility": "redacted"},
-        },
+    for schema_name, values in EXACT_AUTHORIZATION_PROBLEMS.items():
+        components["schemas"][schema_name] = exact_problem_schema(values)
+        example_name = schema_name.removesuffix("Problem")
+        components["examples"][example_name] = {
+            "summary": "Canonical non-disclosing authorization response emitted before protected lookup.",
+            "value": {
+                **{key: value for key, value in values.items() if key != "visibility"},
+                "correlationId": "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+                "details": {"visibility": values["visibility"]},
+            },
+        }
+
+    components["schemas"]["OperationSpecificUnavailableProblem"] = {
+        "description": (
+            "Disjoint historical-or-authority 503 union. The historical operation-specific outcome "
+            "is preserved unless the exact pre-observation authority-unavailable envelope applies."
+        ),
+        "oneOf": [
+            {
+                "allOf": [
+                    {"$ref": "#/components/schemas/ProblemDetails"},
+                    {"not": {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF}},
+                ]
+            },
+            {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF},
+        ],
     }
+
+    principal_mismatch = components["examples"].get("PrincipalMismatchSafeDenialProblem", {}).get("value")
+    if isinstance(principal_mismatch, dict):
+        canonical = EXACT_AUTHORIZATION_PROBLEMS["SafeDenialProblem"]
+        principal_mismatch.update(
+            {key: value for key, value in canonical.items() if key != "visibility"}
+        )
+        principal_mismatch["details"] = {"visibility": canonical["visibility"]}
 
     categories = components["schemas"]["CanonicalErrorCategory"]["enum"]
     if "concurrency_conflict" not in categories:
@@ -278,18 +465,24 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
     if "77" not in cli_exit_codes:
         cli_exit_codes.append("77")
 
-    details_schema = components["schemas"]["ProblemDetails"]["properties"]["details"]
+    problem_schema = components["schemas"]["ProblemDetails"]
+    problem_schema["additionalProperties"] = False
+    problem_schema["properties"]["clientAction"]["enum"] = CLIENT_ACTION_VALUES
+
+    normalize_problem_examples(components.get("examples", {}))
+
+    details_schema = problem_schema["properties"]["details"]
     detail_keys: set[str] = {"visibility"}
     collect_detail_keys(components.get("examples", {}), detail_keys)
     details_schema["required"] = ["visibility"]
-    details_schema["propertyNames"] = {"enum": sorted(detail_keys)}
+    details_schema["additionalProperties"] = False
+    details_schema["properties"] = {
+        key: ({"type": "string", "enum": VISIBILITY_VALUES} if key == "visibility" else {"type": "string"})
+        for key in sorted(detail_keys)
+    }
     details_schema["description"] = (
         "Closed metadata-only details. Every error requires visibility; keys outside the generated vocabulary are forbidden."
     )
-
-    release_reason = components["schemas"].get("ReleaseWorkspaceLockRequest", {}).get("properties", {}).get("releaseReasonCode")
-    if isinstance(release_reason, dict):
-        release_reason["enum"] = ["caller_completed"]
 
     remove_forbidden_enum_values(contract)
     replace_request_schema_versions(contract)
@@ -301,6 +494,29 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         "concurrency_conflict",
     }
     collect_error_codes(components.get("examples", {}), error_codes)
+    components["schemas"]["CanonicalErrorCode"] = {
+        "type": "string",
+        "enum": sorted(error_codes),
+    }
+    canonical_error_code_ref = {"$ref": "#/components/schemas/CanonicalErrorCode"}
+    problem_schema["properties"]["code"] = copy.deepcopy(canonical_error_code_ref)
+    components["schemas"]["ExactFileProblem"]["properties"]["code"] = copy.deepcopy(canonical_error_code_ref)
+
+    authority_branch = {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF}
+    for union_name in ("FileMutationUnavailableProblem", "FileContextUnavailableProblem"):
+        union = components["schemas"][union_name].setdefault("oneOf", [])
+        if authority_branch not in union:
+            union.append(copy.deepcopy(authority_branch))
+
+    for legacy_schema_name in (
+        "FileLegacyMutationReconciliationRequiredProblem",
+        "FileLegacyContextReadModelUnavailableProblem",
+    ):
+        legacy_schema = components["schemas"][legacy_schema_name]
+        authority_exclusion = {"not": {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF}}
+        all_of = legacy_schema.setdefault("allOf", [])
+        if authority_exclusion not in all_of:
+            all_of.append(authority_exclusion)
     post_sdk_mcp_failure_kinds = sorted(
         {
             category
@@ -332,6 +548,8 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
 
 def main() -> int:
     arguments = parse_arguments()
+    if arguments.output.resolve() == arguments.source.resolve():
+        raise ValueError("Candidate output must not alias the immutable historical v1 source.")
     source = yaml.safe_load(arguments.source.read_text(encoding="utf-8"))
     matrix = read_matrix(arguments.matrix)
     candidate = transform(source, matrix)

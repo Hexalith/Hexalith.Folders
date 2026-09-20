@@ -76,7 +76,7 @@ public sealed class FileUploadConvenienceTests
         request.TransportOperation.ShouldBe(FileMutationRequestTransportOperation.PutFileInline);
         request.FileOperationKind.ShouldBe(FileMutationRequestFileOperationKind.Add);
         request.ByteLength.ShouldBe(content.Length);
-        request.RequestSchemaVersion.ShouldBe("v1");
+        request.RequestSchemaVersion.ShouldBe("v2");
 
         PutFileInline inline = request.InlineContent.ShouldNotBeNull();
         Convert.FromBase64String(inline.ContentBytes).ShouldBe(content);
@@ -368,7 +368,7 @@ public sealed class FileUploadConvenienceTests
             () => client.UploadFileAsync(InlineDescriptor(), Encoding.UTF8.GetBytes("synthetic"), "idem_01HZY7Z6N7J4Q2X8Y9V0IDK001", "corr_01HZY7Z6N7J4Q2X8Y9V0COR001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001", TestContext.Current.CancellationToken)).ConfigureAwait(true);
 
         exception.StatusCode.ShouldBe(409);
-        exception.Result.Code.ShouldBe("idempotency_conflict");
+        exception.Result.Code.ShouldBe(CanonicalErrorCode.Idempotency_conflict);
     }
 
     [Fact]

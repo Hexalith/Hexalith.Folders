@@ -148,7 +148,7 @@ classes to `422`; unavailable/projection/internal classes to `503`; and all rema
 and `query_timeout`. The two ambiguous-outcome categories `unknown_provider_outcome` and
 `reconciliation_required` are deliberately **not** retryable — retrying them could duplicate a repository,
 file change, or commit. The typed client-action vocabulary is the generated `ProblemDetailsClientAction`
-enum — **exactly 7 wire tokens**.
+enum — **exactly 9 wire tokens**.
 
 <!-- client-action-tokens -->
 
@@ -161,6 +161,8 @@ enum — **exactly 7 wire tokens**.
 | `contact_operator` | An operator must act before the request can succeed |
 | `no_action` | No client action is useful for this outcome |
 | `refresh_state_then_submit_with_new_key` | Refresh current state, then submit equivalent intent with a new key |
+| `do_not_retry` | Do not repeat an operation whose outcome or policy forbids retry |
+| `restart_query` | Restart a bounded query from a fresh snapshot or cursor |
 
 ## CLI exit-code behavior (16)
 
@@ -175,14 +177,14 @@ oracle `cli_exit_code` column and are deliberately not the EventStore admin CLI 
 | `0` | Success | success |
 | `64` | UsageError | pre-SDK usage / `client_configuration_error` (no HTTP call) |
 | `65` | CredentialMissing | credential family (`credential_missing` / `authentication_failure` / `credential_reference_invalid`) |
-| `66` | AccessDenied | tenant / folder / audit access denial |
+| `66` | AccessDenied | tenant / folder / audit access denial / `authorization_revocation_detected` |
 | `67` | LockConflict | lock contention and stale workspace |
 | `68` | IdempotencyConflict | `idempotency_conflict` |
 | `69` | ValidationError | validation / input-shape failures |
 | `70` | ProviderFailure | provider / repository operation failures |
 | `71` | UnknownProviderOutcome | `unknown_provider_outcome`, surfaced never hidden |
 | `72` | ReconciliationRequired | reconciliation / workspace readiness pending |
-| `73` | AuthorityUnavailable | `read_model_unavailable` / projection unavailable or stale / `authorization_revocation_detected` |
+| `73` | AuthorityUnavailable | `read_model_unavailable` / projection unavailable or stale |
 | `74` | StateTransitionInvalid | `state_transition_invalid` |
 | `75` | Redacted | `redacted`, visibly distinct from missing/unknown |
 | `76` | IdempotencyKeyExpired | `idempotency_key_expired` |

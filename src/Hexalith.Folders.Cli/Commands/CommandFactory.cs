@@ -75,7 +75,8 @@ internal static class CommandFactory
         GlobalOptionsBinding global,
         bool taskIdRequired,
         Option[] resourceOptions,
-        Func<ParseResult, IClient, QuerySourcing, CancellationToken, Task<object?>> invoke)
+        Func<ParseResult, IClient, QuerySourcing, CancellationToken, Task<object?>> invoke,
+        bool taskIdSupported = false)
     {
         Command command = new(name, description);
         foreach (Option option in resourceOptions)
@@ -84,7 +85,7 @@ internal static class CommandFactory
         }
 
         Option<string?>? taskId = null;
-        if (taskIdRequired)
+        if (taskIdRequired || taskIdSupported)
         {
             taskId = CommandOptions.TaskId();
             command.Options.Add(taskId);

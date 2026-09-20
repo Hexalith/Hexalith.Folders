@@ -66,7 +66,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
         // 1) Configure provider binding.
         ConfigureProviderBindingRequest providerBinding = new()
         {
-            RequestSchemaVersion = ConfigureProviderBindingRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = ConfigureProviderBindingRequestRequestSchemaVersion.V2,
             ProviderFamilyRef = "provider_family_github",
             CapabilityProfileRef = "capability_profile_default",
             NonSecretCredentialReference = "credential_reference_01HZY7Z6N7J4Q2X8Y9V0CRD001",
@@ -96,7 +96,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
         // 3) Create a repository-backed folder (preparation requires a ready repository-backed folder).
         CreateRepositoryBackedFolderRequest createRequest = new()
         {
-            RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V2,
             FolderId = inputs.FolderId,
             ProviderBindingRef = inputs.ProviderBindingRef,
             RepositoryProfileRef = "repository_profile_01HZY7Z6N7J4Q2X8Y9V0RPF001",
@@ -107,7 +107,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
             },
             BranchRefPolicy = new BranchRefPolicyRequest
             {
-                RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V1,
+                RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
                 RepositoryBindingId = inputs.RepositoryBindingId,
                 PolicyRef = "branch_ref_default",
                 DefaultRef = "branch_ref_main",
@@ -188,7 +188,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
         // 7) Commit the staged changes.
         CommitWorkspaceRequest commitRequest = new()
         {
-            RequestSchemaVersion = CommitWorkspaceRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = CommitWorkspaceRequestRequestSchemaVersion.V2,
             OperationId = "01ARZ3NDEKTSV4RRFFQ69G5COM",
             TaskId = taskId,
             BranchRefTarget = "branch_ref_main",

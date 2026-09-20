@@ -8,6 +8,7 @@ using System.Net;
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.Client.Generation.Shared;
 using Hexalith.Folders.Client.Idempotency;
+using Hexalith.Folders.Client.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shouldly;
@@ -52,6 +53,43 @@ public sealed class ClientGenerationTests
             .Select(item => item.GetString()).ShouldBe(["MutateFilesRequest", "MutateFilesRequestRequestSchemaVersion"]);
         typeof(CreateFolderRequest).Assembly.GetType("Hexalith.Folders.Client.Generated.MutateFilesRequest").ShouldBeNull(
             "the canonical internal batch shape must not become a public SDK type");
+    }
+
+    [Fact]
+    public void GeneratedClientUsesTheNamedOperationSpecific503Union()
+    {
+        typeof(OperationSpecificUnavailableProblem).BaseType.ShouldBe(typeof(ProblemDetails));
+
+        string generatedPath = Path.Combine(
+            RepositoryRoot,
+            "src",
+            "Hexalith.Folders.Client",
+            "Generated",
+            "HexalithFoldersClient.g.cs");
+        string generated = File.ReadAllText(generatedPath);
+        const string read = "ReadObjectResponseAsync<OperationSpecificUnavailableProblem>";
+        (generated.Split(read, StringSplitOptions.None).Length - 1).ShouldBe(37);
+        generated.ShouldContain(
+            "HexalithFoldersApiException<OperationSpecificUnavailableProblem>(\"Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.\"");
+
+        var problem = new OperationSpecificUnavailableProblem
+        {
+            Category = CanonicalErrorCategory.Unknown_provider_outcome,
+            ClientAction = ProblemDetailsClientAction.Wait_for_reconciliation,
+            Code = CanonicalErrorCode.Unknown_provider_outcome,
+            CorrelationId = "correlation_01HZY7Z6N7J4Q2X8Y9V0COR001",
+            Message = "The provider outcome is unknown.",
+            Retryable = false,
+            Status = 503,
+        };
+        var exception = new HexalithFoldersApiException<OperationSpecificUnavailableProblem>(
+            "message",
+            503,
+            "{}",
+            new Dictionary<string, IEnumerable<string>>(),
+            problem,
+            null!);
+        exception.ProblemDetails.ShouldNotBeNull().Category.ShouldBe(CanonicalErrorCategory.Unknown_provider_outcome);
     }
 
     [Fact]
@@ -115,7 +153,7 @@ public sealed class ClientGenerationTests
             PolicyRef = "branch_ref_default",
             ProtectedRefPatterns = ["branch_ref_release"],
             RepositoryBindingId = "repository_binding_01HZY7Z6N7J4Q2X8Y9V0RBI001",
-            RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
         };
 
         request.ComputeIdempotencyHash("folder_01HZY7Z6N7J4Q2X8Y9V0FLD001").ShouldBe(ExpectedHash(
@@ -154,14 +192,14 @@ public sealed class ClientGenerationTests
             },
             ParentFolderId = null,
             ParentFolderIdSpecified = true,
-            RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V2,
         };
 
         request.ComputeIdempotencyHash().ShouldBe(ExpectedHash(
             "operation=CreateFolder",
             "field=folder_metadata.display_name;present=true;value=s:Synthetic Folder",
             "field=parent_folder_id;present=true;value=null",
-            "field=request_schema_version;present=true;value=s:v1"));
+            "field=request_schema_version;present=true;value=s:v2"));
     }
 
     [Fact]
@@ -181,7 +219,7 @@ public sealed class ClientGenerationTests
             },
             ProviderBindingRef = "provider_binding_01HZY7Z6N7J4Q2X8Y9V0PBR001",
             RepositoryProfileRef = "repository_profile_01HZY7Z6N7J4Q2X8Y9V0RPF001",
-            RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V2,
         };
 
         request.ComputeIdempotencyHash().ShouldBe(ExpectedHash(
@@ -205,7 +243,7 @@ public sealed class ClientGenerationTests
             },
             ParentFolderId = null,
             ParentFolderIdSpecified = true,
-            RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V2,
         };
 
         var omittedParent = new CreateFolderRequest
@@ -214,7 +252,7 @@ public sealed class ClientGenerationTests
             {
                 DisplayName = "Synthetic Folder",
             },
-            RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V1,
+            RequestSchemaVersion = CreateFolderRequestRequestSchemaVersion.V2,
         };
 
         nullParent.ComputeIdempotencyHash().ShouldNotBe(omittedParent.ComputeIdempotencyHash());
@@ -470,7 +508,7 @@ public sealed class ClientGenerationTests
         {
             Category = CanonicalErrorCategory.Validation_error,
             ClientAction = ProblemDetailsClientAction.Revise_request,
-            Code = "validation_error",
+            Code = CanonicalErrorCode.Validation_error,
             CorrelationId = "correlation_01HZY7Z6N7J4Q2X8Y9V0COR001",
             Message = "Synthetic validation failure.",
             Retryable = false,
@@ -672,7 +710,7 @@ public sealed class ClientGenerationTests
     public void Oq2WireValidationRejectsCoercionAndCompleteShapeDrift()
     {
         const string path = "{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"}";
-        const string inline = "{\"requestSchemaVersion\":\"v1\",\"fileOperationKind\":\"add\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":" + path + ",\"contentHashReference\":\"hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"byteLength\":0,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"\"}}";
+        const string inline = "{\"requestSchemaVersion\":\"v2\",\"fileOperationKind\":\"add\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":" + path + ",\"contentHashReference\":\"hashref_e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\"byteLength\":0,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"\"}}";
 
         AddFileRequest add = JsonConvert.DeserializeObject<AddFileRequest>(inline).ShouldNotBeNull();
         add.FileOperationKind.ShouldBe(AddFileRequestFileOperationKind.Add);
@@ -714,7 +752,7 @@ public sealed class ClientGenerationTests
 
         RemoveFileRequest remove = new()
         {
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
             FileOperationKind = RemoveFileRequestFileOperationKind.Remove,
             TransportOperation = FileMutationRequestTransportOperation.MetadataOnlyRemoval,
             OperationId = "operation_01HZY7Z6N7J4Q2X8",
@@ -732,7 +770,7 @@ public sealed class ClientGenerationTests
 
         AddFileRequest incompleteAdd = new()
         {
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
             FileOperationKind = AddFileRequestFileOperationKind.Add,
             TransportOperation = FileMutationRequestTransportOperation.PutFileInline,
             OperationId = "operation_01HZY7Z6N7J4Q2X8",
@@ -750,7 +788,7 @@ public sealed class ClientGenerationTests
         const string hash = "hashref_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
         AddFileRequest request = new()
         {
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
             FileOperationKind = AddFileRequestFileOperationKind.Add,
             TransportOperation = FileMutationRequestTransportOperation.PutFileStream,
             OperationId = "operation_01HZY7Z6N7J4Q2X8",
@@ -813,7 +851,7 @@ public sealed class ClientGenerationTests
         var partialClient = new Hexalith.Folders.Client.Generated.Client(new HttpClient(new StaticResponseHandler(HttpStatusCode.PartialContent, partialJson)) { BaseAddress = new Uri("https://folders.test/") });
         FileRangeReadRequest request = new()
         {
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
             Path = new ContentAllowedPathMetadata
             {
                 NormalizedPath = "docs/readme.md",
@@ -890,7 +928,9 @@ public sealed class ClientGenerationTests
             var errorClient = new Hexalith.Folders.Client.Generated.Client(new HttpClient(new StaticResponseHandler(httpStatus, problemJson)) { BaseAddress = new Uri("https://folders.test/") });
             HexalithFoldersApiException exception = await Should.ThrowAsync<HexalithFoldersApiException>(() => errorClient.ReadFileRangeAsync(
                 "folder", "workspace", "correlation", "task", null, request, TestContext.Current.CancellationToken));
-            exception.ProblemDetails.ShouldNotBeNull().Code.ShouldBe(code);
+            CanonicalErrorCodeProjection.WireValue(
+                exception.ProblemDetails.ShouldNotBeNull($"status={status}; diagnostic={exception.ProblemDetailsParseDiagnostic ?? "none"}").Code)
+                .ShouldBe(code);
         }
     }
 
@@ -951,7 +991,7 @@ public sealed class ClientGenerationTests
                 UnicodeNormalization = PathMetadataUnicodeNormalization.NFC,
             },
             ContentHashReference = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
         };
 
     private static void AssertJsonSerializationRejected(Func<object?> action)

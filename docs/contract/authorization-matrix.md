@@ -291,7 +291,7 @@ scope. A dimension that is silently absent from a decision is a failing conforma
 | `ArchiveFolder` | POST | `/api/v2/folders/{folderId}/archive` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
 | `ListFolderAclEntries` | GET | `/api/v2/folders/{folderId}/acl` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
 | `UpdateFolderAclEntry` | PUT | `/api/v2/folders/{folderId}/acl/{aclEntryId}` | `folder-administration` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
-| `GetEffectivePermissions` | GET | `/api/v2/folders/{folderId}/effective-permissions` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` | `provider` `repository` `workspace` `task` |
+| `GetEffectivePermissions` | GET | `/api/v2/folders/{folderId}/effective-permissions` | `status-permission-and-lock-inspection` | `tenant` `principal` `delegated-actor` `folder` `task` | `provider` `repository` `workspace` |
 | `ConfigureProviderBinding` | PUT | `/api/v2/provider-bindings/{providerBindingRef}` | `provider-configuration` | `tenant` `principal` `delegated-actor` `provider` `task` | `repository` `folder` `workspace` |
 | `GetProviderBinding` | GET | `/api/v2/provider-bindings/{providerBindingRef}` | `provider-configuration` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |
 | `ValidateProviderReadiness` | POST | `/api/v2/provider-readiness/validations` | `readiness-and-provider-evidence` | `tenant` `principal` `delegated-actor` `provider` | `repository` `folder` `workspace` `task` |

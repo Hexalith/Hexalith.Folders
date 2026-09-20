@@ -35,7 +35,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
         { "provider", ["provider", "get-binding", "--provider-binding-ref", "pbr_1", "--base-address", BaseAddress, "--token", Token] },
         { "folder", ["folder", "status", "--folder-id", "folder_1", "--base-address", BaseAddress, "--token", Token] },
         { "workspace", ["workspace", "status", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--base-address", BaseAddress, "--token", Token] },
-        { "file", ["file", "remove", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_1", "--request", "{\"requestSchemaVersion\":\"v1\",\"fileOperationKind\":\"remove\",\"transportOperation\":\"metadataOnlyRemoval\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"metadata_only\",\"unicodeNormalization\":\"NFC\"}}", "--base-address", BaseAddress, "--token", Token] },
+        { "file", ["file", "remove", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_1", "--request", "{\"requestSchemaVersion\":\"v2\",\"fileOperationKind\":\"remove\",\"transportOperation\":\"metadataOnlyRemoval\",\"operationId\":\"operation_01HZY7Z6N7J4Q2X8\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"metadata_only\",\"unicodeNormalization\":\"NFC\"}}", "--base-address", BaseAddress, "--token", Token] },
         { "commit", ["commit", "reconciliation-status", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--reconciliation-id", "recon_1", "--base-address", BaseAddress, "--token", Token] },
         { "context", ["context", "list", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--base-address", BaseAddress, "--token", Token] },
         { "audit", ["audit", "list", "--folder-id", "folder_1", "--base-address", BaseAddress, "--token", Token] },
@@ -150,7 +150,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
             "--folder-id", "folder_1",
             "--workspace-id", "workspace_1",
             "--task-id", "task_1",
-            "--request", "{\"requestSchemaVersion\":\"v1\",\"queryFamily\":\"semantic_reference_pending\",\"queryText\":\"needle\"}",
+            "--request", "{\"requestSchemaVersion\":\"v2\",\"queryFamily\":\"semantic_reference_pending\",\"queryText\":\"needle\"}",
             "--base-address", BaseAddress,
             "--token", Token);
 

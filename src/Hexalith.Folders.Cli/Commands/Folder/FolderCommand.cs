@@ -124,7 +124,9 @@ internal static class FolderCommand
                 parseResult.GetValue(permsFolderId)!,
                 sourcing.CorrelationId,
                 CommandOptions.ParseFreshness(parseResult.GetValue(permsFreshness)),
-                ct))));
+                sourcing.TaskId,
+                ct)),
+            taskIdSupported: true));
 
         command.Subcommands.Add(CreateAclCommand(pipeline, global));
         command.Subcommands.Add(CreateBranchPolicyCommand(pipeline, global));

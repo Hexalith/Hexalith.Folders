@@ -19,6 +19,21 @@ namespace Hexalith.Folders.Mcp.Tests;
 /// </summary>
 public sealed class ToolInputsTests
 {
+    [Fact]
+    public async Task EffectivePermissionsThreadsOptionalTaskContextToTheWire()
+    {
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, "{}");
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
+
+        await FolderTools.GetEffectivePermissions(
+            pipeline,
+            folderId: "f",
+            taskId: "task-effective-1",
+            correlationId: "corr-effective-1",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        handler.Requests.ShouldHaveSingleItem().TaskId.ShouldBe("task-effective-1");
+    }
     [Theory]
     [InlineData("snapshot_per_task", ReadConsistencyClass.Snapshot_per_task)]
     [InlineData("read_your_writes", ReadConsistencyClass.Read_your_writes)]

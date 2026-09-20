@@ -123,11 +123,12 @@ internal static class FolderTools
     public static Task<string> GetEffectivePermissions(
         ToolPipeline pipeline,
         [Description("Opaque folder identifier.")] string folderId,
+        [Description("Optional caller-provided task context for permission evaluation.")] string? taskId = null,
         [Description("Optional caller-provided correlation ID; a fresh ULID is generated when omitted.")] string? correlationId = null,
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
-        => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetEffectivePermissionsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+        => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
+            client.GetEffectivePermissionsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), s.TaskId, ct)), cancellationToken);
 
     [McpServerTool(Name = "configure-branch-ref-policy")]
     [Description("Configure tenant-scoped branch and ref policy metadata (mutating).")]

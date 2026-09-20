@@ -1,0 +1,29 @@
+schema_version: '1.0.0'
+record_id: A8-PROTOCOL-APPROVAL-2026-09-20
+status: approved
+approved_on: '2026-09-20'
+approver: Jerome
+response: 'yes'
+approval_scope: two-stage-a8-ordering-amendment-only
+source: Explicit approval in the active bmad-correct-course exchange.
+approved_proposal:
+  path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-20.md
+  sha256_at_presentation: b78e399936730e2c12af034712465f1dcdb1bc174a34a6c21e74dfb3a95c2f95
+approved_preparation_package:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml
+  sha256_at_presentation: 4bb48e13b6074f0150d982aeef2f53c10486557c5f8017fce566ad5c63c12086
+approved_protocol:
+  - A pre-A8 Section 9 result validates A1-A7b, exact current inputs, the manifest DAG, and the deterministic tracker delta without requiring A8 or a future tracker digest.
+  - A8 requires separate explicit Product, Architecture, and Delivery approval and authorizes only deterministic tracker and provenance finalization.
+  - A8 approval does not itself set general_execution_hold false or authorize ordinary story execution.
+  - After A8, sprint-status.yaml may be regenerated only by the approved deterministic delta while the hold remains true.
+  - The hold may be removed and the recovery action closed only after a final post-A8 Section 9 result passes against the generated tracker digest.
+  - A failed final validation retains the hold and leaves ordinary execution unauthorized.
+approval_effect:
+  a8_hold_removal_approved: false
+  sprint_status_regeneration_authorized: false
+  general_execution_hold: true
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  external_dependency_acceptance_changed: false
+  note: This approval resolves gate ordering only; it supplies no A8 role signature and no external platform acceptance.

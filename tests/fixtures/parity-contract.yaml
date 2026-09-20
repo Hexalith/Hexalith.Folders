@@ -1,5 +1,5 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: 24827e5924a777502c6ba341723b3e1e3c49c7f49389dbd3a19375c747deec31
+# contract_spine_sha256: 07f7e3f7959a6da609619aa76d7d9381a0cb62a469760cb866d050f9c9e8b4f0
 # parity_schema_sha256: 6af4afc59bdc336fe1e0d1ebfa772b761a3ebd69b05170b0f1e01ca81d677049
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
@@ -1403,7 +1403,7 @@
     pre_sdk_error_class: 'none'
     idempotency_key_sourcing: 'not_accepted'
     correlation_id_sourcing: 'caller_provided'
-    task_id_sourcing: 'not_task_scoped'
+    task_id_sourcing: 'caller_provided'
     credential_sourcing: 'sdk_configuration'
     cli_exit_code: 0
     mcp_failure_kind: 'none'

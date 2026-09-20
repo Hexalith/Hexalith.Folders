@@ -31,11 +31,12 @@ public sealed class PostSdkMappingTests
         ProblemDetails problem = new()
         {
             Category = CanonicalErrorCategory.Workspace_locked,
-            Code = "workspace_locked",
+            Code = CanonicalErrorCode.Workspace_locked,
             Message = "The workspace is locked by another task.",
             CorrelationId = "server-correlation-9",
             Retryable = true,
             ClientAction = ProblemDetailsClientAction.Retry,
+            Details = new Details { Visibility = DetailsVisibility.Redacted },
         };
         HexalithFoldersApiException<ProblemDetails> exception = new("locked", 409, "{}", NoHeaders, problem, null);
 
@@ -53,6 +54,7 @@ public sealed class PostSdkMappingTests
         o.Value<bool>("retryable").ShouldBeTrue();
         o.Value<string>("clientAction").ShouldBe("retry");
         o.Value<string>("correlationId").ShouldBe("server-correlation-9");
+        o["details"]!.Value<string>("visibility").ShouldBe("redacted");
     }
 
     [Fact]
@@ -61,7 +63,7 @@ public sealed class PostSdkMappingTests
         ProblemDetails problem = new()
         {
             Category = CanonicalErrorCategory.Unknown_provider_outcome,
-            Code = "unknown_provider_outcome",
+            Code = CanonicalErrorCode.Unknown_provider_outcome,
             CorrelationId = "corr-x",
             Retryable = false,
             ClientAction = ProblemDetailsClientAction.Wait_for_reconciliation,

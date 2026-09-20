@@ -14,6 +14,32 @@ BASELINE_COMMIT = "3f1056d998ac4688f36eb869c516812c1a4ddb71"
 MATRIX_PATH = "docs/contract/authorization-matrix.md"
 HISTORICAL_V1_PATH = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
 APPROVAL_REGISTER_PATH = "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml"
+REQUIRED_CANDIDATE_PATHS = {
+    ".github/workflows/ci.yml",
+    ".github/workflows/contract-spine.yml",
+    "docs/contract/authorization-matrix.md",
+    "docs/operations/canonical-error-catalog.md",
+    "docs/sdk/api-reference.md",
+    "scripts/generate-pd10-v2-conformance-set.py",
+    "scripts/generate-pd10-v2-contract.py",
+    "scripts/generate-v2-conformance-set.ps1",
+    "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
+    "src/Hexalith.Folders.Client/nswag.json",
+    "src/Hexalith.Folders.Client/Generation/Program.cs",
+    "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
+    "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
+    "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
+    "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+    "tests/fixtures/parity-contract.schema.json",
+    "tests/fixtures/parity-contract.yaml",
+    "tests/fixtures/previous-spine.yaml",
+    "tests/tools/parity-oracle-generator/Program.cs",
+    "tests/tools/run-consumer-docs-gates.ps1",
+    "tests/tools/run-contract-parity-ci-gates.ps1",
+    "tests/tools/run-contract-spine-gates.ps1",
+    "tests/tools/run-governance-completeness-gates.ps1",
+    "tests/tools/run-provider-error-docs-gates.ps1",
+}
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -44,12 +70,14 @@ def candidate_paths(root: Path, baseline_commit: str) -> list[str]:
         "--",
     )
     untracked = git_lines(root, "ls-files", "--others", "--exclude-standard")
-    candidates: set[str] = set()
+    candidates: set[str] = set(REQUIRED_CANDIDATE_PATHS)
     for relative_path in tracked + untracked:
         parts = Path(relative_path).parts
         if (
             relative_path in {OUTPUT_PATH, APPROVAL_REGISTER_PATH}
-            or relative_path.startswith("_bmad-output/implementation-artifacts/spec-")
+            or relative_path.startswith("_bmad-output/gates/")
+            or relative_path.startswith("_bmad-output/implementation-artifacts/")
+            or relative_path.startswith("_bmad-output/planning-artifacts/")
             or "bin" in parts
             or "obj" in parts
             or not (root / relative_path).is_file()
@@ -61,8 +89,9 @@ def candidate_paths(root: Path, baseline_commit: str) -> list[str]:
     return sorted(candidates)
 
 
-def sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def artifact_entry(root: Path, relative_path: str) -> tuple[str, int, str]:
+    content = (root / relative_path).read_bytes()
+    return relative_path, len(content), hashlib.sha256(content).hexdigest()
 
 
 def main() -> int:
@@ -70,7 +99,7 @@ def main() -> int:
     root = arguments.repository_root.resolve()
     output = arguments.output or root / OUTPUT_PATH
     paths = candidate_paths(root, arguments.baseline_commit)
-    entries = [(path, (root / path).stat().st_size, sha256(root / path)) for path in paths]
+    entries = [artifact_entry(root, path) for path in paths]
     entry_digests = {path: digest for path, _, digest in entries}
 
     if MATRIX_PATH not in entry_digests:
@@ -78,7 +107,8 @@ def main() -> int:
 
     digest_material = "".join(f"{path}\0{digest}\n" for path, _, digest in entries).encode("utf-8")
     candidate_digest = hashlib.sha256(digest_material).hexdigest()
-    historical_v1_digest = sha256(root / HISTORICAL_V1_PATH)
+    historical_v1_bytes = (root / HISTORICAL_V1_PATH).read_bytes()
+    historical_v1_digest = hashlib.sha256(historical_v1_bytes).hexdigest()
     lines = [
         "schema_version: '1.0.0'",
         "evidence_id: PD10-V2-CONFORMANCE-SET",

@@ -1,0 +1,138 @@
+schema_version: '1.0.0'
+package_id: A8-FREEZE-PREPARATION-2026-09-20
+prepared_on: '2026-09-20'
+status: not-ready-for-human-decision
+approval_readiness: blocked-by-active-a6b-candidate-drift-and-nonpassing-pre-a8-section9
+approval_status: pending-blocked
+approvals: []
+required_authorities: [Product, Architecture, Delivery]
+approval_inference_forbidden: true
+general_execution_hold: true
+sprint_status_regeneration_authorized: false
+ordinary_story_execution_authorized: false
+v2_exposure_authorized: false
+
+decision_target:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+  version: 1.0.0-candidate.1
+  sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+approved_protocol:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
+  sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
+  approval_scope: two-stage-a8-ordering-amendment-only
+
+exact_bound_artifacts:
+  - path: _bmad-output/planning-artifacts/prd.md
+    sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256: 74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e
+  - path: _bmad-output/planning-artifacts/ux-design-specification.md
+    sha256: d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+    binding_role: pre-authorization-input-only
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 68823d8007caf2756a45080f86b632aba4c8d038fa2a90f6c014751f1a395400
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+    sha256: d68734a74d8d000391ad1fecb420dd93dcec278911dd27c606f19a3b2329af68
+    result_kind: pre-a8
+    passing: false
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
+    sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
+  - path: docs/exit-criteria/c0-c13-governance-evidence.yaml
+    sha256: ffe3d9a013a24646c0c7257effd620dd3f0602f2009b5d9381ddab28741d59cb
+  - path: docs/exit-criteria/c3-retention.md
+    sha256: d33d13768bf03ee6baa995c6ef5c55a6e34f47312e29309f52a754d926dfdba1
+  - path: docs/exit-criteria/c6-transition-matrix-mapping.md
+    sha256: a1d8b0357e42f046e2b3511f1a4c4b2457b9c945b12119bbfaf2ac180355efb6
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md
+    sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: c21708a467e29ebfe2d6c8be7e0211780f9abb3db51dc4420edbc1e614e9914c
+    declared_candidate_set_sha256: de6b210f452ec2b8cf2aab1ed7f95bf513df6b9cfa4b875bb1c93f2e365d6d79
+    declared_authorization_matrix_sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+    artifact_count: 116
+    matrix_binding_status: pass
+    reproduction_status: fail-active-candidate-drift
+  - path: docs/exit-criteria/nfr-traceability.md
+    sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+  - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+    sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+  - path: _bmad-output/planning-artifacts/story-3-14-lifecycle-reconciliation-2026-09-20.yaml
+    sha256: c04325dc7b4958675f91441482a1d6a025dad6ba68a94774aa86518ae4bb9fda
+
+readiness_conditions:
+  - id: A6B-APPROVAL
+    status: fail
+    detail: Active candidate drift prevents an exact-digest-ready replacement A6b package. After writers are quiescent and validation passes, Product, Architecture, and Security must approve the newly presented exact digests. The prior approval remains invalidated history.
+  - id: SECTION9-PRE-A8
+    status: fail
+    detail: RELOCK-SECTION9 is blocked by active A6b candidate drift and the consequent missing reapproval.
+  - id: CONFORMANCE-REPRODUCIBILITY
+    status: fail
+    detail: Repeated generation alternated between distinct 116-artifact outputs; the concurrent product snapshot also fails the full solution build with seven compile errors, and the latest focused run observed 53 passes and two conformance drift failures.
+  - id: TRACKER-OUTPUT-DIGEST
+    status: deliberately-deferred
+    detail: The final sprint-status.yaml output digest does not yet exist. The approved protocol makes its generation an effect of A8 while the general hold remains true; it is not inferred or fabricated.
+  - id: GATE-ORDER
+    status: pass
+    detail: The approved protocol establishes the legal order pre-A8 validation, explicit A8 authorization, deterministic finalization under hold, and final post-A8 validation.
+
+exact_post_authorization_tracker_delta:
+  lifecycle_changes:
+    - story_id: '10.8'
+      old: done
+      new: in-progress
+    - story_id: '10.9'
+      old: review
+      new: done
+  backlog_rows_to_add: ['1.17', '4.22', '12.7', '13.7']
+  unchanged_reconciled_row:
+    story_id: '3.14'
+    lifecycle: backlog
+  epic_status_changes: none
+  required_metadata:
+    - Update last_updated and append an evidence-linked reconciliation journal entry.
+    - Preserve all completed evidence and historical workflow snapshots.
+    - Keep the general hold true during tracker generation and validation.
+
+decision_requested:
+  status: blocked-not-presented-for-approval
+  question: none-until-all-candidate-writers-are-quiescent-a6b-is-revalidated-and-reapproved-and-pre-a8-section9-passes
+  approval_effect_if_yes:
+    - Authorize only the exact deterministic tracker delta and provenance finalization described here.
+    - Keep general_execution_hold true, ordinary story execution unauthorized, and v2 exposure unauthorized during finalization.
+    - Require a final post-A8 RELOCK-SECTION9 result bound to the generated tracker and final provenance digests.
+    - Remove the hold and close recovery only if that final result passes; otherwise retain the hold.
+  approval_effect_if_no_or_revise:
+    - Keep A8 pending.
+    - Keep sprint-status regeneration prohibited and the general execution hold active.
+
+required_human_decision_before_a8:
+  question: Will Jerome quiesce or complete all other repository writers and confirm the PD10 candidate is frozen so a new exact A6b package can be generated and validated?
+  prohibited_without_decision:
+    - Do not transfer the prior approval to the changed bytes.
+    - Do not request A6b approval against any observed transient digest.
+    - Do not present A8 for approval.
+
+external_dependencies_preserved:
+  EXT-ES-EVENT-EVOLUTION:
+    acceptance_status: pending
+    execution_authorization_status: external-owner-controlled
+  EXT-ES-RECOVERY:
+    acceptance_status: pending
+    execution_authorization_status: external-owner-controlled
+  dependent_story_policy: Every direct and transitive dependent retains its explicit external prerequisite and cannot become executable from A8 alone.
+
+invariants:
+  - Both Story 3.14 specifications remain byte-stable; the canonical state remains backlog and held.
+  - Completed evidence is not altered.
+  - sprint-status.yaml is not regenerated before explicit A8 approval.
+  - A8 approval alone does not remove the hold or authorize an ordinary product story.

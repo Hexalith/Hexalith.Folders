@@ -47,7 +47,7 @@ public sealed class MetadataOnlyOutputTests
             taskId: "task-1",
             correlationId: "corr-range",
             requestJson: $$"""
-                {"requestSchemaVersion":"v1","path":{"normalizedPath":"docs/readme.md","displayName":"readme.md","pathPolicyClass":"content_allowed","unicodeNormalization":"NFC"},"startOffset":0,"endOffset":{{contentLength}}}
+                {"requestSchemaVersion":"v2","path":{"normalizedPath":"docs/readme.md","displayName":"readme.md","pathPolicyClass":"content_allowed","unicodeNormalization":"NFC"},"startOffset":0,"endOffset":{{contentLength}}}
                 """,
             cancellationToken: TestContext.Current.CancellationToken);
 

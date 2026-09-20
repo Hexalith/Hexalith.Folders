@@ -2,6 +2,7 @@ namespace Hexalith.Folders.Queries.Folders;
 
 public sealed record TaskStatusReadModelSnapshot(
     string ManagedTenantId,
+    string FolderId,
     string TaskId,
     string CurrentState,
     string? TerminalState,

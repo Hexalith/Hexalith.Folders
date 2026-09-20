@@ -22,6 +22,27 @@ public sealed class ExitCodeWiringTests
 {
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
+
+    [Fact]
+    public async Task EffectivePermissionsForwardsOptionalTaskContext()
+    {
+        IClient client = Substitute.For<IClient>();
+        client.GetEffectivePermissionsAsync(
+                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(new EffectivePermissions());
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "folder", "effective-permissions",
+            "--folder-id", "folder_1",
+            "--task-id", "task_1",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(0);
+        await client.Received(1).GetEffectivePermissionsAsync(
+            "folder_1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), "task_1", Arg.Any<CancellationToken>());
+    }
     [Theory]
     [InlineData(CanonicalErrorCategory.Read_model_unavailable, 73)]
     [InlineData(CanonicalErrorCategory.Concurrency_conflict, 77)]
@@ -72,8 +93,9 @@ public sealed class ExitCodeWiringTests
         exit.ShouldBe(69);
         // Projected from typed fields only, emitted in camelCase to match the wire/SDK ProblemDetails shape.
         harness.Console.StdErr.ShouldContain("\"category\": \"Validation_error\"");
-        harness.Console.StdErr.ShouldContain("\"code\": \"test_code\"");
+        harness.Console.StdErr.ShouldContain("\"code\": \"validation_error\"");
         harness.Console.StdErr.ShouldContain("\"correlationId\": \"corr_TEST\"");
+        harness.Console.StdErr.ShouldContain("\"visibility\": \"metadata_only\"");
         harness.Console.StdOut.ShouldBeEmpty();
     }
 
@@ -108,7 +130,7 @@ public sealed class ExitCodeWiringTests
             "--task-id", "task_1",
             "--base-address", BaseAddress,
             "--token", Token,
-            "--request", "{\"requestSchemaVersion\":\"v1\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"startOffset\":0,\"endOffset\":1}");
+            "--request", "{\"requestSchemaVersion\":\"v2\",\"path\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"startOffset\":0,\"endOffset\":1}");
 
         exit.ShouldBe(expectedExit);
         harness.Console.StdErr.ShouldContain(category);

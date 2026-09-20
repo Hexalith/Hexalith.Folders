@@ -104,6 +104,8 @@ internal static class FailureKindProjection
         ProblemDetailsClientAction.Contact_operator => "contact_operator",
         ProblemDetailsClientAction.No_action => "no_action",
         ProblemDetailsClientAction.Refresh_state_then_submit_with_new_key => "refresh_state_then_submit_with_new_key",
+        ProblemDetailsClientAction.Do_not_retry => "do_not_retry",
+        ProblemDetailsClientAction.Restart_query => "restart_query",
         _ => "no_action",
     };
 }

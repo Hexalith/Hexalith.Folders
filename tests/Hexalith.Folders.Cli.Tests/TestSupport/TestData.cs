@@ -32,11 +32,12 @@ internal static class TestData
             Title = category.ToString(),
             Status = 409,
             Category = category,
-            Code = "test_code",
+            Code = CanonicalErrorCode.Validation_error,
             Message = "Synthetic metadata-only problem.",
             CorrelationId = correlationId,
             Retryable = false,
             ClientAction = ProblemDetailsClientAction.No_action,
+            Details = new Details { Visibility = DetailsVisibility.Metadata_only },
         };
 
         return new HexalithFoldersApiException<ProblemDetails>(

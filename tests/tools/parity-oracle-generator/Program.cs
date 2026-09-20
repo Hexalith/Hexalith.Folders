@@ -315,6 +315,9 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
     HashSet<string> currentIdentities = currentOperations.Select(o => o.Identity).ToHashSet(StringComparer.Ordinal);
     Dictionary<string, OperationModel> currentByRoute = currentOperations.ToDictionary(o => o.Method + " " + o.Path, o => o, StringComparer.Ordinal);
     Dictionary<string, OperationModel> currentByOperationId = currentOperations.ToDictionary(o => o.OperationId, o => o, StringComparer.Ordinal);
+    string historicalV1Path = Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    Dictionary<string, OperationModel> historicalV1ByOperationId = EnumerateOperations(LoadYaml(historicalV1Path), [])
+        .ToDictionary(o => o.OperationId, StringComparer.Ordinal);
 
     foreach (YamlNode node in operationsSeq)
     {
@@ -346,6 +349,20 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
                 || errorFingerprint != Fingerprint(current.ErrorCategories))
             {
                 throw new InvalidOperationException($"previous-spine-drift: error vocabulary changed for '{operationId}'.");
+            }
+
+            OperationModel historical = historicalV1ByOperationId[operationId];
+            string[] historicalStatuses = ReadStringSequence(operation, "historical_v1_status_codes").Order(StringComparer.Ordinal).ToArray();
+            string[] historicalCategories = ReadStringSequence(operation, "historical_v1_canonical_error_categories").Order(StringComparer.Ordinal).ToArray();
+            if (!historicalStatuses.SequenceEqual(historical.StatusCodes, StringComparer.Ordinal)
+                || ReadFlexibleScalar(operation, "historical_v1_status_code_fingerprint_sha256") != Fingerprint(historical.StatusCodes))
+            {
+                throw new InvalidOperationException($"previous-spine-drift: historical v1 status-code fingerprint changed for '{operationId}'.");
+            }
+            if (!historicalCategories.SequenceEqual(historical.ErrorCategories, StringComparer.Ordinal)
+                || ReadFlexibleScalar(operation, "historical_v1_error_vocabulary_fingerprint_sha256") != Fingerprint(historical.ErrorCategories))
+            {
+                throw new InvalidOperationException($"previous-spine-drift: historical v1 error vocabulary fingerprint changed for '{operationId}'.");
             }
         }
 
@@ -546,9 +563,12 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations, string co
     builder.Append("source_marker: generated-from-pd10-v2-openapi\n");
     builder.Append("contract_sha256: ").Append(Sha256OfFile(contractPath)).Append('\n');
     string historicalV1Path = Path.Combine(Path.GetDirectoryName(contractPath)!, "hexalith.folders.v1.yaml");
+    Dictionary<string, OperationModel> historicalByOperationId = [];
     if (File.Exists(historicalV1Path))
     {
         builder.Append("historical_v1_sha256: ").Append(Sha256OfFile(historicalV1Path)).Append('\n');
+        historicalByOperationId = EnumerateOperations(LoadYaml(historicalV1Path), [])
+            .ToDictionary(o => o.OperationId, StringComparer.Ordinal);
     }
     builder.Append("intent: PD10 v2 baseline with route, status-code, and canonical-error fingerprints for symmetric drift detection.\n");
     builder.Append("ownership:\n");
@@ -581,6 +601,19 @@ static string RenderBaseline(IReadOnlyList<OperationModel> operations, string co
         }
         builder.Append("    status_code_fingerprint_sha256: ").Append(Fingerprint(operation.StatusCodes)).Append('\n');
         builder.Append("    error_vocabulary_fingerprint_sha256: ").Append(Fingerprint(operation.ErrorCategories)).Append('\n');
+        OperationModel historical = historicalByOperationId[operation.OperationId];
+        builder.Append("    historical_v1_status_codes:\n");
+        foreach (string statusCode in historical.StatusCodes)
+        {
+            builder.Append("      - ").Append(Quote(statusCode)).Append('\n');
+        }
+        builder.Append("    historical_v1_canonical_error_categories:\n");
+        foreach (string category in historical.ErrorCategories)
+        {
+            builder.Append("      - ").Append(Quote(category)).Append('\n');
+        }
+        builder.Append("    historical_v1_status_code_fingerprint_sha256: ").Append(Fingerprint(historical.StatusCodes)).Append('\n');
+        builder.Append("    historical_v1_error_vocabulary_fingerprint_sha256: ").Append(Fingerprint(historical.ErrorCategories)).Append('\n');
     }
 
     return builder.ToString();
@@ -1152,6 +1185,10 @@ internal sealed record GeneratorOptions(
         // Avoid eager LocateRepositoryRoot() evaluation when the caller supplied --repository-root.
         // Dictionary.GetValueOrDefault would evaluate the default expression even on hit.
         string repositoryRoot = Path.GetFullPath(parsed.TryGetValue("--repository-root", out string? rootArg) ? rootArg : LocateRepositoryRoot());
+        if (flags.Contains("--initialize-baseline") && !parsed.ContainsKey("--contract"))
+        {
+            throw new ArgumentException("--initialize-baseline requires an explicit --contract path; no mutable baseline source is inferred.");
+        }
         return new GeneratorOptions(
             RepositoryRoot: repositoryRoot,
             ContractPath: Path.GetFullPath(parsed.GetValueOrDefault("--contract", Path.Combine(repositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml"))),
