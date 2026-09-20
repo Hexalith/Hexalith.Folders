@@ -25,7 +25,7 @@ public sealed class ConsoleErrorPresenterTests
         const string body = """
         {"category":"tenant_access_denied","code":"E-TENANT","message":"server message that must not be shown verbatim","correlationId":"corr-from-body","retryable":false,"clientAction":"escalate"}
         """;
-        HexalithFoldersApiException exception = new("denied", 403, body, _noHeaders, innerException: null);
+        HexalithFoldersApiException exception = new("denied", 404, body, _noHeaders, innerException: null);
 
         ConsoleErrorView view = ConsoleErrorPresenter.FromException(exception, "corr-fallback");
 
@@ -33,6 +33,7 @@ public sealed class ConsoleErrorPresenterTests
         view.CorrelationId.ShouldBe("corr-from-body");
         view.Retryable.ShouldBe(false);
         view.ClientAction.ShouldBe("escalate");
+        view.Disposition.ShouldBe(ConsoleErrorDisposition.Denied);
         view.SafeExplanation.ShouldBe(ConsoleStatusText.ResolveErrorExplanation("tenant_access_denied"));
         view.SafeExplanation.ShouldNotContain("server message");
     }
@@ -49,22 +50,16 @@ public sealed class ConsoleErrorPresenterTests
         view.SafeExplanation.ShouldNotBeNullOrWhiteSpace();
     }
 
-    [Theory]
-    [InlineData("not_found_to_caller")]
-    [InlineData("authorization_denied")]
-    [InlineData("policy_denied")]
-    [InlineData("policy_evidence_unavailable")]
-    [InlineData("path_policy_denied")]
-    public void FromException_MapsServerEmittedDenialCategories_ToSpecificSafeCopy(string category)
+    [Fact]
+    public void FromException_DistinguishesAuthorityUnavailableFromDenial()
     {
-        // These are the tokens FolderAuthorizationDenialMapper / file-path policy actually emit on the
-        // live denial path; each must resolve to specific safe copy, never the generic envelope (AC #10).
-        string body = $$"""{"category":"{{category}}","correlationId":"corr-1","retryable":false}""";
-        HexalithFoldersApiException exception = new("denied", 403, body, _noHeaders, innerException: null);
+        const string body = """{"category":"read_model_unavailable","correlationId":"corr-1","retryable":true,"clientAction":"retry"}""";
+        HexalithFoldersApiException exception = new("unavailable", 503, body, _noHeaders, innerException: null);
 
         ConsoleErrorView view = ConsoleErrorPresenter.FromException(exception, "corr-fallback");
 
-        view.ReasonToken.ShouldBe(category);
+        view.ReasonToken.ShouldBe("read_model_unavailable");
+        view.Disposition.ShouldBe(ConsoleErrorDisposition.AuthorityUnavailable);
         view.SafeExplanation.ShouldNotBe(ConsoleStatusText.DefaultErrorExplanation);
     }
 

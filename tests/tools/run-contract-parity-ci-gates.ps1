@@ -70,6 +70,13 @@ $testGates = @(
         artifact_paths = @('tests/fixtures/parity-contract.yaml', 'tests/tools/parity-oracle-generator')
     },
     [ordered]@{
+        category = 'pd10-v2-conformance-set'
+        project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
+        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests'
+        runner_classes = @('Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests', 'Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests', 'Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests')
+        artifact_paths = @('src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml', '_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml')
+    },
+    [ordered]@{
         category = 'sdk-transport-parity'
         project_path = 'tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj'
         filter = 'FullyQualifiedName~Hexalith.Folders.Client.Tests.TransportParityConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.ArchiveFolderClientConformanceTests|FullyQualifiedName~Hexalith.Folders.Client.Tests.LifecycleStatusClientConformanceTests'

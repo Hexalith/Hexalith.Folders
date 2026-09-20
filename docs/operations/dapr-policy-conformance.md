@@ -24,8 +24,11 @@ Run the metadata-only conformance gate locally:
 If restore and build already ran, use:
 
 ```powershell
-./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild
+./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild -Configuration Release
 ```
+
+Set `-Configuration` to the configuration that was built; it defaults to `Debug`
+when the gate performs its own restore and build.
 
 The gate validates:
 

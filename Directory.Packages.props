@@ -11,4 +11,12 @@
   <Import Project="$(Hexalith1BuildPackageProps)" Condition="Exists('$(Hexalith1BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
   <Import Project="$(Hexalith2BuildPackageProps)" Condition="Exists('$(Hexalith2BuildPackageProps)') And '$(HexalithVersionsLoaded)' != 'true'" />
   <Import Project="$(Hexalith3BuildPackageProps)" Condition="'$(HexalithVersionsLoaded)' != 'true'" />
+  <ItemGroup>
+    <!-- The shared catalog currently follows the 13.5.x Dapr integration preview stream. Folders.Aspire
+         is a stable public package, so keep its public dependency graph on the latest compatible stable
+         integration until the toolkit publishes a stable 13.5.x release. -->
+    <PackageVersion Update="CommunityToolkit.Aspire.Hosting.Dapr"
+                    Version="13.0.0"
+                    Condition="'$(MSBuildProjectName)' == 'Hexalith.Folders.Aspire'" />
+  </ItemGroup>
 </Project>

@@ -53,11 +53,11 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] Contract/matrix files -- create the v2 surface, corrected scopes, exact envelopes, closed vocabularies, and historical-v1 fingerprints.
-- [ ] Server/auth files -- implement fallback/challenge behavior, fresh layered authorization, authorization-before-lookup, folder-scoped diagnostics, and task-folder binding without enabling v2 routes.
-- [ ] SDK/CLI/MCP/UI files -- regenerate the .NET client and migrate consumers/mappings in lockstep, including CLI 73/77 and MCP `concurrency_conflict`.
-- [ ] C13/gate/docs files -- extend generators and schema, regenerate parity/baseline outputs, document the v2 candidate, and add symmetric/server/generated/closed-vocabulary drift gates.
-- [ ] Conformance-set artifact -- inventory exact candidate paths and SHA-256 digests after all generated outputs are stable.
+- [x] Contract/matrix files -- create the v2 surface, corrected scopes, exact envelopes, closed vocabularies, and historical-v1 fingerprints.
+- [x] Server/auth files -- implement fallback/challenge behavior, fresh layered authorization, authorization-before-lookup, folder-scoped diagnostics, and task-folder binding without enabling v2 routes.
+- [x] SDK/CLI/MCP/UI files -- regenerate the .NET client and migrate consumers/mappings in lockstep, including CLI 73/77 and MCP `concurrency_conflict`.
+- [x] C13/gate/docs files -- extend generators and schema, regenerate parity/baseline outputs, document the v2 candidate, and add symmetric/server/generated/closed-vocabulary drift gates.
+- [x] Conformance-set artifact -- inventory exact candidate paths and SHA-256 digests after all generated outputs are stable.
 
 **Acceptance Criteria:**
 - Given the v2 candidate set, when focused contract and adapter gates run, then each of 49 operation identities appears exactly once with all required scopes, status/error fingerprints, and parity cells, and forbidden protected outcomes are absent.
@@ -66,7 +66,15 @@ context:
 
 ## Implementation Notes
 
+- The locally complete candidate remains non-routed and has not been published or approved. `Program.cs`, supported deployment profiles, the historical v1 Spine, OQ3 evidence, execution hold, and sprint status remain unchanged.
+- Independent audit corrected two generator omissions before the digest was sealed: `CliExitCode` now includes `77`, and the closed MCP failure vocabulary is derived from all 44 post-SDK operation categories plus the two pre-SDK kinds. The complete contract suite then exposed and fixed stale canonical-catalog and CI-lane assertions.
+- The final conformance manifest inventories 75 candidate artifacts. Manifest SHA-256 is `649ecfffd95b54ce086777496d612af2793e6b8d254d4985f35b0cbc85ae90ad`; ordered candidate-set SHA-256 is `535c675159047c0ff325995d351dafaa99aac13a1a542ba07a150f9a26ae27ed`; authorization-matrix SHA-256 remains `1d60f21874e0c2e4e44ebc839786d8f65e76ea56c748afb26376e5996cf0d7ef`.
+- The final matrix audit names all seven frozen fresh-negative access states in the runtime gate and asserts the exact ordered 14-state and 11-family vocabularies; the affected Server suite passes 728/728 and Contracts passes 322/322.
+- Product, Architecture, and Security A6b review of those exact bytes remains the next human checkpoint. No approval is inferred by this implementation record.
+
 ## Spec Change Log
+
+- 2026-09-19: Generated and verified the complete non-routed PD10 v2 candidate, closed the generated CLI/MCP vocabulary gaps found during independent audit, and sealed the final 75-artifact conformance digest for A6b review.
 
 ## Review Triage Log
 

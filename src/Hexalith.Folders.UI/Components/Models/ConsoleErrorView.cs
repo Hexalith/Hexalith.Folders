@@ -1,3 +1,5 @@
+using Hexalith.Folders.UI.Services;
+
 namespace Hexalith.Folders.UI.Components.Models;
 
 /// <summary>
@@ -11,9 +13,11 @@ namespace Hexalith.Folders.UI.Components.Models;
 /// <param name="CorrelationId">Correlation evidence (request echo when the body carries none); monospace safe-copy.</param>
 /// <param name="Retryable">Advisory retryability from Problem Details, when present.</param>
 /// <param name="ClientAction">Advisory client-action token from Problem Details, when present.</param>
+/// <param name="Disposition">Operator presentation state distinguishing denial from authority unavailability.</param>
 public sealed record ConsoleErrorView(
     string ReasonToken,
     string SafeExplanation,
     string CorrelationId,
     bool? Retryable,
-    string? ClientAction);
+    string? ClientAction,
+    ConsoleErrorDisposition Disposition);

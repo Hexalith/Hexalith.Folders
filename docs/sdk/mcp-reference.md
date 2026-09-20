@@ -7,6 +7,9 @@ that exposes the canonical Folders surface to MCP clients. It is an executable s
 process you launch, **not** a NuGet library — and it wraps the typed SDK (`Hexalith.Folders.Client`); it adds
 no behavior absent from the [Contract Spine](./api-reference.md).
 
+The checked-in tools consume the non-routed PD10 `/api/v2` candidate. They are review evidence only and must
+not be deployed against a production service before the later governance gates authorize exposure.
+
 The four-surface parity this reference relies on is **wire-exercised** end-to-end (REST/SDK/CLI/MCP), gated on
 Stories 8.1–8.3 — including canonical cross-surface error parity (`idempotency_conflict` → MCP failure kind
 `idempotency_conflict`). See [Surface conventions](./api-reference.md#surface-conventions) and the
@@ -119,7 +122,7 @@ Audit 4 = **49**.
 | `get-commit-evidence` | `GetCommitEvidence` | no | no |
 | `get-provider-outcome` | `GetProviderOutcome` | no | no |
 | `get-reconciliation-status` | `GetReconciliationStatus` | no | no |
-| `get-task-status` | `GetTaskStatus` | no | no |
+| `get-task-status` | `GetTaskStatus` | no | yes (folder-bound) |
 
 ### Diagnostics tools (`DiagnosticsTools.cs`)
 

@@ -1098,6 +1098,8 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.AddSingleton(timeProvider);
 
             WebApplication app = builder.Build();
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;
@@ -1286,6 +1288,8 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.AddSingleton<IProviderCapabilityEvidenceStore, RecordingProviderCapabilityEvidenceStore>();
 
             WebApplication app = builder.Build();
+            app.UsePd10V2CandidateCompatibilitySeam();
+            app.UseRouting();
             app.MapFoldersServerEndpoints();
             await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
             eventStoreClientFactory = app.GetTestClient;

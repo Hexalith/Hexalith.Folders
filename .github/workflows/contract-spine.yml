@@ -55,27 +55,27 @@ jobs:
       - name: Run Dapr policy conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild -Configuration Release
 
       - name: Run production observability conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-production-observability-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-production-observability-gates.ps1 -SkipRestoreBuild -Configuration Release
 
       - name: Run consumer docs conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-consumer-docs-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-consumer-docs-gates.ps1 -SkipRestoreBuild -Configuration Release
 
       - name: Run operations and audit docs conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-operations-audit-docs-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-operations-audit-docs-gates.ps1 -SkipRestoreBuild -Configuration Release
 
       - name: Run provider and error docs conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-provider-error-docs-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-provider-error-docs-gates.ps1 -SkipRestoreBuild -Configuration Release
 
       - name: Run NFR traceability conformance gates
         shell: pwsh
@@ -85,4 +85,4 @@ jobs:
       - name: Run ADR and runbook docs conformance gates
         shell: pwsh
         timeout-minutes: 15
-        run: ./tests/tools/run-adr-runbook-docs-gates.ps1 -SkipRestoreBuild
+        run: ./tests/tools/run-adr-runbook-docs-gates.ps1 -SkipRestoreBuild -Configuration Release

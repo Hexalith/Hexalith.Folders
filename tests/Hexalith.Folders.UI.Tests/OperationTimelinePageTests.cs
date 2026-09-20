@@ -199,7 +199,7 @@ public sealed class OperationTimelinePageTests
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(new HexalithFoldersApiException("denied", 404, body, EmptyHeaders, innerException: null));
 
         IRenderedComponent<OperationTimeline> rendered = Render(ctx);
 

@@ -69,7 +69,9 @@ jobs:
     needs: verify-source
     permissions:
       actions: read
+      attestations: write
       contents: write
+      id-token: write
       issues: write
       pull-requests: write
     uses: Hexalith/Hexalith.Builds/.github/workflows/domain-release.yml@b93e9889e9e7b67036837015b4b2b115e326c4da

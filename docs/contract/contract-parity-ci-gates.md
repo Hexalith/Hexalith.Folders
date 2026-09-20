@@ -32,6 +32,7 @@ The script runs exact project and filter allow-lists. It does not publish packag
 - `idempotency-helpers`: generated helper coverage, canonical hashing, metadata rejection, and idempotency parser policy.
 - `parity-oracle-schema`: parity oracle schema, enum, required column, and outcome mapping validation.
 - `parity-oracle-determinism`: operation-count drift, deterministic output, and fail-closed generator cases.
+- `pd10-v2-conformance-set`: exact candidate denominators, generated artifacts, authorization matrix, and digest-bound manifest.
 - `sdk-transport-parity`: SDK/REST transport parity from the oracle.
 - `rest-sdk-golden-parity`: REST/SDK golden lifecycle parity.
 - `cli-behavioral-parity`: CLI exit-code, pre-SDK sourcing, and behavioral parity.
@@ -41,13 +42,13 @@ The script runs exact project and filter allow-lists. It does not publish packag
 ### Wire-exercised parity (Stories 8.1–8.3)
 
 The `rest-sdk-golden-parity` and `mixed-surface-handoff` lanes are **wire-exercised end-to-end** against an
-in-process host, not asserted at oracle-metadata level: all 47 operations have REST server routes (Stories
-8.1/8.2), the golden-lifecycle steps are driven over the real REST transport (and SDK/CLI/MCP equivalents),
-and cross-surface error parity is exercised on the wire — `idempotency_conflict` surfaces as HTTP 409 / CLI
-exit 68 / MCP `idempotency_conflict`, and ACL denials surface as the safe denial `not_found_to_caller` (404)
-uniformly across surfaces (the canonical `folder_acl_denied` → 403 gateway-hop mapping is covered at the
-route/adapter layers). The public **four-surface canonical-lifecycle parity claim is gated on these stories**
-passing; it is asserted to consumers only on green.
+in-process host, not asserted at oracle-metadata level: all 49 PD10 v2 candidate operations are represented,
+the golden-lifecycle steps are driven over the real REST transport (and SDK/CLI/MCP equivalents), and
+cross-surface error parity is exercised on the wire. Candidate tests explicitly opt into the isolated v2
+compatibility seam; the supported production host does not route v2. `idempotency_conflict` surfaces as HTTP
+409 / CLI exit 68 / MCP `idempotency_conflict`, while fresh negative authority uses the canonical
+non-disclosing 404 envelope uniformly across surfaces. The public **four-surface canonical-lifecycle parity
+claim is gated on these stories** passing; it is asserted to consumers only on green.
 
 ## Test Inventory
 
@@ -61,6 +62,7 @@ The gate uses these exact projects and filters:
 | `idempotency-helpers` | `tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj` | `ClientGenerationTests` helper and canonical hash cases |
 | `parity-oracle-schema` | `tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj` | `ParityOracleGeneratorTests` schema, enum, idempotency, and outcome mapping cases |
 | `parity-oracle-determinism` | `tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj` | `ParityOracleGeneratorTests` deterministic output and fail-closed cases |
+| `pd10-v2-conformance-set` | `tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj` | `Pd10V2CandidateContractTests`, `Pd10ConformanceSetTests`, and `AuthorizationMatrixContractTests` |
 | `sdk-transport-parity` | `tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj` | `TransportParityConformanceTests`, `ArchiveFolderClientConformanceTests`, and `LifecycleStatusClientConformanceTests` |
 | `rest-sdk-golden-parity` | `tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj` | `EndToEnd.GoldenLifecycleParityTests` |
 | `cli-behavioral-parity` | `tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj` | `ParityOracleConformanceTests` and `BehavioralParityTests` |

@@ -1,6 +1,11 @@
 # Contract Spine Foundation Notes
 
-The canonical Contract Spine foundation is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`. The canonical machine-readable extension vocabulary is `src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`.
+The historical Contract Spine foundation is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml`.
+The A6b-pending PD10 candidate is `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml`; it is the
+source for candidate generation and conformance tests but is not production-routed. The canonical
+machine-readable extension vocabulary is
+`src/Hexalith.Folders.Contracts/openapi/extensions/hexalith-extension-vocabulary.yaml`. See
+[`pd10-v2-candidate.md`](./pd10-v2-candidate.md) for the candidate boundary and reproduction commands.
 
 This story keeps operation groups deferred. Stories 1.7 through 1.11 must add concrete paths, request schemas, response schemas, operation-specific error mappings, and operation-specific audit metadata. Story 1.12 owns NSwag SDK generation. Story 1.13 owns parity oracle rows.
 

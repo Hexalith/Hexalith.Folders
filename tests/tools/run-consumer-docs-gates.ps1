@@ -2,7 +2,10 @@
 
 param(
     [Alias('NoRestore')]
-    [switch]$SkipRestoreBuild
+    [switch]$SkipRestoreBuild,
+
+    [ValidateSet('Debug', 'Release')]
+    [string]$Configuration = 'Debug'
 )
 
 Set-StrictMode -Version Latest
@@ -102,9 +105,13 @@ function Get-ExecutedTestCount {
 }
 
 function Invoke-XunitInProcessFallback {
+    param(
+        [Parameter(Mandatory = $true)][string]$Reason
+    )
+
     $script:usedXunitFallback = $true
-    Write-Host 'CONSUMER-DOCS category=static-consumer-references vstest-socket-denied=true fallback=xunit-in-process'
-    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests'
+    Write-Host "CONSUMER-DOCS category=static-consumer-references fallback=xunit-in-process reason=$Reason"
+    $runnerPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests"
     if (-not (Test-Path $runnerPath)) {
         Write-ConsumerDocsReport -Status 'failed' -ExitCode 1
         Write-Error 'CONSUMER-DOCS-GATE-VACUOUS: xUnit in-process runner missing for ConsumerDocsConformanceTests.'
@@ -136,13 +143,13 @@ try {
     Write-ConsumerDocsReport -Status 'discovered'
 
     if (-not $SkipRestoreBuild) {
-        dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+        dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false -p:Configuration=$Configuration
         if ($LASTEXITCODE -ne 0) {
             Write-ConsumerDocsReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
         }
 
-        dotnet build Hexalith.Folders.slnx --no-restore -m:1
+        dotnet build Hexalith.Folders.slnx --configuration $Configuration --no-restore -m:1
         if ($LASTEXITCODE -ne 0) {
             Write-ConsumerDocsReport -Status 'failed' -ExitCode $LASTEXITCODE
             exit $LASTEXITCODE
@@ -155,10 +162,14 @@ try {
         Remove-Item $trxPath -Force
     }
 
-    $testOutput = dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --no-build --filter $testFilter --results-directory $reportDirectory --logger "trx;LogFileName=$trxName" 2>&1
+    $testOutput = dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --configuration $Configuration --no-build --filter $testFilter --results-directory $reportDirectory --logger "trx;LogFileName=$trxName" 2>&1
     if ($LASTEXITCODE -ne 0) {
-        if (($testOutput -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied') {
-            Invoke-XunitInProcessFallback
+        $testOutputText = $testOutput -join [Environment]::NewLine
+        if ($testOutputText -match 'System\.Net\.Sockets\.SocketException.*Permission denied') {
+            Invoke-XunitInProcessFallback -Reason 'vstest-socket-denied'
+        }
+        elseif ($LASTEXITCODE -eq 5 -and $testOutputText -match 'Zero tests ran') {
+            Invoke-XunitInProcessFallback -Reason 'mtp-vstest-filter-empty'
         }
         else {
             Write-ConsumerDocsReport -Status 'failed' -ExitCode $LASTEXITCODE

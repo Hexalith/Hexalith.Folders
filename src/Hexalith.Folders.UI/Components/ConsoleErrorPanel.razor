@@ -2,7 +2,13 @@
 @using Hexalith.Folders.UI.Components.Icons
 @using Microsoft.FluentUI.AspNetCore.Components
 
-<div data-testid="console-error-panel" data-fc-error-category="@Error.ReasonToken" role="alert">
+<div data-testid="console-error-panel"
+     data-fc-error-category="@Error.ReasonToken"
+     data-fc-error-disposition="@Error.Disposition.ToString().ToLowerInvariant()"
+     role="alert">
+    <p data-testid="console-error-disposition">
+        <strong>@DispositionLabel</strong>
+    </p>
     <p>
         <FluentIcon Value="@FoldersConsoleIcons.Warning16()" aria-hidden="true" />
         <strong>Reason category:</strong>
@@ -25,3 +31,12 @@
         <span>Escalate with the correlation ID above.</span>
     </p>
 </div>
+
+@code {
+    private string DispositionLabel => Error.Disposition switch
+    {
+        Hexalith.Folders.UI.Services.ConsoleErrorDisposition.Denied => "Access denied",
+        Hexalith.Folders.UI.Services.ConsoleErrorDisposition.AuthorityUnavailable => "Authority temporarily unavailable",
+        _ => "Operation failed",
+    };
+}

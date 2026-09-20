@@ -25,6 +25,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         "idempotency-helpers",
         "parity-oracle-schema",
         "parity-oracle-determinism",
+        "pd10-v2-conformance-set",
         "sdk-transport-parity",
         "rest-sdk-golden-parity",
         "cli-behavioral-parity",

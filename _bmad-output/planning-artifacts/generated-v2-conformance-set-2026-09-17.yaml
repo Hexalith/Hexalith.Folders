@@ -10,23 +10,99 @@ authorization_matrix_sha256: ec6f3ee55420fc6533d6476a2f57328f9d0b7e952071bc5322c
 approval_status: pending-a6b
 production_exposure: disabled
 story_closure_claimed: false
-artifact_count: 68
+governance_status: candidate-awaiting-a6b
+production_routed: false
+hash_algorithm: SHA-256
+candidate_set_sha256: cf18812bfffdc90f943bd8db43676cd5a04b1c33f83c93b087d4fc27b00a383a
+artifact_count: 114
 artifacts:
+  - path: .github/workflows/contract-spine.yml
+    bytes: 3092
+    sha256: 3faf407676159cb3f2295ecac0cf87fcef97e586da073649da81776997d7a396
+  - path: .github/workflows/release.yml
+    bytes: 3082
+    sha256: 81fae8e6511f7791aa012b559ba6b3a58c980ff0e2f38d01eb515438d9e63486
+  - path: Directory.Packages.props
+    bytes: 1671
+    sha256: fd88d0ea304669f9e3a00c98d12cd2249e9a62bfa06f92f3f3b94af6815aafd9
+  - path: Hexalith.Folders.CI.slnx
+    bytes: 3581
+    sha256: 00f53322343422266350140b4342b78dc97d865b00984c7ab3dcba838ae184d5
+  - path: Hexalith.Folders.slnx
+    bytes: 6219
+    sha256: ac6d025ce04b9d29a454c5ca383d0aa1928fef8747c2f02d03c0e9d0001afd6a
+  - path: _bmad-output/gates/baseline-ci/latest.json
+    bytes: 11847
+    sha256: 35717270d6685e3f2d8bda12c37d2212d8bd1e96495f6fc63a205c9866fb1fe5
+  - path: _bmad-output/gates/capacity-calibration/latest.json
+    bytes: 6314
+    sha256: 512366b4c40a8b9a0e1695b4671cd5ef52959d9c472e8bb0db80f05b4fb11fb4
+  - path: _bmad-output/gates/capacity-calibration/reports/capacity-calibration.md
+    bytes: 2305
+    sha256: b5dd2ec544f5f6990adfb85aafe71bb632eef1094eefb2da095f17a57ecb5b63
+  - path: _bmad-output/gates/capacity-calibration/reports/capacity-calibration.txt
+    bytes: 6562
+    sha256: 4bd6f20c3371435ae3aeeeae6e921cb7cc0962de7604c72591209e21430eb5f6
+  - path: _bmad-output/gates/capacity-calibration/reports/lifecycle-capacity-evidence.json
+    bytes: 5307
+    sha256: 206be209410d10f6a7d2a37e43b1af28110cc918c886aaa538ec450b649229d0
+  - path: _bmad-output/gates/capacity-calibration/reports/nbomber-log-2026-09-19_09-46-09.txt
+    bytes: 1418
+    sha256: 0b7987fa706bb0738515f8d0e125f85220fa653709a496cf323b1eb3e3b7b444
+  - path: _bmad-output/gates/capacity-smoke-ci/latest.json
+    bytes: 2235
+    sha256: 0b93ba51f90691eefaeecac699053a1925cc4034d47b43b9374f4a2fcf0a3b90
+  - path: _bmad-output/gates/capacity-smoke-ci/reports/capacity-smoke-ci.md
+    bytes: 2283
+    sha256: d88596b5c30ea018c7893ac71bdfe1c6f67897a99f66f3debd417e72ce9528b2
+  - path: _bmad-output/gates/capacity-smoke-ci/reports/capacity-smoke-ci.txt
+    bytes: 6562
+    sha256: bb3e009d20e0e5eaebc1b3d9642639fcfc66001e28078b017be79fb58c91b610
+  - path: _bmad-output/gates/capacity-smoke-ci/reports/lifecycle-capacity-evidence.json
+    bytes: 1510
+    sha256: 220da6b123ace269295243f7b9acbd6757d77a58e129765c4f48bf79ae5f0b68
+  - path: _bmad-output/gates/capacity-smoke-ci/reports/nbomber-log-2026-09-19_09-45-54.txt
+    bytes: 1418
+    sha256: 9fe3fee48562fcb39891a48aa96b0083a0b943c5c75a16717de55486078146e5
+  - path: _bmad-output/gates/contract-parity-ci/latest.json
+    bytes: 22824
+    sha256: 2a757dfaa8bbad9af4e8623990bf53a5b6129c371d6f9000a76e83878e9799f1
+  - path: _bmad-output/gates/governance-completeness/latest.json
+    bytes: 1086
+    sha256: 4a5630580f3aec35925bef605bfa2616dc16452024abc592ca2be21d074997a7
+  - path: _bmad-output/gates/nfr-traceability/latest.json
+    bytes: 5578
+    sha256: 88c4c5aacdccf54db9387aa1f9b18d2d9de4735616fcdd72bfb24d384c7c933d
+  - path: _bmad-output/gates/retention-deletion/latest.json
+    bytes: 3423
+    sha256: b606b640bc7db647ce6a302b17bb9c5db549dc477d96a5c140bbf44653c89d4c
   - path: docs/contract/authorization-matrix.md
     bytes: 49645
     sha256: ec6f3ee55420fc6533d6476a2f57328f9d0b7e952071bc5322c6cbf319cb8eb4
+  - path: docs/contract/contract-parity-ci-gates.md
+    bytes: 7962
+    sha256: 0f9a77fb59ece0c666ca23337933940317b9d9ccd38469c5444f41f9a75262d0
+  - path: docs/contract/contract-spine-foundation.md
+    bytes: 3194
+    sha256: 7ff02057fa46a1ccc2e5ef6340fdb64ca53a1743e6a5282e7bdcedabd2e29f13
   - path: docs/contract/parity-oracle-generator.md
-    bytes: 3600
-    sha256: ec329944ed655e99819b0ea066ce222881109b568fbdea8c7616f7d687825728
+    bytes: 3730
+    sha256: ebefb09a32cfa59386a998c64d7f5175b309c2d276ba647281485125d678225d
+  - path: docs/contract/pd10-v2-candidate.md
+    bytes: 3595
+    sha256: 62cc54742272e147c49a98f38b94d7acb1cf21abeff8eee0a2aabb1969f9e4a8
   - path: docs/contract/pd10-v2-consumer-discovery.md
     bytes: 1593
     sha256: 5f84c4a9f4e0c2d3f9414b2b6fdea6a8548a73294b45610656d691e8840e32e5
   - path: docs/contract/sdk-generation-and-idempotency-helpers.md
-    bytes: 6742
-    sha256: e0f739d61aaf5cbc00f5beed12adc226b9c244c6d9cb1b2053b2439fbc7da23d
+    bytes: 6928
+    sha256: 1fd6f6e4c1d715f413c5c13e8c6733bba3b2004d53de16c9da2793313c616dff
   - path: docs/operations/canonical-error-catalog.md
     bytes: 13282
     sha256: e0d5343ffd4955b0b74dae5c139ea1e59bbc7017965bab860c72b3ee697ca308
+  - path: docs/operations/dapr-policy-conformance.md
+    bytes: 5262
+    sha256: 4c43930f6c88578aa97d80f6315ea1ea28b18c8457a74dd6d3692cbcf1be5aa8
   - path: docs/sdk/api-reference.md
     bytes: 18718
     sha256: c776892445358628b0ace20935a33e87172e2aad0359d127ccbce91a86e81e6d
@@ -34,17 +110,20 @@ artifacts:
     bytes: 10752
     sha256: a34c8684f496454a8e91ace3a8d6eb02645717045884bfe6e7e922ab749b3919
   - path: docs/sdk/mcp-reference.md
-    bytes: 9297
-    sha256: 706b6323acf7d103a05528a9dfd7f177c1c52ef8e908086f735c1ead7de3a2e4
-  - path: Hexalith.Folders.CI.slnx
-    bytes: 3581
-    sha256: 00f53322343422266350140b4342b78dc97d865b00984c7ab3dcba838ae184d5
-  - path: Hexalith.Folders.slnx
-    bytes: 6219
-    sha256: ac6d025ce04b9d29a454c5ca383d0aa1928fef8747c2f02d03c0e9d0001afd6a
+    bytes: 9522
+    sha256: d580c995c141c8bb4042e98f2d54da9f401ec81332897d38874f9bc136f46d1b
+  - path: docs/sdk/quickstart.md
+    bytes: 9533
+    sha256: 1952b1f1e287d178e727687f6296c79106b8f7d032de491338bc71d40002d584
+  - path: scripts/generate-pd10-v2-conformance-set.py
+    bytes: 4245
+    sha256: 3ea509edc525d29634b206104e7845a7beeebc2be93184fd7c2152bf4abbf878
+  - path: scripts/generate-pd10-v2-contract.py
+    bytes: 14937
+    sha256: d47d7757c7f5b53e84c605c855923e241848e6fcdd1527230a67929f85b71b6a
   - path: scripts/generate-v2-conformance-set.ps1
-    bytes: 3146
-    sha256: 78a0026d06b91f449d156e33d45c53acc897a6c5bc22b32c6d3369059f0cc977
+    bytes: 769
+    sha256: 2c129ee0460c8504cd2c69a1345ebd89e75bae8418cc6551ea23e992e1f75deb
   - path: src/Hexalith.Folders.Cli/Commands/Commit/CommitCommand.cs
     bytes: 6706
     sha256: a314eccb426298971294a67cebf3f47237d7c344cfc46159b97754b3b4bb079e
@@ -69,12 +148,12 @@ artifacts:
   - path: src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj
     bytes: 3701
     sha256: 0863858a72c9faceee0f7953abfb6c9ff0389eb9400418708644f52d2c8b043f
-  - path: src/Hexalith.Folders.Client/nswag.json
-    bytes: 2900
-    sha256: 3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d
   - path: src/Hexalith.Folders.Client/Serialization/Oq2ProblemProjection.cs
     bytes: 5565
     sha256: 0efc8abd3e52734af741a4a8e0d8da74860f90983b6c853fd1fa1896849f8d4c
+  - path: src/Hexalith.Folders.Client/nswag.json
+    bytes: 2900
+    sha256: 3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d
   - path: src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
     bytes: 463324
     sha256: 24827e5924a777502c6ba341723b3e1e3c49c7f49389dbd3a19375c747deec31
@@ -90,6 +169,21 @@ artifacts:
   - path: src/Hexalith.Folders.Mcp/Tools/DiagnosticsTools.cs
     bytes: 7268
     sha256: 531704180e2ca761a1e3a1b73b593ec3605bd6654d5e798bde4641a5d45d9382
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10AuthorityEvidenceState.cs
+    bytes: 651
+    sha256: a74735d484ede76daeb2290642b899f4422a964eea6449a3c870a230ac3f3a27
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10AuthorizationContext.cs
+    bytes: 1144
+    sha256: 0b2c34cf0d1d864b56349831172473076202679868592063b177993008c34668
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10AuthorizationOutcome.cs
+    bytes: 2191
+    sha256: dcd1eb6aca4ad4701770be75082d93fccd5a56bae051290b488bcedd18289ff5
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationExecutor.cs
+    bytes: 2639
+    sha256: 8fbc3f2447efd0d29dfc00a58cb7b033597d67b613d43b21859889b362b5dc81
+  - path: src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationResult.cs
+    bytes: 503
+    sha256: ee02b2c7374847a99b6aed6e4f2d0a66ad581cc3a4159cbe4d8b35e7c941e496
   - path: src/Hexalith.Folders.Server/Authorization/V2AccessState.cs
     bytes: 462
     sha256: f337637eeccb6f003320191914f55da45e927934ccbdf5237c1c3759cfd8bd63
@@ -111,21 +205,24 @@ artifacts:
   - path: src/Hexalith.Folders.Server/Authorization/V2ProtectedReadResult.cs
     bytes: 431
     sha256: 37473fcb97b245af9f3bd7058d365936ae9f598a84d07b226c88cb33a61214b0
+  - path: src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs
+    bytes: 5627
+    sha256: 69b9ee7b65af80e82d86b580a8032016e934947c031518dac95a1a5ebd81dacc
+  - path: src/Hexalith.Folders.UI/Components/ConsoleErrorPanel.razor
+    bytes: 1621
+    sha256: 4dc056c4e4e35d50346ef3d876457391b8be228f9b8ed96abceaf4c08d83a8b2
+  - path: src/Hexalith.Folders.UI/Components/Models/ConsoleErrorView.cs
+    bytes: 1431
+    sha256: 9c04eca5434b066cc422daac66b4b66bcae9aba5f8d139afb0c45bfbdebf3661
+  - path: src/Hexalith.Folders.UI/Services/ConsoleErrorDisposition.cs
+    bytes: 551
+    sha256: 8798f91661463dd813204156a53af84cdc3ca4e9ea25da0955ee5b92c523bdfe
   - path: src/Hexalith.Folders.UI/Services/ConsoleErrorPresenter.cs
-    bytes: 3987
-    sha256: 87b074aee15b0337b2ffbfe12406b3474324113362eec78b2f1ec9f91a5682c0
+    bytes: 4445
+    sha256: 8317aa7077afa78cf61b41e710b07dca005c175429e9f47c12e48fa42670d694
   - path: src/Hexalith.Folders.UI/Services/ConsoleStatusText.cs
     bytes: 14528
     sha256: db1d98e69f362288031934fb83d5f3327d65daf6cf143c0839d950b55b96a551
-  - path: tests/fixtures/parity-contract.schema.json
-    bytes: 11075
-    sha256: 6af4afc59bdc336fe1e0d1ebfa772b761a3ebd69b05170b0f1e01ca81d677049
-  - path: tests/fixtures/parity-contract.yaml
-    bytes: 170819
-    sha256: 14259ec40b72098afdc3c5bff7164a318d22c81c2f6dd4031e077764cae663bf
-  - path: tests/fixtures/previous-spine.yaml
-    bytes: 40786
-    sha256: ebd759a2567346f1fbf1d58f8beb326f3d9b3904b3f9c1e3d85903ef110579a4
   - path: tests/Hexalith.Folders.Cli.Tests/ErrorProjectionTests.cs
     bytes: 4520
     sha256: 04453dc763178d3b08d05c9c16420aa85884f58dc07908173b6756cad41d9f3b
@@ -136,14 +233,20 @@ artifacts:
     bytes: 12352
     sha256: 4bd458a869676fcbd34fa0039f911da085cf188c9b88b18daa517de0acdab035
   - path: tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs
-    bytes: 73302
-    sha256: e33a387a9e78a3ae1e9d766dba6ad7c8cc29e19ba72e59ac0efdc8bee274b4a6
+    bytes: 74007
+    sha256: a84cdc6e090cff50008a213577f1dd8ad8e7536b29c01f0102953d3828d7e711
   - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ConsumerDocsConformanceTests.cs
     bytes: 49129
     sha256: a25679e7e4b3ad9bbae011f5e51de29b7ff612630c51c4b03599fbec73662110
+  - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ContractParityCiWorkflowConformanceTests.cs
+    bytes: 21383
+    sha256: 824c3f08e01aeeba4a90c4a558e95732d0d5ec059d3af508d537c02e319b34d7
   - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs
     bytes: 32403
     sha256: 7fd6845fc111eb45a8c0c03ce5c38c247dbd0243c7cebf72f82a18ee82ada757
+  - path: tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs
+    bytes: 20376
+    sha256: c317c883ce2459a3d9ca0adc55b1c3c36a9d68f89a512d76dd788227abcefd39
   - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs
     bytes: 47965
     sha256: c4d2762dfe8551b982ae3c8bf0e3cac9036290260815d0179fdfd1ac4132dc76
@@ -156,6 +259,12 @@ artifacts:
   - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs
     bytes: 28757
     sha256: 595d2c4026ec4b21f9a6e253c018d43f9f32a556d76e813810d7b752f2a72540
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10ConformanceSetTests.cs
+    bytes: 4542
+    sha256: b4476ec68a3fc7d35f7537788cc605a57f9326b63a1726cd42e765fbb1e15dc7
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs
+    bytes: 9394
+    sha256: 54c8a114b8cc3916273cb2d39c37d94cf51a07d43b22238c1b5dbe44007df26e
   - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2ContractTests.cs
     bytes: 14205
     sha256: b2ab1c7682783458240fb0915e7f895762c44f48b73891c9026af5dbfc22ab57
@@ -163,8 +272,8 @@ artifacts:
     bytes: 50922
     sha256: 4fc700f754dda9b6b02bcc3d3087a72878a5dbdc7494d6e14b9b02932f7a0285
   - path: tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
-    bytes: 96988
-    sha256: f6a18f159aad4d0d6d4d44e8b95727b034c15b7343daecc3d3820068f64a26c9
+    bytes: 97158
+    sha256: a5817693858603ac5126fdce11b7626e00c0420395865f5cef9aadc7f339670c
   - path: tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
     bytes: 69972
     sha256: 64570427aa8ec5c3a2976220507b86cc4e3fdbeab756684b12dc1d14fb790eec
@@ -180,6 +289,9 @@ artifacts:
   - path: tests/Hexalith.Folders.Server.Tests/Authorization/V2ProtectedOperationAuthorizerTests.cs
     bytes: 6498
     sha256: 738a4b97f4457c84253186f42c01cb4e38737fa6ddd0981df0828b5c2af4c91d
+  - path: tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationExecutorTests.cs
+    bytes: 4792
+    sha256: d86c1ad120204acb396cfb4a5c240144a259a9a31f8e65e965223232dd14fc7f
   - path: tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
     bytes: 20528
     sha256: cc957b9bd57712930521b7342e83b5cbc6ced8dc3ce98a326f4f34165460ce70
@@ -190,14 +302,23 @@ artifacts:
     bytes: 32688
     sha256: da30305a528256b5e75e40c65a0c1dfe103b80f237795478f827ae0be2b1580d
   - path: tests/Hexalith.Folders.UI.Tests/ConsoleErrorPresenterTests.cs
-    bytes: 4288
-    sha256: caddde25ac9c875a555aa59b1f6eb9b49e8545cc02a178868eb05ac9a25e8d31
+    bytes: 4054
+    sha256: 39e363e5f723757800acf0206fbc845f9d90bbd93d7aa1a94ce0ddf9ab6a2f17
   - path: tests/Hexalith.Folders.UI.Tests/IncidentStreamPageTests.cs
     bytes: 38101
-    sha256: dc149e437bcfa342969d50cd6b285934aa0ffaf2ee05b589b546e84e0ce72ad6
+    sha256: 0a711559ff05939bb8ce745483726f514407ca8f67fa26095260c31018d903d9
   - path: tests/Hexalith.Folders.UI.Tests/OperationTimelinePageTests.cs
     bytes: 31266
-    sha256: b0735ee724bf591db79e502f5594280d0e0d27d6805a7b7cef6251a2257d3f12
+    sha256: 407c2e9f9d8baa5a6ae89c44be633358c64382815fd0f790fed3d034f784d4e3
+  - path: tests/fixtures/parity-contract.schema.json
+    bytes: 11075
+    sha256: 6af4afc59bdc336fe1e0d1ebfa772b761a3ebd69b05170b0f1e01ca81d677049
+  - path: tests/fixtures/parity-contract.yaml
+    bytes: 170819
+    sha256: 14259ec40b72098afdc3c5bff7164a318d22c81c2f6dd4031e077764cae663bf
+  - path: tests/fixtures/previous-spine.yaml
+    bytes: 40786
+    sha256: ebd759a2567346f1fbf1d58f8beb326f3d9b3904b3f9c1e3d85903ef110579a4
   - path: tests/tools/parity-oracle-generator/Program.cs
     bytes: 60189
     sha256: a6f43d64440142a921e7c6a8dc6b64b3d0850e8da95abd374f34004777aecbba
@@ -210,9 +331,30 @@ artifacts:
   - path: tests/tools/pd10-v2-contract-generator/Program.cs
     bytes: 20579
     sha256: e06093782f671640665d37e77dda4effef3e92ebef8600120c66d4cf8faf65ff
+  - path: tests/tools/run-adr-runbook-docs-gates.ps1
+    bytes: 10763
+    sha256: bab0234097dddf3355021c961774cb60ed16a3d70f0b17a7f3b297c0939bb309
+  - path: tests/tools/run-consumer-docs-gates.ps1
+    bytes: 10825
+    sha256: 0b9ac2b26b510c5e6026ea01bb010a4aa030cfd5bd12a8382ddf1e7a1b22b1a2
   - path: tests/tools/run-contract-parity-ci-gates.ps1
-    bytes: 17725
-    sha256: 6666ed3b874957413cdda7b49e7f9b84887339369e1293eaff7279bc8dab3bad
+    bytes: 18601
+    sha256: 1ce83405c94f1b50156da125e97bc2d69f091a054445f6c050b5645fb6299e10
+  - path: tests/tools/run-contract-spine-gates.ps1
+    bytes: 2629
+    sha256: 415668ce7b02fd76a5786f0f30904df467c959ab3ea54c88f822e99aefa347bc
+  - path: tests/tools/run-dapr-policy-conformance-gates.ps1
+    bytes: 7818
+    sha256: d570d8d9e1349e1bbf7fe4066b75d3118d51ea5ebbf660e54bb469eaa7a19bcc
   - path: tests/tools/run-governance-completeness-gates.ps1
     bytes: 4782
     sha256: 2b3a95d3ddbc401ecfdfaf1ca84cf6f6bea43040de229c8223f1399716f1f9b9
+  - path: tests/tools/run-operations-audit-docs-gates.ps1
+    bytes: 11233
+    sha256: 0b88bad5583c27f7ec7c8a7a01b1fd18dcc085a4a4e131dcc42f2da6ecc135ec
+  - path: tests/tools/run-production-observability-gates.ps1
+    bytes: 9971
+    sha256: 1fbad2423ef77315b092a95364eaefa083788245c1254c2ae609debf78b75757
+  - path: tests/tools/run-provider-error-docs-gates.ps1
+    bytes: 12029
+    sha256: 0ebba8330bc5e14635d4b1d81669f91421e32c76cacf96cc0ca4207f04c59016

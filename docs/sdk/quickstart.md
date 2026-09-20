@@ -5,6 +5,10 @@ Status: Story 5.1 implementation note.
 This guide shows how to consume the canonical Folders lifecycle through the typed SDK
 (`Hexalith.Folders.Client`) and its convenience helpers, without learning internal transport details.
 
+> The checked-in SDK is generated from the non-routed PD10 `/api/v2` candidate. It is for deterministic A6b
+> review only; do not target a production service or publish a consumer cutover until A6b, Section 9, and A8
+> authorize exposure.
+
 All examples are **metadata-only**: identifiers are opaque, synthetic references. Never place secrets,
 tokens, raw file contents, diffs, provider payloads, or local absolute paths in requests, logs, or examples.
 
