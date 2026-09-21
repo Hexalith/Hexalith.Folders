@@ -1,0 +1,105 @@
+schema_version: '1.0.0'
+package_id: A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21
+prepared_on: '2026-09-21'
+status: ready-for-human-decision
+approval_readiness: ready-for-explicit-product-architecture-security-decision
+approval_status: pending
+approvals: []
+required_authorities: [Product, Architecture, Security]
+approval_inference_forbidden: true
+general_execution_hold: true
+planning_recovery_closed: false
+ordinary_story_execution_authorized: false
+v2_exposure_authorized: false
+
+corrective_authorization:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md
+  sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+  status: approved-for-corrective-preparation
+  approval_scope: Prepare exact-bound A6b and corrective A8 decisions without inferring either approval.
+
+a6b_decision_payload:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
+  version: 1.0.0-candidate.1
+  sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+
+exact_bound_artifacts:
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+    correction_scope: Replace the pre-A8 global pending substring assertion with exact fail-closed A6b pending-or-approved state validation.
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    declared_candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 149
+    reproduction_status: pass-byte-identical-two-runs
+  - path: docs/exit-criteria/c3-retention.md
+    sha256: bf18b36ff42b9ab045105b72a21a3dbfd79eafbac2b082f35f9a83c8b894f693
+    inventory_effect: Added as the sole 149th path relative to the prior approved 148-artifact inventory.
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: e6a13dd139a01caf817328fbcf0fe5f738bc216b8a627c704dbcc61499eada52
+    binding_role: pre-approval-pending-state
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    binding_role: unchanged-current-tracker
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml
+    sha256: 6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302
+    status: fail-post-a8
+    binding_role: retained-failed-result
+
+validation:
+  conformance_generation:
+    command: python3 scripts/generate-pd10-v2-conformance-set.py --repository-root . --output <isolated-output>
+    passes: 2
+    status: pass-byte-identical
+    generated_sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+  focused_contract_tests:
+    runner: xUnit v3 direct class execution
+    status: pass-53-of-53
+    class_results:
+      Pd10ConformanceSetTests: pass-2-of-2
+      Pd10V2CandidateContractTests: pass-5-of-5
+      AuthorizationMatrixContractTests: pass-7-of-7
+      GovernanceCompletenessGateTests: pass-22-of-22
+      NfrTraceabilityConformanceTests: pass-17-of-17
+  source_profile:
+    restore_command: dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseNuGetDeps=false -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0
+    build_command: dotnet build Hexalith.Folders.slnx --configuration Debug --no-restore -m:1 -p:UseNuGetDeps=false -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0
+    status: pass-0-warnings-0-errors-56-projects
+  package_profile:
+    restore_command: dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0
+    build_command: dotnet build Hexalith.Folders.CI.slnx --configuration Release --no-restore -m:1 -p:UseNuGetDeps=true -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0
+    status: pass-0-warnings-0-errors-33-projects
+  build_failure_disposition:
+    cause: Configuration-incompatible project.assets.json files were reused by Release package-mode no-restore builds.
+    repository_code_defect: false
+    dependency_or_submodule_drift: false
+    dependency_acceptance_changed: false
+
+approval_effect_if_yes:
+  a6b_approved: true
+  a8_corrective_reapproval_required: true
+  sprint_status_regeneration_authorized: false
+  general_execution_hold: true
+  planning_recovery_closed: false
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  required_follow_up:
+    - Create an immutable A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21 record bound to this package and every exact artifact above.
+    - Update the approval register from coherent pending to coherent approved state.
+    - Rerun two conformance passes, all 53 focused tests, and both profile-matched builds.
+    - Prepare a separate corrective A8 Product, Architecture, and Delivery decision.
+
+approval_effect_if_no_or_revise:
+  - Keep A6b pending.
+  - Keep corrective A8 blocked and every hold active.
+
+preserved_invariants:
+  - The historical A8 approval remains valid only for the finalization already executed against its original exact inputs.
+  - No sprint-status regeneration is authorized or performed.
+  - Both frozen Story 3.14 specifications remain byte-stable and held.
+  - External dependency nodes remain pending and external-owner-controlled.
+  - No dependency version or submodule pin is changed.

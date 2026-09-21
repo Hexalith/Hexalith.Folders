@@ -1,0 +1,194 @@
+schema_version: '1.0.0'
+artifact_id: RELOCK-SECTION9-POST-A8-CORRECTIVE-2026-09-21
+result_kind: post-a8-corrective
+evaluated_on: '2026-09-21'
+evaluated_at: '2026-09-21T12:04:13+02:00'
+status: pass-post-a8-corrective
+passing: true
+milestone_completion_claimed: true
+final_freeze_removal_validation_complete: true
+general_execution_hold: false
+planning_recovery_closed: true
+ordinary_story_execution_authorized: false
+ordinary_story_execution_started: false
+v2_exposure_authorized: false
+v2_exposed: false
+sprint_status_regenerated: false
+external_dependency_acceptance_changed: false
+submodule_pins_changed: false
+
+corrective_a8_approval:
+  target_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md
+  target_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+  preparation_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml
+  preparation_sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
+  approval_record_sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+  represented_authorities: [Product, Architecture, Delivery]
+  approved_on: '2026-09-21'
+  hold_removal_condition: Every corrective Section 9 check passes against the final provenance bytes.
+
+corrective_a6b_approval:
+  preparation_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml
+  preparation_sha256: 95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
+  approval_record_sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+  represented_authorities: [Product, Architecture, Security]
+  status: approved-post-approval-validation-passed
+
+retained_history:
+  historical_a8_approval:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+    sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    disposition: valid-for-executed-2026-09-21-finalization-only
+  failed_post_a8_result:
+    path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml
+    sha256: 6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302
+    status: fail-post-a8
+    disposition: retained-immutable-failure-history
+
+validated_final_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: d4bec0cda7b450e3fec44031bf78296afb6531d5d0d9fb6374ebb0cf9d86566f
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: e38088f6ff4ba0685cca3d43eaac400c065ca97e0f2fc6e54c389783fa44a396
+    binding_role: final-terminal-control-state
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    regeneration_status: prohibited-and-unchanged
+  - path: _bmad-output/planning-artifacts/prd.md
+    sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256: 74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e
+  - path: _bmad-output/planning-artifacts/ux-design-specification.md
+    sha256: d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+  - path: docs/exit-criteria/c3-retention.md
+    sha256: bf18b36ff42b9ab045105b72a21a3dbfd79eafbac2b082f35f9a83c8b894f693
+  - path: docs/exit-criteria/c6-transition-matrix-mapping.md
+    sha256: a1d8b0357e42f046e2b3511f1a4c4b2457b9c945b12119bbfaf2ac180355efb6
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md
+    sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    declared_candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 149
+  - path: docs/exit-criteria/nfr-traceability.md
+    sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+  - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+    sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+
+checks:
+  - id: S9-01
+    requirement: Every A1-A8 decision and required role approval is explicitly recorded against its exact decision inputs.
+    status: pass
+    evidence: The register records every A1-A8 decision. Corrective A6b is explicitly approved for Product, Architecture, and Security, and corrective A8 is explicitly approved for Product, Architecture, and Delivery; no approval is inferred.
+  - id: S9-02
+    requirement: Final tracker and provenance inputs are exact-digest-bound.
+    status: pass
+    evidence: The final register and manifest digests are bound above, and sprint-status.yaml remains byte-identical at its approved current digest without regeneration.
+  - id: S9-03
+    requirement: PRD and epics retain the approved FR1-FR58 and NFR1-NFR84 inventories.
+    status: pass
+    evidence: Direct manifest and requirement validation confirms 58 FRs and 84 NFRs; the approved PRD and epics digests are unchanged.
+  - id: S9-04
+    requirement: The NFR traceability gate passes exact 84-row identity, ownership, classification, and negative controls.
+    status: pass
+    evidence: Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests passed 17 of 17.
+  - id: S9-05
+    requirement: The manifest parses, retains allowed lifecycle vocabulary, and agrees with the unchanged tracker.
+    status: pass
+    evidence: YAML parsing and exact tracker validation passed. Story 10.8 remains in-progress, Story 10.9 remains done, and Stories 1.17, 4.22, 12.7, 13.7, and 3.14 remain backlog.
+  - id: S9-06
+    requirement: Lifecycle conflicts are reconciled without altering frozen intent.
+    status: pass
+    evidence: Story 3.14 remains backlog and held; both frozen specifications remain byte-stable at their approved digests.
+  - id: S9-07
+    requirement: OQ3/A6b reproduces against the current candidate inventory and its approved exact digests.
+    status: pass
+    evidence: Two final isolated generations and the committed conformance set are byte-identical at SHA-256 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483, candidate-set SHA-256 ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1, and 149 artifacts.
+  - id: S9-08
+    requirement: The execution-wave graph is acyclic and has no unresolved equal-rank or forward-rank dependency.
+    status: pass
+    evidence: Direct validation found 72 ranked nodes, 248 edges, zero unresolved references after accepted-terminal resolution, zero duplicate edges, zero cycles, and zero rank errors.
+  - id: S9-09
+    requirement: C3, C6, C9, authorization-spine, generated-surface, retention, build, and focused governance gates pass.
+    status: pass
+    evidence: The five focused classes pass 53 of 53. Source/Debug builds 56 projects and package/Release builds 33 projects with zero warnings and errors after profile-matched restores. No code, package-version, or submodule correction was needed.
+  - id: S9-10
+    requirement: No active implementation context cites the superseded August 4 manifest as current authority.
+    status: pass
+    evidence: The September relock manifest remains current execution authority; the August snapshot appears only as superseded provenance.
+  - id: S9-11
+    requirement: Hold removal and recovery closure occur only after every final post-A8 Section 9 check passes.
+    status: pass-hold-removed-recovery-closed
+    evidence: Every S9-01 through S9-10 check passed before the terminal transition. The final register and manifest now record general_execution_hold false and planning_recovery_closed true at 2026-09-21T12:04:13+02:00; v2 remains unexposed and no ordinary story was started.
+
+validation_commands:
+  - command: two isolated scripts/generate-v2-conformance-set.ps1 passes with temporary output paths, followed by SHA-256 and byte comparisons against the committed set
+    phase: final-terminal-control-state
+    status: pass-byte-identical-three-way
+    generated_sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    artifact_count: 149
+  - command: direct xUnit v3 class run for Pd10ConformanceSetTests, Pd10V2CandidateContractTests, AuthorizationMatrixContractTests, GovernanceCompletenessGateTests, and NfrTraceabilityConformanceTests
+    phase: final-terminal-control-state
+    status: pass-53-of-53
+    class_results:
+      Pd10ConformanceSetTests: pass-2-of-2
+      Pd10V2CandidateContractTests: pass-5-of-5
+      AuthorizationMatrixContractTests: pass-7-of-7
+      GovernanceCompletenessGateTests: pass-22-of-22
+      NfrTraceabilityConformanceTests: pass-17-of-17
+  - command: dotnet restore Hexalith.Folders.slnx with Debug source-profile properties, then dotnet build Hexalith.Folders.slnx --configuration Debug --no-restore -m:1 with matching properties
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-0-warnings-0-errors-56-projects
+  - command: dotnet restore Hexalith.Folders.CI.slnx with Release package-profile properties, then dotnet build Hexalith.Folders.CI.slnx --configuration Release --no-restore -m:1 with matching properties
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-0-warnings-0-errors-33-projects
+  - command: direct manifest, tracker, approval, digest, graph, lifecycle, and frozen-specification validation
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass
+    result: FR=58 NFR=84 stories=158 graph_nodes=72 graph_edges=248 cycles=0 rank_errors=0
+
+build_failure_disposition:
+  cause: stale-profile-mismatched-build-assets
+  repository_code_defect: false
+  external_or_submodule_dependency_drift: false
+  accepted_dependency_change_required: false
+  evidence: The prior 101 unresolved Hexalith.EventStore and Hexalith.FrontComposer API errors resulted from using source-profile restore assets for Release package-mode no-restore builds. Explicit matched restores make both profiles pass without source, dependency-version, or submodule changes.
+
+frozen_story_3_14:
+  lifecycle: backlog
+  execution_authorization_status: held
+  specifications:
+    - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding.md
+      sha256: d21aa8200d1b322dc2487eac26c274c63d2062739f015f3129501e8a9170d652
+    - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding-2.md
+      sha256: 5eec57125efe867f8ae2ffbf916b233d20248e7888b9a994f8f9a07447a765ee
+
+external_dependencies_preserved:
+  EXT-ES-EVENT-EVOLUTION: pending-external-owner-controlled
+  EXT-ES-RECOVERY: pending-external-owner-controlled
+  accepted_or_updated: false
+
+terminal_control_state:
+  released_at: '2026-09-21T12:04:13+02:00'
+  general_execution_hold: false
+  planning_recovery_closed: true
+  sprint_status_regeneration_authorized: false
+  ordinary_story_execution_authorized: false
+  ordinary_story_execution_started: false
+  v2_exposure_authorized: false
+  v2_exposed: false
+  result_digest_back_reference: The register and manifest reference this immutable result by path and status but intentionally omit its digest to avoid a circular digest dependency; this result binds their final exact digests.
+
+next_action:
+  required: none-for-september-planning-authority-relock
+  boundaries: No v2 exposure, ordinary story start, external dependency acceptance, sprint-status regeneration, or Story 3.14 specification change occurred in this run.

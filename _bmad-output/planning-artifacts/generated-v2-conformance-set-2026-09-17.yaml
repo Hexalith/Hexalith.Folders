@@ -13,8 +13,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: bc6ee8a51086e0dce51b61c28ce20d563c9652fac827f331e623a21a163f9e86
-artifact_count: 148
+candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+artifact_count: 149
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -60,6 +60,10 @@ artifacts:
     kind: file
     bytes: 6928
     sha256: 1fd6f6e4c1d715f413c5c13e8c6733bba3b2004d53de16c9da2793313c616dff
+  - path: "docs/exit-criteria/c3-retention.md"
+    kind: file
+    bytes: 22251
+    sha256: bf18b36ff42b9ab045105b72a21a3dbfd79eafbac2b082f35f9a83c8b894f693
   - path: "docs/operations/canonical-error-catalog.md"
     kind: file
     bytes: 13398
@@ -435,8 +439,8 @@ artifacts:
     sha256: 32cfff42c47a7347ebdcfc07f9e7fc90e861dd33e3f4a06ee21ccc21313ffae1
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs"
     kind: file
-    bytes: 171763
-    sha256: 7e1267fe4e5fd2741383981ec3437c755b43fff32b270d8f3a888813c745e552
+    bytes: 176989
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs"
     kind: file
     bytes: 32927

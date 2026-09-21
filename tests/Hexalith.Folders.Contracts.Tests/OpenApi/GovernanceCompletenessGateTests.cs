@@ -853,9 +853,7 @@ public sealed class GovernanceCompletenessGateTests
         string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq3MatrixPath)));
         actualDigest.ShouldNotBe(ApprovedOq3Sha256, "The 2.0.0 candidate must not reuse the historical v1 approval digest.");
         File.ReadAllText(Oq3MatrixPath).ShouldContain("Matrix version: `2.0.0`", Case.Sensitive);
-        string approvalRegister = File.ReadAllText(ApprovalRegisterPath);
-        approvalRegister.ShouldContain("gate_id: A6b", Case.Sensitive);
-        approvalRegister.ShouldContain("approval_status: pending", Case.Sensitive);
+        AssertA6bRegisterStateIsCoherent(actualDigest);
 
         YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
         ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
@@ -3034,6 +3032,109 @@ public sealed class GovernanceCompletenessGateTests
         }
 
         return mapping;
+    }
+
+    private static void AssertA6bRegisterStateIsCoherent(string matrixDigest)
+    {
+        const string matrixPath = "docs/contract/authorization-matrix.md";
+        const string conformancePath = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
+        string[] expectedAuthorities = ["Product", "Architecture", "Security"];
+
+        YamlMappingNode register = LoadYamlMapping(ApprovalRegisterPath);
+        YamlMappingNode[] a6bRecords = RequiredSequence(register, "records").Children
+            .OfType<YamlMappingNode>()
+            .Where(record => string.Equals(TryScalar(record, "gate_id"), "A6b", StringComparison.Ordinal))
+            .ToArray();
+        a6bRecords.Length.ShouldBe(1, "The approval register must contain exactly one A6b record.");
+
+        YamlMappingNode a6b = a6bRecords[0];
+        string decisionPayloadDigest = RequiredScalar(a6b, "decision_payload_sha256");
+        Regex.IsMatch(decisionPayloadDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant).ShouldBeTrue();
+        RequiredSequence(a6b, "required_authorities").Children
+            .Select(node => RequiredScalar(node, "required_authority"))
+            .ToArray().ShouldBe(expectedAuthorities);
+
+        string conformanceDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(V2ConformanceSetPath)));
+        YamlMappingNode conformance = LoadYamlMapping(V2ConformanceSetPath);
+        string candidateSetDigest = RequiredScalar(conformance, "candidate_set_sha256");
+        string artifactCount = RequiredScalar(conformance, "artifact_count");
+        RequiredScalar(conformance, "authorization_matrix_sha256").ShouldBe(matrixDigest);
+
+        YamlMappingNode[] requiredArtifacts = RequiredSequence(a6b, "required_bound_artifacts").Children
+            .OfType<YamlMappingNode>()
+            .ToArray();
+        requiredArtifacts.Length.ShouldBe(2, "A6b must bind exactly the authorization matrix and generated conformance set.");
+        AssertA6bBoundArtifacts(
+            requiredArtifacts,
+            matrixPath,
+            matrixDigest,
+            conformancePath,
+            conformanceDigest,
+            candidateSetDigest,
+            artifactCount);
+
+        string approvalStatus = RequiredScalar(a6b, "approval_status");
+        approvalStatus.ShouldBeOneOf("pending", "approved");
+        YamlMappingNode[] approvals = RequiredSequence(a6b, "approvals").Children
+            .OfType<YamlMappingNode>()
+            .ToArray();
+
+        if (approvalStatus == "pending")
+        {
+            RequiredScalar(a6b, "approval_readiness").ShouldBe("ready-for-explicit-reapproval");
+            approvals.ShouldBeEmpty("A pending A6b record must not retain current approvals.");
+            return;
+        }
+
+        RequiredScalar(a6b, "approval_readiness").ShouldBe("exact-bound-artifacts-approved");
+        approvals.Select(approval => RequiredScalar(approval, "authority"))
+            .ToArray().ShouldBe(expectedAuthorities, ignoreOrder: true);
+        approvals.Length.ShouldBe(expectedAuthorities.Length);
+
+        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
+        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
+        foreach (YamlMappingNode approval in approvals)
+        {
+            string authority = RequiredScalar(approval, "authority");
+            string approver = RequiredScalar(approval, "approver");
+            policy.GenericApproverTokens.Contains(approver.Trim().ToLowerInvariant()).ShouldBeFalse(authority);
+            ParseRequiredDate(approval, "approved_on").ShouldBeLessThanOrEqualTo(today, authority);
+            RequiredScalar(approval, "payload_version").ShouldNotBeNullOrWhiteSpace(authority);
+            RequiredScalar(approval, "payload_sha256").ShouldBe(decisionPayloadDigest, authority);
+
+            YamlMappingNode[] boundArtifacts = RequiredSequence(approval, "bound_artifacts").Children
+                .OfType<YamlMappingNode>()
+                .ToArray();
+            boundArtifacts.Length.ShouldBe(2, authority);
+            AssertA6bBoundArtifacts(
+                boundArtifacts,
+                matrixPath,
+                matrixDigest,
+                conformancePath,
+                conformanceDigest,
+                candidateSetDigest,
+                artifactCount);
+        }
+    }
+
+    private static void AssertA6bBoundArtifacts(
+        IReadOnlyCollection<YamlMappingNode> artifacts,
+        string matrixPath,
+        string matrixDigest,
+        string conformancePath,
+        string conformanceDigest,
+        string candidateSetDigest,
+        string artifactCount)
+    {
+        YamlMappingNode matrix = artifacts.Single(artifact => RequiredScalar(artifact, "path") == matrixPath);
+        (TryScalar(matrix, "version") ?? RequiredScalar(matrix, "required_version")).ShouldBe("2.0.0");
+        RequiredScalar(matrix, "sha256").ShouldBe(matrixDigest);
+
+        YamlMappingNode conformance = artifacts.Single(artifact => RequiredScalar(artifact, "path") == conformancePath);
+        RequiredScalar(conformance, "sha256").ShouldBe(conformanceDigest);
+        RequiredScalar(conformance, "declared_candidate_set_sha256").ShouldBe(candidateSetDigest);
+        RequiredScalar(conformance, "declared_authorization_matrix_sha256").ShouldBe(matrixDigest);
+        RequiredScalar(conformance, "artifact_count").ShouldBe(artifactCount);
     }
 
     private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)

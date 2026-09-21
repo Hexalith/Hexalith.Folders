@@ -1,10 +1,10 @@
 manifest_version: 2
-revision: folders-planning-authority-relock-post-a8-finalization-2026-09-21
+revision: folders-planning-authority-relock-corrective-a8-finalization-2026-09-21
 project: Hexalith.Folders
 generated_on: '2026-09-17'
 reconciled_on: '2026-09-21'
-status: a8-approved-final-validation-failed-hold-retained
-general_execution_hold: true
+status: corrective-a8-complete-hold-removed-recovery-closed
+general_execution_hold: false
 v2_exposure_authorized: false
 sprint_status_regeneration_authorized: false
 ordinary_story_execution_authorized: false
@@ -19,7 +19,7 @@ authority_register:
     this manifest execution graph; sprint status tracking only.
 approval_binding:
   register_path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  register_sha256: 8292dc059534054fe24f71134fa779afc3815c241181f84e8f706c9d9f4c6d75
+  register_sha256: d4bec0cda7b450e3fec44031bf78296afb6531d5d0d9fb6374ebb0cf9d86566f
   approved_pre_generation_gates:
   - A1
   - A2
@@ -35,7 +35,7 @@ approval_binding:
   - A8
   pending_post_generation_gates: []
   approval_inference_forbidden: true
-  statement: A2b, A3, A6b, and A8 are explicitly approved through exact-digest overlays. A8 authorizes deterministic finalization only; the hold remains active and v2 remains unexposed until final post-A8 Section 9 passes.
+  statement: A2b, A3, corrective A6b, historical A8, and corrective A8 are explicitly approved through exact-digest overlays. Corrective post-A8 Section 9 passed, so the conditionally authorized hold removal and planning-recovery closure are recorded; v2 remains unexposed and no ordinary story was started.
 supersedes_snapshot:
   path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
   manifest_version: 1
@@ -55,11 +55,25 @@ provenance:
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
   sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
 - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  sha256: 8292dc059534054fe24f71134fa779afc3815c241181f84e8f706c9d9f4c6d75
+  sha256: d4bec0cda7b450e3fec44031bf78296afb6531d5d0d9fb6374ebb0cf9d86566f
 - path: docs/exit-criteria/nfr-traceability.md
   sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
 - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
   sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+- path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md
+  sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+- path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml
+  sha256: 95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40
+- path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
+  sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+- path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml
+  sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+- path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
+  sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+- path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+  sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+- path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+  sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
 post_a8_finalization:
   approval_record:
     path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
@@ -87,7 +101,7 @@ post_a8_finalization:
     - path: docs/contract/authorization-matrix.md
       sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
     - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-      sha256: ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5
+      sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
     - path: docs/exit-criteria/nfr-traceability.md
       sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
     - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
@@ -101,6 +115,38 @@ post_a8_finalization:
     status: fail-post-a8
     passing: false
     general_execution_hold: true
+corrective_a8_finalization:
+  corrective_a6b_approval:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
+    sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+    represented_authorities: [Product, Architecture, Security]
+  corrective_a8_preparation:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml
+    sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+  corrective_a8_approval:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
+    sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+    represented_authorities: [Product, Architecture, Delivery]
+  unchanged_tracker:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    input_sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    required_output_sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    regeneration_status: prohibited
+  corrected_governance:
+    test_path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    test_sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+    conformance_path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    conformance_sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+    artifact_count: 149
+  final_corrective_section9:
+    path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
+    status: pass-post-a8-corrective
+    passing: true
+    validated_at: '2026-09-21T12:04:13+02:00'
+    general_execution_hold: false
+    planning_recovery_closed: true
+    result_digest_back_reference: omitted-to-avoid-circular-binding
 generated_counts:
   portfolio_epics_and_workstreams: 13
   product_epics: 7
@@ -1023,24 +1069,43 @@ decision_nodes:
     execution_rank: 5
     prerequisites:
     - 1.17-GENERATE
-    decision_status: superseded-pending-reapproval
+    decision_status: accepted
     execution_authorization_status: not-applicable
-    delivery_evidence_status: pending
-    approval_status: pending
+    delivery_evidence_status: accepted
+    approval_status: approved
     required_authorities:
     - Product
     - Architecture
     - Security
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
     decision_payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
-    approvals: []
+    approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
+    approval_record_sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+    approvals:
+    - authority: Product
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+    - authority: Architecture
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+    - authority: Security
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
     approval_inference_forbidden: true
     required_bound_artifacts:
     - path: docs/contract/authorization-matrix.md
       required_version: 2.0.0
-      sha256: pending-1.17-GENERATE
+      sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
     - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-      sha256: pending-1.17-GENERATE
+      sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+      declared_candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+      artifact_count: 149
   DEC-A7-C6:
     node_type: approval-decision
     authority_ids:
@@ -1137,6 +1202,9 @@ decision_nodes:
     decision_payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
     approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
     approval_record_sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    corrective_approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
+    corrective_approval_record_sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+    corrective_approval_status: approved-final-validation-passed-hold-removed
     approvals:
     - authority: Product
       approver: Jerome
@@ -1153,6 +1221,22 @@ decision_nodes:
       approved_on: '2026-09-21'
       payload_version: 1.0.0-candidate.1
       payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    corrective_approvals:
+    - authority: Product
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    - authority: Architecture
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    - authority: Delivery
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
     approval_inference_forbidden: true
     required_bound_artifacts:
     - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
@@ -1274,7 +1358,7 @@ relock_nodes:
     node_type: relock-milestone
     execution_rank: 6
     execution_authorization_status: relock-only
-    delivery_evidence_status: open
+    delivery_evidence_status: accepted
     prerequisites:
     - RELOCK-PLANNING
     - DEC-A2B
@@ -1283,7 +1367,9 @@ relock_nodes:
     - DEC-A6B-OQ3
     produces:
     - Complete Section 9 conformance result bound to approved digests.
-    decision_status: not-applicable
+    decision_status: accepted
+    result_path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
+    result_status: pass-post-a8-corrective
 delivery_evidence_nodes:
   OQ5-EVIDENCE:
     node_type: delivery-evidence

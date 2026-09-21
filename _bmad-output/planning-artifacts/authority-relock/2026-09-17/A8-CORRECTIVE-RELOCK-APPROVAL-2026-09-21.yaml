@@ -1,0 +1,80 @@
+schema_version: '1.0.0'
+record_id: A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21
+status: approved
+approved_on: '2026-09-21'
+approved_at: '2026-09-21T11:56:23+02:00'
+approver: Jerome
+response: I approve corrective A8 for Product, Architecture, and Delivery against preparation SHA-256 e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab.
+source: Explicit approval in the active September planning-authority relock exchange after presentation of the exact corrective A8 package.
+approval_scope: corrective-a8-provenance-finalization-and-conditional-hold-removal-only
+represented_authorities: [Product, Architecture, Delivery]
+approval_inference_forbidden: true
+
+decision_target:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md
+  version: 1.0.0-candidate.1
+  sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+
+preparation_package:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml
+  sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+
+exact_approval_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: c870fb5fc5820992c5bd632d327bc045a4908bc2d6786398e0804de716fd42b7
+    binding_role: pre-approval-input
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: 2a6795f2a4f2d14370df53ddc7535c42390b25c87ae89be5a0eea6f2034740fb
+    binding_role: failed-state-pre-authorization-input
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    binding_role: immutable-current-tracker-input-and-output
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
+    sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    declared_candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+    artifact_count: 149
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml
+    sha256: 6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302
+    status: fail-post-a8
+    binding_role: retained-prior-failure
+
+approvals:
+  - authority: Product
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    preparation_sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+  - authority: Architecture
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    preparation_sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+  - authority: Delivery
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    preparation_sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+
+approval_effect:
+  corrective_a8_approved: true
+  provenance_only_manifest_finalization_authorized: true
+  sprint_status_regeneration_authorized: false
+  general_execution_hold_during_validation: true
+  hold_removal_conditionally_authorized: true
+  hold_removal_condition: Every corrective Section 9 check must pass against the final provenance bytes.
+  ordinary_story_execution_authorized_before_hold_removal: false
+  v2_exposure_authorized_before_hold_removal: false
+  external_dependency_acceptance_changed: false
+
+preserved_boundaries:
+  - The general execution hold remains active while the corrective register, manifest, and final validation evidence are produced.
+  - The sprint tracker, execution graph, lifecycle values, external dependency states, and both frozen Story 3.14 specifications are immutable inputs.
+  - No dependency or submodule change is authorized.
+  - A failed corrective Section 9 result retains the hold and leaves planning recovery open.

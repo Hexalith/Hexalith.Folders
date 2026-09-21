@@ -1,0 +1,78 @@
+schema_version: '1.0.0'
+record_id: A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21
+status: approved
+approved_on: '2026-09-21'
+approved_at: '2026-09-21T11:42:27+02:00'
+approver: Jerome
+response: I approve the corrective A6b package for Product, Architecture, and Security against preparation SHA-256 95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40.
+source: Explicit approval in the active September planning-authority relock exchange after presentation of the exact corrective A6b package.
+approval_scope: corrective-a6b-149-artifact-package-only
+represented_authorities: [Product, Architecture, Security]
+approval_inference_forbidden: true
+
+preparation_package:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml
+  sha256: 95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40
+
+decision_target:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
+  version: 1.0.0-candidate.1
+  sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+
+exact_approval_inputs:
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md
+    sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    binding_role: corrective-preparation-authorization
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml
+    sha256: 95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    declared_candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 149
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: e6a13dd139a01caf817328fbcf0fe5f738bc216b8a627c704dbcc61499eada52
+    binding_role: pre-approval-pending-state
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    binding_role: unchanged-current-tracker
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml
+    sha256: 6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302
+    status: fail-post-a8
+
+approvals:
+  - authority: Product
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+  - authority: Architecture
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+  - authority: Security
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+
+approval_effect:
+  a6b_approved: true
+  a8_corrective_reapproval_required: true
+  sprint_status_regeneration_authorized: false
+  general_execution_hold: true
+  planning_recovery_closed: false
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  external_dependency_acceptance_changed: false
+
+preserved_boundaries:
+  - This approval does not approve corrective A8, hold removal, recovery closure, v2 exposure, or ordinary story execution.
+  - It does not authorize sprint-status regeneration or any dependency or submodule change.
+  - Both frozen Story 3.14 specifications remain byte-stable and held.
