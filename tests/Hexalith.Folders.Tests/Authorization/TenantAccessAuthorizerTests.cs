@@ -98,6 +98,50 @@ public sealed class TenantAccessAuthorizerTests
         result.Source.ShouldBe("local-projection");
     }
 
+    [Fact]
+    public async Task TenantOnlyAuthorizationReusesAnExactlyMatchingOuterDecision()
+    {
+        TenantAccessAuthorizer authorizer = CreateAuthorizer(new ThrowingFolderTenantAccessProjectionStore());
+        PreauthorizedRequestContext.Begin(new("tenant-a", "user-a", null, "watermark-1", "org-a"));
+        try
+        {
+            TenantAccessAuthorizationResult result = await authorizer.AuthorizeMutationAsync(
+                new TenantAccessAuthorizationContext("tenant-a", "user-a", "tenant-a"),
+                TestContext.Current.CancellationToken);
+
+            result.Outcome.ShouldBe(TenantAccessOutcome.Allowed);
+            result.Source.ShouldBe("preauthorized-request");
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
+    [Theory]
+    [InlineData("tenant-b", "user-a")]
+    [InlineData("tenant-a", "user-b")]
+    public async Task TenantOnlyAuthorizationDoesNotReuseANonMatchingOuterDecision(
+        string tenantId,
+        string principalId)
+    {
+        TenantAccessAuthorizer authorizer = CreateAuthorizer(new ThrowingFolderTenantAccessProjectionStore());
+        PreauthorizedRequestContext.Begin(new("tenant-a", "user-a", null, "watermark-1", "org-a"));
+        try
+        {
+            TenantAccessAuthorizationResult result = await authorizer.AuthorizeMutationAsync(
+                new TenantAccessAuthorizationContext(tenantId, principalId, tenantId),
+                TestContext.Current.CancellationToken);
+
+            result.Outcome.ShouldBe(TenantAccessOutcome.UnavailableProjection);
+            result.Source.ShouldBe("projection-store");
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
     private static TenantAccessAuthorizer CreateAuthorizer(IFolderTenantAccessProjectionStore store)
         => new(store, new FixedUtcClock(Now), new TenantAccessOptions());
 

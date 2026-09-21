@@ -2760,3 +2760,11 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-folders-ci-cd-reference-alignment.md`
   summary: Reconcile the root scaffold-policy tests with the concurrent SDK, solution inventory, and AppHost dependency changes.
   evidence: The final full Testing.Tests assembly executes 68 tests with five failures: two C3 governance failures recorded above plus three scaffold failures (`global.json` 10.0.401 versus expected 10.0.400, AppHost now referencing Hexalith.Folders.EventStore, and solution inventory now including the EventStore source/test projects). These concurrent user-owned changes were not reverted.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md`
+  summary: Bind rolling baseline-CI gate evidence to its source state so a stale `passed` report invalidates automatically.
+  evidence: `_bmad-output/gates/baseline-ci/latest.json` has no source digest or automatic invalidation and can continue to report `passed` after the checked source or suites change; this rolling-report behavior predates the PD10 candidate.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md`
+  summary: Independently confirm that every live runtime Problem Details field is represented by the generated closed PD10 vocabulary.
+  evidence: Review found no concrete missing field, but a source-independent runtime-output inventory would settle whether example-derived code/detail generation can omit a live server value; this remains an unverified medium-severity possibility.

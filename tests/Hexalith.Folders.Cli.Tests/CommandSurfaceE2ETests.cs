@@ -140,6 +140,57 @@ public sealed class CommandSurfaceE2ETests : IDisposable
     }
 
     [Fact]
+    public async Task TaskStatusCommandPassesFolderScopedRouteArgumentsExactly()
+    {
+        const string correlation = "correlation-task-status-cli";
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "commit", "task-status",
+            "--folder-id", "folder_1",
+            "--task-id", "task_1",
+            "--freshness", "eventually_consistent",
+            "--correlation-id", correlation,
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(0);
+        await client.Received(1).GetTaskStatusAsync(
+            "folder_1",
+            "task_1",
+            correlation,
+            ReadConsistencyClass.Eventually_consistent,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task EffectivePermissionsCommandPassesOptionalTaskContextExactly()
+    {
+        const string correlation = "correlation-effective-permissions-cli";
+        const string taskId = "task-effective-permissions-cli";
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "folder", "effective-permissions",
+            "--folder-id", "folder_1",
+            "--task-id", taskId,
+            "--freshness", "read_your_writes",
+            "--correlation-id", correlation,
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(0);
+        await client.Received(1).GetEffectivePermissionsAsync(
+            "folder_1",
+            correlation,
+            ReadConsistencyClass.Read_your_writes,
+            taskId,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public async Task ContextIndexSearchParsesAndDelegatesToTheSdk()
     {
         IClient client = Substitute.For<IClient>();

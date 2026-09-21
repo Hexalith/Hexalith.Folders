@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import yaml
+from jsonschema import Draft202012Validator
 
 
 HTTP_METHODS = {"delete", "get", "head", "options", "patch", "post", "put", "trace"}
@@ -18,6 +19,7 @@ FORBIDDEN_PROTECTED_CATEGORIES = {
     "not_found",
     "cross_tenant_access_denied",
     "audit_access_denied",
+    "folder_acl_denied",
 }
 EVALUATION_ORDER = [
     "authentication",
@@ -101,6 +103,53 @@ AUTHORITY_AWARE_FILE_UNAVAILABLE_SCHEMA_REFS = {
     "#/components/schemas/FileMutationUnavailableProblem",
     "#/components/schemas/FileContextUnavailableProblem",
 }
+DIRECT_RUNTIME_PROBLEMS = [
+    {
+        "status": values["status"],
+        "category": values["category"],
+        "code": values["code"],
+        "retryable": values["retryable"],
+        "clientAction": values["clientAction"],
+        "detailKeys": ["visibility"],
+    }
+    for values in EXACT_AUTHORIZATION_PROBLEMS.values()
+] + [
+    {
+        "status": 400,
+        "category": "validation_error",
+        "code": code,
+        "retryable": False,
+        "clientAction": "revise_request",
+        "detailKeys": ["visibility"],
+    }
+    for code in (
+        "acl_entry_id_mismatch",
+        "cursor_tampered",
+        "idempotency_key_not_allowed",
+        "invalid_pagination",
+        "unsupported_read_consistency",
+        "unsupported_request_schema_version",
+        "validation_error",
+    )
+] + [
+    {
+        "status": 413,
+        "category": "input_limit_exceeded",
+        "code": "c4_input_limit_exceeded",
+        "retryable": False,
+        "clientAction": "revise_request",
+        "detailKeys": ["visibility"],
+    },
+]
+RUNTIME_DETAIL_KEYS = {
+    "evidenceSource",
+    "finalState",
+    "reasonCategory",
+    "retryReasonCode",
+    "taskId",
+    "todoRef",
+    "visibility",
+}
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -127,7 +176,10 @@ def read_matrix(path: Path) -> dict[str, dict[str, Any]]:
         not_applicable = re.findall(r"`([^`]+)`", match.group("not_applicable"))
         if match.group("not_applicable").strip() == "none":
             not_applicable = []
-        operations[match.group("operation")] = {
+        operation_id = match.group("operation")
+        if operation_id in operations:
+            raise ValueError(f"Duplicate operation row {operation_id!r} in {path}.")
+        operations[operation_id] = {
             "method": match.group("method").lower(),
             "path": match.group("path"),
             "family": match.group("family"),
@@ -194,14 +246,14 @@ def transform_operation(
     operation: dict[str, Any],
     operation_id: str,
     matrix: dict[str, Any],
-    component_responses: dict[str, Any],
+    components: dict[str, Any],
 ) -> None:
     responses = operation.setdefault("responses", {})
     existing_unavailable = copy.deepcopy(responses.get("503"))
     responses.pop("403", None)
     responses["401"] = {"$ref": "#/components/responses/AuthenticationFailure401"}
     responses["404"] = {"$ref": "#/components/responses/SafeDenial404"}
-    responses["503"] = response_with_authority_unavailable(existing_unavailable, component_responses)
+    responses["503"] = response_with_authority_unavailable(operation_id, existing_unavailable, components)
 
     categories = [
         category
@@ -247,8 +299,9 @@ def transform_operation(
 
 
 def response_with_authority_unavailable(
+    operation_id: str,
     existing: dict[str, Any] | None,
-    component_responses: dict[str, Any],
+    components: dict[str, Any],
 ) -> dict[str, Any]:
     if existing is None:
         return {"$ref": "#/components/responses/ProtectedOperationUnavailable503"}
@@ -257,27 +310,136 @@ def response_with_authority_unavailable(
     reference = response.get("$ref")
     if isinstance(reference, str) and reference.startswith("#/components/responses/"):
         response_name = reference.rsplit("/", 1)[-1]
-        response = copy.deepcopy(component_responses[response_name])
+        response = copy.deepcopy(components["responses"][response_name])
 
     media_type = response.get("content", {}).get("application/problem+json")
     if not isinstance(media_type, dict) or not isinstance(media_type.get("schema"), dict):
         raise ValueError("Operation-specific 503 response must declare an application/problem+json schema.")
 
-    schema = media_type["schema"]
-    schema_reference = schema.get("$ref")
-    if schema_reference not in AUTHORITY_AWARE_FILE_UNAVAILABLE_SCHEMA_REFS:
-        if schema_reference != "#/components/schemas/ProblemDetails":
-            raise ValueError(
-                "Operation-specific 503 response has an unsupported historical schema: "
-                f"{schema_reference!r}."
-            )
-        media_type["schema"] = {"$ref": OPERATION_SPECIFIC_UNAVAILABLE_SCHEMA_REF}
+    examples = media_type.get("examples", {})
+    if not examples and reference == "#/components/responses/ProviderUnavailable":
+        examples = {"providerUnavailable": {"$ref": "#/components/examples/ProviderUnavailableProblem"}}
+        media_type["examples"] = copy.deepcopy(examples)
+
+    exact_legacy_branches: list[dict[str, Any]] = []
+    exact_values: list[dict[str, Any]] = []
+    for example_name, example in examples.items():
+        value = resolve_example_value(example, components)
+        normalized = copy.deepcopy(value)
+        normalize_problem_examples(normalized)
+        if not isinstance(normalized, dict) or not isinstance(normalized.get("category"), str):
+            raise ValueError(f"503 example {operation_id}.{example_name} is not a problem envelope.")
+        exact_values.append(normalized)
+        exact_legacy_branches.append(exact_example_problem_schema(normalized))
+
+    authority_values = {
+        **{
+            key: value
+            for key, value in EXACT_AUTHORIZATION_PROBLEMS["AuthorityUnavailableProblem"].items()
+            if key != "visibility"
+        },
+        "correlationId": "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+        "details": {"visibility": EXACT_AUTHORIZATION_PROBLEMS["AuthorityUnavailableProblem"]["visibility"]},
+    }
+    exact_values.append(authority_values)
+
+    schema_name = f"{operation_id}UnavailableProblem"
+    components["schemas"][schema_name] = {
+        "description": "Exact operation-specific historical outcomes plus the exact authority-unavailable branch.",
+        **operation_unavailable_wrapper_shape(exact_values),
+        "oneOf": [*exact_legacy_branches, {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF}],
+    }
+    media_type["schema"] = {"$ref": f"#/components/schemas/{schema_name}"}
 
     response["description"] = (
         f"{response.get('description', 'Operation-specific service-unavailable response')} "
         "The exact authority-unavailable branch is emitted only before protected observation."
     )
     return response
+
+
+def operation_unavailable_wrapper_shape(values: list[dict[str, Any]]) -> dict[str, Any]:
+    property_names = [
+        "type", "title", "status", "category", "code", "message", "correlationId",
+        "retryable", "clientAction", "details",
+    ]
+    properties: dict[str, Any] = {}
+    for property_name in property_names:
+        if property_name == "correlationId":
+            properties[property_name] = {"$ref": "#/components/schemas/OpaqueIdentifier"}
+        elif property_name == "details":
+            detail_values = [item[property_name] for item in values]
+            detail_keys = sorted({key for details in detail_values for key in details})
+            properties[property_name] = {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["visibility"],
+                "properties": {
+                    key: enum_schema([details[key] for details in detail_values if key in details])
+                    for key in detail_keys
+                },
+            }
+        else:
+            properties[property_name] = enum_schema([item[property_name] for item in values])
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "required": property_names,
+        "properties": properties,
+    }
+
+
+def enum_schema(values: list[Any]) -> dict[str, Any]:
+    distinct = list(dict.fromkeys(values))
+    schema = literal_schema(distinct[0])
+    schema["enum"] = distinct
+    return schema
+
+
+def resolve_example_value(example: Any, components: dict[str, Any]) -> Any:
+    if isinstance(example, dict) and isinstance(example.get("$ref"), str):
+        prefix = "#/components/examples/"
+        reference = example["$ref"]
+        if not reference.startswith(prefix):
+            raise ValueError(f"Unsupported example reference {reference!r}.")
+        example = components["examples"][reference.removeprefix(prefix)]
+    if isinstance(example, dict) and "value" in example:
+        return example["value"]
+    raise ValueError("Problem example must provide a concrete value.")
+
+
+def exact_example_problem_schema(value: dict[str, Any]) -> dict[str, Any]:
+    properties: dict[str, Any] = {}
+    for key, item in value.items():
+        if key == "correlationId":
+            properties[key] = {"$ref": "#/components/schemas/OpaqueIdentifier"}
+        elif key == "details" and isinstance(item, dict):
+            properties[key] = {
+                "type": "object",
+                "additionalProperties": False,
+                "required": list(item),
+                "properties": {name: literal_schema(detail) for name, detail in item.items()},
+            }
+        else:
+            properties[key] = literal_schema(item)
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "required": list(value),
+        "properties": properties,
+    }
+
+
+def literal_schema(value: Any) -> dict[str, Any]:
+    if isinstance(value, bool):
+        value_type = "boolean"
+    elif isinstance(value, int):
+        value_type = "integer"
+    elif isinstance(value, str):
+        value_type = "string"
+    else:
+        raise ValueError(f"Unsupported exact problem literal type: {type(value).__name__}.")
+    return {"type": value_type, "enum": [value]}
 
 
 def collect_detail_keys(node: Any, keys: set[str]) -> None:
@@ -328,7 +490,7 @@ def normalize_problem_examples(node: Any) -> None:
 
 def exact_problem_schema(values: dict[str, Any]) -> dict[str, Any]:
     exact_properties = {
-        key: {"const": value}
+        key: literal_schema(value)
         for key, value in values.items()
         if key != "visibility"
     }
@@ -336,13 +498,25 @@ def exact_problem_schema(values: dict[str, Any]) -> dict[str, Any]:
         "type": "object",
         "additionalProperties": False,
         "required": ["visibility"],
-        "properties": {"visibility": {"const": values["visibility"]}},
+        "properties": {"visibility": literal_schema(values["visibility"])},
     }
+    exact_properties["correlationId"] = {"$ref": "#/components/schemas/OpaqueIdentifier"}
     return {
         "allOf": [
             {"$ref": "#/components/schemas/ProblemDetails"},
             {
                 "type": "object",
+                "additionalProperties": False,
+                "required": [
+                    "type", "title", "status", "category", "code", "message",
+                    "correlationId", "retryable", "clientAction", "details",
+                ],
+                "not": {
+                    "anyOf": [
+                        {"required": ["detail"]},
+                        {"required": ["instance"]},
+                    ]
+                },
                 "properties": exact_properties,
             },
         ],
@@ -361,8 +535,49 @@ def exact_problem_response(schema_name: str, description: str) -> dict[str, Any]
     }
 
 
+def build_runtime_problem_inventory(node: Any) -> list[dict[str, Any]]:
+    inventory: dict[tuple[Any, ...], dict[str, Any]] = {}
+
+    def add_problem(value: dict[str, Any]) -> None:
+        required = ("status", "category", "code", "retryable", "clientAction", "details")
+        if not all(key in value for key in required) or not isinstance(value["details"], dict):
+            return
+        entry = {
+            "status": value["status"],
+            "category": value["category"],
+            "code": value["code"],
+            "retryable": value["retryable"],
+            "clientAction": value["clientAction"],
+            "detailKeys": sorted(value["details"]),
+        }
+        key = (
+            entry["status"],
+            entry["category"],
+            entry["code"],
+            entry["retryable"],
+            entry["clientAction"],
+            tuple(entry["detailKeys"]),
+        )
+        inventory[key] = entry
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            add_problem(value)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(node)
+    for problem in DIRECT_RUNTIME_PROBLEMS:
+        add_problem({**problem, "details": {key: "inventory" for key in problem["detailKeys"]}})
+    return [inventory[key] for key in sorted(inventory, key=lambda item: tuple(str(part) for part in item))]
+
+
 def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict[str, Any]:
     contract = copy.deepcopy(source)
+    components = contract["components"]
     contract["info"]["version"] = "v2"
     contract["info"]["summary"] = "Non-routed PD10 v2 authorization Contract Spine candidate."
     contract["info"]["description"] = (
@@ -385,7 +600,7 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
             if method != expected["method"]:
                 raise ValueError(f"Method mismatch for {operation_id}: {method} != {expected['method']}.")
             candidate_operation = copy.deepcopy(operation)
-            transform_operation(candidate_operation, operation_id, expected, source["components"]["responses"])
+            transform_operation(candidate_operation, operation_id, expected, components)
             candidate_path_item = generated_paths.setdefault(expected["path"], {})
             if method in candidate_path_item:
                 existing_id = candidate_path_item[method].get("operationId", "unknown")
@@ -400,7 +615,6 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         raise ValueError(f"Matrix operations missing from historical Spine: {', '.join(missing)}")
     contract["paths"] = generated_paths
 
-    components = contract["components"]
     responses = components["responses"]
     responses.pop("SafeAuthorizationDenial403", None)
     responses["AuthenticationFailure401"] = exact_problem_response(
@@ -429,22 +643,6 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
             },
         }
 
-    components["schemas"]["OperationSpecificUnavailableProblem"] = {
-        "description": (
-            "Disjoint historical-or-authority 503 union. The historical operation-specific outcome "
-            "is preserved unless the exact pre-observation authority-unavailable envelope applies."
-        ),
-        "oneOf": [
-            {
-                "allOf": [
-                    {"$ref": "#/components/schemas/ProblemDetails"},
-                    {"not": {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF}},
-                ]
-            },
-            {"$ref": AUTHORITY_UNAVAILABLE_SCHEMA_REF},
-        ],
-    }
-
     principal_mismatch = components["examples"].get("PrincipalMismatchSafeDenialProblem", {}).get("value")
     if isinstance(principal_mismatch, dict):
         canonical = EXACT_AUTHORIZATION_PROBLEMS["SafeDenialProblem"]
@@ -470,9 +668,10 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
     problem_schema["properties"]["clientAction"]["enum"] = CLIENT_ACTION_VALUES
 
     normalize_problem_examples(components.get("examples", {}))
+    runtime_problem_inventory = build_runtime_problem_inventory(components.get("examples", {}))
 
     details_schema = problem_schema["properties"]["details"]
-    detail_keys: set[str] = {"visibility"}
+    detail_keys: set[str] = set(RUNTIME_DETAIL_KEYS)
     collect_detail_keys(components.get("examples", {}), detail_keys)
     details_schema["required"] = ["visibility"]
     details_schema["additionalProperties"] = False
@@ -494,6 +693,7 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         "concurrency_conflict",
     }
     collect_error_codes(components.get("examples", {}), error_codes)
+    error_codes.update(item["code"] for item in runtime_problem_inventory)
     components["schemas"]["CanonicalErrorCode"] = {
         "type": "string",
         "enum": sorted(error_codes),
@@ -543,7 +743,58 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         "cliExitCodes": [int(value) for value in cli_exit_codes],
         "mcpFailureKinds": ["usage_error", "credential_missing", *post_sdk_mcp_failure_kinds],
     }
+    contract["x-hexalith-runtime-problem-inventory"] = runtime_problem_inventory
     return contract
+
+
+def validate_declared_examples(contract: dict[str, Any]) -> None:
+    for path, path_item in contract["paths"].items():
+        for method, operation in path_item.items():
+            if method not in HTTP_METHODS or not isinstance(operation, dict):
+                continue
+            for status, response in operation.get("responses", {}).items():
+                if "$ref" in response:
+                    response = resolve_local_reference(contract, response["$ref"])
+                media_type = response.get("content", {}).get("application/problem+json")
+                if not isinstance(media_type, dict):
+                    continue
+                schema = media_type.get("schema")
+                for example_name, example in media_type.get("examples", {}).items():
+                    if "$ref" in example:
+                        example = resolve_local_reference(contract, example["$ref"])
+                    resolved_schema = resolve_schema(contract, schema)
+                    errors = sorted(
+                        Draft202012Validator(resolved_schema).iter_errors(example["value"]),
+                        key=lambda error: list(error.absolute_path),
+                    )
+                    if errors:
+                        raise ValueError(
+                            f"Example {operation['operationId']}.{status}.{example_name} does not validate "
+                            f"against its fully resolved schema: {errors[0].message}"
+                        )
+
+
+def resolve_local_reference(contract: dict[str, Any], reference: str) -> Any:
+    if not reference.startswith("#/"):
+        raise ValueError(f"Only local references are supported during candidate validation: {reference!r}.")
+    value: Any = contract
+    for segment in reference[2:].split("/"):
+        value = value[segment.replace("~1", "/").replace("~0", "~")]
+    return value
+
+
+def resolve_schema(contract: dict[str, Any], node: Any) -> Any:
+    if isinstance(node, dict):
+        if "$ref" in node:
+            resolved = copy.deepcopy(resolve_local_reference(contract, node["$ref"]))
+            siblings = {key: value for key, value in node.items() if key != "$ref"}
+            if siblings:
+                resolved = {"allOf": [resolved, siblings]}
+            return resolve_schema(contract, resolved)
+        return {key: resolve_schema(contract, value) for key, value in node.items()}
+    if isinstance(node, list):
+        return [resolve_schema(contract, item) for item in node]
+    return node
 
 
 def main() -> int:
@@ -553,6 +804,7 @@ def main() -> int:
     source = yaml.safe_load(arguments.source.read_text(encoding="utf-8"))
     matrix = read_matrix(arguments.matrix)
     candidate = transform(source, matrix)
+    validate_declared_examples(candidate)
     serialized = yaml.safe_dump(candidate, sort_keys=False, allow_unicode=False, width=160)
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(

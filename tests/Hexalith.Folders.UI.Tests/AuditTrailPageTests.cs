@@ -210,11 +210,10 @@ public sealed class AuditTrailPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.ListAuditTrailAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(DiagnosticTestContext.SafeDenialException("correlation-audit-denial"));
 
         IRenderedComponent<AuditTrail> rendered = Render(ctx);
 
@@ -608,7 +607,7 @@ public sealed class AuditTrailPageTests
         // ListAuditTrailAsync read but into the supplementary TryReadAsync reads too — proven here via
         // GetEffectivePermissionsAsync, the unconditional advisory scope-banner read that runs on every load.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(static value => value == null)!, Arg.Any<CancellationToken>());
+            Arg.Is("folder-1"), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
     }
 
     private static IRenderedComponent<AuditTrail> Render(BunitContext ctx)

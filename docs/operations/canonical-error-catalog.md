@@ -17,9 +17,9 @@ and [`docs/sdk/authentication.md`](../sdk/authentication.md). For provider failu
 [`audit-and-redaction.md`](audit-and-redaction.md) and
 [`incident-alerting-and-recovery.md`](incident-alerting-and-recovery.md).
 
-## Generated canonical category vocabulary (47)
+## Generated canonical category vocabulary (46)
 
-The wire vocabulary is the generated `CanonicalErrorCategory` enum — **exactly 47 members**, emitted on the
+The wire vocabulary is the generated `CanonicalErrorCategory` enum — **exactly 46 members**, emitted on the
 RFC 9457 `category` extension. This is the authoritative SDK-facing set; the catalog never invents categories
 the generated enum does not declare.
 
@@ -33,7 +33,6 @@ the generated enum does not declare.
 | `credential_missing` |
 | `credential_reference_invalid` |
 | `tenant_access_denied` |
-| `folder_acl_denied` |
 | `validation_error` |
 | `idempotency_conflict` |
 | `idempotency_key_expired` |
@@ -75,10 +74,10 @@ the generated enum does not declare.
 | `internal_error` |
 | `concurrency_conflict` |
 
-## Parity oracle outcome mappings (44)
+## Parity oracle outcome mappings (43)
 
 The parity oracle `tests/fixtures/parity-contract.yaml` is the source of truth for cross-surface outcome
-mappings. Its `outcome_mapping` rows currently carry **44 distinct canonical categories**. The **three**
+mappings. Its `outcome_mapping` rows currently carry **43 distinct canonical categories**. The **three**
 generated categories intentionally outside the oracle path are `success` (the non-error outcome),
 `client_configuration_error`, and `credential_missing` (pre-SDK behavior with no HTTP call).
 
@@ -97,7 +96,6 @@ generated categories intentionally outside the oracle path are `success` (the no
 | `failed_operation` |
 | `file_operation_failed` |
 | `file_policy_unavailable` |
-| `folder_acl_denied` |
 | `idempotency_conflict` |
 | `idempotency_key_expired` |
 | `input_limit_exceeded` |
@@ -202,7 +200,7 @@ for the full surface; this catalog does not duplicate them.
 ## MCP failure-kind behavior
 
 The MCP projection `FailureKindProjection` projects each post-SDK oracle category to a failure kind where
-**the kind equals the category name verbatim** (the 44 oracle values). Two pre-SDK kinds are layered by the
+**the kind equals the category name verbatim** (the 43 oracle values). Two pre-SDK kinds are layered by the
 tool pipeline and never produced by the projection. Both `range_unsatisfiable` and
 `file_policy_unavailable` are therefore preserved exactly rather than collapsed into a fallback.
 
@@ -210,7 +208,7 @@ tool pipeline and never produced by the projection. Both `range_unsatisfiable` a
 
 | Rule | Behavior |
 |---|---|
-| `verbatim` | Oracle category name equals the MCP failure kind (44 post-SDK values) |
+| `verbatim` | Oracle category name equals the MCP failure kind (43 post-SDK values) |
 | `usage_error` | Pre-SDK only; layered by the tool pipeline; never produced by the projection |
 | `credential_missing` | Pre-SDK only; layered by the tool pipeline; never produced by the projection |
 

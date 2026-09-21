@@ -132,11 +132,11 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
         // Seed the lifecycle snapshot with the shared correlation so query steps (which require the
         // request correlation to match the snapshot's evidence-scope correlation) succeed end-to-end.
-        SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder-a", identity.CorrelationId);
+        SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder_handoff_0001", identity.CorrelationId);
 
         int processCallsBeforeAnyMutation = host.Gateway.ProcessCalls;
 
@@ -148,7 +148,7 @@ public sealed class MixedSurfaceHandoffTests
         restRow.Transport.TerminalStates.ShouldContain("accepted");
 
         using HttpRequestMessage restRequest = CreateArchiveRequest(
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotencyKey: identity.ArchiveKeyRest,
             correlationId: identity.CorrelationId,
             taskId: identity.TaskId);
@@ -169,7 +169,7 @@ public sealed class MixedSurfaceHandoffTests
         sdkRow.AdapterExpectations.ShouldContain("sdk");
 
         AcceptedCommand sdkResult = await host.SdkClient.ArchiveFolderAsync(
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotency_Key: identity.ArchiveKeyRest,
             x_Correlation_Id: identity.CorrelationId,
             x_Hexalith_Task_Id: identity.TaskId,
@@ -201,7 +201,7 @@ public sealed class MixedSurfaceHandoffTests
         // alter what the four surfaces themselves observe — the surfaces all read the SAME snapshot and
         // therefore agree byte-for-byte on the cumulative state. The story's AC #4 cross-surface state
         // coherence is the invariant being tested.
-        ReseedPostChainLifecycle(host.LifecycleReadModel, "tenant-a", "folder-a", identity.CorrelationId, lifecycleState: FolderLifecycleProjectionState.Archived);
+        ReseedPostChainLifecycle(host.LifecycleReadModel, "tenant-a", "folder_handoff_0001", identity.CorrelationId, lifecycleState: FolderLifecycleProjectionState.Archived);
 
         // ===== Step 3 — CLI query: GetFolderLifecycleStatus. =====
         MixedSurfaceStep cliStep = MixedSurfaceScenario.Steps.Single(s => s.ExecutingSurface == "cli");
@@ -212,7 +212,7 @@ public sealed class MixedSurfaceHandoffTests
 
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "status",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--correlation-id", identity.CorrelationId).ConfigureAwait(true);
@@ -229,7 +229,7 @@ public sealed class MixedSurfaceHandoffTests
 
         string mcpResultJson = await FolderTools.GetFolderLifecycleStatus(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             correlationId: identity.CorrelationId,
             freshness: null,
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -241,7 +241,7 @@ public sealed class MixedSurfaceHandoffTests
 
         // ===== Cross-surface state coherence (AC #4): all four surfaces observe the cumulative state. =====
         // REST query.
-        using HttpRequestMessage restQuery = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
+        using HttpRequestMessage restQuery = new(HttpMethod.Get, "/api/v1/folders/folder_handoff_0001/lifecycle-status");
         restQuery.Headers.Add("X-Correlation-Id", identity.CorrelationId);
         using HttpResponseMessage restQueryResponse = await host.HttpClient.SendAsync(restQuery, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restQueryResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -251,7 +251,7 @@ public sealed class MixedSurfaceHandoffTests
 
         // SDK query.
         FolderLifecycleStatus sdkStatus = await host.SdkClient.GetFolderLifecycleStatusAsync(
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             x_Correlation_Id: identity.CorrelationId,
             x_Hexalith_Freshness: ReadConsistencyClass.Eventually_consistent,
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -267,7 +267,7 @@ public sealed class MixedSurfaceHandoffTests
         // to assert the lifecycle state is identical to the other three surfaces.
         CliInvocationOutcome cliJsonOutcome = await host.RunCliAsync(
             "folder", "status",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--correlation-id", identity.CorrelationId,
@@ -294,12 +294,12 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
 
         // ----- REST -----
         using HttpRequestMessage restRequest = CreateArchiveRequest(
-            "folder-a", sharedKey, sharedCorrelationId, sharedTaskId);
+            "folder_handoff_0001", sharedKey, sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient
             .SendAsync(restRequest, TestContext.Current.CancellationToken)
             .ConfigureAwait(true);
@@ -309,7 +309,7 @@ public sealed class MixedSurfaceHandoffTests
 
         // ----- SDK -----
         AcceptedCommand sdkResult = await host.SdkClient.ArchiveFolderAsync(
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotency_Key: sharedKey,
             x_Correlation_Id: sharedCorrelationId,
             x_Hexalith_Task_Id: sharedTaskId,
@@ -322,7 +322,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "archive",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--task-id", sharedTaskId,
@@ -340,7 +340,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- MCP -----
         string mcpResultJson = await FolderTools.ArchiveFolder(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotencyKey: sharedKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
@@ -368,14 +368,14 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
 
         host.Repository.ResetAppendCounters();
         int eventsBeforeChain = host.Repository.EventsAppended;
 
         // ----- REST -----
-        using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId);
+        using HttpRequestMessage restRequest = CreateArchiveRequest("folder_handoff_0001", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted, "REST first-write reaches 'accepted'.");
         int eventsAfterFirstWrite = host.Repository.EventsAppended;
@@ -383,7 +383,7 @@ public sealed class MixedSurfaceHandoffTests
 
         // ----- SDK -----
         AcceptedCommand sdkResult = await host.SdkClient.ArchiveFolderAsync(
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotency_Key: sharedIdempotencyKey,
             x_Correlation_Id: sharedCorrelationId,
             x_Hexalith_Task_Id: sharedTaskId,
@@ -394,7 +394,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "archive",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--task-id", sharedTaskId,
@@ -407,7 +407,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- MCP -----
         string mcpResultJson = await FolderTools.ArchiveFolder(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotencyKey: sharedIdempotencyKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
@@ -419,7 +419,7 @@ public sealed class MixedSurfaceHandoffTests
         int eventsAfterFullChain = host.Repository.EventsAppended;
         eventsAfterFullChain.ShouldBe(eventsAfterFirstWrite, "Same idempotency key + same payload across four surfaces produces exactly the first writer's events; later surfaces hit FingerprintMatched (no second write).");
         host.Repository.TryGetIdempotencyFingerprint(
-            FolderStreamName.Create("tenant-a", "folder-a"),
+            FolderStreamName.Create("tenant-a", "folder_handoff_0001"),
             sharedIdempotencyKey,
             out string? fingerprint).ShouldBe(FolderIdempotencyLookupResult.Found, "Aggregate idempotency ledger retained the first writer's fingerprint.");
         fingerprint.ShouldNotBeNullOrWhiteSpace();
@@ -440,15 +440,15 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
 
         host.Repository.ResetAppendCounters();
         int eventsBeforeChain = host.Repository.EventsAppended;
 
         // ----- REST first writer with payload P (reason: caller_requested) → 202. -----
         using HttpRequestMessage restRequest = CreateArchiveRequest(
-            "folder-a", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId,
+            "folder_handoff_0001", sharedIdempotencyKey, sharedCorrelationId, sharedTaskId,
             reasonCode: "caller_requested");
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
@@ -458,7 +458,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- SDK conflicting payload P' → HTTP 409 idempotency_conflict. -----
         HexalithFoldersApiException sdkException = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
             await host.SdkClient.ArchiveFolderAsync(
-                folderId: "folder-a",
+                folderId: "folder_handoff_0001",
                 idempotency_Key: sharedIdempotencyKey,
                 x_Correlation_Id: sharedCorrelationId,
                 x_Hexalith_Task_Id: sharedTaskId,
@@ -470,14 +470,14 @@ public sealed class MixedSurfaceHandoffTests
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
             .ConfigureAwait(true);
         sdkException.StatusCode.ShouldBe((int)HttpStatusCode.Conflict, "SDK conflicting payload must surface HTTP 409.");
-        ProblemDetails sdkProblem = sdkException.ProblemDetails!;
-        sdkProblem.ShouldNotBeNull("the exact safe-denial subtype must project to canonical ProblemDetails.");
+        ProblemDetails sdkProblem = sdkException.ProblemDetails.ShouldNotBeNull(
+            $"{sdkException.ProblemDetailsParseDiagnostic}; response={sdkException.Response}");
         ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("idempotency_conflict", "SDK must surface the canonical idempotency_conflict category.");
 
         // ----- CLI conflicting payload P'' → exit 68, stderr carries idempotency_conflict. -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "archive",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--task-id", sharedTaskId,
@@ -490,7 +490,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- MCP conflicting payload → failure kind idempotency_conflict. -----
         string mcpResultJson = await FolderTools.ArchiveFolder(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotencyKey: sharedIdempotencyKey,
             taskId: sharedTaskId,
             correlationId: sharedCorrelationId,
@@ -530,7 +530,7 @@ public sealed class MixedSurfaceHandoffTests
         const string requestJson = """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""";
 
         // ----- REST -----
-        using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_err_rest", "corr_err_rest", "task_err_rest");
+        using HttpRequestMessage restRequest = CreateArchiveRequest("folder_handoff_0001", "key_err_rest", "corr_err_rest", "task_err_rest");
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(expectedRestStatus, $"REST must reach {expectedRestStatus} for '{category}'.");
         string restBody = await restResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -542,7 +542,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- SDK -----
         HexalithFoldersApiException sdkException = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
             await host.SdkClient.ArchiveFolderAsync(
-                folderId: "folder-a",
+                folderId: "folder_handoff_0001",
                 idempotency_Key: "key_err_sdk",
                 x_Correlation_Id: "corr_err_sdk",
                 x_Hexalith_Task_Id: "task_err_sdk",
@@ -555,8 +555,7 @@ public sealed class MixedSurfaceHandoffTests
             .ConfigureAwait(true);
 
         sdkException.StatusCode.ShouldBe((int)expectedRestStatus);
-        ProblemDetails sdkProblem = sdkException.ProblemDetails!;
-        sdkProblem.ShouldNotBeNull("the generated exact response subtype must project to canonical ProblemDetails.");
+        ProblemDetails sdkProblem = sdkException.ProblemDetails.ShouldNotBeNull(sdkException.ProblemDetailsParseDiagnostic);
         string sdkCategoryWire = ResolveCanonicalCategoryWireValue(sdkProblem.Category);
         sdkCategoryWire.ShouldBe(category, "SDK surfaced category must be the canonical category.");
         archiveRow.Transport.ErrorCodeSet.ShouldContain(sdkCategoryWire);
@@ -564,7 +563,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "archive",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--task-id", "task_err_cli",
@@ -577,7 +576,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- MCP -----
         string mcpResult = await FolderTools.ArchiveFolder(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotencyKey: "key_err_mcp",
             taskId: "task_err_mcp",
             correlationId: "corr_err_mcp",
@@ -585,8 +584,7 @@ public sealed class MixedSurfaceHandoffTests
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResult);
         mcpJson.Value<string>("kind").ShouldBe(category, $"MCP kind must equal canonical category '{category}'.");
-        string expectedCode = category == "authentication_failure" ? "authentication_required" : category;
-        mcpJson.Value<string>("code").ShouldBe(expectedCode);
+        mcpJson.Value<string>("code").ShouldBe(category == "authentication_failure" ? "authentication_required" : category);
 
         // ===== Cross-surface byte-for-byte equivalence. =====
         restCategory.ShouldBe(sdkCategoryWire);
@@ -610,21 +608,22 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
-        SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder-a", sharedCorrelationId);
+        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder_handoff_0001", sharedCorrelationId);
 
         // Drive REST + SDK mutations with the shared correlation (the last mutating step's correlation is
         // what the surrogate evidence-snapshot ends up carrying). The SDK uses the SAME idempotency key +
         // payload as the REST writer, so it is an idempotent replay (202) over the wire — not an
         // archive-on-archived 403 (the former flattening-masked false-green).
-        using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_audit_rest", sharedCorrelationId, sharedTaskId);
+        const string auditIdempotencyKey = "key_audit_rest_0000000000";
+        using HttpRequestMessage restRequest = CreateArchiveRequest("folder_handoff_0001", auditIdempotencyKey, sharedCorrelationId, sharedTaskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
 
         _ = await host.SdkClient.ArchiveFolderAsync(
-            folderId: "folder-a",
-            idempotency_Key: "key_audit_rest",
+            folderId: "folder_handoff_0001",
+            idempotency_Key: auditIdempotencyKey,
             x_Correlation_Id: sharedCorrelationId,
             x_Hexalith_Task_Id: sharedTaskId,
             body: BuildArchiveBody(),
@@ -633,10 +632,10 @@ public sealed class MixedSurfaceHandoffTests
         // Post-chain re-seed: clear the auto-bound task_id on the snapshot so the four query operations
         // (none of which accept a task_id parameter on the wire) observe the cumulative state coherently.
         // See OneTaskMoves... for the rationale; this is a test-fixture invariant, not a story drift.
-        ReseedPostChainLifecycle(host.LifecycleReadModel, "tenant-a", "folder-a", sharedCorrelationId, FolderLifecycleProjectionState.Archived);
+        ReseedPostChainLifecycle(host.LifecycleReadModel, "tenant-a", "folder_handoff_0001", sharedCorrelationId, FolderLifecycleProjectionState.Archived);
 
         // ----- REST query -----
-        using HttpRequestMessage restQuery = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
+        using HttpRequestMessage restQuery = new(HttpMethod.Get, "/api/v1/folders/folder_handoff_0001/lifecycle-status");
         restQuery.Headers.Add("X-Correlation-Id", sharedCorrelationId);
         using HttpResponseMessage restQueryResponse = await host.HttpClient.SendAsync(restQuery, TestContext.Current.CancellationToken).ConfigureAwait(true);
         restQueryResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -647,7 +646,7 @@ public sealed class MixedSurfaceHandoffTests
 
         // ----- SDK query -----
         FolderLifecycleStatus sdkStatus = await host.SdkClient.GetFolderLifecycleStatusAsync(
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             x_Correlation_Id: sharedCorrelationId,
             x_Hexalith_Freshness: ReadConsistencyClass.Eventually_consistent,
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -657,7 +656,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- CLI query -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "status",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--correlation-id", sharedCorrelationId,
@@ -670,7 +669,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- MCP query -----
         string mcpResultJson = await FolderTools.GetFolderLifecycleStatus(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             correlationId: sharedCorrelationId,
             freshness: null,
             cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -704,16 +703,17 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedArchiveDeniedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+        SeedArchiveDeniedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
 
         ParityRow archiveRow = ParityScenarios.Row("ArchiveFolder");
-        archiveRow.Transport.ErrorCodeSet.ShouldContain("folder_acl_denied", "ArchiveFolder declares folder_acl_denied in its error_code_set (the canonical ACL-denial category).");
+        archiveRow.Transport.ErrorCodeSet.ShouldNotContain("folder_acl_denied", "v2 collapses fresh ACL denial into the non-enumerating tenant_access_denied outcome.");
+        archiveRow.Transport.ErrorCodeSet.ShouldContain("tenant_access_denied");
 
         const string requestJson = """{"requestSchemaVersion":"v2","archiveReasonCode":"caller_requested"}""";
 
         // ----- REST -----
-        using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "key_acl_rest_000000000000", correlationId, taskId);
+        using HttpRequestMessage restRequest = CreateArchiveRequest("folder_handoff_0001", "key_acl_rest_000000000000", correlationId, taskId);
         using HttpResponseMessage restResponse = await host.HttpClient.SendAsync(restRequest, TestContext.Current.CancellationToken).ConfigureAwait(true);
         string restBody = await restResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
         restResponse.StatusCode.ShouldBe(HttpStatusCode.NotFound, $"REST ACL denial must surface the safe denial 404 not_found_to_caller. Got {(int)restResponse.StatusCode}: {restBody}");
@@ -725,7 +725,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- SDK -----
         HexalithFoldersApiException sdkException = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
             await host.SdkClient.ArchiveFolderAsync(
-                folderId: "folder-a",
+                folderId: "folder_handoff_0001",
                 idempotency_Key: "key_acl_sdk_0000000000000",
                 x_Correlation_Id: correlationId,
                 x_Hexalith_Task_Id: taskId,
@@ -733,14 +733,13 @@ public sealed class MixedSurfaceHandoffTests
                 cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
             .ConfigureAwait(true);
         sdkException.StatusCode.ShouldBe((int)HttpStatusCode.NotFound, "SDK ACL denial must surface the safe denial 404.");
-        ProblemDetails sdkProblem = sdkException.ProblemDetails!;
-        sdkProblem.ShouldNotBeNull("the exact safe-denial subtype must project to canonical ProblemDetails.");
+        ProblemDetails sdkProblem = sdkException.ProblemDetails.ShouldNotBeNull(sdkException.ProblemDetailsParseDiagnostic);
         ResolveCanonicalCategoryWireValue(sdkProblem.Category).ShouldBe("tenant_access_denied", "The v2 SDK must surface the canonical non-enumerating safe denial.");
 
         // ----- CLI -----
         CliInvocationOutcome cliOutcome = await host.RunCliAsync(
             "folder", "archive",
-            "--folder-id", "folder-a",
+            "--folder-id", "folder_handoff_0001",
             "--base-address", host.HostUri.ToString(),
             "--token", "synthetic-test-token",
             "--task-id", taskId,
@@ -753,7 +752,7 @@ public sealed class MixedSurfaceHandoffTests
         // ----- MCP -----
         string mcpResultJson = await FolderTools.ArchiveFolder(
             host.McpPipeline,
-            folderId: "folder-a",
+            folderId: "folder_handoff_0001",
             idempotencyKey: "key_acl_mcp_0000000000000",
             taskId: taskId,
             correlationId: correlationId,

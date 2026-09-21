@@ -2,7 +2,6 @@ namespace Hexalith.Folders.Queries.Folders;
 
 public sealed record TaskStatusReadModelSnapshot(
     string ManagedTenantId,
-    string FolderId,
     string TaskId,
     string CurrentState,
     string? TerminalState,
@@ -11,4 +10,5 @@ public sealed record TaskStatusReadModelSnapshot(
     WorkspaceStatusRetryEligibility RetryEligibility,
     WorkspaceStatusRetryAfter? RetryAfter,
     FolderLifecycleFreshness Freshness,
-    FolderLifecycleEvidenceScope EvidenceScope);
+    FolderLifecycleEvidenceScope EvidenceScope,
+    string? FolderId = null);

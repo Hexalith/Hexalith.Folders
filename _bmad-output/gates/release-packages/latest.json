@@ -19,9 +19,9 @@
     "metadata-only-report",
     "publish"
   ],
-  "package_version": "0.0.0-ci-review",
+  "package_version": "0.0.0-local.20260920",
   "release_tag": "",
-  "source_revision_id": "3dd121eadd3e952850be69ec3b7cfda6fd549925",
+  "source_revision_id": "5174b82c9b69aa1a81d89837c4b14a25ebbd7915",
   "package_manifest_path": "tools/release-packages.json",
   "package_policy_path": "deploy/nuget/release-packages.yaml",
   "package_output_path": "nupkgs",
@@ -36,42 +36,42 @@
     {
       "package_id": "Hexalith.Folders.Contracts",
       "project_path": "src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-ci-review.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-ci-review.snupkg",
-      "version": "0.0.0-ci-review",
-      "source_revision_id": "3dd121eadd3e952850be69ec3b7cfda6fd549925"
+      "package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-local.20260920.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Contracts.0.0.0-local.20260920.snupkg",
+      "version": "0.0.0-local.20260920",
+      "source_revision_id": "5174b82c9b69aa1a81d89837c4b14a25ebbd7915"
     },
     {
       "package_id": "Hexalith.Folders",
       "project_path": "src/Hexalith.Folders/Hexalith.Folders.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.0.0.0-ci-review.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.0.0.0-ci-review.snupkg",
-      "version": "0.0.0-ci-review",
-      "source_revision_id": "3dd121eadd3e952850be69ec3b7cfda6fd549925"
+      "package_path": "nupkgs/Hexalith.Folders.0.0.0-local.20260920.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.0.0.0-local.20260920.snupkg",
+      "version": "0.0.0-local.20260920",
+      "source_revision_id": "5174b82c9b69aa1a81d89837c4b14a25ebbd7915"
     },
     {
       "package_id": "Hexalith.Folders.Client",
       "project_path": "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-ci-review.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-ci-review.snupkg",
-      "version": "0.0.0-ci-review",
-      "source_revision_id": "3dd121eadd3e952850be69ec3b7cfda6fd549925"
+      "package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-local.20260920.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Client.0.0.0-local.20260920.snupkg",
+      "version": "0.0.0-local.20260920",
+      "source_revision_id": "5174b82c9b69aa1a81d89837c4b14a25ebbd7915"
     },
     {
       "package_id": "Hexalith.Folders.Aspire",
       "project_path": "src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-ci-review.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-ci-review.snupkg",
-      "version": "0.0.0-ci-review",
-      "source_revision_id": "3dd121eadd3e952850be69ec3b7cfda6fd549925"
+      "package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-local.20260920.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Aspire.0.0.0-local.20260920.snupkg",
+      "version": "0.0.0-local.20260920",
+      "source_revision_id": "5174b82c9b69aa1a81d89837c4b14a25ebbd7915"
     },
     {
       "package_id": "Hexalith.Folders.Testing",
       "project_path": "src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj",
-      "package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-ci-review.nupkg",
-      "symbol_package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-ci-review.snupkg",
-      "version": "0.0.0-ci-review",
-      "source_revision_id": "3dd121eadd3e952850be69ec3b7cfda6fd549925"
+      "package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-local.20260920.nupkg",
+      "symbol_package_path": "nupkgs/Hexalith.Folders.Testing.0.0.0-local.20260920.snupkg",
+      "version": "0.0.0-local.20260920",
+      "source_revision_id": "5174b82c9b69aa1a81d89837c4b14a25ebbd7915"
     }
   ],
   "results": [
@@ -136,5 +136,5 @@
       "exit_code": 0
     }
   ],
-  "elapsed_ms": 35748
+  "elapsed_ms": 70526
 }

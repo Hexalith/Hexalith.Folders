@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -50,62 +52,90 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def git_lines(root: Path, *arguments: str) -> list[str]:
+def git_nul_records(root: Path, *arguments: str) -> list[str]:
     result = subprocess.run(
         ["git", "-C", str(root), *arguments],
         check=True,
         capture_output=True,
-        text=True,
     )
-    return [line for line in result.stdout.splitlines() if line]
+    return [os.fsdecode(record) for record in result.stdout.split(b"\0") if record]
 
 
-def candidate_paths(root: Path, baseline_commit: str) -> list[str]:
-    tracked = git_lines(
+def gitlinks(root: Path) -> dict[str, str]:
+    links: dict[str, str] = {}
+    for line in git_nul_records(root, "ls-files", "--stage", "-z"):
+        metadata, relative_path = line.split("\t", 1)
+        mode, object_id, _stage = metadata.split(" ", 2)
+        if mode == "160000":
+            links[relative_path.replace("\\", "/")] = object_id
+    return links
+
+
+def candidate_paths(root: Path, baseline_commit: str, output: Path) -> tuple[list[str], dict[str, str]]:
+    tracked = git_nul_records(
         root,
         "diff",
         "--name-only",
         "--diff-filter=ACMRT",
+        "-z",
         baseline_commit,
         "--",
     )
-    untracked = git_lines(root, "ls-files", "--others", "--exclude-standard")
+    untracked = git_nul_records(root, "ls-files", "--others", "--exclude-standard", "-z")
+    root_gitlinks = gitlinks(root)
+    resolved_output = output.resolve()
+    try:
+        output_relative = resolved_output.relative_to(root).as_posix()
+    except ValueError:
+        output_relative = None
     candidates: set[str] = set(REQUIRED_CANDIDATE_PATHS)
     for relative_path in tracked + untracked:
+        relative_path = relative_path.replace("\\", "/")
         parts = Path(relative_path).parts
         if (
-            relative_path in {OUTPUT_PATH, APPROVAL_REGISTER_PATH}
+            relative_path in {OUTPUT_PATH, APPROVAL_REGISTER_PATH, output_relative}
             or relative_path.startswith("_bmad-output/gates/")
             or relative_path.startswith("_bmad-output/implementation-artifacts/")
             or relative_path.startswith("_bmad-output/planning-artifacts/")
             or "bin" in parts
             or "obj" in parts
-            or not (root / relative_path).is_file()
+            or (relative_path not in root_gitlinks and not (root / relative_path).is_file())
         ):
             continue
-        candidates.add(relative_path.replace("\\", "/"))
+        candidates.add(relative_path)
     if not candidates:
         raise RuntimeError("The v2 conformance set cannot be empty.")
-    return sorted(candidates)
+    return sorted(candidates), root_gitlinks
 
 
-def artifact_entry(root: Path, relative_path: str) -> tuple[str, int, str]:
+def artifact_entry(
+    root: Path,
+    relative_path: str,
+    root_gitlinks: dict[str, str],
+) -> tuple[str, str, int, str, str | None]:
+    if relative_path in root_gitlinks:
+        object_id = root_gitlinks[relative_path]
+        content = object_id.encode("ascii")
+        return relative_path, "gitlink", len(content), hashlib.sha256(content).hexdigest(), object_id
     content = (root / relative_path).read_bytes()
-    return relative_path, len(content), hashlib.sha256(content).hexdigest()
+    return relative_path, "file", len(content), hashlib.sha256(content).hexdigest(), None
 
 
 def main() -> int:
     arguments = parse_arguments()
     root = arguments.repository_root.resolve()
     output = arguments.output or root / OUTPUT_PATH
-    paths = candidate_paths(root, arguments.baseline_commit)
-    entries = [artifact_entry(root, path) for path in paths]
-    entry_digests = {path: digest for path, _, digest in entries}
+    if not output.is_absolute():
+        output = root / output
+    output = output.resolve()
+    paths, root_gitlinks = candidate_paths(root, arguments.baseline_commit, output)
+    entries = [artifact_entry(root, path, root_gitlinks) for path in paths]
+    entry_digests = {path: digest for path, _, _, digest, _ in entries}
 
     if MATRIX_PATH not in entry_digests:
         raise RuntimeError(f"The candidate set does not contain {MATRIX_PATH}.")
 
-    digest_material = "".join(f"{path}\0{digest}\n" for path, _, digest in entries).encode("utf-8")
+    digest_material = "".join(f"{path}\0{digest}\n" for path, _, _, digest, _ in entries).encode("utf-8")
     candidate_digest = hashlib.sha256(digest_material).hexdigest()
     historical_v1_bytes = (root / HISTORICAL_V1_PATH).read_bytes()
     historical_v1_digest = hashlib.sha256(historical_v1_bytes).hexdigest()
@@ -129,14 +159,17 @@ def main() -> int:
         f"artifact_count: {len(entries)}",
         "artifacts:",
     ]
-    for relative_path, byte_count, digest in entries:
+    for relative_path, kind, byte_count, digest, git_object in entries:
         lines.extend(
             (
-                f"  - path: {relative_path}",
+                f"  - path: {json.dumps(relative_path, ensure_ascii=False)}",
+                f"    kind: {kind}",
                 f"    bytes: {byte_count}",
                 f"    sha256: {digest}",
             )
         )
+        if git_object is not None:
+            lines.append(f"    git_object: {git_object}")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")

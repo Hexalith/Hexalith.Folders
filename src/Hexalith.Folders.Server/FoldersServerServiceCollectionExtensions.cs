@@ -34,6 +34,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddOptions<TenantContextOptions>().BindConfiguration(TenantContextOptions.SectionName);
         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
         services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();
+        services.TryAddSingleton<IPd10AuthorizationAuditSink, LoggingPd10AuthorizationAuditSink>();
         services.TryAddSingleton<IFolderCommandActionTokenMapper, FolderCommandActionTokenMapper>();
         services.TryAddScoped<ILayeredFolderAuthorizationResultAccessor, ScopedLayeredFolderAuthorizationResultAccessor>();
         services.TryAddScoped<IFolderArchiveAclEvidenceProvider, LayeredAuthBackedFolderArchiveAclEvidenceProvider>();

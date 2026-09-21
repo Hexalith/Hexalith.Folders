@@ -217,12 +217,6 @@ internal sealed class CommandPipeline
         {
             return UsageError(global, correlationId, "The request body is not valid for this operation.");
         }
-        catch (HexalithFoldersApiException<ProblemDetails> typed) when (typed.Result is not null)
-        {
-            // Post-SDK: server returned RFC 9457 + canonical category. Project category → exit code.
-            ResultRenderer.RenderProblem(_dependencies.Console, global.Output, typed.Result);
-            return ErrorProjection.Project(typed.Result.Category);
-        }
         catch (HexalithFoldersApiException exception) when (exception.ProblemDetails is { } problem)
         {
             // File-specific exact response DTOs produce a non-generic generated exception. The generated

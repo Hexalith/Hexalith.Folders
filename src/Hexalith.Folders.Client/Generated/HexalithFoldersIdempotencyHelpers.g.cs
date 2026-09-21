@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "07f7e3f7959a6da609619aa76d7d9381a0cb62a469760cb866d050f9c9e8b4f0";
+    public const string ContractSpineSha256 = "8991594ca78534afd42875731893ff9a5258acdf40d057bbab60e75e8eccde12";
     public const string GenerationConfigurationSha256 = "3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d";
-    public const string GeneratedHelpersSha256 = "82f4ccb5415962c520615201f90db30e2bd94757ea817d74a4750e8489a081e2";
+    public const string GeneratedHelpersSha256 = "4e89cf3996c59ccd73f653f886ec94f136915696d442c100dc470c5e1d86bb29";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -182,13 +182,6 @@ public partial class HexalithFoldersApiException
 
     private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()
     {
-        if (this is HexalithFoldersApiException<ProblemDetails> typed)
-        {
-            return typed.Result is not null && typed.Result.Status == StatusCode
-                ? (typed.Result, null)
-                : (null, "http_status_mismatch");
-        }
-
         return Hexalith.Folders.Client.Serialization.Oq2ProblemProjection.Project(this);
     }
 }

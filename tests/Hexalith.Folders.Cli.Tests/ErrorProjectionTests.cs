@@ -28,7 +28,6 @@ public sealed class ErrorProjectionTests
     [InlineData(CanonicalErrorCategory.Credential_missing, 65)]
     [InlineData(CanonicalErrorCategory.Credential_reference_invalid, 65)]
     [InlineData(CanonicalErrorCategory.Tenant_access_denied, 66)]
-    [InlineData(CanonicalErrorCategory.Folder_acl_denied, 66)]
     [InlineData(CanonicalErrorCategory.Authorization_revocation_detected, 66)]
     [InlineData(CanonicalErrorCategory.Workspace_locked, 67)]
     [InlineData(CanonicalErrorCategory.Lock_conflict, 67)]

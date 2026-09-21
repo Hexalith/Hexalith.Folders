@@ -34,6 +34,7 @@ public static class ConsoleStatusText
         ["authentication_failure"] = "Authentication could not be established for this request.",
         ["tenant_access_denied"] = "Access to this tenant scope was denied.",
         ["folder_acl_denied"] = "Your effective folder permissions do not allow this view.",
+        ["authorization_revocation_detected"] = "Access was revoked before this operation completed.",
         ["read_model_unavailable"] = "The read model is currently unavailable and cannot answer this query.",
         ["projection_stale"] = "The projection is stale; data shown may lag the source of truth.",
         ["projection_unavailable"] = "The projection is unavailable and cannot answer this query.",

@@ -1,6 +1,7 @@
 #Requires -Version 7
 
 param(
+    [Alias('NoRestore')]
     [switch]$SkipRestoreBuild,
     [switch]$SelfTestFailureIsolation,
     [switch]$SelfTestMissingDotnet,
@@ -58,14 +59,14 @@ $testGates = @(
     [ordered]@{
         category = 'parity-oracle-schema'
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedOutcomeMappingPopulatesEveryDeclaredErrorCategory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaOutcomeMappingShapeIsBounded'
+        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsValidateAgainstSeedSchemaEnumsAndRequiredColumns|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityRowsClassifyMutatingAndNonMutatingIdempotencyRules|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedOutcomeMappingPopulatesEveryDeclaredErrorCategory|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.ParitySchemaOutcomeMappingShapeIsBounded|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorValidatesRenderedRowsAgainstNestedSchemaTypes|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorValidatesEveryRequiredSchemaProperty'
         runner_classes = @('Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests')
         artifact_paths = @('tests/fixtures/parity-contract.yaml', 'tests/fixtures/parity-contract.schema.json')
     },
     [ordered]@{
         category = 'parity-oracle-determinism'
         project_path = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
-        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDuplicateIdempotencyFields'
+        filter = 'FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratedParityOracleContainsEveryCurrentOperationExactlyOnce|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorOutputIsByteStableAndMetadataOnly|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedWhenMutatingIdempotencyMetadataIsMissing|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForDuplicateIdempotencyFields|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForNonScalarResponseKeys|FullyQualifiedName~Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.GeneratorFailsClosedForMalformedScalarResponseKeys'
         runner_classes = @('Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests')
         artifact_paths = @('tests/fixtures/parity-contract.yaml', 'tests/tools/parity-oracle-generator')
     },

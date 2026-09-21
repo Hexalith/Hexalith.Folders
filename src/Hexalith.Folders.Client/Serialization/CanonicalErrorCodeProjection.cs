@@ -9,8 +9,6 @@ namespace Hexalith.Folders.Client.Serialization;
 public static class CanonicalErrorCodeProjection
 {
     /// <summary>Gets the exact <see cref="EnumMemberAttribute.Value"/> declared by the generated contract.</summary>
-    /// <param name="code">The generated canonical error code.</param>
-    /// <returns>The canonical lower-snake-case wire token.</returns>
     public static string WireValue(CanonicalErrorCode code)
     {
         string memberName = code.ToString();

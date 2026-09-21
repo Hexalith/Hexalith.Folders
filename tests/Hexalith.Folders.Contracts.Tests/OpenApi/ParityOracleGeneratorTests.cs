@@ -203,6 +203,80 @@ public sealed class ParityOracleGeneratorTests
     }
 
     [Fact]
+    public void GeneratorFailsClosedForNonScalarResponseKeys()
+    {
+        string temp = NewTempDirectory("hexalith-parity-response-nonscalar");
+        string mutatedContract = Path.Combine(temp, "hexalith.folders.v2.yaml");
+        string contract = NormalizeLineEndings(File.ReadAllText(_openApiFilePath));
+        const string before = "        '202':\n          $ref: '#/components/responses/AcceptedCommand'";
+        const string after = "        ? [202]\n        :\n          $ref: '#/components/responses/AcceptedCommand'";
+        contract.ShouldContain(before, Case.Sensitive);
+        File.WriteAllText(mutatedContract, contract.Replace(before, after, StringComparison.Ordinal), new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("non-scalar or empty OpenAPI response key", Case.Insensitive);
+    }
+
+    [Fact]
+    public void GeneratorFailsClosedForMalformedScalarResponseKeys()
+    {
+        string temp = NewTempDirectory("hexalith-parity-response-malformed");
+        string mutatedContract = Path.Combine(temp, "hexalith.folders.v2.yaml");
+        string contract = NormalizeLineEndings(File.ReadAllText(_openApiFilePath));
+        const string before = "        '202':\n          $ref: '#/components/responses/AcceptedCommand'";
+        const string after = "        2O2:\n          $ref: '#/components/responses/AcceptedCommand'";
+        contract.ShouldContain(before, Case.Sensitive);
+        File.WriteAllText(mutatedContract, contract.Replace(before, after, StringComparison.Ordinal), new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("malformed OpenAPI response key", Case.Insensitive);
+    }
+
+    [Fact]
+    public void GeneratorValidatesRenderedRowsAgainstNestedSchemaTypes()
+    {
+        string temp = NewTempDirectory("hexalith-parity-schema-type");
+        string mutatedSchema = Path.Combine(temp, "parity-contract.schema.json");
+        string schema = File.ReadAllText(_schemaFilePath);
+        const string before = "\"cli_exit_code\": {\n          \"$ref\": \"#/$defs/cli_exit_code\"";
+        const string after = "\"cli_exit_code\": {\n          \"type\": \"boolean\"";
+        schema.ShouldContain(before, Case.Sensitive);
+        File.WriteAllText(mutatedSchema, schema.Replace(before, after, StringComparison.Ordinal), new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(
+            _openApiFilePath,
+            Path.Combine(temp, "parity-contract.yaml"),
+            schemaPath: mutatedSchema);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("parity-schema-drift", Case.Insensitive);
+    }
+
+    [Fact]
+    public void GeneratorValidatesEveryRequiredSchemaProperty()
+    {
+        string temp = NewTempDirectory("hexalith-parity-schema-required");
+        string mutatedSchema = Path.Combine(temp, "parity-contract.schema.json");
+        string schema = File.ReadAllText(_schemaFilePath);
+        const string before = "\"operation_id\",\n    \"operation_family\",";
+        const string after = "\"operation_id\",\n    \"schema_probe\",\n    \"operation_family\",";
+        schema.ShouldContain(before, Case.Sensitive);
+        File.WriteAllText(mutatedSchema, schema.Replace(before, after, StringComparison.Ordinal), new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(
+            _openApiFilePath,
+            Path.Combine(temp, "parity-contract.yaml"),
+            schemaPath: mutatedSchema);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("missing required property 'schema_probe'", Case.Insensitive);
+    }
+
+    [Fact]
     public void GeneratorFailsClosedForRemovedPreviousSpineOperationWithoutDeprecation()
     {
         string temp = NewTempDirectory("hexalith-parity-removed");
@@ -401,13 +475,18 @@ operations:
     private static int RunGenerator(string contractPath, string outputPath) =>
         RunGeneratorDetailed(contractPath, outputPath).ExitCode;
 
-    private static GeneratorResult RunGeneratorDetailed(string contractPath, string outputPath, string? previousSpinePath = null)
+    private static GeneratorResult RunGeneratorDetailed(
+        string contractPath,
+        string outputPath,
+        string? previousSpinePath = null,
+        string? schemaPath = null)
     {
         string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
+        string schemaArgument = schemaPath is null ? string.Empty : $" --schema \"{schemaPath}\"";
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}",
+            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

@@ -41,7 +41,6 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
         "tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj",
         "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
-        "tests/tools/pd10-v2-contract-generator/Hexalith.Folders.Pd10V2ContractGenerator.csproj",
         "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj"
     ];
 
@@ -98,7 +97,6 @@ public sealed class ScaffoldContractTests
         "tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj",
         "tests/load/Hexalith.Folders.LoadTests.csproj",
         "tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj",
-        "tests/tools/pd10-v2-contract-generator/Hexalith.Folders.Pd10V2ContractGenerator.csproj",
         "tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj",
     ];
 

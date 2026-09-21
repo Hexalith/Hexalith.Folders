@@ -558,7 +558,6 @@ public sealed class InMemoryFolderRepository : IFolderRepository
 
         _taskStatusReadModel.Save(new TaskStatusReadModelSnapshot(
             state.ManagedTenantId,
-            state.FolderId,
             state.WorkspaceTaskId,
             currentState,
             TerminalStateFor(currentState),
@@ -573,7 +572,8 @@ public sealed class InMemoryFolderRepository : IFolderRepository
                 TaskStatusQueryHandler.ActionToken,
                 state.WorkspaceTaskId,
                 state.WorkspaceCorrelationId,
-                AuthorizationWatermark: null)));
+                AuthorizationWatermark: null),
+            state.FolderId));
     }
 
     private static string LifecycleKey(string managedTenantId, string folderId)

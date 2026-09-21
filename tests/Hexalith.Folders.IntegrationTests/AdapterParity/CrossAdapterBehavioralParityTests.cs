@@ -157,8 +157,8 @@ public sealed class CrossAdapterBehavioralParityTests
             }
         }
 
-        oracleCategories.Count.ShouldBe(44);
-        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(47);
+        oracleCategories.Count.ShouldBe(43);
+        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(46);
     }
 
     // =====================================================================================================
@@ -459,11 +459,10 @@ public sealed class CrossAdapterBehavioralParityTests
         // Status codes pair the oracle's category with a CreateRepositoryBackedFolder-declared response so the
         // SDK reads the body as ProblemDetails (typed projection). The category in the body drives the kind.
         data.Add("authentication_failure", 401, 65, "authentication_failure", false, "check_credentials");
-        data.Add("folder_acl_denied", 409, 66, "folder_acl_denied", false, "no_action");
         data.Add("idempotency_conflict", 409, 68, "idempotency_conflict", false, "revise_request");
         data.Add("idempotency_key_expired", 409, 76, "idempotency_key_expired", false, "refresh_state_then_submit_with_new_key");
-        data.Add("validation_error", 422, 69, "validation_error", false, "revise_request");
-        data.Add("workspace_locked", 409, 67, "workspace_locked", true, "retry");
+        data.Add("validation_error", 400, 69, "validation_error", false, "revise_request");
+        data.Add("lock_conflict", 409, 67, "lock_conflict", true, "retry");
         data.Add("tenant_access_denied", 404, 66, "tenant_access_denied", false, "no_action");
         data.Add("unknown_provider_outcome", 503, 71, "unknown_provider_outcome", false, "wait_for_reconciliation");
 
@@ -489,28 +488,49 @@ public sealed class CrossAdapterBehavioralParityTests
         // ---- CLI ----
         CliTestHarness cliHarness = new();
         CapturingHttpHandler cliHandler = cliHarness.UseRealClient((HttpStatusCode)httpStatus, problemJson);
-        int cliExit = await cliHarness.RunAsync(
-            "folder", "create-repo-backed",
-            "--base-address", CliBaseAddress,
-            "--token", CliToken,
-            "--task-id", "task_1",
-            "--idempotency-key", "key_1",
-            "--correlation-id", "client_correlation_cli",
-            "--request", "{}");
-        cliExit.ShouldBe(expectedCliExitCode);
+        int cliExit = category == "unknown_provider_outcome"
+            ? await cliHarness.RunAsync(
+                "workspace", "prepare",
+                "--folder-id", "folder_1",
+                "--workspace-id", "workspace_1",
+                "--base-address", CliBaseAddress,
+                "--token", CliToken,
+                "--task-id", "task_1",
+                "--idempotency-key", "key_1",
+                "--correlation-id", "client_correlation_cli",
+                "--request", "{}")
+            : await cliHarness.RunAsync(
+                "folder", "create-repo-backed",
+                "--base-address", CliBaseAddress,
+                "--token", CliToken,
+                "--task-id", "task_1",
+                "--idempotency-key", "key_1",
+                "--correlation-id", "client_correlation_cli",
+                "--request", "{}");
+        cliExit.ShouldBe(expectedCliExitCode, cliHarness.Console.StdErr);
         cliHandler.Header("X-Correlation-Id").ShouldBe("client_correlation_cli"); // caller-supplied correlation is on the wire unchanged.
         cliHarness.Console.StdErr.ShouldContain(ServerCorrelation); // server-supplied correlation is surfaced to the operator.
 
         // ---- MCP ----
         TestSupport.CapturingHandler mcpHandler = new((HttpStatusCode)httpStatus, problemJson, "application/problem+json");
         ToolPipeline mcpPipeline = TestSupport.Pipeline(TestSupport.RealClient(mcpHandler));
-        string mcpResult = await FolderTools.CreateRepositoryBackedFolder(
-            mcpPipeline,
-            idempotencyKey: "key_1",
-            taskId: "task_1",
-            correlationId: "client_correlation_mcp",
-            requestJson: "{}",
-            TestContext.Current.CancellationToken);
+        string mcpResult = category == "unknown_provider_outcome"
+            ? await WorkspaceTools.PrepareWorkspace(
+                mcpPipeline,
+                folderId: "folder_1",
+                workspaceId: "workspace_1",
+                idempotencyKey: "key_1",
+                taskId: "task_1",
+                correlationId: "client_correlation_mcp",
+                requestJson: "{}",
+                TestContext.Current.CancellationToken)
+            : await FolderTools.CreateRepositoryBackedFolder(
+                mcpPipeline,
+                idempotencyKey: "key_1",
+                taskId: "task_1",
+                correlationId: "client_correlation_mcp",
+                requestJson: "{}",
+                TestContext.Current.CancellationToken);
 
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResult);
         mcpJson.Value<string>("kind").ShouldBe(expectedMcpFailureKind);
@@ -518,7 +538,7 @@ public sealed class CrossAdapterBehavioralParityTests
         {
             "authentication_failure" => "authentication_required",
             "tenant_access_denied" => "resource_unavailable",
-            "folder_acl_denied" => "resource_unavailable",
+            "lock_conflict" => "workspace_locked",
             _ => category,
         };
         mcpJson.Value<string>("code").ShouldBe(expectedCode); // exact envelopes use their canonical code.
@@ -601,21 +621,32 @@ public sealed class CrossAdapterBehavioralParityTests
         {
             "authentication_failure" => "authentication_required",
             "tenant_access_denied" => "resource_unavailable",
-            "folder_acl_denied" => "resource_unavailable",
+            "lock_conflict" => "workspace_locked",
             _ => category,
         };
         string title = category switch
         {
             "authentication_failure" => "Authentication required",
-            "tenant_access_denied" => "Access unavailable",
+            "tenant_access_denied" => "Resource not available",
+            "unknown_provider_outcome" => "Unknown provider outcome",
             _ => category,
         };
         string message = category switch
         {
-            "authentication_failure" => "Authentication is required to access this resource.",
+            "authentication_failure" => "Authentication is required.",
             "tenant_access_denied" => "The requested resource is unavailable.",
+            "unknown_provider_outcome" => "Provider outcome is unknown for the requested workspace operation.",
             _ => "Synthetic problem",
         };
+        Dictionary<string, object> details = new(StringComparer.Ordinal)
+        {
+            ["visibility"] = category == "unknown_provider_outcome" ? "metadata_only" : "redacted",
+        };
+        if (category == "lock_conflict")
+        {
+            details["lockStatus"] = "active";
+        }
+
         return Newtonsoft.Json.JsonConvert.SerializeObject(new
         {
             type = "about:blank",
@@ -627,7 +658,7 @@ public sealed class CrossAdapterBehavioralParityTests
             correlationId = serverCorrelation,
             retryable,
             clientAction,
-            details = new { visibility = "redacted" },
+            details,
         });
     }
 
@@ -745,16 +776,16 @@ public sealed class CrossAdapterBehavioralParityTests
     [Fact]
     public async Task CanonicalErrorCategoryStringAppearsVerbatimOnBothSurfaces()
     {
-        // folder_acl_denied is a representative authorization-denial category (oracle: 66 / folder_acl_denied).
+        // tenant_access_denied is the candidate's single non-enumerating authorization-denial category.
         // Drive it through both adapters via a fake HttpMessageHandler. Assert the canonical snake_case
         // category string surfaces verbatim on BOTH surfaces. No adapter may localize/translate/abbreviate
         // ("ACL denied", "AccessDenied") or hide the category vocabulary.
-        const string category = "folder_acl_denied";
-        string problemJson = BuildProblemJson(category, 409, ServerCorrelation, retryable: false, clientAction: "no_action");
+        const string category = "tenant_access_denied";
+        string problemJson = BuildProblemJson(category, 404, ServerCorrelation, retryable: false, clientAction: "no_action");
 
         // ---- CLI ----
         CliTestHarness cliHarness = new();
-        _ = cliHarness.UseRealClient(HttpStatusCode.Conflict, problemJson);
+        _ = cliHarness.UseRealClient(HttpStatusCode.NotFound, problemJson);
         int cliExit = await cliHarness.RunAsync(
             "folder", "create-repo-backed",
             "--base-address", CliBaseAddress,
@@ -766,15 +797,15 @@ public sealed class CrossAdapterBehavioralParityTests
 
         cliExit.ShouldBe(66);
         string cliStdErr = cliHarness.Console.StdErr;
-        // The canonical snake_case category must surface verbatim in CLI stderr independently from the
-        // safe-denial code (`resource_unavailable`).
+        // The canonical snake_case category must surface verbatim in CLI stderr (via the server-supplied
+        // problem.Code field which the CLI emits as `code: folder_acl_denied`).
         cliStdErr.ShouldContain(category);
         // And it must not be replaced by a localized / abbreviated form.
         cliStdErr.ShouldNotContain("AccessDenied");
         cliStdErr.ShouldNotContain("\"ACL denied\"");
 
         // ---- MCP ----
-        TestSupport.CapturingHandler mcpHandler = new(HttpStatusCode.Conflict, problemJson, "application/problem+json");
+        TestSupport.CapturingHandler mcpHandler = new(HttpStatusCode.NotFound, problemJson, "application/problem+json");
         ToolPipeline mcpPipeline = TestSupport.Pipeline(TestSupport.RealClient(mcpHandler));
         string mcpResult = await FolderTools.CreateRepositoryBackedFolder(
             mcpPipeline,

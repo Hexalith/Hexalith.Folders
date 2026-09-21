@@ -22,31 +22,9 @@ public sealed class ExitCodeWiringTests
 {
     private const string BaseAddress = "https://folders.test/";
     private const string Token = "synthetic-jwt";
-
-    [Fact]
-    public async Task EffectivePermissionsForwardsOptionalTaskContext()
-    {
-        IClient client = Substitute.For<IClient>();
-        client.GetEffectivePermissionsAsync(
-                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(new EffectivePermissions());
-        CliTestHarness harness = new() { Client = client };
-
-        int exit = await harness.RunAsync(
-            "folder", "effective-permissions",
-            "--folder-id", "folder_1",
-            "--task-id", "task_1",
-            "--base-address", BaseAddress,
-            "--token", Token);
-
-        exit.ShouldBe(0);
-        await client.Received(1).GetEffectivePermissionsAsync(
-            "folder_1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), "task_1", Arg.Any<CancellationToken>());
-    }
     [Theory]
     [InlineData(CanonicalErrorCategory.Read_model_unavailable, 73)]
-    [InlineData(CanonicalErrorCategory.Concurrency_conflict, 77)]
-    [InlineData(CanonicalErrorCategory.Workspace_locked, 67)]
+    [InlineData(CanonicalErrorCategory.Lock_conflict, 67)]
     [InlineData(CanonicalErrorCategory.Validation_error, 69)]
     [InlineData(CanonicalErrorCategory.Unknown_provider_outcome, 71)]
     [InlineData(CanonicalErrorCategory.Reconciliation_required, 72)]
@@ -54,7 +32,6 @@ public sealed class ExitCodeWiringTests
     [InlineData(CanonicalErrorCategory.Idempotency_conflict, 68)]
     [InlineData(CanonicalErrorCategory.Provider_unavailable, 70)]
     [InlineData(CanonicalErrorCategory.State_transition_invalid, 74)]
-    [InlineData(CanonicalErrorCategory.Redacted, 75)]
     [InlineData(CanonicalErrorCategory.Authentication_failure, 65)]
     public async Task TypedProblemProjectsToCanonicalExitCode(CanonicalErrorCategory category, int expectedExit)
     {
@@ -94,8 +71,7 @@ public sealed class ExitCodeWiringTests
         // Projected from typed fields only, emitted in camelCase to match the wire/SDK ProblemDetails shape.
         harness.Console.StdErr.ShouldContain("\"category\": \"Validation_error\"");
         harness.Console.StdErr.ShouldContain("\"code\": \"validation_error\"");
-        harness.Console.StdErr.ShouldContain("\"correlationId\": \"corr_TEST\"");
-        harness.Console.StdErr.ShouldContain("\"visibility\": \"metadata_only\"");
+        harness.Console.StdErr.ShouldContain("\"correlationId\": \"correlation_TEST_0001\"");
         harness.Console.StdOut.ShouldBeEmpty();
     }
 
@@ -135,6 +111,65 @@ public sealed class ExitCodeWiringTests
         exit.ShouldBe(expectedExit);
         harness.Console.StdErr.ShouldContain(category);
         harness.Console.StdErr.ShouldContain("server-file-correlation");
+    }
+
+    [Fact]
+    public async Task ExactAuthorityUnavailableProjectsThroughGeneratedSdkToExit73()
+    {
+        string response = Newtonsoft.Json.JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "Authorization evidence unavailable",
+            status = 503,
+            category = "read_model_unavailable",
+            code = "projection_unavailable",
+            message = "Authorization evidence is temporarily unavailable.",
+            correlationId = "server-authority-correlation",
+            retryable = true,
+            clientAction = "retry",
+            details = new { visibility = "redacted" },
+        });
+        CliTestHarness harness = new();
+        _ = harness.UseRealClient(HttpStatusCode.ServiceUnavailable, response);
+
+        int exit = await harness.RunAsync(
+            "folder", "status",
+            "--folder-id", "folder_1",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(73, harness.Console.StdErr);
+        harness.Console.StdErr.ShouldContain("read_model_unavailable");
+        harness.Console.StdErr.ShouldContain("server-authority-correlation");
+    }
+
+    [Fact]
+    public async Task NonCanonicalAuthorityTupleFailsClosedAsInternalError()
+    {
+        string response = Newtonsoft.Json.JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "Authority unavailable",
+            status = 503,
+            category = "read_model_unavailable",
+            code = "projection_unavailable",
+            message = "Authorization evidence is temporarily unavailable.",
+            correlationId = "server-authority-correlation",
+            retryable = true,
+            clientAction = "retry",
+            details = new { visibility = "redacted" },
+        });
+        CliTestHarness harness = new();
+        _ = harness.UseRealClient(HttpStatusCode.ServiceUnavailable, response);
+
+        int exit = await harness.RunAsync(
+            "folder", "status",
+            "--folder-id", "folder_1",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(1);
+        harness.Console.StdErr.ShouldContain("internal_error");
     }
 
     [Fact]

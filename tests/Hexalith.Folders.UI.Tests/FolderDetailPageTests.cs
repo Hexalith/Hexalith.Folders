@@ -56,9 +56,8 @@ public sealed class FolderDetailPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"folder_acl_denied","correlationId":"corr-x","retryable":false}""";
         client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(DiagnosticTestContext.SafeDenialException("correlation-folder-denial"));
 
         IRenderedComponent<FolderDetail> rendered = ctx.Render<FolderDetail>(p => p.Add(d => d.FolderId, "folder-1"));
 
@@ -66,7 +65,7 @@ public sealed class FolderDetailPageTests
             rendered.Find("[data-testid=\"console-error-panel\"]").ShouldNotBeNull());
 
         rendered.FindAll("[data-testid=\"console-page-folder-detail-identity\"]").ShouldBeEmpty();
-        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("folder_acl_denied");
+        rendered.Find("[data-testid=\"console-error-category\"]").TextContent.ShouldBe("tenant_access_denied");
         rendered.ShouldHaveNoMutationAffordances();
     }
 
@@ -192,7 +191,7 @@ public sealed class FolderDetailPageTests
         // Story 6.10 AC #5/#14: the supplementary effective-permissions read (run unconditionally before the
         // lifecycle read to feed the tenant-scope banner) is also threaded the page's per-load CancellationToken.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(static value => value == null)!, Arg.Any<CancellationToken>());
+            Arg.Is("folder-1"), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
     }
 
     [Fact]

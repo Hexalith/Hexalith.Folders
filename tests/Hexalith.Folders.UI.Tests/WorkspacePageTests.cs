@@ -131,9 +131,8 @@ public sealed class WorkspacePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(DiagnosticTestContext.SafeDenialException("correlation-workspace-denial"));
 
         IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(p => p
             .Add(w => w.FolderId, "folder-1")

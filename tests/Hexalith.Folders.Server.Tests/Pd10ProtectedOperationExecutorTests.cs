@@ -17,7 +17,7 @@ public sealed class Pd10ProtectedOperationExecutorTests
         Probe probe = new();
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
-            new(false, Pd10AuthorityEvidenceState.Unavailable, false, false, false, false),
+            Allowed() with { IsAuthenticated = false },
             probe);
 
         result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthenticationRequired);
@@ -36,7 +36,7 @@ public sealed class Pd10ProtectedOperationExecutorTests
         Pd10AuthorityEvidenceState state = (Pd10AuthorityEvidenceState)stateValue;
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
-            new(true, state, true, true, true, true),
+            Allowed() with { AuthorityEvidence = state },
             probe);
 
         result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthorityUnavailable);
@@ -45,40 +45,75 @@ public sealed class Pd10ProtectedOperationExecutorTests
     }
 
     [Theory]
-    [InlineData("wrong-tenant", false, true, true, true)]
-    [InlineData("revoked", true, true, false, true)]
-    [InlineData("hidden-resource", true, false, true, true)]
-    [InlineData("absent-resource", true, false, true, true)]
-    [InlineData("disabled", true, true, false, true)]
-    [InlineData("unknown", true, true, true, false)]
-    [InlineData("insufficient-scope", true, true, true, false)]
+    [MemberData(nameof(FreshNegativeStates))]
     public async Task FreshNegativeAuthorityReturnsByteEquivalent404WithoutAnyLookup(
-        string accessState,
-        bool tenantAllowed,
-        bool folderAllowed,
-        bool familyAllowed,
-        bool scopeAllowed)
+        int accessStateValue)
     {
+        V2AccessState accessState = (V2AccessState)accessStateValue;
         Probe probe = new();
 
-        accessState.ShouldNotBeNullOrWhiteSpace();
+        foreach (V2ProtectedOperationFamily family in Enum.GetValues<V2ProtectedOperationFamily>())
+        {
+            Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
+                Allowed(accessState),
+                probe);
 
-        Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
-            new(true, Pd10AuthorityEvidenceState.Fresh, tenantAllowed, folderAllowed, familyAllowed, scopeAllowed),
-            probe);
+            result.Outcome.ShouldBe(Pd10AuthorizationOutcome.SafeDenial, $"{family}:{accessState}");
+            probe.BindingReads.ShouldBe(0);
+            probe.ProtectedReads.ShouldBe(0);
+        }
+    }
 
-        result.Outcome.ShouldBe(Pd10AuthorizationOutcome.SafeDenial);
-        probe.BindingReads.ShouldBe(0);
+    [Fact]
+    public async Task EveryPositiveAccessStateCanObserveEveryFamilyOnlyWhenAllConjunctsHold()
+    {
+        V2AccessState[] positiveStates =
+        [
+            V2AccessState.TenantAdministrator,
+            V2AccessState.TenantMember,
+            V2AccessState.DelegatedServiceAgent,
+            V2AccessState.TenantScopedOperator,
+            V2AccessState.AuditReviewer,
+            V2AccessState.IncidentAdministrator,
+        ];
+        Enum.GetValues<V2AccessState>().Length.ShouldBe(14);
+
+        foreach (V2AccessState state in positiveStates)
+        {
+            foreach (V2ProtectedOperationFamily family in Enum.GetValues<V2ProtectedOperationFamily>())
+            {
+                Probe allowedProbe = new();
+                Pd10ProtectedOperationResult<string> allowed = await ExecuteAsync(Allowed(state), allowedProbe);
+                allowed.Outcome.ShouldBe(Pd10AuthorizationOutcome.Allowed, $"{family}:{state}");
+                allowedProbe.ProtectedReads.ShouldBe(1);
+
+                Probe deniedProbe = new();
+                Pd10ProtectedOperationResult<string> denied = await ExecuteAsync(
+                    Allowed(state) with { DelegationAllowed = false },
+                    deniedProbe);
+                denied.Outcome.ShouldBe(Pd10AuthorizationOutcome.SafeDenial, $"{family}:{state}:intersection");
+                deniedProbe.ProtectedReads.ShouldBe(0);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task StaleCanonicalAccessStateReturns503WithoutObservation()
+    {
+        Probe probe = new();
+        Pd10ProtectedOperationResult<string> result = await ExecuteAsync(Allowed(V2AccessState.Stale), probe);
+
+        result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthorityUnavailable);
         probe.ProtectedReads.ShouldBe(0);
     }
 
     [Fact]
     public async Task TaskBindingFailureOccursAfterParentAuthorityAndBeforeProtectedRead()
     {
-        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.NotBound };
+        Probe probe = new() { TaskBelongsToFolder = false };
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
-            new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresTaskFolderBinding: true),
+            Allowed() with { RequiresTaskFolderBinding = true },
             probe);
 
         result.Outcome.ShouldBe(Pd10AuthorizationOutcome.SafeDenial);
@@ -89,10 +124,10 @@ public sealed class Pd10ProtectedOperationExecutorTests
     [Fact]
     public async Task FullyAuthorizedBoundTaskPerformsProtectedReadOnce()
     {
-        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.Bound };
+        Probe probe = new() { TaskBelongsToFolder = true };
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
-            new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresTaskFolderBinding: true),
+            Allowed() with { RequiresTaskFolderBinding = true },
             probe);
 
         result.Outcome.ShouldBe(Pd10AuthorizationOutcome.Allowed);
@@ -102,16 +137,18 @@ public sealed class Pd10ProtectedOperationExecutorTests
     }
 
     [Fact]
-    public async Task UnavailableTaskBindingReturnsCanonical503BeforeProtectedRead()
+    public async Task InvalidEnvelopeIsCheckedAfterAuthorizationAndBeforeTaskBindingOrProtectedRead()
     {
-        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.Unavailable };
+        Probe probe = new() { TaskBelongsToFolder = true, EnvelopeValid = false };
 
         Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
-            new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresTaskFolderBinding: true),
+            Allowed() with { RequiresTaskFolderBinding = true },
             probe);
 
-        result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthorityUnavailable);
-        probe.BindingReads.ShouldBe(1);
+        result.Outcome.ShouldBe(Pd10AuthorizationOutcome.Allowed);
+        result.Value.ShouldBeNull();
+        probe.EnvelopeChecks.ShouldBe(1);
+        probe.BindingReads.ShouldBe(0);
         probe.ProtectedReads.ShouldBe(0);
     }
 
@@ -120,8 +157,31 @@ public sealed class Pd10ProtectedOperationExecutorTests
         Probe probe)
         => Pd10ProtectedOperationExecutor.ExecuteAsync(
             context,
+            probe.ValidateEnvelopeAsync,
             probe.VerifyBindingAsync,
             probe.ObserveAsync);
+
+    private static Pd10AuthorizationContext Allowed(V2AccessState accessState = V2AccessState.TenantMember)
+        => new(
+            IsAuthenticated: true,
+            AccessState: accessState,
+            AuthorityEvidence: Pd10AuthorityEvidenceState.Fresh,
+            TenantAllowed: true,
+            FolderAllowed: true,
+            FamilyAllowed: true,
+            ScopeAllowed: true,
+            DelegationAllowed: true);
+
+    public static TheoryData<int> FreshNegativeStates => new()
+    {
+        (int)V2AccessState.WrongTenant,
+        (int)V2AccessState.Revoked,
+        (int)V2AccessState.Disabled,
+        (int)V2AccessState.Unknown,
+        (int)V2AccessState.HiddenResource,
+        (int)V2AccessState.AbsentResource,
+        (int)V2AccessState.InsufficientScope,
+    };
 
     private sealed class Probe
     {
@@ -129,13 +189,26 @@ public sealed class Pd10ProtectedOperationExecutorTests
 
         public int ProtectedReads { get; private set; }
 
-        public Pd10TaskFolderBindingState BindingState { get; init; }
+        public int EnvelopeChecks { get; private set; }
+
+        public bool EnvelopeValid { get; init; } = true;
+
+        public bool TaskBelongsToFolder { get; init; }
+
+        public ValueTask<bool> ValidateEnvelopeAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            EnvelopeChecks++;
+            return ValueTask.FromResult(EnvelopeValid);
+        }
 
         public ValueTask<Pd10TaskFolderBindingState> VerifyBindingAsync(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             BindingReads++;
-            return ValueTask.FromResult(BindingState);
+            return ValueTask.FromResult(TaskBelongsToFolder
+                ? Pd10TaskFolderBindingState.Bound
+                : Pd10TaskFolderBindingState.NotBound);
         }
 
         public ValueTask<string> ObserveAsync(CancellationToken cancellationToken)

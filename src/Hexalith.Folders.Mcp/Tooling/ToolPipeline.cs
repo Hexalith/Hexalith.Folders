@@ -181,11 +181,6 @@ internal sealed class ToolPipeline
         {
             return Failure(McpFailure.UsageError(correlation, "The request body is not valid for this operation."));
         }
-        catch (HexalithFoldersApiException<ProblemDetails> typed) when (typed.Result is not null)
-        {
-            // Post-SDK: server returned RFC 9457 + canonical category. Project category → kind.
-            return Failure(McpFailure.FromProblem(typed.Result, correlation));
-        }
         catch (HexalithFoldersApiException exception) when (exception.ProblemDetails is { } problem)
         {
             // Exact file-policy response DTOs arrive as non-generic generated exceptions. Preserve the

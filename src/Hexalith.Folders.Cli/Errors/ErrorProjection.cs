@@ -31,9 +31,8 @@ internal static class ErrorProjection
         // Pre-SDK usage error category, should the server ever echo it → 64.
         CanonicalErrorCategory.Client_configuration_error => FoldersExitCodes.UsageError,
 
-        // Tenant / folder / audit access denial → 66.
+        // Non-enumerating tenant/folder denial and revocation → 66.
         CanonicalErrorCategory.Tenant_access_denied => FoldersExitCodes.AccessDenied,
-        CanonicalErrorCategory.Folder_acl_denied => FoldersExitCodes.AccessDenied,
         CanonicalErrorCategory.Authorization_revocation_detected => FoldersExitCodes.AccessDenied,
 
         // Lock contention → 67.

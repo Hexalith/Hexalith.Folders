@@ -50,7 +50,9 @@ public sealed class Oq2WireObjectConverter : JsonConverter
     public override bool CanConvert(Type objectType)
     {
         ArgumentNullException.ThrowIfNull(objectType);
-        return SupportedTypes.Contains(objectType.Name);
+        return SupportedTypes.Contains(objectType.Name)
+            || objectType.Namespace == "Hexalith.Folders.Client.Generated"
+            && objectType.Name.EndsWith("UnavailableProblem", StringComparison.Ordinal);
     }
 
     /// <inheritdoc/>
@@ -139,6 +141,12 @@ public sealed class Oq2WireObjectConverter : JsonConverter
                 ValidateProblemUnion(value, 503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", true);
                 return;
             default:
+                if (typeName.EndsWith("UnavailableProblem", StringComparison.Ordinal))
+                {
+                    Oq2ProblemProjection.ValidateGeneratedUnavailableProblem(typeName, value);
+                    return;
+                }
+
                 throw new JsonSerializationException($"Unsupported OQ2 wire type {typeName}.");
         }
     }

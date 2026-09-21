@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 
+using Newtonsoft.Json;
+
 using Shouldly;
 
 using Xunit;
@@ -195,11 +197,13 @@ public sealed class OperationTimelinePageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
+        const string body = """{"type":"about:blank","title":"Resource not available","status":404,"category":"tenant_access_denied","code":"resource_unavailable","message":"The requested resource is unavailable.","correlationId":"correlation-ui-denial","retryable":false,"clientAction":"no_action","details":{"visibility":"redacted"}}""";
+        SafeDenialProblem problem = JsonConvert.DeserializeObject<SafeDenialProblem>(body).ShouldNotBeNull();
         client.ListOperationTimelineAsync(
                 Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(),
                 Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 404, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(new HexalithFoldersApiException<SafeDenialProblem>(
+                "denied", 404, body, EmptyHeaders, problem, innerException: null));
 
         IRenderedComponent<OperationTimeline> rendered = Render(ctx);
 
@@ -574,7 +578,7 @@ public sealed class OperationTimelinePageTests
         // permissions read too — invoked UNCONDITIONALLY on every load — so the F-7 Cancel affordance aborts
         // the whole in-flight load, not just the primary read.
         client.Received(1).GetEffectivePermissionsAsync(
-            "folder-1", Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(static value => value == null)!, Arg.Any<CancellationToken>());
+            Arg.Is("folder-1"), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
     }
 
     [Fact]

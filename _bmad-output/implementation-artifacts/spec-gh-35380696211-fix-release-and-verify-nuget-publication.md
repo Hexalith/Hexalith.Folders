@@ -2,7 +2,7 @@
 title: 'Restore green Folders CI and publish the first NuGet release'
 type: 'bugfix'
 created: '2026-09-19'
-status: 'in-progress'
+status: 'in-review'
 route: 'dispatch'
 review_loop_iteration: 0
 baseline_commit: 'e2881d901b3f12e3f9023617fe622c5f11254916'
@@ -53,11 +53,11 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] In `references/Hexalith.FrontComposer`, validate the existing `FrontComposerShell.razor` heading correction, repair any blocking `.github/workflows/ci.yml` failures, release the corrected Shell package through that repository's governed workflow, and record its published version.
-- [ ] In `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs` and `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`, replace stale Debug/SDK/AppHost/solution assumptions with configuration-independent assertions that match the tracked repository.
-- [ ] In `docs/exit-criteria/*`, `docs/contract/authorization-matrix.md`, `_bmad-output/planning-artifacts/planning-story-manifest.yaml`, and their conformance tests, reconcile lifecycle and governance evidence; write digest-bound C3/C6/OQ3 decisions only when every required artifact is complete, and keep incomplete OQ4 evidence fail-closed.
-- [ ] In the production code exercised by `ArchiveFolderProcessWiringTests.cs`, `GoldenLifecycleParityTests.cs`, and `MixedSurfaceHandoffTests.cs`, restore authorization, replay/conflict, and wire-contract behavior without weakening the test expectations.
-- [ ] In `references/Hexalith.Builds/Props/Directory.Packages.props`, advance the authoritative FrontComposer pin to the verified release, commit and push the owning Builds repository, update the Folders Builds gitlink, then run the focused test projects, `tests/tools/run-retention-deletion-gates.ps1`, `tests/tools/run-e2e-ci-gates.ps1 -SkipBrowserInstall`, and `tests/tools/run-release-package-gates.ps1`.
+- [x] In `references/Hexalith.FrontComposer`, validate the existing `FrontComposerShell.razor` heading correction, repair any blocking `.github/workflows/ci.yml` failures, release the corrected Shell package through that repository's governed workflow, and record its published version.
+- [x] In `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs` and `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs`, replace stale Debug/SDK/AppHost/solution assumptions with configuration-independent assertions that match the tracked repository.
+- [x] In `docs/exit-criteria/*`, `docs/contract/authorization-matrix.md`, `_bmad-output/planning-artifacts/planning-story-manifest.yaml`, and their conformance tests, reconcile lifecycle and governance evidence; write digest-bound C3/C6/OQ3 decisions only when every required artifact is complete, and keep incomplete OQ4 evidence fail-closed.
+- [x] In the production code exercised by `ArchiveFolderProcessWiringTests.cs`, `GoldenLifecycleParityTests.cs`, and `MixedSurfaceHandoffTests.cs`, restore authorization, replay/conflict, and wire-contract behavior without weakening the test expectations.
+- [x] In `references/Hexalith.Builds/Props/Directory.Packages.props`, advance the authoritative FrontComposer pin to the verified release, commit and push the owning Builds repository, update the Folders Builds gitlink, then run the focused test projects, `tests/tools/run-retention-deletion-gates.ps1`, `tests/tools/run-e2e-ci-gates.ps1 -SkipBrowserInstall`, and `tests/tools/run-release-package-gates.ps1`.
 - [ ] Commit the owning-repository changes with validated Conventional Commits, push each `main`, and require the exact pushed Folders SHA's `.github/workflows/ci.yml` run to succeed.
 - [ ] Configure `Hexalith/Hexalith.Folders`'s `production` environment to mirror the established Hexalith reviewer/main policy and set repository variable `HEXALITH_RELEASE_PUBLISH_ENABLED=true`.
 - [ ] Dispatch `.github/workflows/release.yml` from the unchanged green Folders SHA, satisfy environment approval, monitor to completion, and verify NuGet.org plus the immutable GitHub release.
@@ -86,8 +86,17 @@ context:
   cross-repository scope: Story 11.25 deliberately keeps Gate 2c red until a genuine EventStore
   `run-evidence.v4` / `apphost-smoke.v3` recapture replaces the preserved packet, while current
   EventStore/Builds coordinates have advanced off its sealed tuple. Publication remains stopped.
+- Superseding local repository evidence on 2026-09-20 records FrontComposer `v4.5.0` at
+  `b2bac5f193130ea08abc22fd78d6a936c2f419f4`, Builds `4.5.0` consumption at
+  `2ca5965`, the Folders dependency update at `27cebf6`, and a Folders `v1.0.0` tag at
+  `823dce16bca7d1eb9c10c4d871bf581fc9dc61ef`. Remote run, environment, NuGet-index, and
+  GitHub-release asset evidence still requires an authorized remote verification pass.
 
 ## Spec Change Log
+
+- 2026-09-20: Recorded completed local implementation tasks and refreshed package-mode verification
+  at `5174b82c9b69aa1a81d89837c4b14a25ebbd7915`; retained remote publication tasks as open pending
+  direct GitHub and NuGet evidence.
 
 ## Review Triage Log
 
@@ -103,11 +112,13 @@ context:
 **Current results:**
 
 - PASS -- `dotnet build Hexalith.Folders.CI.slnx` in Release/package mode, zero warnings/errors.
-- PASS -- Testing 68/68, Integration 695/695, UI unit lane, retention/deletion gates, and
-  FrontComposer-source UI E2E 63/63.
-- BLOCKED -- Contracts 311/314; the three remaining failures are the OQ3 A6b/PD10 v2 evidence
-  guards and correctly remain fail-closed.
-- PASS -- FrontComposer focused governance repair checks 3/3 and `actionlint
-  .github/workflows/ci.yml`.
-- BLOCKED -- no FrontComposer or Folders Release workflow was dispatched and no NuGet package was
-  published because the approved full-CI prerequisite is not yet satisfied.
+- PASS -- Contracts 332/332, Testing 68/68, Integration 689/689, and package-mode UI E2E 63/63.
+- PASS -- retention/deletion gate reports approved at source
+  `5174b82c9b69aa1a81d89837c4b14a25ebbd7915`.
+- PASS -- dry-run release gate validated five sealed package/symbol pairs and two isolated
+  package-only consumers at version `0.0.0-local.20260920`.
+- PASS -- release tooling fail-closed coverage passes 11/11 tests, including occupied-version
+  rejection without `--skip-duplicate`.
+- UNVERIFIED -- exact-source GitHub CI/Release run conclusions, protected-environment configuration,
+  all five NuGet.org `1.0.0` indexes, and all ten immutable GitHub release assets require remote
+  queries and remain open.

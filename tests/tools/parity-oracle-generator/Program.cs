@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using YamlDotNet.RepresentationModel;
 using static GeneratorConstants;
@@ -9,7 +10,25 @@ GeneratorOptions options = GeneratorOptions.Parse(args);
 
 if (options.InitializeBaseline)
 {
+    string historicalV1Path = Path.GetFullPath(Path.Combine(
+        options.RepositoryRoot,
+        "src",
+        "Hexalith.Folders.Contracts",
+        "openapi",
+        "hexalith.folders.v1.yaml"));
+    if (string.Equals(options.ContractPath, historicalV1Path, StringComparison.OrdinalIgnoreCase)
+        || string.Equals(options.ContractPath, options.PreviousSpinePath, StringComparison.OrdinalIgnoreCase))
+    {
+        throw new InvalidOperationException(
+            "prerequisite-drift: --initialize-baseline requires the v2 candidate contract and a distinct previous-spine output.");
+    }
+
     YamlMappingNode rootForBaseline = LoadYaml(options.ContractPath);
+    if (!rootForBaseline.Children.ContainsKey(new YamlScalarNode("x-hexalith-pd10-candidate")))
+    {
+        throw new InvalidOperationException(
+            "prerequisite-drift: --initialize-baseline contract is not marked as the PD10 v2 candidate.");
+    }
     IReadOnlyList<OperationModel> baselineOps = EnumerateOperations(rootForBaseline, new List<Diagnostic>()).OrderBy(o => o.OperationId, StringComparer.Ordinal).ToArray();
     string baselineYaml = RenderBaseline(baselineOps, options.ContractPath);
     Directory.CreateDirectory(Path.GetDirectoryName(options.PreviousSpinePath) ?? ".");
@@ -27,9 +46,235 @@ ValidateOperationInventory(operations, diagnostics);
 ValidatePreviousSpine(options.PreviousSpinePath, operations, diagnostics, options.AllowEmptyBaseline, options.RepositoryRoot);
 
 string output = RenderOracle(operations, diagnostics, options);
+ValidateOracleAgainstSchema(output, options.SchemaPath);
 Directory.CreateDirectory(Path.GetDirectoryName(options.OutputPath) ?? ".");
 File.WriteAllText(options.OutputPath, output, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
 return 0;
+
+static void ValidateOracleAgainstSchema(string oracle, string schemaPath)
+{
+    using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(schemaPath));
+    using StringReader reader = new(oracle);
+    YamlStream yaml = new();
+    yaml.Load(reader);
+    if (yaml.Documents.Count != 1 || yaml.Documents[0].RootNode is not YamlSequenceNode rows)
+    {
+        throw new InvalidOperationException("parity-schema-drift: generated parity oracle must be one YAML sequence.");
+    }
+
+    for (int index = 0; index < rows.Children.Count; index++)
+    {
+        ValidateSchemaNode(rows.Children[index], schema.RootElement, schema.RootElement, $"$[{index}]");
+    }
+}
+
+static void ValidateSchemaNode(YamlNode value, JsonElement schema, JsonElement schemaRoot, string path)
+{
+    if (schema.TryGetProperty("$ref", out JsonElement reference))
+    {
+        schema = ResolveSchemaReference(schemaRoot, reference.GetString()
+            ?? throw new InvalidOperationException($"parity-schema-drift: null $ref at {path}."));
+    }
+
+    if (schema.TryGetProperty("type", out JsonElement type))
+    {
+        ValidateSchemaType(value, type.GetString(), path);
+    }
+
+    if (schema.TryGetProperty("enum", out JsonElement enumValues)
+        && !enumValues.EnumerateArray().Any(candidate => ScalarEqualsJson(value, candidate)))
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} is outside the declared enum.");
+    }
+
+    if (schema.TryGetProperty("const", out JsonElement constant) && !ScalarEqualsJson(value, constant))
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} does not equal the declared const.");
+    }
+
+    if (value is YamlMappingNode mapping)
+    {
+        ValidateSchemaObject(mapping, schema, schemaRoot, path);
+    }
+    else if (value is YamlSequenceNode sequence)
+    {
+        ValidateSchemaArray(sequence, schema, schemaRoot, path);
+    }
+    else if (value is YamlScalarNode scalar)
+    {
+        ValidateSchemaScalar(scalar, schema, path);
+    }
+}
+
+static void ValidateSchemaObject(
+    YamlMappingNode value,
+    JsonElement schema,
+    JsonElement schemaRoot,
+    string path)
+{
+    Dictionary<string, YamlNode> properties = [];
+    foreach ((YamlNode keyNode, YamlNode child) in value.Children)
+    {
+        if (keyNode is not YamlScalarNode { Value: { } key })
+        {
+            throw new InvalidOperationException($"parity-schema-drift: {path} contains a non-scalar key.");
+        }
+
+        properties.Add(key, child);
+    }
+
+    if (schema.TryGetProperty("required", out JsonElement required))
+    {
+        foreach (JsonElement requiredName in required.EnumerateArray())
+        {
+            string name = requiredName.GetString()!;
+            if (!properties.ContainsKey(name))
+            {
+                throw new InvalidOperationException($"parity-schema-drift: {path} is missing required property '{name}'.");
+            }
+        }
+    }
+
+    Dictionary<string, JsonElement> declared = schema.TryGetProperty("properties", out JsonElement declaredProperties)
+        ? declaredProperties.EnumerateObject().ToDictionary(static property => property.Name, static property => property.Value, StringComparer.Ordinal)
+        : [];
+    bool closed = schema.TryGetProperty("additionalProperties", out JsonElement additional)
+        && additional.ValueKind == JsonValueKind.False;
+    foreach ((string name, YamlNode child) in properties)
+    {
+        if (declared.TryGetValue(name, out JsonElement childSchema))
+        {
+            ValidateSchemaNode(child, childSchema, schemaRoot, $"{path}.{name}");
+        }
+        else if (closed)
+        {
+            throw new InvalidOperationException($"parity-schema-drift: {path} contains undeclared property '{name}'.");
+        }
+    }
+}
+
+static void ValidateSchemaArray(
+    YamlSequenceNode value,
+    JsonElement schema,
+    JsonElement schemaRoot,
+    string path)
+{
+    if (schema.TryGetProperty("minItems", out JsonElement minimum)
+        && value.Children.Count < minimum.GetInt32())
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} has fewer than minItems entries.");
+    }
+
+    if (schema.TryGetProperty("maxItems", out JsonElement maximum)
+        && value.Children.Count > maximum.GetInt32())
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} has more than maxItems entries.");
+    }
+
+    if (schema.TryGetProperty("uniqueItems", out JsonElement unique)
+        && unique.ValueKind == JsonValueKind.True
+        && value.Children.Select(CanonicalYaml).Distinct(StringComparer.Ordinal).Count() != value.Children.Count)
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} contains duplicate entries.");
+    }
+
+    if (schema.TryGetProperty("items", out JsonElement itemSchema))
+    {
+        for (int index = 0; index < value.Children.Count; index++)
+        {
+            ValidateSchemaNode(value.Children[index], itemSchema, schemaRoot, $"{path}[{index}]");
+        }
+    }
+}
+
+static void ValidateSchemaScalar(YamlScalarNode value, JsonElement schema, string path)
+{
+    string text = value.Value ?? string.Empty;
+    if (schema.TryGetProperty("minLength", out JsonElement minimum) && text.Length < minimum.GetInt32())
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} is shorter than minLength.");
+    }
+
+    if (schema.TryGetProperty("maxLength", out JsonElement maximum) && text.Length > maximum.GetInt32())
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} is longer than maxLength.");
+    }
+
+    if (schema.TryGetProperty("pattern", out JsonElement pattern)
+        && !Regex.IsMatch(text, pattern.GetString()!, RegexOptions.CultureInvariant))
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} does not match its declared pattern.");
+    }
+}
+
+static void ValidateSchemaType(YamlNode value, string? type, string path)
+{
+    bool valid = type switch
+    {
+        "object" => value is YamlMappingNode,
+        "array" => value is YamlSequenceNode,
+        "string" => value is YamlScalarNode,
+        "integer" => value is YamlScalarNode scalar
+            && long.TryParse(scalar.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out _),
+        "boolean" => value is YamlScalarNode scalar
+            && bool.TryParse(scalar.Value, out _),
+        null => true,
+        _ => throw new InvalidOperationException($"parity-schema-drift: unsupported JSON Schema type '{type}' at {path}."),
+    };
+    if (!valid)
+    {
+        throw new InvalidOperationException($"parity-schema-drift: {path} is not of declared type '{type}'.");
+    }
+}
+
+static JsonElement ResolveSchemaReference(JsonElement root, string reference)
+{
+    if (!reference.StartsWith("#/", StringComparison.Ordinal))
+    {
+        throw new InvalidOperationException($"parity-schema-drift: external schema reference '{reference}' is unsupported.");
+    }
+
+    JsonElement current = root;
+    foreach (string rawSegment in reference[2..].Split('/'))
+    {
+        string segment = rawSegment.Replace("~1", "/", StringComparison.Ordinal).Replace("~0", "~", StringComparison.Ordinal);
+        if (!current.TryGetProperty(segment, out current))
+        {
+            throw new InvalidOperationException($"parity-schema-drift: unresolved schema reference '{reference}'.");
+        }
+    }
+
+    return current;
+}
+
+static bool ScalarEqualsJson(YamlNode value, JsonElement expected)
+{
+    if (value is not YamlScalarNode scalar)
+    {
+        return false;
+    }
+
+    return expected.ValueKind switch
+    {
+        JsonValueKind.String => string.Equals(scalar.Value, expected.GetString(), StringComparison.Ordinal),
+        JsonValueKind.Number => long.TryParse(scalar.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long actual)
+            && expected.TryGetInt64(out long expectedInteger)
+            && actual == expectedInteger,
+        JsonValueKind.True => string.Equals(scalar.Value, "true", StringComparison.OrdinalIgnoreCase),
+        JsonValueKind.False => string.Equals(scalar.Value, "false", StringComparison.OrdinalIgnoreCase),
+        JsonValueKind.Null => scalar.Value is null,
+        _ => false,
+    };
+}
+
+static string CanonicalYaml(YamlNode value)
+{
+    StringBuilder builder = new();
+    using StringWriter writer = new(builder, CultureInfo.InvariantCulture);
+    YamlStream stream = new(new YamlDocument(value));
+    stream.Save(writer, assignAnchors: false);
+    return builder.ToString();
+}
 
 static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, List<Diagnostic> diagnostics)
 {
@@ -120,12 +365,7 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 .Distinct(StringComparer.Ordinal)
                 .Order(StringComparer.Ordinal)
                 .ToArray();
-            string[] statusCodes = RequiredMapping(operation, "responses").Children.Keys
-                .OfType<YamlScalarNode>()
-                .Select(node => node.Value ?? string.Empty)
-                .Where(value => Regex.IsMatch(value, "^[1-5][0-9][0-9]$", RegexOptions.CultureInvariant))
-                .Order(StringComparer.Ordinal)
-                .ToArray();
+            string[] statusCodes = ReadResponseStatusCodes(operation, operationId);
             string? readConsistency = ReadConsistencyClass(operation);
             bool hasIdempotencyKey = HasIdempotencyKey(parameters, operation);
             string correlationHeader = ReadNestedScalar(operation, "x-hexalith-correlation", "correlationHeader") ?? "X-Correlation-Id";
@@ -162,6 +402,30 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
     }
 
     return operations;
+}
+
+static string[] ReadResponseStatusCodes(YamlMappingNode operation, string operationId)
+{
+    List<string> statuses = [];
+    foreach (YamlNode responseKey in RequiredMapping(operation, "responses").Children.Keys)
+    {
+        if (responseKey is not YamlScalarNode scalar || string.IsNullOrWhiteSpace(scalar.Value))
+        {
+            throw new InvalidOperationException(
+                $"prerequisite-drift: operation {operationId} has a non-scalar or empty OpenAPI response key.");
+        }
+
+        string value = scalar.Value;
+        if (!Regex.IsMatch(value, "^(?:[1-5](?:[0-9]{2}|[xX]{2})|default)$", RegexOptions.CultureInvariant))
+        {
+            throw new InvalidOperationException(
+                $"prerequisite-drift: operation {operationId} has malformed OpenAPI response key '{value}'.");
+        }
+
+        statuses.Add(value.Equals("default", StringComparison.Ordinal) ? value : value.ToUpperInvariant());
+    }
+
+    return statuses.Order(StringComparer.Ordinal).ToArray();
 }
 
 static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations, List<Diagnostic> diagnostics)
@@ -331,11 +595,8 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
         string identity = method + " " + path + " " + operationId;
 
-        if (operation.Children.ContainsKey(new YamlScalarNode("status_codes")))
+        if (currentByOperationId.TryGetValue(operationId, out OperationModel? current))
         {
-            OperationModel current = currentByOperationId.TryGetValue(operationId, out OperationModel? currentOperation)
-                ? currentOperation
-                : throw new InvalidOperationException($"previous-spine-drift: operation '{operationId}' has fingerprints but no current operation.");
             string[] previousStatusCodes = ReadStringSequence(operation, "status_codes").Order(StringComparer.Ordinal).ToArray();
             string[] previousCategories = ReadStringSequence(operation, "canonical_error_categories").Order(StringComparer.Ordinal).ToArray();
             string statusFingerprint = ReadFlexibleScalar(operation, "status_code_fingerprint_sha256");

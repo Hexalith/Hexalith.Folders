@@ -127,7 +127,7 @@ Folder identity, repository binding, ACL, branch-ref policy, and lifecycle statu
 | `GetRepositoryBinding` | GET | `/api/v2/folders/{folderId}/repository-bindings/{repositoryBindingId}` | Read-only. |
 | `ArchiveFolder` | POST | `/api/v2/folders/{folderId}/archive` | Mutating; idempotency-keyed. |
 | `GetFolderLifecycleStatus` | GET | `/api/v2/folders/{folderId}/lifecycle-status` | Read-only. |
-| `GetEffectivePermissions` | GET | `/api/v2/folders/{folderId}/effective-permissions` | Read-only. |
+| `GetEffectivePermissions` | GET | `/api/v2/folders/{folderId}/effective-permissions` | Read-only; accepts optional `X-Hexalith-Task-Id` context. |
 | `ListFolderAclEntries` | GET | `/api/v2/folders/{folderId}/acl` | Read-only. |
 | `UpdateFolderAclEntry` | PUT | `/api/v2/folders/{folderId}/acl/{aclEntryId}` | Mutating; idempotency-keyed. |
 | `ConfigureBranchRefPolicy` | PUT | `/api/v2/folders/{folderId}/branch-ref-policy` | Mutating; idempotency-keyed. |
@@ -179,7 +179,7 @@ Workspace, task, reconciliation, and cleanup status queries. See
 | `GetWorkspaceStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/status` | Read-only. |
 | `GetWorkspaceCleanupStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/cleanup/status` | Read-only. |
 | `GetReconciliationStatus` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/reconciliation/{reconciliationId}/status` | Read-only. |
-| `GetTaskStatus` | GET | `/api/v2/tasks/{taskId}/status` | Read-only. |
+| `GetTaskStatus` | GET | `/api/v2/folders/{folderId}/tasks/{taskId}/status` | Read-only; task binding is checked against the authorized folder. |
 
 ### Tag: `audit`
 
@@ -200,8 +200,8 @@ Story 7.14). See [audit & ops-console groups](../contract/audit-ops-console-cont
 
 | Operation | Method | Path | Notes |
 |---|---|---|---|
-| `GetReadinessDiagnostics` | GET | `/api/v2/ops-console/readiness-diagnostics` | Read-only. |
-| `GetProjectionFreshness` | GET | `/api/v2/ops-console/projection-freshness` | Read-only. |
+| `GetReadinessDiagnostics` | GET | `/api/v2/folders/{folderId}/ops-console/readiness-diagnostics` | Read-only. |
+| `GetProjectionFreshness` | GET | `/api/v2/folders/{folderId}/ops-console/projection-freshness` | Read-only. |
 | `GetProviderStatusDiagnostics` | GET | `/api/v2/folders/{folderId}/ops-console/provider-status-diagnostics` | Read-only. |
 | `GetLockDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/lock-diagnostics` | Read-only. |
 | `GetDirtyStateDiagnostics` | GET | `/api/v2/folders/{folderId}/workspaces/{workspaceId}/ops-console/dirty-state-diagnostics` | Read-only. |

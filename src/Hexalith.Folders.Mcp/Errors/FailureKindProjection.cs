@@ -43,7 +43,6 @@ internal static class FailureKindProjection
         CanonicalErrorCategory.Credential_missing => "credential_missing",
         CanonicalErrorCategory.Credential_reference_invalid => "credential_reference_invalid",
         CanonicalErrorCategory.Tenant_access_denied => "tenant_access_denied",
-        CanonicalErrorCategory.Folder_acl_denied => "folder_acl_denied",
         CanonicalErrorCategory.Validation_error => "validation_error",
         CanonicalErrorCategory.Idempotency_conflict => "idempotency_conflict",
         CanonicalErrorCategory.Idempotency_key_expired => "idempotency_key_expired",

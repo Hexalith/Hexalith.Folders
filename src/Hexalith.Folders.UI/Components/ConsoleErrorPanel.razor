@@ -1,14 +1,16 @@
 @namespace Hexalith.Folders.UI.Components
 @using Hexalith.Folders.UI.Components.Icons
+@using Hexalith.FrontComposer.Contracts.Rendering
 @using Microsoft.FluentUI.AspNetCore.Components
 
 <div data-testid="console-error-panel"
      data-fc-error-category="@Error.ReasonToken"
      data-fc-error-disposition="@Error.Disposition.ToString().ToLowerInvariant()"
      role="alert">
-    <p data-testid="console-error-disposition">
-        <strong>@DispositionLabel</strong>
-    </p>
+    <FluentText Size="@Typography.FieldLabel.Size"
+                Weight="@Typography.FieldLabel.Weight"
+                As="@Typography.FieldLabel.Tag"
+                data-testid="console-error-disposition">@DispositionLabel</FluentText>
     <p>
         <FluentIcon Value="@FoldersConsoleIcons.Warning16()" aria-hidden="true" />
         <strong>Reason category:</strong>

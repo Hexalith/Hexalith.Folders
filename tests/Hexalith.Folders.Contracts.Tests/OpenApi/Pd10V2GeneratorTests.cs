@@ -50,6 +50,19 @@ public sealed class Pd10V2GeneratorTests
         diagnostics.ShouldContain("Duplicate generated route", Case.Sensitive);
     }
 
+    [Fact]
+    public void GeneratorRejectsDuplicateMatrixOperationBeforeInsertion()
+    {
+        string matrix = NewTempPath("authorization-matrix.md");
+        string text = File.ReadAllText(MatrixPath);
+        string row = text.Split('\n').Single(line => line.StartsWith("| `GetEffectivePermissions` |", StringComparison.Ordinal));
+        File.WriteAllText(matrix, text.Replace(row, row + Environment.NewLine + row, StringComparison.Ordinal));
+
+        Run(SourcePath, matrix, NewTempPath("candidate.yaml"), out string diagnostics).ShouldNotBe(0);
+
+        diagnostics.ShouldContain("Duplicate operation row", Case.Sensitive);
+    }
+
     private static int Run(string source, string matrix, string output, out string diagnostics)
     {
         ProcessStartInfo startInfo = new("python3")

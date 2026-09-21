@@ -1,4 +1,11 @@
 using System.Text;
+using System.Text.RegularExpressions;
+
+using Hexalith.Folders.Client.Generation.Shared;
+
+using YamlDotNet.RepresentationModel;
+
+using static Hexalith.Folders.Client.Generation.Shared.YamlContractLoader;
 
 namespace Hexalith.Folders.Client.Generation;
 
@@ -11,9 +18,10 @@ internal static class GeneratedClientPostProcessor
     /// Makes both declared successful range responses flow through the common generated result abstraction.
     /// </summary>
     /// <param name="clientPath">The generated NSwag client source path.</param>
-    public static void Process(string clientPath)
+    public static void Process(string clientPath, string contractPath)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(clientPath);
+        ArgumentException.ThrowIfNullOrWhiteSpace(contractPath);
 
         string source = File.ReadAllText(clientPath)
             .Replace("\r\n", "\n", StringComparison.Ordinal)
@@ -78,7 +86,243 @@ internal static class GeneratedClientPostProcessor
             }
         }
 
+        source = RequireClosedProblemFields(source);
+        source = RestoreOperationUnavailableEnumUnions(source, contractPath);
+
         WriteAtomically(clientPath, source);
+    }
+
+    private static string RestoreOperationUnavailableEnumUnions(
+        string source,
+        string contractPath)
+    {
+        // NSwag 14 selects the first exact oneOf branch when it emits the public DTO even though the
+        // wrapper's declared properties contain the scalar union. Restore every declared string value
+        // deterministically, but only on the operation wrappers derived from the candidate contract.
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(LoadYaml(contractPath), "components"), "schemas");
+        Dictionary<string, YamlMappingNode> wrappers = schemas.Children
+            .Select(static entry => new
+            {
+                Name = entry.Key.ShouldBeScalar("schema name").Value ?? string.Empty,
+                Schema = entry.Value.ShouldBeMapping("schema"),
+            })
+            .Where(static entry => entry.Name.EndsWith("UnavailableProblem", StringComparison.Ordinal)
+                && entry.Schema.Children.ContainsKey(new YamlScalarNode("oneOf"))
+                && entry.Schema.Children.ContainsKey(new YamlScalarNode("properties")))
+            .ToDictionary(static entry => entry.Name, static entry => entry.Schema, StringComparer.Ordinal);
+        if (wrappers.Count != 45)
+        {
+            throw new InvalidOperationException($"Expected 45 generated operation-unavailable wrappers, found {wrappers.Count}.");
+        }
+
+        foreach ((string typeName, YamlMappingNode wrapper) in wrappers.OrderBy(static item => item.Key, StringComparer.Ordinal))
+        {
+            string declaration = $"    public partial class {typeName}";
+            string decorated = $"    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]\n{declaration}";
+            if (!source.Contains(decorated, StringComparison.Ordinal))
+            {
+                source = ReplaceExactly(source, declaration, decorated, expectedCount: 1);
+            }
+
+            string block = ClassBlock(source, typeName);
+            YamlMappingNode properties = RequiredMapping(wrapper, "properties");
+            foreach (string propertyName in new[] { "Type", "Title", "Category", "Code", "Message", "ClientAction" })
+            {
+                string wireName = char.ToLowerInvariant(propertyName[0]) + propertyName[1..];
+                foreach (string wireValue in EnumValues(RequiredMapping(properties, wireName), $"{typeName}.{wireName}"))
+                {
+                    source = AddEnumValue(source, PropertyType(block, propertyName), wireValue, EnumMemberName(wireValue));
+                }
+            }
+
+            string detailsType = PropertyType(block, "Details");
+            YamlMappingNode detailProperties = RequiredMapping(RequiredMapping(properties, "details"), "properties");
+            foreach (string visibility in EnumValues(RequiredMapping(detailProperties, "visibility"), $"{typeName}.details.visibility"))
+            {
+                source = AddEnumValue(
+                    source,
+                    PropertyType(ClassBlock(source, detailsType), "Visibility"),
+                    visibility,
+                    EnumMemberName(visibility));
+            }
+        }
+
+        return source;
+    }
+
+    private static IEnumerable<string> EnumValues(YamlMappingNode schema, string location)
+    {
+        if (!schema.Children.TryGetValue(new YamlScalarNode("enum"), out YamlNode? valuesNode))
+        {
+            throw new InvalidOperationException($"Generated-client union property '{location}' has no enum.");
+        }
+
+        return valuesNode.ShouldBeSequence($"{location}.enum").Children
+            .Select(value => value.ShouldBeScalar(location).Value
+                ?? throw new InvalidOperationException($"Generated-client union value '{location}' must not be null."));
+    }
+
+    private static string EnumMemberName(string wireValue)
+    {
+        string member = Regex.Replace(wireValue, @"[^A-Za-z0-9_]", "_", RegexOptions.CultureInvariant);
+        if (member.Length == 0)
+        {
+            return "Value";
+        }
+
+        if (char.IsDigit(member[0]))
+        {
+            member = "_" + member;
+        }
+
+        return char.ToUpperInvariant(member[0]) + member[1..];
+    }
+
+    private static string PropertyType(string classBlock, string propertyName)
+    {
+        Match match = Regex.Match(
+            classBlock,
+            $@"public (?<type>[A-Za-z0-9_]+) {Regex.Escape(propertyName)} \{{ get; set; \}}",
+            RegexOptions.CultureInvariant);
+        if (!match.Success)
+        {
+            throw new InvalidOperationException($"Generated-client property '{propertyName}' was not found for unavailable-union restoration.");
+        }
+
+        return match.Groups["type"].Value;
+    }
+
+    private static string AddEnumValue(string source, string enumType, string wireValue, string memberName)
+    {
+        string declaration = $"    public enum {enumType}";
+        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        int end = start < 0 ? -1 : source.IndexOf("\n    }\n", start, StringComparison.Ordinal);
+        if (start < 0 || end < 0)
+        {
+            throw new InvalidOperationException($"Generated-client enum '{enumType}' was not found.");
+        }
+
+        string block = source[start..end];
+        string attribute = $"[System.Runtime.Serialization.EnumMember(Value = @\"{wireValue}\")]";
+        if (block.Contains(attribute, StringComparison.Ordinal))
+        {
+            return source;
+        }
+
+        int nextValue = Regex.Matches(block, @"= (?<value>[0-9]+),", RegexOptions.CultureInvariant)
+            .Select(static match => int.Parse(match.Groups["value"].Value, System.Globalization.CultureInfo.InvariantCulture))
+            .DefaultIfEmpty(-1)
+            .Max() + 1;
+        string member = $"\n        {attribute}\n        {memberName} = {nextValue},\n";
+        return source.Insert(end, member);
+    }
+
+    private static string RequireClosedProblemFields(string source)
+    {
+        string[] requiredProblemProperties =
+        [
+            "type", "title", "status", "category", "code", "message", "correlationId",
+            "retryable", "clientAction", "details",
+        ];
+        string[] problemTypeNames = Regex.Matches(
+                source,
+                @"^    public partial class (?<name>[A-Za-z0-9_]*Problem(?:Details)?)\b",
+                RegexOptions.Multiline | RegexOptions.CultureInvariant)
+            .Select(static match => match.Groups["name"].Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        HashSet<string> detailsTypeNames = new(StringComparer.Ordinal);
+        foreach (string typeName in problemTypeNames)
+        {
+            string block = ClassBlock(source, typeName);
+            Match detailsType = Regex.Match(
+                block,
+                @"public (?<name>Details[0-9]*) Details \{ get; set; \}",
+                RegexOptions.CultureInvariant);
+            if (detailsType.Success)
+            {
+                detailsTypeNames.Add(detailsType.Groups["name"].Value);
+            }
+
+            source = RequireJsonProperties(source, typeName, requiredProblemProperties);
+            source = RemoveJsonExtensionData(source, typeName);
+        }
+
+        foreach (string detailsTypeName in detailsTypeNames)
+        {
+            source = RequireJsonProperties(source, detailsTypeName, ["visibility"]);
+            source = RemoveJsonExtensionData(source, detailsTypeName);
+        }
+
+        return source;
+    }
+
+    private static string RemoveJsonExtensionData(string source, string typeName)
+    {
+        string declaration = $"    public partial class {typeName}";
+        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        int end = start < 0 ? -1 : source.IndexOf("\n    }\n", start, StringComparison.Ordinal);
+        if (start < 0 || end < 0)
+        {
+            throw new InvalidOperationException(
+                $"Generated-client problem type '{typeName}' was not found for closed-shape enforcement.");
+        }
+
+        string block = source[start..end];
+        block = Regex.Replace(
+            block,
+            "\\n        private System\\.Collections\\.Generic\\.IDictionary<string, object> _additionalProperties;\\n\\n"
+                + "        \\[Newtonsoft\\.Json\\.JsonExtensionData\\]\\n"
+                + "        public System\\.Collections\\.Generic\\.IDictionary<string, object> AdditionalProperties\\n"
+                + "        \\{\\n"
+                + "            get \\{ return _additionalProperties \\?\\? \\(_additionalProperties = new System\\.Collections\\.Generic\\.Dictionary<string, object>\\(\\)\\); \\}\\n"
+                + "            set \\{ _additionalProperties = value; \\}\\n"
+                + "        \\}\\n",
+            string.Empty,
+            RegexOptions.CultureInvariant);
+        return source[..start] + block + source[end..];
+    }
+
+    private static string RequireJsonProperties(string source, string typeName, IReadOnlyList<string> propertyNames)
+    {
+        string declaration = $"    public partial class {typeName}";
+        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        if (start < 0)
+        {
+            throw new InvalidOperationException($"Generated-client problem type '{typeName}' was not found for required-field enforcement.");
+        }
+
+        int end = source.IndexOf("\n    }\n", start, StringComparison.Ordinal);
+        if (end < 0)
+        {
+            throw new InvalidOperationException($"Generated-client problem type '{typeName}' has no deterministic class terminator.");
+        }
+
+        string block = source[start..end];
+        foreach (string propertyName in propertyNames)
+        {
+            string optional = $"[Newtonsoft.Json.JsonProperty(\"{propertyName}\", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]";
+            string required = $"[Newtonsoft.Json.JsonProperty(\"{propertyName}\", Required = Newtonsoft.Json.Required.Always)]";
+            if (block.Contains(optional, StringComparison.Ordinal))
+            {
+                block = block.Replace(optional, required, StringComparison.Ordinal);
+            }
+        }
+
+        return source[..start] + block + source[end..];
+    }
+
+    private static string ClassBlock(string source, string typeName)
+    {
+        string declaration = $"    public partial class {typeName}";
+        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        int end = start < 0 ? -1 : source.IndexOf("\n    }\n", start, StringComparison.Ordinal);
+        if (start < 0 || end < 0)
+        {
+            throw new InvalidOperationException($"Generated-client class block '{typeName}' was not found.");
+        }
+
+        return source[start..end];
     }
 
     private static void AssertPartialRangeIsSuccessful(string source)

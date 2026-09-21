@@ -1695,12 +1695,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetFolderLifecycleStatusUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetFolderLifecycleStatusUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2010,12 +2010,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ListFolderAclEntriesUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ListFolderAclEntriesUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2316,12 +2316,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetEffectivePermissionsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetEffectivePermissionsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2479,12 +2479,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ConfigureProviderBindingUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ConfigureProviderBindingUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2609,12 +2609,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProviderBindingUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetProviderBindingUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2750,12 +2750,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ValidateProviderReadinessUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ValidateProviderReadinessUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2888,12 +2888,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProviderSupportEvidenceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetProviderSupportEvidenceUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3055,12 +3055,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CreateRepositoryBackedFolderUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<CreateRepositoryBackedFolderUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3239,12 +3239,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<BindRepositoryUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<BindRepositoryUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3376,12 +3376,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetRepositoryBindingUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetRepositoryBindingUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3671,12 +3671,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetBranchRefPolicyUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetBranchRefPolicyUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3859,12 +3859,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<PrepareWorkspaceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider readiness cannot be safely established, or provider outcome is unknown. Authorization-first contract \u2014 these distinguishable responses are only reachable after authentication and authorization succeed. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<PrepareWorkspaceUnavailableProblem>("Provider readiness cannot be safely established, or provider outcome is unknown. Authorization-first contract \u2014 these distinguishable responses are only reachable after authentication and authorization succeed. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4057,12 +4057,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<LockWorkspaceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<LockWorkspaceUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4211,12 +4211,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetWorkspaceLockUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetWorkspaceLockUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4409,12 +4409,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ReleaseWorkspaceLockUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ReleaseWorkspaceLockUnavailableProblem>("Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4552,12 +4552,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetWorkspaceRetryEligibilityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetWorkspaceRetryEligibilityUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4701,12 +4701,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetWorkspaceTransitionEvidenceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetWorkspaceTransitionEvidenceUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -4929,12 +4929,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AddFileUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<AddFileUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5157,12 +5157,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ChangeFileUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ChangeFileUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5375,12 +5375,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileMutationUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<RemoveFileUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileMutationUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<RemoveFileUnavailableProblem>("File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5578,12 +5578,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ListFolderFilesUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ListFolderFilesUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5774,12 +5774,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetFolderFileMetadataUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetFolderFileMetadataUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -5970,12 +5970,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SearchFolderFilesUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SearchFolderFilesUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6166,12 +6166,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<SearchFolderIndexedFilesUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<SearchFolderIndexedFilesUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6318,12 +6318,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetFolderIndexingStatusUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetFolderIndexingStatusUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6514,12 +6514,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GlobFolderFilesUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GlobFolderFilesUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6730,12 +6730,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContextUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ReadFileRangeUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContextUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ReadFileRangeUnavailableProblem>("File context-query unavailability preserving read-model-unavailable outcomes while adding the exact non-disclosing file-policy outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -6918,12 +6918,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<CommitWorkspaceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Provider or read-model dependency cannot produce a safe commit outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<CommitWorkspaceUnavailableProblem>("Provider or read-model dependency cannot produce a safe commit outcome. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7062,12 +7062,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetWorkspaceStatusUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetWorkspaceStatusUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7211,12 +7211,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetWorkspaceCleanupStatusUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetWorkspaceCleanupStatusUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7355,12 +7355,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetTaskStatusUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetTaskStatusUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7506,12 +7506,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetCommitEvidenceUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetCommitEvidenceUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7657,12 +7657,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProviderOutcomeUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetProviderOutcomeUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7808,12 +7808,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetReconciliationStatusUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetReconciliationStatusUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -7975,12 +7975,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ListAuditTrailUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Audit projection unavailable. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ListAuditTrailUnavailableProblem>("Audit projection unavailable. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8128,12 +8128,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetAuditRecordUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetAuditRecordUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8295,12 +8295,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ListOperationTimelineUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ListOperationTimelineUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8448,12 +8448,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetOperationTimelineEntryUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetOperationTimelineEntryUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8595,12 +8595,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetReadinessDiagnosticsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetReadinessDiagnosticsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8749,12 +8749,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetLockDiagnosticsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetLockDiagnosticsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -8903,12 +8903,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetDirtyStateDiagnosticsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetDirtyStateDiagnosticsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9057,12 +9057,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetFailedOperationDiagnosticsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetFailedOperationDiagnosticsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9204,12 +9204,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProviderStatusDiagnosticsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetProviderStatusDiagnosticsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9358,12 +9358,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetSyncStatusDiagnosticsUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetSyncStatusDiagnosticsUnavailableProblem>("Read model is temporarily unavailable without leaking protected resource existence. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9505,12 +9505,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 503)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationSpecificUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<GetProjectionFreshnessUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<OperationSpecificUnavailableProblem>("Projection unavailable. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<GetProjectionFreshnessUnavailableProblem>("Projection unavailable. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -9668,13 +9668,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProblemDetails
     {
 
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
         public string Type { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         public string Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public int Status { get; set; }
 
         [Newtonsoft.Json.JsonProperty("detail", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -9683,31 +9683,31 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Instance { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         public string Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProblemDetailsClientAction ClientAction { get; set; }
 
         /// <summary>
         /// Closed metadata-only details. Every error requires visibility; keys outside the generated vocabulary are forbidden.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details Details { get; set; } = new Details();
 
     }
@@ -9719,37 +9719,37 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
         public string Type { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         public string Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public int Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         public string Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ExactFileProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details2 Details { get; set; } = new Details2();
 
     }
@@ -9759,43 +9759,34 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileSafeResourceUnavailableProblem : ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSafeResourceUnavailableProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public FileSafeResourceUnavailableProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSafeResourceUnavailableProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSafeResourceUnavailableProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSafeResourceUnavailableProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSafeResourceUnavailableProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details3 Details { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -9804,43 +9795,34 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeUnsatisfiableProblem : ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileRangeUnsatisfiableProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public FileRangeUnsatisfiableProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileRangeUnsatisfiableProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileRangeUnsatisfiableProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileRangeUnsatisfiableProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileRangeUnsatisfiableProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details4 Details { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -9849,43 +9831,34 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FilePolicyUnavailableProblem : ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FilePolicyUnavailableProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public FilePolicyUnavailableProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FilePolicyUnavailableProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FilePolicyUnavailableProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FilePolicyUnavailableProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FilePolicyUnavailableProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details5 Details { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -9894,43 +9867,34 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileContentEvidenceInvalidProblem : ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentEvidenceInvalidProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public FileContentEvidenceInvalidProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentEvidenceInvalidProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentEvidenceInvalidProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentEvidenceInvalidProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentEvidenceInvalidProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details6 Details { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -9939,15 +9903,6 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileContentEvidenceInvalidOrValidationProblem : ProblemDetails
     {
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -9955,43 +9910,34 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileInlineTransportRequiredProblem : ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileInlineTransportRequiredProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public FileInlineTransportRequiredProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileInlineTransportRequiredProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileInlineTransportRequiredProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileInlineTransportRequiredProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileInlineTransportRequiredProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details7 Details { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -10000,43 +9946,34 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileContentLimitExceededProblem : ExactFileProblem
     {
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentLimitExceededProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public FileContentLimitExceededProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentLimitExceededProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentLimitExceededProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentLimitExceededProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileContentLimitExceededProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
         public Details8 Details { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -10045,15 +9982,6 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileContentLimitExceededOrWorkspaceTransitionProblem : ProblemDetails
     {
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -10061,30 +9989,12 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileMutationUnavailableProblem : ProblemDetails
     {
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class FileContextUnavailableProblem : ProblemDetails
     {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -12985,8 +12895,209 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
         Tenant_access_denied = 5,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
-        Folder_acl_denied = 6,
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
+        Concurrency_conflict = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
+        Idempotency_conflict = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
+        Provider_readiness_failed = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
+        Provider_permission_insufficient = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
+        Provider_rate_limited = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
+        Repository_binding_unavailable = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
+        Branch_ref_policy_invalid = 15,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
+        Workspace_not_ready = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
+        Workspace_preparation_failed = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
+        Workspace_locked = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
+        Lock_conflict = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
+        Lock_expired = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
+        Lock_not_owned = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
+        Stale_workspace = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
+        Authorization_revocation_detected = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
+        Repository_conflict = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
+        Duplicate_binding = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
+        Unsupported_provider_capability = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
+        Path_validation_failed = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
+        File_operation_failed = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
+        Dirty_workspace = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
+        Commit_failed = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
+        State_transition_invalid = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
+        Response_limit_exceeded = 36,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 37,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 38,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
+        Projection_stale = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 40,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 41,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 42,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
+        Failed_operation = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 44,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
+        Internal_error = 45,
+
+    }
+
+    /// <summary>
+    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CliExitCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"0")]
+        _0 = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"1")]
+        _1 = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"64")]
+        _64 = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"65")]
+        _65 = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"66")]
+        _66 = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"67")]
+        _67 = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"68")]
+        _68 = 6,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"69")]
+        _69 = 7,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"70")]
+        _70 = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"71")]
+        _71 = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"72")]
+        _72 = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"73")]
+        _73 = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"74")]
+        _74 = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"75")]
+        _75 = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"76")]
+        _76 = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"77")]
+        _77 = 15,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum McpFailureKind
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"none")]
+        None = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
+        Authentication_failure = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
+        Usage_error = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
+        Client_configuration_error = 3,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
+        Credential_missing = 4,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
+        Credential_reference_invalid = 5,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
         Validation_error = 7,
@@ -13107,213 +13218,6 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
         Internal_error = 46,
-
-    }
-
-    /// <summary>
-    /// CLI exit codes are string enums here to avoid accidental numeric range expansion.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum CliExitCode
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"0")]
-        _0 = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"1")]
-        _1 = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"64")]
-        _64 = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"65")]
-        _65 = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"66")]
-        _66 = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"67")]
-        _67 = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"68")]
-        _68 = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"69")]
-        _69 = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"70")]
-        _70 = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"71")]
-        _71 = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"72")]
-        _72 = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"73")]
-        _73 = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"74")]
-        _74 = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"75")]
-        _75 = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"76")]
-        _76 = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"77")]
-        _77 = 15,
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum McpFailureKind
-    {
-
-        [System.Runtime.Serialization.EnumMember(Value = @"none")]
-        None = 0,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
-        Authentication_failure = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"usage_error")]
-        Usage_error = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
-        Client_configuration_error = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
-        Credential_missing = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
-        Credential_reference_invalid = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
-        Tenant_access_denied = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"folder_acl_denied")]
-        Folder_acl_denied = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
-        Concurrency_conflict = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
-        Idempotency_key_expired = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
-        Provider_permission_insufficient = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
-        Provider_rate_limited = 15,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
-        Repository_binding_unavailable = 16,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
-        Branch_ref_policy_invalid = 17,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
-        Workspace_not_ready = 18,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 19,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 20,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
-        Lock_conflict = 21,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 22,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
-        Lock_not_owned = 23,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
-        Stale_workspace = 24,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 25,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 26,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 27,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
-        Unsupported_provider_capability = 28,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
-        Path_validation_failed = 29,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
-        File_operation_failed = 30,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 31,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 32,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 33,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 34,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 35,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 36,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
-        Input_limit_exceeded = 37,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
-        Response_limit_exceeded = 38,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
-        Query_timeout = 39,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 40,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 41,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 42,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 43,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 44,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 45,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 46,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 47,
 
     }
 
@@ -13456,44 +13360,1979 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetFolderLifecycleStatusUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderLifecycleStatusUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderLifecycleStatusUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetFolderLifecycleStatusUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderLifecycleStatusUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderLifecycleStatusUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderLifecycleStatusUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderLifecycleStatusUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details9 Details { get; set; } = new Details9();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ListFolderAclEntriesUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderAclEntriesUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderAclEntriesUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ListFolderAclEntriesUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderAclEntriesUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderAclEntriesUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderAclEntriesUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderAclEntriesUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details10 Details { get; set; } = new Details10();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetEffectivePermissionsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetEffectivePermissionsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetEffectivePermissionsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetEffectivePermissionsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetEffectivePermissionsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetEffectivePermissionsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetEffectivePermissionsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetEffectivePermissionsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details11 Details { get; set; } = new Details11();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ConfigureProviderBindingUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureProviderBindingUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureProviderBindingUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ConfigureProviderBindingUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureProviderBindingUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureProviderBindingUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureProviderBindingUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureProviderBindingUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details12 Details { get; set; } = new Details12();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetProviderBindingUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderBindingUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderBindingUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetProviderBindingUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderBindingUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderBindingUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderBindingUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderBindingUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details13 Details { get; set; } = new Details13();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ValidateProviderReadinessUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ValidateProviderReadinessUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ValidateProviderReadinessUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ValidateProviderReadinessUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ValidateProviderReadinessUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ValidateProviderReadinessUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ValidateProviderReadinessUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ValidateProviderReadinessUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details14 Details { get; set; } = new Details14();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetProviderSupportEvidenceUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderSupportEvidenceUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderSupportEvidenceUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetProviderSupportEvidenceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderSupportEvidenceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderSupportEvidenceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderSupportEvidenceUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderSupportEvidenceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details15 Details { get; set; } = new Details15();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class CreateRepositoryBackedFolderUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateRepositoryBackedFolderUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateRepositoryBackedFolderUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public CreateRepositoryBackedFolderUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateRepositoryBackedFolderUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateRepositoryBackedFolderUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateRepositoryBackedFolderUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateRepositoryBackedFolderUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details16 Details { get; set; } = new Details16();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class BindRepositoryUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BindRepositoryUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BindRepositoryUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public BindRepositoryUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BindRepositoryUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BindRepositoryUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BindRepositoryUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public BindRepositoryUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details17 Details { get; set; } = new Details17();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetRepositoryBindingUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetRepositoryBindingUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetRepositoryBindingUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetRepositoryBindingUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetRepositoryBindingUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetRepositoryBindingUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetRepositoryBindingUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetRepositoryBindingUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details18 Details { get; set; } = new Details18();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetBranchRefPolicyUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetBranchRefPolicyUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetBranchRefPolicyUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetBranchRefPolicyUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetBranchRefPolicyUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetBranchRefPolicyUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetBranchRefPolicyUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetBranchRefPolicyUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details19 Details { get; set; } = new Details19();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class PrepareWorkspaceUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PrepareWorkspaceUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PrepareWorkspaceUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public PrepareWorkspaceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PrepareWorkspaceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PrepareWorkspaceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PrepareWorkspaceUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public PrepareWorkspaceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details20 Details { get; set; } = new Details20();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class LockWorkspaceUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public LockWorkspaceUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public LockWorkspaceUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public LockWorkspaceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public LockWorkspaceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public LockWorkspaceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public LockWorkspaceUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public LockWorkspaceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details21 Details { get; set; } = new Details21();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetWorkspaceLockUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceLockUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceLockUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetWorkspaceLockUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceLockUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceLockUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceLockUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceLockUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details22 Details { get; set; } = new Details22();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ReleaseWorkspaceLockUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReleaseWorkspaceLockUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReleaseWorkspaceLockUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ReleaseWorkspaceLockUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReleaseWorkspaceLockUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReleaseWorkspaceLockUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReleaseWorkspaceLockUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReleaseWorkspaceLockUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details23 Details { get; set; } = new Details23();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetWorkspaceRetryEligibilityUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceRetryEligibilityUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceRetryEligibilityUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetWorkspaceRetryEligibilityUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceRetryEligibilityUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceRetryEligibilityUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceRetryEligibilityUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceRetryEligibilityUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details24 Details { get; set; } = new Details24();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetWorkspaceTransitionEvidenceUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceTransitionEvidenceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details25 Details { get; set; } = new Details25();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class AddFileUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public AddFileUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AddFileUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details26 Details { get; set; } = new Details26();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ChangeFileUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ChangeFileUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ChangeFileUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details27 Details { get; set; } = new Details27();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class RemoveFileUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public RemoveFileUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public RemoveFileUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details28 Details { get; set; } = new Details28();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ListFolderFilesUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderFilesUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderFilesUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ListFolderFilesUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderFilesUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderFilesUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderFilesUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListFolderFilesUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details29 Details { get; set; } = new Details29();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetFolderFileMetadataUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderFileMetadataUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderFileMetadataUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetFolderFileMetadataUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderFileMetadataUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderFileMetadataUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderFileMetadataUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderFileMetadataUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details30 Details { get; set; } = new Details30();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class SearchFolderFilesUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderFilesUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderFilesUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public SearchFolderFilesUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderFilesUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderFilesUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderFilesUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderFilesUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details31 Details { get; set; } = new Details31();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class SearchFolderIndexedFilesUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderIndexedFilesUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderIndexedFilesUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public SearchFolderIndexedFilesUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderIndexedFilesUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderIndexedFilesUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderIndexedFilesUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SearchFolderIndexedFilesUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details32 Details { get; set; } = new Details32();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetFolderIndexingStatusUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderIndexingStatusUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderIndexingStatusUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetFolderIndexingStatusUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderIndexingStatusUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderIndexingStatusUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderIndexingStatusUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFolderIndexingStatusUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details33 Details { get; set; } = new Details33();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GlobFolderFilesUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GlobFolderFilesUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GlobFolderFilesUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GlobFolderFilesUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GlobFolderFilesUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GlobFolderFilesUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GlobFolderFilesUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GlobFolderFilesUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details34 Details { get; set; } = new Details34();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ReadFileRangeUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReadFileRangeUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReadFileRangeUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ReadFileRangeUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReadFileRangeUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReadFileRangeUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReadFileRangeUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ReadFileRangeUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details35 Details { get; set; } = new Details35();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class CommitWorkspaceUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CommitWorkspaceUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CommitWorkspaceUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public CommitWorkspaceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CommitWorkspaceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CommitWorkspaceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CommitWorkspaceUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CommitWorkspaceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details36 Details { get; set; } = new Details36();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetWorkspaceStatusUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceStatusUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceStatusUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetWorkspaceStatusUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceStatusUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceStatusUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceStatusUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceStatusUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details37 Details { get; set; } = new Details37();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetWorkspaceCleanupStatusUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceCleanupStatusUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceCleanupStatusUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetWorkspaceCleanupStatusUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceCleanupStatusUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceCleanupStatusUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceCleanupStatusUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetWorkspaceCleanupStatusUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details38 Details { get; set; } = new Details38();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetTaskStatusUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskStatusUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskStatusUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetTaskStatusUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskStatusUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskStatusUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskStatusUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetTaskStatusUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details39 Details { get; set; } = new Details39();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetCommitEvidenceUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetCommitEvidenceUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetCommitEvidenceUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetCommitEvidenceUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetCommitEvidenceUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetCommitEvidenceUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetCommitEvidenceUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetCommitEvidenceUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details40 Details { get; set; } = new Details40();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetProviderOutcomeUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderOutcomeUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderOutcomeUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetProviderOutcomeUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderOutcomeUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderOutcomeUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderOutcomeUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderOutcomeUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details41 Details { get; set; } = new Details41();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetReconciliationStatusUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReconciliationStatusUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReconciliationStatusUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetReconciliationStatusUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReconciliationStatusUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReconciliationStatusUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReconciliationStatusUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReconciliationStatusUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details42 Details { get; set; } = new Details42();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ListAuditTrailUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListAuditTrailUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListAuditTrailUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ListAuditTrailUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListAuditTrailUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListAuditTrailUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListAuditTrailUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListAuditTrailUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details43 Details { get; set; } = new Details43();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetAuditRecordUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAuditRecordUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAuditRecordUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetAuditRecordUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAuditRecordUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAuditRecordUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAuditRecordUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetAuditRecordUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details44 Details { get; set; } = new Details44();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ListOperationTimelineUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListOperationTimelineUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListOperationTimelineUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ListOperationTimelineUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListOperationTimelineUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListOperationTimelineUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListOperationTimelineUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ListOperationTimelineUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details45 Details { get; set; } = new Details45();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetOperationTimelineEntryUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetOperationTimelineEntryUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetOperationTimelineEntryUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetOperationTimelineEntryUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetOperationTimelineEntryUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetOperationTimelineEntryUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetOperationTimelineEntryUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetOperationTimelineEntryUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details46 Details { get; set; } = new Details46();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetReadinessDiagnosticsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReadinessDiagnosticsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReadinessDiagnosticsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetReadinessDiagnosticsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReadinessDiagnosticsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReadinessDiagnosticsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReadinessDiagnosticsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetReadinessDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details47 Details { get; set; } = new Details47();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetLockDiagnosticsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetLockDiagnosticsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetLockDiagnosticsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetLockDiagnosticsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetLockDiagnosticsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetLockDiagnosticsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetLockDiagnosticsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetLockDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details48 Details { get; set; } = new Details48();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetDirtyStateDiagnosticsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetDirtyStateDiagnosticsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetDirtyStateDiagnosticsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetDirtyStateDiagnosticsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetDirtyStateDiagnosticsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetDirtyStateDiagnosticsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetDirtyStateDiagnosticsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetDirtyStateDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details49 Details { get; set; } = new Details49();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetFailedOperationDiagnosticsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFailedOperationDiagnosticsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFailedOperationDiagnosticsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetFailedOperationDiagnosticsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFailedOperationDiagnosticsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFailedOperationDiagnosticsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFailedOperationDiagnosticsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetFailedOperationDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details50 Details { get; set; } = new Details50();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetProviderStatusDiagnosticsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderStatusDiagnosticsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderStatusDiagnosticsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetProviderStatusDiagnosticsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderStatusDiagnosticsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderStatusDiagnosticsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderStatusDiagnosticsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProviderStatusDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details51 Details { get; set; } = new Details51();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetSyncStatusDiagnosticsUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetSyncStatusDiagnosticsUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetSyncStatusDiagnosticsUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetSyncStatusDiagnosticsUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetSyncStatusDiagnosticsUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetSyncStatusDiagnosticsUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetSyncStatusDiagnosticsUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetSyncStatusDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details52 Details { get; set; } = new Details52();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class GetProjectionFreshnessUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProjectionFreshnessUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProjectionFreshnessUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public GetProjectionFreshnessUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProjectionFreshnessUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProjectionFreshnessUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProjectionFreshnessUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public GetProjectionFreshnessUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details53 Details { get; set; } = new Details53();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class AuthenticationFailureProblem : ProblemDetails
     {
 
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthenticationFailureProblemType Type { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Title { get; set; }
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthenticationFailureProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Status { get; set; }
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public AuthenticationFailureProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Category { get; set; }
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthenticationFailureProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Code { get; set; }
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthenticationFailureProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Message { get; set; }
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthenticationFailureProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Retryable { get; set; }
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object ClientAction { get; set; }
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthenticationFailureProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Details9 Details { get; set; }
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details54 Details { get; set; } = new Details54();
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
 
     }
 
@@ -13501,41 +15340,41 @@ namespace Hexalith.Folders.Client.Generated
     public partial class SafeDenialProblem : ProblemDetails
     {
 
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SafeDenialProblemType Type { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Title { get; set; }
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SafeDenialProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Status { get; set; }
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public SafeDenialProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Category { get; set; }
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SafeDenialProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Code { get; set; }
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SafeDenialProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Message { get; set; }
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SafeDenialProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Retryable { get; set; }
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object ClientAction { get; set; }
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public SafeDenialProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Details10 Details { get; set; }
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details55 Details { get; set; } = new Details55();
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
 
     }
 
@@ -13543,56 +15382,41 @@ namespace Hexalith.Folders.Client.Generated
     public partial class AuthorityUnavailableProblem : ProblemDetails
     {
 
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthorityUnavailableProblemType Type { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Title { get; set; }
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthorityUnavailableProblemTitle Title { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Status { get; set; }
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public AuthorityUnavailableProblemStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Category { get; set; }
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthorityUnavailableProblemCategory Category { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Code { get; set; }
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthorityUnavailableProblemCode Code { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Message { get; set; }
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthorityUnavailableProblemMessage Message { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Retryable { get; set; }
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object ClientAction { get; set; }
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public AuthorityUnavailableProblemClientAction ClientAction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Details11 Details { get; set; }
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details56 Details { get; set; } = new Details56();
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class OperationSpecificUnavailableProblem : ProblemDetails
-    {
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
 
     }
 
@@ -13600,107 +15424,125 @@ namespace Hexalith.Folders.Client.Generated
     public enum CanonicalErrorCode
     {
 
+        [System.Runtime.Serialization.EnumMember(Value = @"acl_entry_id_mismatch")]
+        Acl_entry_id_mismatch = 0,
+
         [System.Runtime.Serialization.EnumMember(Value = @"authentication_required")]
-        Authentication_required = 0,
+        Authentication_required = 1,
 
         [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 1,
+        Authorization_revocation_detected = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_input_limit_exceeded")]
-        C4_input_limit_exceeded = 2,
+        C4_input_limit_exceeded = 3,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_query_timeout")]
-        C4_query_timeout = 3,
+        C4_query_timeout = 4,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_range_limit_exceeded")]
-        C4_range_limit_exceeded = 4,
+        C4_range_limit_exceeded = 5,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_response_budget_exceeded")]
-        C4_response_budget_exceeded = 5,
+        C4_response_budget_exceeded = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 6,
+        Commit_failed = 7,
 
         [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
-        Concurrency_conflict = 7,
+        Concurrency_conflict = 8,
 
         [System.Runtime.Serialization.EnumMember(Value = @"content_evidence_invalid")]
-        Content_evidence_invalid = 8,
+        Content_evidence_invalid = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"cursor_tampered")]
+        Cursor_tampered = 10,
 
         [System.Runtime.Serialization.EnumMember(Value = @"d9_inline_limit_exceeded")]
-        D9_inline_limit_exceeded = 9,
+        D9_inline_limit_exceeded = 11,
 
         [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 10,
+        Dirty_workspace = 12,
 
         [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 11,
+        Duplicate_binding = 13,
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_content_limit_exceeded")]
-        File_content_limit_exceeded = 12,
+        File_content_limit_exceeded = 14,
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 13,
+        File_policy_unavailable = 15,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 14,
+        Idempotency_conflict = 16,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
-        Idempotency_key_expired = 15,
+        Idempotency_key_expired = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_not_allowed")]
+        Idempotency_key_not_allowed = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"invalid_pagination")]
+        Invalid_pagination = 19,
 
         [System.Runtime.Serialization.EnumMember(Value = @"invalid_sort")]
-        Invalid_sort = 16,
+        Invalid_sort = 20,
 
         [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 17,
+        Lock_expired = 21,
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 18,
+        Projection_stale = 22,
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 19,
+        Projection_unavailable = 23,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 20,
+        Provider_failure_known = 24,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 21,
+        Provider_readiness_failed = 25,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 22,
+        Provider_unavailable = 26,
 
         [System.Runtime.Serialization.EnumMember(Value = @"range_reversed")]
-        Range_reversed = 23,
+        Range_reversed = 27,
 
         [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 24,
+        Range_unsatisfiable = 28,
 
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 25,
+        Reconciliation_required = 29,
 
         [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 26,
+        Repository_conflict = 30,
 
         [System.Runtime.Serialization.EnumMember(Value = @"resource_unavailable")]
-        Resource_unavailable = 27,
+        Resource_unavailable = 31,
 
         [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 28,
+        State_transition_invalid = 32,
 
         [System.Runtime.Serialization.EnumMember(Value = @"tampered_cursor_or_changed_filter")]
-        Tampered_cursor_or_changed_filter = 29,
+        Tampered_cursor_or_changed_filter = 33,
 
         [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 30,
+        Unknown_provider_outcome = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_read_consistency")]
+        Unsupported_read_consistency = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_request_schema_version")]
+        Unsupported_request_schema_version = 36,
 
         [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 31,
+        Validation_error = 37,
 
         [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 32,
+        Workspace_locked = 38,
 
         [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 33,
+        Workspace_preparation_failed = 39,
 
     }
 
@@ -13753,6 +15595,12 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("dimension", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Dimension { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("evidenceSource", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string EvidenceSource { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("finalState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string FinalState { get; set; }
+
         [Newtonsoft.Json.JsonProperty("leaseStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string LeaseStatus { get; set; }
 
@@ -13762,10 +15610,22 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("rangeRule", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string RangeRule { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("reasonCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ReasonCategory { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string RetryReasonCode { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string TaskId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("todoRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string TodoRef { get; set; }
+
         [Newtonsoft.Json.JsonProperty("unit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Unit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DetailsVisibility Visibility { get; set; }
 
@@ -13790,7 +15650,7 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details2
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details2Visibility Visibility { get; set; }
 
@@ -13853,18 +15713,9 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details3
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details3Visibility Visibility { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -13925,18 +15776,9 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details4
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details4Visibility Visibility { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -13997,18 +15839,9 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details5
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details5Visibility Visibility { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -14069,18 +15902,9 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details6
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details6Visibility Visibility { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -14141,18 +15965,9 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details7
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details7Visibility Visibility { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -14213,18 +16028,9 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details8
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Details8Visibility Visibility { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -15087,11 +16893,148 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderLifecycleStatusUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Details9
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Visibility { get; set; }
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details9Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderAclEntriesUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
 
     }
 
@@ -15099,8 +17042,77 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details10
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Visibility { get; set; }
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details10Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetEffectivePermissionsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
 
     }
 
@@ -15108,8 +17120,3708 @@ namespace Hexalith.Folders.Client.Generated
     public partial class Details11
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Visibility { get; set; }
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details11Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureProviderBindingUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details12
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details12Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderBindingUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details13
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details13Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ValidateProviderReadinessUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details14
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details14Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderSupportEvidenceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details15
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details15Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateRepositoryBackedFolderUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details16
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details16Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum BindRepositoryUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details17
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details17Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetRepositoryBindingUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details18
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details18Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetBranchRefPolicyUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details19
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details19Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Unknown provider outcome")]
+        Unknown_provider_outcome = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider outcome is unknown for the requested workspace operation.")]
+        Provider_outcome_is_unknown_for_the_requested_workspace_operation_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum PrepareWorkspaceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"wait_for_reconciliation")]
+        Wait_for_reconciliation = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details20
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details20Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum LockWorkspaceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details21
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details21Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceLockUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details22
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details22Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReleaseWorkspaceLockUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details23
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details23Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceRetryEligibilityUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details24
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details24Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceTransitionEvidenceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details25
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details25Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Reconciliation required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The mutation outcome requires reconciliation before it can be finalized.")]
+        The_mutation_outcome_requires_reconciliation_before_it_can_be_finalized_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AddFileUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"wait_for_reconciliation")]
+        Wait_for_reconciliation = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details26
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details26Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Reconciliation required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The mutation outcome requires reconciliation before it can be finalized.")]
+        The_mutation_outcome_requires_reconciliation_before_it_can_be_finalized_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ChangeFileUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"wait_for_reconciliation")]
+        Wait_for_reconciliation = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details27
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details27Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Reconciliation required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The mutation outcome requires reconciliation before it can be finalized.")]
+        The_mutation_outcome_requires_reconciliation_before_it_can_be_finalized_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum RemoveFileUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"wait_for_reconciliation")]
+        Wait_for_reconciliation = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details28
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details28Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListFolderFilesUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details29
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details29Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderFileMetadataUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details30
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details30Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderFilesUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details31
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details31Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SearchFolderIndexedFilesUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details32
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details32Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFolderIndexingStatusUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details33
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details33Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GlobFolderFilesUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details34
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details34Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"File policy unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The file policy cannot be verified for this request.")]
+        The_file_policy_cannot_be_verified_for_this_request_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ReadFileRangeUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details35
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details35Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider failure known")]
+        Provider_failure_known = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
+        Provider_dependency_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider reported a known terminal failure for the requested workspace operation.")]
+        Provider_reported_a_known_terminal_failure_for_the_requested_workspace_operation_ = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CommitWorkspaceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"do_not_retry")]
+        Do_not_retry = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details36
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details36Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceStatusUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details37
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details37Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetWorkspaceCleanupStatusUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details38
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details38Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetTaskStatusUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details39
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details39Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetCommitEvidenceUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details40
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details40Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderOutcomeUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details41
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details41Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReconciliationStatusUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details42
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details42Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection unavailable")]
+        Projection_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListAuditTrailUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details43
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details43Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetAuditRecordUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details44
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details44Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ListOperationTimelineUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details45
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details45Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetOperationTimelineEntryUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details46
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details46Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetReadinessDiagnosticsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details47
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details47Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetLockDiagnosticsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details48
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details48Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetDirtyStateDiagnosticsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details49
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details49Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetFailedOperationDiagnosticsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details50
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details50Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProviderStatusDiagnosticsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details51
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details51Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
+        Read_model_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetSyncStatusDiagnosticsUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details52
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details52Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection unavailable")]
+        Projection_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
+        Projection_data_is_temporarily_unavailable_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum GetProjectionFreshnessUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details53
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details53Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authentication required")]
+        Authentication_required = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemStatus
+    {
+
+        _401 = 401,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
+        Authentication_failure = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"authentication_required")]
+        Authentication_required = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authentication is required.")]
+        Authentication_is_required_ = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthenticationFailureProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"check_credentials")]
+        Check_credentials = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details54
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details54Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Resource not available")]
+        Resource_not_available = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemStatus
+    {
+
+        _404 = 404,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"resource_unavailable")]
+        Resource_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The requested resource is unavailable.")]
+        The_requested_resource_is_unavailable_ = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SafeDenialProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"no_action")]
+        No_action = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details55
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details55Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum AuthorityUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details56
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details56Visibility Visibility { get; set; }
 
     }
 
@@ -15215,6 +20927,573 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"unavailable")]
         Unavailable = 3,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details9Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details10Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details11Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details12Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details13Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details14Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details15Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details16Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details17Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details18Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details19Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details20Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details21Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details22Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details23Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details24Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details25Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details26Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details27Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details28Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details29Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details30Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details31Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details32Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details33Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details34Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details35Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details36Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details37Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details38Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details39Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details40Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details41Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details42Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details43Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details44Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details45Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details46Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details47Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details48Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details49Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details50Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details51Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details52Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details53Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details54Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details55Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details56Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
 
     }
 

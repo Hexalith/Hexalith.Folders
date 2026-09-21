@@ -168,14 +168,14 @@ oracle (`tests/fixtures/parity-contract.yaml`).
 | `0` | `Success` | `success` |
 | `64` | `UsageError` | `client_configuration_error` (pre-SDK usage/config error; no HTTP call made — also the exit for a query command given `--idempotency-key`) |
 | `65` | `CredentialMissing` | `credential_missing`, `authentication_failure`, `credential_reference_invalid` |
-| `66` | `AccessDenied` | `tenant_access_denied`, `folder_acl_denied` |
+| `66` | `AccessDenied` | `tenant_access_denied`, `authorization_revocation_detected` |
 | `67` | `LockConflict` | `workspace_locked`, `lock_conflict`, `lock_expired`, `lock_not_owned`, `stale_workspace` |
 | `68` | `IdempotencyConflict` | `idempotency_conflict` |
 | `69` | `ValidationError` | `validation_error`, `input_limit_exceeded`, `path_validation_failed`, `branch_ref_policy_invalid`, `response_limit_exceeded`, `range_unsatisfiable` |
 | `70` | `ProviderFailure` | `provider_failure_known`, `provider_unavailable`, `provider_rate_limited`, `provider_readiness_failed`, `provider_permission_insufficient`, `repository_binding_unavailable`, `repository_conflict`, `duplicate_binding`, `unsupported_provider_capability`, `failed_operation`, `commit_failed`, `file_operation_failed` |
 | `71` | `UnknownProviderOutcome` | `unknown_provider_outcome` (surfaced truthfully, never hidden) |
 | `72` | `ReconciliationRequired` | `reconciliation_required`, `file_policy_unavailable`, `workspace_not_ready`, `workspace_preparation_failed`, `dirty_workspace` |
-| `73` | `AuthorityUnavailable` | `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `authorization_revocation_detected` |
+| `73` | `AuthorityUnavailable` | `read_model_unavailable`, `projection_stale`, `projection_unavailable` |
 | `74` | `StateTransitionInvalid` | `state_transition_invalid` |
 | `75` | `Redacted` | `redacted` (visibly distinct from missing/unknown) |
 | `76` | `IdempotencyKeyExpired` | `idempotency_key_expired` (refresh state, then submit with a new key) |

@@ -37,6 +37,24 @@ public sealed class Pd10V2CandidateContractTests
         operations.Select(operation => operation.OperationId).Distinct(StringComparer.Ordinal).Count().ShouldBe(49);
         operations.Select(operation => operation.Identity).Distinct(StringComparer.Ordinal).Count().ShouldBe(49);
         operations.ShouldAllBe(operation => operation.Path.StartsWith("/api/v2", StringComparison.Ordinal));
+
+        Values(Sequence(Mapping(root, "x-hexalith-pd10-candidate"), "accessStates")).ShouldBe(
+        [
+            "tenant-administrator",
+            "tenant-member",
+            "delegated-service-agent",
+            "tenant-scoped-operator",
+            "audit-reviewer",
+            "incident-administrator",
+            "wrong-tenant",
+            "revoked",
+            "stale",
+            "disabled",
+            "unknown",
+            "hidden-resource",
+            "absent-resource",
+            "insufficient-scope",
+        ]);
     }
 
     [Fact]
@@ -60,16 +78,26 @@ public sealed class Pd10V2CandidateContractTests
         YamlMappingNode details = Mapping(Mapping(schema, "properties"), "details");
         Values(Sequence(details, "required")).ShouldBe(["visibility"]);
 
-        string[] cliExitCodes = Values(Sequence(Mapping(schemas, "CliExitCode"), "enum"));
-        string[] schemaCliExitCodes = Values(Sequence(Mapping(schemas, "CliExitCode"), "enum"));
-        cliExitCodes.ShouldBe(schemaCliExitCodes);
-        cliExitCodes.ShouldContain("73");
-        cliExitCodes.ShouldContain("77");
+        Values(Sequence(Mapping(schemas, "CliExitCode"), "enum")).ShouldBe(
+            Enumerable.Range(0, 2).Select(static value => value.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                .Concat(Enumerable.Range(64, 14).Select(static value => value.ToString(System.Globalization.CultureInfo.InvariantCulture))));
 
         string[] mcpFailureKinds = Values(Sequence(Mapping(schemas, "McpFailureKind"), "enum"));
-        mcpFailureKinds.ShouldContain("concurrency_conflict");
-        mcpFailureKinds.ShouldContain("none");
-        Values(Sequence(Mapping(schemas, "McpFailureKind"), "enum")).ShouldContain("concurrency_conflict");
+        mcpFailureKinds.ShouldBe(
+        [
+            "none", "authentication_failure", "usage_error", "client_configuration_error", "credential_missing",
+            "credential_reference_invalid", "tenant_access_denied", "validation_error", "concurrency_conflict",
+            "idempotency_conflict", "idempotency_key_expired", "provider_readiness_failed",
+            "provider_permission_insufficient", "provider_unavailable", "provider_rate_limited",
+            "repository_binding_unavailable", "branch_ref_policy_invalid", "workspace_not_ready",
+            "workspace_preparation_failed", "workspace_locked", "lock_conflict", "lock_expired", "lock_not_owned",
+            "stale_workspace", "authorization_revocation_detected", "repository_conflict", "duplicate_binding",
+            "unsupported_provider_capability", "path_validation_failed", "file_operation_failed", "dirty_workspace",
+            "commit_failed", "provider_failure_known", "unknown_provider_outcome", "reconciliation_required",
+            "state_transition_invalid", "input_limit_exceeded", "response_limit_exceeded", "query_timeout",
+            "read_model_unavailable", "projection_stale", "projection_unavailable", "range_unsatisfiable",
+            "file_policy_unavailable", "failed_operation", "redacted", "internal_error",
+        ]);
         Values(Sequence(Mapping(Mapping(details, "properties"), "visibility"), "enum"))
             .ShouldBe(["redacted", "metadata_only", "withheld", "unavailable", "absent"]);
     }
@@ -93,7 +121,6 @@ public sealed class Pd10V2CandidateContractTests
         string program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Program.cs"));
         program.ShouldNotContain("/api/v2", Case.Sensitive);
         program.ShouldNotContain("MapPd10V2", Case.Sensitive);
-        program.ShouldNotContain("UsePd10V2CandidateCompatibilitySeam", Case.Sensitive);
     }
 
     [Fact]

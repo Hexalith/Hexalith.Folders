@@ -129,9 +129,8 @@ public sealed class ProviderSupportPageTests
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
         using BunitContext _ctx = ctx;
 
-        const string body = """{"category":"tenant_access_denied","correlationId":"corr-y","retryable":false}""";
         client.GetProviderSupportEvidenceAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<string>(), Arg.Any<int?>(), Arg.Any<CancellationToken>())
-            .ThrowsAsync(new HexalithFoldersApiException("denied", 403, body, EmptyHeaders, innerException: null));
+            .ThrowsAsync(DiagnosticTestContext.SafeDenialException("correlation-provider-support-denial"));
 
         IRenderedComponent<ProviderSupport> rendered = ctx.Render<ProviderSupport>();
 

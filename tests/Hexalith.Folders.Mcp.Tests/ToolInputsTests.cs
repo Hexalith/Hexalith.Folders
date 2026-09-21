@@ -19,21 +19,6 @@ namespace Hexalith.Folders.Mcp.Tests;
 /// </summary>
 public sealed class ToolInputsTests
 {
-    [Fact]
-    public async Task EffectivePermissionsThreadsOptionalTaskContextToTheWire()
-    {
-        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, "{}");
-        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
-
-        await FolderTools.GetEffectivePermissions(
-            pipeline,
-            folderId: "f",
-            taskId: "task-effective-1",
-            correlationId: "corr-effective-1",
-            cancellationToken: TestContext.Current.CancellationToken);
-
-        handler.Requests.ShouldHaveSingleItem().TaskId.ShouldBe("task-effective-1");
-    }
     [Theory]
     [InlineData("snapshot_per_task", ReadConsistencyClass.Snapshot_per_task)]
     [InlineData("read_your_writes", ReadConsistencyClass.Read_your_writes)]
@@ -71,5 +56,24 @@ public sealed class ToolInputsTests
             pipeline, folderId: "f", correlationId: "corr-1", freshness: null, cancellationToken: TestContext.Current.CancellationToken);
 
         handler.Requests[0].Freshness.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task EffectivePermissionsPassesOptionalTaskContextOnTheWire()
+    {
+        const string taskId = "task-effective-permissions-mcp";
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, "{}");
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
+
+        _ = await FolderTools.GetEffectivePermissions(
+            pipeline,
+            folderId: "folder_000000001",
+            taskId,
+            correlationId: "correlation-effective-permissions-mcp",
+            freshness: "read_your_writes",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        handler.Requests.ShouldHaveSingleItem();
+        handler.Requests[0].TaskId.ShouldBe(taskId);
     }
 }

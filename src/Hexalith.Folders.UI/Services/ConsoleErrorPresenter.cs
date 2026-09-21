@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 using Hexalith.Folders.Client.Generated;
 using Hexalith.Folders.UI.Components.Models;
 
@@ -7,9 +5,8 @@ namespace Hexalith.Folders.UI.Services;
 
 /// <summary>
 /// Story 6.6 / §3.9 — translates a thrown <see cref="HexalithFoldersApiException"/> into a
-/// metadata-only <see cref="ConsoleErrorView"/> for the safe-denial / safe-error path. Parses only the
-/// canonical A-8 Problem Details extension fields (<c>category</c>, <c>correlationId</c>,
-/// <c>retryable</c>, <c>clientAction</c>); it never surfaces the raw body, a stack trace, or a
+/// metadata-only <see cref="ConsoleErrorView"/> for the safe-denial / safe-error path. Consumes only the
+/// SDK's validated canonical A-8 Problem Details projection; it never reparses the raw body, surfaces a stack trace, or exposes a
 /// <c>taskId</c> off the error body (not an A-8 extension). Displayed explanations come from
 /// <see cref="ConsoleStatusText.ResolveErrorExplanation(string)"/> (our safe copy), never the server
 /// message, so denial categories can never be expanded into an existence oracle.
@@ -29,45 +26,19 @@ public static class ConsoleErrorPresenter
         bool? retryable = null;
         string? clientAction = null;
 
-        if (!string.IsNullOrWhiteSpace(exception.Response))
+        if (exception.ProblemDetails is { } problem)
         {
-            try
+            string category = ConsoleStatusText.ResolveErrorReasonToken(problem.Category);
+            if (ConsoleStatusText.IsKnownReasonToken(category))
             {
-                using JsonDocument document = JsonDocument.Parse(exception.Response);
-                JsonElement root = document.RootElement;
-                if (root.ValueKind == JsonValueKind.Object)
-                {
-                    // Only adopt the body's category if it is a known, vetted canonical token. An
-                    // unrecognized/free-text category is never echoed into the DOM — fall back to the
-                    // generic safe envelope (§3.9: surface only vetted metadata, never arbitrary server text).
-                    if (TryGetString(root, "category", out string? category)
-                        && ConsoleStatusText.IsKnownReasonToken(category))
-                    {
-                        reasonToken = category!;
-                    }
-
-                    if (TryGetString(root, "correlationId", out string? bodyCorrelation) && !string.IsNullOrWhiteSpace(bodyCorrelation))
-                    {
-                        correlationId = bodyCorrelation;
-                    }
-
-                    if (root.TryGetProperty("retryable", out JsonElement retryableElement)
-                        && (retryableElement.ValueKind == JsonValueKind.True || retryableElement.ValueKind == JsonValueKind.False))
-                    {
-                        retryable = retryableElement.GetBoolean();
-                    }
-
-                    if (TryGetString(root, "clientAction", out string? action) && !string.IsNullOrWhiteSpace(action))
-                    {
-                        clientAction = action;
-                    }
-                }
+                reasonToken = category;
             }
-            catch (JsonException)
-            {
-                // A non-JSON or malformed body must not leak; fall back to the generic safe envelope.
-                reasonToken = "internal_error";
-            }
+
+            correlationId = string.IsNullOrWhiteSpace(problem.CorrelationId)
+                ? correlationId
+                : problem.CorrelationId;
+            retryable = problem.Retryable;
+            clientAction = ResolveClientAction(problem.ClientAction);
         }
 
         return new ConsoleErrorView(
@@ -82,20 +53,23 @@ public static class ConsoleErrorPresenter
     private static ConsoleErrorDisposition ResolveDisposition(string reasonToken)
         => reasonToken switch
         {
-            "tenant_access_denied" or "folder_acl_denied" => ConsoleErrorDisposition.Denied,
+            "tenant_access_denied" or "folder_acl_denied" or "authorization_revocation_detected" => ConsoleErrorDisposition.Denied,
             "read_model_unavailable" or "projection_stale" or "projection_unavailable" => ConsoleErrorDisposition.AuthorityUnavailable,
             _ => ConsoleErrorDisposition.Failure,
         };
 
-    private static bool TryGetString(JsonElement root, string propertyName, out string? value)
-    {
-        if (root.TryGetProperty(propertyName, out JsonElement element) && element.ValueKind == JsonValueKind.String)
+    private static string ResolveClientAction(ProblemDetailsClientAction action)
+        => action switch
         {
-            value = element.GetString();
-            return true;
-        }
-
-        value = null;
-        return false;
-    }
+            ProblemDetailsClientAction.Retry => "retry",
+            ProblemDetailsClientAction.Revise_request => "revise_request",
+            ProblemDetailsClientAction.Check_credentials => "check_credentials",
+            ProblemDetailsClientAction.Wait_for_reconciliation => "wait_for_reconciliation",
+            ProblemDetailsClientAction.Contact_operator => "contact_operator",
+            ProblemDetailsClientAction.No_action => "no_action",
+            ProblemDetailsClientAction.Refresh_state_then_submit_with_new_key => "refresh_state_then_submit_with_new_key",
+            ProblemDetailsClientAction.Do_not_retry => "do_not_retry",
+            ProblemDetailsClientAction.Restart_query => "restart_query",
+            _ => "no_action",
+        };
 }

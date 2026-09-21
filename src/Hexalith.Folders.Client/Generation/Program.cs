@@ -38,7 +38,7 @@ if (output.IndexOf(constDeclarationSentinel, constLineIndex + constDeclarationSe
 int placeholderOffset = constLineIndex + ConstDeclarationPrefix.Length;
 output = output.Remove(placeholderOffset, PlaceholderToken.Length).Insert(placeholderOffset, helperHash);
 Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
-GeneratedClientPostProcessor.Process(clientPath);
+GeneratedClientPostProcessor.Process(clientPath, contractPath);
 WriteAtomically(outputPath, output);
 
 static void WriteAtomically(string path, string content)
@@ -539,13 +539,6 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine();
     code.AppendLine("    private (ProblemDetails? Problem, string? Diagnostic) ParseProblemDetails()");
     code.AppendLine("    {");
-    code.AppendLine("        if (this is HexalithFoldersApiException<ProblemDetails> typed)");
-    code.AppendLine("        {");
-    code.AppendLine("            return typed.Result is not null && typed.Result.Status == StatusCode");
-    code.AppendLine("                ? (typed.Result, null)");
-    code.AppendLine("                : (null, \"http_status_mismatch\");");
-    code.AppendLine("        }");
-    code.AppendLine();
     code.AppendLine("        return Hexalith.Folders.Client.Serialization.Oq2ProblemProjection.Project(this);");
     code.AppendLine("    }");
     code.AppendLine("}");
@@ -694,6 +687,7 @@ static void RenderConditionalExactProblemValidator(
     string actionMember,
     bool categoryIsDiscriminator)
 {
+    string codeMember = char.ToUpperInvariant(exactCode[0]) + exactCode[1..];
     code.AppendLine($"public partial class {typeName}");
     code.AppendLine("{");
     code.AppendLine("    [System.Runtime.Serialization.OnDeserialized]");
@@ -702,11 +696,10 @@ static void RenderConditionalExactProblemValidator(
     string categorySignal = categoryIsDiscriminator
         ? $" || Category == CanonicalErrorCategory.{categoryMember}"
         : string.Empty;
-    string exactCodeMember = char.ToUpperInvariant(exactCode[0]) + exactCode[1..];
-    code.AppendLine($"        bool exactSignal = Code == CanonicalErrorCode.{exactCodeMember}{categorySignal};");
+    code.AppendLine($"        bool exactSignal = Code == CanonicalErrorCode.{codeMember}{categorySignal};");
     code.AppendLine($"        if (exactSignal && (Status != {status}");
     code.AppendLine($"            || Category != CanonicalErrorCategory.{categoryMember}");
-    code.AppendLine($"            || Code != CanonicalErrorCode.{exactCodeMember}");
+    code.AppendLine($"            || Code != CanonicalErrorCode.{codeMember}");
     code.AppendLine($"            || Retryable != {retryable.ToString().ToLowerInvariant()}");
     code.AppendLine($"            || ClientAction != ProblemDetailsClientAction.{actionMember}))");
     code.AppendLine("        {");

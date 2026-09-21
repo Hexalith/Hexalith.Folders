@@ -21,6 +21,35 @@ public sealed class LayeredFolderAuthorizationService(
         List<AuthorizationLayer> evaluatedLayers = [];
         string actorSafeIdentifier = SafeActorIdentifier(context);
 
+        PreauthorizedRequestState? preauthorized = PreauthorizedRequestContext.Current;
+        if (preauthorized is not null && PreauthorizedRequestContext.Covers(
+                context.AuthoritativeTenantId,
+                context.PrincipalId,
+                context.OperationScope))
+        {
+            LayeredFolderAuthorizationAllowedContext allowedContext = new(
+                context.AuthoritativeTenantId!,
+                actorSafeIdentifier,
+                context.ActionToken,
+                context.OperationScope,
+                context.CorrelationId,
+                context.TaskId,
+                FreshnessWatermark: preauthorized.FreshnessWatermark,
+                AuthorizationOrder.LayeredFolderAuthorization)
+            {
+                OrganizationId = preauthorized.OrganizationId,
+            };
+            LayeredFolderAuthorizationDecisionSnapshot reusedDecision = Snapshot(
+                AuthorizationLayer.JwtValidation,
+                LayeredAuthorizationOutcomeCodes.Allowed,
+                retryable: false,
+                freshnessClass: "fresh",
+                freshnessWatermark: preauthorized.FreshnessWatermark,
+                context,
+                actorSafeIdentifier);
+            return new(true, reusedDecision, allowedContext, [AuthorizationLayer.JwtValidation]);
+        }
+
         evaluatedLayers.Add(AuthorizationLayer.JwtValidation);
         if (string.IsNullOrWhiteSpace(context.AuthoritativeTenantId)
             || string.IsNullOrWhiteSpace(context.PrincipalId))

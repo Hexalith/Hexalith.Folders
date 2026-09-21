@@ -40,6 +40,7 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
         first.WorkspaceStatus.CurrentState.ShouldBe("ready");
         first.WorkspaceCleanupStatus.Status.ShouldBe("status_only");
         first.TaskStatus.CurrentState.ShouldBe("ready");
+        first.TaskStatus.FolderId.ShouldBe(FolderLifecycleReplayFixture.FolderId);
         first.FolderList.Get(FolderLifecycleReplayFixture.ManagedTenantId, FolderLifecycleReplayFixture.FolderId)
             .ShouldNotBeNull()
             .RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.Bound);

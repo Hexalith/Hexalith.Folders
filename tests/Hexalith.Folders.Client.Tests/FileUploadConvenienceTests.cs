@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using Hexalith.Folders.Client.Convenience;
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -359,7 +360,7 @@ public sealed class FileUploadConvenienceTests
     public async Task UploadFileAsyncSurfacesIdempotencyConflictAsTypedProblem()
     {
         const string conflictJson = """
-            {"type":"about:blank","title":"Conflict","status":409,"category":"idempotency_conflict","code":"idempotency_conflict","message":"Synthetic conflict.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":false}
+            {"type":"about:blank","title":"Conflict","status":409,"category":"idempotency_conflict","code":"idempotency_conflict","message":"Synthetic conflict.","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":false,"clientAction":"revise_request","details":{"visibility":"metadata_only"}}
             """;
         CapturingHandler handler = new(HttpStatusCode.Conflict, conflictJson);
         IClient client = NewClient(handler);
@@ -368,7 +369,7 @@ public sealed class FileUploadConvenienceTests
             () => client.UploadFileAsync(InlineDescriptor(), Encoding.UTF8.GetBytes("synthetic"), "idem_01HZY7Z6N7J4Q2X8Y9V0IDK001", "corr_01HZY7Z6N7J4Q2X8Y9V0COR001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001", TestContext.Current.CancellationToken)).ConfigureAwait(true);
 
         exception.StatusCode.ShouldBe(409);
-        exception.Result.Code.ShouldBe(CanonicalErrorCode.Idempotency_conflict);
+        CanonicalErrorCodeProjection.WireValue(exception.Result.Code).ShouldBe("idempotency_conflict");
     }
 
     [Fact]

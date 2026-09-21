@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using Hexalith.Folders.Client.Generated;
 
+using Newtonsoft.Json;
+
 namespace Hexalith.Folders.Cli.Tests.TestSupport;
 
 /// <summary>Canned SDK shapes and exceptions for hermetic CLI tests.</summary>
@@ -23,27 +25,55 @@ internal static class TestData
     /// <returns>The exception the SDK would throw for that category.</returns>
     public static HexalithFoldersApiException<ProblemDetails> ProblemException(
         CanonicalErrorCategory category,
-        string correlationId = "corr_TEST",
-        string rawResponse = "{}")
+        string correlationId = "correlation_TEST_0001",
+        string? rawResponse = null)
     {
+        (int status, CanonicalErrorCode code, bool retryable, ProblemDetailsClientAction clientAction) = category switch
+        {
+            CanonicalErrorCategory.Read_model_unavailable =>
+                (503, CanonicalErrorCode.Projection_unavailable, true, ProblemDetailsClientAction.Retry),
+            CanonicalErrorCategory.Lock_conflict =>
+                (409, CanonicalErrorCode.Workspace_locked, true, ProblemDetailsClientAction.Retry),
+            CanonicalErrorCategory.Validation_error =>
+                (400, CanonicalErrorCode.Validation_error, false, ProblemDetailsClientAction.Revise_request),
+            CanonicalErrorCategory.Unknown_provider_outcome =>
+                (503, CanonicalErrorCode.Unknown_provider_outcome, false, ProblemDetailsClientAction.Wait_for_reconciliation),
+            CanonicalErrorCategory.Reconciliation_required =>
+                (503, CanonicalErrorCode.Reconciliation_required, false, ProblemDetailsClientAction.Wait_for_reconciliation),
+            CanonicalErrorCategory.Tenant_access_denied =>
+                (404, CanonicalErrorCode.Resource_unavailable, false, ProblemDetailsClientAction.No_action),
+            CanonicalErrorCategory.Idempotency_conflict =>
+                (409, CanonicalErrorCode.Idempotency_conflict, false, ProblemDetailsClientAction.Revise_request),
+            CanonicalErrorCategory.Provider_unavailable =>
+                (503, CanonicalErrorCode.Provider_unavailable, true, ProblemDetailsClientAction.Retry),
+            CanonicalErrorCategory.State_transition_invalid =>
+                (422, CanonicalErrorCode.State_transition_invalid, false, ProblemDetailsClientAction.Revise_request),
+            CanonicalErrorCategory.Authentication_failure =>
+                (401, CanonicalErrorCode.Authentication_required, false, ProblemDetailsClientAction.Check_credentials),
+            _ => throw new ArgumentOutOfRangeException(nameof(category), category, "The fixture must use a reachable runtime problem tuple."),
+        };
         ProblemDetails problem = new()
         {
             Type = "about:blank",
             Title = category.ToString(),
-            Status = 409,
+            Status = status,
             Category = category,
-            Code = CanonicalErrorCode.Validation_error,
+            Code = code,
             Message = "Synthetic metadata-only problem.",
             CorrelationId = correlationId,
-            Retryable = false,
-            ClientAction = ProblemDetailsClientAction.No_action,
-            Details = new Details { Visibility = DetailsVisibility.Metadata_only },
+            Retryable = retryable,
+            ClientAction = clientAction,
+            Details = new Details
+            {
+                Visibility = DetailsVisibility.Metadata_only,
+                LockStatus = category == CanonicalErrorCategory.Lock_conflict ? "active" : null!,
+            },
         };
 
         return new HexalithFoldersApiException<ProblemDetails>(
             "Synthetic problem.",
             problem.Status,
-            response: rawResponse,
+            response: rawResponse ?? JsonConvert.SerializeObject(problem),
             headers: new Dictionary<string, IEnumerable<string>>(),
             result: problem,
             innerException: null!);

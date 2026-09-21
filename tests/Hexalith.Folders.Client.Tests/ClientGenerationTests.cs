@@ -48,48 +48,13 @@ public sealed class ClientGenerationTests
         generator.GetProperty("generateSyncMethods").GetBoolean().ShouldBeFalse();
         generator.GetProperty("generateClientInterfaces").GetBoolean().ShouldBeTrue();
         generator.GetProperty("generateExceptionClasses").GetBoolean().ShouldBeTrue();
+        generator.GetProperty("requiredPropertiesMustBeDefined").GetBoolean().ShouldBeFalse(
+            "problem-only Required.Always enforcement is applied by the deterministic postprocessor without changing request DTO compatibility");
         generator.GetProperty("useBaseUrl").GetBoolean().ShouldBeFalse();
         generator.GetProperty("excludedTypeNames").EnumerateArray()
             .Select(item => item.GetString()).ShouldBe(["MutateFilesRequest", "MutateFilesRequestRequestSchemaVersion"]);
         typeof(CreateFolderRequest).Assembly.GetType("Hexalith.Folders.Client.Generated.MutateFilesRequest").ShouldBeNull(
             "the canonical internal batch shape must not become a public SDK type");
-    }
-
-    [Fact]
-    public void GeneratedClientUsesTheNamedOperationSpecific503Union()
-    {
-        typeof(OperationSpecificUnavailableProblem).BaseType.ShouldBe(typeof(ProblemDetails));
-
-        string generatedPath = Path.Combine(
-            RepositoryRoot,
-            "src",
-            "Hexalith.Folders.Client",
-            "Generated",
-            "HexalithFoldersClient.g.cs");
-        string generated = File.ReadAllText(generatedPath);
-        const string read = "ReadObjectResponseAsync<OperationSpecificUnavailableProblem>";
-        (generated.Split(read, StringSplitOptions.None).Length - 1).ShouldBe(37);
-        generated.ShouldContain(
-            "HexalithFoldersApiException<OperationSpecificUnavailableProblem>(\"Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before protected observation.\"");
-
-        var problem = new OperationSpecificUnavailableProblem
-        {
-            Category = CanonicalErrorCategory.Unknown_provider_outcome,
-            ClientAction = ProblemDetailsClientAction.Wait_for_reconciliation,
-            Code = CanonicalErrorCode.Unknown_provider_outcome,
-            CorrelationId = "correlation_01HZY7Z6N7J4Q2X8Y9V0COR001",
-            Message = "The provider outcome is unknown.",
-            Retryable = false,
-            Status = 503,
-        };
-        var exception = new HexalithFoldersApiException<OperationSpecificUnavailableProblem>(
-            "message",
-            503,
-            "{}",
-            new Dictionary<string, IEnumerable<string>>(),
-            problem,
-            null!);
-        exception.ProblemDetails.ShouldNotBeNull().Category.ShouldBe(CanonicalErrorCategory.Unknown_provider_outcome);
     }
 
     [Fact]
@@ -506,6 +471,8 @@ public sealed class ClientGenerationTests
     {
         var problem = new ProblemDetails
         {
+            Type = "about:blank",
+            Title = "Validation failure",
             Category = CanonicalErrorCategory.Validation_error,
             ClientAction = ProblemDetailsClientAction.Revise_request,
             Code = CanonicalErrorCode.Validation_error,
@@ -513,13 +480,15 @@ public sealed class ClientGenerationTests
             Message = "Synthetic validation failure.",
             Retryable = false,
             Status = 400,
+            Details = new Details { Visibility = DetailsVisibility.Metadata_only },
         };
 
-        var typed = new HexalithFoldersApiException<ProblemDetails>("message", 400, "{}", new Dictionary<string, IEnumerable<string>>(), problem, null!);
-        typed.ProblemDetails.ShouldBeSameAs(problem);
+        string canonical = JsonConvert.SerializeObject(problem);
+        var typed = new HexalithFoldersApiException<ProblemDetails>("message", 400, canonical, new Dictionary<string, IEnumerable<string>>(), problem, null!);
+        typed.ProblemDetails.ShouldNotBeNull();
+        typed.ProblemDetails.Category.ShouldBe(CanonicalErrorCategory.Validation_error);
 
-        string response = JsonConvert.SerializeObject(problem);
-        var untyped = new HexalithFoldersApiException("message", 400, response, new Dictionary<string, IEnumerable<string>>(), null!);
+        var untyped = new HexalithFoldersApiException("message", 400, canonical, new Dictionary<string, IEnumerable<string>>(), null!);
         untyped.ProblemDetails.ShouldBeNull("raw or arbitrary exception bodies are not declared typed problem results");
         untyped.ProblemDetailsParseDiagnostic.ShouldBe("unsupported_problem_result_type");
 
@@ -835,10 +804,309 @@ public sealed class ClientGenerationTests
         arbitrary.ProblemDetails.ShouldBeNull();
         arbitrary.ProblemDetailsParseDiagnostic.ShouldBe("unsupported_problem_result_type");
 
-        var problem = new ProblemDetails { Status = 503 };
-        var mismatch = new HexalithFoldersApiException<ProblemDetails>("mismatch", 400, "{}", new Dictionary<string, IEnumerable<string>>(), problem, null!);
+        const string mismatchBody = """{"type":"about:blank","title":"Read model unavailable","status":503,"category":"read_model_unavailable","code":"projection_unavailable","message":"Projection data is temporarily unavailable.","correlationId":"correlation_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":true,"clientAction":"retry","details":{"visibility":"metadata_only"}}""";
+        ProblemDetails problem = JsonConvert.DeserializeObject<ProblemDetails>(mismatchBody).ShouldNotBeNull();
+        var mismatch = new HexalithFoldersApiException<ProblemDetails>("mismatch", 400, mismatchBody, new Dictionary<string, IEnumerable<string>>(), problem, null!);
         mismatch.ProblemDetails.ShouldBeNull();
         mismatch.ProblemDetailsParseDiagnostic.ShouldBe("http_status_mismatch");
+
+        var incomplete = new HexalithFoldersApiException<ProblemDetails>("incomplete", 500, "{\"status\":500}", new Dictionary<string, IEnumerable<string>>(), new ProblemDetails { Status = 500 }, null!);
+        incomplete.ProblemDetails.ShouldBeNull();
+        incomplete.ProblemDetailsParseDiagnostic.ShouldBe("problem_shape_mismatch");
+    }
+
+    [Fact]
+    public void GenericProblemProjectionRejectsUnknownDetailsKey()
+    {
+        JObject valid = GenericProblemWithOptionalFields();
+        ProblemDetails typedResult = valid.ToObject<ProblemDetails>().ShouldNotBeNull();
+        JObject unknownDetail = (JObject)valid.DeepClone();
+        unknownDetail["details"]!["unknownMetadata"] = "must not pass through";
+
+        var exception = new HexalithFoldersApiException<ProblemDetails>(
+            "unknown generic detail",
+            400,
+            unknownDetail.ToString(Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            typedResult,
+            null!);
+
+        exception.ProblemDetails.ShouldBeNull();
+        exception.ProblemDetailsParseDiagnostic.ShouldBe("problem_shape_mismatch");
+    }
+
+    [Fact]
+    public void GenericProblemProjectionValidatesDeclaredOptionalFieldsAndClosedScalars()
+    {
+        JObject valid = GenericProblemWithOptionalFields();
+        ProblemDetails typedResult = valid.ToObject<ProblemDetails>().ShouldNotBeNull();
+        var validException = new HexalithFoldersApiException<ProblemDetails>(
+            "valid generic problem",
+            400,
+            valid.ToString(Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            typedResult,
+            null!);
+
+        ProblemDetails projected = validException.ProblemDetails.ShouldNotBeNull(validException.ProblemDetailsParseDiagnostic);
+        projected.Detail.ShouldBe("The request did not satisfy the declared constraints.");
+        projected.Instance.ShouldBe("/problems/validation/opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3");
+
+        (string Name, Action<JObject> Mutate)[] malformed =
+        [
+            ("detail type", root => root["detail"] = 42),
+            ("instance format", root => root["instance"] = "not a uri reference%"),
+            ("undeclared retryAfterSeconds", root => root["retryAfterSeconds"] = 30),
+            ("undeclared top-level taskId", root => root["taskId"] = "opaque_01HZY7Z6N7J4Q2X8Y9V0TSK001"),
+            ("status range", root => root["status"] = 99),
+            ("declared success category on HTTP problem", root => root["category"] = "success"),
+            ("category enum", root => root["category"] = "not_declared"),
+            ("code enum", root => root["code"] = "not_declared"),
+            ("clientAction enum", root => root["clientAction"] = "not_declared"),
+            ("correlation identifier", root => root["correlationId"] = "short"),
+            ("details optional scalar", root => root["details"]!["taskId"] = false),
+            ("visibility enum", root => root["details"]!["visibility"] = "not_declared"),
+        ];
+
+        foreach ((string name, Action<JObject> mutate) in malformed)
+        {
+            JObject body = (JObject)valid.DeepClone();
+            mutate(body);
+            var exception = new HexalithFoldersApiException<ProblemDetails>(
+                name,
+                400,
+                body.ToString(Formatting.None),
+                new Dictionary<string, IEnumerable<string>>(),
+                typedResult,
+                null!);
+
+            exception.ProblemDetails.ShouldBeNull(name);
+            exception.ProblemDetailsParseDiagnostic.ShouldBe("problem_shape_mismatch", name);
+        }
+    }
+
+    [Fact]
+    public void ExactAuthorizationAndOperationUnavailableProjectionRejectsWrongWireTuple()
+    {
+        const string correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3";
+        string validAuthority = JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "Authorization evidence unavailable",
+            status = 503,
+            category = "read_model_unavailable",
+            code = "projection_unavailable",
+            message = "Authorization evidence is temporarily unavailable.",
+            correlationId,
+            retryable = true,
+            clientAction = "retry",
+            details = new { visibility = "redacted" },
+        });
+        AuthorityUnavailableProblem authorityResult = JsonConvert
+            .DeserializeObject<AuthorityUnavailableProblem>(validAuthority).ShouldNotBeNull();
+        var wrongAuthority = new HexalithFoldersApiException<AuthorityUnavailableProblem>(
+            "wrong authority tuple",
+            503,
+            validAuthority.Replace("Authorization evidence unavailable", "Authority unavailable", StringComparison.Ordinal),
+            new Dictionary<string, IEnumerable<string>>(),
+            authorityResult,
+            null!);
+        wrongAuthority.ProblemDetails.ShouldBeNull();
+        wrongAuthority.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch");
+
+        string validTaskUnavailable = JsonConvert.SerializeObject(new
+        {
+            type = "about:blank",
+            title = "Read model unavailable",
+            status = 503,
+            category = "read_model_unavailable",
+            code = "projection_unavailable",
+            message = "Projection data is temporarily unavailable.",
+            correlationId,
+            retryable = true,
+            clientAction = "retry",
+            details = new { visibility = "metadata_only" },
+        });
+        GetTaskStatusUnavailableProblem taskResult = JsonConvert
+            .DeserializeObject<GetTaskStatusUnavailableProblem>(validTaskUnavailable).ShouldNotBeNull();
+        AssertJsonSerializationRejected(() => JsonConvert.DeserializeObject<GetTaskStatusUnavailableProblem>(
+            validTaskUnavailable.Replace("Read model unavailable", "Authorization evidence unavailable", StringComparison.Ordinal)));
+        var wrongTaskUnavailable = new HexalithFoldersApiException<GetTaskStatusUnavailableProblem>(
+            "wrong task unavailable tuple",
+            503,
+            validTaskUnavailable.Replace("Read model unavailable", "Provider unavailable", StringComparison.Ordinal),
+            new Dictionary<string, IEnumerable<string>>(),
+            taskResult,
+            null!);
+        wrongTaskUnavailable.ProblemDetails.ShouldBeNull();
+        wrongTaskUnavailable.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch");
+
+        Newtonsoft.Json.Linq.JObject extendedTaskBody = Newtonsoft.Json.Linq.JObject.Parse(validTaskUnavailable);
+        extendedTaskBody["detail"] = "must not be accepted";
+        var extendedTaskUnavailable = new HexalithFoldersApiException<GetTaskStatusUnavailableProblem>(
+            "extended task unavailable shape",
+            503,
+            extendedTaskBody.ToString(Newtonsoft.Json.Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            taskResult,
+            null!);
+        extendedTaskUnavailable.ProblemDetails.ShouldBeNull();
+        extendedTaskUnavailable.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_shape_mismatch");
+
+        var malformedScalar = new HexalithFoldersApiException<AuthorityUnavailableProblem>(
+            "malformed authority scalar",
+            503,
+            validAuthority.Replace("\"status\":503", "\"status\":\"not-a-number\"", StringComparison.Ordinal),
+            new Dictionary<string, IEnumerable<string>>(),
+            authorityResult,
+            null!);
+        malformedScalar.ProblemDetails.ShouldBeNull();
+        malformedScalar.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch");
+
+        foreach ((string name, string malformedBody) in new[]
+        {
+            ("numeric status string", validAuthority.Replace("\"status\":503", "\"status\":\"503\"", StringComparison.Ordinal)),
+            ("boolean retryable string", validAuthority.Replace("\"retryable\":true", "\"retryable\":\"true\"", StringComparison.Ordinal)),
+        })
+        {
+            var wrongScalarKind = new HexalithFoldersApiException<AuthorityUnavailableProblem>(
+                name,
+                503,
+                malformedBody,
+                new Dictionary<string, IEnumerable<string>>(),
+                authorityResult,
+                null!);
+            wrongScalarKind.ProblemDetails.ShouldBeNull(name);
+            wrongScalarKind.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch", name);
+        }
+    }
+
+    [Fact]
+    public void EveryGeneratedOperationUnavailableWrapperHasAnExactTupleMap()
+    {
+        MethodInfo map = typeof(Oq2ProblemProjection).GetMethod(
+            "AllowedUnavailableTuples",
+            BindingFlags.NonPublic | BindingFlags.Static).ShouldNotBeNull();
+        YamlMappingNode contract = LoadYaml(Path.Combine(
+            RepositoryRoot,
+            "src",
+            "Hexalith.Folders.Contracts",
+            "openapi",
+            "hexalith.folders.v2.yaml"));
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(contract, "components"), "schemas");
+        string[] directlyProjectedTypes =
+        [
+            nameof(FileSafeResourceUnavailableProblem),
+            nameof(FilePolicyUnavailableProblem),
+            nameof(FileMutationUnavailableProblem),
+            nameof(FileContextUnavailableProblem),
+            nameof(AuthorityUnavailableProblem),
+        ];
+        Type[] operationUnavailableTypes = typeof(Hexalith.Folders.Client.Generated.Client).Assembly.GetTypes()
+            .Where(type => type.Namespace == typeof(Hexalith.Folders.Client.Generated.Client).Namespace
+                && type.Name.EndsWith("UnavailableProblem", StringComparison.Ordinal)
+                && !directlyProjectedTypes.Contains(type.Name, StringComparer.Ordinal))
+            .ToArray();
+
+        operationUnavailableTypes.Length.ShouldBe(45);
+        foreach (Type type in operationUnavailableTypes)
+        {
+            object mapped = map.Invoke(null, [type.Name]).ShouldNotBeNull(type.Name);
+            HashSet<string> actualTuples = ((System.Collections.IEnumerable)mapped)
+                .Cast<object>()
+                .Select(ExactTupleKey)
+                .ToHashSet(StringComparer.Ordinal);
+            YamlMappingNode wrapper = RequiredMapping(schemas, type.Name);
+            HashSet<string> contractTuples = wrapper.Children[new YamlScalarNode("oneOf")]
+                .ShouldBeSequence($"{type.Name}.oneOf")
+                .Children
+                .Select(branch => ExactTupleKey(ResolveExactProperties(schemas, branch.ShouldBeMapping($"{type.Name}.oneOf branch"))))
+                .ToHashSet(StringComparer.Ordinal);
+            actualTuples.ShouldBe(contractTuples, $"{type.Name} projection tuples must exactly match its Contract Spine oneOf branches");
+            type.GetProperties().ShouldAllBe(
+                property => property.PropertyType != typeof(object),
+                $"{type.Name} must expose typed scalar/enum fields rather than object-valued const placeholders");
+            type.GetProperties().ShouldAllBe(
+                property => property.GetCustomAttribute<JsonExtensionDataAttribute>() == null,
+                $"{type.Name} must not expose an extension-data escape hatch");
+        }
+
+        foreach (Type type in new[] { typeof(AuthenticationFailureProblem), typeof(SafeDenialProblem), typeof(AuthorityUnavailableProblem) })
+        {
+            type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .ShouldAllBe(property => property.PropertyType != typeof(object), type.Name);
+            type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .ShouldAllBe(property => property.GetCustomAttribute<JsonExtensionDataAttribute>() == null, type.Name);
+        }
+
+        string[] requiredProblemProperties =
+        [
+            "Type", "Title", "Status", "Category", "Code", "Message", "CorrelationId",
+            "Retryable", "ClientAction", "Details",
+        ];
+        foreach (Type type in operationUnavailableTypes.Append(typeof(ProblemDetails)))
+        {
+            foreach (string propertyName in requiredProblemProperties)
+            {
+                PropertyInfo property = type.GetProperty(propertyName).ShouldNotBeNull($"{type.Name}.{propertyName}");
+                property.GetCustomAttribute<JsonPropertyAttribute>().ShouldNotBeNull().Required
+                    .ShouldBe(Required.Always, $"{type.Name}.{propertyName}");
+            }
+        }
+    }
+
+    private static YamlMappingNode ResolveExactProperties(YamlMappingNode schemas, YamlMappingNode branch)
+    {
+        if (branch.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
+        {
+            string reference = referenceNode.ShouldBeScalar("$ref").Value.ShouldNotBeNull();
+            const string prefix = "#/components/schemas/";
+            reference.ShouldStartWith(prefix);
+            return RequiredMapping(RequiredMapping(schemas, reference[prefix.Length..]), "x-hexalith-exact-envelope");
+        }
+
+        return RequiredMapping(branch, "properties");
+    }
+
+    private static string ExactTupleKey(YamlMappingNode properties)
+    {
+        string[] values =
+        [
+            ExactEnumValue(properties, "status"),
+            ExactEnumValue(properties, "category"),
+            ExactEnumValue(properties, "code"),
+            ExactEnumValue(properties, "title"),
+            ExactEnumValue(properties, "message"),
+            ExactEnumValue(properties, "retryable"),
+            ExactEnumValue(properties, "clientAction"),
+            ExactEnumValue(RequiredMapping(RequiredMapping(properties, "details"), "properties"), "visibility"),
+        ];
+        return string.Join('\u001f', values);
+    }
+
+    private static string ExactTupleKey(object tuple)
+    {
+        string[] propertyNames =
+        [
+            "Status", "Category", "Code", "Title", "Message", "Retryable", "ClientAction", "Visibility",
+        ];
+        return string.Join(
+            '\u001f',
+            propertyNames.Select(name =>
+            {
+                object value = tuple.GetType().GetProperty(name).ShouldNotBeNull().GetValue(tuple).ShouldNotBeNull();
+                return value is bool boolean
+                    ? (boolean ? "true" : "false")
+                    : Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture).ShouldNotBeNull();
+            }));
+    }
+
+    private static string ExactEnumValue(YamlMappingNode properties, string propertyName)
+    {
+        YamlMappingNode property = RequiredMapping(properties, propertyName);
+        YamlSequenceNode values = property.Children[new YamlScalarNode("enum")].ShouldBeSequence($"{propertyName}.enum");
+        values.Children.Count.ShouldBe(1, $"{propertyName} must be an exact singleton enum");
+        return values.Children[0].ShouldBeScalar(propertyName).Value.ShouldNotBeNull();
     }
 
     [Fact]
@@ -928,10 +1196,30 @@ public sealed class ClientGenerationTests
             var errorClient = new Hexalith.Folders.Client.Generated.Client(new HttpClient(new StaticResponseHandler(httpStatus, problemJson)) { BaseAddress = new Uri("https://folders.test/") });
             HexalithFoldersApiException exception = await Should.ThrowAsync<HexalithFoldersApiException>(() => errorClient.ReadFileRangeAsync(
                 "folder", "workspace", "correlation", "task", null, request, TestContext.Current.CancellationToken));
-            CanonicalErrorCodeProjection.WireValue(
-                exception.ProblemDetails.ShouldNotBeNull($"status={status}; diagnostic={exception.ProblemDetailsParseDiagnostic ?? "none"}").Code)
-                .ShouldBe(code);
+            CanonicalErrorCodeProjection.WireValue(exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic).Code).ShouldBe(code);
         }
+    }
+
+    [Fact]
+    public async Task GeneratedClientUsesFolderScopedTaskAndDiagnosticRoutes()
+    {
+        StaticResponseHandler handler = new((HttpStatusCode)418, "{}");
+        var client = new Hexalith.Folders.Client.Generated.Client(new HttpClient(handler) { BaseAddress = new Uri("https://folders.test/") });
+
+        _ = await Should.ThrowAsync<HexalithFoldersApiException>(() => client.GetTaskStatusAsync(
+            "folder-a", "task-b", "correlation-a", null, TestContext.Current.CancellationToken));
+        handler.Request.ShouldNotBeNull().RequestUri.ShouldNotBeNull().AbsolutePath
+            .ShouldBe("/api/v2/folders/folder-a/tasks/task-b/status");
+
+        _ = await Should.ThrowAsync<HexalithFoldersApiException>(() => client.GetReadinessDiagnosticsAsync(
+            "folder-a", "correlation-a", null, TestContext.Current.CancellationToken));
+        handler.Request.ShouldNotBeNull().RequestUri.ShouldNotBeNull().AbsolutePath
+            .ShouldBe("/api/v2/folders/folder-a/ops-console/readiness-diagnostics");
+
+        _ = await Should.ThrowAsync<HexalithFoldersApiException>(() => client.GetProjectionFreshnessAsync(
+            "folder-a", "correlation-a", null, TestContext.Current.CancellationToken));
+        handler.Request.ShouldNotBeNull().RequestUri.ShouldNotBeNull().AbsolutePath
+            .ShouldBe("/api/v2/folders/folder-a/ops-console/projection-freshness");
     }
 
     [Fact]
@@ -959,7 +1247,7 @@ public sealed class ClientGenerationTests
             .Attribute("BeforeTargets").ShouldBeNull("freshness is verified by the pre-build CI gate against checked-in files");
 
         string program = File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "Program.cs"));
-        program.IndexOf("GeneratedClientPostProcessor.Process(clientPath);", StringComparison.Ordinal)
+        program.IndexOf("GeneratedClientPostProcessor.Process(clientPath, contractPath);", StringComparison.Ordinal)
             .ShouldBeLessThan(program.IndexOf("WriteAtomically(outputPath, output);", StringComparison.Ordinal));
         File.ReadAllText(Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "Generation", "GeneratedClientPostProcessor.cs"))
             .ShouldContain("AssertPartialRangeIsSuccessful(source);");
@@ -1022,6 +1310,25 @@ public sealed class ClientGenerationTests
             clientAction,
             details = new { visibility = status is 404 or 503 ? "redacted" : "metadata_only" },
         });
+
+    private static JObject GenericProblemWithOptionalFields() => JObject.FromObject(new
+    {
+        type = "about:blank",
+        title = "Validation failure",
+        status = 400,
+        detail = "The request did not satisfy the declared constraints.",
+        instance = "/problems/validation/opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+        category = "validation_error",
+        code = "validation_error",
+        message = "Synthetic validation failure.",
+        correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+        retryable = false,
+        clientAction = "revise_request",
+        details = new
+        {
+            visibility = "metadata_only",
+        },
+    });
 
     private static string? ExactTitle(string code) => code switch
     {
@@ -1224,11 +1531,16 @@ public sealed class ClientGenerationTests
 
     private sealed class StaticResponseHandler(HttpStatusCode statusCode, string json) : HttpMessageHandler
     {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
-            Task.FromResult(new HttpResponseMessage(statusCode)
+        public HttpRequestMessage? Request { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            Request = request;
+            return Task.FromResult(new HttpResponseMessage(statusCode)
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json"),
                 RequestMessage = request,
             });
+        }
     }
 }

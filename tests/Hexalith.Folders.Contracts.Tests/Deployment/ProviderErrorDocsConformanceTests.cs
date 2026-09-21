@@ -203,7 +203,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocGeneratedCategoryInventoryEqualsClient()
     {
         HashSet<string> generated = ParseGeneratedEnumValues("CanonicalErrorCategory");
-        generated.Count.ShouldBe(47, "the generated CanonicalErrorCategory must declare exactly 47 PD10-v2 members.");
+        generated.Count.ShouldBe(46, "the generated CanonicalErrorCategory must declare exactly 46 PD10-v2 members.");
 
         HashSet<string> docCategories = FirstColumnBacktickTokens(ErrorDocPath, "<!-- generated-canonical-categories -->");
         AssertSetEquals(docCategories, generated, "error doc generated categories must equal the generated enum exactly.");
@@ -213,7 +213,7 @@ public sealed partial class ProviderErrorDocsConformanceTests
     public void CanonicalErrorDocOracleCategoryInventoryEqualsParityContract()
     {
         HashSet<string> oracle = ParseParityOracleCategories();
-        oracle.Count.ShouldBe(44, "the parity oracle must carry exactly 44 distinct PD10-v2 canonical categories.");
+        oracle.Count.ShouldBe(43, "the parity oracle must carry exactly 43 distinct PD10-v2 canonical categories.");
 
         HashSet<string> docOracle = FirstColumnBacktickTokens(ErrorDocPath, "<!-- oracle-carried-categories -->");
         AssertSetEquals(docOracle, oracle, "error doc oracle categories must equal the parity oracle exactly.");

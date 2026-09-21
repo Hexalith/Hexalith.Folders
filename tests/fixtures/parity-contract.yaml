@@ -1,5 +1,5 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: 07f7e3f7959a6da609619aa76d7d9381a0cb62a469760cb866d050f9c9e8b4f0
+# contract_spine_sha256: 8991594ca78534afd42875731893ff9a5258acdf40d057bbab60e75e8eccde12
 # parity_schema_sha256: 6af4afc59bdc336fe1e0d1ebfa772b761a3ebd69b05170b0f1e01ca81d677049
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
@@ -7,7 +7,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -15,7 +15,6 @@
       - 'failed_operation'
       - 'file_operation_failed'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'input_limit_exceeded'
@@ -78,10 +77,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -165,11 +160,10 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -201,10 +195,6 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -368,7 +358,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -376,7 +366,6 @@
       - 'failed_operation'
       - 'file_operation_failed'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'input_limit_exceeded'
@@ -439,10 +428,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -526,7 +511,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -534,7 +519,6 @@
       - 'concurrency_conflict'
       - 'dirty_workspace'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -599,10 +583,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -690,11 +670,10 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -726,10 +705,6 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -1049,10 +1024,9 @@
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1081,10 +1055,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1127,10 +1097,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1159,10 +1128,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1205,10 +1170,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1240,10 +1204,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1286,11 +1246,10 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'dirty_workspace'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1325,10 +1284,6 @@
     - canonical_error_category: 'dirty_workspace'
       cli_exit_code: 72
       mcp_failure_kind: 'dirty_workspace'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
@@ -1381,10 +1336,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1412,10 +1366,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1454,11 +1404,10 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1495,10 +1444,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
@@ -1559,11 +1504,10 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'input_limit_exceeded'
       - 'internal_error'
       - 'path_validation_failed'
@@ -1602,10 +1546,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'input_limit_exceeded'
       cli_exit_code: 69
@@ -1665,10 +1605,9 @@
   operation_family: 'context_query'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
@@ -1694,10 +1633,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1732,10 +1667,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1763,10 +1697,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1805,10 +1735,9 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1840,10 +1769,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -1895,10 +1820,9 @@
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -1928,10 +1852,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -2124,11 +2044,10 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -2166,10 +2085,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
@@ -2225,10 +2140,9 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -2262,10 +2176,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -2490,11 +2400,10 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -2530,10 +2439,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
@@ -2581,10 +2486,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -2613,10 +2517,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -2659,10 +2559,9 @@
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -2696,10 +2595,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -2834,10 +2729,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -2870,10 +2764,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -2916,10 +2806,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'lock_expired'
       - 'projection_stale'
@@ -2955,10 +2844,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -3005,11 +2890,10 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -3047,10 +2931,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
@@ -3102,10 +2982,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -3137,10 +3016,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -3183,10 +3058,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -3218,10 +3092,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -3260,11 +3130,10 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'input_limit_exceeded'
       - 'internal_error'
       - 'path_validation_failed'
@@ -3304,10 +3173,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'input_limit_exceeded'
       cli_exit_code: 69
@@ -3367,10 +3232,9 @@
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -3403,10 +3267,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -3457,10 +3317,9 @@
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -3488,10 +3347,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -3534,11 +3389,10 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'input_limit_exceeded'
       - 'internal_error'
       - 'path_validation_failed'
@@ -3578,10 +3432,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'input_limit_exceeded'
       cli_exit_code: 69
@@ -3641,10 +3491,9 @@
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'internal_error'
       - 'projection_stale'
       - 'projection_unavailable'
@@ -3676,10 +3525,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'internal_error'
       cli_exit_code: 1
       mcp_failure_kind: 'internal_error'
@@ -3730,12 +3575,11 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
       - 'concurrency_conflict'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -3783,10 +3627,6 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -3854,13 +3694,12 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'branch_ref_policy_invalid'
       - 'concurrency_conflict'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -3915,10 +3754,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -3998,11 +3833,10 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'input_limit_exceeded'
       - 'internal_error'
       - 'path_validation_failed'
@@ -4042,10 +3876,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'input_limit_exceeded'
       cli_exit_code: 69
@@ -4109,13 +3939,12 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
       - 'concurrency_conflict'
       - 'failed_operation'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -4165,10 +3994,6 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -4228,7 +4053,7 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'authorization_revocation_detected'
@@ -4236,7 +4061,6 @@
       - 'failed_operation'
       - 'file_operation_failed'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -4296,10 +4120,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -4379,11 +4199,10 @@
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'file_policy_unavailable'
-      - 'folder_acl_denied'
       - 'input_limit_exceeded'
       - 'internal_error'
       - 'path_validation_failed'
@@ -4423,10 +4242,6 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'input_limit_exceeded'
       cli_exit_code: 69
@@ -4486,10 +4301,9 @@
   operation_family: 'context_query'
   read_consistency_class: 'eventually-consistent'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
-      - 'folder_acl_denied'
       - 'input_limit_exceeded'
       - 'internal_error'
       - 'query_timeout'
@@ -4523,10 +4337,6 @@
       cli_exit_code: 65
       mcp_failure_kind: 'authentication_failure'
       pre_sdk_error_class: 'credential_missing'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
-      pre_sdk_error_class: 'none'
     - canonical_error_category: 'input_limit_exceeded'
       cli_exit_code: 69
       mcp_failure_kind: 'input_limit_exceeded'
@@ -4573,11 +4383,10 @@
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
   transport_parity:
-    auth_outcome_class: 'folder_acl_denied'
+    auth_outcome_class: 'tenant_access_denied'
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
-      - 'folder_acl_denied'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -4609,10 +4418,6 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
-      pre_sdk_error_class: 'none'
-    - canonical_error_category: 'folder_acl_denied'
-      cli_exit_code: 66
-      mcp_failure_kind: 'folder_acl_denied'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68

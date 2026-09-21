@@ -105,10 +105,10 @@ public sealed class MetadataOnlyOutputTests
             "--token", "synthetic-jwt",
             "--output", output);
 
-        exit.ShouldBe(69);
+        exit.ShouldBe(1);
         harness.Console.StdOut.ShouldNotContain(rawBodyLeak);
         harness.Console.StdErr.ShouldNotContain(rawBodyLeak);
-        // The projected (typed) category is still surfaced, proving we rendered the problem, just not the raw body.
-        harness.Console.StdErr.ShouldContain("Validation_error");
+        harness.Console.StdErr.ShouldContain("internal_error");
+        harness.Console.StdErr.ShouldNotContain("Validation_error");
     }
 }

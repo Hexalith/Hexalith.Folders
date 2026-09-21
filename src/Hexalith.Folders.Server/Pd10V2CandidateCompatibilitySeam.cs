@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Security.Claims;
 
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -18,6 +19,48 @@ namespace Hexalith.Folders.Server;
 public static class Pd10V2CandidateCompatibilitySeam
 {
     private const string CandidatePrefix = "/api/v2";
+    private const long MaximumRequestBodyBytes = 1_048_576;
+    private const string DelegatorClaimType = "eventstore:delegator";
+    private const string DelegatorPermissionClaimType = "eventstore:delegator-permission";
+    private const string AccessStateClaimType = "eventstore:access-state";
+    private const string AuthorizedTenantItem = "pd10.authorized-tenant";
+    private const string AuthorizedPrincipalItem = "pd10.authorized-principal";
+    private const string AuthorizedFolderItem = "pd10.authorized-folder";
+    private const string AuthorizedWatermarkItem = "pd10.authorized-watermark";
+    private const string AuthorizedOrganizationItem = "pd10.authorized-organization";
+    private const string TaskSnapshotItem = "pd10.task-snapshot";
+    private static readonly HashSet<string> TaskLifecycleStates = new(StringComparer.Ordinal)
+    {
+        "requested", "preparing", "ready", "locked", "changes_staged", "dirty", "committed", "failed",
+        "inaccessible", "unknown_provider_outcome", "reconciliation_required",
+    };
+    private static readonly HashSet<string> TaskErrorCategories = new(StringComparer.Ordinal)
+    {
+        "success", "authentication_failure", "client_configuration_error", "credential_missing",
+        "credential_reference_invalid", "tenant_access_denied", "validation_error", "concurrency_conflict",
+        "idempotency_conflict", "idempotency_key_expired", "provider_readiness_failed",
+        "provider_permission_insufficient", "provider_unavailable", "provider_rate_limited",
+        "repository_binding_unavailable", "branch_ref_policy_invalid", "workspace_not_ready",
+        "workspace_preparation_failed", "workspace_locked", "lock_conflict", "lock_expired", "lock_not_owned",
+        "stale_workspace", "authorization_revocation_detected", "repository_conflict", "duplicate_binding",
+        "unsupported_provider_capability", "path_validation_failed", "file_operation_failed", "dirty_workspace",
+        "commit_failed", "provider_failure_known", "unknown_provider_outcome", "reconciliation_required",
+        "state_transition_invalid", "input_limit_exceeded", "response_limit_exceeded", "query_timeout",
+        "read_model_unavailable", "projection_stale", "projection_unavailable", "range_unsatisfiable",
+        "file_policy_unavailable", "failed_operation", "redacted", "internal_error",
+    };
+    private static readonly HashSet<string> RootSchemaVersionOperations = new(StringComparer.Ordinal)
+    {
+        "CreateFolder", "ArchiveFolder", "UpdateFolderAclEntry", "ConfigureProviderBinding",
+        "CreateRepositoryBackedFolder", "BindRepository",
+        "ConfigureBranchRefPolicy", "PrepareWorkspace", "LockWorkspace", "ReleaseWorkspaceLock",
+        "AddFile", "ChangeFile", "RemoveFile", "GetFolderFileMetadata", "SearchFolderFiles",
+        "SearchFolderIndexedFiles", "GlobFolderFiles", "ReadFileRange", "CommitWorkspace",
+    };
+    private static readonly HashSet<string> NestedBranchPolicySchemaVersionOperations = new(StringComparer.Ordinal)
+    {
+        "CreateRepositoryBackedFolder", "BindRepository",
+    };
 
     /// <summary>Adds the candidate-only authorization and historical transport seam.</summary>
     public static IApplicationBuilder UsePd10V2CandidateCompatibilitySeam(this IApplicationBuilder app)
@@ -39,7 +82,31 @@ public static class Pd10V2CandidateCompatibilitySeam
                     out IReadOnlyDictionary<string, string> routeValues)
                 || descriptor is null)
             {
+                await AuditAsync(
+                    context,
+                    operation: "unknown",
+                    operationFamily: "unknown",
+                    result: "deny").ConfigureAwait(false);
                 await WriteProblemAsync(context, Pd10AuthorizationOutcome.SafeDenial, null).ConfigureAwait(false);
+                return;
+            }
+
+            ITenantContextAccessor tenant = context.RequestServices.GetRequiredService<ITenantContextAccessor>();
+            if (string.IsNullOrWhiteSpace(tenant.AuthoritativeTenantId)
+                || string.IsNullOrWhiteSpace(tenant.PrincipalId))
+            {
+                await AuditAsync(
+                    context,
+                    descriptor.OperationId,
+                    ToKebabCase(descriptor.OperationFamily.ToString()),
+                    result: "deny").ConfigureAwait(false);
+                await WriteProblemAsync(context, Pd10AuthorizationOutcome.AuthenticationRequired, null).ConfigureAwait(false);
+                return;
+            }
+
+            if (!await BufferBoundedRequestBodyAsync(context.Request, context.RequestAborted).ConfigureAwait(false))
+            {
+                await WriteInputLimitProblemAsync(context).ConfigureAwait(false);
                 return;
             }
 
@@ -47,6 +114,11 @@ public static class Pd10V2CandidateCompatibilitySeam
             try
             {
                 authorization = await AuthorizeAsync(context, descriptor, routeValues).ConfigureAwait(false);
+            }
+            catch (Pd10RequestValidationException)
+            {
+                await WriteValidationProblemAsync(context).ConfigureAwait(false);
+                return;
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -57,25 +129,62 @@ public static class Pd10V2CandidateCompatibilitySeam
                 descriptor.TaskBinding == Pd10TaskBindingRule.RouteTaskBelongsToRouteFolder
                     ? token => VerifyTaskBindingAsync(context, routeValues, token)
                     : null;
-            Pd10ProtectedOperationResult<bool> result = await Pd10ProtectedOperationExecutor.ExecuteAsync(
-                authorization,
-                binding,
-                async token =>
-                {
-                    PathString originalPath = context.Request.Path;
-                    try
+            Pd10ProtectedOperationResult<bool> result;
+            try
+            {
+                result = await Pd10ProtectedOperationExecutor.ExecuteAsync(
+                    authorization,
+                    token => ValidateCandidateEnvelopeAsync(context, descriptor, routeValues, token),
+                    binding,
+                    async token =>
                     {
-                        context.Request.Path = Pd10ProtectedOperationCatalog.HistoricalPath(descriptor, routeValues);
-                        await RewriteRequestAsync(context.Request, token).ConfigureAwait(false);
-                        await InvokeHistoricalAsync(context, next).ConfigureAwait(false);
-                        return true;
-                    }
-                    finally
-                    {
-                        context.Request.Path = originalPath;
-                    }
-                },
-                context.RequestAborted).ConfigureAwait(false);
+                        if (descriptor.OperationId == "GetTaskStatus"
+                            && context.Items.TryGetValue(TaskSnapshotItem, out object? snapshotValue)
+                            && snapshotValue is TaskStatusReadModelSnapshot snapshot)
+                        {
+                            await WriteTaskStatusAsync(context, snapshot, token).ConfigureAwait(false);
+                            return true;
+                        }
+
+                        PathString originalPath = context.Request.Path;
+                        PreauthorizedRequestState preauthorized = new(
+                            (string)context.Items[AuthorizedTenantItem]!,
+                            (string)context.Items[AuthorizedPrincipalItem]!,
+                            context.Items.TryGetValue(AuthorizedFolderItem, out object? folder) ? folder as string : null,
+                            context.Items.TryGetValue(AuthorizedWatermarkItem, out object? watermark) ? watermark as string : null,
+                            context.Items.TryGetValue(AuthorizedOrganizationItem, out object? organization) ? organization as string : null);
+                        try
+                        {
+                            PreauthorizedRequestContext.Begin(preauthorized);
+                            context.Request.Path = Pd10ProtectedOperationCatalog.HistoricalPath(descriptor, routeValues);
+                            await RewriteRequestAsync(context.Request, descriptor, token).ConfigureAwait(false);
+                            await InvokeHistoricalAsync(context, next).ConfigureAwait(false);
+                            return true;
+                        }
+                        finally
+                        {
+                            PreauthorizedRequestContext.End();
+                            context.Request.Path = originalPath;
+                        }
+                    },
+                    context.RequestAborted).ConfigureAwait(false);
+            }
+            catch
+            {
+                // The direct authorization decision is already established before protected observation.
+                // Preserve that evidence even when downstream execution or request cancellation fails.
+                await AuditAsync(
+                    context,
+                    descriptor.OperationId,
+                    ToKebabCase(descriptor.OperationFamily.ToString()),
+                    result: "allow").ConfigureAwait(false);
+                throw;
+            }
+            await AuditAsync(
+                context,
+                descriptor.OperationId,
+                ToKebabCase(descriptor.OperationFamily.ToString()),
+                result.Outcome.IsAllowed ? "allow" : "deny").ConfigureAwait(false);
             if (!result.Outcome.IsAllowed)
             {
                 await WriteProblemAsync(context, result.Outcome, null).ConfigureAwait(false);
@@ -93,7 +202,29 @@ public static class Pd10V2CandidateCompatibilitySeam
         string? principalId = tenant.PrincipalId;
         if (string.IsNullOrWhiteSpace(tenantId) || string.IsNullOrWhiteSpace(principalId))
         {
-            return new(false, Pd10AuthorityEvidenceState.Unavailable, false, false, false, false, RequiresBinding(descriptor));
+            return new(
+                false,
+                V2AccessState.TenantMember,
+                Pd10AuthorityEvidenceState.Unavailable,
+                false,
+                false,
+                false,
+                false,
+                false,
+                RequiresBinding(descriptor));
+        }
+
+        (bool isDelegated, bool isUsable, string? delegatorId, EventStoreClaimTransformEvidence? delegatorClaim) =
+            DelegationEvidence(context.User, descriptor.ActionToken, tenantId, principalId);
+        V2AccessState accessState = CanonicalAccessState(context.User, isDelegated);
+        if (!isUsable)
+        {
+            return Unusable(descriptor, Pd10AuthorityEvidenceState.Incomplete, V2AccessState.DelegatedServiceAgent);
+        }
+
+        if (isDelegated && !IsDelegable(descriptor.OperationFamily))
+        {
+            return Denied(descriptor, accessState);
         }
 
         EventStoreClaimTransformEvidence claim = context.RequestServices
@@ -101,14 +232,14 @@ public static class Pd10V2CandidateCompatibilitySeam
             .GetEvidence(descriptor.ActionToken);
         if (!claim.IsPresent || claim.Malformed)
         {
-            return Unusable(descriptor);
+            return Unusable(descriptor, accessState: accessState);
         }
 
         if (!string.Equals(claim.TenantId, tenantId, StringComparison.Ordinal)
             || !string.Equals(claim.PrincipalId, principalId, StringComparison.Ordinal)
             || !claim.HasPermissionFor(descriptor.ActionToken))
         {
-            return Denied(descriptor);
+            return Denied(descriptor, accessState);
         }
 
         string? folderId = descriptor.FolderScope switch
@@ -120,55 +251,114 @@ public static class Pd10V2CandidateCompatibilitySeam
         };
         if (descriptor.FolderScope != Pd10FolderScopeRule.None && string.IsNullOrWhiteSpace(folderId))
         {
-            return Unusable(descriptor);
+            return Unusable(descriptor, accessState: accessState);
+        }
+
+        context.Items[AuthorizedTenantItem] = tenantId;
+        context.Items[AuthorizedPrincipalItem] = principalId;
+        if (folderId is not null)
+        {
+            context.Items[AuthorizedFolderItem] = folderId;
         }
 
         if (folderId is null)
         {
-            TenantAccessOutcome outcome = (await context.RequestServices.GetRequiredService<TenantAccessAuthorizer>()
+            if (HasClientControlledMismatch(tenantId, ClientTenantIds(context))
+                || HasClientControlledMismatch(principalId, ClientPrincipalIds(context)))
+            {
+                return Denied(descriptor, accessState);
+            }
+
+            TenantAccessAuthorizer authorizer = context.RequestServices.GetRequiredService<TenantAccessAuthorizer>();
+            TenantAccessOutcome outcome = (await authorizer
                 .AuthorizeMutationAsync(
                     new TenantAccessAuthorizationContext(tenantId, principalId, tenantId),
                     context.RequestAborted)
                 .ConfigureAwait(false)).Outcome;
+            if (outcome == TenantAccessOutcome.Allowed && isDelegated)
+            {
+                outcome = (await authorizer.AuthorizeMutationAsync(
+                    new TenantAccessAuthorizationContext(tenantId, delegatorId!, tenantId),
+                    context.RequestAborted).ConfigureAwait(false)).Outcome;
+            }
+
             return outcome switch
             {
-                TenantAccessOutcome.Allowed => Allowed(descriptor),
-                TenantAccessOutcome.StaleProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Stale),
-                TenantAccessOutcome.UnavailableProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable),
+                TenantAccessOutcome.Allowed => Allowed(descriptor, accessState),
+                TenantAccessOutcome.StaleProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Stale, accessState),
+                TenantAccessOutcome.UnavailableProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable, accessState),
                 TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict =>
-                    Unusable(descriptor, Pd10AuthorityEvidenceState.Conflicting),
-                _ => Denied(descriptor),
+                    Unusable(descriptor, Pd10AuthorityEvidenceState.Conflicting, accessState),
+                _ => Denied(descriptor, accessState),
             };
         }
 
         LayeredFolderOperationPolicy policy = descriptor.PolicyClass == FolderOperationPolicyClass.StrictRead
             ? LayeredFolderOperationPolicy.StrictRead()
             : LayeredFolderOperationPolicy.Mutation();
-        LayeredFolderAuthorizationResult result = await context.RequestServices
-            .GetRequiredService<LayeredFolderAuthorizationService>()
+        LayeredFolderAuthorizationService layered = context.RequestServices
+            .GetRequiredService<LayeredFolderAuthorizationService>();
+        LayeredFolderAuthorizationResult result = await layered
             .AuthorizeAsync(
                 new LayeredFolderAuthorizationContext(
                     tenantId,
                     principalId,
-                    "actor_present",
+                    principalId,
                     descriptor.ActionToken,
                     policy,
                     claim,
                     folderId,
-                    Header(context, "X-Correlation-Id"),
+                    CorrelationId(context),
                     Header(context, "X-Hexalith-Task-Id") ?? Value(routeValues, "taskId"),
                     ClientTenantIds(context),
                     ClientPrincipalIds(context)),
                 context.RequestAborted)
             .ConfigureAwait(false);
+        if (result.IsAllowed && isDelegated)
+        {
+            result = await layered.AuthorizeAsync(
+                new LayeredFolderAuthorizationContext(
+                    tenantId,
+                    delegatorId!,
+                    principalId,
+                    descriptor.ActionToken,
+                    policy,
+                    delegatorClaim!,
+                    folderId,
+                    CorrelationId(context),
+                    Header(context, "X-Hexalith-Task-Id") ?? Value(routeValues, "taskId"),
+                    ClientTenantIds(context),
+                    ClientControlledPrincipalValues: null),
+                context.RequestAborted).ConfigureAwait(false);
+        }
+
         if (result.IsAllowed)
         {
-            return Allowed(descriptor);
+            if (result.AllowedContext?.FreshnessWatermark is { } watermark)
+            {
+                context.Items[AuthorizedWatermarkItem] = watermark;
+            }
+
+            if (result.AllowedContext?.OrganizationId is { } organizationId)
+            {
+                context.Items[AuthorizedOrganizationItem] = organizationId;
+            }
+
+            return Allowed(descriptor, accessState);
         }
 
         if (result.Decision.OutcomeCode == LayeredAuthorizationOutcomeCodes.AuthenticationDenied)
         {
-            return new(false, Pd10AuthorityEvidenceState.Unavailable, false, false, false, false, RequiresBinding(descriptor));
+            return new(
+                false,
+                accessState,
+                Pd10AuthorityEvidenceState.Unavailable,
+                false,
+                false,
+                false,
+                false,
+                !isDelegated,
+                RequiresBinding(descriptor));
         }
 
         Pd10AuthorityEvidenceState state = result.Decision.OutcomeCode switch
@@ -181,7 +371,9 @@ public static class Pd10V2CandidateCompatibilitySeam
             _ when result.Decision.Retryable => Pd10AuthorityEvidenceState.Unavailable,
             _ => Pd10AuthorityEvidenceState.Fresh,
         };
-        return state == Pd10AuthorityEvidenceState.Fresh ? Denied(descriptor) : Unusable(descriptor, state);
+        return state == Pd10AuthorityEvidenceState.Fresh
+            ? Denied(descriptor, accessState)
+            : Unusable(descriptor, state, accessState);
     }
 
     private static async ValueTask<Pd10TaskFolderBindingState> VerifyTaskBindingAsync(
@@ -207,11 +399,16 @@ public static class Pd10V2CandidateCompatibilitySeam
                     taskId,
                     tenant.PrincipalId,
                     TaskStatusQueryHandler.ActionToken,
-                    Header(context, "X-Correlation-Id"),
+                    CorrelationId(context),
                     "eventually_consistent"),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return Pd10TaskFolderBindingState.Unavailable;
+        }
+
+        if (result.Freshness is null || result.Freshness.Stale)
         {
             return Pd10TaskFolderBindingState.Unavailable;
         }
@@ -223,17 +420,122 @@ public static class Pd10V2CandidateCompatibilitySeam
 
         if (result.Status != TaskStatusReadModelStatus.Available
             || result.Snapshot is null
-            || result.Freshness.Stale
+            || string.IsNullOrWhiteSpace(result.Snapshot.FolderId)
+            || result.Snapshot.Freshness is null
+            || result.Snapshot.EvidenceScope is null
+            || result.Snapshot.RetryEligibility is null
             || result.Snapshot.Freshness.Stale)
         {
             return Pd10TaskFolderBindingState.Unavailable;
         }
 
-        return result.Snapshot.ManagedTenantId == tenant.AuthoritativeTenantId
+        bool isBound = result.Snapshot.ManagedTenantId == tenant.AuthoritativeTenantId
             && result.Snapshot.FolderId == folderId
-            && result.Snapshot.TaskId == taskId
-                ? Pd10TaskFolderBindingState.Bound
-                : Pd10TaskFolderBindingState.NotBound;
+            && result.Snapshot.TaskId == taskId;
+        if (!isBound)
+        {
+            return Pd10TaskFolderBindingState.NotBound;
+        }
+
+        bool hasCompatibleEvidence = result.Snapshot.EvidenceScope.ManagedTenantId == tenant.AuthoritativeTenantId
+            && result.Snapshot.EvidenceScope.PrincipalId == tenant.PrincipalId
+            && result.Snapshot.EvidenceScope.ActionToken == TaskStatusQueryHandler.ActionToken
+            && result.Snapshot.EvidenceScope.TaskId == taskId;
+        if (!hasCompatibleEvidence || !IsTaskStatusContractShaped(result.Snapshot))
+        {
+            return Pd10TaskFolderBindingState.Unavailable;
+        }
+
+        context.Items[TaskSnapshotItem] = result.Snapshot;
+        return Pd10TaskFolderBindingState.Bound;
+    }
+
+    private static async ValueTask<bool> ValidateCandidateEnvelopeAsync(
+        HttpContext context,
+        Pd10ProtectedOperationDescriptor descriptor,
+        IReadOnlyDictionary<string, string> routeValues,
+        CancellationToken cancellationToken)
+    {
+        if (descriptor.OperationId == "GetTaskStatus" && HeaderValues(context, "Idempotency-Key").Count > 0)
+        {
+            await WriteValidationProblemAsync(
+                context,
+                "idempotency_key_not_allowed",
+                "Idempotency-Key is not accepted on read operations.",
+                cancellationToken).ConfigureAwait(false);
+            return false;
+        }
+
+        if (!HeaderValuesAreExactIdentifiers(context, "X-Correlation-Id")
+            || !HeaderValuesAreExactIdentifiers(context, "X-Hexalith-Task-Id")
+            || !HeaderValuesAreExactIdentifiers(context, "Idempotency-Key")
+            || !HeaderValuesAreExactIdentifiers(context, "X-Hexalith-Tenant-Id")
+            || !HeaderValuesAreExactIdentifiers(context, "X-Tenant-Id")
+            || !HeaderValuesAreExactIdentifiers(context, "X-Forwarded-Tenant")
+            || !HeaderValuesAreExactIdentifiers(context, "X-Principal-Id")
+            || !HeaderValuesAreExactIdentifiers(context, "X-Forwarded-Principal")
+            || !QueryValuesAreExactIdentifiers(context, "tenantId")
+            || !QueryValuesAreExactIdentifiers(context, "managedTenantId")
+            || !QueryValuesAreExactIdentifiers(context, "principalId"))
+        {
+            await WriteValidationProblemAsync(
+                context,
+                "validation_error",
+                "Request validation failed.",
+                cancellationToken).ConfigureAwait(false);
+            return false;
+        }
+
+        if (descriptor.OperationId == "GetTaskStatus")
+        {
+            string? taskId = Value(routeValues, "taskId");
+            if (HeaderValues(context, "X-Hexalith-Task-Id")
+                .Any(value => !string.Equals(value, taskId, StringComparison.Ordinal)))
+            {
+                await WriteValidationProblemAsync(
+                    context,
+                    "validation_error",
+                    "Request validation failed.",
+                    cancellationToken).ConfigureAwait(false);
+                return false;
+            }
+
+            IReadOnlyList<string> freshnessValues = HeaderValues(context, "X-Hexalith-Freshness");
+            if (freshnessValues.Any(value =>
+                    !string.Equals(value, "eventually_consistent", StringComparison.Ordinal)))
+            {
+                await WriteValidationProblemAsync(
+                    context,
+                    "unsupported_read_consistency",
+                    "Operation supports eventually_consistent only.",
+                    cancellationToken).ConfigureAwait(false);
+                return false;
+            }
+        }
+        else if (!AllHeaderValuesAgree(context, "X-Hexalith-Freshness"))
+        {
+            await WriteValidationProblemAsync(
+                context,
+                "unsupported_read_consistency",
+                "Supplied read-consistency values must agree.",
+                cancellationToken).ConfigureAwait(false);
+            return false;
+        }
+
+        if (!await HasExactV2SchemaDiscriminatorsAsync(
+                context.Request,
+                descriptor,
+                cancellationToken).ConfigureAwait(false))
+        {
+            await WriteValidationProblemAsync(
+                context,
+                "unsupported_request_schema_version",
+                "The request schema version is not supported.",
+                cancellationToken).ConfigureAwait(false);
+            return false;
+        }
+
+        return true;
     }
 
     private static async Task InvokeHistoricalAsync(HttpContext context, RequestDelegate next)
@@ -255,12 +557,13 @@ public static class Pd10V2CandidateCompatibilitySeam
             captured.Position = 0;
             if (canonical is not null)
             {
-                string? correlationId = ReadCorrelationId(captured);
+                string? correlationId = ValidateCorrelationId(ReadCorrelationId(captured));
                 context.Response.Body = destination;
                 await WriteProblemAsync(context, canonical, correlationId).ConfigureAwait(false);
                 return;
             }
 
+            NormalizeHistoricalProblem(captured, context.Response.ContentType);
             context.Response.ContentLength = captured.Length;
             await captured.CopyToAsync(destination, context.RequestAborted).ConfigureAwait(false);
         }
@@ -268,6 +571,93 @@ public static class Pd10V2CandidateCompatibilitySeam
         {
             context.Response.Body = destination;
         }
+    }
+
+    private static void NormalizeHistoricalProblem(MemoryStream body, string? contentType)
+    {
+        if (contentType is null
+            || !contentType.StartsWith("application/problem+json", StringComparison.OrdinalIgnoreCase))
+        {
+            body.Position = 0;
+            return;
+        }
+
+        body.Position = 0;
+        JsonNode? parsed;
+        try
+        {
+            parsed = JsonNode.Parse(body);
+        }
+        catch (JsonException)
+        {
+            body.Position = 0;
+            return;
+        }
+
+        if (parsed is not JsonObject problem
+            || problem["category"] is not JsonValue categoryValue
+            || !categoryValue.TryGetValue(out string? category)
+            || problem["code"] is not JsonValue codeValue
+            || !codeValue.TryGetValue(out string? code))
+        {
+            body.Position = 0;
+            return;
+        }
+
+        // Historical handlers expose task and retry metadata as open top-level extensions. The v2
+        // candidate owns a closed Problem Details shape, so retain only its schema-owned locations.
+        problem.Remove("taskId");
+        problem.Remove("retryAfterSeconds");
+        if (problem["details"] is JsonObject details)
+        {
+            details.Remove("retryReasonCode");
+            details.Remove("reasonCategory");
+            details.Remove("evidenceSource");
+            details.Remove("taskId");
+        }
+
+        if (category == "lock_conflict")
+        {
+            problem["code"] = "workspace_locked";
+            problem["retryable"] = true;
+            if (problem["details"] is JsonObject lockDetails)
+            {
+                lockDetails["lockStatus"] = "active";
+            }
+        }
+        else if (category is "projection_stale" or "projection_unavailable" or "provider_unavailable"
+            or "file_policy_unavailable" or "read_model_unavailable" or "lock_expired")
+        {
+            problem["retryable"] = true;
+            if (category == "read_model_unavailable")
+            {
+                problem["code"] = "projection_unavailable";
+            }
+        }
+
+        problem["clientAction"] = (category, code) switch
+        {
+            ("authentication_failure", _) => "check_credentials",
+            ("validation_error", "tampered_cursor_or_changed_filter") => "restart_query",
+            ("validation_error", _) or ("duplicate_binding", _) or ("idempotency_conflict", _)
+                or ("repository_conflict", _) or ("input_limit_exceeded", _)
+                or ("response_limit_exceeded", _) or ("range_unsatisfiable", _)
+                or ("state_transition_invalid", _) or ("workspace_preparation_failed", _)
+                or ("query_timeout", _) => "revise_request",
+            ("idempotency_key_expired", _) => "refresh_state_then_submit_with_new_key",
+            ("authorization_revocation_detected", _) or ("dirty_workspace", _)
+                or ("commit_failed", _) or ("provider_readiness_failed", _) => "contact_operator",
+            ("unknown_provider_outcome", _) or ("reconciliation_required", _) => "wait_for_reconciliation",
+            ("provider_failure_known", _) => "do_not_retry",
+            ("lock_conflict", _) or ("lock_expired", _) or ("projection_stale", _)
+                or ("projection_unavailable", _) or ("provider_unavailable", _)
+                or ("file_policy_unavailable", _) or ("read_model_unavailable", _) => "retry",
+            _ => problem["clientAction"]?.DeepClone(),
+        };
+
+        body.SetLength(0);
+        JsonSerializer.Serialize(body, problem);
+        body.Position = 0;
     }
 
     private static bool IsAuthorityUnavailable(Stream body)
@@ -340,7 +730,9 @@ public static class Pd10V2CandidateCompatibilitySeam
             category = outcome.Category,
             code = outcome.Code,
             message,
-            correlationId = correlationId ?? Header(context, "X-Correlation-Id") ?? "correlation_absent",
+            correlationId = ValidateCorrelationId(correlationId)
+                ?? CorrelationId(context)
+                ?? "correlation_absent",
             retryable = outcome.Retryable,
             clientAction = outcome.ClientAction,
             details = new { visibility = outcome.Visibility },
@@ -352,20 +744,22 @@ public static class Pd10V2CandidateCompatibilitySeam
         if (request.Body == Stream.Null || request.ContentType is null
             || !request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
         {
-            return null;
+            throw new Pd10RequestValidationException();
         }
 
-        request.EnableBuffering();
         request.Body.Position = 0;
         try
         {
             using JsonDocument document = await JsonDocument.ParseAsync(request.Body, cancellationToken: cancellationToken).ConfigureAwait(false);
-            return document.RootElement.ValueKind == JsonValueKind.Object
+            string? folderId = document.RootElement.ValueKind == JsonValueKind.Object
                 ? StringProperty(document.RootElement, "folderId") : null;
+            return string.IsNullOrWhiteSpace(folderId)
+                ? throw new Pd10RequestValidationException()
+                : folderId;
         }
         catch (JsonException)
         {
-            return null;
+            throw new Pd10RequestValidationException();
         }
         finally
         {
@@ -373,7 +767,10 @@ public static class Pd10V2CandidateCompatibilitySeam
         }
     }
 
-    private static async Task RewriteRequestAsync(HttpRequest request, CancellationToken cancellationToken)
+    private static async Task RewriteRequestAsync(
+        HttpRequest request,
+        Pd10ProtectedOperationDescriptor descriptor,
+        CancellationToken cancellationToken)
     {
         if (request.Body == Stream.Null || request.ContentType is null
             || !request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
@@ -383,58 +780,380 @@ public static class Pd10V2CandidateCompatibilitySeam
 
         using StreamReader reader = new(request.Body, Encoding.UTF8, false, leaveOpen: true);
         string json = await reader.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
-        byte[] original = Encoding.UTF8.GetBytes(json);
-        try
+        JsonNode? root = JsonNode.Parse(json);
+        if (root is JsonObject jsonObject)
         {
-            JsonNode? root = JsonNode.Parse(json);
-            RewriteVersions(root);
-            byte[] rewritten = Encoding.UTF8.GetBytes(root?.ToJsonString() ?? json);
-            request.Body = new MemoryStream(rewritten, writable: false);
-            request.ContentLength = rewritten.Length;
+            RewriteSchemaDiscriminators(jsonObject, descriptor);
         }
-        catch (JsonException)
-        {
-            request.Body = new MemoryStream(original, writable: false);
-            request.ContentLength = original.Length;
-        }
+
+        byte[] rewritten = Encoding.UTF8.GetBytes(root?.ToJsonString() ?? json);
+        request.Body = new MemoryStream(rewritten, writable: false);
+        request.ContentLength = rewritten.Length;
     }
 
-    private static void RewriteVersions(JsonNode? node)
+    /// <summary>Translates only the request-schema discriminator positions owned by the selected operation.</summary>
+    internal static void RewriteSchemaDiscriminators(
+        JsonObject jsonObject,
+        Pd10ProtectedOperationDescriptor descriptor)
     {
-        if (node is JsonObject obj)
+        ArgumentNullException.ThrowIfNull(jsonObject);
+        ArgumentNullException.ThrowIfNull(descriptor);
+        if (!RootSchemaVersionOperations.Contains(descriptor.OperationId))
         {
-            foreach ((string name, JsonNode? child) in obj.ToArray())
-            {
-                if (name == "requestSchemaVersion" && child is JsonValue value
-                    && value.TryGetValue(out string? version) && version == "v2")
-                {
-                    obj[name] = "v1";
-                }
-                else
-                {
-                    RewriteVersions(child);
-                }
-            }
+            return;
         }
-        else if (node is JsonArray array)
+
+        RewriteSchemaVersion(jsonObject);
+        if (NestedBranchPolicySchemaVersionOperations.Contains(descriptor.OperationId)
+            && jsonObject["branchRefPolicy"] is JsonObject branchRefPolicy)
         {
-            foreach (JsonNode? child in array)
-            {
-                RewriteVersions(child);
-            }
+            RewriteSchemaVersion(branchRefPolicy);
         }
     }
 
-    private static Pd10AuthorizationContext Allowed(Pd10ProtectedOperationDescriptor descriptor)
-        => new(true, Pd10AuthorityEvidenceState.Fresh, true, true, true, true, RequiresBinding(descriptor));
+    private static void RewriteSchemaVersion(JsonObject jsonObject)
+    {
+        if (jsonObject.TryGetPropertyValue("requestSchemaVersion", out JsonNode? version)
+            && version?.GetValueKind() == JsonValueKind.String
+            && string.Equals(version.GetValue<string>(), "v2", StringComparison.Ordinal))
+        {
+            jsonObject["requestSchemaVersion"] = "v1";
+        }
+    }
 
-    private static Pd10AuthorizationContext Denied(Pd10ProtectedOperationDescriptor descriptor)
-        => new(true, Pd10AuthorityEvidenceState.Fresh, false, false, false, false, RequiresBinding(descriptor));
+    private static Pd10AuthorizationContext Allowed(
+        Pd10ProtectedOperationDescriptor descriptor,
+        V2AccessState accessState)
+        => new(
+            true,
+            accessState,
+            Pd10AuthorityEvidenceState.Fresh,
+            true,
+            true,
+            true,
+            true,
+            true,
+            RequiresBinding(descriptor));
+
+    private static Pd10AuthorizationContext Denied(
+        Pd10ProtectedOperationDescriptor descriptor,
+        V2AccessState accessState)
+        => new(
+            true,
+            accessState,
+            Pd10AuthorityEvidenceState.Fresh,
+            false,
+            false,
+            false,
+            false,
+            accessState != V2AccessState.DelegatedServiceAgent,
+            RequiresBinding(descriptor));
 
     private static Pd10AuthorizationContext Unusable(
         Pd10ProtectedOperationDescriptor descriptor,
-        Pd10AuthorityEvidenceState state = Pd10AuthorityEvidenceState.Incomplete)
-        => new(true, state, false, false, false, false, RequiresBinding(descriptor));
+        Pd10AuthorityEvidenceState state = Pd10AuthorityEvidenceState.Incomplete,
+        V2AccessState accessState = V2AccessState.TenantMember)
+        => new(
+            true,
+            accessState,
+            state,
+            false,
+            false,
+            false,
+            false,
+            accessState != V2AccessState.DelegatedServiceAgent,
+            RequiresBinding(descriptor));
+
+    private static async Task<bool> BufferBoundedRequestBodyAsync(
+        HttpRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.ContentLength > MaximumRequestBodyBytes)
+        {
+            return false;
+        }
+
+        if (request.Body == Stream.Null)
+        {
+            return true;
+        }
+
+        try
+        {
+            request.EnableBuffering(64 * 1024, MaximumRequestBodyBytes);
+            request.Body.Position = 0;
+            byte[] buffer = new byte[8192];
+            long observed = 0;
+            int read;
+            while ((read = await request.Body.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) > 0)
+            {
+                observed += read;
+                if (observed > MaximumRequestBodyBytes)
+                {
+                    return false;
+                }
+            }
+
+            request.Body.Position = 0;
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+    }
+
+    private static async Task WriteInputLimitProblemAsync(HttpContext context)
+    {
+        context.Response.Headers.Clear();
+        context.Response.StatusCode = StatusCodes.Status413PayloadTooLarge;
+        context.Response.ContentType = "application/problem+json";
+        await JsonSerializer.SerializeAsync(context.Response.Body, new
+        {
+            type = "about:blank",
+            title = "Request body too large",
+            status = StatusCodes.Status413PayloadTooLarge,
+            category = "input_limit_exceeded",
+            code = "c4_input_limit_exceeded",
+            message = "The request body exceeds the supported limit.",
+            correlationId = CorrelationId(context) ?? "correlation_absent",
+            retryable = false,
+            clientAction = "revise_request",
+            details = new { visibility = "redacted" },
+        }, cancellationToken: context.RequestAborted).ConfigureAwait(false);
+    }
+
+    private static Task WriteValidationProblemAsync(HttpContext context)
+        => WriteValidationProblemAsync(
+            context,
+            "validation_error",
+            "Request validation failed.",
+            context.RequestAborted);
+
+    private static async Task WriteValidationProblemAsync(
+        HttpContext context,
+        string code,
+        string message,
+        CancellationToken cancellationToken)
+    {
+        context.Response.Headers.Clear();
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        context.Response.ContentType = "application/problem+json";
+        await JsonSerializer.SerializeAsync(context.Response.Body, new
+        {
+            type = "about:blank",
+            title = "Validation failure",
+            status = StatusCodes.Status400BadRequest,
+            category = "validation_error",
+            code,
+            message,
+            correlationId = CorrelationId(context) ?? "correlation_absent",
+            retryable = false,
+            clientAction = "revise_request",
+            details = new { visibility = "metadata_only" },
+        }, cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    private static async ValueTask AuditAsync(
+        HttpContext context,
+        string operation,
+        string operationFamily,
+        string result)
+    {
+        ITenantContextAccessor? tenant = context.RequestServices.GetService<ITenantContextAccessor>();
+        IPd10AuthorizationAuditSink sink = context.RequestServices.GetRequiredService<IPd10AuthorizationAuditSink>();
+        await sink.WriteAsync(
+            new Pd10AuthorizationAuditRecord(
+                tenant?.PrincipalId ?? "actor_absent",
+                tenant?.AuthoritativeTenantId ?? "tenant_absent",
+                operation,
+                operationFamily,
+                result,
+                CorrelationId(context) ?? "correlation_absent"),
+            CancellationToken.None).ConfigureAwait(false);
+    }
+
+    private static async Task WriteTaskStatusAsync(
+        HttpContext context,
+        TaskStatusReadModelSnapshot snapshot,
+        CancellationToken cancellationToken)
+    {
+        string? correlationId = CorrelationId(context);
+        if (correlationId is not null)
+        {
+            context.Response.Headers["X-Correlation-Id"] = correlationId;
+        }
+
+        context.Response.Headers["X-Hexalith-Read-Consistency"] = "eventually_consistent";
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        context.Response.ContentType = "application/json";
+        Dictionary<string, object?> response = new(StringComparer.Ordinal)
+        {
+            ["taskId"] = snapshot.TaskId,
+            ["currentState"] = snapshot.CurrentState,
+            ["retryEligibility"] = new
+            {
+                eligible = snapshot.RetryEligibility.Eligible,
+                reasonCode = snapshot.RetryEligibility.ReasonCode,
+                advisoryOnly = snapshot.RetryEligibility.AdvisoryOnly,
+            },
+            ["freshness"] = new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["readConsistency"] = "eventually_consistent",
+                ["observedAt"] = snapshot.Freshness.ObservedAt,
+                ["stale"] = snapshot.Freshness.Stale,
+            },
+        };
+        AddWhenPresent(response, "terminalState", snapshot.TerminalState);
+        AddWhenPresent(response, "lastOperationId", snapshot.LastOperationId);
+        AddWhenPresent(response, "lastFailureCategory", snapshot.LastFailureCategory);
+        if (snapshot.RetryAfter is not null)
+        {
+            response["retryAfter"] = new
+            {
+                retryAfterSeconds = snapshot.RetryAfter.RetryAfterSeconds,
+                advisoryOnly = snapshot.RetryAfter.AdvisoryOnly,
+            };
+        }
+
+        if (snapshot.Freshness.ProjectionWatermark is not null
+            && response["freshness"] is Dictionary<string, object?> freshness)
+        {
+            freshness["projectionWatermark"] = snapshot.Freshness.ProjectionWatermark;
+        }
+
+        await JsonSerializer.SerializeAsync(
+            context.Response.Body,
+            response,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
+    }
+
+    private static void AddWhenPresent(IDictionary<string, object?> values, string name, string? value)
+    {
+        if (value is not null)
+        {
+            values[name] = value;
+        }
+    }
+
+    private static (bool IsDelegated, bool IsUsable, string? DelegatorId, EventStoreClaimTransformEvidence? Evidence)
+        DelegationEvidence(
+            ClaimsPrincipal principal,
+            string actionToken,
+            string tenantId,
+            string actorId)
+    {
+        string? delegatorId = principal.FindFirstValue(DelegatorClaimType);
+        string[] permissions = principal.FindAll(DelegatorPermissionClaimType)
+            .Select(static claim => claim.Value)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+        bool isDelegated = delegatorId is not null || permissions.Length > 0;
+        if (!isDelegated)
+        {
+            return (false, true, null, null);
+        }
+
+        bool usable = !string.IsNullOrWhiteSpace(delegatorId)
+            && !string.Equals(delegatorId, actorId, StringComparison.Ordinal)
+            && permissions.Contains(actionToken, StringComparer.Ordinal);
+        return usable
+            ? (true, true, delegatorId, EventStoreClaimTransformEvidence.Allowed(tenantId, delegatorId, permissions))
+            : (true, false, delegatorId, null);
+    }
+
+    private static V2AccessState CanonicalAccessState(ClaimsPrincipal principal, bool isDelegated)
+    {
+        V2AccessState claimedState = principal.FindFirstValue(AccessStateClaimType) switch
+        {
+            "tenant-administrator" => V2AccessState.TenantAdministrator,
+            "tenant-member" => V2AccessState.TenantMember,
+            "tenant-scoped-operator" => V2AccessState.TenantScopedOperator,
+            "audit-reviewer" => V2AccessState.AuditReviewer,
+            "incident-administrator" => V2AccessState.IncidentAdministrator,
+            "wrong-tenant" => V2AccessState.WrongTenant,
+            "revoked" => V2AccessState.Revoked,
+            "stale" => V2AccessState.Stale,
+            "disabled" => V2AccessState.Disabled,
+            "unknown" => V2AccessState.Unknown,
+            "hidden-resource" => V2AccessState.HiddenResource,
+            "absent-resource" => V2AccessState.AbsentResource,
+            "insufficient-scope" => V2AccessState.InsufficientScope,
+            null or "" => V2AccessState.TenantMember,
+            _ => (V2AccessState)(-1),
+        };
+        return isDelegated && !IsNegativeAccessState(claimedState)
+            ? V2AccessState.DelegatedServiceAgent
+            : claimedState;
+    }
+
+    private static bool IsNegativeAccessState(V2AccessState accessState)
+        => accessState is V2AccessState.WrongTenant
+            or V2AccessState.Revoked
+            or V2AccessState.Stale
+            or V2AccessState.Disabled
+            or V2AccessState.Unknown
+            or V2AccessState.HiddenResource
+            or V2AccessState.AbsentResource
+            or V2AccessState.InsufficientScope;
+
+    internal static bool IsDelegable(V2ProtectedOperationFamily family)
+        => family is V2ProtectedOperationFamily.FolderAdministration
+            or V2ProtectedOperationFamily.TaskMutation
+            or V2ProtectedOperationFamily.ContextRead
+            or V2ProtectedOperationFamily.StatusPermissionAndLockInspection
+            or V2ProtectedOperationFamily.IndexSearch;
+
+    private static bool IsTaskStatusContractShaped(TaskStatusReadModelSnapshot snapshot)
+    {
+        return snapshot.RetryEligibility is not null
+            && snapshot.Freshness is not null
+            && snapshot.EvidenceScope is not null
+            && TaskLifecycleStates.Contains(snapshot.CurrentState)
+            && (snapshot.TerminalState is null || TaskLifecycleStates.Contains(snapshot.TerminalState))
+            && Pd10OpaqueIdentifier.IsValid(snapshot.TaskId)
+            && (snapshot.LastOperationId is null || Pd10OpaqueIdentifier.IsValid(snapshot.LastOperationId))
+            && (snapshot.LastFailureCategory is null
+                || TaskErrorCategories.Contains(snapshot.LastFailureCategory))
+            && snapshot.RetryEligibility.AdvisoryOnly
+            && IsReasonCode(snapshot.RetryEligibility.ReasonCode)
+            && (snapshot.RetryAfter is null
+                || snapshot.RetryAfter.AdvisoryOnly
+                && snapshot.RetryAfter.RetryAfterSeconds is >= 1 and <= 3600)
+            && string.Equals(snapshot.Freshness.ReadConsistency, "eventually_consistent", StringComparison.Ordinal)
+            && !snapshot.Freshness.Stale
+            && (snapshot.Freshness.ProjectionWatermark is null
+                || Pd10OpaqueIdentifier.IsValid(snapshot.Freshness.ProjectionWatermark));
+    }
+
+    private static bool IsReasonCode(string? value)
+        => !string.IsNullOrWhiteSpace(value)
+            && value.Length <= 80
+            && value[0] is >= 'a' and <= 'z'
+            && value.All(static character => character is >= 'a' and <= 'z' or >= '0' and <= '9' or '_');
+
+    private static string? CorrelationId(HttpContext context)
+        => ValidateCorrelationId(Header(context, "X-Correlation-Id"));
+
+    private static string? ValidateCorrelationId(string? value)
+        => Pd10OpaqueIdentifier.IsValid(value) ? value : null;
+
+    private static string ToKebabCase(string value)
+    {
+        StringBuilder builder = new(value.Length + 8);
+        for (int index = 0; index < value.Length; index++)
+        {
+            char character = value[index];
+            if (index > 0 && char.IsUpper(character))
+            {
+                builder.Append('-');
+            }
+
+            builder.Append(char.ToLowerInvariant(character));
+        }
+
+        return builder.ToString();
+    }
 
     private static bool RequiresBinding(Pd10ProtectedOperationDescriptor descriptor)
         => descriptor.TaskBinding != Pd10TaskBindingRule.None;
@@ -445,26 +1164,136 @@ public static class Pd10V2CandidateCompatibilitySeam
     private static string? Value(IReadOnlyDictionary<string, string> values, string key)
         => values.TryGetValue(key, out string? value) ? value : null;
 
-    private static string? Header(HttpContext context, string name) => context.Request.Headers[name].FirstOrDefault();
+    private static string? Header(HttpContext context, string name) => HeaderValues(context, name).FirstOrDefault();
+
+    private static IReadOnlyList<string> HeaderValues(HttpContext context, string name)
+        => context.Request.Headers[name]
+            .Select(static value => value ?? string.Empty)
+            .ToArray();
+
+    private static bool HeaderValuesAreExactIdentifiers(HttpContext context, string name)
+    {
+        IReadOnlyList<string> values = HeaderValues(context, name);
+        return values.Count == 0 || values.All(Pd10OpaqueIdentifier.IsValid);
+    }
+
+    private static bool AllHeaderValuesAgree(HttpContext context, string name)
+    {
+        IReadOnlyList<string> values = HeaderValues(context, name);
+        return values.Count < 2 || values.All(value => string.Equals(value, values[0], StringComparison.Ordinal));
+    }
+
+    private static bool QueryValuesAreExactIdentifiers(HttpContext context, string name)
+    {
+        string[] values = context.Request.Query[name]
+            .Select(static value => value ?? string.Empty)
+            .ToArray();
+        return values.Length == 0 || values.All(Pd10OpaqueIdentifier.IsValid);
+    }
+
+    private static async ValueTask<bool> HasExactV2SchemaDiscriminatorsAsync(
+        HttpRequest request,
+        Pd10ProtectedOperationDescriptor descriptor,
+        CancellationToken cancellationToken)
+    {
+        if (!RootSchemaVersionOperations.Contains(descriptor.OperationId))
+        {
+            return true;
+        }
+
+        if (request.Body == Stream.Null || request.ContentType is null
+            || !request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        request.Body.Position = 0;
+        try
+        {
+            using JsonDocument document = await JsonDocument.ParseAsync(
+                request.Body,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                return false;
+            }
+
+            if (!HasExactV2SchemaVersion(document.RootElement))
+            {
+                return false;
+            }
+
+            if (!NestedBranchPolicySchemaVersionOperations.Contains(descriptor.OperationId))
+            {
+                return true;
+            }
+
+            return document.RootElement.TryGetProperty("branchRefPolicy", out JsonElement branchRefPolicy)
+                && branchRefPolicy.ValueKind == JsonValueKind.Object
+                && HasExactV2SchemaVersion(branchRefPolicy);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+        finally
+        {
+            request.Body.Position = 0;
+        }
+    }
+
+    private static bool HasExactV2SchemaVersion(JsonElement element)
+        => element.TryGetProperty("requestSchemaVersion", out JsonElement version)
+            && version.ValueKind == JsonValueKind.String
+            && string.Equals(version.GetString(), "v2", StringComparison.Ordinal);
+
+    private static bool HasClientControlledMismatch(
+        string authoritativeValue,
+        IReadOnlyDictionary<string, string?> comparisonValues)
+        => comparisonValues.Values.Any(value =>
+            string.IsNullOrWhiteSpace(value)
+            || !string.Equals(value.Trim(), authoritativeValue, StringComparison.Ordinal));
 
     private static string? StringProperty(JsonElement element, string name)
         => element.TryGetProperty(name, out JsonElement value) && value.ValueKind == JsonValueKind.String
             ? value.GetString() : null;
 
     private static IReadOnlyDictionary<string, string?> ClientTenantIds(HttpContext context)
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
-        {
-            ["query_tenant_id"] = context.Request.Query["tenantId"].FirstOrDefault(),
-            ["query_managed_tenant_id"] = context.Request.Query["managedTenantId"].FirstOrDefault(),
-            ["header_hexalith_tenant_id"] = Header(context, "X-Hexalith-Tenant-Id"),
-            ["header_tenant_id"] = Header(context, "X-Tenant-Id"),
-            ["forwarded_tenant_id"] = Header(context, "X-Forwarded-Tenant"),
-        };
+        => ClientControlledValues(
+            context,
+            ("query_tenant_id", false, "tenantId"),
+            ("query_managed_tenant_id", false, "managedTenantId"),
+            ("header_hexalith_tenant_id", true, "X-Hexalith-Tenant-Id"),
+            ("header_tenant_id", true, "X-Tenant-Id"),
+            ("forwarded_tenant_id", true, "X-Forwarded-Tenant"));
 
     private static IReadOnlyDictionary<string, string?> ClientPrincipalIds(HttpContext context)
-        => new Dictionary<string, string?>(StringComparer.Ordinal)
+        => ClientControlledValues(
+            context,
+            ("query_principal_id", false, "principalId"),
+            ("header_principal_id", true, "X-Principal-Id"),
+            ("forwarded_principal_id", true, "X-Forwarded-Principal"));
+
+    private static IReadOnlyDictionary<string, string?> ClientControlledValues(
+        HttpContext context,
+        params (string Source, bool IsHeader, string Name)[] sources)
+    {
+        Dictionary<string, string?> values = new(StringComparer.Ordinal);
+        foreach ((string source, bool isHeader, string name) in sources)
         {
-            ["header_principal_id"] = Header(context, "X-Principal-Id"),
-            ["forwarded_principal_id"] = Header(context, "X-Forwarded-Principal"),
-        };
+            IEnumerable<string?> supplied = isHeader
+                ? context.Request.Headers[name]
+                : context.Request.Query[name];
+            int index = 0;
+            foreach (string? value in supplied)
+            {
+                values[$"{source}[{index}]"] = value;
+                index++;
+            }
+        }
+
+        return values;
+    }
+
+    private sealed class Pd10RequestValidationException : Exception;
 }

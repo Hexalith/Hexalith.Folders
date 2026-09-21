@@ -24,6 +24,15 @@ public sealed class TenantAccessAuthorizer(
     {
         ArgumentNullException.ThrowIfNull(context);
 
+        if (PreauthorizedRequestContext.Covers(context.AuthoritativeTenantId, context.PrincipalId))
+        {
+            return Result(
+                TenantAccessOutcome.Allowed,
+                context.AuthoritativeTenantId,
+                freshnessStatus: TenantProjectionFreshnessStatus.Fresh,
+                source: "preauthorized-request");
+        }
+
         if (string.IsNullOrWhiteSpace(context.AuthoritativeTenantId))
         {
             return Result(TenantAccessOutcome.MissingAuthoritativeTenant, (string?)null);
