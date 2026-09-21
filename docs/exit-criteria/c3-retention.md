@@ -74,7 +74,7 @@ The required classes are `Audit metadata`, `Workspace status`, `Provider correla
 
 C3 is Phase-1-blocking because the Contract Spine must expose D-7 idempotency TTL semantics before client and parity work starts. The proposed durations keep audit and reconciliation evidence long enough to support operational review while keeping temporary working files short-lived because they are disposable caches, not authoritative state.
 
-No unaffected row changes its recorded approval. The temporary-working-files row is a candidate fixed by the approved September 15 proposal and is explicitly blocked on A7b rather than inheriting the superseded digest.
+No unaffected row changes its recorded approval. The temporary-working-files row is bound to approved A7b; runtime remains Story 4.22.
 
 The table covers eleven data classes: the six explicitly enumerated by the Phase 0.5 workshop scope (audit metadata, workspace status, provider correlation IDs, read-model views, temporary working files, cleanup records), four additional classes the workshop classified as separate retention concerns (folder metadata and soft-delete markers, auth claims copied into metadata, diagnostics and rejected-command records, and commit idempotency records), and the independently governed OQ8 consumed-key evidence class. The consumed-key row is required and cannot be inferred from either replay-result tier.
 

@@ -1,12 +1,13 @@
 manifest_version: 2
-revision: folders-planning-authority-relock-2026-09-17
+revision: folders-planning-authority-relock-post-a8-finalization-2026-09-21
 project: Hexalith.Folders
 generated_on: '2026-09-17'
-reconciled_on: '2026-09-18'
-status: relock-candidate-awaiting-post-generation-approvals
+reconciled_on: '2026-09-21'
+status: a8-approved-final-validation-failed-hold-retained
 general_execution_hold: true
 v2_exposure_authorized: false
 sprint_status_regeneration_authorized: false
+ordinary_story_execution_authorized: false
 authority_register:
   product_authority: _bmad-output/planning-artifacts/prd.md
   technical_authority: _bmad-output/planning-artifacts/architecture.md
@@ -18,7 +19,7 @@ authority_register:
     this manifest execution graph; sprint status tracking only.
 approval_binding:
   register_path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  register_sha256: 9360e4b87a91179a7f7357c58a2d38118b436724a8a5f440fa4e226b048d1b95
+  register_sha256: 8292dc059534054fe24f71134fa779afc3815c241181f84e8f706c9d9f4c6d75
   approved_pre_generation_gates:
   - A1
   - A2
@@ -27,13 +28,14 @@ approval_binding:
   - A6
   - A7
   - A7b
-  pending_post_generation_gates:
+  approved_post_generation_gates:
   - A2b
   - A3
   - A6b
   - A8
+  pending_post_generation_gates: []
   approval_inference_forbidden: true
-  statement: This generated candidate does not approve A2b, A3, A6b, or A8, remove the hold, or expose v2.
+  statement: A2b, A3, A6b, and A8 are explicitly approved through exact-digest overlays. A8 authorizes deterministic finalization only; the hold remains active and v2 remains unexposed until final post-A8 Section 9 passes.
 supersedes_snapshot:
   path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
   manifest_version: 1
@@ -53,11 +55,52 @@ provenance:
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
   sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
 - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  sha256: 9360e4b87a91179a7f7357c58a2d38118b436724a8a5f440fa4e226b048d1b95
+  sha256: 8292dc059534054fe24f71134fa779afc3815c241181f84e8f706c9d9f4c6d75
 - path: docs/exit-criteria/nfr-traceability.md
   sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
 - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
   sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+post_a8_finalization:
+  approval_record:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+    sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    represented_authorities: [Product, Architecture, Delivery]
+  preparation_package:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml
+    sha256: 05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973
+  pre_a8_section9_result:
+    path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+    sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
+    passing: true
+  regenerated_tracker:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    input_sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+    output_sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    deterministic_delta_status: applied-exactly
+  finalized_governance:
+    - path: docs/exit-criteria/c3-retention.md
+      sha256: bf18b36ff42b9ab045105b72a21a3dbfd79eafbac2b082f35f9a83c8b894f693
+    - path: docs/exit-criteria/c6-transition-matrix-mapping.md
+      sha256: a1d8b0357e42f046e2b3511f1a4c4b2457b9c945b12119bbfaf2ac180355efb6
+    - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md
+      sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+    - path: docs/contract/authorization-matrix.md
+      sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+      sha256: ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5
+    - path: docs/exit-criteria/nfr-traceability.md
+      sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+    - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+      sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+    - path: _bmad-output/planning-artifacts/story-3-14-lifecycle-reconciliation-2026-09-20.yaml
+      sha256: c04325dc7b4958675f91441482a1d6a025dad6ba68a94774aa86518ae4bb9fda
+  final_post_a8_section9:
+    path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml
+    sha256: 6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302
+    validated_manifest_input_sha256: 079380bd7f1751805cc10def84dadcae951f9add8f7da4b02d8dd716e7dc1c32
+    status: fail-post-a8
+    passing: false
+    general_execution_hold: true
 generated_counts:
   portfolio_epics_and_workstreams: 13
   product_epics: 7
@@ -1082,25 +1125,46 @@ decision_nodes:
     execution_rank: 7
     prerequisites:
     - RELOCK-SECTION9
-    decision_status: pending
+    decision_status: accepted
     execution_authorization_status: not-applicable
-    delivery_evidence_status: pending
-    approval_status: pending
+    delivery_evidence_status: accepted
+    approval_status: approved
     required_authorities:
     - Product
     - Architecture
     - Delivery
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
     decision_payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
-    approvals: []
+    approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+    approval_record_sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    approvals:
+    - authority: Product
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    - authority: Architecture
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    - authority: Delivery
+      approver: Jerome
+      approved_on: '2026-09-21'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
     approval_inference_forbidden: true
     required_bound_artifacts:
     - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
-      sha256: pending-RELOCK-SECTION9
+      sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
+      result_kind: pre-a8
+      passing: true
     - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
-      sha256: pending-RELOCK-SECTION9
+      sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+      binding_role: pre-authorization-input
     - path: _bmad-output/implementation-artifacts/sprint-status.yaml
-      sha256: pending-authorized-tracker-reconciliation
+      sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+      binding_role: pre-authorization-input
 external_nodes:
   EXT-ES-EVENT-EVOLUTION:
     node_type: external-platform-release
@@ -1954,15 +2018,16 @@ validation_rules:
 - id: V2-025
   rule: Reject sprint-status regeneration or a general hold change in the bmad-create-epics-and-stories pass.
 validation_results:
-  validated_on: '2026-09-18'
+  validated_on: '2026-09-21'
   yaml_parse: pass-manifest-version-2
   identity_and_count: pass-158-canonical-159-with-alias
   requirements_and_classifications: pass-fr58-nfr84-ux39-and-86-41-24-7
   lifecycle_reconciliation: pass-111-done-44-backlog-2-in-progress-1-review
   rank_and_prerequisite_graph: pass-72-ranked-nodes-248-edges-acyclic
-  approval_and_hold_safety: pass-hold-preserved-a2b-a3-a6b-a8-pending
+  approval_and_hold_safety: pass-a8-approved-final-validation-failed-hold-retained
   frozen_evidence_integrity: pass-10-cited-artifacts-byte-preserved
   nfr_traceability_conformance: pass-17-of-17
+  final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
 stories:
 - id: '1.1'
   title: Scaffold the Consumer-Ready Folders Module

@@ -1,4 +1,5 @@
 # generated: 2026-05-12T07:11:18+02:00
+# current_reconciliation: 2026-09-21 A8-approved deterministic tracker delta applied under the continuing general execution hold; Story 10.8 done -> in-progress, Story 10.9 review -> done, Stories 1.17/4.22/12.7/13.7 added as backlog, Story 3.14 and all epic statuses unchanged. Approval record: authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml.
 # last_updated: 2026-09-12 (Story 3.13 reconciled in-progress -> done via bmad-build. spec-3-13-forgejo-file-mutation-commit-status-and-failure-behavior.md carries status: done, review_loop_iteration 5, followup_review_recommended false, and all 9 Execution tasks checked; 171 triage findings routed [90 bad_spec folded into the spec, 63 defer with ledger entries in deferred-work.md, 16 reject, 2 patch]. Implementation landed 2026-09-07 in f3337bf -> 0001f49 -> 1471855, all ancestors of HEAD [ForgejoSmartHttpGitTransport, ForgejoProvider.Operations, ForgejoNativeOperationPermit; LibGit2Sharp 0.32.0 pinned centrally in Directory.Packages.props]. The key went stale because both bmad-build-auto runs aborted on the dirty-working-tree VCS gate before any sprint-status write, and the frozen spec forbids the dev lane from writing this file [orchestrator-owned]. Status-only reconciliation: no code, spec, or ledger change. epic-3 stays in-progress because 3-14-complete-asynchronous-repository-creation-and-binding remains backlog. Prior: 2026-09-12 (Story 11.3 code review round 2 completed via bmad-code-review [4 layers: blind-hunter, edge-case-hunter, verification-gap, acceptance-auditor] -> done. All 4 ACs verified independently: litter absent from the index, Builds pins 2.0.11/2.2.0 exact, E2E layout matches disk, protected surfaces untouched, ConsumerDocsConformanceTests 22/22 green. 1 decision resolved [extend the version sweep into src/ comments], 7 patches applied, 3 defers recorded in deferred-work.md [doc/pin lockstep guard -> 11.16; litter re-accretion guard -> 11.16; project-context.md E2E bullet -> 11.13], 7 findings rejected. Known residual: the spec's Implementation Notes claim the 11-3 key 'already had in-progress' when the pre-image was backlog - left as-is because the only fix edits the frozen spec. Prior: 2026-07-14 - Story 11.2 Model B implementation completed -> review; evidence manifest/proposal and 15 owned upstream issues recorded; Release build 0W/0E and 5255 tests/4 configured skips green. Prior: 2026-07-14 (Story 11.2 implementation started -> in-progress; Task 0 decisions ratified. Prior: Story 10.6 governance synced: metadata-derived materializer item -> done; C9-gated real-content follow-up recorded open. Prior: 2026-07-14 implementation started -> in-progress. Prior: 2026-07-08 Story 11.2 contexted via bmad-create-story -> ready-for-dev: platform-first prerequisite story; 3-agent prerequisite audit at pins Commons 20048e9/EventStore 963402c5/FrontComposer f61c6a8a/Memories deb9dd7 produced per-gap CONFIRM/CREATE dispositions for G1-G9 + P6-P9; consumption-mechanism split recorded [sibling-source pin-bump for EventStore/Memories/FrontComposer/Tenants vs Commons package-publish+Builds-pin]; TWO open ratifications carried into Task 0 [Model A umbrella vs Model B confirm-and-pin execution model; Step-4 AppHost-Aspire+ServiceDefaults ADR direction; FolderStreamName reserved-tenant semantics]. Prior: 2026-07-07 Story 11.1 reconciled backlog->done from spec-kernel/bmad-loop pipeline; epic-11->in-progress; evidence artifact preserved; Epic 10 reopened for Story 10.6 content materializer; Epic 8 gateway-double guard action item re-homed to Epic 11 Story 11.7 via bmad-correct-course sprint-change-proposal-2026-07-07-193110; Story 10.6 contexted via bmad-create-story -> ready-for-dev; Epic 8 seed-backed diagnostics/transition-evidence read-model action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-seed-backed-read-models -> record-limitation, wiring re-homed to Epic 11 Story 11.10; Epic 8 honest-green UI-E2E/accessibility gate baseline action item RESOLVED via bmad-correct-course sprint-change-proposal-2026-07-07-honest-green-gate-baseline -> pinned in Story 11.1 register + Epic 11 ACs 11.3/11.7/11.11/11.13 + new HonestGreenGateBaselineConformanceTests guard (green)))
 # project: Hexalith.Folders
 # project_key: NOKEY
@@ -35,7 +36,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '2026-05-12T07:11:18+02:00'
-last_updated: '2026-09-12'
+last_updated: '2026-09-21'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -43,6 +44,27 @@ project: Hexalith.Folders
 project_key: NOKEY
 tracking_system: file-system
 story_location: "{project-root}/_bmad-output/implementation-artifacts"
+reconciliation_journal:
+  - recorded_on: '2026-09-21'
+    reason: A8-approved deterministic lifecycle and provenance reconciliation under the continuing general execution hold.
+    approval_record: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+    approval_record_sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    pre_a8_section9_result: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+    pre_a8_section9_sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
+    input_sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+    lifecycle_changes:
+      - story_id: '10.8'
+        old: done
+        new: in-progress
+      - story_id: '10.9'
+        old: review
+        new: done
+    backlog_rows_added: ['1.17', '4.22', '12.7', '13.7']
+    unchanged_reconciled_row:
+      story_id: '3.14'
+      lifecycle: backlog
+    epic_status_changes: none
+    general_execution_hold_during_reconciliation: true
 
 # EXECUTION CONTROL — approved 2026-08-04 via
 # sprint-change-proposal-2026-08-04.md. Until the canonical planning manifest,
@@ -71,6 +93,7 @@ development_status:
   1-14-wire-contract-spine-drift-and-generated-client-ci-gates: done
   1-15-wire-safety-invariant-ci-gates: done
   1-16-wire-exit-criteria-and-parity-completeness-gates: done
+  1-17-publish-the-pd10-v2-authorization-contract-spine: backlog
   epic-1-retrospective: done
 
   epic-2: done
@@ -124,6 +147,7 @@ development_status:
   4-19-prove-durable-workspace-prepare-and-lock-lifecycle: backlog
   4-20-prove-durable-file-mutation-and-bounded-context-lifecycle: backlog
   4-21-prove-real-commit-retry-conflict-and-unknown-outcome-reconci: backlog
+  4-22-implement-the-pd11-guard-discriminated-lifecycle: backlog
   epic-4-retrospective: optional
 
   epic-5: in-progress
@@ -201,8 +225,8 @@ development_status:
   10-5-expose-an-authorized-folders-query-facade-over-memories: done
   10-6-replace-the-fail-closed-content-materializer-with-a-metadata: done
   10-7-eventstore-backed-search-bridge-and-deployed-server-registra: done
-  10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: done
-  10-9-authorized-body-content-materialization-c9-gated: review
+  10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: in-progress
+  10-9-authorized-body-content-materialization-c9-gated: done
   epic-10-retrospective: done
 
   epic-11: in-progress
@@ -236,6 +260,7 @@ development_status:
   12-4-real-git-commit-executor-and-provider-write-path: backlog
   12-5-at-least-once-memories-egress-and-reconciler: backlog
   12-6-implement-durable-all-mutations-idempotency-and-expired-key: in-progress
+  12-7-protect-confidential-operational-values: backlog
   epic-12-retrospective: optional
 
   epic-13: backlog
@@ -245,6 +270,7 @@ development_status:
   13-4-real-readiness-snapshot-source-and-ui-health-endpoints: backlog
   13-5-wire-alert-instruments-and-production-dapr-state-store-and-r: backlog
   13-6-rate-limiting-timeouts-body-caps-and-sensitive-value-filter: backlog
+  13-7-deliver-the-supported-production-profile-and-recovery-drill: backlog
   epic-13-retrospective: optional
 action_items:
   - epic: planning

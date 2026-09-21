@@ -1,0 +1,91 @@
+schema_version: '1.0.0'
+record_id: A8-FREEZE-APPROVAL-2026-09-21
+status: approved
+approved_on: '2026-09-21'
+approved_at: '2026-09-21T10:35:16+02:00'
+approver: Jerome
+response: 'yes'
+source: Explicit approval in the active bmad-correct-course exchange after presentation of the exact A8 decision inputs.
+approval_scope: a8-deterministic-tracker-and-provenance-finalization-only
+represented_authorities: [Product, Architecture, Delivery]
+approval_inference_forbidden: true
+
+decision_target:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+  version: 1.0.0-candidate.1
+  sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+preparation_package:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml
+  sha256: 05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973
+approved_protocol:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
+  sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
+
+exact_approval_inputs:
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+    version: 1.0.0-candidate.1
+    sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml
+    sha256: 05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: e30495072d871fbb9ea2f66126ea14e6e80aa31a1d22fe6648c78b03b2514ad8
+    binding_role: pre-approval-input
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+    sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
+    result_kind: pre-a8
+    passing: true
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+    binding_role: pre-authorization-input
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+    binding_role: pre-authorization-input
+
+approvals:
+  - authority: Product
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+  - authority: Architecture
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+  - authority: Delivery
+    approver: Jerome
+    approved_on: '2026-09-21'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+
+approval_effect:
+  a8_approved: true
+  deterministic_tracker_delta_authorized: true
+  provenance_finalization_authorized: true
+  sprint_status_regeneration_authorized: true
+  general_execution_hold: true
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  final_post_a8_section9_required: true
+  hold_removal_condition: Remove the hold and close recovery only after a final post-A8 RELOCK-SECTION9 result passes against the generated tracker and final provenance digests.
+
+authorized_tracker_delta:
+  lifecycle_changes:
+    - story_id: '10.8'
+      old: done
+      new: in-progress
+    - story_id: '10.9'
+      old: review
+      new: done
+  backlog_rows_to_add: ['1.17', '4.22', '12.7', '13.7']
+  unchanged_reconciled_row:
+    story_id: '3.14'
+    lifecycle: backlog
+  epic_status_changes: none
+
+preserved_boundaries:
+  - A8 approval does not itself remove the general execution hold.
+  - Ordinary story execution remains unauthorized during finalization.
+  - V2 exposure remains unauthorized during finalization.
+  - EXT-ES-EVENT-EVOLUTION and EXT-ES-RECOVERY remain pending and external-owner-controlled.
+  - Both frozen Story 3.14 specifications remain byte-stable.

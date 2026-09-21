@@ -1,9 +1,9 @@
 schema_version: '1.0.0'
 artifact_id: RELOCK-SECTION9
 result_kind: pre-a8
-evaluated_on: '2026-09-20'
-status: blocked-active-a6b-candidate-drift
-passing: false
+evaluated_on: '2026-09-21'
+status: pass-pre-a8
+passing: true
 milestone_completion_claimed: false
 final_freeze_removal_validation_complete: false
 general_execution_hold: true
@@ -22,10 +22,10 @@ approved_ordering_amendment:
 
 prerequisite_state:
   RELOCK-PLANNING: accepted-through-A2b-and-A3-overlay
-  1.17-GENERATE: candidate-generated-but-not-stable
-  DEC-A6B-OQ3: blocked-active-bound-artifact-drift
-  RELOCK-SECTION9: blocked-by-active-a6b-candidate-drift
-  DEC-A8-HOLD: blocked-and-not-approved
+  1.17-GENERATE: candidate-generated-and-byte-stable
+  DEC-A6B-OQ3: approved-by-product-architecture-security
+  RELOCK-SECTION9: pass-pre-a8
+  DEC-A8-HOLD: ready-for-separate-decision-and-not-approved
 
 bound_artifacts:
   - path: _bmad-output/planning-artifacts/prd.md
@@ -42,7 +42,7 @@ bound_artifacts:
     sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
     binding_role: pre-authorization-input-only
   - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-    sha256: 68823d8007caf2756a45080f86b632aba4c8d038fa2a90f6c014751f1a395400
+    sha256: e30495072d871fbb9ea2f66126ea14e6e80aa31a1d22fe6648c78b03b2514ad8
   - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
     sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
   - path: docs/exit-criteria/c0-c13-governance-evidence.yaml
@@ -54,14 +54,14 @@ bound_artifacts:
   - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md
     sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
   - path: docs/contract/authorization-matrix.md
-    sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
   - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-    sha256: c21708a467e29ebfe2d6c8be7e0211780f9abb3db51dc4420edbc1e614e9914c
-    declared_candidate_set_sha256: de6b210f452ec2b8cf2aab1ed7f95bf513df6b9cfa4b875bb1c93f2e365d6d79
-    declared_authorization_matrix_sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
-    artifact_count: 116
+    sha256: ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5
+    declared_candidate_set_sha256: bc6ee8a51086e0dce51b61c28ce20d563c9652fac827f331e623a21a163f9e86
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 148
     matrix_binding_status: pass
-    reproduction_status: fail-active-candidate-drift
+    reproduction_status: pass-byte-identical-two-runs
   - path: docs/exit-criteria/nfr-traceability.md
     sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
   - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
@@ -72,14 +72,12 @@ bound_artifacts:
 checks:
   - id: S9-01
     requirement: Under the approved pre-A8 protocol, every A1-A7b decision and required role approval is recorded; A8 remains a separate later decision.
-    status: fail
-    evidence: A1, A2, A2b, A3, A4, A5, A6, A7, and A7b remain approved. The superseded A6b approval is preserved as invalidated history; active drift prevents formation of a replacement approval package. A8 remains pending and is not inferred.
-    blocker: Candidate stability and fresh Product, Architecture, and Security approval are both required before A6b can pass.
+    status: pass
+    evidence: A1, A2, A2b, A3, A4, A5, A6, A6b, A7, and A7b are approved. A6b records separate Product, Architecture, and Security attestations against the current exact matrix and conformance-set digests. A8 remains pending and is not inferred.
   - id: S9-02
     requirement: Exact current planning provenance and the deterministic finalization delta are known before A8; generated post-A8 provenance remains deferred.
-    status: fail
-    evidence: Planning provenance and the deterministic tracker delta are exact-digest-known, but the explicit PD10 allowlist changed during validation and alternated between distinct 116-artifact outputs. No current A6b candidate can be bound for approval until all writers are quiescent and regeneration reproduces byte-for-byte across a stable window.
-    blocker: Active candidate drift prevents a trustworthy exact current input set.
+    status: pass
+    evidence: Planning provenance and the deterministic tracker delta are exact-digest-known. Two regeneration passes across the stable window produced byte-identical authorization-matrix, candidate-contract, conformance-set, and declared candidate-set digests for the 148-artifact inventory.
   - id: S9-03
     requirement: PRD and epics contain identical FR1-FR58 and NFR1-NFR84 inventories.
     status: pass
@@ -98,18 +96,20 @@ checks:
     evidence: Story 3.14 is non-destructively reconciled to canonical backlog and held while both frozen specs remain byte-stable. The two tracker mismatches and four missing rows are completely enumerated for deterministic post-A8 reconciliation.
   - id: S9-07
     requirement: OQ1-OQ4 approval digests are current and OQ3 is reapproved after PD10.
-    status: fail
-    evidence: Historical OQ1, OQ2, and OQ4 approval checks pass. The matrix remains SHA-256 c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6, but the conformance set changed repeatedly during validation and has no stable current digest or current approval.
-    blocker: Approval cannot be requested for moving bytes or inferred from the invalidated prior snapshot.
+    status: pass
+    evidence: Historical OQ1, OQ2, and OQ4 approval checks pass. Jerome explicitly approved OQ3/A6b for Product, Architecture, and Security against replacement matrix SHA-256 d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420 and conformance-set SHA-256 ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5 on 2026-09-21.
   - id: S9-08
     requirement: The execution-wave graph is acyclic and has no unresolved equal-rank or forward-rank dependency.
     status: pass
     evidence: Direct validation on 2026-09-20 found 72 ranked nodes, 248 exact edges, zero missing nodes, zero duplicate edges, zero cycles, and zero rank errors.
   - id: S9-09
     requirement: C3, C6, C9, authorization-spine, generated-surface, and retention gates pass against approved digests.
-    status: fail
-    evidence: C3/A7b, C6/A7, and C9/A5 remain approved. The current product snapshot fails the full solution build with seven compile errors, and the focused 55-test run observed two conformance failures when the candidate changed while the tests were running. An earlier 55-test pass is superseded by later drift.
-    blocker: Quiesce all candidate writers, regenerate, rebuild, and rerun the focused suites before requesting A6b approval.
+    status: pass
+    evidence: >-
+      C3/A7b, C6/A7, and C9/A5 remain approved. The full solution build passed all 56 projects with zero
+      warnings and zero errors, and the corrected focused inventory passed 53 of 53 tests: 2 PD10
+      conformance-set, 5 PD10 v2 candidate-contract, 7 authorization-matrix, 22 governance-completeness, and
+      17 NFR-traceability tests.
   - id: S9-10
     requirement: No active implementation context cites the superseded August 4 manifest as current authority.
     status: pass
@@ -140,11 +140,13 @@ exact_post_authorization_tracker_delta:
 validation:
   yaml_parse: pass
   exact_bound_artifact_digests: pass
-  a6b_candidate_regeneration: fail-active-drift-between-distinct-116-path-snapshots
+  a6b_candidate_regeneration: pass-byte-identical-two-runs-148-artifacts
   a6b_matrix_binding: pass
-  full_solution_build: fail-7-compile-errors-in-concurrent-product-snapshot
-  focused_contract_tests: fail-53-of-55-pass-2-conformance-drift-failures
-  superseded_snapshot_focused_contract_tests: pass-55-of-55-before-subsequent-drift
+  full_solution_build: pass-0-warnings-0-errors-56-projects
+  focused_contract_tests: pass-53-of-53
+  corrected_historical_drift_focused_contract_tests: fail-51-of-53-pass-2-conformance-drift-failures
+  corrected_superseded_snapshot_focused_contract_tests: pass-53-of-53-before-subsequent-drift
+  test_count_correction: The prior 55-test total duplicated two tests in reporting; repository history and the original runner output establish a 53-test inventory.
   manifest_dag: pass-72-nodes-248-edges
   manifest_tracker_current_delta: validated-2-mismatches-4-missing
 
@@ -155,16 +157,10 @@ blocking_governance_conflict:
     path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
     sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
 
-blocking_conditions:
-  - id: ACTIVE-CANDIDATE-DRIFT
-    status: blocking
-    detail: Concurrent repository writers changed the explicit candidate allowlist and candidate bytes during repeated generation and validation. No exact A6b digest is safe to approve until the repository is quiescent.
-  - id: A6B-REAPPROVAL
-    status: blocking
-    detail: After candidate stability and validation are restored, the replacement package requires explicit Product, Architecture, and Security approval against newly presented exact digests. Prior approval remains invalidated and is not transferred.
+blocking_conditions: []
 
 next_action:
-  required_human_decision: Quiesce or complete all other repository writers and confirm the PD10 candidate is frozen. A6b approval cannot yet be requested, and A8 is not ready for decision.
+  required_human_decision: A8 is eligible for a separate explicit Product, Architecture, and Delivery decision. The current A6b response does not approve A8 and no A8 decision is recorded here.
   forbidden_before_a8:
     - Regenerate sprint-status.yaml.
     - Change general_execution_hold to false.

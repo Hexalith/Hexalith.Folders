@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 9f436610d6c8f2b98e4a6610eb03a19b1263999ca5923b5ddbf3a3cdfca4e5e4
+candidate_set_sha256: bc6ee8a51086e0dce51b61c28ce20d563c9652fac827f331e623a21a163f9e86
 artifact_count: 148
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -92,13 +92,13 @@ artifacts:
   - path: "references/Hexalith.EventStore"
     kind: gitlink
     bytes: 40
-    sha256: af9461b497d127aa50af2cb661f04d7c83e4715f1d60cbcb7569cb7607084043
-    git_object: 2cf9bf49b4858db4b83a05e47b7bd280dc51c826
+    sha256: 101876b8cffbab3d10bb0b87bb22168be99f9542f83c481eee0beee74522c9d4
+    git_object: ffb6901a5b840af7be030ff246435b4bad00b79c
   - path: "references/Hexalith.FrontComposer"
     kind: gitlink
     bytes: 40
-    sha256: 9f82282b7119fb74f166646883b52a151072654eb6156c732c31b6fef8bfb3d9
-    git_object: 5213552913b421a26b3f4822f02f0d9b98504ebb
+    sha256: 4124c5c76bb38b7db2ad889fe4e0482398168ab0c6be16087c1d0f081494ce28
+    git_object: a2581001d9d8d1ffefb4c6c035b25be3c7d35755
   - path: "references/Hexalith.Memories"
     kind: gitlink
     bytes: 40

@@ -1,0 +1,149 @@
+schema_version: '1.0.0'
+artifact_id: RELOCK-SECTION9-POST-A8-2026-09-21
+result_kind: post-a8
+evaluated_on: '2026-09-21'
+evaluated_at: '2026-09-21T10:47:24+02:00'
+status: fail-post-a8
+passing: false
+milestone_completion_claimed: false
+final_freeze_removal_validation_complete: false
+general_execution_hold: true
+planning_recovery_closed: false
+ordinary_story_execution_authorized: false
+v2_exposure_authorized: false
+external_dependency_acceptance_changed: false
+
+approved_ordering_amendment:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
+  sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
+  governing_rule: A failed final validation retains the hold and leaves ordinary execution unauthorized.
+
+a8_approval:
+  target_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+  target_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+  preparation_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml
+  preparation_sha256: 05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+  approval_record_sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+  represented_authorities: [Product, Architecture, Delivery]
+
+pre_a8_evidence:
+  approval_register_sha256_at_decision: e30495072d871fbb9ea2f66126ea14e6e80aa31a1d22fe6648c78b03b2514ad8
+  manifest_sha256_at_decision: 28a454ebff0d0475886d407a2342fa041f019bbcea49f7fa6e58108dafdaa5af
+  sprint_status_sha256_at_decision: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+  section9_result:
+    path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+    sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
+    status: pass-pre-a8
+
+validated_post_a8_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 20675a1fadffda06921341647e7de7662f5432bc138534e8787c7458642e4513
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: 079380bd7f1751805cc10def84dadcae951f9add8f7da4b02d8dd716e7dc1c32
+    binding_role: validated-input-before-result-overlay
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    input_sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+    deterministic_delta_status: applied-exactly
+  - path: docs/exit-criteria/c3-retention.md
+    sha256: bf18b36ff42b9ab045105b72a21a3dbfd79eafbac2b082f35f9a83c8b894f693
+    change_scope: authorized-single-stale-sentence-correction
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5
+  - path: docs/contract/authorization-matrix.md
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+
+checks:
+  - id: S9-01
+    requirement: Every A1-A8 decision and required role approval is explicitly recorded against its exact decision inputs.
+    status: pass
+    evidence: A8 is explicitly approved by Jerome for Product, Architecture, and Delivery in the exact-bound A8 approval record; no approval is inferred.
+  - id: S9-02
+    requirement: Final tracker and provenance inputs are exact-digest-bound.
+    status: pass
+    evidence: The approved six-row tracker delta is applied exactly, the pre-authorization digest is retained, and current register, manifest-input, tracker, and C3 digests are recorded above.
+  - id: S9-03
+    requirement: PRD and epics retain the approved FR1-FR58 and NFR1-NFR84 inventories.
+    status: pass
+    evidence: Product requirement authorities were not changed by A8 finalization.
+  - id: S9-04
+    requirement: The NFR traceability gate passes exact 84-row identity, ownership, classification, and negative controls.
+    status: pass
+    evidence: Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests passed 17 of 17.
+  - id: S9-05
+    requirement: The manifest parses, retains allowed lifecycle vocabulary, and the tracker applies only the authorized delta.
+    status: pass
+    evidence: YAML parsing and exact-delta validation passed; Stories 10.8 and 10.9 are the only lifecycle changes, backlog rows 1.17, 4.22, 12.7, and 13.7 are the only additions, and epic statuses are unchanged.
+  - id: S9-06
+    requirement: Lifecycle conflicts are reconciled without altering frozen intent.
+    status: pass
+    evidence: Story 3.14 remains backlog and held; both frozen specifications remain byte-stable at their approved digests.
+  - id: S9-07
+    requirement: OQ3/A6b remains reproducible against the current candidate inventory and its approved exact digests.
+    status: fail
+    evidence: The committed approved conformance set remains SHA-256 ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5 with 148 artifacts, but two current generation passes are byte-identical at SHA-256 f21bb9092958a233bfc7c66242aeb931b6da351cb88174bc34d8dba6a546e7f1 with candidate-set SHA-256 ddd2ad14aa8a48c23f4d232f3973d68c4ecc26e7ceb994baef69f0a9ec3f7d81 and 149 artifacts. The sole added inventory entry is the authorized C3 governance correction. The approved A6b artifact was not rewritten and no reapproval is inferred.
+  - id: S9-08
+    requirement: The execution-wave graph is acyclic and has no unresolved equal-rank or forward-rank dependency.
+    status: pass
+    evidence: Direct validation found 72 ranked nodes, 248 edges, zero unresolved references after accepted-terminal resolution, zero duplicate edges, zero cycles, and zero rank errors.
+  - id: S9-09
+    requirement: C3, C6, C9, authorization-spine, generated-surface, retention, build, and focused governance gates pass.
+    status: fail
+    evidence: Both full-solution profiles fail with 101 errors and zero warnings from unresolved current Hexalith.EventStore DomainService/Client APIs and Hexalith.FrontComposer Shell components. The focused inventory passes 50 of 53; both PD10 conformance-set tests fail on the 148-to-149 inventory drift and one governance-completeness test fails because it hard-codes a global pre-A8 pending-approval marker. Candidate-contract 5/5, authorization-matrix 7/7, remaining governance-completeness 21/22, and NFR traceability 17/17 pass.
+  - id: S9-10
+    requirement: No active implementation context cites the superseded August 4 manifest as current authority.
+    status: pass
+    evidence: The finalization preserves the September relock manifest as current execution authority and the August snapshot only as superseded provenance.
+  - id: S9-11
+    requirement: Hold removal and recovery closure occur only after every final post-A8 Section 9 check passes.
+    status: pass-hold-retained
+    evidence: Because S9-07 and S9-09 fail, general_execution_hold remains true, ordinary story execution and v2 exposure remain unauthorized, and planning recovery remains open.
+
+validation_commands:
+  - command: dotnet build Hexalith.Folders.slnx --configuration Release --no-restore -m:1 -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0
+    status: fail
+    warnings: 0
+    errors: 101
+  - command: dotnet build Hexalith.Folders.CI.slnx --configuration Release --no-restore -m:1 -p:UseNuGetDeps=true -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0
+    status: fail
+    warnings: 0
+    errors: 101
+  - command: direct xUnit v3 class runs for the five approved focused classes
+    status: fail-50-of-53-pass
+    class_results:
+      Pd10ConformanceSetTests: fail-0-of-2
+      Pd10V2CandidateContractTests: pass-5-of-5
+      AuthorizationMatrixContractTests: pass-7-of-7
+      GovernanceCompletenessGateTests: fail-21-of-22
+      NfrTraceabilityConformanceTests: pass-17-of-17
+  - command: two isolated PD10 conformance-set generation passes
+    status: fail-byte-identical-but-not-approved-output
+    generated_sha256: f21bb9092958a233bfc7c66242aeb931b6da351cb88174bc34d8dba6a546e7f1
+    approved_sha256: ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5
+
+frozen_story_3_14:
+  lifecycle: backlog
+  execution_authorization_status: held
+  specifications:
+    - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding.md
+      sha256: d21aa8200d1b322dc2487eac26c274c63d2062739f015f3129501e8a9170d652
+    - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding-2.md
+      sha256: 5eec57125efe867f8ae2ffbf916b233d20248e7888b9a994f8f9a07447a765ee
+
+blocking_conditions:
+  - Current conformance generation no longer reproduces the exact A6b-approved 148-artifact set after the authorized C3 provenance correction.
+  - The governance-completeness test still requires a pre-A8 pending-approval marker and was not authorized for modification by the exact A8 delta.
+  - Both full solution profiles fail against current sibling dependency APIs; no external dependency acceptance or update is authorized.
+
+retained_holds:
+  general_execution_hold: true
+  planning_recovery_open: true
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  external_eventstore_dependencies:
+    EXT-ES-EVENT-EVOLUTION: pending-external-owner-controlled
+    EXT-ES-RECOVERY: pending-external-owner-controlled
+
+next_action:
+  required: A separate corrective decision is required before changing the A6b candidate/conformance inventory, governance test, or external dependency bindings. Until then, retain every hold.

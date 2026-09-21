@@ -1,9 +1,10 @@
 schema_version: '1.0.0'
 package_id: A8-FREEZE-PREPARATION-2026-09-20
 prepared_on: '2026-09-20'
-status: not-ready-for-human-decision
-approval_readiness: blocked-by-active-a6b-candidate-drift-and-nonpassing-pre-a8-section9
-approval_status: pending-blocked
+last_updated_on: '2026-09-21'
+status: ready-for-human-decision
+approval_readiness: ready-for-explicit-product-architecture-delivery-decision
+approval_status: pending
 approvals: []
 required_authorities: [Product, Architecture, Delivery]
 approval_inference_forbidden: true
@@ -36,11 +37,11 @@ exact_bound_artifacts:
     sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
     binding_role: pre-authorization-input-only
   - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-    sha256: 68823d8007caf2756a45080f86b632aba4c8d038fa2a90f6c014751f1a395400
+    sha256: e30495072d871fbb9ea2f66126ea14e6e80aa31a1d22fe6648c78b03b2514ad8
   - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
-    sha256: d68734a74d8d000391ad1fecb420dd93dcec278911dd27c606f19a3b2329af68
+    sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
     result_kind: pre-a8
-    passing: false
+    passing: true
   - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml
     sha256: fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750
   - path: docs/exit-criteria/c0-c13-governance-evidence.yaml
@@ -53,14 +54,14 @@ exact_bound_artifacts:
     sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
   - path: docs/contract/authorization-matrix.md
     version: '2.0.0'
-    sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
   - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-    sha256: c21708a467e29ebfe2d6c8be7e0211780f9abb3db51dc4420edbc1e614e9914c
-    declared_candidate_set_sha256: de6b210f452ec2b8cf2aab1ed7f95bf513df6b9cfa4b875bb1c93f2e365d6d79
-    declared_authorization_matrix_sha256: c2ac9f8f7b2ec1602dbc02d06df9dd7ea64537cd7bd0fee9f39ff6ea0459a1e6
-    artifact_count: 116
+    sha256: ef01adde04ad15a6218cf8d5d8163af7fcebcb86e5bd4d3972eb7107600772e5
+    declared_candidate_set_sha256: bc6ee8a51086e0dce51b61c28ce20d563c9652fac827f331e623a21a163f9e86
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 148
     matrix_binding_status: pass
-    reproduction_status: fail-active-candidate-drift
+    reproduction_status: pass-byte-identical-two-runs
   - path: docs/exit-criteria/nfr-traceability.md
     sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
   - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
@@ -70,14 +71,14 @@ exact_bound_artifacts:
 
 readiness_conditions:
   - id: A6B-APPROVAL
-    status: fail
-    detail: Active candidate drift prevents an exact-digest-ready replacement A6b package. After writers are quiescent and validation passes, Product, Architecture, and Security must approve the newly presented exact digests. The prior approval remains invalidated history.
+    status: pass
+    detail: Jerome explicitly approved the byte-stable replacement package for Product, Architecture, and Security against the exact matrix and conformance-set digests on 2026-09-21. The prior invalidated approval remains history.
   - id: SECTION9-PRE-A8
-    status: fail
-    detail: RELOCK-SECTION9 is blocked by active A6b candidate drift and the consequent missing reapproval.
+    status: pass
+    detail: RELOCK-SECTION9 passes in its pre-A8 form with the general hold retained, sprint-status regeneration prohibited, and A8 still unapproved.
   - id: CONFORMANCE-REPRODUCIBILITY
-    status: fail
-    detail: Repeated generation alternated between distinct 116-artifact outputs; the concurrent product snapshot also fails the full solution build with seven compile errors, and the latest focused run observed 53 passes and two conformance drift failures.
+    status: pass
+    detail: Two generation passes produced byte-identical matrix, candidate-contract, conformance-set, and declared candidate-set digests for the 148-artifact inventory. The full 56-project solution build passed with zero warnings and errors, and the corrected focused inventory passed 53 of 53 tests.
   - id: TRACKER-OUTPUT-DIGEST
     status: deliberately-deferred
     detail: The final sprint-status.yaml output digest does not yet exist. The approved protocol makes its generation an effect of A8 while the general hold remains true; it is not inferred or fabricated.
@@ -104,8 +105,8 @@ exact_post_authorization_tracker_delta:
     - Keep the general hold true during tracker generation and validation.
 
 decision_requested:
-  status: blocked-not-presented-for-approval
-  question: none-until-all-candidate-writers-are-quiescent-a6b-is-revalidated-and-reapproved-and-pre-a8-section9-passes
+  status: ready-not-presented-for-approval
+  question: none-in-this-turn
   approval_effect_if_yes:
     - Authorize only the exact deterministic tracker delta and provenance finalization described here.
     - Keep general_execution_hold true, ordinary story execution unauthorized, and v2 exposure unauthorized during finalization.
@@ -116,11 +117,11 @@ decision_requested:
     - Keep sprint-status regeneration prohibited and the general execution hold active.
 
 required_human_decision_before_a8:
-  question: Will Jerome quiesce or complete all other repository writers and confirm the PD10 candidate is frozen so a new exact A6b package can be generated and validated?
+  question: A8 requires a separate explicit Product, Architecture, and Delivery decision against this exact preparation package.
   prohibited_without_decision:
-    - Do not transfer the prior approval to the changed bytes.
-    - Do not request A6b approval against any observed transient digest.
-    - Do not present A8 for approval.
+    - Do not treat the current A6b approval as an A8 approval.
+    - Do not infer Product, Architecture, or Delivery A8 approval from prior or blanket approvals.
+    - Do not regenerate sprint-status.yaml, remove the hold, expose v2, or start ordinary stories.
 
 external_dependencies_preserved:
   EXT-ES-EVENT-EVOLUTION:

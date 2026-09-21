@@ -4,7 +4,7 @@ type: 'feature'
 created: '2026-09-19'
 status: 'in-review'
 route: 'dispatch'
-review_loop_iteration: 8
+review_loop_iteration: 9
 baseline_commit: '3f1056d998ac4688f36eb869c516812c1a4ddb71'
 context:
   - '{project-root}/_bmad-output/implementation-artifacts/epic-1-context.md'
@@ -352,6 +352,49 @@ context:
 | EC9-12 | medium | bad_spec | The parity schema validator treats any YAML scalar as a string and parses quoted scalar text as integer or boolean, so quoted `"true"` or `"123"` values can satisfy JSON Schema boolean/integer declarations. |
 | EC9-13 | false | reject | The approval-register delta is concurrently owned work outside this candidate's artifact set; this story neither edits nor seals that file, and reverting the baseline-wide unrelated change would violate the preservation boundary. |
 | VG9-01 | medium | patch | Pre-verified: `ChangeFile` discriminator translation is controlled by a hand-maintained operation set, but tests cover only ArchiveFolder and CreateRepositoryBackedFolder; removing `ChangeFile` leaves current tests green, so a contract-derived exhaustive translation test is required. |
+| BH10-01 | high | bad_spec | carried: same location and claim as BH9-01; the candidate still accepts uppercase-capable v2 route identifiers and forwards them unchanged into lowercase-only historical route validation. |
+| BH10-02 | high | bad_spec | carried: same location and claim as BH9-02; contract-valid uppercase correlation, task, and idempotency headers still reach lowercase-only historical validators. |
+| BH10-03 | high | bad_spec | carried: same location and claim as BH9-03; candidate body validation still omits schema-owned identifiers and delegates them to the incompatible legacy grammar. |
+| BH10-04 | high | bad_spec | carried: same location and claim as BH9-04; successful historical responses are still copied without translating `GetBranchRefPolicy.requestSchemaVersion` from `v1` to the required `v2`. |
+| BH10-05 | medium | bad_spec | carried: same location and claim as BH9-10/EC9-04; repeated correlation, task, and idempotency headers are grammar-checked independently but not required to agree. |
+| BH10-06 | medium | bad_spec | carried: same location and claim as BH9-09/EC9-06; the candidate JSON checks still use an `application/json` prefix test that admits `application/jsonp`. |
+| BH10-07 | medium | bad_spec | carried: same location and claim as BH9-08; duplicate schema-owned JSON properties are still accepted by last-wins reads before a later rewrite can fail or change meaning. |
+| BH10-08 | high | bad_spec | carried: same location and claim as BH9-11/EC9-10; only the first access-state claim is evaluated, so a later explicit negative state can be ignored. |
+| BH10-09 | high | bad_spec | carried: same location and claim as BH9-12/EC9-09; the first delegator identity is still combined with all delegator-permission claims. |
+| BH10-10 | medium | intent_gap | carried: same location and claim as BH9-13; audit-sink failure after a mutation remains ambiguous, and the frozen exactly-one-record requirement does not choose durable, fail-before-effect, or non-throwing semantics. |
+| BH10-11 | high | bad_spec | carried: same location and claim as EC9-11; generic problem validation still uses one global tuple set without operation identity. |
+| BH10-12 | medium | bad_spec | carried: same location and claim as BH9-07; exact problem validation still reads `correlationId` through a coercing string accessor before checking its JSON token kind. |
+| BH10-13 | high | bad_spec | carried: same location and claim as BH9-05; the runtime-problem inventory remains example-driven plus a partial hard-coded list and is not exhaustive over candidate runtime paths. |
+| BH10-14 | medium | bad_spec | carried: same location and claim as EC9-12; the parity validator still infers integer and boolean types from scalar text, allowing quoted values to satisfy non-string schema types. |
+| BH10-15 | medium | patch | carried: same location and claim as EC9-01; an explicitly supplied blank CLI `--task-id` is still treated as omission. |
+| BH10-16 | medium | patch | carried: same location and claim as EC9-02; an explicitly supplied blank MCP `taskId` is still treated as omission. |
+| BH10-17 | false | reject | The conformance manifest is an exact-path/digest inventory of artifacts that exist in the candidate, not a deletion ledger; a deleted non-required path has no candidate bytes to hash, and the reviewer demonstrated no extant candidate artifact omitted by this behavior. |
+| EC10-01 | medium | patch | Direct execution of a deliberately empty filtered run returned Microsoft Testing Platform exit code `8`, while `run-adr-runbook-docs-gates.ps1` checks `5`; its fallback is therefore skipped and the gate fails without executing tests. |
+| EC10-02 | medium | patch | The same directly reproduced exit-code mismatch exists in `run-consumer-docs-gates.ps1`: zero tests return `8`, but the fallback checks `5`. |
+| EC10-03 | medium | patch | The same directly reproduced exit-code mismatch exists in `run-dapr-policy-conformance-gates.ps1`: zero tests return `8`, but the fallback checks `5`. |
+| EC10-04 | medium | patch | The same directly reproduced exit-code mismatch exists in `run-operations-audit-docs-gates.ps1`: zero tests return `8`, but the fallback checks `5`. |
+| EC10-05 | medium | patch | The same directly reproduced exit-code mismatch exists in `run-production-observability-gates.ps1`: zero tests return `8`, but the fallback checks `5`. |
+| EC10-06 | medium | patch | The same directly reproduced exit-code mismatch exists in `run-provider-error-docs-gates.ps1`: zero tests return `8`, but the fallback checks `5`. |
+| EC10-07 | medium | bad_spec | carried: same location and claim as BH9-07; the cited exact-problem path still coerces a numeric `correlationId` before applying the identifier grammar. |
+| EC10-08 | high | bad_spec | carried: same location and claim as EC9-11; a generic error tuple reachable for one operation can still be trusted for another operation. |
+| EC10-09 | medium | bad_spec | carried: same public-SDK one-of root cause as BH8-09; the generated unavailable converter still permits a generic problem branch without proving the actual operation-specific union branch. |
+| EC10-10 | false | reject | carried: same location and claim as EC9-05; malformed downstream `503` content is deliberately collapsed to the non-disclosing authority-unavailable envelope, so the claimed caller-visible misclassification does not occur. |
+| EC10-11 | medium | bad_spec | `VerifyTaskBindingAsync` independently accepts fresh wrapper and snapshot freshness without requiring matching projection watermarks. The public read-model result permits disagreement, violating the explicit consistency-bound task-observation requirement even though the in-memory factory normally reuses snapshot freshness. |
+| EC10-12 | high | bad_spec | `PreauthorizedRequestState` carries no authorized action, and `HttpContextEventStoreClaimTransformEvidenceAccessor` synthesizes an allow for whichever action the historical path requests. A differently-tokened inner check can therefore gain authority that the outer candidate decision never granted. |
+| EC10-13 | false | reject | No in-scope historical handler starts background work that later reads `PreauthorizedRequestContext`; the repository search found no reachable caller for the hypothesized post-request `AsyncLocal` reuse. |
+| EC10-14 | high | bad_spec | The repository producer stores `WorkspaceLockHolderTaskId` or `WorkspaceTaskId` as `EvidenceScope.PrincipalId`, while task binding requires the authenticated principal. A repository-produced task snapshot therefore fails legitimate binding as authority-unavailable. |
+| EC10-15 | medium | bad_spec | carried: same location and claim as EC9-12; quoted numeric or boolean YAML scalars can still satisfy non-string schema declarations. |
+| EC10-16 | medium | bad_spec | Previous-spine fingerprint validation is conditional on the operation still existing in the current contract; an approved removal skips the required historical-v1 status/error fingerprint validation for that stored row. |
+| EC10-17 | false | reject | carried: same gitlink-identity claim as EC6-09/EC7-06; the manifest intentionally binds the parent Git index object, and the sealed candidate has no index-versus-submodule-HEAD mismatch. |
+| EC10-18 | false | reject | carried: same claim as EC9-13; the approval-register delta is concurrent governance work outside this candidate artifact set and still leaves A6b blocked. |
+| EC10-19 | false | reject | Current generated problem properties are all asserted as `Required.Always` by `ClientGenerationTests`; the finding depends on a hypothetical future NSwag formatting change and does not identify an optional field in this candidate. |
+| EC10-20 | false | reject | Current generated closed-problem types are reflection-tested to expose no `JsonExtensionData`; the hypothetical formatter drift is not present in this candidate. |
+| EC10-21 | high | bad_spec | carried: same runtime-inventory root cause as BH9-05/BH10-13; component examples plus the partial direct list do not establish exhaustive reachability. |
+| EC10-22 | low | reject | carried: same location and claim as BH5-08/EC7-04; string capture requires a hostile non-contract response while all candidate shapes are bounded, and the cited capped-reader call is not present in the current partial class. |
+| EC10-23 | medium | bad_spec | carried: same content-type defect as BH9-09/EC9-06; `application/jsonp` passes the candidate prefix checks and can reach an undeclared historical transport outcome after authorization. |
+| VG10-01 | medium | patch | carried: same pre-verified location and claim as VG9-01; discriminator translation is still hand-maintained and executable tests cover only two of the schema-bearing operations. |
+| VG10-02 | medium | patch | Pre-verified: folder-scoped `PreauthorizedRequestContext` reuse has no matching/nonmatching behavioral tests with counting or throwing dependencies, so the double-authorization race can silently return. |
+| VG10-03 | medium | patch | Pre-verified: no executable v2 `LockWorkspace` conflict test crosses the compatibility seam and asserts the normalized exact wire tuple or generated-client projection. |
 
 ## Design Notes
 
