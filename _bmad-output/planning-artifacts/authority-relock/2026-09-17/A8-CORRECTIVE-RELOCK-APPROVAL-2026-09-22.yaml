@@ -1,0 +1,90 @@
+schema_version: '1.0.0'
+record_id: A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22
+status: approved
+approved_on: '2026-09-22'
+approved_at: '2026-09-22T23:11:52+02:00'
+approver: Jerome
+response: "Corrective A8 (2026-09-22): I, Jerome, approve for Product, Architecture and Delivery on 2026-09-22. Payload A8-FREEZE.md sha256 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca (1.0.0-candidate.1), against preparation A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml sha256 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d. Bound artifacts: A6b approval record 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d; authorization-matrix v2.0.0 d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420; conformance set 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7, candidate set c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts; sprint-status 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26 (unchanged, not regenerated). The 17 deferred findings from review-1-17-generate-scoped-a6b-2026-09-22.md remain deferred. The general execution hold stays active during final validation and is removed only if every corrective Section 9 check passes against the final provenance bytes. This does not approve sprint-status regeneration, closing Story 1.17, v2 exposure or routing, ordinary story execution, or any dependency or submodule change."
+source: Explicit approval in the 2026-09-22 PD10 v2 relock decision exchange after presentation of the exact corrective A8 preparation package and its pre-approval Section 9 evidence.
+approval_scope: corrective-a8-provenance-finalization-and-conditional-hold-removal-only
+represented_authorities: [Product, Architecture, Delivery]
+approval_inference_forbidden: true
+
+decision_target:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+  version: 1.0.0-candidate.1
+  sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+
+preparation_package:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
+  sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+
+exact_approval_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 886c8004c757db56da652f9d0e7c07f5593b00f16a93ca5c3ca8ee2f7cf18116
+    binding_role: pre-approval-input
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: 4333577d4b57ee7199fcf031947b241e153c17bc7913425690e831fba959e991
+    binding_role: a6b-reapproved-hold-active-pre-authorization-input
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    binding_role: immutable-current-tracker-input-and-output
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+    sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    artifact_count: 196
+  - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+    sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+    binding_role: 17-deferred-findings-remain-deferred
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml
+    sha256: 4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492
+    binding_role: pre-approval-section9-evidence
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
+    sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+    binding_role: superseded-corrective-approval-history
+
+approvals:
+  - authority: Product
+    approver: Jerome
+    approved_on: '2026-09-22'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+  - authority: Architecture
+    approver: Jerome
+    approved_on: '2026-09-22'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+  - authority: Delivery
+    approver: Jerome
+    approved_on: '2026-09-22'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+    preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+
+approval_effect:
+  corrective_a8_approved: true
+  provenance_only_manifest_finalization_authorized: true
+  sprint_status_regeneration_authorized: false
+  general_execution_hold_during_validation: true
+  hold_removal_conditionally_authorized: true
+  hold_removal_condition: Every corrective Section 9 check must pass against the final provenance bytes.
+  deferred_review_findings_remain_deferred: 17
+  story_1_17_closure_authorized: false
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  v2_routing_authorized: false
+  external_dependency_acceptance_changed: false
+
+preserved_boundaries:
+  - The general execution hold remains active while the corrective register, manifest, and final validation evidence are produced.
+  - The sprint tracker, execution graph, lifecycle values, external dependency states, and both frozen Story 3.14 specifications are immutable inputs.
+  - No dependency or submodule change is authorized.
+  - A failed corrective Section 9 result retains the hold and leaves planning recovery open.
+  - Hold removal does not by itself authorize any ordinary story execution, Story 1.17 closure, or v2 exposure or routing.

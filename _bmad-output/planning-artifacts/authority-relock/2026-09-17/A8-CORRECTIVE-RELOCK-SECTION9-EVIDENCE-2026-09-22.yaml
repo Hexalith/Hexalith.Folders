@@ -1,0 +1,166 @@
+schema_version: '1.0.0'
+artifact_id: A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22
+evidence_kind: pre-a8-approval-section9-check-set
+evaluated_on: '2026-09-22'
+evaluation_window: 2026-09-22T22:58:32+02:00/2026-09-22T23:04:29+02:00
+status: pass-pre-a8-approval
+passing: true
+immutable_section9_result: false
+hold_removal_effect: none
+statement: This evidence records the full corrective Section 9 check set run against HEAD before any corrective A8 decision. It is not a Section 9 result, not an A8 approval, and cannot remove the hold. After an explicit A8 approval, the same check set must be rerun against the final provenance bytes and written as a new immutable Section 9 result.
+general_execution_hold: true
+planning_recovery_closed: false
+a8_approved: false
+sprint_status_regenerated: false
+ordinary_story_execution_authorized: false
+v2_exposure_authorized: false
+external_dependency_acceptance_changed: false
+submodule_pins_changed: false
+
+evaluated_revision:
+  branch: main
+  head_commit: ef9865b75170e58946ac4a72785972f13d242acd
+  worktree_before: clean
+  worktree_after_checks: clean
+  dotnet_sdk: 10.0.401
+
+stale_evidence_not_reused:
+  artifacts:
+    - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml
+      sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+    - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
+      sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+    - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
+      sha256: d27e48651659b3cf1480227d35c6fce72bafa6c5396fb2354a6d956ee681e07f
+  reason: All three bind superseded conformance set 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483 (candidate ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1, 149 artifacts).
+
+checks:
+  - id: S9-01
+    requirement: Every A1-A8 decision and required role approval is explicitly recorded against its exact decision inputs.
+    status: pass-pre-a8
+    evidence: The register and manifest record A6b re-approved on 2026-09-22 for Product, Architecture, and Security (record 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d, payload 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375). Corrective A8 is recorded as superseded and reapproval-required; no A8 approval exists for the current bytes and none is inferred. This check can pass in the final result only after an explicit corrective A8 approval.
+  - id: S9-02
+    requirement: Final tracker and provenance inputs are exact-digest-bound.
+    status: pass
+    evidence: The manifest binds register 886c8004c757db56da652f9d0e7c07f5593b00f16a93ca5c3ca8ee2f7cf18116, all 17 manifest provenance digests match current bytes, and sprint-status.yaml is byte-identical at 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26.
+  - id: S9-03
+    requirement: PRD and epics retain the approved FR1-FR58 and NFR1-NFR84 inventories.
+    status: pass
+    evidence: The manifest inventory lists exactly FR1-FR58 and NFR1-NFR84, epics.md carries all 58 FR and 84 NFR identities, prd.md carries all 58 FR identities, and the PRD and epics digests match provenance.
+  - id: S9-04
+    requirement: The NFR traceability gate passes exact 84-row identity, ownership, classification, and negative controls.
+    status: pass
+    evidence: NfrTraceabilityConformanceTests passed 17 of 17.
+  - id: S9-05
+    requirement: The manifest parses, retains allowed lifecycle vocabulary, and agrees with the unchanged tracker.
+    status: pass
+    evidence: Manifest version 2 parses; all 158 canonical stories resolve to exactly one tracker key with an identical lifecycle value (111 done, 44 backlog, 2 in-progress, 1 review). Story 10.8 is in-progress, Story 10.9 is done, and Stories 1.17, 4.22, 12.7, 13.7, and 3.14 are backlog.
+  - id: S9-06
+    requirement: Lifecycle conflicts are reconciled without altering frozen intent.
+    status: pass
+    evidence: Story 3.14 is backlog with execution authorization held; both frozen specifications are byte-stable at their approved digests.
+  - id: S9-07
+    requirement: OQ3/A6b reproduces against the current candidate inventory and its approved exact digests.
+    status: pass
+    evidence: Two isolated generations and the committed conformance set are byte-identical at 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7, candidate set c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts, matching the A6b approval exactly.
+  - id: S9-08
+    requirement: The execution-wave graph is acyclic and has no unresolved equal-rank or forward-rank dependency.
+    status: pass
+    evidence: 72 ranked nodes and 248 edges; all 23 accepted-prefixed edges resolve to accepted terminal references; zero unresolved references, duplicate edges, unranked nodes, cycles, and rank errors; every rank-10-or-later ordinary node carries the DEC-A8-HOLD edge.
+  - id: S9-09
+    requirement: C3, C6, C9, authorization-spine, generated-surface, retention, build, and focused governance gates pass.
+    status: pass
+    evidence: Focused classes pass 54 of 54, the full Contracts suite passes 340 of 340, source/Debug builds 56 projects and package/Release builds 33 projects with zero warnings and errors after profile-matched restores, and the contract-parity gate passes 12 of 12 against freshly rebuilt Release test assemblies.
+  - id: S9-10
+    requirement: No active implementation context cites the superseded August 4 manifest as current authority.
+    status: pass
+    evidence: The September relock manifest remains the declared execution authority; the August 4 snapshot appears only under supersedes_snapshot.
+  - id: S9-11
+    requirement: Hold removal and recovery closure occur only after every final post-A8 Section 9 check passes.
+    status: not-evaluated-pre-a8
+    evidence: No hold change is made by this evidence. The hold remains true and planning recovery remains open.
+
+validation_commands:
+  - command: python3 scripts/generate-pd10-v2-conformance-set.py --output <scratch>/conf-run1.yaml
+    status: pass-exit-0
+    generated_sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+  - command: python3 scripts/generate-pd10-v2-conformance-set.py --output <scratch>/conf-run2.yaml
+    status: pass-exit-0
+    generated_sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+  - command: cmp <scratch>/conf-run1.yaml <scratch>/conf-run2.yaml && cmp <scratch>/conf-run1.yaml _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    status: pass-byte-identical-three-way
+    candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 196
+    generator_sha256: 841bc26f7b786d97bbe0a8ee8df9c2c64a0badbcd893f5ffd0b9a76d57771381
+  - command: dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseNuGetDeps=false -m:1
+    status: pass-exit-0
+  - command: dotnet build Hexalith.Folders.slnx --configuration Debug -p:UseNuGetDeps=false --no-restore -m:1
+    status: pass-0-warnings-0-errors-56-projects
+  - command: tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests -class <class>, run once per focused class
+    status: pass-54-of-54
+    class_results:
+      Pd10ConformanceSetTests: pass-3-of-3
+      Pd10V2CandidateContractTests: pass-5-of-5
+      AuthorizationMatrixContractTests: pass-7-of-7
+      GovernanceCompletenessGateTests: pass-22-of-22
+      NfrTraceabilityConformanceTests: pass-17-of-17
+    note: Pd10ConformanceSetTests has 3 tests at HEAD; the 2026-09-21 precedent ran 2.
+  - command: tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests
+    status: pass-340-of-340
+  - command: dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1
+    status: pass-exit-0
+    note: Separate package-profile restore; source-profile restore assets were not reused.
+  - command: dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
+    status: pass-0-warnings-0-errors-33-projects
+    rebuilt_release_test_assemblies: [Hexalith.Folders.Contracts.Tests, Hexalith.Folders.Client.Tests, Hexalith.Folders.Cli.Tests, Hexalith.Folders.Mcp.Tests, Hexalith.Folders.IntegrationTests]
+    rebuilt_at: 2026-09-22T23:00:32+02:00/2026-09-22T23:00:35+02:00
+  - command: pwsh ./tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore
+    status: pass-12-of-12-gates
+    gate_script_sha256: 82aef1ede821fd6d903f6f629c7073a51d0f48c4ed43344b0fb27466f1587175
+    report_path: _bmad-output/gates/contract-parity-ci/latest.json
+    report_rewritten: true
+    report_sha256_before: 53439288efd4dd7e2163926e6a9d60ebb1e929e1225e209525c24640105b17d3
+    report_sha256_after: 53439288efd4dd7e2163926e6a9d60ebb1e929e1225e209525c24640105b17d3
+    report_content_changed: false
+  - command: direct manifest, tracker, approval, digest, graph, lifecycle, and frozen-specification validation (read-only Python validator, session scratch validate_bindings.py)
+    status: pass-69-of-69
+    validator_sha256: fe0ce49c9a247a8c9e260ee678fed60b6d7548d3e3081a29176b58ff38e3f5a5
+    result: FR=58 NFR=84 stories=158 graph_nodes=72 graph_edges=248 cycles=0 rank_errors=0
+    validator_corrections_before_pass: Two first-run failures were validator defects, not repository defects. The validator did not resolve accepted-prefixed terminal edges, and it expected NFR labels in prd.md, which does not label every NFR. Both checks were corrected to the precedent semantics before the pass. No repository file changed.
+
+validated_inputs:
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+    sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
+    sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 886c8004c757db56da652f9d0e7c07f5593b00f16a93ca5c3ca8ee2f7cf18116
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: 4333577d4b57ee7199fcf031947b241e153c17bc7913425690e831fba959e991
+  - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
+    sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    artifact_count: 196
+  - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+    sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+  - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding.md
+    sha256: d21aa8200d1b322dc2487eac26c274c63d2062739f015f3129501e8a9170d652
+  - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding-2.md
+    sha256: 5eec57125efe867f8ae2ffbf916b233d20248e7888b9a994f8f9a07447a765ee
+  - path: _bmad-output/gates/contract-parity-ci/latest.json
+    sha256: 53439288efd4dd7e2163926e6a9d60ebb1e929e1225e209525c24640105b17d3
+
+external_dependencies_preserved:
+  EXT-ES-EVENT-EVOLUTION: pending-external-owner-controlled
+  EXT-ES-RECOVERY: pending-external-owner-controlled
+  accepted_or_updated: false

@@ -1,6 +1,6 @@
 schema_version: '1.0.0'
 register_id: folders-planning-authority-relock-2026-09-17
-status: a6b-reapproved-a8-corrective-pending-hold-active
+status: corrective-a8-complete-hold-removed-recovery-closed
 prepared_on: '2026-09-17'
 last_updated_on: '2026-09-22'
 digest_algorithm: sha256
@@ -326,6 +326,81 @@ corrective_a6b_reapproval_2026_09_22:
     story_1_17_closure_authorized: false
     ordinary_story_execution_authorized: false
     v2_exposure_authorized: false
+
+corrective_a8_reapproval_2026_09_22:
+  status: approved-final-validation-passed-hold-removed
+  approver: Jerome
+  approved_on: '2026-09-22'
+  approved_at: '2026-09-22T23:11:52+02:00'
+  required_authorities: [Product, Architecture, Delivery]
+  decision_target_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+  decision_target_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+  preparation_package_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
+  preparation_package_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+  pre_approval_section9_evidence_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml
+  pre_approval_section9_evidence_sha256: 4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml
+  approval_record_sha256: 57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390
+  pre_approval_register_sha256: 886c8004c757db56da652f9d0e7c07f5593b00f16a93ca5c3ca8ee2f7cf18116
+  approvals:
+    - authority: Product
+      approver: Jerome
+      approved_on: '2026-09-22'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+      preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+    - authority: Architecture
+      approver: Jerome
+      approved_on: '2026-09-22'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+      preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+    - authority: Delivery
+      approver: Jerome
+      approved_on: '2026-09-22'
+      payload_version: 1.0.0-candidate.1
+      payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+      preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+  exact_bound_artifacts:
+    - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+      sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
+    - path: docs/contract/authorization-matrix.md
+      version: '2.0.0'
+      sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+      sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+      declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+      artifact_count: 196
+    - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+      sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+      regeneration_status: prohibited-and-unchanged
+  deferred_review_findings_remain_deferred: 17
+  approval_inference_forbidden: true
+  approval_effect:
+    corrective_a8_approved: true
+    provenance_only_manifest_finalization_authorized: true
+    sprint_status_regeneration_authorized: false
+    hold_removal_conditionally_authorized: true
+    hold_removal_condition: Every corrective Section 9 check must pass against the final provenance bytes.
+    story_1_17_closure_authorized: false
+    ordinary_story_execution_authorized: false
+    v2_exposure_authorized: false
+    external_dependency_acceptance_changed: false
+  general_execution_hold: false
+  planning_recovery_closed: true
+  final_validation:
+    result_path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-22-post-a8-corrective.yaml
+    status: pass-post-a8-corrective
+    passing: true
+    validated_at: '2026-09-22T23:21:13+02:00'
+    hold_removed_at: '2026-09-22T23:21:13+02:00'
+    digest_back_reference: omitted-to-avoid-circular-binding
+    sprint_status_regenerated: false
+    story_1_17_closed: false
+    ordinary_story_execution_started: false
+    v2_exposed: false
+    v2_routed: false
+    dependency_acceptance_changed: false
 
 gate_ordering_amendment:
   status: approved
@@ -960,6 +1035,32 @@ records:
         approved_on: '2026-09-21'
         payload_version: 1.0.0-candidate.1
         payload_sha256: 6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57
+    corrective_reapproval_2026_09_22:
+      status: approved-final-validation-passed-hold-removed
+      supersedes_corrective_approval_record_sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+      preparation_package_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
+      preparation_package_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+      approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml
+      approval_record_sha256: 57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390
+      final_validation_result_path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-22-post-a8-corrective.yaml
+      final_validation_status: pass-post-a8-corrective
+      hold_removed_at: '2026-09-22T23:21:13+02:00'
+      approvals:
+        - authority: Product
+          approver: Jerome
+          approved_on: '2026-09-22'
+          payload_version: 1.0.0-candidate.1
+          payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+        - authority: Architecture
+          approver: Jerome
+          approved_on: '2026-09-22'
+          payload_version: 1.0.0-candidate.1
+          payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+        - authority: Delivery
+          approver: Jerome
+          approved_on: '2026-09-22'
+          payload_version: 1.0.0-candidate.1
+          payload_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
     approvals:
       - authority: Product
         approver: Jerome

@@ -1,0 +1,233 @@
+schema_version: '1.0.0'
+artifact_id: RELOCK-SECTION9-POST-A8-CORRECTIVE-2026-09-22
+result_kind: post-a8-corrective
+evaluated_on: '2026-09-22'
+evaluated_at: '2026-09-22T23:21:13+02:00'
+evaluated_from_commit: ef9865b75170e58946ac4a72785972f13d242acd
+evaluated_worktree: uncommitted-provenance-finalization-over-ef9865b
+status: pass-post-a8-corrective
+passing: true
+milestone_completion_claimed: true
+final_freeze_removal_validation_complete: true
+general_execution_hold: false
+planning_recovery_closed: true
+ordinary_story_execution_authorized: false
+ordinary_story_execution_started: false
+story_1_17_closed: false
+v2_exposure_authorized: false
+v2_exposed: false
+v2_routed: false
+sprint_status_regenerated: false
+external_dependency_acceptance_changed: false
+submodule_pins_changed: false
+
+corrective_a8_approval:
+  target_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md
+  target_sha256: 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca
+  preparation_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
+  preparation_sha256: 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d
+  pre_approval_section9_evidence_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml
+  pre_approval_section9_evidence_sha256: 4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml
+  approval_record_sha256: 57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390
+  represented_authorities: [Product, Architecture, Delivery]
+  approved_on: '2026-09-22'
+  approved_at: '2026-09-22T23:11:52+02:00'
+  hold_removal_condition: Every corrective Section 9 check passes against the final provenance bytes.
+  deferred_review_findings_remain_deferred: 17
+
+corrective_a6b_approval:
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+  approval_record_sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
+  represented_authorities: [Product, Architecture, Security]
+  status: approved-post-approval-validation-passed
+
+retained_history:
+  historical_a8_approval:
+    path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+    sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    disposition: valid-for-executed-2026-09-21-finalization-only
+  failed_post_a8_result:
+    path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8.yaml
+    sha256: 6465abac629c269ce341c84e0d6ce38b062669951616999c2817f4e4cd310302
+    disposition: retained-immutable-failure-history
+  superseded_corrective_a8:
+    preparation_sha256: e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab
+    approval_record_sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
+    result_path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
+    result_sha256: d27e48651659b3cf1480227d35c6fce72bafa6c5396fb2354a6d956ee681e07f
+    disposition: superseded-by-a6b-reopen-not-reused-as-evidence
+    superseded_conformance_sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+
+validated_final_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a
+    binding_role: final-terminal-control-state
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: c70dc3285e138d58cabdd49e5dcec3615633ab88be0bd30c51589f9a079f14b4
+    binding_role: final-terminal-control-state
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    regeneration_status: prohibited-and-unchanged
+  - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
+    sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
+  - path: _bmad-output/planning-artifacts/prd.md
+    sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256: 74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e
+  - path: _bmad-output/planning-artifacts/ux-design-specification.md
+    sha256: d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+  - path: docs/exit-criteria/c3-retention.md
+    sha256: bf18b36ff42b9ab045105b72a21a3dbfd79eafbac2b082f35f9a83c8b894f693
+  - path: docs/exit-criteria/c6-transition-matrix-mapping.md
+    sha256: a1d8b0357e42f046e2b3511f1a4c4b2457b9c945b12119bbfaf2ac180355efb6
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md
+    sha256: fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
+    sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 196
+  - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+    sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+    binding_role: 17-deferred-findings-remain-deferred
+  - path: docs/exit-criteria/nfr-traceability.md
+    sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+  - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
+    sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
+  - path: _bmad-output/planning-artifacts/story-3-14-lifecycle-reconciliation-2026-09-20.yaml
+    sha256: c04325dc7b4958675f91441482a1d6a025dad6ba68a94774aa86518ae4bb9fda
+  - path: _bmad-output/gates/contract-parity-ci/latest.json
+    sha256: 53439288efd4dd7e2163926e6a9d60ebb1e929e1225e209525c24640105b17d3
+    binding_role: tracked-gate-report-rewritten-byte-identical
+
+checks:
+  - id: S9-01
+    requirement: Every A1-A8 decision and required role approval is explicitly recorded against its exact decision inputs.
+    status: pass
+    evidence: The register records every A1-A8 decision. A6b is explicitly re-approved for Product, Architecture, and Security (record 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d), and corrective A8 is explicitly re-approved for Product, Architecture, and Delivery (record 57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390) against payload 886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca and preparation 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d. No approval is inferred.
+  - id: S9-02
+    requirement: Final tracker and provenance inputs are exact-digest-bound.
+    status: pass
+    evidence: The manifest binds the final register digest; all 20 manifest provenance digests match current bytes; sprint-status.yaml remains byte-identical at 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26 without regeneration.
+  - id: S9-03
+    requirement: PRD and epics retain the approved FR1-FR58 and NFR1-NFR84 inventories.
+    status: pass
+    evidence: The manifest inventory lists exactly FR1-FR58 and NFR1-NFR84, epics.md carries all 58 FR and 84 NFR identities, prd.md carries all 58 FR identities, and the PRD and epics digests are unchanged.
+  - id: S9-04
+    requirement: The NFR traceability gate passes exact 84-row identity, ownership, classification, and negative controls.
+    status: pass
+    evidence: NfrTraceabilityConformanceTests passed 17 of 17 before and after the terminal transition.
+  - id: S9-05
+    requirement: The manifest parses, retains allowed lifecycle vocabulary, and agrees with the unchanged tracker.
+    status: pass
+    evidence: All 158 canonical stories resolve to exactly one tracker key with an identical lifecycle value (111 done, 44 backlog, 2 in-progress, 1 review). Story 10.8 is in-progress, Story 10.9 is done, and Stories 1.17, 4.22, 12.7, 13.7, and 3.14 are backlog.
+  - id: S9-06
+    requirement: Lifecycle conflicts are reconciled without altering frozen intent.
+    status: pass
+    evidence: Story 3.14 remains backlog and held; both frozen specifications remain byte-stable at their approved digests.
+  - id: S9-07
+    requirement: OQ3/A6b reproduces against the current candidate inventory and its approved exact digests.
+    status: pass
+    evidence: Two isolated generations and the committed set are byte-identical at 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7, candidate set c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts, both after A8 finalization and after the terminal transition.
+  - id: S9-08
+    requirement: The execution-wave graph is acyclic and has no unresolved equal-rank or forward-rank dependency.
+    status: pass
+    evidence: 72 ranked nodes and 248 edges; all 23 accepted-prefixed edges resolve to accepted terminal references; zero unresolved references, duplicate edges, unranked nodes, cycles, and rank errors; every rank-10-or-later ordinary node keeps its DEC-A8-HOLD edge.
+  - id: S9-09
+    requirement: C3, C6, C9, authorization-spine, generated-surface, retention, build, and focused governance gates pass.
+    status: pass
+    evidence: Focused classes pass 54 of 54 and the full Contracts suite passes 340 of 340. Source/Debug builds 56 projects and package/Release builds 33 projects with zero warnings and errors after separate profile-matched restores. The contract-parity gate passes 12 of 12 against Release test assemblies force-rebuilt without incremental reuse. No code, package-version, or submodule correction was needed.
+  - id: S9-10
+    requirement: No active implementation context cites the superseded August 4 manifest as current authority.
+    status: pass
+    evidence: The September relock manifest remains current execution authority; the August 4 snapshot appears only as superseded provenance.
+  - id: S9-11
+    requirement: Hold removal and recovery closure occur only after every final post-A8 Section 9 check passes.
+    status: pass-hold-removed-recovery-closed
+    evidence: S9-01 through S9-10 passed against the finalization bytes while the hold was still true (register ffaf96741f4d37e246e7874399e5649bd647fd8700c59d83b7d347f0b483a1ed). Only then did the register and manifest record general_execution_hold false and planning_recovery_closed true at 2026-09-22T23:21:13+02:00. The conformance, focused, full Contracts, and direct validations were rerun against the terminal bytes and passed. v2 remains unexposed and unrouted, Story 1.17 remains open, and no ordinary story was started.
+
+validation_commands:
+  - command: python3 scripts/generate-pd10-v2-conformance-set.py --output <scratch>/conf-run{1,2}.yaml, then cmp against each other and against the committed set
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-byte-identical-three-way
+    generated_sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    artifact_count: 196
+  - command: dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseNuGetDeps=false -m:1, then dotnet build Hexalith.Folders.slnx --configuration Debug -p:UseNuGetDeps=false --no-restore -m:1
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-0-warnings-0-errors-56-projects
+  - command: tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests -class <class> for the five focused classes, then the assembly without a filter
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-54-of-54-focused-and-340-of-340-full
+    class_results:
+      Pd10ConformanceSetTests: pass-3-of-3
+      Pd10V2CandidateContractTests: pass-5-of-5
+      AuthorizationMatrixContractTests: pass-7-of-7
+      GovernanceCompletenessGateTests: pass-22-of-22
+      NfrTraceabilityConformanceTests: pass-17-of-17
+  - command: dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1, then dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-0-warnings-0-errors-33-projects
+  - command: dotnet build <Contracts|Client|Cli|Mcp|Integration test csproj> --configuration Release -p:UseNuGetDeps=true --no-restore --no-incremental -warnaserror -m:1
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-0-warnings-0-errors-5-projects
+    reason: The solution build was incremental and left the gate assemblies at their earlier compile; they were force-rebuilt so the parity gate could not run stale Release assemblies.
+  - command: pwsh ./tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-12-of-12-gates
+    report_path: _bmad-output/gates/contract-parity-ci/latest.json
+    report_rewritten: true
+    report_content_changed: false
+    report_sha256: 53439288efd4dd7e2163926e6a9d60ebb1e929e1225e209525c24640105b17d3
+  - command: direct manifest, tracker, approval, digest, graph, lifecycle, and frozen-specification validation (read-only Python validator validate_final.py, stage pre-terminal)
+    phase: post-corrective-a8-approval-before-terminal-control-transition
+    status: pass-80-of-80
+    validator_sha256: acc625e9ab6a14b5149d9f54a8f0943f9df6a553a278a5db5e5ee13033768023
+  - command: two isolated conformance generations with three-way cmp
+    phase: final-terminal-control-state
+    status: pass-byte-identical-three-way
+    generated_sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+  - command: five focused Contracts classes and the full Contracts assembly
+    phase: final-terminal-control-state
+    status: pass-54-of-54-focused-and-340-of-340-full
+  - command: direct validation (validate_final.py, stage terminal)
+    phase: final-terminal-control-state
+    status: pass-80-of-80
+    result: FR=58 NFR=84 stories=158 graph_nodes=72 graph_edges=248 cycles=0 rank_errors=0
+
+frozen_story_3_14:
+  lifecycle: backlog
+  execution_authorization_status: held
+  specifications:
+    - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding.md
+      sha256: d21aa8200d1b322dc2487eac26c274c63d2062739f015f3129501e8a9170d652
+    - path: _bmad-output/implementation-artifacts/spec-3-14-complete-asynchronous-repository-creation-and-binding-2.md
+      sha256: 5eec57125efe867f8ae2ffbf916b233d20248e7888b9a994f8f9a07447a765ee
+
+external_dependencies_preserved:
+  EXT-ES-EVENT-EVOLUTION: pending-external-owner-controlled
+  EXT-ES-RECOVERY: pending-external-owner-controlled
+  accepted_or_updated: false
+
+terminal_control_state:
+  released_at: '2026-09-22T23:21:13+02:00'
+  general_execution_hold: false
+  planning_recovery_closed: true
+  sprint_status_regeneration_authorized: false
+  ordinary_story_execution_authorized: false
+  ordinary_story_execution_started: false
+  story_1_17_closure_authorized: false
+  v2_exposure_authorized: false
+  v2_exposed: false
+  result_digest_back_reference: The register and manifest reference this immutable result by path and status but intentionally omit its digest to avoid a circular digest dependency; this result binds their final exact digests.
+
+next_action:
+  required: none-for-september-planning-authority-relock
+  boundaries: No v2 exposure or routing, Story 1.17 closure, ordinary story start, external dependency acceptance, sprint-status regeneration, or Story 3.14 specification change occurred in this run. The 17 scoped-review findings remain deferred.
