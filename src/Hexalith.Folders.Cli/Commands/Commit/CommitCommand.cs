@@ -43,6 +43,7 @@ internal static class CommitCommand
         command.Subcommands.Add(OperationQuery(
             "evidence",
             "Get commit evidence (query).",
+            "GetCommitEvidence",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, operationId, freshness, ct) => CommandFactory.AsObject(
@@ -51,6 +52,7 @@ internal static class CommitCommand
         command.Subcommands.Add(OperationQuery(
             "provider-outcome",
             "Get provider outcome (query).",
+            "GetProviderOutcome",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, operationId, freshness, ct) => CommandFactory.AsObject(
@@ -72,7 +74,7 @@ internal static class CommitCommand
                 parseResult.GetValue(reconWorkspaceId)!,
                 parseResult.GetValue(reconId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(reconFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(reconFreshness), "GetReconciliationStatus"),
                 ct))));
 
         // task-status takes the task identifier as a PATH/resource parameter (not the header task-id);
@@ -91,7 +93,7 @@ internal static class CommitCommand
                 parseResult.GetValue(taskFolderId)!,
                 parseResult.GetValue(taskResourceId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(taskFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(taskFreshness), "GetTaskStatus"),
                 ct))));
 
         return command;
@@ -100,6 +102,7 @@ internal static class CommitCommand
     private static Command OperationQuery(
         string name,
         string description,
+        string freshnessOperationId,
         CommandPipeline pipeline,
         GlobalOptionsBinding global,
         System.Func<System.CommandLine.ParseResult, IClient, QuerySourcing, string, string, string, ReadConsistencyClass?, System.Threading.CancellationToken, System.Threading.Tasks.Task<object?>> invoke)
@@ -122,7 +125,7 @@ internal static class CommitCommand
                 parseResult.GetValue(folderId)!,
                 parseResult.GetValue(workspaceId)!,
                 parseResult.GetValue(operationId)!,
-                CommandOptions.ParseFreshness(parseResult.GetValue(freshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(freshness), freshnessOperationId),
                 ct));
     }
 }

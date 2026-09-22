@@ -31,7 +31,8 @@ public sealed class ResourceTests
     [Fact]
     public async Task AuditTrailResourceWrapsListAuditTrailAndEchoesAFreshCorrelation()
     {
-        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, """{ "items": [], "page": { "hasMore": false } }""");
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK,
+            """{ "entries": [], "page": { "limit": 100, "isTruncated": false }, "retentionClass": "active", "freshness": { "readConsistency": "eventually_consistent", "observedAt": "2026-09-22T12:00:00Z" } }""");
         ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
         string result = await AuditTrailResource.Read(pipeline, folderId: "f", TestContext.Current.CancellationToken);
@@ -59,7 +60,8 @@ public sealed class ResourceTests
     [Fact]
     public async Task FolderTreeResourceThreadsTaskIdToTheWireWhenSupplied()
     {
-        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, """{ "items": [], "page": { "hasMore": false } }""");
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK,
+            """{ "items": [], "page": { "limit": 100, "isTruncated": false }, "limits": { "queryFamily": "tree", "configuredLimit": 100, "actualCount": 0, "actualBytes": 0, "elapsedMilliseconds": 1, "isTruncated": false }, "freshness": { "readConsistency": "snapshot_per_task", "observedAt": "2026-09-22T12:00:00Z" } }""");
         ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
         string result = await FolderTreeResource.Read(pipeline, folderId: "f", workspaceId: "w", taskId: "task-tree-1", TestContext.Current.CancellationToken);

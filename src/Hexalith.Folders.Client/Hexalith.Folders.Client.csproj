@@ -19,6 +19,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Client.Tests" />
     <InternalsVisibleTo Include="Hexalith.Folders.Cli.Tests" />
+    <InternalsVisibleTo Include="Hexalith.Folders.IntegrationTests" />
     <InternalsVisibleTo Include="Hexalith.Folders.UI.Tests" />
   </ItemGroup>
   <ItemGroup>

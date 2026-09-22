@@ -283,7 +283,7 @@ def transform_operation(
 ) -> None:
     responses = operation.setdefault("responses", {})
     existing_unavailable = copy.deepcopy(responses.get("503"))
-    runtime_problems = operation_runtime_problems(operation_id, operation)
+    runtime_problems = operation_runtime_problems(operation_id, operation, components)
     responses.pop("403", None)
     responses["401"] = {"$ref": "#/components/responses/AuthenticationFailure401"}
     responses["404"] = {"$ref": "#/components/responses/SafeDenial404"}
@@ -377,7 +377,11 @@ def runtime_problem(
     }
 
 
-def operation_runtime_problems(operation_id: str, operation: dict[str, Any]) -> list[dict[str, Any]]:
+def operation_runtime_problems(
+    operation_id: str,
+    operation: dict[str, Any],
+    components: dict[str, Any],
+) -> list[dict[str, Any]]:
     problems = [
         runtime_problem(400, "validation_error", "validation_error", False, "revise_request"),
         runtime_problem(503, "read_model_unavailable", "evidence_unavailable", True, "retry"),
@@ -444,7 +448,38 @@ def operation_runtime_problems(operation_id: str, operation: dict[str, Any]) -> 
             runtime_problem(413, "response_limit_exceeded", "response_limit_exceeded", False, "revise_request"),
             runtime_problem(422, "input_limit_exceeded", "input_limit_exceeded", False, "revise_request"),
         ])
+    if operation_id in {"CreateRepositoryBackedFolder", "BindRepository"}:
+        problems.append(runtime_problem(
+            422,
+            "unsupported_provider_capability",
+            "unsupported_provider_capability",
+            False,
+            "contact_operator",
+        ))
+    problems.extend(declared_runtime_problems(operation, components))
     return deduplicate_problems(problems)
+
+
+def declared_runtime_problems(
+    operation: dict[str, Any],
+    components: dict[str, Any],
+) -> list[dict[str, Any]]:
+    problems: list[dict[str, Any]] = []
+    for status in (422, 423, 428, 429):
+        response = copy.deepcopy(operation.get("responses", {}).get(str(status)))
+        if not isinstance(response, dict):
+            continue
+        reference = response.get("$ref")
+        if isinstance(reference, str) and reference.startswith("#/components/responses/"):
+            response = copy.deepcopy(components["responses"][reference.rsplit("/", 1)[-1]])
+        examples = response.get("content", {}).get("application/problem+json", {}).get("examples", {})
+        for example in examples.values():
+            value = copy.deepcopy(resolve_example_value(example, components))
+            normalize_problem_examples(value)
+            if isinstance(value, dict) and isinstance(value.get("category"), str):
+                value["status"] = status
+                problems.append(value)
+    return problems
 
 
 def deduplicate_problems(problems: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -489,6 +524,13 @@ def ensure_runtime_problem_response(
     media_type = response.setdefault("content", {}).setdefault("application/problem+json", {})
     media_type["schema"] = {"$ref": "#/components/schemas/ProblemDetails"}
     examples = media_type.setdefault("examples", {})
+    for example_name, example in list(examples.items()):
+        value = copy.deepcopy(resolve_example_value(example, components))
+        normalize_problem_examples(value)
+        if not isinstance(value, dict):
+            raise ValueError(f"Problem example {example_name!r} is not an object.")
+        value["status"] = status
+        examples[example_name] = {"value": value}
     for index, problem in enumerate(problems, start=1):
         examples[f"candidateRuntime{status}_{index}"] = {"value": copy.deepcopy(problem)}
     responses[status_key] = response

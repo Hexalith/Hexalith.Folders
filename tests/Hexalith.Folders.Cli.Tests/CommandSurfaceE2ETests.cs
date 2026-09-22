@@ -191,6 +191,48 @@ public sealed class CommandSurfaceE2ETests : IDisposable
     }
 
     [Fact]
+    public async Task EffectivePermissionsCommandForwardsNullWhenTaskContextIsOmitted()
+    {
+        const string correlation = "correlation-effective-permissions-without-task-cli";
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "folder", "effective-permissions",
+            "--folder-id", "folder_1",
+            "--freshness", "read_your_writes",
+            "--correlation-id", correlation,
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(0);
+        await client.Received(1).GetEffectivePermissionsAsync(
+            "folder_1",
+            correlation,
+            ReadConsistencyClass.Read_your_writes,
+            null,
+            Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task MissingRequiredRequestBodyReturnsUsageWithoutSdkDispatch()
+    {
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "folder", "create-repo-backed",
+            "--task-id", "task_1",
+            "--idempotency-key", "key_folder",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(64);
+        await client.DidNotReceiveWithAnyArgs().CreateRepositoryBackedFolderAsync(
+            default!, default!, default!, default!, TestContext.Current.CancellationToken);
+    }
+
+    [Fact]
     public async Task EffectivePermissionsCommandRejectsExplicitlyBlankOptionalTaskContext()
     {
         IClient client = Substitute.For<IClient>();

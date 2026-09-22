@@ -184,7 +184,8 @@ public sealed class WorkspacePreparationService(
             command.TaskId,
             command.IdempotencyKey,
             idempotencyFingerprint,
-            _timeProvider.GetUtcNow());
+            _timeProvider.GetUtcNow(),
+            command.ActorPrincipalId);
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,

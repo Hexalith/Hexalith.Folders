@@ -42,19 +42,20 @@ public sealed class FolderCreationService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
+        LayeredFolderAuthorizationContext authorizationContext = new(
+            request.AuthoritativeTenantId,
+            request.PrincipalId,
+            ActorSafeIdentifier: request.PrincipalId,
+            ActionToken,
+            LayeredFolderOperationPolicy.Mutation(),
+            request.ClaimTransformEvidence,
+            OperationScope: OrganizationBaselineScope,
+            request.CorrelationId,
+            request.TaskId,
+            clientTenantValues,
+            request.ClientControlledPrincipalValues);
         LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
-                request.AuthoritativeTenantId,
-                request.PrincipalId,
-                ActorSafeIdentifier: request.PrincipalId,
-                ActionToken,
-                LayeredFolderOperationPolicy.Mutation(),
-                request.ClaimTransformEvidence,
-                OperationScope: OrganizationBaselineScope,
-                request.CorrelationId,
-                request.TaskId,
-                clientTenantValues,
-                request.ClientControlledPrincipalValues),
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -111,6 +112,14 @@ public sealed class FolderCreationService(
         if (result.Events.Count == 0)
         {
             return result;
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: false, cancellationToken)
+            .ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(

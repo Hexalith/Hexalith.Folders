@@ -415,6 +415,28 @@ operations:
     }
 
     [Fact]
+    public void GeneratorRequiresHistoricalFingerprintsForEveryCurrentOperation()
+    {
+        string temp = NewTempDirectory("hexalith-parity-historical-fingerprints");
+        string previousSpine = Path.Combine(temp, "previous-spine.yaml");
+        string baseline = File.ReadAllText(_previousSpineFilePath);
+        const string requiredField = "    historical_v1_status_codes:\n";
+        baseline.ShouldContain(requiredField, Case.Sensitive);
+        File.WriteAllText(
+            previousSpine,
+            baseline.Replace(requiredField, string.Empty, StringComparison.Ordinal),
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+
+        GeneratorResult result = RunGeneratorDetailed(
+            _openApiFilePath,
+            Path.Combine(temp, "parity-contract.yaml"),
+            previousSpine);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("missing required historical field 'historical_v1_status_codes'", Case.Insensitive);
+    }
+
+    [Fact]
     public void ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown()
     {
         using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(_schemaFilePath));

@@ -26,7 +26,7 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetReadinessDiagnosticsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetReadinessDiagnosticsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetReadinessDiagnostics"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-provider-status-diagnostics")]
     [Description("Inspect provider status diagnostics for a folder (query).")]
@@ -37,7 +37,7 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetProviderStatusDiagnosticsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetProviderStatusDiagnosticsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetProviderStatusDiagnostics"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-sync-status-diagnostics")]
     [Description("Inspect sync status diagnostics for a workspace (query).")]
@@ -49,7 +49,7 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetSyncStatusDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetSyncStatusDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetSyncStatusDiagnostics"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-lock-diagnostics")]
     [Description("Inspect lock diagnostics for a workspace (query).")]
@@ -61,7 +61,7 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetLockDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetLockDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetLockDiagnostics"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-dirty-state-diagnostics")]
     [Description("Inspect dirty-state diagnostics for a workspace (query).")]
@@ -73,7 +73,7 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetDirtyStateDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetDirtyStateDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetDirtyStateDiagnostics"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-failed-operation-diagnostics")]
     [Description("Inspect failed-operation diagnostics for a workspace (query).")]
@@ -85,7 +85,7 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetFailedOperationDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetFailedOperationDiagnosticsAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetFailedOperationDiagnostics"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-projection-freshness")]
     [Description("Inspect projection freshness diagnostics (query).")]
@@ -96,5 +96,5 @@ internal static class DiagnosticsTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetProjectionFreshnessAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetProjectionFreshnessAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetProjectionFreshness"), ct)), cancellationToken);
 }

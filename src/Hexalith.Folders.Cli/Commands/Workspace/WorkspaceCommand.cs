@@ -67,6 +67,7 @@ internal static class WorkspaceCommand
         command.Subcommands.Add(WorkspaceQuery(
             "get-lock",
             "Get the workspace lock status (query).",
+            "GetWorkspaceLock",
             pipeline,
             global,
             taskIdRequired: false,
@@ -76,6 +77,7 @@ internal static class WorkspaceCommand
         command.Subcommands.Add(WorkspaceQuery(
             "status",
             "Get workspace status (query).",
+            "GetWorkspaceStatus",
             pipeline,
             global,
             taskIdRequired: false,
@@ -85,6 +87,7 @@ internal static class WorkspaceCommand
         command.Subcommands.Add(WorkspaceQuery(
             "retry-eligibility",
             "Get workspace retry eligibility (query; requires --task-id).",
+            "GetWorkspaceRetryEligibility",
             pipeline,
             global,
             taskIdRequired: true,
@@ -94,6 +97,7 @@ internal static class WorkspaceCommand
         command.Subcommands.Add(WorkspaceQuery(
             "transition-evidence",
             "Get workspace transition evidence (query; requires --task-id).",
+            "GetWorkspaceTransitionEvidence",
             pipeline,
             global,
             taskIdRequired: true,
@@ -103,6 +107,7 @@ internal static class WorkspaceCommand
         command.Subcommands.Add(WorkspaceQuery(
             "cleanup-status",
             "Get workspace cleanup status (query; requires --task-id).",
+            "GetWorkspaceCleanupStatus",
             pipeline,
             global,
             taskIdRequired: true,
@@ -141,6 +146,7 @@ internal static class WorkspaceCommand
     private static Command WorkspaceQuery(
         string name,
         string description,
+        string operationId,
         CommandPipeline pipeline,
         GlobalOptionsBinding global,
         bool taskIdRequired,
@@ -162,7 +168,7 @@ internal static class WorkspaceCommand
                 sourcing,
                 parseResult.GetValue(folderId)!,
                 parseResult.GetValue(workspaceId)!,
-                CommandOptions.ParseFreshness(parseResult.GetValue(freshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(freshness), operationId),
                 ct));
     }
 }

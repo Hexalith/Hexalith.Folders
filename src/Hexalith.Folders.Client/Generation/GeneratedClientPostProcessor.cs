@@ -86,11 +86,19 @@ internal static class GeneratedClientPostProcessor
             }
         }
 
+        source = RelaxGeneratedRequiredFields(source);
         source = RequireClosedProblemFields(source);
+        source = RequireClosedSuccessFields(source, contractPath);
         source = RestoreOperationUnavailableEnumUnions(source, contractPath);
 
         WriteAtomically(clientPath, source);
     }
+
+    private static string RelaxGeneratedRequiredFields(string source)
+        => source.Replace(
+            "Required = Newtonsoft.Json.Required.Always)]",
+            "Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]",
+            StringComparison.Ordinal);
 
     private static string RestoreOperationUnavailableEnumUnions(
         string source,
@@ -257,10 +265,141 @@ internal static class GeneratedClientPostProcessor
         return source;
     }
 
+    private static string RequireClosedSuccessFields(string source, string contractPath)
+    {
+        YamlMappingNode root = LoadYaml(contractPath);
+        YamlMappingNode components = RequiredMapping(root, "components");
+        YamlMappingNode schemas = RequiredMapping(components, "schemas");
+        HashSet<string> successSchemas = CollectSuccessSchemas(root, components, schemas);
+        foreach ((YamlNode nameNode, YamlNode schemaNode) in schemas.Children)
+        {
+            string typeName = nameNode.ShouldBeScalar("schema name").Value ?? string.Empty;
+            if (!successSchemas.Contains(typeName)
+                || typeName.Contains("Problem", StringComparison.Ordinal)
+                || !source.Contains($"    public partial class {typeName}", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            YamlMappingNode schema = schemaNode.ShouldBeMapping($"schema {typeName}");
+            HashSet<string> required = ReadStringSequence(schema, "required").ToHashSet(StringComparer.Ordinal);
+            bool closed = IsFalse(schema, "additionalProperties") || IsFalse(schema, "unevaluatedProperties");
+            if (schema.Children.TryGetValue(new YamlScalarNode("allOf"), out YamlNode? allOfNode))
+            {
+                closed = true;
+                foreach (YamlNode branchNode in allOfNode.ShouldBeSequence($"{typeName}.allOf"))
+                {
+                    if (branchNode is not YamlMappingNode branch)
+                    {
+                        continue;
+                    }
+
+                    required.UnionWith(ReadStringSequence(branch, "required"));
+                    closed = closed || IsFalse(branch, "additionalProperties") || IsFalse(branch, "unevaluatedProperties");
+                }
+            }
+
+            if (required.Count > 0)
+            {
+                source = RequireJsonProperties(source, typeName, required.Order(StringComparer.Ordinal).ToArray());
+            }
+
+            if (closed)
+            {
+                source = RemoveJsonExtensionData(source, typeName);
+            }
+        }
+
+        return source;
+    }
+
+    private static HashSet<string> CollectSuccessSchemas(
+        YamlMappingNode root,
+        YamlMappingNode components,
+        YamlMappingNode schemas)
+    {
+        HashSet<string> names = new(StringComparer.Ordinal);
+        foreach (YamlNode pathItemNode in RequiredMapping(root, "paths").Children.Values)
+        {
+            foreach ((YamlNode methodNode, YamlNode operationNode) in pathItemNode.ShouldBeMapping("path item").Children)
+            {
+                string method = methodNode.ShouldBeScalar("method").Value ?? string.Empty;
+                if (method is not ("get" or "post" or "put" or "patch" or "delete")
+                    || operationNode is not YamlMappingNode operation)
+                {
+                    continue;
+                }
+
+                foreach ((YamlNode statusNode, YamlNode responseNode) in RequiredMapping(operation, "responses").Children)
+                {
+                    string status = statusNode.ShouldBeScalar("response status").Value ?? string.Empty;
+                    if (!status.StartsWith('2'))
+                    {
+                        continue;
+                    }
+
+                    YamlMappingNode response = responseNode.ShouldBeMapping("success response");
+                    if (response.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? responseReference))
+                    {
+                        string reference = responseReference.ShouldBeScalar("response $ref").Value ?? string.Empty;
+                        const string prefix = "#/components/responses/";
+                        response = RequiredMapping(components, "responses").Children[
+                            new YamlScalarNode(reference[prefix.Length..])].ShouldBeMapping("referenced response");
+                    }
+
+                    CollectSchemaReferences(response, schemas, names);
+                }
+            }
+        }
+
+        return names;
+    }
+
+    private static void CollectSchemaReferences(
+        YamlNode node,
+        YamlMappingNode schemas,
+        HashSet<string> names)
+    {
+        if (node is YamlMappingNode mapping)
+        {
+            if (mapping.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
+            {
+                string reference = referenceNode.ShouldBeScalar("schema $ref").Value ?? string.Empty;
+                const string prefix = "#/components/schemas/";
+                if (reference.StartsWith(prefix, StringComparison.Ordinal))
+                {
+                    string name = reference[prefix.Length..];
+                    if (names.Add(name)
+                        && schemas.Children.TryGetValue(new YamlScalarNode(name), out YamlNode? schema))
+                    {
+                        CollectSchemaReferences(schema, schemas, names);
+                    }
+                }
+            }
+
+            foreach (YamlNode child in mapping.Children.Values)
+            {
+                CollectSchemaReferences(child, schemas, names);
+            }
+        }
+        else if (node is YamlSequenceNode sequence)
+        {
+            foreach (YamlNode child in sequence.Children)
+            {
+                CollectSchemaReferences(child, schemas, names);
+            }
+        }
+    }
+
+    private static bool IsFalse(YamlMappingNode mapping, string name)
+        => mapping.Children.TryGetValue(new YamlScalarNode(name), out YamlNode? value)
+            && value is YamlScalarNode scalar
+            && bool.TryParse(scalar.Value, out bool parsed)
+            && !parsed;
+
     private static string RemoveJsonExtensionData(string source, string typeName)
     {
-        string declaration = $"    public partial class {typeName}";
-        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        int start = FindClassDeclaration(source, typeName);
         int end = start < 0 ? -1 : source.IndexOf("\n    }\n", start, StringComparison.Ordinal);
         if (start < 0 || end < 0)
         {
@@ -285,8 +424,7 @@ internal static class GeneratedClientPostProcessor
 
     private static string RequireJsonProperties(string source, string typeName, IReadOnlyList<string> propertyNames)
     {
-        string declaration = $"    public partial class {typeName}";
-        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        int start = FindClassDeclaration(source, typeName);
         if (start < 0)
         {
             throw new InvalidOperationException($"Generated-client problem type '{typeName}' was not found for required-field enforcement.");
@@ -314,8 +452,7 @@ internal static class GeneratedClientPostProcessor
 
     private static string ClassBlock(string source, string typeName)
     {
-        string declaration = $"    public partial class {typeName}";
-        int start = source.IndexOf(declaration, StringComparison.Ordinal);
+        int start = FindClassDeclaration(source, typeName);
         int end = start < 0 ? -1 : source.IndexOf("\n    }\n", start, StringComparison.Ordinal);
         if (start < 0 || end < 0)
         {
@@ -323,6 +460,24 @@ internal static class GeneratedClientPostProcessor
         }
 
         return source[start..end];
+    }
+
+    private static int FindClassDeclaration(string source, string typeName)
+    {
+        string declaration = $"    public partial class {typeName}";
+        int offset = 0;
+        while ((offset = source.IndexOf(declaration, offset, StringComparison.Ordinal)) >= 0)
+        {
+            int suffix = offset + declaration.Length;
+            if (suffix == source.Length || source[suffix] is '\r' or '\n' or ' ')
+            {
+                return offset;
+            }
+
+            offset = suffix;
+        }
+
+        return -1;
     }
 
     private static void AssertPartialRangeIsSuccessful(string source)

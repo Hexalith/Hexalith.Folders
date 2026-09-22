@@ -29,19 +29,20 @@ public sealed class BranchRefPolicyConfigurationService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
+        LayeredFolderAuthorizationContext authorizationContext = new(
+            request.AuthoritativeTenantId,
+            request.PrincipalId,
+            ActorSafeIdentifier: request.PrincipalId,
+            ActionToken,
+            LayeredFolderOperationPolicy.Mutation(),
+            request.ClaimTransformEvidence,
+            OperationScope: request.FolderId,
+            request.CorrelationId,
+            request.TaskId,
+            clientTenantValues,
+            request.ClientControlledPrincipalValues);
         LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
-                request.AuthoritativeTenantId,
-                request.PrincipalId,
-                ActorSafeIdentifier: request.PrincipalId,
-                ActionToken,
-                LayeredFolderOperationPolicy.Mutation(),
-                request.ClaimTransformEvidence,
-                OperationScope: request.FolderId,
-                request.CorrelationId,
-                request.TaskId,
-                clientTenantValues,
-                request.ClientControlledPrincipalValues),
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -115,6 +116,14 @@ public sealed class BranchRefPolicyConfigurationService(
         if (!IsReady(readiness))
         {
             return FolderResult.Rejected(command, MapReadiness(readiness));
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: true, cancellationToken)
+            .ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(

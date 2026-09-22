@@ -30,7 +30,11 @@ if (options.InitializeBaseline)
         throw new InvalidOperationException(
             "prerequisite-drift: --initialize-baseline contract is not marked as the PD10 v2 candidate.");
     }
-    IReadOnlyList<OperationModel> baselineOps = EnumerateOperations(rootForBaseline, new List<Diagnostic>()).OrderBy(o => o.OperationId, StringComparer.Ordinal).ToArray();
+    List<Diagnostic> baselineDiagnostics = [];
+    IReadOnlyList<OperationModel> baselineOps = EnumerateOperations(rootForBaseline, baselineDiagnostics)
+        .OrderBy(o => o.OperationId, StringComparer.Ordinal)
+        .ToArray();
+    ValidateOperationInventory(baselineOps, baselineDiagnostics);
     string baselineYaml = RenderBaseline(baselineOps, options.ContractPath);
     Directory.CreateDirectory(Path.GetDirectoryName(options.PreviousSpinePath) ?? ".");
     File.WriteAllText(options.PreviousSpinePath, baselineYaml, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
@@ -596,16 +600,21 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
         string identity = method + " " + path + " " + operationId;
 
-        bool carriesHistoricalFingerprints = operation.Children.ContainsKey(new YamlScalarNode("historical_v1_status_codes"))
-            || operation.Children.ContainsKey(new YamlScalarNode("historical_v1_canonical_error_categories"))
-            || operation.Children.ContainsKey(new YamlScalarNode("historical_v1_status_code_fingerprint_sha256"))
-            || operation.Children.ContainsKey(new YamlScalarNode("historical_v1_error_vocabulary_fingerprint_sha256"));
-        if (carriesHistoricalFingerprints)
+        if (historicalV1ByOperationId.TryGetValue(operationId, out OperationModel? historical))
         {
-            if (!historicalV1ByOperationId.TryGetValue(operationId, out OperationModel? historical))
+            string[] requiredHistoricalFields =
+            [
+                "historical_v1_status_codes",
+                "historical_v1_canonical_error_categories",
+                "historical_v1_status_code_fingerprint_sha256",
+                "historical_v1_error_vocabulary_fingerprint_sha256",
+            ];
+            string? missingHistoricalField = requiredHistoricalFields.FirstOrDefault(
+                field => !operation.Children.ContainsKey(new YamlScalarNode(field)));
+            if (missingHistoricalField is not null)
             {
                 throw new InvalidOperationException(
-                    $"previous-spine-drift: operation '{operationId}' is absent from the immutable historical v1 spine.");
+                    $"previous-spine-drift: operation '{operationId}' is missing required historical field '{missingHistoricalField}'.");
             }
 
             string[] historicalStatuses = ReadStringSequence(operation, "historical_v1_status_codes").Order(StringComparer.Ordinal).ToArray();
@@ -620,6 +629,11 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
             {
                 throw new InvalidOperationException($"previous-spine-drift: historical v1 error vocabulary fingerprint changed for '{operationId}'.");
             }
+        }
+        else if (currentByOperationId.ContainsKey(operationId))
+        {
+            throw new InvalidOperationException(
+                $"previous-spine-drift: operation '{operationId}' is absent from the immutable historical v1 spine.");
         }
 
         if (currentByOperationId.TryGetValue(operationId, out OperationModel? current))

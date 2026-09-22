@@ -12,4 +12,5 @@ public sealed record FolderWorkspaceLifecycleEventRecorded(
     string TaskId,
     string IdempotencyKey,
     string IdempotencyFingerprint,
-    DateTimeOffset OccurredAt) : IFolderEvent;
+    DateTimeOffset OccurredAt,
+    string? ActorPrincipalId = null) : IFolderEvent;

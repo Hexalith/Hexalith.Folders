@@ -1729,7 +1729,7 @@ public sealed class GoldenLifecycleParityTests
     }
 
     [Fact]
-    public async Task CandidateRejectsConflictingRepeatedAccessStatesAsUnavailable()
+    public async Task CandidateAppliesSafeDenialPrecedenceToRepeatedNegativeAccessStates()
     {
         TestHost host = await TestHost.StartAsync(
             "tenant-a",
@@ -1745,7 +1745,7 @@ public sealed class GoldenLifecycleParityTests
                 request,
                 TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
             host.Gateway.ProcessCalls.ShouldBe(0);
             host.AuditSink.Records.ShouldHaveSingleItem().Result.ShouldBe("deny");
         }

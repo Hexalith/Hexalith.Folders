@@ -19,22 +19,22 @@ namespace Hexalith.Folders.Mcp.Tests;
 public sealed class ToolInputsTests
 {
     [Theory]
-    [InlineData("snapshot_per_task", ReadConsistencyClass.Snapshot_per_task)]
-    [InlineData("read_your_writes", ReadConsistencyClass.Read_your_writes)]
-    [InlineData("eventually_consistent", ReadConsistencyClass.Eventually_consistent)]
-    public void ParsesKnownFreshnessTokens(string token, ReadConsistencyClass expected)
-        => ToolInputs.ParseFreshness(token).ShouldBe(expected);
+    [InlineData("ListFolderFiles", "snapshot_per_task", ReadConsistencyClass.Snapshot_per_task)]
+    [InlineData("GetEffectivePermissions", "read_your_writes", ReadConsistencyClass.Read_your_writes)]
+    [InlineData("GetFolderLifecycleStatus", "eventually_consistent", ReadConsistencyClass.Eventually_consistent)]
+    public void ParsesOperationAcceptedFreshnessTokens(string operationId, string token, ReadConsistencyClass expected)
+        => ToolInputs.ParseFreshness(token, operationId).ShouldBe(expected);
 
     [Fact]
     public void OmittedFreshnessMapsToNull()
-        => ToolInputs.ParseFreshness(null).ShouldBeNull();
+        => ToolInputs.ParseFreshness(null, "GetFolderLifecycleStatus").ShouldBeNull();
 
     [Theory]
     [InlineData("")]
     [InlineData(" ")]
     [InlineData("not_a_real_class")]
     public void SuppliedUnknownOrBlankFreshnessIsAUsageError(string token)
-        => Should.Throw<McpUsageException>(() => ToolInputs.ParseFreshness(token));
+        => Should.Throw<McpUsageException>(() => ToolInputs.ParseFreshness(token, "GetFolderLifecycleStatus"));
 
     [Fact]
     public async Task SuppliedFreshnessIsSentOnTheWire()
@@ -43,7 +43,7 @@ public sealed class ToolInputsTests
         ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
         await FolderTools.GetFolderLifecycleStatus(
-            pipeline, folderId: "f", correlationId: "corr-1", freshness: "read_your_writes", cancellationToken: TestContext.Current.CancellationToken);
+            pipeline, folderId: "f", correlationId: "corr-1", freshness: "eventually_consistent", cancellationToken: TestContext.Current.CancellationToken);
 
         handler.Requests.ShouldHaveSingleItem();
         handler.Requests[0].Freshness.ShouldNotBeNullOrWhiteSpace();
@@ -78,6 +78,24 @@ public sealed class ToolInputsTests
 
         handler.Requests.ShouldHaveSingleItem();
         handler.Requests[0].TaskId.ShouldBe(taskId);
+    }
+
+    [Fact]
+    public async Task EffectivePermissionsForwardsNullWhenTaskContextIsOmitted()
+    {
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, "{}");
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
+
+        _ = await FolderTools.GetEffectivePermissions(
+            pipeline,
+            folderId: "folder_000000001",
+            taskId: null,
+            correlationId: "correlation-effective-permissions-without-task-mcp",
+            freshness: "read_your_writes",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        handler.Requests.ShouldHaveSingleItem();
+        handler.Requests[0].TaskId.ShouldBeNull();
     }
 
     [Fact]

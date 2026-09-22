@@ -43,7 +43,7 @@ internal static class CommitTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetCommitEvidenceAsync(folderId, workspaceId, operationId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetCommitEvidenceAsync(folderId, workspaceId, operationId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetCommitEvidence"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-provider-outcome")]
     [Description("Inspect the provider outcome for an operation (query). Unknown outcomes are surfaced truthfully.")]
@@ -56,7 +56,7 @@ internal static class CommitTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetProviderOutcomeAsync(folderId, workspaceId, operationId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetProviderOutcomeAsync(folderId, workspaceId, operationId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetProviderOutcome"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-reconciliation-status")]
     [Description("Inspect reconciliation status (query). Reconciliation-required outcomes are surfaced truthfully.")]
@@ -69,7 +69,7 @@ internal static class CommitTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetReconciliationStatusAsync(folderId, workspaceId, reconciliationId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetReconciliationStatusAsync(folderId, workspaceId, reconciliationId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetReconciliationStatus"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-task-status")]
     [Description("Inspect the status of a task by its identifier (query).")]
@@ -81,5 +81,5 @@ internal static class CommitTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetTaskStatusAsync(folderId, taskId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetTaskStatusAsync(folderId, taskId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetTaskStatus"), ct)), cancellationToken);
 }

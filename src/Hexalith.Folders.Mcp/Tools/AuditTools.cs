@@ -28,7 +28,7 @@ internal static class AuditTools
         [Description("Metadata-only filter expression.")] string? filter = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ListAuditTrailAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), cursor, limit, filter, ct)), cancellationToken);
+            client.ListAuditTrailAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "ListAuditTrail"), cursor, limit, filter, ct)), cancellationToken);
 
     [McpServerTool(Name = "get-audit-record")]
     [Description("Inspect a specific metadata-only audit record (query).")]
@@ -40,7 +40,7 @@ internal static class AuditTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetAuditRecordAsync(folderId, auditRecordId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetAuditRecordAsync(folderId, auditRecordId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetAuditRecord"), ct)), cancellationToken);
 
     [McpServerTool(Name = "list-operation-timeline")]
     [Description("List the metadata-only operation timeline for a folder (query).")]
@@ -54,7 +54,7 @@ internal static class AuditTools
         [Description("Metadata-only filter expression.")] string? filter = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ListOperationTimelineAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), cursor, limit, filter, ct)), cancellationToken);
+            client.ListOperationTimelineAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "ListOperationTimeline"), cursor, limit, filter, ct)), cancellationToken);
 
     [McpServerTool(Name = "get-operation-timeline-entry")]
     [Description("Inspect a specific metadata-only operation timeline entry (query).")]
@@ -66,5 +66,5 @@ internal static class AuditTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetOperationTimelineEntryAsync(folderId, timelineEntryId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetOperationTimelineEntryAsync(folderId, timelineEntryId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetOperationTimelineEntry"), ct)), cancellationToken);
 }

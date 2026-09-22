@@ -187,7 +187,15 @@ public sealed class FolderLifecycleSampleTests
     private sealed class RecordingHandler : HttpMessageHandler
     {
         private const string AcceptedJson =
-            """{"acceptedAt":"2026-05-27T12:00:00+00:00","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","taskId":"task_01HZY7Z6N7J4Q2X8Y9V0TSK001","status":"accepted","idempotentReplay":false}""";
+            """{"acceptedAt":"2026-05-27T12:00:00+00:00","correlationId":"corr_01HZY7Z6N7J4Q2X8Y9V0COR001","taskId":"task_01HZY7Z6N7J4Q2X8Y9V0TSK001","status":"accepted","idempotentReplay":false,"operationId":"operation_01HZY7Z6N7J4Q2X8Y9V0COM001","acceptedCommandState":"accepted","providerOutcomeState":"pending","retryEligibility":{"eligible":false,"reasonCode":"provider_outcome_pending","advisoryOnly":true}}""";
+        private const string ProviderReadinessJson =
+            """{"audience":"consumer","status":"ready","freshness":{"readConsistency":"snapshot_per_task","observedAt":"2026-05-27T12:00:00+00:00"}}""";
+        private const string WorkspaceStatusJson =
+            """{"folderId":"folder_01HZY7Z6N7J4Q2X8Y9V0FOL001","workspaceId":"workspace_01HZY7Z6N7J4Q2X8Y9V0WSP001","currentState":"committed","projectedState":{"state":"committed","stateSource":"projection","observedAt":"2026-05-27T12:00:00+00:00"},"providerOutcome":{"operationId":"operation_01HZY7Z6N7J4Q2X8Y9V0COM001","state":"known_success","sanitizedStatusClass":"provider_failure_known","providerCorrelationReference":"provref_01HZY7Z6N7J4Q2X8Y9V0PRV001","retryEligibility":{"eligible":false,"reasonCode":"terminal_committed","advisoryOnly":true},"freshness":{"readConsistency":"eventually_consistent","observedAt":"2026-05-27T12:00:00+00:00"}},"retryEligibility":{"eligible":false,"reasonCode":"terminal_committed","advisoryOnly":true},"freshness":{"readConsistency":"read_your_writes","observedAt":"2026-05-27T12:00:00+00:00"},"projectionLag":{"ageMilliseconds":0,"stateSource":"projection"}}""";
+        private const string FolderLifecycleStatusJson =
+            """{"folderId":"folder_01HZY7Z6N7J4Q2X8Y9V0FOL001","lifecycleState":"ready","archived":false,"freshness":{"readConsistency":"eventually_consistent","observedAt":"2026-05-27T12:00:00+00:00"}}""";
+        private const string AuditTrailJson =
+            """{"entries":[],"page":{"limit":50,"isTruncated":false},"retentionClass":"TODO(reference-pending):c3-retention-class","freshness":{"readConsistency":"eventually_consistent","observedAt":"2026-05-27T12:00:00+00:00"}}""";
 
         public List<RecordedRequest> Requests { get; } = [];
 
@@ -210,7 +218,15 @@ public sealed class FolderLifecycleSampleTests
                 path.EndsWith("/provider-readiness/validations", StringComparison.Ordinal);
 
             HttpStatusCode status = isQueryOrReadiness ? HttpStatusCode.OK : HttpStatusCode.Accepted;
-            string json = isQueryOrReadiness ? "{}" : AcceptedJson;
+            string json = path.EndsWith("/provider-readiness/validations", StringComparison.Ordinal)
+                ? ProviderReadinessJson
+                : path.EndsWith("/lifecycle-status", StringComparison.Ordinal)
+                    ? FolderLifecycleStatusJson
+                    : path.EndsWith("/audit-trail", StringComparison.Ordinal)
+                        ? AuditTrailJson
+                        : request.Method == HttpMethod.Get
+                    ? WorkspaceStatusJson
+                    : AcceptedJson;
 
             return new HttpResponseMessage(status)
             {

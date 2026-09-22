@@ -326,6 +326,11 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         (bool isDelegated, bool isUsable, string? delegatorId, EventStoreClaimTransformEvidence? delegatorClaim) =
             DelegationEvidence(context.User, descriptor.ActionToken, tenantId, principalId);
         V2AccessState accessState = CanonicalAccessState(context.User, isDelegated);
+        if ((int)accessState < 0)
+        {
+            return Unusable(descriptor, Pd10AuthorityEvidenceState.Incomplete, V2AccessState.Unknown);
+        }
+
         if (!isUsable)
         {
             return Unusable(descriptor, Pd10AuthorityEvidenceState.Incomplete, V2AccessState.DelegatedServiceAgent);
@@ -391,6 +396,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 principalId,
                 isDelegated,
                 delegatorId,
+                claim,
+                delegatorClaim,
                 accessState).ConfigureAwait(false);
         }
 
@@ -712,6 +719,18 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 return;
             }
 
+            bool normalized = true;
+            if (context.Response.StatusCode >= 400)
+            {
+                normalized = NormalizeHistoricalProblem(
+                    captured,
+                    context.Response.ContentType,
+                    descriptor.OperationId,
+                    context.Response.StatusCode,
+                    out int candidateStatus);
+                context.Response.StatusCode = candidateStatus;
+            }
+
             if (!Pd10V2RuntimeResponseCatalog.AllowsStatus(descriptor.OperationId, context.Response.StatusCode))
             {
                 context.Response.Body = destination;
@@ -729,7 +748,6 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             }
             else
             {
-                bool normalized = NormalizeHistoricalProblem(captured, context.Response.ContentType);
                 if (context.Response.StatusCode >= 400
                     && (!normalized || !IsDeclaredProblem(captured, descriptor.OperationId, context.Response.StatusCode)))
                 {
@@ -802,8 +820,14 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         return true;
     }
 
-    private static bool NormalizeHistoricalProblem(MemoryStream body, string? contentType)
+    private static bool NormalizeHistoricalProblem(
+        MemoryStream body,
+        string? contentType,
+        string operationId,
+        int historicalStatus,
+        out int candidateStatus)
     {
+        candidateStatus = historicalStatus;
         if (!IsExactProblemJsonMediaType(contentType))
         {
             body.Position = 0;
@@ -899,6 +923,19 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 or ("file_policy_unavailable", _) or ("read_model_unavailable", _) => "retry",
             _ => problem["clientAction"]?.DeepClone(),
         };
+
+        if (historicalStatus == StatusCodes.Status409Conflict
+            && operationId is "AddFile" or "ChangeFile" or "RemoveFile")
+        {
+            candidateStatus = category switch
+            {
+                "lock_conflict" => StatusCodes.Status423Locked,
+                "authorization_revocation_detected" => StatusCodes.Status428PreconditionRequired,
+                _ => historicalStatus,
+            };
+        }
+
+        problem["status"] = candidateStatus;
 
         body.SetLength(0);
         JsonSerializer.Serialize(body, problem);
@@ -1148,6 +1185,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         string principalId,
         bool isDelegated,
         string? delegatorId,
+        EventStoreClaimTransformEvidence actorClaim,
+        EventStoreClaimTransformEvidence? delegatorClaim,
         V2AccessState accessState)
     {
         if (HasClientControlledMismatch(tenantId, ClientTenantIds(context))
@@ -1156,26 +1195,56 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             return Denied(descriptor, accessState);
         }
 
-        TenantAccessAuthorizer authorizer = context.RequestServices.GetRequiredService<TenantAccessAuthorizer>();
-        TenantAccessOutcome outcome = (await authorizer
-            .AuthorizeMutationAsync(
-                new TenantAccessAuthorizationContext(tenantId, principalId, tenantId),
-                context.RequestAborted)
-            .ConfigureAwait(false)).Outcome;
-        if (outcome == TenantAccessOutcome.Allowed && isDelegated)
+        LayeredFolderAuthorizationService authorizer = context.RequestServices
+            .GetRequiredService<LayeredFolderAuthorizationService>();
+        LayeredFolderAuthorizationContext authorizationContext = new(
+            tenantId,
+            principalId,
+            principalId,
+            descriptor.ActionToken,
+            LayeredFolderOperationPolicy.Mutation(),
+            actorClaim,
+            OperationScope: null,
+            CorrelationId(context),
+            Header(context, "X-Hexalith-Task-Id"),
+            ClientTenantIds(context),
+            ClientPrincipalIds(context));
+        LayeredFolderAuthorizationResult result = await authorizer
+            .AuthorizeTenantScopedAsync(authorizationContext, context.RequestAborted)
+            .ConfigureAwait(false);
+        if (result.IsAllowed && isDelegated)
         {
-            outcome = (await authorizer.AuthorizeMutationAsync(
-                new TenantAccessAuthorizationContext(tenantId, delegatorId!, tenantId),
-                context.RequestAborted).ConfigureAwait(false)).Outcome;
+            result = await authorizer.AuthorizeTenantScopedAsync(
+                authorizationContext with
+                {
+                    PrincipalId = delegatorId!,
+                    ActorSafeIdentifier = principalId,
+                    ClaimTransformEvidence = delegatorClaim!,
+                    ClientControlledPrincipalValues = null,
+                },
+                context.RequestAborted).ConfigureAwait(false);
         }
 
-        return outcome switch
+        if (result.IsAllowed)
         {
-            TenantAccessOutcome.Allowed => Allowed(descriptor, accessState),
-            TenantAccessOutcome.StaleProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Stale, accessState),
-            TenantAccessOutcome.UnavailableProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable, accessState),
-            TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict =>
+            if (result.AllowedContext?.FreshnessWatermark is { } watermark)
+            {
+                context.Items[AuthorizedWatermarkItem] = watermark;
+            }
+
+            return Allowed(descriptor, accessState);
+        }
+
+        return result.Decision.OutcomeCode switch
+        {
+            LayeredAuthorizationOutcomeCodes.TenantProjectionStale =>
+                Unusable(descriptor, Pd10AuthorityEvidenceState.Stale, accessState),
+            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable =>
+                Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable, accessState),
+            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed =>
                 Unusable(descriptor, Pd10AuthorityEvidenceState.Conflicting, accessState),
+            _ when result.Decision.Retryable =>
+                Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable, accessState),
             _ => Denied(descriptor, accessState),
         };
     }
@@ -1411,11 +1480,14 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             .Distinct(StringComparer.Ordinal)
             .ToArray();
         string? delegatorId = delegatorIds.Length == 1 ? delegatorIds[0] : null;
-        string[] permissions = principal.FindAll(DelegatorPermissionClaimType)
+        string[] rawPermissions = principal.FindAll(DelegatorPermissionClaimType)
             .Select(static claim => claim.Value)
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
             .ToArray();
-        bool isDelegated = rawDelegatorIds.Length > 0 || permissions.Length > 0;
+        string[] permissions = rawPermissions
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        bool isDelegated = rawDelegatorIds.Length > 0 || rawPermissions.Length > 0;
         if (!isDelegated)
         {
             return (false, true, null, null);
@@ -1426,6 +1498,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             && delegatorIds.Length == 1
             && !string.IsNullOrWhiteSpace(delegatorId)
             && !string.Equals(delegatorId, actorId, StringComparison.Ordinal)
+            && rawPermissions.Length > 0
+            && rawPermissions.All(static value => !string.IsNullOrWhiteSpace(value))
             && permissions.Contains(actionToken, StringComparer.Ordinal);
         return usable
             ? (true, true, delegatorId, EventStoreClaimTransformEvidence.Allowed(tenantId, delegatorId, permissions))
@@ -1434,9 +1508,15 @@ public static partial class Pd10V2CandidateCompatibilitySeam
 
     private static V2AccessState CanonicalAccessState(ClaimsPrincipal principal, bool isDelegated)
     {
-        string[] values = principal.FindAll(AccessStateClaimType)
+        string[] rawValues = principal.FindAll(AccessStateClaimType)
             .Select(static claim => claim.Value)
-            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .ToArray();
+        if (rawValues.Any(static value => string.IsNullOrWhiteSpace(value)))
+        {
+            return (V2AccessState)(-1);
+        }
+
+        string[] values = rawValues
             .Distinct(StringComparer.Ordinal)
             .ToArray();
         V2AccessState[] states = values.Select(static value => value switch
@@ -1461,35 +1541,13 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             return (V2AccessState)(-1);
         }
 
-        if (states.Distinct().Count() > 1)
-        {
-            return (V2AccessState)(-1);
-        }
-
-        V2AccessState[] negativeStates = states.Where(IsNegativeAccessState).ToArray();
+        V2AccessState[] negativeStates = states.Where(IsNegativeAccessState).Distinct().ToArray();
         if (negativeStates.Length > 0)
         {
             return negativeStates[0];
         }
 
-        V2AccessState claimedState = values.SingleOrDefault() switch
-        {
-            "tenant-administrator" => V2AccessState.TenantAdministrator,
-            "tenant-member" => V2AccessState.TenantMember,
-            "tenant-scoped-operator" => V2AccessState.TenantScopedOperator,
-            "audit-reviewer" => V2AccessState.AuditReviewer,
-            "incident-administrator" => V2AccessState.IncidentAdministrator,
-            "wrong-tenant" => V2AccessState.WrongTenant,
-            "revoked" => V2AccessState.Revoked,
-            "stale" => V2AccessState.Stale,
-            "disabled" => V2AccessState.Disabled,
-            "unknown" => V2AccessState.Unknown,
-            "hidden-resource" => V2AccessState.HiddenResource,
-            "absent-resource" => V2AccessState.AbsentResource,
-            "insufficient-scope" => V2AccessState.InsufficientScope,
-            null or "" => V2AccessState.TenantMember,
-            _ => (V2AccessState)(-1),
-        };
+        V2AccessState claimedState = states.FirstOrDefault(V2AccessState.TenantMember);
         return isDelegated && !IsNegativeAccessState(claimedState)
             ? V2AccessState.DelegatedServiceAgent
             : claimedState;
@@ -1702,7 +1760,7 @@ public static partial class Pd10V2CandidateCompatibilitySeam
     {
         if (element.ValueKind == JsonValueKind.Object)
         {
-            HashSet<string> names = new(StringComparer.Ordinal);
+            HashSet<string> names = new(StringComparer.OrdinalIgnoreCase);
             foreach (JsonProperty property in element.EnumerateObject())
             {
                 if (!names.Add(property.Name) || HasDuplicateProperties(property.Value))

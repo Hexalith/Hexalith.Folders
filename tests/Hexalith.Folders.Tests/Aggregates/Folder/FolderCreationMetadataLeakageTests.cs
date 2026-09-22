@@ -17,6 +17,7 @@ public sealed class FolderCreationMetadataLeakageTests
     [InlineData("raw file content sentinel")]
     [InlineData("diff --git a/secret b/secret")]
     [InlineData("generated context payload")]
+    [InlineData("synthetic project")]
     [InlineData("person@example.test")]
     [InlineData("group display name")]
     [InlineData("unauthorized-resource-name")]

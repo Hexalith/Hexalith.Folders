@@ -2856,7 +2856,25 @@ paths:
         '409':
           $ref: '#/components/responses/RepositoryConflict'
         '422':
-          $ref: '#/components/responses/UnsupportedProviderCapability'
+          description: Requested provider capability is not supported by the bound provider profile.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Candidate request or downstream outcome
+                    status: 422
+                    category: unsupported_provider_capability
+                    code: unsupported_provider_capability
+                    message: The request could not be completed.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
         '503':
           description: Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before
             protected observation.
@@ -3074,6 +3092,13 @@ paths:
         clientAction: revise_request
         detailKeys:
         - visibility
+      - status: 422
+        category: unsupported_provider_capability
+        code: unsupported_provider_capability
+        retryable: false
+        clientAction: contact_operator
+        detailKeys:
+        - visibility
       - status: 429
         category: provider_rate_limited
         code: provider_rate_limited
@@ -3163,7 +3188,25 @@ paths:
         '409':
           $ref: '#/components/responses/DuplicateBinding'
         '422':
-          $ref: '#/components/responses/UnsupportedProviderCapability'
+          description: Requested provider capability is not supported by the bound provider profile.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Candidate request or downstream outcome
+                    status: 422
+                    category: unsupported_provider_capability
+                    code: unsupported_provider_capability
+                    message: The request could not be completed.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
         '429':
           description: Provider readiness or repository operation is rate limited.
           content:
@@ -3379,6 +3422,13 @@ paths:
         code: c4_input_limit_exceeded
         retryable: false
         clientAction: revise_request
+        detailKeys:
+        - visibility
+      - status: 422
+        category: unsupported_provider_capability
+        code: unsupported_provider_capability
+        retryable: false
+        clientAction: contact_operator
         detailKeys:
         - visibility
       - status: 429
@@ -4229,11 +4279,87 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 providerReadinessFailed:
-                  $ref: '#/components/examples/ProviderReadinessFailedProblem'
+                  value:
+                    type: about:blank
+                    title: Provider readiness failed
+                    status: 422
+                    category: provider_readiness_failed
+                    code: provider_readiness_failed
+                    message: Provider readiness preconditions are not satisfied for workspace preparation.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
                 workspacePreparationFailed:
-                  $ref: '#/components/examples/WorkspacePreparationFailedProblem'
+                  value:
+                    type: about:blank
+                    title: Workspace preparation failed
+                    status: 422
+                    category: workspace_preparation_failed
+                    code: workspace_preparation_failed
+                    message: Workspace preparation could not be accepted for the supplied scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 workspaceTransitionInvalid:
-                  $ref: '#/components/examples/WorkspaceTransitionInvalidProblem'
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Provider readiness failed
+                    status: 422
+                    category: provider_readiness_failed
+                    code: provider_readiness_failed
+                    message: Provider readiness preconditions are not satisfied for workspace preparation.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
+                candidateRuntime422_3:
+                  value:
+                    type: about:blank
+                    title: Workspace preparation failed
+                    status: 422
+                    category: workspace_preparation_failed
+                    code: workspace_preparation_failed
+                    message: Workspace preparation could not be accepted for the supplied scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
         '503':
           description: "Provider readiness cannot be safely established, or provider outcome is unknown. Authorization-first contract \u2014 these distinguishable\
             \ responses are only reachable after authentication and authorization succeed. The exact authority-unavailable branch is emitted only before protected\
@@ -4641,7 +4767,43 @@ paths:
         '410':
           $ref: '#/components/responses/WorkspaceLockExpired'
         '422':
-          $ref: '#/components/responses/WorkspaceTransitionInvalid'
+          description: "C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication\
+            \ and authorization succeed."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
         '503':
           description: Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before
             protected observation.
@@ -5281,7 +5443,43 @@ paths:
         '410':
           $ref: '#/components/responses/WorkspaceLockExpired'
         '422':
-          $ref: '#/components/responses/WorkspaceTransitionInvalid'
+          description: "C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication\
+            \ and authorization succeed."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
         '503':
           description: Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before
             protected observation.
@@ -6108,9 +6306,31 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 contentEvidenceInvalid:
-                  $ref: '#/components/examples/FileContentEvidenceInvalidProblem'
+                  value:
+                    type: about:blank
+                    title: Content evidence invalid
+                    status: 400
+                    category: validation_error
+                    code: content_evidence_invalid
+                    message: The supplied content evidence is not valid.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD400
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 validationFailure:
-                  $ref: '#/components/examples/FileValidationFailureProblem'
+                  value:
+                    type: about:blank
+                    title: Validation failure
+                    status: 400
+                    category: validation_error
+                    code: validation_error
+                    message: The supplied file request is not valid.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0VAL400
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 candidateRuntime400_1:
                   value:
                     type: about:blank
@@ -6156,7 +6376,18 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 overBound:
-                  $ref: '#/components/examples/FileInlineTooLargeProblem'
+                  value:
+                    type: about:blank
+                    title: Inline payload too large
+                    status: 413
+                    category: input_limit_exceeded
+                    code: d9_inline_limit_exceeded
+                    message: The inline payload exceeds the configured D-9 boundary.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD413
+                    retryable: true
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -6171,11 +6402,137 @@ paths:
                     details:
                       visibility: metadata_only
         '422':
-          $ref: '#/components/responses/FileContentLimitExceeded422'
+          description: Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline
+            transport routing.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                fileContentLimitExceeded:
+                  value:
+                    type: about:blank
+                    title: File content limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: file_content_limit_exceeded
+                    message: The file content exceeds the permitted maximum.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                workspaceTransitionInvalid:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0WST422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: File content limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: file_content_limit_exceeded
+                    message: The file content exceeds the permitted maximum.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0WST422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
         '423':
-          $ref: '#/components/responses/LockConflict'
+          description: "Deterministic single-active-writer lock conflict without revealing hidden lock holder details. Authorization-first contract \u2014 this response\
+            \ is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Workspace lock conflict
+                    status: 423
+                    category: lock_conflict
+                    code: workspace_locked
+                    message: The workspace already has an active writer for this scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
+                      lockStatus: active
+                candidateRuntime423_1:
+                  value:
+                    type: about:blank
+                    title: Workspace lock conflict
+                    status: 423
+                    category: lock_conflict
+                    code: workspace_locked
+                    message: The workspace already has an active writer for this scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
+                      lockStatus: active
         '428':
-          $ref: '#/components/responses/WorkspaceAuthorizationRevoked'
+          description: "Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first\
+            \ contract \u2014 this response is only reachable after authentication and authorization succeed."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Authorization revoked
+                    status: 428
+                    category: authorization_revocation_detected
+                    code: authorization_revocation_detected
+                    message: Authorization changed while workspace state was active.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                      currentState: inaccessible
+                candidateRuntime428_1:
+                  value:
+                    type: about:blank
+                    title: Authorization revoked
+                    status: 428
+                    category: authorization_revocation_detected
+                    code: authorization_revocation_detected
+                    message: Authorization changed while workspace state was active.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                      currentState: inaccessible
         '503':
           description: File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact
             authority-unavailable branch is emitted only before protected observation.
@@ -6388,14 +6745,6 @@ paths:
         detailKeys:
         - visibility
       - status: 409
-        category: authorization_revocation_detected
-        code: authorization_revocation_detected
-        retryable: false
-        clientAction: contact_operator
-        detailKeys:
-        - currentState
-        - visibility
-      - status: 409
         category: idempotency_conflict
         code: idempotency_conflict
         retryable: false
@@ -6408,14 +6757,6 @@ paths:
         retryable: false
         clientAction: refresh_state_then_submit_with_new_key
         detailKeys:
-        - visibility
-      - status: 409
-        category: lock_conflict
-        code: workspace_locked
-        retryable: true
-        clientAction: retry
-        detailKeys:
-        - lockStatus
         - visibility
       - status: 410
         category: lock_expired
@@ -6452,6 +6793,22 @@ paths:
         retryable: false
         clientAction: revise_request
         detailKeys:
+        - visibility
+      - status: 423
+        category: lock_conflict
+        code: workspace_locked
+        retryable: true
+        clientAction: retry
+        detailKeys:
+        - lockStatus
+        - visibility
+      - status: 428
+        category: authorization_revocation_detected
+        code: authorization_revocation_detected
+        retryable: false
+        clientAction: contact_operator
+        detailKeys:
+        - currentState
         - visibility
       - status: 429
         category: provider_rate_limited
@@ -6540,9 +6897,31 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 contentEvidenceInvalid:
-                  $ref: '#/components/examples/FileContentEvidenceInvalidProblem'
+                  value:
+                    type: about:blank
+                    title: Content evidence invalid
+                    status: 400
+                    category: validation_error
+                    code: content_evidence_invalid
+                    message: The supplied content evidence is not valid.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD400
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 validationFailure:
-                  $ref: '#/components/examples/FileValidationFailureProblem'
+                  value:
+                    type: about:blank
+                    title: Validation failure
+                    status: 400
+                    category: validation_error
+                    code: validation_error
+                    message: The supplied file request is not valid.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0VAL400
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 candidateRuntime400_1:
                   value:
                     type: about:blank
@@ -6588,7 +6967,18 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 overBound:
-                  $ref: '#/components/examples/FileInlineTooLargeProblem'
+                  value:
+                    type: about:blank
+                    title: Inline payload too large
+                    status: 413
+                    category: input_limit_exceeded
+                    code: d9_inline_limit_exceeded
+                    message: The inline payload exceeds the configured D-9 boundary.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD413
+                    retryable: true
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -6603,11 +6993,137 @@ paths:
                     details:
                       visibility: metadata_only
         '422':
-          $ref: '#/components/responses/FileContentLimitExceeded422'
+          description: Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline
+            transport routing.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                fileContentLimitExceeded:
+                  value:
+                    type: about:blank
+                    title: File content limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: file_content_limit_exceeded
+                    message: The file content exceeds the permitted maximum.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                workspaceTransitionInvalid:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0WST422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: File content limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: file_content_limit_exceeded
+                    message: The file content exceeds the permitted maximum.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0ADD422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0WST422
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
         '423':
-          $ref: '#/components/responses/LockConflict'
+          description: "Deterministic single-active-writer lock conflict without revealing hidden lock holder details. Authorization-first contract \u2014 this response\
+            \ is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Workspace lock conflict
+                    status: 423
+                    category: lock_conflict
+                    code: workspace_locked
+                    message: The workspace already has an active writer for this scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
+                      lockStatus: active
+                candidateRuntime423_1:
+                  value:
+                    type: about:blank
+                    title: Workspace lock conflict
+                    status: 423
+                    category: lock_conflict
+                    code: workspace_locked
+                    message: The workspace already has an active writer for this scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
+                      lockStatus: active
         '428':
-          $ref: '#/components/responses/WorkspaceAuthorizationRevoked'
+          description: "Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first\
+            \ contract \u2014 this response is only reachable after authentication and authorization succeed."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Authorization revoked
+                    status: 428
+                    category: authorization_revocation_detected
+                    code: authorization_revocation_detected
+                    message: Authorization changed while workspace state was active.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                      currentState: inaccessible
+                candidateRuntime428_1:
+                  value:
+                    type: about:blank
+                    title: Authorization revoked
+                    status: 428
+                    category: authorization_revocation_detected
+                    code: authorization_revocation_detected
+                    message: Authorization changed while workspace state was active.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                      currentState: inaccessible
         '503':
           description: File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact
             authority-unavailable branch is emitted only before protected observation.
@@ -6820,14 +7336,6 @@ paths:
         detailKeys:
         - visibility
       - status: 409
-        category: authorization_revocation_detected
-        code: authorization_revocation_detected
-        retryable: false
-        clientAction: contact_operator
-        detailKeys:
-        - currentState
-        - visibility
-      - status: 409
         category: idempotency_conflict
         code: idempotency_conflict
         retryable: false
@@ -6840,14 +7348,6 @@ paths:
         retryable: false
         clientAction: refresh_state_then_submit_with_new_key
         detailKeys:
-        - visibility
-      - status: 409
-        category: lock_conflict
-        code: workspace_locked
-        retryable: true
-        clientAction: retry
-        detailKeys:
-        - lockStatus
         - visibility
       - status: 410
         category: lock_expired
@@ -6884,6 +7384,22 @@ paths:
         retryable: false
         clientAction: revise_request
         detailKeys:
+        - visibility
+      - status: 423
+        category: lock_conflict
+        code: workspace_locked
+        retryable: true
+        clientAction: retry
+        detailKeys:
+        - lockStatus
+        - visibility
+      - status: 428
+        category: authorization_revocation_detected
+        code: authorization_revocation_detected
+        retryable: false
+        clientAction: contact_operator
+        detailKeys:
+        - currentState
         - visibility
       - status: 429
         category: provider_rate_limited
@@ -7006,11 +7522,115 @@ paths:
         '410':
           $ref: '#/components/responses/WorkspaceLockExpired'
         '422':
-          $ref: '#/components/responses/WorkspaceTransitionInvalid'
+          description: "C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication\
+            \ and authorization succeed."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
         '423':
-          $ref: '#/components/responses/LockConflict'
+          description: "Deterministic single-active-writer lock conflict without revealing hidden lock holder details. Authorization-first contract \u2014 this response\
+            \ is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Workspace lock conflict
+                    status: 423
+                    category: lock_conflict
+                    code: workspace_locked
+                    message: The workspace already has an active writer for this scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
+                      lockStatus: active
+                candidateRuntime423_1:
+                  value:
+                    type: about:blank
+                    title: Workspace lock conflict
+                    status: 423
+                    category: lock_conflict
+                    code: workspace_locked
+                    message: The workspace already has an active writer for this scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
+                      lockStatus: active
         '428':
-          $ref: '#/components/responses/WorkspaceAuthorizationRevoked'
+          description: "Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first\
+            \ contract \u2014 this response is only reachable after authentication and authorization succeed."
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Authorization revoked
+                    status: 428
+                    category: authorization_revocation_detected
+                    code: authorization_revocation_detected
+                    message: Authorization changed while workspace state was active.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                      currentState: inaccessible
+                candidateRuntime428_1:
+                  value:
+                    type: about:blank
+                    title: Authorization revoked
+                    status: 428
+                    category: authorization_revocation_detected
+                    code: authorization_revocation_detected
+                    message: Authorization changed while workspace state was active.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                      currentState: inaccessible
         '503':
           description: File mutation unavailability preserving reconciliation-required outcomes while adding the exact non-disclosing file-policy outcome. The exact
             authority-unavailable branch is emitted only before protected observation.
@@ -7228,14 +7848,6 @@ paths:
         detailKeys:
         - visibility
       - status: 409
-        category: authorization_revocation_detected
-        code: authorization_revocation_detected
-        retryable: false
-        clientAction: contact_operator
-        detailKeys:
-        - currentState
-        - visibility
-      - status: 409
         category: idempotency_conflict
         code: idempotency_conflict
         retryable: false
@@ -7248,14 +7860,6 @@ paths:
         retryable: false
         clientAction: refresh_state_then_submit_with_new_key
         detailKeys:
-        - visibility
-      - status: 409
-        category: lock_conflict
-        code: workspace_locked
-        retryable: true
-        clientAction: retry
-        detailKeys:
-        - lockStatus
         - visibility
       - status: 410
         category: lock_expired
@@ -7279,6 +7883,22 @@ paths:
         clientAction: revise_request
         detailKeys:
         - attemptedTransition
+        - currentState
+        - visibility
+      - status: 423
+        category: lock_conflict
+        code: workspace_locked
+        retryable: true
+        clientAction: retry
+        detailKeys:
+        - lockStatus
+        - visibility
+      - status: 428
+        category: authorization_revocation_detected
+        code: authorization_revocation_detected
+        retryable: false
+        clientAction: contact_operator
+        detailKeys:
         - currentState
         - visibility
       - status: 429
@@ -7423,7 +8043,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextQueryTimeoutProblem'
+                  value:
+                    type: about:blank
+                    title: Query timeout
+                    status: 408
+                    category: query_timeout
+                    code: c4_query_timeout
+                    message: The query exceeded the configured duration.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '2000'
+                      unit: milliseconds
                 candidateRuntime408_1:
                   value:
                     type: about:blank
@@ -7445,7 +8078,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextResponseLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Response limit exceeded
+                    status: 413
+                    category: response_limit_exceeded
+                    code: c4_response_budget_exceeded
+                    message: The response would exceed the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '1048576'
+                      unit: bytes
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -7467,10 +8113,64 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextInputLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
                 rangeOverBound:
-                  $ref: '#/components/examples/ReadFileRangeOverBoundProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
+                candidateRuntime422_3:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -7828,7 +8528,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextQueryTimeoutProblem'
+                  value:
+                    type: about:blank
+                    title: Query timeout
+                    status: 408
+                    category: query_timeout
+                    code: c4_query_timeout
+                    message: The query exceeded the configured duration.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '2000'
+                      unit: milliseconds
                 candidateRuntime408_1:
                   value:
                     type: about:blank
@@ -7850,7 +8563,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextResponseLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Response limit exceeded
+                    status: 413
+                    category: response_limit_exceeded
+                    code: c4_response_budget_exceeded
+                    message: The response would exceed the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '1048576'
+                      unit: bytes
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -7885,10 +8611,64 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextInputLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
                 rangeOverBound:
-                  $ref: '#/components/examples/ReadFileRangeOverBoundProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
+                candidateRuntime422_3:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -8260,7 +9040,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextQueryTimeoutProblem'
+                  value:
+                    type: about:blank
+                    title: Query timeout
+                    status: 408
+                    category: query_timeout
+                    code: c4_query_timeout
+                    message: The query exceeded the configured duration.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '2000'
+                      unit: milliseconds
                 candidateRuntime408_1:
                   value:
                     type: about:blank
@@ -8282,7 +9075,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextResponseLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Response limit exceeded
+                    status: 413
+                    category: response_limit_exceeded
+                    code: c4_response_budget_exceeded
+                    message: The response would exceed the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '1048576'
+                      unit: bytes
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -8317,10 +9123,64 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextInputLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
                 rangeOverBound:
-                  $ref: '#/components/examples/ReadFileRangeOverBoundProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
+                candidateRuntime422_3:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -8690,7 +9550,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextQueryTimeoutProblem'
+                  value:
+                    type: about:blank
+                    title: Query timeout
+                    status: 408
+                    category: query_timeout
+                    code: c4_query_timeout
+                    message: The query exceeded the configured duration.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '2000'
+                      unit: milliseconds
                 candidateRuntime408_1:
                   value:
                     type: about:blank
@@ -8712,7 +9585,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextResponseLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Response limit exceeded
+                    status: 413
+                    category: response_limit_exceeded
+                    code: c4_response_budget_exceeded
+                    message: The response would exceed the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '1048576'
+                      unit: bytes
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -8747,10 +9633,64 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextInputLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
                 rangeOverBound:
-                  $ref: '#/components/examples/ReadFileRangeOverBoundProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
+                candidateRuntime422_3:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -9337,7 +10277,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextQueryTimeoutProblem'
+                  value:
+                    type: about:blank
+                    title: Query timeout
+                    status: 408
+                    category: query_timeout
+                    code: c4_query_timeout
+                    message: The query exceeded the configured duration.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '2000'
+                      unit: milliseconds
                 candidateRuntime408_1:
                   value:
                     type: about:blank
@@ -9359,7 +10312,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextResponseLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Response limit exceeded
+                    status: 413
+                    category: response_limit_exceeded
+                    code: c4_response_budget_exceeded
+                    message: The response would exceed the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '1048576'
+                      unit: bytes
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -9394,10 +10360,64 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextInputLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
                 rangeOverBound:
-                  $ref: '#/components/examples/ReadFileRangeOverBoundProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
+                candidateRuntime422_3:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -9730,7 +10750,19 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 invalidReversed:
-                  $ref: '#/components/examples/ReadFileRangeInvalidReversedProblem'
+                  value:
+                    type: about:blank
+                    title: Invalid range
+                    status: 400
+                    category: validation_error
+                    code: range_reversed
+                    message: The requested byte range is not valid.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      rangeRule: start_inclusive_end_exclusive
                 candidateRuntime400_1:
                   value:
                     type: about:blank
@@ -9795,7 +10827,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextQueryTimeoutProblem'
+                  value:
+                    type: about:blank
+                    title: Query timeout
+                    status: 408
+                    category: query_timeout
+                    code: c4_query_timeout
+                    message: The query exceeded the configured duration.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '2000'
+                      unit: milliseconds
                 candidateRuntime408_1:
                   value:
                     type: about:blank
@@ -9817,7 +10862,20 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextResponseLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Response limit exceeded
+                    status: 413
+                    category: response_limit_exceeded
+                    code: c4_response_budget_exceeded
+                    message: The response would exceed the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX001
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '1048576'
+                      unit: bytes
                 candidateRuntime413_1:
                   value:
                     type: about:blank
@@ -9854,10 +10912,64 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 synthetic:
-                  $ref: '#/components/examples/ContextInputLimitExceededProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
                 rangeOverBound:
-                  $ref: '#/components/examples/ReadFileRangeOverBoundProblem'
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_input_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0CTX002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      dimension: input_count
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: Input limit exceeded
+                    status: 422
+                    category: input_limit_exceeded
+                    code: c4_range_limit_exceeded
+                    message: The requested input exceeds the configured bound.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0RNG002
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      configuredLimit: '262144'
+                      unit: bytes
+                candidateRuntime422_3:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -10232,9 +11344,61 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 commitFailed:
-                  $ref: '#/components/examples/CommitFailedProblem'
+                  value:
+                    type: about:blank
+                    title: Commit failed
+                    status: 422
+                    category: commit_failed
+                    code: commit_failed
+                    message: The commit could not be completed for the authorized workspace scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
                 workspaceTransitionInvalid:
-                  $ref: '#/components/examples/WorkspaceTransitionInvalidProblem'
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
+                candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Commit failed
+                    status: 422
+                    category: commit_failed
+                    code: commit_failed
+                    message: The commit could not be completed for the authorized workspace scope.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_2:
+                  value:
+                    type: about:blank
+                    title: State transition invalid
+                    status: 422
+                    category: state_transition_invalid
+                    code: state_transition_invalid
+                    message: The requested state transition is invalid for the current workspace state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                      currentState: locked
+                      attemptedTransition: '{"eventName":"WorkspaceLocked","fromState":"locked","toState":"locked"}'
         '503':
           description: Provider or read-model dependency cannot produce a safe commit outcome. The exact authority-unavailable branch is emitted only before protected
             observation.
@@ -31727,6 +32891,7 @@ components:
       - tampered_cursor_or_changed_filter
       - unknown_provider_outcome
       - unsupported_archive_reason_code
+      - unsupported_provider_capability
       - unsupported_read_consistency
       - unsupported_request_schema_version
       - validation_error
@@ -31813,6 +32978,7 @@ x-hexalith-closed-error-vocabulary:
   - tampered_cursor_or_changed_filter
   - unknown_provider_outcome
   - unsupported_archive_reason_code
+  - unsupported_provider_capability
   - unsupported_read_consistency
   - unsupported_request_schema_version
   - validation_error
@@ -32000,14 +33166,6 @@ x-hexalith-runtime-problem-inventory:
   detailKeys:
   - visibility
 - status: 409
-  category: authorization_revocation_detected
-  code: authorization_revocation_detected
-  retryable: false
-  clientAction: contact_operator
-  detailKeys:
-  - currentState
-  - visibility
-- status: 409
   category: dirty_workspace
   code: dirty_workspace
   retryable: false
@@ -32178,11 +33336,34 @@ x-hexalith-runtime-problem-inventory:
   detailKeys:
   - visibility
 - status: 422
+  category: unsupported_provider_capability
+  code: unsupported_provider_capability
+  retryable: false
+  clientAction: contact_operator
+  detailKeys:
+  - visibility
+- status: 422
   category: workspace_preparation_failed
   code: workspace_preparation_failed
   retryable: false
   clientAction: revise_request
   detailKeys:
+  - visibility
+- status: 423
+  category: lock_conflict
+  code: workspace_locked
+  retryable: true
+  clientAction: retry
+  detailKeys:
+  - lockStatus
+  - visibility
+- status: 428
+  category: authorization_revocation_detected
+  code: authorization_revocation_detected
+  retryable: false
+  clientAction: contact_operator
+  detailKeys:
+  - currentState
   - visibility
 - status: 429
   category: provider_rate_limited

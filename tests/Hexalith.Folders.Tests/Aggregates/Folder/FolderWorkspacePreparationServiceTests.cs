@@ -141,9 +141,13 @@ public sealed class FolderWorkspacePreparationServiceTests
             .ShouldHaveSingleItem()
             .ShouldBeOfType<FolderWorkspaceLifecycleEventRecorded>();
         recorded.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
+        recorded.ActorPrincipalId.ShouldBe("user-a");
         repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
             .WorkspaceLifecycleState
             .ShouldBe(FolderWorkspaceLifecycleState.UnknownProviderOutcome);
+        repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+            .WorkspaceActorPrincipalId
+            .ShouldBe("user-a");
         readiness.Calls.ShouldBe(1);
     }
 

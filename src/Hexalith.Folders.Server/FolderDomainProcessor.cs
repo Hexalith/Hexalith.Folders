@@ -29,6 +29,7 @@ public sealed partial class FolderDomainProcessor(
     WorkspaceLockReleaseService workspaceLockReleaseService,
     WorkspaceFileMutationService workspaceFileMutationService,
     WorkspaceCommitService workspaceCommitService,
+    LayeredFolderAuthorizationService authorizationService,
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider,
@@ -69,6 +70,8 @@ public sealed partial class FolderDomainProcessor(
         workspaceFileMutationService ?? throw new ArgumentNullException(nameof(workspaceFileMutationService));
     private readonly WorkspaceCommitService _workspaceCommitService =
         workspaceCommitService ?? throw new ArgumentNullException(nameof(workspaceCommitService));
+    private readonly LayeredFolderAuthorizationService _authorizationService =
+        authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
     private readonly ILayeredFolderAuthorizationResultAccessor _authorizationAccessor =
         authorizationAccessor ?? throw new ArgumentNullException(nameof(authorizationAccessor));
     private readonly IFolderArchiveAclEvidenceProvider _archiveAclEvidenceProvider =
@@ -517,6 +520,33 @@ public sealed partial class FolderDomainProcessor(
             .GetEvidenceAsync(command, CancellationToken.None)
             .ConfigureAwait(false);
 
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeMutationAsync(
+                new LayeredFolderAuthorizationContext(
+                    allowed.AuthoritativeTenantId,
+                    allowed.ActorSafeIdentifier,
+                    allowed.ActorSafeIdentifier,
+                    FolderArchiveAclEvidence.ArchiveAction,
+                    LayeredFolderOperationPolicy.Mutation(),
+                    EventStoreClaimTransformEvidence.Allowed(
+                        allowed.AuthoritativeTenantId,
+                        allowed.ActorSafeIdentifier,
+                        [FolderArchiveAclEvidence.ArchiveAction]),
+                    command.FolderId,
+                    command.CorrelationId,
+                    command.TaskId,
+                    command.ClientTenantIds,
+                    ClientControlledPrincipalValues: null),
+                includeFolderAcl: true,
+                CancellationToken.None)
+            .ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return ToDomainResult(
+                envelope,
+                FolderResult.Rejected(command, MapLayeredAuthorization(finalAuthorization.Decision.OutcomeCode)));
+        }
+
         FolderResult result;
         try
         {
@@ -534,6 +564,22 @@ public sealed partial class FolderDomainProcessor(
 
         return ToDomainResult(envelope, result);
     }
+
+    private static FolderResultCode MapLayeredAuthorization(string outcomeCode)
+        => outcomeCode switch
+        {
+            LayeredAuthorizationOutcomeCodes.AuthenticationDenied => FolderResultCode.MissingAuthoritativeTenant,
+            LayeredAuthorizationOutcomeCodes.ClaimTransformDenied => FolderResultCode.TenantAccessDenied,
+            LayeredAuthorizationOutcomeCodes.TenantProjectionStale => FolderResultCode.StaleProjection,
+            LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable => FolderResultCode.UnavailableProjection,
+            LayeredAuthorizationOutcomeCodes.FolderAclDenied or LayeredAuthorizationOutcomeCodes.SafeNotFound => FolderResultCode.FolderAclDenied,
+            LayeredAuthorizationOutcomeCodes.FolderAclStale => FolderResultCode.StaleProjection,
+            LayeredAuthorizationOutcomeCodes.FolderAclUnavailable => FolderResultCode.UnavailableProjection,
+            LayeredAuthorizationOutcomeCodes.EventStoreValidatorDenied => FolderResultCode.TenantAccessDenied,
+            LayeredAuthorizationOutcomeCodes.DaprPolicyDenied => FolderResultCode.PolicyEvidenceUnavailable,
+            LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed => FolderResultCode.MalformedEvidence,
+            _ => FolderResultCode.TenantAccessDenied,
+        };
 
     private async Task<DomainResult> ProcessCreateRepositoryBackedFolderAsync(CommandEnvelope envelope)
     {

@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Testing;
 
@@ -209,6 +210,77 @@ public sealed class FolderAclEndpointTests
     }
 
     [Fact]
+    public async Task ListFolderAclEntriesShouldRejectMalformedFilterAsValidationError()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            "/api/v1/folders/folder-a/acl?filter=1invalid",
+            TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"validation_error\"");
+        json.ShouldNotContain("filter_not_yet_supported");
+    }
+
+    [Fact]
+    public async Task ListFolderAclEntriesShouldPageMultipleAllowedEntriesWithKnownCursor()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        SeedAcl(app.Services.GetRequiredService<IFolderRepository>());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage firstResponse = await client.GetAsync(
+            "/api/v1/folders/folder-a/acl?limit=2",
+            TestContext.Current.CancellationToken);
+        string firstJson = await firstResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using System.Text.Json.JsonDocument first = System.Text.Json.JsonDocument.Parse(firstJson);
+
+        firstResponse.StatusCode.ShouldBe(HttpStatusCode.OK, firstJson);
+        System.Text.Json.JsonElement firstEntries = first.RootElement.GetProperty("items");
+        firstEntries.GetArrayLength().ShouldBe(2);
+        string cursor = first.RootElement.GetProperty("page").GetProperty("cursor").GetString()!;
+        cursor.ShouldBe(firstEntries[1].GetProperty("aclEntryId").GetString());
+        first.RootElement.GetProperty("page").GetProperty("isTruncated").GetBoolean().ShouldBeTrue();
+
+        using HttpResponseMessage secondResponse = await client.GetAsync(
+            $"/api/v1/folders/folder-a/acl?limit=2&cursor={Uri.EscapeDataString(cursor)}",
+            TestContext.Current.CancellationToken);
+        string secondJson = await secondResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using System.Text.Json.JsonDocument second = System.Text.Json.JsonDocument.Parse(secondJson);
+
+        secondResponse.StatusCode.ShouldBe(HttpStatusCode.OK, secondJson);
+        System.Text.Json.JsonElement secondEntries = second.RootElement.GetProperty("items");
+        secondEntries.GetArrayLength().ShouldBe(1);
+        secondEntries[0].GetProperty("aclEntryId").GetString().ShouldNotBe(cursor);
+        second.RootElement.GetProperty("page").GetProperty("isTruncated").GetBoolean().ShouldBeFalse();
+        second.RootElement.GetProperty("page").TryGetProperty("cursor", out _).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task ListFolderAclEntriesShouldRejectUnknownInRangeCursorAsTampered()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        SeedAcl(app.Services.GetRequiredService<IFolderRepository>());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        string unknownCursor = FolderAclContract.DeriveAclEntryId("user", "user-z", "read");
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            $"/api/v1/folders/folder-a/acl?cursor={Uri.EscapeDataString(unknownCursor)}",
+            TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"category\":\"validation_error\"");
+        json.ShouldContain("\"code\":\"cursor_tampered\"");
+    }
+
+    [Fact]
     public async Task ListFolderAclEntriesShouldRejectLimitOutsideTheClosedRange()
     {
         await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
@@ -262,6 +334,30 @@ public sealed class FolderAclEndpointTests
         return request;
     }
 
+    private static void SeedAcl(IFolderRepository repository)
+    {
+        DateTimeOffset now = new(2026, 9, 22, 12, 0, 0, TimeSpan.Zero);
+        IFolderEvent[] events =
+        [
+            new FolderCreated(
+                "tenant-a", "organization-a", "folder-a", "Folder A", null, null, [],
+                FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound,
+                "user-a", "correlation-seed", "task-seed", "idempotency-seed", "fingerprint-seed", now),
+            new FolderAccessGranted(
+                "tenant-a", "organization-a", "folder-a", FolderAccessPrincipalKind.User, "user-a", "read_metadata",
+                "user-a", "correlation-seed", "task-seed", "idempotency-seed-1", "fingerprint-seed-1", 1, now),
+            new FolderAccessGranted(
+                "tenant-a", "organization-a", "folder-a", FolderAccessPrincipalKind.User, "user-b", "mutate_files",
+                "user-a", "correlation-seed", "task-seed", "idempotency-seed-2", "fingerprint-seed-2", 2, now),
+            new FolderAccessGranted(
+                "tenant-a", "organization-a", "folder-a", FolderAccessPrincipalKind.Group, "group-a", "manage_folder_access",
+                "user-a", "correlation-seed", "task-seed", "idempotency-seed-3", "fingerprint-seed-3", 3, now),
+        ];
+        FolderStreamName stream = repository.CreateStreamName("tenant-a", "folder-a");
+        repository.AppendIfFingerprintAbsent(stream, "idempotency-seed", "fingerprint-seed", events)
+            .ShouldBe(FolderAppendOutcome.Appended);
+    }
+
     private static WebApplication BuildApp(
         RecordingEventStoreGatewayClient gateway,
         string? tenantId = "tenant-a",
@@ -275,6 +371,12 @@ public sealed class FolderAclEndpointTests
         builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
         builder.Services.AddInMemoryFolderRepository();
+        builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
+        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore(tenantId, principalId));
+        builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
+        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(PermissionReadModel());
+        builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
+        builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();
@@ -284,6 +386,57 @@ public sealed class FolderAclEndpointTests
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
         return app;
+    }
+
+    private static InMemoryFolderTenantAccessProjectionStore TenantStore(string? tenantId, string? principalId)
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        if (!string.IsNullOrWhiteSpace(tenantId) && !string.IsNullOrWhiteSpace(principalId))
+        {
+            store.SaveAsync(new FolderTenantAccessProjection
+            {
+                TenantId = tenantId,
+                Enabled = true,
+                Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
+                {
+                    [principalId] = new(principalId, "Member"),
+                },
+                Watermark = 1,
+                ProjectionWatermark = $"{tenantId}:1",
+                LastEventTimestamp = DateTimeOffset.UtcNow,
+            }).GetAwaiter().GetResult();
+        }
+
+        return store;
+    }
+
+    private static InMemoryEffectivePermissionsReadModel PermissionReadModel()
+    {
+        DateTimeOffset observedAt = DateTimeOffset.UtcNow.AddMinutes(-1);
+        InMemoryEffectivePermissionsReadModel readModel = new();
+        readModel.Save(new EffectivePermissionsReadModelSnapshot(
+            ManagedTenantId: "tenant-a",
+            OrganizationId: "organization-a",
+            FolderId: "folder-a",
+            LifecycleState: EffectivePermissionsFolderLifecycleState.Active,
+            EvidenceRows:
+            [
+                new(
+                    EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                    EffectivePermissionPrincipal.User("user-a"),
+                    "read_metadata",
+                    Sequence: 1,
+                    EffectiveAt: observedAt),
+            ],
+            Freshness: new EffectivePermissionsFreshness(
+                ReadConsistency: "read_your_writes",
+                ObservedAt: observedAt,
+                ProjectionWatermark: "permissions:1",
+                Stale: false,
+                ReasonCode: null),
+            RevocationFreshnessEstablished: true,
+            TaskScope: null));
+        return readModel;
     }
 
     private sealed class StaticTenantContextAccessor(string? authoritativeTenantId, string? principalId) : ITenantContextAccessor

@@ -12,9 +12,21 @@ public sealed class LayeredFolderAuthorizationService(
     private const string UnknownFreshness = "unknown";
     private const string NotRecordedTimingBucket = "not_recorded";
 
-    public async Task<LayeredFolderAuthorizationResult> AuthorizeAsync(
+    public Task<LayeredFolderAuthorizationResult> AuthorizeAsync(
         LayeredFolderAuthorizationContext context,
         CancellationToken cancellationToken = default)
+        => AuthorizeCoreAsync(context, includeFolderAcl: true, cancellationToken);
+
+    /// <summary>Runs the complete authorization stack for an operation that has no existing folder ACL scope.</summary>
+    internal Task<LayeredFolderAuthorizationResult> AuthorizeTenantScopedAsync(
+        LayeredFolderAuthorizationContext context,
+        CancellationToken cancellationToken = default)
+        => AuthorizeCoreAsync(context, includeFolderAcl: false, cancellationToken);
+
+    private async Task<LayeredFolderAuthorizationResult> AuthorizeCoreAsync(
+        LayeredFolderAuthorizationContext context,
+        bool includeFolderAcl,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -126,54 +138,61 @@ public sealed class LayeredFolderAuthorizationService(
 
         string managedTenantId = authoritativeTenantId;
 
-        evaluatedLayers.Add(AuthorizationLayer.FolderAcl);
-        if (!EffectivePermissionsActionCatalog.IsSupported(context.ActionToken))
+        string? folderWatermark = tenantAccess.ProjectionWatermark;
+        string folderFreshnessClass = MapFreshness(tenantAccess.FreshnessStatus);
+        string? organizationId = null;
+        if (includeFolderAcl)
         {
-            return Deny(
-                AuthorizationLayer.FolderAcl,
-                LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
-                context,
-                actorSafeIdentifier,
-                evaluatedLayers,
-                freshnessClass: "malformed");
-        }
-
-        FolderPermissionEvidenceResult folderEvidence;
-        try
-        {
-            folderEvidence = await folderPermissionEvidenceProvider.GetEvidenceAsync(
-                new FolderPermissionEvidenceRequest(
-                    managedTenantId,
-                    context.PrincipalId,
+            evaluatedLayers.Add(AuthorizationLayer.FolderAcl);
+            if (!EffectivePermissionsActionCatalog.IsSupported(context.ActionToken))
+            {
+                return Deny(
+                    AuthorizationLayer.FolderAcl,
+                    LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                    context,
                     actorSafeIdentifier,
-                    context.ActionToken,
-                    context.OperationScope,
-                    context.CorrelationId,
-                    context.TaskId,
-                    context.OperationPolicy.PolicyClass,
-                    context.OperationPolicy.AllowBoundedStaleFolderPermission),
-                cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            folderEvidence = FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null);
-        }
+                    evaluatedLayers,
+                    freshnessClass: "malformed");
+            }
 
-        if (folderEvidence.Status != FolderPermissionEvidenceStatus.Allowed)
-        {
-            return Deny(
-                AuthorizationLayer.FolderAcl,
-                folderEvidence.OutcomeCode,
-                context,
-                actorSafeIdentifier,
-                evaluatedLayers,
-                folderEvidence.FreshnessClass,
-                folderEvidence.FreshnessWatermark,
-                folderEvidence.Retryable);
-        }
+            FolderPermissionEvidenceResult folderEvidence;
+            try
+            {
+                folderEvidence = await folderPermissionEvidenceProvider.GetEvidenceAsync(
+                    new FolderPermissionEvidenceRequest(
+                        managedTenantId,
+                        context.PrincipalId,
+                        actorSafeIdentifier,
+                        context.ActionToken,
+                        context.OperationScope,
+                        context.CorrelationId,
+                        context.TaskId,
+                        context.OperationPolicy.PolicyClass,
+                        context.OperationPolicy.AllowBoundedStaleFolderPermission),
+                    cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                folderEvidence = FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Unavailable, null);
+            }
 
-        string? folderWatermark = folderEvidence.FreshnessWatermark ?? tenantAccess.ProjectionWatermark;
-        string folderFreshnessClass = folderEvidence.FreshnessClass;
+            if (folderEvidence.Status != FolderPermissionEvidenceStatus.Allowed)
+            {
+                return Deny(
+                    AuthorizationLayer.FolderAcl,
+                    folderEvidence.OutcomeCode,
+                    context,
+                    actorSafeIdentifier,
+                    evaluatedLayers,
+                    folderEvidence.FreshnessClass,
+                    folderEvidence.FreshnessWatermark,
+                    folderEvidence.Retryable);
+            }
+
+            folderWatermark = folderEvidence.FreshnessWatermark ?? tenantAccess.ProjectionWatermark;
+            folderFreshnessClass = folderEvidence.FreshnessClass;
+            organizationId = folderEvidence.OrganizationId;
+        }
 
         LayeredFolderAuthorizationAllowedContext validatorContext = new(
             managedTenantId,
@@ -255,7 +274,7 @@ public sealed class LayeredFolderAuthorizationService(
         LayeredFolderAuthorizationAllowedContext safeContext = validatorContext with
         {
             FreshnessWatermark = finalWatermark,
-            OrganizationId = folderEvidence.OrganizationId,
+            OrganizationId = organizationId,
         };
 
         LayeredFolderAuthorizationDecisionSnapshot decision = Snapshot(
@@ -278,19 +297,29 @@ public sealed class LayeredFolderAuthorizationService(
     public async Task<LayeredFolderAuthorizationResult> ReauthorizeTaskMutationAsync(
         LayeredFolderAuthorizationContext context,
         CancellationToken cancellationToken = default)
+        => await ReauthorizeMutationAsync(context, includeFolderAcl: true, cancellationToken).ConfigureAwait(false);
+
+    /// <summary>Obtains fresh candidate-action evidence immediately before a gateway mutation effect.</summary>
+    internal async Task<LayeredFolderAuthorizationResult> ReauthorizeMutationAsync(
+        LayeredFolderAuthorizationContext context,
+        bool includeFolderAcl,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
+        LayeredFolderAuthorizationContext freshContext = includeFolderAcl
+            ? context
+            : context with { OperationScope = null };
         PreauthorizedRequestState? preauthorized = PreauthorizedRequestContext.Current;
         if (preauthorized is null)
         {
-            return await AuthorizeAsync(context, cancellationToken).ConfigureAwait(false);
+            return await AuthorizeCoreAsync(freshContext, includeFolderAcl, cancellationToken).ConfigureAwait(false);
         }
 
         if (!PreauthorizedRequestContext.Covers(
-                context.AuthoritativeTenantId,
-                context.PrincipalId,
-                context.OperationScope,
-                context.ActionToken))
+                freshContext.AuthoritativeTenantId,
+                freshContext.PrincipalId,
+                freshContext.OperationScope,
+                freshContext.ActionToken))
         {
             return LayeredFolderAuthorizationResult.Denied(
                 Snapshot(
@@ -299,12 +328,12 @@ public sealed class LayeredFolderAuthorizationService(
                     retryable: false,
                     freshnessClass: "malformed",
                     freshnessWatermark: null,
-                    context,
-                    SafeActorIdentifier(context)),
+                    freshContext,
+                    SafeActorIdentifier(freshContext)),
                 [AuthorizationLayer.JwtValidation, AuthorizationLayer.EventStoreClaimTransform]);
         }
 
-        LayeredFolderAuthorizationContext actorContext = context with
+        LayeredFolderAuthorizationContext actorContext = freshContext with
         {
             ActionToken = preauthorized.CandidateActionToken,
             ClaimTransformEvidence = EventStoreClaimTransformEvidence.Allowed(
@@ -314,7 +343,10 @@ public sealed class LayeredFolderAuthorizationService(
         };
 
         using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
-        LayeredFolderAuthorizationResult actor = await AuthorizeAsync(actorContext, cancellationToken).ConfigureAwait(false);
+        LayeredFolderAuthorizationResult actor = await AuthorizeCoreAsync(
+            actorContext,
+            includeFolderAcl,
+            cancellationToken).ConfigureAwait(false);
         if (!actor.IsAllowed || actor.AllowedContext is null || preauthorized.DelegatorPrincipalId is null)
         {
             return actor;
@@ -330,7 +362,10 @@ public sealed class LayeredFolderAuthorizationService(
                 [preauthorized.CandidateActionToken]),
             ClientControlledPrincipalValues = null,
         };
-        LayeredFolderAuthorizationResult delegator = await AuthorizeAsync(delegatorContext, cancellationToken).ConfigureAwait(false);
+        LayeredFolderAuthorizationResult delegator = await AuthorizeCoreAsync(
+            delegatorContext,
+            includeFolderAcl,
+            cancellationToken).ConfigureAwait(false);
         return delegator.IsAllowed ? actor : delegator;
     }
 

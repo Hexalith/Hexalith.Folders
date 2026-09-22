@@ -1,5 +1,5 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: bc70b397be367aadafcb9957340f3ba31dce9b35f59bda7ee81492abc51ca29d
+# contract_spine_sha256: 71052dbfebb677e38cf1e56b4afee1ddd97e123a6ef8df7171fbc57ee5935d07
 # parity_schema_sha256: dc20eb8d1083ffb6cf682ac607a1ff4446fce92eddc92a12e8b26261dc1b8916
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0

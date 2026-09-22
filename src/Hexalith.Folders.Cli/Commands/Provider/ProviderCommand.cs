@@ -46,7 +46,7 @@ internal static class ProviderCommand
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetProviderBindingAsync(
                 parseResult.GetValue(getRef)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness), "GetProviderBinding"),
                 ct))));
 
         Option<string?> readinessFreshness = CommandOptions.Freshness();
@@ -60,7 +60,7 @@ internal static class ProviderCommand
             [readinessFreshness, readinessBody],
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.ValidateProviderReadinessAsync(
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(readinessFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(readinessFreshness), "ValidateProviderReadiness"),
                 CommandOptions.ReadRequiredBody<ValidateProviderReadinessRequest>(parseResult.GetValue(readinessBody)),
                 ct))));
 
@@ -76,7 +76,7 @@ internal static class ProviderCommand
             [evidenceFreshness, evidenceCursor, evidenceLimit],
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetProviderSupportEvidenceAsync(
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(evidenceFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(evidenceFreshness), "GetProviderSupportEvidence"),
                 parseResult.GetValue(evidenceCursor)!,
                 parseResult.GetValue(evidenceLimit),
                 ct))));

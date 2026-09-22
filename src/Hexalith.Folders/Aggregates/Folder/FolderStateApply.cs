@@ -307,6 +307,7 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
         {
+            WorkspaceActorPrincipalId = recorded.ActorPrincipalId ?? state.WorkspaceActorPrincipalId,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, recorded),
         };
     }

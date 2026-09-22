@@ -34,7 +34,7 @@ internal static class TestData
             CanonicalErrorCategory.Read_model_unavailable =>
                 (503, CanonicalErrorCode.Projection_unavailable, true, ProblemDetailsClientAction.Retry),
             CanonicalErrorCategory.Lock_conflict =>
-                (409, CanonicalErrorCode.Workspace_locked, true, ProblemDetailsClientAction.Retry),
+                (423, CanonicalErrorCode.Workspace_locked, true, ProblemDetailsClientAction.Retry),
             CanonicalErrorCategory.Validation_error =>
                 (400, CanonicalErrorCode.Validation_error, false, ProblemDetailsClientAction.Revise_request),
             CanonicalErrorCategory.Unknown_provider_outcome =>

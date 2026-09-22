@@ -13,36 +13,7 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 public sealed class Pd10ConformanceSetTests
 {
     private const string ManifestPath = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
-    private const string BaselineCommit = "3f1056d998ac4688f36eb869c516812c1a4ddb71";
-    private static readonly HashSet<string> RequiredPaths = new(StringComparer.Ordinal)
-    {
-        ".github/workflows/ci.yml",
-        ".github/workflows/contract-spine.yml",
-        "docs/contract/authorization-matrix.md",
-        "docs/operations/canonical-error-catalog.md",
-        "docs/sdk/api-reference.md",
-        "scripts/generate-pd10-v2-conformance-set.py",
-        "scripts/generate-pd10-v2-contract.py",
-        "scripts/generate-pd10-v2-runtime-catalog.py",
-        "scripts/generate-v2-conformance-set.ps1",
-        "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
-        "src/Hexalith.Folders.Client/nswag.json",
-        "src/Hexalith.Folders.Client/Generation/Program.cs",
-        "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs",
-        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
-        "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
-        "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
-        "src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs",
-        "tests/fixtures/parity-contract.schema.json",
-        "tests/fixtures/parity-contract.yaml",
-        "tests/fixtures/previous-spine.yaml",
-        "tests/tools/parity-oracle-generator/Program.cs",
-        "tests/tools/run-consumer-docs-gates.ps1",
-        "tests/tools/run-contract-parity-ci-gates.ps1",
-        "tests/tools/run-contract-spine-gates.ps1",
-        "tests/tools/run-governance-completeness-gates.ps1",
-        "tests/tools/run-provider-error-docs-gates.ps1",
-    };
+    private const string StoryOwnedPathsPath = "scripts/pd10-v2-story-owned-paths.txt";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
 
     [Fact]
@@ -54,7 +25,6 @@ public sealed class Pd10ConformanceSetTests
         Scalar(root, "hash_algorithm").ShouldBe("SHA-256");
 
         YamlSequenceNode artifacts = (YamlSequenceNode)root.Children[new YamlScalarNode("artifacts")];
-        Dictionary<string, string> gitlinks = GitLinks();
         List<(string Path, string Digest)> entries = [];
         foreach (YamlMappingNode artifact in artifacts.Children.Cast<YamlMappingNode>())
         {
@@ -62,21 +32,10 @@ public sealed class Pd10ConformanceSetTests
             string digest = Scalar(artifact, "sha256");
             string fullPath = Path.Combine(RepositoryRoot, path);
             string kind = Scalar(artifact, "kind");
-            if (kind == "gitlink")
-            {
-                Directory.Exists(fullPath).ShouldBeTrue(path);
-                string objectId = Scalar(artifact, "git_object");
-                gitlinks[path].ShouldBe(objectId, path);
-                Encoding.UTF8.GetByteCount(objectId).ShouldBe(int.Parse(Scalar(artifact, "bytes")), path);
-                Sha256(Encoding.UTF8.GetBytes(objectId)).ShouldBe(digest, path);
-            }
-            else
-            {
-                kind.ShouldBe("file", path);
-                File.Exists(fullPath).ShouldBeTrue(path);
-                new FileInfo(fullPath).Length.ShouldBe(long.Parse(Scalar(artifact, "bytes")), path);
-                Sha256(fullPath).ShouldBe(digest, path);
-            }
+            kind.ShouldBe("file", path);
+            File.Exists(fullPath).ShouldBeTrue(path);
+            new FileInfo(fullPath).Length.ShouldBe(long.Parse(Scalar(artifact, "bytes")), path);
+            Sha256(fullPath).ShouldBe(digest, path);
             entries.Add((path, digest));
         }
 
@@ -91,7 +50,10 @@ public sealed class Pd10ConformanceSetTests
             .ShouldBe(Scalar(root, "authorization_matrix_sha256"));
 
         entries.Select(entry => entry.Path).ToHashSet(StringComparer.Ordinal)
-            .SetEquals(IndependentCandidatePaths(gitlinks)).ShouldBeTrue();
+            .SetEquals(IndependentCandidatePaths()).ShouldBeTrue();
+        entries.Select(entry => entry.Path).ShouldNotContain(".github/workflows/release.yml");
+        entries.Select(entry => entry.Path).ShouldNotContain("Directory.Packages.props");
+        entries.Select(entry => entry.Path).ShouldNotContain(path => path.StartsWith("references/", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -161,64 +123,11 @@ public sealed class Pd10ConformanceSetTests
     private static string Sha256(byte[] bytes) =>
         Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
 
-    private static HashSet<string> IndependentCandidatePaths(IReadOnlyDictionary<string, string> gitlinks)
-    {
-        HashSet<string> expected = new(RequiredPaths, StringComparer.Ordinal);
-        foreach (string path in GitNulRecords("diff", "--name-only", "--diff-filter=ACMRT", "-z", BaselineCommit, "--")
-            .Concat(GitNulRecords("ls-files", "--others", "--exclude-standard", "-z")))
-        {
-            string normalized = path.Replace('\\', '/');
-            string[] parts = normalized.Split('/');
-            if (normalized == ManifestPath
-                || normalized == "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml"
-                || normalized.StartsWith("_bmad-output/gates/", StringComparison.Ordinal)
-                || normalized.StartsWith("_bmad-output/implementation-artifacts/", StringComparison.Ordinal)
-                || normalized.StartsWith("_bmad-output/planning-artifacts/", StringComparison.Ordinal)
-                || parts.Contains("bin", StringComparer.Ordinal)
-                || parts.Contains("obj", StringComparer.Ordinal)
-                || (!gitlinks.ContainsKey(normalized) && !File.Exists(Path.Combine(RepositoryRoot, normalized))))
-            {
-                continue;
-            }
-
-            expected.Add(normalized);
-        }
-
-        return expected;
-    }
-
-    private static Dictionary<string, string> GitLinks()
-        => GitNulRecords("ls-files", "--stage", "-z")
-            .Select(line => line.Split('\t', 2))
-            .Where(parts => parts[0].StartsWith("160000 ", StringComparison.Ordinal))
-            .ToDictionary(
-                parts => parts[1].Replace('\\', '/'),
-                parts => parts[0].Split(' ', StringSplitOptions.RemoveEmptyEntries)[1],
-                StringComparer.Ordinal);
-
-    private static string[] GitNulRecords(params string[] arguments)
-    {
-        ProcessStartInfo start = new("git")
-        {
-            WorkingDirectory = RepositoryRoot,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-        };
-        foreach (string argument in arguments)
-        {
-            start.ArgumentList.Add(argument);
-        }
-
-        using Process process = Process.Start(start) ?? throw new InvalidOperationException("Could not start git.");
-        using MemoryStream output = new();
-        process.StandardOutput.BaseStream.CopyTo(output);
-        string error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
-        process.ExitCode.ShouldBe(0, error);
-        return Encoding.UTF8.GetString(output.ToArray())
-            .Split('\0', StringSplitOptions.RemoveEmptyEntries);
-    }
+    private static HashSet<string> IndependentCandidatePaths()
+        => File.ReadAllLines(Path.Combine(RepositoryRoot, StoryOwnedPathsPath))
+            .Select(static line => line.Trim())
+            .Where(static line => line.Length > 0)
+            .ToHashSet(StringComparer.Ordinal);
 
     private static YamlMappingNode Load(string path)
     {

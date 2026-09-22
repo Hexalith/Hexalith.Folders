@@ -319,7 +319,22 @@ static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
             string? requestSchema = TryReadRequestSchema(operation);
             IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
             IReadOnlyList<string> problemTuples = ReadProblemTuples(root, operation, method, requestSchema, parameters);
-            yield return new OperationModel(path, method, operationId, requestSchema, parameters, fields, problemTuples);
+            string? acceptedFreshness = null;
+            if (operation.Children.TryGetValue(new YamlScalarNode("x-hexalith-read-consistency"), out YamlNode? freshnessNode)
+                && freshnessNode is YamlMappingNode freshnessMapping)
+            {
+                _ = TryScalar(freshnessMapping, "class", out acceptedFreshness);
+            }
+
+            yield return new OperationModel(
+                path,
+                method,
+                operationId,
+                requestSchema,
+                parameters,
+                fields,
+                problemTuples,
+                acceptedFreshness);
         }
     }
 }
@@ -685,6 +700,21 @@ static string Render(
     }
 
     code.AppendLine("    ];");
+    code.AppendLine();
+    code.AppendLine("    private static IReadOnlyDictionary<string, string> AcceptedFreshnessValues { get; } =");
+    code.AppendLine("        new Dictionary<string, string>(StringComparer.Ordinal)");
+    code.AppendLine("        {");
+    foreach (OperationModel operation in operations
+        .Where(static operation => operation.AcceptedFreshness is not null)
+        .OrderBy(static operation => operation.OperationId, StringComparer.Ordinal))
+    {
+        code.AppendLine($"            [\"{operation.OperationId}\"] = \"{operation.AcceptedFreshness}\",");
+    }
+
+    code.AppendLine("        };");
+    code.AppendLine();
+    code.AppendLine("    internal static string? AcceptedFreshness(string operationId) =>");
+    code.AppendLine("        AcceptedFreshnessValues.TryGetValue(operationId, out string? value) ? value : null;");
     code.AppendLine();
     code.AppendLine("    private static IReadOnlySet<string> GenericProblemTuples { get; } = new HashSet<string>(StringComparer.Ordinal)");
     code.AppendLine("    {");
@@ -1084,7 +1114,8 @@ internal sealed record OperationModel(
     string? RequestSchema,
     IReadOnlyList<ParameterModel> Parameters,
     IReadOnlyList<string> IdempotencyFields,
-    IReadOnlyList<string> ProblemTuples);
+    IReadOnlyList<string> ProblemTuples,
+    string? AcceptedFreshness);
 
 internal sealed record ParameterModel(string Field, string Name);
 

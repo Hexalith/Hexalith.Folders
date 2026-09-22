@@ -64,7 +64,7 @@ internal static class FolderTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetRepositoryBindingAsync(folderId, repositoryBindingId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetRepositoryBindingAsync(folderId, repositoryBindingId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetRepositoryBinding"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-folder-lifecycle-status")]
     [Description("Inspect folder lifecycle and repository binding status (query).")]
@@ -75,7 +75,7 @@ internal static class FolderTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetFolderLifecycleStatusAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetFolderLifecycleStatusAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetFolderLifecycleStatus"), ct)), cancellationToken);
 
     [McpServerTool(Name = "archive-folder")]
     [Description("Archive a folder without exposing cross-tenant existence (mutating).")]
@@ -102,7 +102,7 @@ internal static class FolderTools
         [Description("Metadata-only filter expression.")] string? filter = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ListFolderAclEntriesAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), cursor, limit, filter, ct)), cancellationToken);
+            client.ListFolderAclEntriesAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "ListFolderAclEntries"), cursor, limit, filter, ct)), cancellationToken);
 
     [McpServerTool(Name = "update-folder-acl-entry")]
     [Description("Add, update, or revoke a metadata-only folder ACL entry (mutating).")]
@@ -128,7 +128,7 @@ internal static class FolderTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetEffectivePermissionsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), s.TaskId, ct)), cancellationToken);
+            client.GetEffectivePermissionsAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetEffectivePermissions"), s.TaskId, ct)), cancellationToken);
 
     [McpServerTool(Name = "configure-branch-ref-policy")]
     [Description("Configure tenant-scoped branch and ref policy metadata (mutating).")]
@@ -152,5 +152,5 @@ internal static class FolderTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetBranchRefPolicyAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetBranchRefPolicyAsync(folderId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetBranchRefPolicy"), ct)), cancellationToken);
 }

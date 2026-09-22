@@ -21,6 +21,7 @@ internal static class AuditCommand
         command.Subcommands.Add(PagedFolderQuery(
             "list",
             "List the audit trail (query).",
+            "ListAuditTrail",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, freshness, cursor, limit, filter, ct) => CommandFactory.AsObject(
@@ -40,7 +41,7 @@ internal static class AuditCommand
                 parseResult.GetValue(getFolderId)!,
                 parseResult.GetValue(auditRecordId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness), "GetAuditRecord"),
                 ct))));
 
         command.Subcommands.Add(CreateTimelineCommand(pipeline, global));
@@ -54,6 +55,7 @@ internal static class AuditCommand
         timeline.Subcommands.Add(PagedFolderQuery(
             "list",
             "List the operation timeline (query).",
+            "ListOperationTimeline",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, freshness, cursor, limit, filter, ct) => CommandFactory.AsObject(
@@ -73,7 +75,7 @@ internal static class AuditCommand
                 parseResult.GetValue(getFolderId)!,
                 parseResult.GetValue(entryId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness), "GetOperationTimelineEntry"),
                 ct))));
 
         return timeline;
@@ -82,6 +84,7 @@ internal static class AuditCommand
     private static Command PagedFolderQuery(
         string name,
         string description,
+        string operationId,
         CommandPipeline pipeline,
         GlobalOptionsBinding global,
         System.Func<System.CommandLine.ParseResult, IClient, QuerySourcing, string, ReadConsistencyClass?, string, int?, string, System.Threading.CancellationToken, System.Threading.Tasks.Task<object?>> invoke)
@@ -103,7 +106,7 @@ internal static class AuditCommand
                 client,
                 sourcing,
                 parseResult.GetValue(folderId)!,
-                CommandOptions.ParseFreshness(parseResult.GetValue(freshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(freshness), operationId),
                 parseResult.GetValue(cursor)!,
                 parseResult.GetValue(limit),
                 parseResult.GetValue(filter)!,

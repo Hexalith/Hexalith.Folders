@@ -43,7 +43,7 @@ public sealed class PostSdkMappingTests
             pipeline,
             folderId: "folder_2",
             correlationId: "correlation-readiness-mcp",
-            freshness: "read_your_writes",
+            freshness: "eventually_consistent",
             cancellationToken: TestContext.Current.CancellationToken);
 
         await client.Received(1).GetTaskStatusAsync(
@@ -55,7 +55,7 @@ public sealed class PostSdkMappingTests
         await client.Received(1).GetReadinessDiagnosticsAsync(
             "folder_2",
             "correlation-readiness-mcp",
-            ReadConsistencyClass.Read_your_writes,
+            ReadConsistencyClass.Eventually_consistent,
             Arg.Any<CancellationToken>());
     }
 
@@ -65,30 +65,25 @@ public sealed class PostSdkMappingTests
         ProblemDetails problem = new()
         {
             Type = "about:blank",
-            Title = "Workspace locked",
-            Status = 409,
-            Category = CanonicalErrorCategory.Lock_conflict,
-            Code = CanonicalErrorCode.Workspace_locked,
-            Message = "The workspace is locked by another task.",
+            Title = "Read model unavailable",
+            Status = 503,
+            Category = CanonicalErrorCategory.Read_model_unavailable,
+            Code = CanonicalErrorCode.Projection_unavailable,
+            Message = "Projection data is temporarily unavailable.",
             CorrelationId = "server-correlation-9",
             Retryable = true,
             ClientAction = ProblemDetailsClientAction.Retry,
-            Details = new Details { Visibility = DetailsVisibility.Metadata_only, LockStatus = "active" },
+            Details = new Details { Visibility = DetailsVisibility.Metadata_only },
         };
-        HexalithFoldersApiException<ProblemDetails> exception = new(
-            "locked", 409, JsonConvert.SerializeObject(problem), NoHeaders, problem, null);
-
-        IClient client = Substitute.For<IClient>();
-        client.GetFolderLifecycleStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromException<FolderLifecycleStatus>(exception));
-        ToolPipeline pipeline = TestSupport.Pipeline(client);
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.ServiceUnavailable, JsonConvert.SerializeObject(problem));
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
         string result = await FolderTools.GetFolderLifecycleStatus(
             pipeline, folderId: "f", correlationId: "client-correlation-1", cancellationToken: TestContext.Current.CancellationToken);
 
         Newtonsoft.Json.Linq.JObject o = TestSupport.Parse(result);
-        o.Value<string>("kind").ShouldBe("lock_conflict");
-        o.Value<string>("code").ShouldBe("workspace_locked");
+        o.Value<string>("kind").ShouldBe("read_model_unavailable");
+        o.Value<string>("code").ShouldBe("projection_unavailable");
         o.Value<bool>("retryable").ShouldBeTrue();
         o.Value<string>("clientAction").ShouldBe("retry");
         o.Value<string>("correlationId").ShouldBe("server-correlation-9");
@@ -104,22 +99,24 @@ public sealed class PostSdkMappingTests
             Status = 503,
             Category = CanonicalErrorCategory.Unknown_provider_outcome,
             Code = CanonicalErrorCode.Unknown_provider_outcome,
-            Message = "Provider outcome is unknown.",
+            Message = "Provider outcome is unknown for the requested workspace operation.",
             CorrelationId = "correlation-provider-unknown",
             Retryable = false,
             ClientAction = ProblemDetailsClientAction.Wait_for_reconciliation,
             Details = new Details { Visibility = DetailsVisibility.Metadata_only },
         };
-        HexalithFoldersApiException<ProblemDetails> exception = new(
-            "unknown", 503, JsonConvert.SerializeObject(problem), NoHeaders, problem, null);
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.ServiceUnavailable, JsonConvert.SerializeObject(problem));
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
 
-        IClient client = Substitute.For<IClient>();
-        client.GetProviderOutcomeAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
-            .Returns(Task.FromException<ProviderOutcome>(exception));
-        ToolPipeline pipeline = TestSupport.Pipeline(client);
-
-        string result = await CommitTools.GetProviderOutcome(
-            pipeline, folderId: "f", workspaceId: "w", operationId: "op", correlationId: "corr-x", cancellationToken: TestContext.Current.CancellationToken);
+        string result = await WorkspaceTools.PrepareWorkspace(
+            pipeline,
+            folderId: "folder_000000001",
+            workspaceId: "workspace_000000001",
+            idempotencyKey: "idempotency_000000001",
+            taskId: "task_000000001",
+            correlationId: "correlation-provider-unknown",
+            requestJson: """{"requestSchemaVersion":"v2","repositoryBindingId":"binding_000000001","branchRefPolicyRef":"branchref_000000001","workspacePolicyRef":"workspacepolicy_000000001"}""",
+            cancellationToken: TestContext.Current.CancellationToken);
 
         TestSupport.Kind(result).ShouldBe("unknown_provider_outcome");
     }

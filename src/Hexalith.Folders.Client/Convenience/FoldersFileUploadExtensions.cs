@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 namespace Hexalith.Folders.Client.Convenience;
 
@@ -172,14 +173,13 @@ public static class FoldersFileUploadExtensions
             Retryable: true,
             ClientAction: FileInlineTransportRequiredProblemClientAction.Revise_request,
         }
-        && exception.Headers
-            .FirstOrDefault(static header => string.Equals(header.Key, "X-Hexalith-Retry-Transport", StringComparison.OrdinalIgnoreCase))
-            .Value is { } values
-        && values.Any(static value => string.Equals(value, "stream", StringComparison.Ordinal));
+        && HasExactStreamingRetryHeader(exception.Headers);
 
-    private static bool IsExactStreamingRetry(HexalithFoldersApiException<ProblemDetails> exception) =>
-        exception.StatusCode == 413
-        && exception.Result is
+    private static bool IsExactStreamingRetry(HexalithFoldersApiException<ProblemDetails> exception)
+    {
+        (ProblemDetails? problem, _) = Oq2ProblemProjection.Project(exception);
+        return exception.StatusCode == 413
+        && problem is
         {
             Status: 413,
             Category: CanonicalErrorCategory.Input_limit_exceeded,
@@ -187,10 +187,21 @@ public static class FoldersFileUploadExtensions
             Retryable: true,
             ClientAction: ProblemDetailsClientAction.Revise_request,
         }
-        && exception.Headers
-            .FirstOrDefault(static header => string.Equals(header.Key, "X-Hexalith-Retry-Transport", StringComparison.OrdinalIgnoreCase))
-            .Value is { } values
-        && values.Any(static value => string.Equals(value, "stream", StringComparison.Ordinal));
+        && HasExactStreamingRetryHeader(exception.Headers);
+    }
+
+    private static bool HasExactStreamingRetryHeader(
+        IReadOnlyDictionary<string, IEnumerable<string>> headers)
+    {
+        string[] values = headers
+            .Where(static header => string.Equals(
+                header.Key,
+                "X-Hexalith-Retry-Transport",
+                StringComparison.OrdinalIgnoreCase))
+            .SelectMany(static header => header.Value)
+            .ToArray();
+        return values.Length == 1 && string.Equals(values[0], "stream", StringComparison.Ordinal);
+    }
 
     private static AddFileRequest ToAddRequest(FileMutationRequest request)
     {

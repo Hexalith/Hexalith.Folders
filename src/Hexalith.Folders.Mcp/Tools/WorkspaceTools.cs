@@ -55,7 +55,7 @@ internal static class WorkspaceTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetWorkspaceLockAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetWorkspaceLockAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetWorkspaceLock"), ct)), cancellationToken);
 
     [McpServerTool(Name = "release-workspace-lock")]
     [Description("Release a task-scoped workspace lock (mutating, task-scoped).")]
@@ -82,7 +82,7 @@ internal static class WorkspaceTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetWorkspaceRetryEligibilityAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetWorkspaceRetryEligibilityAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness, "GetWorkspaceRetryEligibility"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-workspace-transition-evidence")]
     [Description("Inspect workspace transition evidence (query, task-scoped).")]
@@ -95,7 +95,7 @@ internal static class WorkspaceTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetWorkspaceTransitionEvidenceAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetWorkspaceTransitionEvidenceAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness, "GetWorkspaceTransitionEvidence"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-workspace-status")]
     [Description("Inspect workspace lifecycle status (query).")]
@@ -107,7 +107,7 @@ internal static class WorkspaceTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetWorkspaceStatusAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetWorkspaceStatusAsync(folderId, workspaceId, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetWorkspaceStatus"), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-workspace-cleanup-status")]
     [Description("Inspect workspace cleanup status (query, task-scoped).")]
@@ -120,5 +120,5 @@ internal static class WorkspaceTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetWorkspaceCleanupStatusAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetWorkspaceCleanupStatusAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness, "GetWorkspaceCleanupStatus"), ct)), cancellationToken);
 }

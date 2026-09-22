@@ -38,7 +38,7 @@ internal static class ContextCommand
                 parseResult.GetValue(listWorkspaceId)!,
                 sourcing.CorrelationId,
                 sourcing.TaskId!,
-                CommandOptions.ParseFreshness(parseResult.GetValue(listFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(listFreshness), "ListFolderFiles"),
                 parseResult.GetValue(listCursor)!,
                 parseResult.GetValue(listLimit),
                 ct))));
@@ -46,6 +46,7 @@ internal static class ContextCommand
         command.Subcommands.Add(BodyQuery(
             "metadata",
             "Get folder file metadata (query; requires --task-id).",
+            "GetFolderFileMetadata",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, freshness, body, ct) => CommandFactory.AsObject(
@@ -61,6 +62,7 @@ internal static class ContextCommand
         command.Subcommands.Add(BodyQuery(
             "search",
             "Search folder files (query; requires --task-id).",
+            "SearchFolderFiles",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, freshness, body, ct) => CommandFactory.AsObject(
@@ -76,6 +78,7 @@ internal static class ContextCommand
         command.Subcommands.Add(BodyQuery(
             "glob",
             "Glob folder files (query; requires --task-id).",
+            "GlobFolderFiles",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, freshness, body, ct) => CommandFactory.AsObject(
@@ -91,6 +94,7 @@ internal static class ContextCommand
         command.Subcommands.Add(BodyQuery(
             "read-range",
             "Read a file byte range (query; requires --task-id). Content is never printed (metadata-only).",
+            "ReadFileRange",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, freshness, body, ct) => CommandFactory.AsObject(
@@ -106,6 +110,7 @@ internal static class ContextCommand
         command.Subcommands.Add(BodyQuery(
             "index-search",
             "Search the authorized Folders semantic index (query; requires --task-id). Metadata-only output.",
+            "SearchFolderIndexedFiles",
             pipeline,
             global,
             static (parseResult, client, sourcing, folderId, workspaceId, freshness, body, ct) => CommandFactory.AsObject(
@@ -131,7 +136,7 @@ internal static class ContextCommand
                 parseResult.GetValue(indexingStatusFolderId)!,
                 sourcing.CorrelationId,
                 null,
-                CommandOptions.ParseFreshness(parseResult.GetValue(indexingStatusFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(indexingStatusFreshness), "GetFolderIndexingStatus"),
                 ct))));
 
         return command;
@@ -140,6 +145,7 @@ internal static class ContextCommand
     private static Command BodyQuery(
         string name,
         string description,
+        string operationId,
         CommandPipeline pipeline,
         GlobalOptionsBinding global,
         System.Func<System.CommandLine.ParseResult, IClient, QuerySourcing, string, string, ReadConsistencyClass?, string?, System.Threading.CancellationToken, System.Threading.Tasks.Task<object?>> invoke)
@@ -161,7 +167,7 @@ internal static class ContextCommand
                 sourcing,
                 parseResult.GetValue(folderId)!,
                 parseResult.GetValue(workspaceId)!,
-                CommandOptions.ParseFreshness(parseResult.GetValue(freshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(freshness), operationId),
                 parseResult.GetValue(body),
                 ct));
     }

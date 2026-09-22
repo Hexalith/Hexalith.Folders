@@ -5209,12 +5209,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 422)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContentLimitExceededOrWorkspaceTransitionProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContentLimitExceededOrWorkspaceTransitionProblem>("Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 423)
@@ -5447,12 +5447,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 422)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContentLimitExceededOrWorkspaceTransitionProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContentLimitExceededOrWorkspaceTransitionProblem>("Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Workspace transition failure preserving the legacy outcome while adding the exact absolute per-file limit outcome, evaluated before inline transport routing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 423)
@@ -10542,16 +10542,16 @@ namespace Hexalith.Folders.Client.Generated
     public partial class AcceptedCommand
     {
 
-        [Newtonsoft.Json.JsonProperty("acceptedAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("acceptedAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset AcceptedAt { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.Always)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AcceptedCommandStatus Status { get; set; }
 
@@ -10619,10 +10619,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// C4-backed bound; final normative value remains approval-bound until PM approval.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.Always)]
         public int Limit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.Always)]
         public bool IsTruncated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -10635,11 +10635,11 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FreshnessMetadata
     {
 
-        [Newtonsoft.Json.JsonProperty("readConsistency", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("readConsistency", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ReadConsistencyClass ReadConsistency { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("observedAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("observedAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset ObservedAt { get; set; }
 
         [Newtonsoft.Json.JsonProperty("projectionWatermark", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -10811,14 +10811,14 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FolderLifecycleStatus
     {
 
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.Always)]
         public string FolderId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("lifecycleState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("lifecycleState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState LifecycleState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("archived", Required = Newtonsoft.Json.Required.Always)]
         public bool Archived { get; set; }
 
         [Newtonsoft.Json.JsonProperty("repositoryBindingId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -10827,7 +10827,7 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ProviderBindingRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -10836,17 +10836,17 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FolderAclEntry
     {
 
-        [Newtonsoft.Json.JsonProperty("aclEntryId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("aclEntryId", Required = Newtonsoft.Json.Required.Always)]
         public string AclEntryId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("subjectRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("subjectRef", Required = Newtonsoft.Json.Required.Always)]
         public string SubjectRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("permissionLevel", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("permissionLevel", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FolderPermissionLevel PermissionLevel { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("effect", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("effect", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FolderAclEntryEffect Effect { get; set; }
 
@@ -10856,13 +10856,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FolderAclEntryList
     {
 
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<FolderAclEntry> Items { get; set; } = new System.Collections.Generic.List<FolderAclEntry>();
 
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public PaginationMetadata Page { get; set; } = new PaginationMetadata();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -10892,17 +10892,17 @@ namespace Hexalith.Folders.Client.Generated
     public partial class EffectivePermissions
     {
 
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.Always)]
         public string FolderId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("permissions", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public System.Collections.Generic.ICollection<FolderPermissionLevel> Permissions { get; set; } = new System.Collections.Generic.List<FolderPermissionLevel>();
 
-        [Newtonsoft.Json.JsonProperty("authorizationOutcome", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("authorizationOutcome", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public EffectivePermissionsAuthorizationOutcome AuthorizationOutcome { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -10930,20 +10930,20 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderBinding
     {
 
-        [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderBindingRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerFamilyRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerFamilyRef", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderFamilyRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("capabilityProfileRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("capabilityProfileRef", Required = Newtonsoft.Json.Required.Always)]
         public string CapabilityProfileRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderBindingRedaction Redaction { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11040,31 +11040,31 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderCapabilityEvidence
     {
 
-        [Newtonsoft.Json.JsonProperty("repositoryCreation", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("repositoryCreation", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState RepositoryCreation { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("existingRepositoryBinding", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("existingRepositoryBinding", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState ExistingRepositoryBinding { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("branchRefPolicy", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("branchRefPolicy", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState BranchRefPolicy { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("fileOperations", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fileOperations", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState FileOperations { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("commitStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("commitStatus", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState CommitStatus { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerErrors", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerErrors", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState ProviderErrors { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("failureBehavior", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("failureBehavior", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderFailureBehavior FailureBehavior { get; set; }
 
@@ -11092,11 +11092,11 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderReadinessConsumer
     {
 
-        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessConsumerAudience Audience { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessStatus Status { get; set; }
 
@@ -11104,7 +11104,7 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessConsumerRetryHint RetryHint { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11116,14 +11116,14 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderReadinessOperator
     {
 
-        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessOperatorAudience Audience { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderBindingRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessStatus Status { get; set; }
 
@@ -11140,19 +11140,19 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Stable metadata-only remediation code derived from canonical provider failure categories.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("safeRemediationCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("safeRemediationCode", Required = Newtonsoft.Json.Required.Always)]
         public string SafeRemediationCode { get; set; }
 
         /// <summary>
         /// Stable metadata-only provider readiness reason code. Never raw provider text.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("safeReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("safeReasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string SafeReasonCode { get; set; }
 
         /// <summary>
         /// Whether retry is safe according to canonical provider failure semantics.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
         /// <summary>
@@ -11164,17 +11164,17 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Bounded safe action category. It never embeds provider payloads or secret-bearing values.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("remediationCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("remediationCategory", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessOperatorRemediationCategory RemediationCategory { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerReference", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderReference { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11183,13 +11183,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderSupportEvidenceList
     {
 
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<ProviderSupportEvidence> Items { get; set; } = new System.Collections.Generic.List<ProviderSupportEvidence>();
 
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public PaginationMetadata Page { get; set; } = new PaginationMetadata();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11198,14 +11198,14 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderSupportEvidence
     {
 
-        [Newtonsoft.Json.JsonProperty("capabilityProfileRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("capabilityProfileRef", Required = Newtonsoft.Json.Required.Always)]
         public string CapabilityProfileRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("capability", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("capability", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityName Capability { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("supportState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("supportState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderCapabilityState SupportState { get; set; }
 
@@ -11243,26 +11243,26 @@ namespace Hexalith.Folders.Client.Generated
     public partial class BranchRefPolicy
     {
 
-        [Newtonsoft.Json.JsonProperty("requestSchemaVersion", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("requestSchemaVersion", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public BranchRefPolicyRequestSchemaVersion RequestSchemaVersion { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("repositoryBindingId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("repositoryBindingId", Required = Newtonsoft.Json.Required.Always)]
         public string RepositoryBindingId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("policyRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("policyRef", Required = Newtonsoft.Json.Required.Always)]
         public string PolicyRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("defaultRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("defaultRef", Required = Newtonsoft.Json.Required.Always)]
         public string DefaultRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("allowedRefPatterns", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("allowedRefPatterns", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<string> AllowedRefPatterns { get; set; } = new System.Collections.Generic.List<string>();
 
         [Newtonsoft.Json.JsonProperty("protectedRefPatterns", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> ProtectedRefPatterns { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11315,24 +11315,24 @@ namespace Hexalith.Folders.Client.Generated
     public partial class RepositoryBinding
     {
 
-        [Newtonsoft.Json.JsonProperty("repositoryBindingId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("repositoryBindingId", Required = Newtonsoft.Json.Required.Always)]
         public string RepositoryBindingId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.Always)]
         public string FolderId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerBindingRef", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderBindingRef { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("bindingState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("bindingState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RepositoryBindingBindingState BindingState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("sensitiveMetadataTier", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sensitiveMetadataTier", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public SensitiveMetadataTier SensitiveMetadataTier { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11400,10 +11400,10 @@ namespace Hexalith.Folders.Client.Generated
     public partial class WorkspaceLockStatus
     {
 
-        [Newtonsoft.Json.JsonProperty("workspaceReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("workspaceReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier WorkspaceReference { get; set; } = new RedactableDiagnosticIdentifier();
 
-        [Newtonsoft.Json.JsonProperty("lockState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("lockState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LockState LockState { get; set; }
 
@@ -11413,10 +11413,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("lease", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public LockLeaseMetadata Lease { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public WorkspaceRetryEligibility RetryEligibility { get; set; } = new WorkspaceRetryEligibility();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11449,20 +11449,20 @@ namespace Hexalith.Folders.Client.Generated
     public partial class LockLeaseMetadata
     {
 
-        [Newtonsoft.Json.JsonProperty("lockId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("lockId", Required = Newtonsoft.Json.Required.Always)]
         public string LockId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("leaseStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("leaseStatus", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LockLeaseStatus LeaseStatus { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("acquiredAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("acquiredAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset AcquiredAt { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("effectiveAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("effectiveAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset EffectiveAt { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("expiresAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("expiresAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset ExpiresAt { get; set; }
 
         /// <summary>
@@ -11498,7 +11498,7 @@ namespace Hexalith.Folders.Client.Generated
     public partial class WorkspaceRetryEligibility
     {
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
         /// <summary>
@@ -11507,11 +11507,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("retryAfterSeconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int RetryAfterSeconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public WorkspaceRetryEligibilityReasonCode ReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
         /// <summary>
@@ -11520,11 +11520,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState CurrentState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11533,15 +11533,15 @@ namespace Hexalith.Folders.Client.Generated
     public partial class WorkspaceTransitionAttempt
     {
 
-        [Newtonsoft.Json.JsonProperty("fromState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fromState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState FromState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("eventName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("eventName", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public WorkspaceTransitionAttemptEventName EventName { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("toState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState ToState { get; set; }
 
@@ -11575,28 +11575,28 @@ namespace Hexalith.Folders.Client.Generated
     public partial class WorkspaceTransitionEvidence
     {
 
-        [Newtonsoft.Json.JsonProperty("workspaceId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("workspaceId", Required = Newtonsoft.Json.Required.Always)]
         public string WorkspaceId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState CurrentState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("attemptedTransition", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("attemptedTransition", Required = Newtonsoft.Json.Required.Always)]
         public WorkspaceTransitionAttempt AttemptedTransition { get; set; } = new WorkspaceTransitionAttempt();
 
-        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("result", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public WorkspaceTransitionResult Result { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public WorkspaceTransitionEvidenceReasonCode ReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("evidenceAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("evidenceAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset EvidenceAt { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
         /// <summary>
@@ -11614,10 +11614,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Metadata-only audit reference; file contents, diffs, provider payloads, local paths, and unauthorized resource hints are forbidden. Timestamp-valued entries use RFC 3339 date-time strings.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("auditMetadata", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("auditMetadata", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.Dictionary<string, System.DateTimeOffset> AuditMetadata { get; set; } = new System.Collections.Generic.Dictionary<string, System.DateTimeOffset>();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11634,23 +11634,23 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Caller spelling preserved without retargeting. The file-policy v1.1.0 profile permits only ASCII A-Z a-z 0-9 . _ - / and rejects a leading/trailing slash, empty segment, complete . or .. segment, trailing dot in any segment, backslash, absolute/drive/UNC form, and Windows device base names in any ASCII case. The server restricts `.git` and descendants and rejects ordinal-ignore-case aliases for every component plus every touched symlink/reparse entry or ancestor without following it.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("normalizedPath", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("normalizedPath", Required = Newtonsoft.Json.Required.Always)]
         public string NormalizedPath { get; set; }
 
         /// <summary>
         /// Human-readable file name. Rejects control characters (0x00-0x1F, 0x7F), forward slashes, and backslashes to prevent log injection and path-separator confusion.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("displayName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("displayName", Required = Newtonsoft.Json.Required.Always)]
         public string DisplayName { get; set; }
 
         /// <summary>
         /// Closed, server-owned file-policy v1.1.0 classification. Callers cannot select or upgrade this value; any value carried through a request is revalidated against the pinned server policy. A required bounded include allowlist is evaluated first, exclusions always win with no re-inclusion, and invalid, unavailable, or changed policy fails closed.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public PathMetadataPathPolicyClass PathPolicyClass { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("unicodeNormalization", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("unicodeNormalization", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public PathMetadataUnicodeNormalization UnicodeNormalization { get; set; }
 
@@ -11668,15 +11668,6 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public VisiblePathMetadataPathPolicyClass PathPolicyClass { get; set; }
 
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
-
     }
 
     /// <summary>
@@ -11690,15 +11681,6 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("pathPolicyClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ContentAllowedPathMetadataPathPolicyClass PathPolicyClass { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -11936,7 +11918,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Metadata-only search hits after authorization, security-trimming, and authoritative hydration. No raw paths, snippets, source URIs, or memory-unit ids are present.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<ContextIndexSearchItem> Items { get; set; } = new System.Collections.Generic.List<ContextIndexSearchItem>();
 
         /// <summary>
@@ -11945,10 +11927,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("nextCursor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string NextCursor { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.Always)]
         public ContextIndexSearchLimits Limits { get; set; } = new ContextIndexSearchLimits();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -11960,33 +11942,33 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Opaque, non-disclosing file-version handle. Not a filesystem path, source URI, or memory-unit id.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("fileVersionReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fileVersionReference", Required = Newtonsoft.Json.Required.Always)]
         public string FileVersionReference { get; set; }
 
         /// <summary>
         /// Authoritative indexing status from the Folders-owned bridge read model (never inferred from the index).
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("indexingStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("indexingStatus", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ContextIndexSearchItemIndexingStatus IndexingStatus { get; set; }
 
         /// <summary>
         /// Sensitivity tier of the metadata (e.g. tenant_sensitive, restricted).
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.Always)]
         public string Sensitivity { get; set; }
 
         /// <summary>
         /// Redaction marker, visibly distinct from unknown/missing; never silently hidden.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ContextIndexSearchItemRedaction Redaction { get; set; }
 
         /// <summary>
         /// Relevance score from the search axis (BM25); ordering signal only.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("score", Required = Newtonsoft.Json.Required.Always)]
         public double Score { get; set; }
 
     }
@@ -11999,25 +11981,25 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ContextIndexSearchLimits
     {
 
-        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.Always)]
         public string QueryFamily { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.Always)]
         public int ConfiguredLimit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.Always)]
         public int ActualCount { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.Always)]
         public int ActualBytes { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int ElapsedMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.Always)]
         public bool IsTruncated { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ContextIndexSearchLimitsTruncatedReason TruncatedReason { get; set; }
 
@@ -12030,16 +12012,16 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Metadata-only indexing-status entries for the folder's file versions, after authorization.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<FolderIndexingStatusEntry> Items { get; set; } = new System.Collections.Generic.List<FolderIndexingStatusEntry>();
 
         /// <summary>
         /// True when the folder has more entries than the bounded projection page returned.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.Always)]
         public bool IsTruncated { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12051,32 +12033,32 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Opaque, non-disclosing file-version handle. Not a filesystem path, source URI, or memory-unit id.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("fileVersionReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fileVersionReference", Required = Newtonsoft.Json.Required.Always)]
         public string FileVersionReference { get; set; }
 
         /// <summary>
         /// Authoritative indexing status from the Folders-owned bridge read model.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("indexingStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("indexingStatus", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FolderIndexingStatusEntryIndexingStatus IndexingStatus { get; set; }
 
         /// <summary>
         /// Metadata-safe reason classification (e.g. memories_accepted, content_too_large); never a raw path or payload.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string ReasonCode { get; set; }
 
         /// <summary>
         /// Sensitivity tier of the metadata (e.g. tenant_sensitive, restricted).
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.Always)]
         public string Sensitivity { get; set; }
 
         /// <summary>
         /// Redaction marker, visibly distinct from unknown/missing; never silently hidden.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FolderIndexingStatusEntryRedaction Redaction { get; set; }
 
@@ -12149,22 +12131,22 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeReadResult
     {
 
-        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
         public ContentAllowedPathMetadata Path { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.Always)]
         public FileRangeReadDescriptor Range { get; set; } = new FileRangeReadDescriptor();
 
         /// <summary>
         /// Authorized response body for ReadFileRange only; base64-encoded bytes up to 262144 raw bytes (349528 base64 characters). Never audit, log, diagnostic, projection, or generated context material.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("contentBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("contentBytes", Required = Newtonsoft.Json.Required.Always)]
         public string ContentBytes { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.Always)]
         public ContextQueryLimitMetadata Limits { get; set; } = new ContextQueryLimitMetadata();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12177,17 +12159,8 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeReadCompleteResult : FileRangeReadResult
     {
 
-        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.Always)]
         public FileRangeReadCompleteDescriptor Range { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -12199,17 +12172,8 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeReadPartialResult : FileRangeReadResult
     {
 
-        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("range", Required = Newtonsoft.Json.Required.Always)]
         public FileRangeReadPartialDescriptor Range { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -12220,16 +12184,16 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeReadDescriptor
     {
 
-        [Newtonsoft.Json.JsonProperty("startOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("startOffset", Required = Newtonsoft.Json.Required.Always)]
         public long StartOffset { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("endOffset", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("endOffset", Required = Newtonsoft.Json.Required.Always)]
         public long EndOffset { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.Always)]
         public long ActualBytes { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.Always)]
         public bool Partial { get; set; }
 
     }
@@ -12238,17 +12202,8 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeReadCompleteDescriptor : FileRangeReadDescriptor
     {
 
-        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.Always)]
         public bool Partial { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -12256,17 +12211,8 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileRangeReadPartialDescriptor : FileRangeReadDescriptor
     {
 
-        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("partial", Required = Newtonsoft.Json.Required.Always)]
         public bool Partial { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -12277,16 +12223,16 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Metadata-only entries after authorization and path filtering. TODO(reference-pending): docs/exit-criteria/c4-input-limits.md PM approval state is proposed.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<FileMetadataItem> Items { get; set; } = new System.Collections.Generic.List<FileMetadataItem>();
 
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public PaginationMetadata Page { get; set; } = new PaginationMetadata();
 
-        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.Always)]
         public ContextQueryLimitMetadata Limits { get; set; } = new ContextQueryLimitMetadata();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12299,16 +12245,16 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileSearchResult
     {
 
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<ContentAllowedFileMetadataItem> Items { get; set; } = new System.Collections.Generic.List<ContentAllowedFileMetadataItem>();
 
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public FileSearchPaginationMetadata Page { get; set; } = new FileSearchPaginationMetadata();
 
-        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.Always)]
         public FileSearchLimitMetadata Limits { get; set; } = new FileSearchLimitMetadata();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12320,10 +12266,10 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("cursor", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Cursor { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limit", Required = Newtonsoft.Json.Required.Always)]
         public int Limit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.Always)]
         public bool IsTruncated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -12336,25 +12282,25 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileSearchLimitMetadata : object
     {
 
-        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.Always)]
         public string QueryFamily { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.Always)]
         public int ConfiguredLimit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.Always)]
         public int ActualCount { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.Always)]
         public int ActualBytes { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int ElapsedMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.Always)]
         public bool IsTruncated { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileSearchLimitMetadataTruncatedReason TruncatedReason { get; set; }
 
@@ -12364,13 +12310,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileMetadataResult
     {
 
-        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<FileMetadataItem> Items { get; set; } = new System.Collections.Generic.List<FileMetadataItem>();
 
-        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("limits", Required = Newtonsoft.Json.Required.Always)]
         public ContextQueryLimitMetadata Limits { get; set; } = new ContextQueryLimitMetadata();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12389,10 +12335,10 @@ namespace Hexalith.Folders.Client.Generated
     public partial class FileMetadataItem : object
     {
 
-        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("path", Required = Newtonsoft.Json.Required.Always)]
         public VisiblePathMetadata Path { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("kind", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileMetadataItemKind Kind { get; set; }
 
@@ -12402,14 +12348,14 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("byteLength", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public long ByteLength { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sensitivity", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public SensitiveMetadataTier Sensitivity { get; set; }
 
         /// <summary>
         /// Hidden path classes are omitted entirely; visible entries use not_redacted.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public FileMetadataItemRedaction Redaction { get; set; }
 
@@ -12436,26 +12382,26 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ContextQueryLimitMetadata : object
     {
 
-        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("queryFamily", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ContextQueryLimitMetadataQueryFamily QueryFamily { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("configuredLimit", Required = Newtonsoft.Json.Required.Always)]
         public int ConfiguredLimit { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualCount", Required = Newtonsoft.Json.Required.Always)]
         public int ActualCount { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actualBytes", Required = Newtonsoft.Json.Required.Always)]
         public int ActualBytes { get; set; }
 
         /// <summary>
         /// Soft target is 2000 ms via x-hexalith-query-timeout-ms; legitimate post-processing telemetry above the soft target is allowed up to a generous ceiling for diagnostic purposes.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int ElapsedMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("isTruncated", Required = Newtonsoft.Json.Required.Always)]
         public bool IsTruncated { get; set; }
 
         [Newtonsoft.Json.JsonProperty("truncatedReason", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -12511,28 +12457,19 @@ namespace Hexalith.Folders.Client.Generated
     public partial class CommitWorkspaceAccepted : AcceptedCommand
     {
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public string OperationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("acceptedCommandState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("acceptedCommandState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CommitWorkspaceAcceptedAcceptedCommandState AcceptedCommandState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerOutcomeState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerOutcomeState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderOutcomeState ProviderOutcomeState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public RetryEligibility RetryEligibility { get; set; } = new RetryEligibility();
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -12540,13 +12477,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class WorkspaceStatus
     {
 
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.Always)]
         public string FolderId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("workspaceId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("workspaceId", Required = Newtonsoft.Json.Required.Always)]
         public string WorkspaceId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState CurrentState { get; set; }
 
@@ -12556,22 +12493,22 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("acceptedCommandState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public AcceptedCommandState AcceptedCommandState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("projectedState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("projectedState", Required = Newtonsoft.Json.Required.Always)]
         public ProjectedWorkspaceState ProjectedState { get; set; } = new ProjectedWorkspaceState();
 
-        [Newtonsoft.Json.JsonProperty("providerOutcome", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerOutcome", Required = Newtonsoft.Json.Required.Always)]
         public ProviderOutcome ProviderOutcome { get; set; } = new ProviderOutcome();
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public RetryEligibility RetryEligibility { get; set; } = new RetryEligibility();
 
         [Newtonsoft.Json.JsonProperty("retryAfter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public RetryAfterMetadata RetryAfter { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
-        [Newtonsoft.Json.JsonProperty("projectionLag", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("projectionLag", Required = Newtonsoft.Json.Required.Always)]
         public ProjectionLagMetadata ProjectionLag { get; set; } = new ProjectionLagMetadata();
 
         [Newtonsoft.Json.JsonProperty("lastFailureCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -12584,26 +12521,26 @@ namespace Hexalith.Folders.Client.Generated
     public partial class WorkspaceCleanupStatus
     {
 
-        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("folderId", Required = Newtonsoft.Json.Required.Always)]
         public string FolderId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("workspaceId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("workspaceId", Required = Newtonsoft.Json.Required.Always)]
         public string WorkspaceId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CleanupStatus Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string ReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public RetryEligibility RetryEligibility { get; set; } = new RetryEligibility();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
         [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -12639,17 +12576,17 @@ namespace Hexalith.Folders.Client.Generated
     public partial class AcceptedCommandState
     {
 
-        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.Always)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public string OperationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public AcceptedCommandStateState State { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("acceptedAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("acceptedAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset AcceptedAt { get; set; }
 
     }
@@ -12658,15 +12595,15 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProjectedWorkspaceState
     {
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState State { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("stateSource", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("stateSource", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProjectedWorkspaceStateStateSource StateSource { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("observedAt", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("observedAt", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset ObservedAt { get; set; }
 
     }
@@ -12675,10 +12612,10 @@ namespace Hexalith.Folders.Client.Generated
     public partial class TaskStatus
     {
 
-        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.Always)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("currentState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState CurrentState { get; set; }
 
@@ -12699,13 +12636,13 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory LastFailureCategory { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public RetryEligibility RetryEligibility { get; set; } = new RetryEligibility();
 
         [Newtonsoft.Json.JsonProperty("retryAfter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public RetryAfterMetadata RetryAfter { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12714,30 +12651,30 @@ namespace Hexalith.Folders.Client.Generated
     public partial class CommitEvidence
     {
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public string OperationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("commitResultStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("commitResultStatus", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState CommitResultStatus { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("commitReferenceClassification", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("commitReferenceClassification", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CommitEvidenceCommitReferenceClassification CommitReferenceClassification { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("changedPathMetadataDigest", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("changedPathMetadataDigest", Required = Newtonsoft.Json.Required.Always)]
         public string ChangedPathMetadataDigest { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerCorrelationReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerCorrelationReference", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderCorrelationReference { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         public RedactionMetadata Redaction { get; set; } = new RedactionMetadata();
 
         [Newtonsoft.Json.JsonProperty("auditMetadataKeys", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore, ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public System.Collections.Generic.ICollection<AuditMetadataKey> AuditMetadataKeys { get; set; } = new System.Collections.Generic.List<AuditMetadataKey>();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12746,27 +12683,27 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderOutcome
     {
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public string OperationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderOutcomeState State { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("sanitizedStatusClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sanitizedStatusClass", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory SanitizedStatusClass { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("providerCorrelationReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerCorrelationReference", Required = Newtonsoft.Json.Required.Always)]
         public string ProviderCorrelationReference { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public RetryEligibility RetryEligibility { get; set; } = new RetryEligibility();
 
         [Newtonsoft.Json.JsonProperty("retryAfter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public RetryAfterMetadata RetryAfter { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12796,13 +12733,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class RetryEligibility
     {
 
-        [Newtonsoft.Json.JsonProperty("eligible", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("eligible", Required = Newtonsoft.Json.Required.Always)]
         public bool Eligible { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string ReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("advisoryOnly", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("advisoryOnly", Required = Newtonsoft.Json.Required.Always)]
         public bool AdvisoryOnly { get; set; }
 
     }
@@ -12811,10 +12748,10 @@ namespace Hexalith.Folders.Client.Generated
     public partial class RetryAfterMetadata
     {
 
-        [Newtonsoft.Json.JsonProperty("retryAfterSeconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryAfterSeconds", Required = Newtonsoft.Json.Required.Always)]
         public int RetryAfterSeconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("advisoryOnly", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("advisoryOnly", Required = Newtonsoft.Json.Required.Always)]
         public bool AdvisoryOnly { get; set; }
 
     }
@@ -12823,30 +12760,30 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ReconciliationStatus
     {
 
-        [Newtonsoft.Json.JsonProperty("reconciliationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reconciliationId", Required = Newtonsoft.Json.Required.Always)]
         public string ReconciliationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public string OperationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("state", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ReconciliationState State { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("finalStateEvidence", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("finalStateEvidence", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ReconciliationStatusFinalStateEvidence FinalStateEvidence { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("escalationRequired", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("escalationRequired", Required = Newtonsoft.Json.Required.Always)]
         public bool EscalationRequired { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryEligibility", Required = Newtonsoft.Json.Required.Always)]
         public RetryEligibility RetryEligibility { get; set; } = new RetryEligibility();
 
         [Newtonsoft.Json.JsonProperty("retryAfter", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public RetryAfterMetadata RetryAfter { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -12885,7 +12822,7 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("ageMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int AgeMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("stateSource", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("stateSource", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProjectionLagMetadataStateSource StateSource { get; set; }
 
@@ -12895,11 +12832,11 @@ namespace Hexalith.Folders.Client.Generated
     public partial class RedactionMetadata
     {
 
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RedactionMetadataVisibility Visibility { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("reasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string ReasonCode { get; set; }
 
     }
@@ -12914,11 +12851,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Value { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticFieldClassification Classification { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         public RedactionMetadata Redaction { get; set; } = new RedactionMetadata();
 
     }
@@ -12933,11 +12870,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Value { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticFieldClassification Classification { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         public RedactionMetadata Redaction { get; set; } = new RedactionMetadata();
 
     }
@@ -12952,11 +12889,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Value { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticFieldClassification Classification { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         public RedactionMetadata Redaction { get; set; } = new RedactionMetadata();
 
     }
@@ -12971,11 +12908,11 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.DateTimeOffset Value { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("precision", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("precision", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public RedactableAuditTimestampPrecision Precision { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         public RedactionMetadata Redaction { get; set; } = new RedactionMetadata();
 
     }
@@ -12984,19 +12921,19 @@ namespace Hexalith.Folders.Client.Generated
     public partial class AuditTrailPage
     {
 
-        [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<AuditRecord> Entries { get; set; } = new System.Collections.Generic.List<AuditRecord>();
 
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public PaginationMetadata Page { get; set; } = new PaginationMetadata();
 
         /// <summary>
         /// C3 audit-trail retention evidence class identifier (snake_case) or an explicit `TODO(reference-pending):` marker. Runtime servers must emit an approved identifier once C3 vocabulary is frozen; until then, the only legal value is a `TODO(reference-pending):...` marker. This contract does not define retention jobs.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("retentionClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retentionClass", Required = Newtonsoft.Json.Required.Always)]
         public string RetentionClass { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -13005,45 +12942,45 @@ namespace Hexalith.Folders.Client.Generated
     public partial class AuditRecord
     {
 
-        [Newtonsoft.Json.JsonProperty("auditRecordId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("auditRecordId", Required = Newtonsoft.Json.Required.Always)]
         public string AuditRecordId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("actorReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("actorReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableAuditActorReference ActorReference { get; set; } = new RedactableAuditActorReference();
 
         [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public RedactableAuditOperationReference OperationId { get; set; } = new RedactableAuditOperationReference();
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("resultStatus", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("resultStatus", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory ResultStatus { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("sanitizedErrorCategory", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sanitizedErrorCategory", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory SanitizedErrorCategory { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("durationMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("durationMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int DurationMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("evidenceTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("evidenceTimestamp", Required = Newtonsoft.Json.Required.Always)]
         public RedactableAuditTimestamp EvidenceTimestamp { get; set; } = new RedactableAuditTimestamp();
 
-        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("redaction", Required = Newtonsoft.Json.Required.Always)]
         public RedactionMetadata Redaction { get; set; } = new RedactionMetadata();
 
         [Newtonsoft.Json.JsonProperty("changedPathEvidence", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public ChangedPathEvidence2 ChangedPathEvidence { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -13052,19 +12989,19 @@ namespace Hexalith.Folders.Client.Generated
     public partial class OperationTimelinePage
     {
 
-        [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("entries", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<OperationTimelineEntry> Entries { get; set; } = new System.Collections.Generic.List<OperationTimelineEntry>();
 
-        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("page", Required = Newtonsoft.Json.Required.Always)]
         public PaginationMetadata Page { get; set; } = new PaginationMetadata();
 
         /// <summary>
         /// C3 retention evidence class or explicit TODO(reference-pending) marker.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("retentionClass", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retentionClass", Required = Newtonsoft.Json.Required.Always)]
         public string RetentionClass { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -13073,38 +13010,38 @@ namespace Hexalith.Folders.Client.Generated
     public partial class OperationTimelineEntry
     {
 
-        [Newtonsoft.Json.JsonProperty("timelineEntryId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("timelineEntryId", Required = Newtonsoft.Json.Required.Always)]
         public string TimelineEntryId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("operationId", Required = Newtonsoft.Json.Required.Always)]
         public string OperationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("taskId", Required = Newtonsoft.Json.Required.Always)]
         public string TaskId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("workspaceReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("workspaceReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier WorkspaceReference { get; set; } = new RedactableDiagnosticIdentifier();
 
-        [Newtonsoft.Json.JsonProperty("stateTransition", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("stateTransition", Required = Newtonsoft.Json.Required.Always)]
         public DiagnosticStateTransition StateTransition { get; set; } = new DiagnosticStateTransition();
 
-        [Newtonsoft.Json.JsonProperty("sanitizedResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sanitizedResult", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public CanonicalErrorCategory SanitizedResult { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
         public bool Retryable { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("durationMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("durationMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int DurationMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("evidenceTimestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("evidenceTimestamp", Required = Newtonsoft.Json.Required.Always)]
         public System.DateTimeOffset EvidenceTimestamp { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -13113,15 +13050,15 @@ namespace Hexalith.Folders.Client.Generated
     public partial class DiagnosticStateTransition
     {
 
-        [Newtonsoft.Json.JsonProperty("fromState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fromState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState FromState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("toState", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("toState", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public LifecycleState ToState { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("disposition", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("disposition", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public OperatorDispositionLabel Disposition { get; set; }
 
@@ -13185,10 +13122,10 @@ namespace Hexalith.Folders.Client.Generated
         /// <summary>
         /// Field identifier. Accepts camelCase body properties and snake_case audit-metadata keys; consumers must not assume a single casing convention.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("field", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("field", Required = Newtonsoft.Json.Required.Always)]
         public string Field { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticFieldClassification Classification { get; set; }
 
@@ -13214,7 +13151,7 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ChangedPathEvidence
     {
 
-        [Newtonsoft.Json.JsonProperty("evidenceKind", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("evidenceKind", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ChangedPathEvidenceEvidenceKind EvidenceKind { get; set; }
 
@@ -13224,18 +13161,9 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonProperty("reference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Reference { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("classification", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticFieldClassification Classification { get; set; }
-
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties;
-
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties ?? (_additionalProperties = new System.Collections.Generic.Dictionary<string, object>()); }
-            set { _additionalProperties = value; }
-        }
 
     }
 
@@ -13243,20 +13171,20 @@ namespace Hexalith.Folders.Client.Generated
     public partial class DiagnosticTrustEvidence
     {
 
-        [Newtonsoft.Json.JsonProperty("availability", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("availability", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProjectionAvailability Availability { get; set; }
 
         /// <summary>
         /// TODO(reference-pending): C5 projection freshness target.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("freshnessAgeMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshnessAgeMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int FreshnessAgeMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("staleReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("staleReasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string StaleReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("unavailableReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("unavailableReasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string UnavailableReasonCode { get; set; }
 
     }
@@ -13265,24 +13193,24 @@ namespace Hexalith.Folders.Client.Generated
     public partial class DiagnosticBase : object
     {
 
-        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticAudience Audience { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public string Status { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("disposition", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("disposition", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public OperatorDispositionLabel Disposition { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("trust", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("trust", Required = Newtonsoft.Json.Required.Always)]
         public DiagnosticTrustEvidence Trust { get; set; } = new DiagnosticTrustEvidence();
 
-        [Newtonsoft.Json.JsonProperty("fieldClassifications", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fieldClassifications", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<DiagnosticFieldClassificationEntry> FieldClassifications { get; set; } = new System.Collections.Generic.List<DiagnosticFieldClassificationEntry>();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -13291,13 +13219,13 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ReadinessDiagnostics : DiagnosticBase
     {
 
-        [Newtonsoft.Json.JsonProperty("providerSummaryReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerSummaryReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier ProviderSummaryReference { get; set; } = new RedactableDiagnosticIdentifier();
 
-        [Newtonsoft.Json.JsonProperty("folderSummaryReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("folderSummaryReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier FolderSummaryReference { get; set; } = new RedactableDiagnosticIdentifier();
 
-        [Newtonsoft.Json.JsonProperty("workspaceSummaryReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("workspaceSummaryReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier WorkspaceSummaryReference { get; set; } = new RedactableDiagnosticIdentifier();
 
     }
@@ -13306,7 +13234,7 @@ namespace Hexalith.Folders.Client.Generated
     public partial class LockDiagnostics : DiagnosticBase
     {
 
-        [Newtonsoft.Json.JsonProperty("lockReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("lockReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier LockReference { get; set; } = new RedactableDiagnosticIdentifier();
 
     }
@@ -13343,7 +13271,7 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderStatusDiagnostics : DiagnosticBase
     {
 
-        [Newtonsoft.Json.JsonProperty("providerBindingReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("providerBindingReference", Required = Newtonsoft.Json.Required.Always)]
         public RedactableDiagnosticIdentifier ProviderBindingReference { get; set; } = new RedactableDiagnosticIdentifier();
 
         [Newtonsoft.Json.JsonProperty("providerCorrelationReference", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -13376,39 +13304,39 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProjectionFreshnessDiagnostics : object
     {
 
-        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public DiagnosticAudience Audience { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("projectionName", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("projectionName", Required = Newtonsoft.Json.Required.Always)]
         public string ProjectionName { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("availability", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("availability", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProjectionAvailability Availability { get; set; }
 
         /// <summary>
         /// TODO(reference-pending): C5 projection freshness target.
         /// </summary>
-        [Newtonsoft.Json.JsonProperty("freshnessAgeMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshnessAgeMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int FreshnessAgeMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("elapsedMilliseconds", Required = Newtonsoft.Json.Required.Always)]
         public int ElapsedMilliseconds { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("staleReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("staleReasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string StaleReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("unavailableReasonCode", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("unavailableReasonCode", Required = Newtonsoft.Json.Required.Always)]
         public string UnavailableReasonCode { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshnessTarget", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshnessTarget", Required = Newtonsoft.Json.Required.Always)]
         public string FreshnessTarget { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("fieldClassifications", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("fieldClassifications", Required = Newtonsoft.Json.Required.Always)]
         public System.Collections.Generic.ICollection<DiagnosticFieldClassificationEntry> FieldClassifications { get; set; } = new System.Collections.Generic.List<DiagnosticFieldClassificationEntry>();
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -16274,20 +16202,23 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"unsupported_archive_reason_code")]
         Unsupported_archive_reason_code = 44,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
+        Unsupported_provider_capability = 45,
+
         [System.Runtime.Serialization.EnumMember(Value = @"unsupported_read_consistency")]
-        Unsupported_read_consistency = 45,
+        Unsupported_read_consistency = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"unsupported_request_schema_version")]
-        Unsupported_request_schema_version = 46,
+        Unsupported_request_schema_version = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 47,
+        Validation_error = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 48,
+        Workspace_locked = 49,
 
         [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 49,
+        Workspace_preparation_failed = 50,
 
     }
 

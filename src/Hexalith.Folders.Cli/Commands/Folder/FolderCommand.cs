@@ -77,7 +77,7 @@ internal static class FolderCommand
                 parseResult.GetValue(getBindingFolderId)!,
                 parseResult.GetValue(getBindingId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(getBindingFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(getBindingFreshness), "GetRepositoryBinding"),
                 ct))));
 
         Option<string> statusFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
@@ -92,7 +92,7 @@ internal static class FolderCommand
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetFolderLifecycleStatusAsync(
                 parseResult.GetValue(statusFolderId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(statusFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(statusFreshness), "GetFolderLifecycleStatus"),
                 ct))));
 
         Option<string> archiveFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
@@ -123,7 +123,7 @@ internal static class FolderCommand
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetEffectivePermissionsAsync(
                 parseResult.GetValue(permsFolderId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(permsFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(permsFreshness), "GetEffectivePermissions"),
                 sourcing.TaskId,
                 ct)),
             taskIdSupported: true));
@@ -152,7 +152,7 @@ internal static class FolderCommand
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.ListFolderAclEntriesAsync(
                 parseResult.GetValue(listFolderId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(listFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(listFreshness), "ListFolderAclEntries"),
                 parseResult.GetValue(listCursor)!,
                 parseResult.GetValue(listLimit),
                 parseResult.GetValue(listFilter)!,
@@ -211,7 +211,7 @@ internal static class FolderCommand
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.GetBranchRefPolicyAsync(
                 parseResult.GetValue(getFolderId)!,
                 sourcing.CorrelationId,
-                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness)),
+                CommandOptions.ParseFreshness(parseResult.GetValue(getFreshness), "GetBranchRefPolicy"),
                 ct))));
 
         return branchPolicy;

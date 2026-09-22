@@ -85,8 +85,8 @@ public sealed class ConsoleErrorPresenterTests
     [Fact]
     public void FromException_MapsAuthorizationRevocationToDenied()
     {
-        const string body = """{"type":"about:blank","title":"Authorization revoked","status":409,"category":"authorization_revocation_detected","code":"authorization_revocation_detected","message":"Authorization was revoked.","correlationId":"correlation-revoked","retryable":false,"clientAction":"contact_operator","details":{"visibility":"metadata_only","currentState":"inaccessible"}}""";
-        HexalithFoldersApiException exception = ProblemException(409, body);
+        const string body = """{"type":"about:blank","title":"Authorization revoked","status":428,"category":"authorization_revocation_detected","code":"authorization_revocation_detected","message":"Authorization was revoked.","correlationId":"correlation-revoked","retryable":false,"clientAction":"contact_operator","details":{"visibility":"metadata_only","currentState":"inaccessible"}}""";
+        HexalithFoldersApiException exception = ProblemException(428, body);
 
         ConsoleErrorView view = ConsoleErrorPresenter.FromException(exception, "corr-fallback");
 

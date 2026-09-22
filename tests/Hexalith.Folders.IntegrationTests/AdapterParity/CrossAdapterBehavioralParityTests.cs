@@ -702,7 +702,7 @@ public sealed class CrossAdapterBehavioralParityTests
         // Both adapters serialize the SDK shape through Newtonsoft StringEnumConverter → the canonical wire
         // string "committed" must round-trip into BOTH outputs verbatim.
         string lifecycleJson = """
-            {"folderId":"folder_1","lifecycleState":"committed","archived":false,"repositoryBindingId":"binding_1","providerBindingRef":"provider_ref_1","freshness":{"readConsistencyClass":"snapshot_per_task","readyForReads":true}}
+            {"folderId":"folder_1","lifecycleState":"committed","archived":false,"repositoryBindingId":"binding_1","providerBindingRef":"provider_ref_1","freshness":{"readConsistency":"snapshot_per_task","observedAt":"2026-05-27T12:00:00+00:00"}}
             """;
 
         // ---- CLI --output json ----

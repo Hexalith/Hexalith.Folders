@@ -1,4 +1,5 @@
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 namespace Hexalith.Folders.Mcp.Tooling;
 
@@ -8,16 +9,14 @@ namespace Hexalith.Folders.Mcp.Tooling;
 /// </summary>
 internal static class ToolInputs
 {
-    /// <summary>Maps a freshness tool-input value to the typed read-consistency class.</summary>
-    /// <param name="freshness">The raw freshness value (<c>snapshot_per_task</c>, <c>read_your_writes</c>, <c>eventually_consistent</c>), or <see langword="null"/>.</param>
-    /// <returns>The mapped class, or <see langword="null"/> when unspecified.</returns>
-    /// <exception cref="McpUsageException">Thrown when a supplied value is not in the closed freshness vocabulary.</exception>
-    public static ReadConsistencyClass? ParseFreshness(string? freshness) => freshness switch
+    /// <summary>Maps a freshness value only when it is accepted by the selected generated operation.</summary>
+    public static ReadConsistencyClass? ParseFreshness(string? freshness, string operationId)
     {
-        null => null,
-        "snapshot_per_task" => ReadConsistencyClass.Snapshot_per_task,
-        "read_your_writes" => ReadConsistencyClass.Read_your_writes,
-        "eventually_consistent" => ReadConsistencyClass.Eventually_consistent,
-        _ => throw new McpUsageException("The supplied freshness value is invalid."),
-    };
+        if (OperationFreshness.TryParse(operationId, freshness, out ReadConsistencyClass? parsed))
+        {
+            return parsed;
+        }
+
+        throw new McpUsageException("The supplied freshness value is not accepted by this operation.");
+    }
 }

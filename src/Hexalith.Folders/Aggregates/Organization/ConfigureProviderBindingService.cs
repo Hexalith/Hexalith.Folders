@@ -37,19 +37,20 @@ public sealed class ConfigureProviderBindingService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
+        LayeredFolderAuthorizationContext authorizationContext = new(
+            request.AuthoritativeTenantId,
+            request.PrincipalId,
+            ActorSafeIdentifier: request.PrincipalId,
+            ActionToken,
+            LayeredFolderOperationPolicy.Mutation(),
+            request.ClaimTransformEvidence,
+            OperationScope: request.ProviderBindingRef,
+            request.CorrelationId,
+            request.TaskId,
+            clientTenantValues,
+            request.ClientControlledPrincipalValues);
         LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
-                request.AuthoritativeTenantId,
-                request.PrincipalId,
-                ActorSafeIdentifier: request.PrincipalId,
-                ActionToken,
-                LayeredFolderOperationPolicy.Mutation(),
-                request.ClaimTransformEvidence,
-                OperationScope: request.ProviderBindingRef,
-                request.CorrelationId,
-                request.TaskId,
-                clientTenantValues,
-                request.ClientControlledPrincipalValues),
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -104,6 +105,14 @@ public sealed class ConfigureProviderBindingService(
         if (result.Events.Count == 0)
         {
             return result;
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: false, cancellationToken)
+            .ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return OrganizationProviderBindingResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         OrganizationAclAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(

@@ -39,7 +39,7 @@ internal static class ProviderTools
         [Description("Optional read-consistency: snapshot_per_task | read_your_writes | eventually_consistent.")] string? freshness = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetProviderBindingAsync(providerBindingRef, s.CorrelationId, ToolInputs.ParseFreshness(freshness), ct)), cancellationToken);
+            client.GetProviderBindingAsync(providerBindingRef, s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetProviderBinding"), ct)), cancellationToken);
 
     [McpServerTool(Name = "validate-provider-readiness")]
     [Description("Validate provider readiness through sanitized evidence (query).")]
@@ -50,7 +50,7 @@ internal static class ProviderTools
         [Description("Request body as inline JSON matching the ValidateProviderReadinessRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ValidateProviderReadinessAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<ValidateProviderReadinessRequest>(requestJson), ct)), cancellationToken);
+            client.ValidateProviderReadinessAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness, "ValidateProviderReadiness"), RequestBody.ReadRequired<ValidateProviderReadinessRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-provider-support-evidence")]
     [Description("Inspect provider-neutral support and capability evidence (query).")]
@@ -62,5 +62,5 @@ internal static class ProviderTools
         [Description("Maximum number of items to return.")] int? limit = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetProviderSupportEvidenceAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness), cursor, limit, ct)), cancellationToken);
+            client.GetProviderSupportEvidenceAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness, "GetProviderSupportEvidence"), cursor, limit, ct)), cancellationToken);
 }

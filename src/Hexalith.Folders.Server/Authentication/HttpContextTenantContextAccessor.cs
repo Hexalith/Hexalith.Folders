@@ -21,7 +21,7 @@ public sealed class HttpContextTenantContextAccessor(
     private string? GetClaim(string claimType)
     {
         ClaimsPrincipal? user = _httpContextAccessor.HttpContext?.User;
-        if (user is null)
+        if (user?.Identity?.IsAuthenticated != true)
         {
             return null;
         }

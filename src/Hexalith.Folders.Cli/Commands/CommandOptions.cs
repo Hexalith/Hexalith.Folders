@@ -4,6 +4,7 @@ using System.IO;
 
 using Hexalith.Folders.Cli.Errors;
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 using Newtonsoft.Json;
 
@@ -151,12 +152,17 @@ internal static class CommandOptions
     /// <param name="freshness">The raw option value.</param>
     /// <returns>The mapped class, or <see langword="null"/> when the option is omitted.</returns>
     /// <exception cref="CliUsageException">Thrown when a supplied value is not in the closed freshness vocabulary.</exception>
-    public static ReadConsistencyClass? ParseFreshness(string? freshness) => freshness switch
+    public static ReadConsistencyClass? ParseFreshness(string? freshness)
+        => ParseFreshness(freshness, "ListAuditTrail");
+
+    /// <summary>Maps a freshness value only when it is accepted by the selected generated operation.</summary>
+    public static ReadConsistencyClass? ParseFreshness(string? freshness, string operationId)
     {
-        null => null,
-        "snapshot_per_task" => ReadConsistencyClass.Snapshot_per_task,
-        "read_your_writes" => ReadConsistencyClass.Read_your_writes,
-        "eventually_consistent" => ReadConsistencyClass.Eventually_consistent,
-        _ => throw new CliUsageException("The supplied freshness value is invalid."),
-    };
+        if (OperationFreshness.TryParse(operationId, freshness, out ReadConsistencyClass? parsed))
+        {
+            return parsed;
+        }
+
+        throw new CliUsageException("The supplied freshness value is not accepted by this operation.");
+    }
 }

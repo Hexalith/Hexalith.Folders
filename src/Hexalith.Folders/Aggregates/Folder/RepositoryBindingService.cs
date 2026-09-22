@@ -39,19 +39,20 @@ public sealed class RepositoryBindingService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
+        LayeredFolderAuthorizationContext authorizationContext = new(
+            request.AuthoritativeTenantId,
+            request.PrincipalId,
+            ActorSafeIdentifier: request.PrincipalId,
+            ActionToken,
+            LayeredFolderOperationPolicy.Mutation(),
+            request.ClaimTransformEvidence,
+            OperationScope: request.FolderId,
+            request.CorrelationId,
+            request.TaskId,
+            clientTenantValues,
+            request.ClientControlledPrincipalValues);
         LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
-                request.AuthoritativeTenantId,
-                request.PrincipalId,
-                ActorSafeIdentifier: request.PrincipalId,
-                ActionToken,
-                LayeredFolderOperationPolicy.Mutation(),
-                request.ClaimTransformEvidence,
-                OperationScope: request.FolderId,
-                request.CorrelationId,
-                request.TaskId,
-                clientTenantValues,
-                request.ClientControlledPrincipalValues),
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -151,6 +152,14 @@ public sealed class RepositoryBindingService(
             return FolderResult.Rejected(command, FolderResultCode.UnsupportedProviderCapability);
         }
 
+        LayeredFolderAuthorizationResult providerAuthorization = await _authorizationService
+            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: true, cancellationToken)
+            .ConfigureAwait(false);
+        if (!providerAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(providerAuthorization.Decision.OutcomeCode));
+        }
+
         ProviderRepositoryBindingResult providerResult = await provider.ValidateRepositoryBindingAsync(
             new ProviderRepositoryBindingRequest(
                 command.ManagedTenantId,
@@ -182,6 +191,14 @@ public sealed class RepositoryBindingService(
             aggregateResult.Events,
             providerResult,
             _timeProvider.GetUtcNow());
+        LayeredFolderAuthorizationResult persistenceAuthorization = await _authorizationService
+            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: true, cancellationToken)
+            .ConfigureAwait(false);
+        if (!persistenceAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(persistenceAuthorization.Decision.OutcomeCode));
+        }
+
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,
             command.IdempotencyKey,

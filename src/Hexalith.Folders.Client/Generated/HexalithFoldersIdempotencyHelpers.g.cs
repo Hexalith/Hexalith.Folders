@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "bc70b397be367aadafcb9957340f3ba31dce9b35f59bda7ee81492abc51ca29d";
+    public const string ContractSpineSha256 = "71052dbfebb677e38cf1e56b4afee1ddd97e123a6ef8df7171fbc57ee5935d07";
     public const string GenerationConfigurationSha256 = "3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d";
-    public const string GeneratedHelpersSha256 = "f890fe9c141773f6330073d212d5e12160fbb2a9d0adf43d310e149f7e47b6f7";
+    public const string GeneratedHelpersSha256 = "5e8ae23dee8fccf992636564182685a2d45f4201c652c96944c1f17aef26c2d5";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -193,6 +193,49 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         ("POST", "/api/v2/provider-readiness/validations", "ValidateProviderReadiness"),
     ];
 
+    private static IReadOnlyDictionary<string, string> AcceptedFreshnessValues { get; } =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["GetAuditRecord"] = "eventually_consistent",
+            ["GetBranchRefPolicy"] = "eventually_consistent",
+            ["GetCommitEvidence"] = "eventually_consistent",
+            ["GetDirtyStateDiagnostics"] = "eventually_consistent",
+            ["GetEffectivePermissions"] = "read_your_writes",
+            ["GetFailedOperationDiagnostics"] = "eventually_consistent",
+            ["GetFolderFileMetadata"] = "snapshot_per_task",
+            ["GetFolderIndexingStatus"] = "eventually_consistent",
+            ["GetFolderLifecycleStatus"] = "eventually_consistent",
+            ["GetLockDiagnostics"] = "eventually_consistent",
+            ["GetOperationTimelineEntry"] = "eventually_consistent",
+            ["GetProjectionFreshness"] = "eventually_consistent",
+            ["GetProviderBinding"] = "eventually_consistent",
+            ["GetProviderOutcome"] = "eventually_consistent",
+            ["GetProviderStatusDiagnostics"] = "eventually_consistent",
+            ["GetProviderSupportEvidence"] = "eventually_consistent",
+            ["GetReadinessDiagnostics"] = "eventually_consistent",
+            ["GetReconciliationStatus"] = "eventually_consistent",
+            ["GetRepositoryBinding"] = "eventually_consistent",
+            ["GetSyncStatusDiagnostics"] = "eventually_consistent",
+            ["GetTaskStatus"] = "eventually_consistent",
+            ["GetWorkspaceCleanupStatus"] = "read_your_writes",
+            ["GetWorkspaceLock"] = "read_your_writes",
+            ["GetWorkspaceRetryEligibility"] = "eventually_consistent",
+            ["GetWorkspaceStatus"] = "read_your_writes",
+            ["GetWorkspaceTransitionEvidence"] = "snapshot_per_task",
+            ["GlobFolderFiles"] = "snapshot_per_task",
+            ["ListAuditTrail"] = "eventually_consistent",
+            ["ListFolderAclEntries"] = "eventually_consistent",
+            ["ListFolderFiles"] = "snapshot_per_task",
+            ["ListOperationTimeline"] = "eventually_consistent",
+            ["ReadFileRange"] = "snapshot_per_task",
+            ["SearchFolderFiles"] = "snapshot_per_task",
+            ["SearchFolderIndexedFiles"] = "eventually_consistent",
+            ["ValidateProviderReadiness"] = "snapshot_per_task",
+        };
+
+    internal static string? AcceptedFreshness(string operationId) =>
+        AcceptedFreshnessValues.TryGetValue(operationId, out string? value) ? value : null;
+
     private static IReadOnlySet<string> GenericProblemTuples { get; } = new HashSet<string>(StringComparer.Ordinal)
     {
         "AddFile|400|validation_error|content_evidence_invalid|false|revise_request|visibility",
@@ -200,15 +243,15 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "AddFile|400|validation_error|validation_error|false|revise_request|visibility",
         "AddFile|401|authentication_failure|authentication_required|false|check_credentials|visibility",
         "AddFile|404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
-        "AddFile|409|authorization_revocation_detected|authorization_revocation_detected|false|contact_operator|currentState,visibility",
         "AddFile|409|idempotency_conflict|idempotency_conflict|false|revise_request|visibility",
         "AddFile|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
-        "AddFile|409|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
         "AddFile|410|lock_expired|lock_expired|true|retry|leaseStatus,visibility",
         "AddFile|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
         "AddFile|413|input_limit_exceeded|d9_inline_limit_exceeded|true|revise_request|visibility",
         "AddFile|422|input_limit_exceeded|file_content_limit_exceeded|false|revise_request|visibility",
         "AddFile|422|state_transition_invalid|state_transition_invalid|false|revise_request|visibility",
+        "AddFile|423|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
+        "AddFile|428|authorization_revocation_detected|authorization_revocation_detected|false|contact_operator|currentState,visibility",
         "AddFile|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "AddFile|503|file_policy_unavailable|file_policy_unavailable|true|retry|visibility",
         "AddFile|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
@@ -235,6 +278,7 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "BindRepository|409|idempotency_conflict|idempotency_conflict|false|revise_request|visibility",
         "BindRepository|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
         "BindRepository|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+        "BindRepository|422|unsupported_provider_capability|unsupported_provider_capability|false|contact_operator|visibility",
         "BindRepository|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "BindRepository|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
         "BindRepository|503|provider_unavailable|provider_unavailable|true|retry|visibility",
@@ -245,15 +289,15 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "ChangeFile|400|validation_error|validation_error|false|revise_request|visibility",
         "ChangeFile|401|authentication_failure|authentication_required|false|check_credentials|visibility",
         "ChangeFile|404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
-        "ChangeFile|409|authorization_revocation_detected|authorization_revocation_detected|false|contact_operator|currentState,visibility",
         "ChangeFile|409|idempotency_conflict|idempotency_conflict|false|revise_request|visibility",
         "ChangeFile|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
-        "ChangeFile|409|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
         "ChangeFile|410|lock_expired|lock_expired|true|retry|leaseStatus,visibility",
         "ChangeFile|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
         "ChangeFile|413|input_limit_exceeded|d9_inline_limit_exceeded|true|revise_request|visibility",
         "ChangeFile|422|input_limit_exceeded|file_content_limit_exceeded|false|revise_request|visibility",
         "ChangeFile|422|state_transition_invalid|state_transition_invalid|false|revise_request|visibility",
+        "ChangeFile|423|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
+        "ChangeFile|428|authorization_revocation_detected|authorization_revocation_detected|false|contact_operator|currentState,visibility",
         "ChangeFile|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "ChangeFile|503|file_policy_unavailable|file_policy_unavailable|true|retry|visibility",
         "ChangeFile|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
@@ -320,6 +364,7 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "CreateRepositoryBackedFolder|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
         "CreateRepositoryBackedFolder|409|repository_conflict|repository_conflict|false|revise_request|visibility",
         "CreateRepositoryBackedFolder|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+        "CreateRepositoryBackedFolder|422|unsupported_provider_capability|unsupported_provider_capability|false|contact_operator|visibility",
         "CreateRepositoryBackedFolder|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "CreateRepositoryBackedFolder|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
         "CreateRepositoryBackedFolder|503|provider_unavailable|provider_unavailable|true|retry|visibility",
@@ -670,13 +715,13 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "RemoveFile|400|validation_error|validation_error|false|revise_request|visibility",
         "RemoveFile|401|authentication_failure|authentication_required|false|check_credentials|visibility",
         "RemoveFile|404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
-        "RemoveFile|409|authorization_revocation_detected|authorization_revocation_detected|false|contact_operator|currentState,visibility",
         "RemoveFile|409|idempotency_conflict|idempotency_conflict|false|revise_request|visibility",
         "RemoveFile|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
-        "RemoveFile|409|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
         "RemoveFile|410|lock_expired|lock_expired|true|retry|leaseStatus,visibility",
         "RemoveFile|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
         "RemoveFile|422|state_transition_invalid|state_transition_invalid|false|revise_request|attemptedTransition,currentState,visibility",
+        "RemoveFile|423|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
+        "RemoveFile|428|authorization_revocation_detected|authorization_revocation_detected|false|contact_operator|currentState,visibility",
         "RemoveFile|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "RemoveFile|503|file_policy_unavailable|file_policy_unavailable|true|retry|visibility",
         "RemoveFile|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",

@@ -6,7 +6,7 @@ namespace Hexalith.Folders.Authorization;
 /// Carries an outer authorization decision through an in-process compatibility dispatch so an inner transport
 /// adapter cannot repeat authorization with a different action token.
 /// </summary>
-public static class PreauthorizedRequestContext
+internal static class PreauthorizedRequestContext
 {
     private static readonly AsyncLocal<PreauthorizedRequestState?> CurrentState = new();
     private static readonly AsyncLocal<int> ReuseSuppressionDepth = new();
