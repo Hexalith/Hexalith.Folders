@@ -17,13 +17,13 @@ context:
 
 **Problem:** Consumers still lack a published, digest-bound PD10 v2 authorization spine. A candidate already exists, and treating it as Story 1.17 closure or as a routed release would skip the execution gates.
 
-**Approach:** Leave the candidate, historical v1 spine, and accepted A6b, Section 9, and A8 records unchanged. Implement only the one bounded unit named by the scope answer. Until that answer is recorded, change no contract, host, generated client, or approval artifact.
+**Approach:** Leave the candidate, historical v1 spine, and accepted A6b, Section 9, and A8 records unchanged. Decision: stop. Story 1.17 stays backlog. This spec is not approved and does not start a slice, GENERATE review, or production publication.
 
 ## Boundaries & Constraints
 
 **Always:** Keep `hexalith.folders.v1.yaml` byte-for-byte and preserve historical OQ3 evidence. Authorize before any protected lookup or side effect. Keep fourteen access states, every protected family once, and the 49-operation candidate. Unauthenticated is `401`; fresh negative authority is one byte-equivalent `404`; unusable authority is one retryable `503`. CLI `73`/`77` and MCP `concurrency_conflict` stay paired. Generated SDK and parity rows stay generator-owned. `sprint-status.yaml` stays orchestrator-owned.
 
-**Never:** Map `/api/v2` from production `Program.cs`, publish a release, or close Story 1.17. Infer a new A6b or A8 approval, or flip `v2_exposure_authorized` or `ordinary_story_execution_authorized`. Hand-edit generated output or revive `tests/tools/pd10-v2-contract-generator/`. Start a slice, resume GENERATE review, or cut production over before the scope question is answered.
+**Never:** Map `/api/v2` from production `Program.cs`, publish a release, or close Story 1.17. Infer a new A6b or A8 approval, or flip `v2_exposure_authorized` or `ordinary_story_execution_authorized`. Hand-edit generated output or revive `tests/tools/pd10-v2-contract-generator/`. Start a slice, resume GENERATE review, or cut production over from this stopped spec.
 
 ## I/O & Edge-Case Matrix
 
@@ -36,10 +36,6 @@ context:
 | External v1 consumer | Deployed consumer outside this repo | Stop | Escalate; no invented migration window |
 
 </frozen-after-approval>
-
-## Open Questions
-
-- Scope of this session — options: Resume in-review GENERATE at `_bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md` (candidate review only; this draft stays unapproved) / Name one slice `1.17-A` through `1.17-G` (rewrite this spec to that slice; still no v2 exposure or parent closure; overrides `ordinary_story_execution_authorized: false`) / Publish production v2 (route `/api/v2`, drop v1 from the supported profile, close the parent; overrides `v2_exposure_authorized: false` and held status) / Stop (leave Story 1.17 backlog; do not approve this spec)
 
 ## Code Map
 
@@ -57,14 +53,14 @@ context:
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `_bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md` -- after the scope answer, replace these tasks with that one unit -- slices `1.17-A` through `1.17-G` are separate assignments.
+- [ ] `_bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md` -- leave this spec draft and unapproved -- the scope answer is stop.
 - [ ] `src/Hexalith.Folders.Server/Program.cs` -- leave mapping historical-only -- exposure is not authorized.
 - [ ] `tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs` -- keep non-routing and v1 byte-stability green -- current exposure guard.
 
 **Acceptance Criteria:**
-- Given this spec is draft and no scope answer is recorded, when the session ends, then no contract, server, SDK, CLI, MCP, UI, approval, or sprint-status file has changed for Story 1.17.
+- Given this spec is draft and the scope answer is stop, when the session ends, then no contract, server, SDK, CLI, MCP, UI, approval, or sprint-status file has changed for Story 1.17.
 - Given the production host, when it starts from `Program.cs`, then it does not map `/api/v2`.
-- Given a later answer names GENERATE review or one slice, when this spec is rewritten, then it still does not close Story 1.17 or expose v2 unless that answer selects production publication.
+- Given the scope answer is stop, when this session ends, then Story 1.17 stays backlog and this spec stays unapproved.
 
 ## Implementation Notes
 
