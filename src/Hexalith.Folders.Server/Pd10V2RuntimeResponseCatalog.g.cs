@@ -694,6 +694,7 @@ internal static class Pd10V2RuntimeResponseCatalog
                 "401|authentication_failure|authentication_required|false|check_credentials|visibility",
                 "404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
                 "413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+                "429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
                 "503|provider_unavailable|provider_unavailable|true|retry|visibility",
                 "503|read_model_unavailable|projection_unavailable|true|retry|visibility",
             ],

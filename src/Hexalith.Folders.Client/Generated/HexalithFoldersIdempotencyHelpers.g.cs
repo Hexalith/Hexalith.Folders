@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "71052dbfebb677e38cf1e56b4afee1ddd97e123a6ef8df7171fbc57ee5935d07";
+    public const string ContractSpineSha256 = "9a0822ac786e601878fd2ee5f9aee431c9974f3caa1c41e5497d88af2f6c4ec1";
     public const string GenerationConfigurationSha256 = "3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d";
-    public const string GeneratedHelpersSha256 = "5e8ae23dee8fccf992636564182685a2d45f4201c652c96944c1f17aef26c2d5";
+    public const string GeneratedHelpersSha256 = "33a2768f5a147cce5a804c3ea8b155e844c6648562a7bbf203ddf149725e9ab5";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -780,6 +780,7 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "ValidateProviderReadiness|401|authentication_failure|authentication_required|false|check_credentials|visibility",
         "ValidateProviderReadiness|404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
         "ValidateProviderReadiness|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+        "ValidateProviderReadiness|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "ValidateProviderReadiness|503|provider_unavailable|provider_unavailable|true|retry|visibility",
         "ValidateProviderReadiness|503|read_model_unavailable|evidence_unavailable|true|retry|visibility",
         "ValidateProviderReadiness|503|read_model_unavailable|projection_unavailable|true|retry|visibility",

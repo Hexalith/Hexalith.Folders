@@ -1,10 +1,10 @@
 manifest_version: 2
-revision: folders-planning-authority-relock-corrective-a8-finalization-2026-09-21
+revision: folders-planning-authority-relock-a6b-reapproval-2026-09-22
 project: Hexalith.Folders
 generated_on: '2026-09-17'
-reconciled_on: '2026-09-21'
-status: corrective-a8-complete-hold-removed-recovery-closed
-general_execution_hold: false
+reconciled_on: '2026-09-22'
+status: a6b-reapproved-a8-corrective-pending-hold-active
+general_execution_hold: true
 v2_exposure_authorized: false
 sprint_status_regeneration_authorized: false
 ordinary_story_execution_authorized: false
@@ -19,7 +19,7 @@ authority_register:
     this manifest execution graph; sprint status tracking only.
 approval_binding:
   register_path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  register_sha256: d4bec0cda7b450e3fec44031bf78296afb6531d5d0d9fb6374ebb0cf9d86566f
+  register_sha256: 886c8004c757db56da652f9d0e7c07f5593b00f16a93ca5c3ca8ee2f7cf18116
   approved_pre_generation_gates:
   - A1
   - A2
@@ -35,7 +35,7 @@ approval_binding:
   - A8
   pending_post_generation_gates: []
   approval_inference_forbidden: true
-  statement: A2b, A3, corrective A6b, historical A8, and corrective A8 are explicitly approved through exact-digest overlays. Corrective post-A8 Section 9 passed, so the conditionally authorized hold removal and planning-recovery closure are recorded; v2 remains unexposed and no ordinary story was started.
+  statement: A2b, A3, historical A8, and corrective A8 remain explicitly approved for the bytes they bound. On 2026-09-22 A6b was reopened (245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483 superseded), the scoped review's blocking finding was fixed and resealed, and A6b was explicitly re-approved against conformance set 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7 (candidate set c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts). The general execution hold remains active and planning recovery open until a corrective A8 approval and a new passing Section 9. v2 remains unexposed and no ordinary story is started.
 supersedes_snapshot:
   path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
   manifest_version: 1
@@ -55,7 +55,7 @@ provenance:
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
   sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
 - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  sha256: d4bec0cda7b450e3fec44031bf78296afb6531d5d0d9fb6374ebb0cf9d86566f
+  sha256: 886c8004c757db56da652f9d0e7c07f5593b00f16a93ca5c3ca8ee2f7cf18116
 - path: docs/exit-criteria/nfr-traceability.md
   sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
 - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
@@ -73,7 +73,9 @@ provenance:
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
   sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+  sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+- path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+  sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 post_a8_finalization:
   approval_record:
     path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
@@ -139,6 +141,26 @@ corrective_a8_finalization:
     conformance_sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
     candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
     artifact_count: 149
+  a6b_reopen:
+    reopened_on: '2026-09-22'
+    authorized_by: Jerome
+    authorization_source: Explicit "do recommended" in the 2026-09-22 PD10 v2 relock decision exchange.
+    superseded_conformance_sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
+    current_conformance_sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    current_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    scoped_review_fix_resealed_from_conformance_sha256: 249570480be2a7503ad79d33c0b026fd913c8f05f4dfc92cb2b054b1d08b0195
+    current_artifact_count: 196
+    general_execution_hold: true
+    planning_recovery_closed: false
+    tracker_restored_to_sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    tracker_restoration_reason: Commit 1ab55ef rewrote the tracker (1fca8fffcdf0f176b150074c0fd34d58c089b10798ce03c01ec508051a885469) while regeneration was prohibited; its renamed keys matched neither story files nor this manifest.
+    required_next_steps:
+    - Corrective A8 approval and a new passing Section 9 before hold removal.
+    completed_steps:
+    - Scoped review of candidate delta 292ea32..dc8a4e6; one blocking finding fixed and resealed.
+    - A6b re-approved 2026-09-22 by Jerome for Product, Architecture, and Security.
+    a6b_reapproval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+    a6b_reapproval_record_sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
   final_corrective_section9:
     path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
     status: pass-post-a8-corrective
@@ -1079,33 +1101,39 @@ decision_nodes:
     - Security
     decision_payload_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
     decision_payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
-    approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
-    approval_record_sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+    invalidated_approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml
+    invalidated_approval_record_sha256: e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558
+    invalidated_on: '2026-09-22'
+    invalidation_reason: The conformance set bound by the 2026-09-21 corrective approval (245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483, candidate set ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1, 149 artifacts) was resealed; approval does not transfer to the new bytes.
+    approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+    approval_record_sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
     approvals:
     - authority: Product
       approver: Jerome
-      approved_on: '2026-09-21'
+      approved_on: '2026-09-22'
       payload_version: 1.0.0-candidate.1
       payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
     - authority: Architecture
       approver: Jerome
-      approved_on: '2026-09-21'
+      approved_on: '2026-09-22'
       payload_version: 1.0.0-candidate.1
       payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
     - authority: Security
       approver: Jerome
-      approved_on: '2026-09-21'
+      approved_on: '2026-09-22'
       payload_version: 1.0.0-candidate.1
       payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
     approval_inference_forbidden: true
+    reapproval_precondition: One scoped review pass over candidate delta 292ea32..dc8a4e6 (68 story-owned files); only high-severity, reachable, in-delta defects block.
+    reapproval_precondition_status: satisfied-one-blocking-finding-fixed-and-resealed
     required_bound_artifacts:
     - path: docs/contract/authorization-matrix.md
       required_version: 2.0.0
       sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
     - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-      sha256: 245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483
-      declared_candidate_set_sha256: ac8aba1e1c869d6183429bef7340b795eaf4d3bee0938a6c8d0e2817507bbbd1
-      artifact_count: 149
+      sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+      declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+      artifact_count: 196
   DEC-A7-C6:
     node_type: approval-decision
     authority_ids:
@@ -1204,7 +1232,8 @@ decision_nodes:
     approval_record_sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
     corrective_approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
     corrective_approval_record_sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
-    corrective_approval_status: approved-final-validation-passed-hold-removed
+    corrective_approval_status: superseded-hold-reinstated-by-a6b-reopen
+    corrective_reapproval_required: true
     approvals:
     - authority: Product
       approver: Jerome
@@ -1358,7 +1387,7 @@ relock_nodes:
     node_type: relock-milestone
     execution_rank: 6
     execution_authorization_status: relock-only
-    delivery_evidence_status: accepted
+    delivery_evidence_status: open
     prerequisites:
     - RELOCK-PLANNING
     - DEC-A2B
@@ -1367,9 +1396,10 @@ relock_nodes:
     - DEC-A6B-OQ3
     produces:
     - Complete Section 9 conformance result bound to approved digests.
-    decision_status: accepted
-    result_path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
-    result_status: pass-post-a8-corrective
+    decision_status: not-applicable
+    delivery_evidence_status_note: Reopened 2026-09-22; the last passing result binds the superseded A6b conformance digest and must be rerun after A6b re-approval.
+    superseded_result_path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-21-post-a8-corrective.yaml
+    superseded_result_status: pass-post-a8-corrective-stale-a6b-digest
 delivery_evidence_nodes:
   OQ5-EVIDENCE:
     node_type: delivery-evidence

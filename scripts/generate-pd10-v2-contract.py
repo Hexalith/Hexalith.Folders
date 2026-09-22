@@ -456,6 +456,8 @@ def operation_runtime_problems(
             False,
             "contact_operator",
         ))
+    if operation_id == "ValidateProviderReadiness":
+        problems.append(runtime_problem(429, "provider_rate_limited", "provider_rate_limited", True, "retry"))
     problems.extend(declared_runtime_problems(operation, components))
     return deduplicate_problems(problems)
 
@@ -1165,6 +1167,22 @@ def validate_declared_examples(contract: dict[str, Any]) -> None:
                         )
 
 
+def validate_declared_statuses_have_runtime_tuples(contract: dict[str, Any]) -> None:
+    for path_item in contract["paths"].values():
+        for method, operation in path_item.items():
+            if method not in HTTP_METHODS or not isinstance(operation, dict):
+                continue
+            inventory_statuses = {
+                entry["status"] for entry in operation.get("x-hexalith-runtime-problem-inventory", [])
+            }
+            for status in operation.get("responses", {}):
+                if str(status).isdigit() and int(status) >= 400 and int(status) not in inventory_statuses:
+                    raise ValueError(
+                        f"{operation['operationId']} declares error status {status} "
+                        "without an operation-bound runtime problem tuple."
+                    )
+
+
 def resolve_local_reference(contract: dict[str, Any], reference: str) -> Any:
     if not reference.startswith("#/"):
         raise ValueError(f"Only local references are supported during candidate validation: {reference!r}.")
@@ -1198,6 +1216,7 @@ def main() -> int:
     matrix = read_matrix(arguments.matrix)
     candidate = transform(source, matrix)
     validate_declared_examples(candidate)
+    validate_declared_statuses_have_runtime_tuples(candidate)
     serialized = yaml.safe_dump(candidate, sort_keys=False, allow_unicode=False, width=160)
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(

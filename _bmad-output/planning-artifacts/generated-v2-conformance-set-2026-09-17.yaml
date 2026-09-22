@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 76e36d37bfcfc97e575bf6847f8cc17c0691841c7f244b75e711220abf41a0be
+candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
 artifact_count: 196
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -94,8 +94,8 @@ artifacts:
     sha256: 841bc26f7b786d97bbe0a8ee8df9c2c64a0badbcd893f5ffd0b9a76d57771381
   - path: "scripts/generate-pd10-v2-contract.py"
     kind: file
-    bytes: 51971
-    sha256: 1ee0f7cebf51e37eac744c14e5fececf6fcc7697db211e43fff272bec67baf10
+    bytes: 53027
+    sha256: 532659ae608b46d10424d73262e858f61279d0d40e2d7d8af4f4d3b80b5aae68
   - path: "scripts/generate-pd10-v2-runtime-catalog.py"
     kind: file
     bytes: 4534
@@ -174,8 +174,8 @@ artifacts:
     sha256: c036899e53e7f343b512df36524e13cdba0fee48aba3307789999b1083246562
   - path: "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs"
     kind: file
-    bytes: 100976
-    sha256: d60b14a071cd98165ca2cb307c2d1727d9b909f7938751abcdc577e0c57d2114
+    bytes: 101083
+    sha256: 25faad997d356e5f779365f15ced5120837e915d3ed0fa1f993af0a12e88174e
   - path: "src/Hexalith.Folders.Client/Generation/GeneratedClientPostProcessor.cs"
     kind: file
     bytes: 24409
@@ -218,8 +218,8 @@ artifacts:
     sha256: 3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d
   - path: "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"
     kind: file
-    bytes: 1110078
-    sha256: 71052dbfebb677e38cf1e56b4afee1ddd97e123a6ef8df7171fbc57ee5935d07
+    bytes: 1111040
+    sha256: 9a0822ac786e601878fd2ee5f9aee431c9974f3caa1c41e5497d88af2f6c4ec1
   - path: "src/Hexalith.Folders.Mcp/Errors/FailureKindProjection.cs"
     kind: file
     bytes: 7390
@@ -358,8 +358,8 @@ artifacts:
     sha256: 9d46645569c40f39ef4199391cf432d2f3e6e42cd7e6625258a20374f3e083fd
   - path: "src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs"
     kind: file
-    bytes: 56271
-    sha256: 6fca2af45ddb92df6052e0a9018df848f08a37f7aeab99713681ac506de11c30
+    bytes: 56360
+    sha256: f9c19b4352a3fb8c7aba99b78b5b2a41e225a7497a304760b19187e150698283
   - path: "src/Hexalith.Folders.UI/Components/ConsoleErrorPanel.razor"
     kind: file
     bytes: 1812
@@ -594,8 +594,8 @@ artifacts:
     sha256: 84b02948ebb7de69a9c1f47650fcf6c02ba389c0629fa05ff79ddd53ac969e18
   - path: "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
     kind: file
-    bytes: 186344
-    sha256: e785d93fd30f90ca8458ac47b7a5e84c61926a78a96c018691d5d55091df58c9
+    bytes: 188898
+    sha256: 73753d950a889bc2d9937312438dae8595ce214c698be5db42f4a1a4efc0bf02
   - path: "tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs"
     kind: file
     bytes: 70936
@@ -751,11 +751,11 @@ artifacts:
   - path: "tests/fixtures/parity-contract.yaml"
     kind: file
     bytes: 167058
-    sha256: 7a79b709d5bcb651b3260381b79bdd46ad297e9fd32bc9a20c0006385006dfc2
+    sha256: af37468f18aca5c12df0a46404ca4ceb1381195d95b9ab42c36920513604ffbe
   - path: "tests/fixtures/previous-spine.yaml"
     kind: file
     bytes: 77714
-    sha256: 22f673a61ea0d635c7049cf7aa963d65d83f6934b930e4743b591b4504222777
+    sha256: 25c045df7326afd13c59f84233ab8cc41d7e46429399d97d5731c1e46eda8943
   - path: "tests/tools/parity-oracle-generator/Program.cs"
     kind: file
     bytes: 74286

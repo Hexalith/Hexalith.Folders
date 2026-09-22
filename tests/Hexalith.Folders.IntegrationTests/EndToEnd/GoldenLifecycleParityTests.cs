@@ -904,6 +904,48 @@ public sealed class GoldenLifecycleParityTests
     }
 
     [Fact]
+    public async Task CandidateProviderReadinessRateLimitKeepsItsDeclaredTuple()
+    {
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: async context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                context.Response.ContentType = "application/problem+json";
+                await context.Response.WriteAsync(
+                    "{\"type\":\"https://hexalith.dev/errors/folders/provider_rate_limited\",\"title\":\"Provider rate limited.\",\"status\":429,\"category\":\"provider_rate_limited\",\"code\":\"provider_rate_limited\",\"message\":\"The provider rate limited the request.\",\"correlationId\":\"correlation_readiness_0429\",\"retryable\":true,\"clientAction\":\"retry\",\"retryAfterSeconds\":30,\"details\":{\"visibility\":\"metadata_only\",\"retryReasonCode\":\"provider_rate_limited\",\"reasonCategory\":\"provider_rate_limited\",\"evidenceSource\":\"provider_readiness\"}}")
+                    .ConfigureAwait(false);
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+
+            HexalithFoldersApiException exception = await Should.ThrowAsync<HexalithFoldersApiException>(() =>
+                host.SdkClient.ValidateProviderReadinessAsync(
+                    x_Correlation_Id: "correlation_readiness_0429",
+                    x_Hexalith_Freshness: ReadConsistencyClass.Snapshot_per_task,
+                    body: new ValidateProviderReadinessRequest
+                    {
+                        ProviderBindingRef = "provider_binding_0001",
+                        RequestedCapability = ProviderCapabilityName.Repository_creation,
+                    },
+                    cancellationToken: TestContext.Current.CancellationToken)).ConfigureAwait(true);
+
+            exception.StatusCode.ShouldBe(StatusCodes.Status429TooManyRequests, exception.Response);
+            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+            problem.Category.ShouldBe(CanonicalErrorCategory.Provider_rate_limited);
+            problem.Code.ShouldBe(CanonicalErrorCode.Provider_rate_limited);
+            problem.Retryable.ShouldBeTrue();
+            problem.Details.Visibility.ShouldBe(DetailsVisibility.Metadata_only);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task CandidateStripsForbiddenHistoricalProblemDetailAndInstanceFields()
     {
         TestHost host = await TestHost.StartAsync(

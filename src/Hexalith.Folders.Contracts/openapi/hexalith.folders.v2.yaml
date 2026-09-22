@@ -2364,7 +2364,25 @@ paths:
         '404':
           $ref: '#/components/responses/SafeDenial404'
         '429':
-          $ref: '#/components/responses/ProviderRateLimited'
+          description: Provider readiness or repository operation is rate limited.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                candidateRuntime429_1:
+                  value:
+                    type: about:blank
+                    title: Candidate request or downstream outcome
+                    status: 429
+                    category: provider_rate_limited
+                    code: provider_rate_limited
+                    message: The request could not be completed.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: true
+                    clientAction: retry
+                    details:
+                      visibility: metadata_only
         '503':
           description: Provider dependency is unavailable or readiness cannot be safely established. The exact authority-unavailable branch is emitted only before
             protected observation.
@@ -2567,6 +2585,13 @@ paths:
         code: c4_input_limit_exceeded
         retryable: false
         clientAction: revise_request
+        detailKeys:
+        - visibility
+      - status: 429
+        category: provider_rate_limited
+        code: provider_rate_limited
+        retryable: true
+        clientAction: retry
         detailKeys:
         - visibility
       - status: 503

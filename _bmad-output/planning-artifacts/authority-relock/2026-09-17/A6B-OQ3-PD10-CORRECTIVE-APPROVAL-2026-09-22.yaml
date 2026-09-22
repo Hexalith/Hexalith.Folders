@@ -1,0 +1,86 @@
+schema_version: '1.0.0'
+record_id: A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22
+status: approved
+approved_on: '2026-09-22'
+approved_at: '2026-09-22T22:46:45+02:00'
+approver: Jerome
+response: "A6b (OQ3/PD10): I, Jerome, approve for Product, Architecture and Security on 2026-09-22. Payload A6B-OQ3-PD10.md sha256 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375 (1.0.0-candidate.1). Bound artifacts: authorization-matrix v2.0.0 d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420; conformance set 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7, candidate set c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts. I accept the narrowed inventory and the 17 deferred review findings. This does not approve A8, hold removal, sprint-status changes, closing Story 1.17 or v2 exposure."
+source: Explicit approval in the 2026-09-22 PD10 v2 relock decision exchange after presentation of the exact resealed digests and the scoped review outcome.
+approval_scope: corrective-a6b-196-artifact-package-only
+represented_authorities: [Product, Architecture, Security]
+approval_inference_forbidden: true
+
+decision_target:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md
+  version: 1.0.0-candidate.1
+  sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+
+exact_approval_inputs:
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    declared_authorization_matrix_sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    artifact_count: 196
+    reproduction_status: pass-byte-identical-two-isolated-runs-committed-file-and-post-test-recheck
+  - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+    sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+    binding_role: scoped-review-outcome-1-fixed-17-deferred-10-rejected
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 354570f30c59e38377871722d56f54b2e5b38e0e04db975943cddd4bf1019d76
+    binding_role: pre-approval-pending-state
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    binding_role: unchanged-current-tracker
+
+accepted_conditions:
+  narrowed_inventory: The 196-artifact story-owned allowlist no longer attests the five root gitlinks, .github/workflows/release.yml, Directory.Packages.props, docs/exit-criteria/c3-retention.md, or tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs.
+  deferred_review_findings: 17
+  deferred_findings_source: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+
+validation_at_approval:
+  contracts: pass-340-of-340
+  server: pass-757-of-757
+  client: pass-324-of-324
+  cli: pass-718-of-718
+  mcp: pass-667-of-667
+  ui: pass-525-of-525
+  integration: pass-703-of-703
+  sample: pass-10-of-10
+  contract_parity_gate: pass-12-of-12-release-assemblies
+  domain_suite: not-rerun-no-domain-change
+  worktree_state: uncommitted-over-dc8a4e66b32b4300b3101856bb32fcc47e5b6bc6
+
+approvals:
+  - authority: Product
+    approver: Jerome
+    approved_on: '2026-09-22'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+  - authority: Architecture
+    approver: Jerome
+    approved_on: '2026-09-22'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+  - authority: Security
+    approver: Jerome
+    approved_on: '2026-09-22'
+    payload_version: 1.0.0-candidate.1
+    payload_sha256: 2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375
+
+approval_effect:
+  a6b_approved: true
+  a8_corrective_reapproval_required: true
+  sprint_status_regeneration_authorized: false
+  general_execution_hold: true
+  planning_recovery_closed: false
+  story_1_17_closure_authorized: false
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  external_dependency_acceptance_changed: false
+
+preserved_boundaries:
+  - This approval does not approve A8, hold removal, recovery closure, sprint-status changes, Story 1.17 closure, v2 exposure, or ordinary story execution.
+  - It does not authorize any dependency or submodule change.
