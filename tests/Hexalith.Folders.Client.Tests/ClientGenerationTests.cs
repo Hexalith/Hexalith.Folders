@@ -484,6 +484,9 @@ public sealed class ClientGenerationTests
         };
 
         string canonical = JsonConvert.SerializeObject(problem);
+        HexalithFoldersOperationContext.Set(
+            "POST",
+            "api/v2/folders/folder_000000001/workspaces/workspace_000000001/files/add");
         var typed = new HexalithFoldersApiException<ProblemDetails>("message", 400, canonical, new Dictionary<string, IEnumerable<string>>(), problem, null!);
         typed.ProblemDetails.ShouldNotBeNull();
         typed.ProblemDetails.Category.ShouldBe(CanonicalErrorCategory.Validation_error);
@@ -806,6 +809,7 @@ public sealed class ClientGenerationTests
 
         const string mismatchBody = """{"type":"about:blank","title":"Read model unavailable","status":503,"category":"read_model_unavailable","code":"projection_unavailable","message":"Projection data is temporarily unavailable.","correlationId":"correlation_01HZY7Z6N7J4Q2X8Y9V0COR001","retryable":true,"clientAction":"retry","details":{"visibility":"metadata_only"}}""";
         ProblemDetails problem = JsonConvert.DeserializeObject<ProblemDetails>(mismatchBody).ShouldNotBeNull();
+        HexalithFoldersOperationContext.Set("GET", "api/v2/folders/folder_000000001/lifecycle-status");
         var mismatch = new HexalithFoldersApiException<ProblemDetails>("mismatch", 400, mismatchBody, new Dictionary<string, IEnumerable<string>>(), problem, null!);
         mismatch.ProblemDetails.ShouldBeNull();
         mismatch.ProblemDetailsParseDiagnostic.ShouldBe("http_status_mismatch");
@@ -866,6 +870,15 @@ public sealed class ClientGenerationTests
         originatingOperation.ProblemDetails.ShouldNotBeNull(originatingOperation.ProblemDetailsParseDiagnostic);
 
         HexalithFoldersOperationContext.Set("GET", "api/v2/not-an-operation");
+        var unbound = new HexalithFoldersApiException<ProblemDetails>(
+            "unbound operation",
+            400,
+            wire.ToString(Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            typedResult,
+            null!);
+        unbound.ProblemDetails.ShouldBeNull();
+        unbound.ProblemDetailsParseDiagnostic.ShouldBe("problem_shape_mismatch");
     }
 
     [Fact]
@@ -873,6 +886,9 @@ public sealed class ClientGenerationTests
     {
         JObject valid = GenericProblemWithOptionalFields();
         ProblemDetails typedResult = valid.ToObject<ProblemDetails>().ShouldNotBeNull();
+        HexalithFoldersOperationContext.Set(
+            "POST",
+            "api/v2/folders/folder_000000001/workspaces/workspace_000000001/files/add");
         var validException = new HexalithFoldersApiException<ProblemDetails>(
             "valid generic problem",
             400,

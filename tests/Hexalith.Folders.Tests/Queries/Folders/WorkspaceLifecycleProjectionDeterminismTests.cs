@@ -43,6 +43,11 @@ public sealed class WorkspaceLifecycleProjectionDeterminismTests
         first.TaskStatus.FolderId.ShouldBe(FolderLifecycleReplayFixture.FolderId);
         first.TaskStatus.EvidenceScope.PrincipalId.ShouldBe(FolderLifecycleReplayFixture.ActorPrincipalId);
         first.TaskStatus.EvidenceScope.PrincipalId.ShouldNotBe(first.TaskStatus.TaskId);
+        first.WorkspaceLockStatus.EvidenceScope.PrincipalId.ShouldBe(FolderLifecycleReplayFixture.ActorPrincipalId);
+        first.WorkspaceLockStatus.EvidenceScope.PrincipalId.ShouldNotBe(first.WorkspaceLockStatus.TaskId);
+        first.WorkspaceStatus.EvidenceScope.PrincipalId.ShouldBe(FolderLifecycleReplayFixture.ActorPrincipalId);
+        first.WorkspaceCleanupStatus.EvidenceScope.PrincipalId.ShouldBe(FolderLifecycleReplayFixture.ActorPrincipalId);
+        first.WorkspaceCleanupStatus.EvidenceScope.PrincipalId.ShouldNotBe(first.WorkspaceCleanupStatus.TaskId);
         first.FolderList.Get(FolderLifecycleReplayFixture.ManagedTenantId, FolderLifecycleReplayFixture.FolderId)
             .ShouldNotBeNull()
             .RepositoryBindingState.ShouldBe(FolderRepositoryBindingState.Bound);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 
 using Newtonsoft.Json;
 
@@ -52,6 +53,7 @@ internal static class TestData
                 (401, CanonicalErrorCode.Authentication_required, false, ProblemDetailsClientAction.Check_credentials),
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, "The fixture must use a reachable runtime problem tuple."),
         };
+        BindOriginatingOperation(category);
         ProblemDetails problem = new()
         {
             Type = "about:blank",
@@ -90,6 +92,22 @@ internal static class TestData
         Status = AcceptedCommandStatus.Accepted,
         IdempotentReplay = idempotentReplay,
     };
+
+    /// <summary>
+    /// Stamps the operation the real SDK would capture before throwing, so projection
+    /// fail-closes on an unbound exception without dropping a declared tuple.
+    /// </summary>
+    /// <param name="category">The canonical error category whose declared operation is bound.</param>
+    private static void BindOriginatingOperation(CanonicalErrorCategory category)
+    {
+        (string method, string url) = category switch
+        {
+            CanonicalErrorCategory.Provider_unavailable or CanonicalErrorCategory.Unknown_provider_outcome =>
+                ("POST", "api/v2/folders/folder_000000001/workspaces/workspace_000000001/preparation"),
+            _ => ("POST", "api/v2/folders/folder_000000001/workspaces/workspace_000000001/files/add"),
+        };
+        HexalithFoldersOperationContext.Set(method, url);
+    }
 
     /// <summary>Builds a bare (untyped) API exception representing an unexpected/unmapped status.</summary>
     /// <returns>The bare exception.</returns>

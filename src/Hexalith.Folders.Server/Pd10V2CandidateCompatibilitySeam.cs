@@ -14,11 +14,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Hexalith.Folders.Server;
 
 /// <summary>Provides the isolated, opt-in PD10 v2 candidate compatibility pipeline.</summary>
-public static class Pd10V2CandidateCompatibilitySeam
+public static partial class Pd10V2CandidateCompatibilitySeam
 {
     private const string CandidatePrefix = "/api/v2";
     private const long MaximumRequestBodyBytes = 1_048_576;
@@ -185,6 +186,14 @@ public static class Pd10V2CandidateCompatibilitySeam
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
+                ILoggerFactory? loggerFactory = context.RequestServices.GetService<ILoggerFactory>();
+                if (loggerFactory is not null)
+                {
+                    LogAuthorizationEvaluationFailed(
+                        loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)),
+                        ex);
+                }
+
                 authorization = Unusable(descriptor);
             }
 
@@ -1536,6 +1545,12 @@ public static class Pd10V2CandidateCompatibilitySeam
 
     private static string? ValidateCorrelationId(string? value)
         => Pd10OpaqueIdentifier.IsValid(value) ? value : null;
+
+    [LoggerMessage(
+        EventId = 1018,
+        Level = LogLevel.Error,
+        Message = "PD10 candidate authorization evaluation failed.")]
+    private static partial void LogAuthorizationEvaluationFailed(ILogger logger, Exception exception);
 
     private static string ToKebabCase(string value)
     {

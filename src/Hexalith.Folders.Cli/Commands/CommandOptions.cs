@@ -149,12 +149,14 @@ internal static class CommandOptions
 
     /// <summary>Maps a <c>--freshness</c> value to the typed read-consistency class.</summary>
     /// <param name="freshness">The raw option value.</param>
-    /// <returns>The mapped class, or <see langword="null"/> when unspecified.</returns>
+    /// <returns>The mapped class, or <see langword="null"/> when the option is omitted.</returns>
+    /// <exception cref="CliUsageException">Thrown when a supplied value is not in the closed freshness vocabulary.</exception>
     public static ReadConsistencyClass? ParseFreshness(string? freshness) => freshness switch
     {
+        null => null,
         "snapshot_per_task" => ReadConsistencyClass.Snapshot_per_task,
         "read_your_writes" => ReadConsistencyClass.Read_your_writes,
         "eventually_consistent" => ReadConsistencyClass.Eventually_consistent,
-        _ => null,
+        _ => throw new CliUsageException("The supplied freshness value is invalid."),
     };
 }

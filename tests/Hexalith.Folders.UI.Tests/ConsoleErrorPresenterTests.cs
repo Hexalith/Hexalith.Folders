@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using Hexalith.Folders.Client.Generated;
+using Hexalith.Folders.Client.Serialization;
 using Hexalith.Folders.UI.Components.Models;
 using Hexalith.Folders.UI.Services;
 
@@ -137,6 +138,13 @@ public sealed class ConsoleErrorPresenterTests
     private static HexalithFoldersApiException ProblemException(int status, string body)
     {
         ProblemDetails problem = JsonConvert.DeserializeObject<ProblemDetails>(body).ShouldNotBeNull();
+        (string method, string url) = problem.Category switch
+        {
+            CanonicalErrorCategory.Projection_stale or CanonicalErrorCategory.Projection_unavailable =>
+                ("GET", "api/v2/folders/folder_000000001/ops-console/projection-freshness"),
+            _ => ("POST", "api/v2/folders/folder_000000001/workspaces/workspace_000000001/files/add"),
+        };
+        HexalithFoldersOperationContext.Set(method, url);
         return new HexalithFoldersApiException<ProblemDetails>("problem", status, body, _noHeaders, problem, null!);
     }
 }

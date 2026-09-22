@@ -333,7 +333,7 @@ internal static class Oq2ProblemProjection
     {
         if (operationId is null)
         {
-            return true;
+            return false;
         }
 
         return HexalithFoldersGeneratedOperationCatalog.AllowsGenericProblemTuple(

@@ -38,6 +38,7 @@ public static partial class FolderCommandValidator
         "diff --git",
         "generated context",
         "provider payload",
+        "synthetic",
         "unauthorized",
         "@",
         "://",

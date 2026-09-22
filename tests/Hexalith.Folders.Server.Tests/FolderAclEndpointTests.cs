@@ -192,6 +192,54 @@ public sealed class FolderAclEndpointTests
         json.ShouldContain("\"category\":\"authentication_failure\"");
     }
 
+    [Fact]
+    public async Task ListFolderAclEntriesShouldRejectAnyCanonicalFilterWithFilterNotYetSupported()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            "/api/v1/folders/folder-a/acl?filter=actorreference%3Dactor-a",
+            TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"filter_not_yet_supported\"");
+    }
+
+    [Fact]
+    public async Task ListFolderAclEntriesShouldRejectLimitOutsideTheClosedRange()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            "/api/v1/folders/folder-a/acl?limit=1001",
+            TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"invalid_pagination\"");
+    }
+
+    [Fact]
+    public async Task ListFolderAclEntriesShouldRejectAnOverlongCursorAsTampered()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            "/api/v1/folders/folder-a/acl?cursor=" + new string('a', 257),
+            TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        json.ShouldContain("\"code\":\"cursor_tampered\"");
+    }
+
     private static HttpRequestMessage CreateValidRequest(
         string effect,
         string permissionLevel,

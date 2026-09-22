@@ -2768,3 +2768,7 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md`
   summary: Independently confirm that every live runtime Problem Details field is represented by the generated closed PD10 vocabulary.
   evidence: Review found no concrete missing field, but a source-independent runtime-output inventory would settle whether example-derived code/detail generation can omit a live server value; this remains an unverified medium-severity possibility.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md`
+  summary: The Aspire host still pins CommunityToolkit.Aspire.Hosting.Dapr 13.0.0 while the shared catalog follows the 13.5 preview stream.
+  evidence: Re-verified BH14-14. Directory.Packages.props still applies that conditional package update when MSBuildProjectName is Hexalith.Folders.Aspire. Central package management cannot isolate the pin per project, and this non-routed candidate does not own that package graph.
