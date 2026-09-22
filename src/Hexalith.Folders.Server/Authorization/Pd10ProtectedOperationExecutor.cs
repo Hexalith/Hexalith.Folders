@@ -50,15 +50,16 @@ internal static class Pd10ProtectedOperationExecutor
         ArgumentNullException.ThrowIfNull(observeProtectedResource);
 
         Pd10AuthorizationOutcome outcome = Evaluate(context);
-        await auditDecision(outcome, cancellationToken).ConfigureAwait(false);
         if (!outcome.IsAllowed)
         {
+            await auditDecision(outcome, cancellationToken).ConfigureAwait(false);
             return new(outcome, default);
         }
 
         if (validateRequestEnvelope is not null
             && !await validateRequestEnvelope(cancellationToken).ConfigureAwait(false))
         {
+            await auditDecision(Pd10AuthorizationOutcome.Allowed, cancellationToken).ConfigureAwait(false);
             return new(Pd10AuthorizationOutcome.Allowed, default);
         }
 
@@ -66,19 +67,22 @@ internal static class Pd10ProtectedOperationExecutor
         {
             ArgumentNullException.ThrowIfNull(verifyTaskFolderBinding);
             Pd10TaskFolderBindingState binding = await verifyTaskFolderBinding(cancellationToken).ConfigureAwait(false);
-            if (binding == Pd10TaskFolderBindingState.Unavailable)
+            outcome = binding switch
             {
-                return new(Pd10AuthorizationOutcome.AuthorityUnavailable, default);
-            }
+                Pd10TaskFolderBindingState.Bound => Pd10AuthorizationOutcome.Allowed,
+                Pd10TaskFolderBindingState.NotBound => Pd10AuthorizationOutcome.SafeDenial,
+                _ => Pd10AuthorizationOutcome.AuthorityUnavailable,
+            };
+        }
 
-            if (binding != Pd10TaskFolderBindingState.Bound)
-            {
-                return new(Pd10AuthorizationOutcome.SafeDenial, default);
-            }
+        await auditDecision(outcome, cancellationToken).ConfigureAwait(false);
+        if (!outcome.IsAllowed)
+        {
+            return new(outcome, default);
         }
 
         T value = await observeProtectedResource(cancellationToken).ConfigureAwait(false);
-        return new(Pd10AuthorizationOutcome.Allowed, value);
+        return new(outcome, value);
     }
 
     private static Pd10AuthorizationOutcome Evaluate(Pd10AuthorizationContext context)

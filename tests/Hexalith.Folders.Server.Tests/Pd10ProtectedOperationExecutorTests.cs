@@ -120,6 +120,23 @@ public sealed class Pd10ProtectedOperationExecutorTests
         result.Outcome.ShouldBe(Pd10AuthorizationOutcome.SafeDenial);
         probe.BindingReads.ShouldBe(1);
         probe.ProtectedReads.ShouldBe(0);
+        probe.AuditedOutcome.ShouldBe(Pd10AuthorizationOutcome.SafeDenial);
+        probe.AuditWrites.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task UnavailableTaskBindingIsAuditedAsAuthorityUnavailableBeforeObservation()
+    {
+        Probe probe = new() { BindingState = Pd10TaskFolderBindingState.Unavailable };
+
+        Pd10ProtectedOperationResult<string> result = await ExecuteAsync(
+            Allowed() with { RequiresTaskFolderBinding = true },
+            probe);
+
+        result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthorityUnavailable);
+        probe.AuditedOutcome.ShouldBe(Pd10AuthorizationOutcome.AuthorityUnavailable);
+        probe.AuditWrites.ShouldBe(1);
+        probe.ProtectedReads.ShouldBe(0);
     }
 
     [Fact]
@@ -162,6 +179,22 @@ public sealed class Pd10ProtectedOperationExecutorTests
             async () => await ExecuteAsync(Allowed() with { RequiresTaskFolderBinding = true }, probe).ConfigureAwait(false));
 
         exception.Message.ShouldBe("audit unavailable");
+        probe.AuditWrites.ShouldBe(1);
+        probe.EnvelopeChecks.ShouldBe(1);
+        probe.BindingReads.ShouldBe(1);
+        probe.ProtectedReads.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task AuditSinkFailureOnInitialDenialSkipsBindingAndObservation()
+    {
+        Probe probe = new() { AuditFailure = new InvalidOperationException("audit unavailable") };
+
+        await Should.ThrowAsync<InvalidOperationException>(
+            async () => await ExecuteAsync(
+                Allowed() with { IsAuthenticated = false, RequiresTaskFolderBinding = true },
+                probe).ConfigureAwait(false));
+
         probe.AuditWrites.ShouldBe(1);
         probe.EnvelopeChecks.ShouldBe(0);
         probe.BindingReads.ShouldBe(0);
@@ -210,16 +243,21 @@ public sealed class Pd10ProtectedOperationExecutorTests
 
         public int AuditWrites { get; private set; }
 
+        public Pd10AuthorizationOutcome? AuditedOutcome { get; private set; }
+
         public Exception? AuditFailure { get; init; }
 
         public bool EnvelopeValid { get; init; } = true;
 
         public bool TaskBelongsToFolder { get; init; }
 
+        public Pd10TaskFolderBindingState? BindingState { get; init; }
+
         public ValueTask AuditAsync(Pd10AuthorizationOutcome outcome, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             AuditWrites++;
+            AuditedOutcome = outcome;
             return AuditFailure is null
                 ? ValueTask.CompletedTask
                 : ValueTask.FromException(AuditFailure);
@@ -236,9 +274,10 @@ public sealed class Pd10ProtectedOperationExecutorTests
         {
             cancellationToken.ThrowIfCancellationRequested();
             BindingReads++;
-            return ValueTask.FromResult(TaskBelongsToFolder
-                ? Pd10TaskFolderBindingState.Bound
-                : Pd10TaskFolderBindingState.NotBound);
+            return ValueTask.FromResult(BindingState
+                ?? (TaskBelongsToFolder
+                    ? Pd10TaskFolderBindingState.Bound
+                    : Pd10TaskFolderBindingState.NotBound));
         }
 
         public ValueTask<string> ObserveAsync(CancellationToken cancellationToken)

@@ -52,10 +52,13 @@ public static class PreauthorizedRequestContext
         => Covers(tenantId, principalId, folderId)
             && string.Equals(CurrentState.Value?.HistoricalActionToken, actionToken, StringComparison.Ordinal);
 
-    /// <summary>Returns whether a value uses the exact candidate opaque-identifier grammar.</summary>
+    /// <summary>
+    /// Returns whether a value uses the uppercase-capable v2 opaque-identifier grammar.
+    /// The grammar is part of the identifier, including after compatibility seam state ends, so stream names,
+    /// command validation, and projection rebuild accept the same value that a candidate request accepted.
+    /// </summary>
     public static bool IsCandidateOpaqueIdentifier(string? value)
-        => CurrentState.Value is not null
-            && value is not null
+        => value is not null
             && value.Length is >= 16 and <= 128
             && char.IsAsciiLetterOrDigit(value[0])
             && value.All(static character => char.IsAsciiLetterOrDigit(character) || character is '_' or '-');

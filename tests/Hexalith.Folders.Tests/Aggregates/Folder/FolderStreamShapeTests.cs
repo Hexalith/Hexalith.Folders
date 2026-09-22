@@ -1,5 +1,8 @@
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
+
 using Shouldly;
+
 using Xunit;
 
 namespace Hexalith.Folders.Tests.Aggregates.Folder;
@@ -31,6 +34,40 @@ public sealed class FolderStreamShapeTests
 
         created.ShouldBeFalse();
         code.ShouldBe(expectedCode);
+    }
+
+    [Fact]
+    public void UppercaseOpaqueIdentifierRemainsValidAfterSeamStateEnds()
+    {
+        const string folderId = "Folder_0000000001";
+        PreauthorizedRequestContext.Begin(new PreauthorizedRequestState(
+            "tenant-a",
+            "user-a",
+            folderId,
+            FreshnessWatermark: null,
+            OrganizationId: "org-a",
+            CandidateActionToken: "manage_folder_access",
+            HistoricalActionToken: "create_repository_backed_folder",
+            DelegatorPrincipalId: null));
+        try
+        {
+            PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(folderId).ShouldBeTrue();
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+
+        PreauthorizedRequestContext.Current.ShouldBeNull();
+        FolderStreamName.TryCreate("tenant-a", folderId, out FolderStreamName? streamName, out FolderResultCode code)
+            .ShouldBeTrue();
+        code.ShouldBe(FolderResultCode.Created);
+        streamName!.Value.ShouldBe($"tenant-a:folders:{folderId}");
+        FolderCommandValidator.IsValidIdentifier(folderId).ShouldBeTrue();
+        FolderStreamName.TryCreate("tenant-a", folderId, out FolderStreamName? rebuilt, out FolderResultCode replayCode)
+            .ShouldBeTrue();
+        replayCode.ShouldBe(FolderResultCode.Created);
+        rebuilt!.Value.ShouldBe(streamName.Value);
     }
 
     [Fact]

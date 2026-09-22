@@ -28,6 +28,7 @@ using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -1313,9 +1314,31 @@ public sealed class GoldenLifecycleParityTests
             await unauthenticated.DisposeAsync().ConfigureAwait(true);
         }
 
+        TestHost unauthorized = await TestHost.StartAsync().ConfigureAwait(true);
+        try
+        {
+            using ByteArrayContent knownLength = new(new byte[1_048_577]);
+            knownLength.Headers.ContentType = new("application/json");
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v2/folders/repository-backed")
+            {
+                Content = knownLength,
+            };
+            using HttpResponseMessage response = await unauthorized.HttpClient.SendAsync(
+                request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldNotBe(HttpStatusCode.RequestEntityTooLarge);
+            unauthorized.AuditSink.Records.ShouldNotBeEmpty();
+            unauthorized.AuditSink.Records.ShouldAllBe(record => record.Result == "deny");
+        }
+        finally
+        {
+            await unauthorized.DisposeAsync().ConfigureAwait(true);
+        }
+
         TestHost authenticated = await TestHost.StartAsync().ConfigureAwait(true);
         try
         {
+            SeedTenant(authenticated.TenantStore, "tenant-a", "user-a");
             using ByteArrayContent knownLength = new(new byte[1_048_577]);
             knownLength.Headers.ContentType = new("application/json");
             await AssertInputLimitAsync(authenticated, knownLength).ConfigureAwait(true);
@@ -1360,7 +1383,185 @@ public sealed class GoldenLifecycleParityTests
             problem.GetProperty("status").GetInt32().ShouldBe(413);
             problem.GetProperty("category").GetString().ShouldBe("input_limit_exceeded");
             problem.GetProperty("code").GetString().ShouldBe("c4_input_limit_exceeded");
-            host.AuditSink.Records.ShouldBeEmpty();
+            host.AuditSink.Records.ShouldContain(record =>
+                record.Result == "allow"
+                && record.Operation == "CreateRepositoryBackedFolder"
+                && record.CorrelationId == "correlation-input-limit");
+        }
+    }
+
+    [Fact]
+    public async Task CandidateAuditsFinalTaskFolderBindingOutcome()
+    {
+        TestHost notBound = await TestHost.StartAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(notBound.TenantStore, "tenant-a", "user-a");
+            SeedTaskStatusPermissions(notBound.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            notBound.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderB));
+            using HttpRequestMessage request = new(
+                HttpMethod.Get,
+                $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
+            request.Headers.Add("X-Correlation-Id", "correlation-binding-deny");
+            using HttpResponseMessage response = await notBound.HttpClient.SendAsync(
+                request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+            notBound.AuditSink.Records.ShouldBe(
+            [
+                new("user-a", "tenant-a", "GetTaskStatus", "status-permission-and-lock-inspection", "deny", "correlation-binding-deny"),
+            ]);
+        }
+        finally
+        {
+            await notBound.DisposeAsync().ConfigureAwait(true);
+        }
+
+        TestHost unavailable = await TestHost.StartAsync().ConfigureAwait(true);
+        try
+        {
+            SeedTenant(unavailable.TenantStore, "tenant-a", "user-a");
+            SeedTaskStatusPermissions(unavailable.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            unavailable.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderA) with { FolderId = null! });
+            using HttpRequestMessage request = new(
+                HttpMethod.Get,
+                $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
+            request.Headers.Add("X-Correlation-Id", "correlation-binding-unavailable");
+            using HttpResponseMessage response = await unavailable.HttpClient.SendAsync(
+                request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            unavailable.AuditSink.Records.ShouldBe(
+            [
+                new("user-a", "tenant-a", "GetTaskStatus", "status-permission-and-lock-inspection", "deny", "correlation-binding-unavailable"),
+            ]);
+        }
+        finally
+        {
+            await unavailable.DisposeAsync().ConfigureAwait(true);
+        }
+
+        static TaskStatusReadModelSnapshot TaskSnapshot(string folderId)
+            => new(
+                ManagedTenantId: "tenant-a",
+                TaskId: CandidateTaskStatus,
+                CurrentState: "ready",
+                TerminalState: null,
+                LastOperationId: null,
+                LastFailureCategory: null,
+                RetryEligibility: new WorkspaceStatusRetryEligibility(false, "retry_not_required"),
+                RetryAfter: null,
+                Freshness: new FolderLifecycleFreshness(
+                    "eventually_consistent",
+                    Now,
+                    ProjectionWatermark: null,
+                    Stale: false,
+                    ReasonCode: null),
+                EvidenceScope: new FolderLifecycleEvidenceScope(
+                    "tenant-a",
+                    "user-a",
+                    TaskStatusQueryHandler.ActionToken,
+                    CandidateTaskStatus,
+                    CorrelationId: null,
+                    AuthorizationWatermark: null),
+                FolderId: folderId);
+    }
+
+    [Fact]
+    public async Task CandidateAuthorizesRepositoryBackedCreationOfAMissingFolder()
+    {
+        int downstreamCalls = 0;
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: context =>
+            {
+                downstreamCalls++;
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                return Task.CompletedTask;
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v2/folders/repository-backed")
+            {
+                Content = new StringContent(
+                    "{\"requestSchemaVersion\":\"v2\",\"folderId\":\"folder_create_0001\",\"branchRefPolicy\":{\"requestSchemaVersion\":\"v2\"}}",
+                    Encoding.UTF8,
+                    "application/json"),
+            };
+            request.Headers.Add("X-Correlation-Id", "correlation-create-missing");
+            request.Headers.Add("Idempotency-Key", "idempotency_create_0001");
+            request.Headers.Add("X-Hexalith-Task-Id", "task_create_00000001");
+
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted, body);
+            downstreamCalls.ShouldBe(1);
+            host.AuditSink.Records.ShouldBe(
+            [
+                new("user-a", "tenant-a", "CreateRepositoryBackedFolder", "folder-administration", "allow", "correlation-create-missing"),
+            ]);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task CandidateTreatsHeaderlessTransportBodiesAndMalformedJsonAsDeclaredValidation()
+    {
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            headerlessTransportBody: true,
+            downstreamOverride: context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                return Task.CompletedTask;
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+
+            using HttpRequestMessage required = new(HttpMethod.Post, $"/api/v2/folders/{CandidateFolderA}/archive")
+            {
+                Content = new StringContent(
+                    "{\"requestSchemaVersion\":\"v2\",\"archiveReasonCode\":\"caller_requested\"}",
+                    Encoding.UTF8,
+                    "application/json"),
+            };
+            AddMutationHeaders(required, "idempotency_headerless_0001", "correlation-headerless-required", "task_headerless_000001");
+            using HttpResponseMessage requiredResponse = await host.HttpClient.SendAsync(
+                required,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            requiredResponse.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+
+            using HttpRequestMessage unexpected = new(
+                HttpMethod.Get,
+                $"/api/v2/folders/{CandidateFolderA}/lifecycle-status")
+            {
+                Content = new StringContent("{", Encoding.UTF8, "application/json"),
+            };
+            unexpected.Headers.Add("X-Correlation-Id", "correlation-headerless-unexpected");
+            using HttpResponseMessage unexpectedResponse = await host.HttpClient.SendAsync(
+                unexpected,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string unexpectedBody = await unexpectedResponse.Content.ReadAsStringAsync(
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            unexpectedResponse.StatusCode.ShouldBe(HttpStatusCode.BadRequest, unexpectedBody);
+            JsonDocument.Parse(unexpectedBody).RootElement.GetProperty("code").GetString().ShouldBe("validation_error");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
         }
     }
 
@@ -1379,7 +1580,12 @@ public sealed class GoldenLifecycleParityTests
             using HttpResponseMessage response = await host.HttpClient.SendAsync(
                 request,
                 TestContext.Current.CancellationToken).ConfigureAwait(true);
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            JsonElement problem = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true)).RootElement;
+            problem.GetProperty("category").GetString().ShouldBe("read_model_unavailable");
+            problem.GetProperty("code").GetString().ShouldBe("projection_unavailable");
+            problem.GetProperty("clientAction").GetString().ShouldBe("retry");
             host.AuditSink.Records.ShouldBe(
             [
                 new("user-a", "tenant-a", "GetFolderLifecycleStatus", "status-permission-and-lock-inspection", "allow", "correlation-audit-throw"),
@@ -2531,7 +2737,8 @@ public sealed class GoldenLifecycleParityTests
             string? additionalDelegator = null,
             IPd10AuthorizationAuditSink? auditSinkOverride = null,
             Func<HttpContext, Task>? downstreamOverride = null,
-            IEventStoreGatewayClient? gatewayOverride = null)
+            IEventStoreGatewayClient? gatewayOverride = null,
+            bool headerlessTransportBody = false)
         {
             MutableTenantAndClaimContext context = new(tenantId, principalId);
             InMemoryFolderTenantAccessProjectionStore tenantStore = new();
@@ -2613,6 +2820,18 @@ public sealed class GoldenLifecycleParityTests
 
                     httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType: "candidate-test"));
                     await next(httpContext).ConfigureAwait(false);
+                });
+            }
+
+            if (headerlessTransportBody)
+            {
+                app.Use((HttpContext httpContext, RequestDelegate next) =>
+                {
+                    httpContext.Request.ContentLength = null;
+                    httpContext.Request.Headers.Remove("Content-Length");
+                    httpContext.Request.Headers.Remove("Transfer-Encoding");
+                    httpContext.Features.Set<IHttpRequestBodyDetectionFeature>(new HeaderlessTransportBodyFeature());
+                    return next(httpContext);
                 });
             }
 
@@ -2777,6 +2996,11 @@ public sealed class GoldenLifecycleParityTests
             cancellationToken.ThrowIfCancellationRequested();
             return Task.FromResult(result);
         }
+    }
+
+    private sealed class HeaderlessTransportBodyFeature : IHttpRequestBodyDetectionFeature
+    {
+        public bool CanHaveBody => true;
     }
 
     private sealed class UnknownLengthContent(byte[] bytes) : HttpContent

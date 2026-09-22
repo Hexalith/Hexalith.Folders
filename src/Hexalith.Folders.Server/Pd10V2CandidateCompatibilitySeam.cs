@@ -12,6 +12,7 @@ using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hexalith.Folders.Server;
@@ -31,6 +32,8 @@ public static class Pd10V2CandidateCompatibilitySeam
     private const string AuthorizedOrganizationItem = "pd10.authorized-organization";
     private const string AuthorizedDelegatorItem = "pd10.authorized-delegator";
     private const string TaskSnapshotItem = "pd10.task-snapshot";
+    private const string DeferredInputLimitItem = "pd10.deferred-input-limit";
+    private const string PendingUnknownLengthBodyItem = "pd10.pending-unknown-length-body";
     private static readonly HashSet<string> TaskLifecycleStates = new(StringComparer.Ordinal)
     {
         "requested", "preparing", "ready", "locked", "changes_staged", "dirty", "committed", "failed",
@@ -153,11 +156,21 @@ public static class Pd10V2CandidateCompatibilitySeam
                 return;
             }
 
-            if (RequiresRequestBody(descriptor)
+            if (RequiresRequestBody(descriptor) && context.Request.ContentLength > MaximumRequestBodyBytes)
+            {
+                // Known oversized bodies are not read. Disclosure waits until authorization is audited.
+                context.Items[DeferredInputLimitItem] = true;
+            }
+            else if (RequiresRequestBody(descriptor)
+                && context.Request.ContentLength is null
+                && HasRequestBody(context.Request))
+            {
+                context.Items[PendingUnknownLengthBodyItem] = true;
+            }
+            else if (RequiresRequestBody(descriptor)
                 && !await BufferBoundedRequestBodyAsync(context.Request, context.RequestAborted).ConfigureAwait(false))
             {
-                await WriteInputLimitProblemAsync(context).ConfigureAwait(false);
-                return;
+                context.Items[DeferredInputLimitItem] = true;
             }
 
             Pd10AuthorizationContext authorization;
@@ -190,6 +203,50 @@ public static class Pd10V2CandidateCompatibilitySeam
                     binding,
                     async token =>
                     {
+                        if (context.Items.ContainsKey(PendingUnknownLengthBodyItem))
+                        {
+                            context.Items.Remove(PendingUnknownLengthBodyItem);
+                            if (!await BufferBoundedRequestBodyAsync(context.Request, token).ConfigureAwait(false))
+                            {
+                                await WriteInputLimitProblemAsync(context).ConfigureAwait(false);
+                                return true;
+                            }
+
+                            if (!await ValidateCandidateEnvelopeAsync(context, descriptor, routeValues, token)
+                                .ConfigureAwait(false))
+                            {
+                                return true;
+                            }
+
+                            if (descriptor.FolderScope == Pd10FolderScopeRule.RequestFolder
+                                && !context.Items.ContainsKey(AuthorizedFolderItem))
+                            {
+                                try
+                                {
+                                    string? createdFolderId = await ReadRequestFolderAsync(context.Request, token)
+                                        .ConfigureAwait(false);
+                                    if (string.IsNullOrWhiteSpace(createdFolderId))
+                                    {
+                                        await WriteValidationProblemAsync(context).ConfigureAwait(false);
+                                        return true;
+                                    }
+
+                                    context.Items[AuthorizedFolderItem] = createdFolderId;
+                                }
+                                catch (Pd10RequestValidationException)
+                                {
+                                    await WriteValidationProblemAsync(context).ConfigureAwait(false);
+                                    return true;
+                                }
+                            }
+                        }
+
+                        if (context.Items.ContainsKey(DeferredInputLimitItem))
+                        {
+                            await WriteInputLimitProblemAsync(context).ConfigureAwait(false);
+                            return true;
+                        }
+
                         if (descriptor.OperationId == "GetTaskStatus"
                             && context.Items.TryGetValue(TaskSnapshotItem, out object? snapshotValue)
                             && snapshotValue is TaskStatusReadModelSnapshot snapshot)
@@ -212,7 +269,12 @@ public static class Pd10V2CandidateCompatibilitySeam
                         {
                             PreauthorizedRequestContext.Begin(preauthorized);
                             context.Request.Path = Pd10ProtectedOperationCatalog.HistoricalPath(descriptor, routeValues);
-                            await RewriteRequestAsync(context.Request, descriptor, token).ConfigureAwait(false);
+                            if (!await RewriteRequestAsync(context.Request, descriptor, token).ConfigureAwait(false))
+                            {
+                                await WriteValidationProblemAsync(context).ConfigureAwait(false);
+                                return true;
+                            }
+
                             await InvokeHistoricalAsync(context, next, descriptor).ConfigureAwait(false);
                             return true;
                         }
@@ -285,14 +347,19 @@ public static class Pd10V2CandidateCompatibilitySeam
             return Denied(descriptor, accessState);
         }
 
+        bool deferBody = context.Items.ContainsKey(DeferredInputLimitItem)
+            || context.Items.ContainsKey(PendingUnknownLengthBodyItem);
         string? folderId = descriptor.FolderScope switch
         {
             Pd10FolderScopeRule.None => null,
             Pd10FolderScopeRule.RouteFolder => Value(routeValues, "folderId"),
+            Pd10FolderScopeRule.RequestFolder when deferBody => null,
             Pd10FolderScopeRule.RequestFolder => await ReadRequestFolderAsync(context.Request, context.RequestAborted).ConfigureAwait(false),
             _ => null,
         };
-        if (descriptor.FolderScope != Pd10FolderScopeRule.None && string.IsNullOrWhiteSpace(folderId))
+        if (descriptor.FolderScope != Pd10FolderScopeRule.None
+            && string.IsNullOrWhiteSpace(folderId)
+            && !(deferBody && descriptor.OperationId == "CreateRepositoryBackedFolder"))
         {
             return Unusable(descriptor, accessState: accessState);
         }
@@ -304,36 +371,18 @@ public static class Pd10V2CandidateCompatibilitySeam
             context.Items[AuthorizedFolderItem] = folderId;
         }
 
-        if (folderId is null)
+        if (folderId is null || descriptor.OperationId == "CreateRepositoryBackedFolder")
         {
-            if (HasClientControlledMismatch(tenantId, ClientTenantIds(context))
-                || HasClientControlledMismatch(principalId, ClientPrincipalIds(context)))
-            {
-                return Denied(descriptor, accessState);
-            }
-
-            TenantAccessAuthorizer authorizer = context.RequestServices.GetRequiredService<TenantAccessAuthorizer>();
-            TenantAccessOutcome outcome = (await authorizer
-                .AuthorizeMutationAsync(
-                    new TenantAccessAuthorizationContext(tenantId, principalId, tenantId),
-                    context.RequestAborted)
-                .ConfigureAwait(false)).Outcome;
-            if (outcome == TenantAccessOutcome.Allowed && isDelegated)
-            {
-                outcome = (await authorizer.AuthorizeMutationAsync(
-                    new TenantAccessAuthorizationContext(tenantId, delegatorId!, tenantId),
-                    context.RequestAborted).ConfigureAwait(false)).Outcome;
-            }
-
-            return outcome switch
-            {
-                TenantAccessOutcome.Allowed => Allowed(descriptor, accessState),
-                TenantAccessOutcome.StaleProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Stale, accessState),
-                TenantAccessOutcome.UnavailableProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable, accessState),
-                TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict =>
-                    Unusable(descriptor, Pd10AuthorityEvidenceState.Conflicting, accessState),
-                _ => Denied(descriptor, accessState),
-            };
+            // Repository-backed creation names the folder in the body. Authorize the create,
+            // including when that folderId does not exist yet, instead of an existing-folder ACL.
+            return await AuthorizeTenantFolderCreationAsync(
+                context,
+                descriptor,
+                tenantId,
+                principalId,
+                isDelegated,
+                delegatorId,
+                accessState).ConfigureAwait(false);
         }
 
         LayeredFolderOperationPolicy policy = descriptor.PolicyClass == FolderOperationPolicyClass.StrictRead
@@ -578,6 +627,12 @@ public static class Pd10V2CandidateCompatibilitySeam
             }
         }
 
+        if (context.Items.ContainsKey(DeferredInputLimitItem)
+            || context.Items.ContainsKey(PendingUnknownLengthBodyItem))
+        {
+            return true;
+        }
+
         bool hasBody = HasRequestBody(context.Request);
         if (RequiresRequestBody(descriptor) != hasBody)
         {
@@ -617,7 +672,20 @@ public static class Pd10V2CandidateCompatibilitySeam
         context.Response.Body = captured;
         try
         {
-            await next(context).ConfigureAwait(false);
+            try
+            {
+                await next(context).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                context.Response.Body = destination;
+                await WriteProblemAsync(
+                    context,
+                    Pd10AuthorizationOutcome.AuthorityUnavailable,
+                    null).ConfigureAwait(false);
+                return;
+            }
+
             captured.Position = 0;
             Pd10AuthorizationOutcome? canonical = context.Response.StatusCode switch
             {
@@ -1001,19 +1069,28 @@ public static class Pd10V2CandidateCompatibilitySeam
         }
     }
 
-    private static async Task RewriteRequestAsync(
+    private static async Task<bool> RewriteRequestAsync(
         HttpRequest request,
         Pd10ProtectedOperationDescriptor descriptor,
         CancellationToken cancellationToken)
     {
         if (request.Body == Stream.Null || !IsExactJsonMediaType(request.ContentType))
         {
-            return;
+            return true;
         }
 
         using StreamReader reader = new(request.Body, Encoding.UTF8, false, leaveOpen: true);
         string json = await reader.ReadToEndAsync(cancellationToken).ConfigureAwait(false);
-        JsonNode? root = JsonNode.Parse(json);
+        JsonNode? root;
+        try
+        {
+            root = JsonNode.Parse(json);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+
         if (root is JsonObject jsonObject)
         {
             RewriteSchemaDiscriminators(jsonObject, descriptor);
@@ -1022,6 +1099,7 @@ public static class Pd10V2CandidateCompatibilitySeam
         byte[] rewritten = Encoding.UTF8.GetBytes(root?.ToJsonString() ?? json);
         request.Body = new MemoryStream(rewritten, writable: false);
         request.ContentLength = rewritten.Length;
+        return true;
     }
 
     /// <summary>Translates only the request-schema discriminator positions owned by the selected operation.</summary>
@@ -1052,6 +1130,45 @@ public static class Pd10V2CandidateCompatibilitySeam
         {
             jsonObject["requestSchemaVersion"] = "v1";
         }
+    }
+
+    private static async ValueTask<Pd10AuthorizationContext> AuthorizeTenantFolderCreationAsync(
+        HttpContext context,
+        Pd10ProtectedOperationDescriptor descriptor,
+        string tenantId,
+        string principalId,
+        bool isDelegated,
+        string? delegatorId,
+        V2AccessState accessState)
+    {
+        if (HasClientControlledMismatch(tenantId, ClientTenantIds(context))
+            || HasClientControlledMismatch(principalId, ClientPrincipalIds(context)))
+        {
+            return Denied(descriptor, accessState);
+        }
+
+        TenantAccessAuthorizer authorizer = context.RequestServices.GetRequiredService<TenantAccessAuthorizer>();
+        TenantAccessOutcome outcome = (await authorizer
+            .AuthorizeMutationAsync(
+                new TenantAccessAuthorizationContext(tenantId, principalId, tenantId),
+                context.RequestAborted)
+            .ConfigureAwait(false)).Outcome;
+        if (outcome == TenantAccessOutcome.Allowed && isDelegated)
+        {
+            outcome = (await authorizer.AuthorizeMutationAsync(
+                new TenantAccessAuthorizationContext(tenantId, delegatorId!, tenantId),
+                context.RequestAborted).ConfigureAwait(false)).Outcome;
+        }
+
+        return outcome switch
+        {
+            TenantAccessOutcome.Allowed => Allowed(descriptor, accessState),
+            TenantAccessOutcome.StaleProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Stale, accessState),
+            TenantAccessOutcome.UnavailableProjection => Unusable(descriptor, Pd10AuthorityEvidenceState.Unavailable, accessState),
+            TenantAccessOutcome.MalformedEvidence or TenantAccessOutcome.ReplayConflict =>
+                Unusable(descriptor, Pd10AuthorityEvidenceState.Conflicting, accessState),
+            _ => Denied(descriptor, accessState),
+        };
     }
 
     private static Pd10AuthorizationContext Allowed(
@@ -1111,10 +1228,9 @@ public static class Pd10V2CandidateCompatibilitySeam
             return true;
         }
 
+        using MemoryStream copy = new();
         try
         {
-            request.EnableBuffering(64 * 1024, MaximumRequestBodyBytes);
-            request.Body.Position = 0;
             byte[] buffer = new byte[8192];
             long observed = 0;
             int read;
@@ -1125,15 +1241,17 @@ public static class Pd10V2CandidateCompatibilitySeam
                 {
                     return false;
                 }
-            }
 
-            request.Body.Position = 0;
-            return true;
+                copy.Write(buffer, 0, read);
+            }
         }
         catch (IOException)
         {
             return false;
         }
+
+        request.Body = new MemoryStream(copy.ToArray(), writable: false);
+        return true;
     }
 
     private static async Task WriteInputLimitProblemAsync(HttpContext context)
@@ -1443,8 +1561,17 @@ public static class Pd10V2CandidateCompatibilitySeam
         => RequiredBodyOperations.Contains(descriptor.OperationId);
 
     private static bool HasRequestBody(HttpRequest request)
-        => request.ContentLength is > 0
-            || request.Headers.ContainsKey("Transfer-Encoding");
+    {
+        if (request.ContentLength is > 0 || request.Headers.ContainsKey("Transfer-Encoding"))
+        {
+            return true;
+        }
+
+        // HTTP/2 and HTTP/3 can carry a DATA body with neither Content-Length nor Transfer-Encoding.
+        IHttpRequestBodyDetectionFeature? detection = request.HttpContext.Features
+            .Get<IHttpRequestBodyDetectionFeature>();
+        return detection?.CanHaveBody == true;
+    }
 
     private static bool IsCandidatePath(string path)
         => path == CandidatePrefix || path.StartsWith(CandidatePrefix + "/", StringComparison.Ordinal);

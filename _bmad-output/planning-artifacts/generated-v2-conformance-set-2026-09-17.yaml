@@ -13,8 +13,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: f6358023e0fc99ab45dd725f3c815eb9e517b2889895f74bb38116afb9b4a642
-artifact_count: 182
+candidate_set_sha256: 8c24af7c461d6b8750877dc7741f081100f4fa6bcfbe9892a2756eadc5a4e5ce
+artifact_count: 183
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -100,13 +100,13 @@ artifacts:
   - path: "references/Hexalith.EventStore"
     kind: gitlink
     bytes: 40
-    sha256: 101876b8cffbab3d10bb0b87bb22168be99f9542f83c481eee0beee74522c9d4
-    git_object: ffb6901a5b840af7be030ff246435b4bad00b79c
+    sha256: 3fe9b874f92fdd3543fc25ba0a144f333e9d161590398e95606bf689a5a7f6c2
+    git_object: 4e81694354b26c4d1782ca4dcaaf10cb317138ed
   - path: "references/Hexalith.FrontComposer"
     kind: gitlink
     bytes: 40
-    sha256: 4124c5c76bb38b7db2ad889fe4e0482398168ab0c6be16087c1d0f081494ce28
-    git_object: a2581001d9d8d1ffefb4c6c035b25be3c7d35755
+    sha256: c150a234a4e1d2f705e6e214ea690e31716c8bc215bff560b71fdef9496b97fb
+    git_object: 7830f110c02d0360efa5680aebc7db1b0bb24077
   - path: "references/Hexalith.Memories"
     kind: gitlink
     bytes: 40
@@ -115,8 +115,8 @@ artifacts:
   - path: "references/Hexalith.Tenants"
     kind: gitlink
     bytes: 40
-    sha256: 801c48ac3dfd9d141d104213f64c2aa9c7af917a7ab8be9d8cb3dd663413a6d7
-    git_object: dfd84f4b9c93779f253672096fec5d717d6afc91
+    sha256: 93cd5c02b939f3da884dccaba8e2ff6b6d9ba55fed578b7a818abfbc37e37d19
+    git_object: d3134ba299a9bc059fe9b065fb956d454bea79a3
   - path: "samples/Hexalith.Folders.Sample/FolderLifecycleSample.cs"
     kind: file
     bytes: 11709
@@ -323,8 +323,8 @@ artifacts:
     sha256: 117251bb2ab9438db47b495fd57625b3fabf56e46d7eab5ed6271536eadae93d
   - path: "src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationExecutor.cs"
     kind: file
-    bytes: 4741
-    sha256: b4eec87410ce4a20f870ad709466c2e08d82ebd2c67cd4005a5de434a7e8299d
+    bytes: 4971
+    sha256: 1e65762f0500793d867e44f777a911062f3491e5b744d5e8d4eea81de8970e68
   - path: "src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationResult.cs"
     kind: file
     bytes: 503
@@ -359,8 +359,8 @@ artifacts:
     sha256: 14e04d72dae212c03954244038347194b2669dd4e5f8e23b7cf9e56df7b98c62
   - path: "src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs"
     kind: file
-    bytes: 71828
-    sha256: 3cab21275be4b1d2bcfcda86dc62cf974fba0bffb5c22b8a31d0955c5ea70a20
+    bytes: 77246
+    sha256: 5b0bacb9c52020988663e7eb2b6f6f36bfcabb7a059eefac69c73f8ea1741220
   - path: "src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs"
     kind: file
     bytes: 56029
@@ -463,8 +463,8 @@ artifacts:
     sha256: 54833afc6850ec46c9c400bd5ee401bce487a049c584f54d9101919363a5d612
   - path: "src/Hexalith.Folders/Authorization/PreauthorizedRequestContext.cs"
     kind: file
-    bytes: 3317
-    sha256: 6219262cb9abc38c50b506e7488577b3408d2b025b40c143643e797694e4383d
+    bytes: 3513
+    sha256: acf35e7c118475c01d15a3f4afac1dbe357b59bed8cd1cb54db0594aa2fe81e1
   - path: "src/Hexalith.Folders/Authorization/PreauthorizedRequestState.cs"
     kind: file
     bytes: 442
@@ -567,8 +567,8 @@ artifacts:
     sha256: 1e04dcfc290102f550f9d1d74e2a5aa70b43323f252b9e1130176a44f0451e1e
   - path: "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
     kind: file
-    bytes: 175757
-    sha256: da697218459af09d1c9b0b1b4d3f1031b537c63c5ba91c0046d905754c3f2f01
+    bytes: 186348
+    sha256: 17a8f20090ec5cc802146eb3ec564c70aec43d45bba4552d6f9b20ea02ca8444
   - path: "tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs"
     kind: file
     bytes: 70936
@@ -611,12 +611,16 @@ artifacts:
     sha256: fb29e5d1ff38fdbd69622c2c0343a02a5772ba71dbe1e846658f989aef74be2d
   - path: "tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationExecutorTests.cs"
     kind: file
-    bytes: 9218
-    sha256: ea8bfd342866027b49bd459f488f85398d76406917dedad311e34ceaa816cfbd
+    bytes: 10793
+    sha256: 938b5936a35ac55f1454729422f0f4607b86f3cf12c5f451f8caae6deca0d722
   - path: "tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs"
     kind: file
     bytes: 20528
     sha256: cc957b9bd57712930521b7342e83b5cbc6ced8dc3ce98a326f4f34165460ce70
+  - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderStreamShapeTests.cs"
+    kind: file
+    bytes: 3540
+    sha256: 20600bfab10d9d229361121807dee30f34ff595c0ec77fd96755d24aa3f169f0
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspaceCommitServiceTests.cs"
     kind: file
     bytes: 23809
