@@ -1,6 +1,6 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: 8991594ca78534afd42875731893ff9a5258acdf40d057bbab60e75e8eccde12
-# parity_schema_sha256: 6af4afc59bdc336fe1e0d1ebfa772b761a3ebd69b05170b0f1e01ca81d677049
+# contract_spine_sha256: bc70b397be367aadafcb9957340f3ba31dce9b35f59bda7ee81492abc51ca29d
+# parity_schema_sha256: dc20eb8d1083ffb6cf682ac607a1ff4446fce92eddc92a12e8b26261dc1b8916
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
 - operation_id: 'AddFile'
@@ -15,6 +15,7 @@
       - 'failed_operation'
       - 'file_operation_failed'
       - 'file_policy_unavailable'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'input_limit_exceeded'
@@ -77,6 +78,10 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -164,6 +169,7 @@
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -195,6 +201,10 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -244,6 +254,7 @@
       - 'concurrency_conflict'
       - 'duplicate_binding'
       - 'failed_operation'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -291,6 +302,10 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -366,6 +381,7 @@
       - 'failed_operation'
       - 'file_operation_failed'
       - 'file_policy_unavailable'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'input_limit_exceeded'
@@ -428,6 +444,10 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -519,6 +539,7 @@
       - 'concurrency_conflict'
       - 'dirty_workspace'
       - 'failed_operation'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -583,6 +604,10 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -674,6 +699,7 @@
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -705,6 +731,10 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -753,6 +783,7 @@
       - 'authentication_failure'
       - 'concurrency_conflict'
       - 'credential_reference_invalid'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -790,6 +821,10 @@
       cli_exit_code: 65
       mcp_failure_kind: 'credential_reference_invalid'
       pre_sdk_error_class: 'credential_missing'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
+      pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
       mcp_failure_kind: 'idempotency_conflict'
@@ -840,6 +875,7 @@
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -871,6 +907,10 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -919,6 +959,7 @@
       - 'authentication_failure'
       - 'concurrency_conflict'
       - 'failed_operation'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -961,6 +1002,10 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -3580,6 +3625,7 @@
       - 'authentication_failure'
       - 'authorization_revocation_detected'
       - 'concurrency_conflict'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -3627,6 +3673,10 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -3700,6 +3750,7 @@
       - 'branch_ref_policy_invalid'
       - 'concurrency_conflict'
       - 'failed_operation'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -3754,6 +3805,10 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -3945,6 +4000,7 @@
       - 'authorization_revocation_detected'
       - 'concurrency_conflict'
       - 'failed_operation'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -3994,6 +4050,10 @@
     - canonical_error_category: 'failed_operation'
       cli_exit_code: 70
       mcp_failure_kind: 'failed_operation'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -4061,6 +4121,7 @@
       - 'failed_operation'
       - 'file_operation_failed'
       - 'file_policy_unavailable'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -4120,6 +4181,10 @@
     - canonical_error_category: 'file_policy_unavailable'
       cli_exit_code: 72
       mcp_failure_kind: 'file_policy_unavailable'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68
@@ -4387,6 +4452,7 @@
     error_code_set:
       - 'authentication_failure'
       - 'concurrency_conflict'
+      - 'idempotency_admission_unavailable'
       - 'idempotency_conflict'
       - 'idempotency_key_expired'
       - 'internal_error'
@@ -4418,6 +4484,10 @@
     - canonical_error_category: 'concurrency_conflict'
       cli_exit_code: 77
       mcp_failure_kind: 'concurrency_conflict'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'idempotency_admission_unavailable'
+      cli_exit_code: 73
+      mcp_failure_kind: 'idempotency_admission_unavailable'
       pre_sdk_error_class: 'none'
     - canonical_error_category: 'idempotency_conflict'
       cli_exit_code: 68

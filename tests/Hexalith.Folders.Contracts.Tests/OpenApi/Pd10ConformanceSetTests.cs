@@ -23,6 +23,7 @@ public sealed class Pd10ConformanceSetTests
         "docs/sdk/api-reference.md",
         "scripts/generate-pd10-v2-conformance-set.py",
         "scripts/generate-pd10-v2-contract.py",
+        "scripts/generate-pd10-v2-runtime-catalog.py",
         "scripts/generate-v2-conformance-set.ps1",
         "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
         "src/Hexalith.Folders.Client/nswag.json",
@@ -31,6 +32,7 @@ public sealed class Pd10ConformanceSetTests
         "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
         "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
         "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+        "src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs",
         "tests/fixtures/parity-contract.schema.json",
         "tests/fixtures/parity-contract.yaml",
         "tests/fixtures/previous-spine.yaml",
@@ -125,6 +127,32 @@ public sealed class Pd10ConformanceSetTests
                 File.Delete(temporary);
             }
         }
+    }
+
+    [Fact]
+    public void GeneratorRejectsOutputThatAliasesARequiredCandidateInput()
+    {
+        string matrix = Path.Combine(RepositoryRoot, "docs", "contract", "authorization-matrix.md");
+        string before = Sha256(matrix);
+        ProcessStartInfo start = new("python3")
+        {
+            WorkingDirectory = RepositoryRoot,
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+        };
+        start.ArgumentList.Add("scripts/generate-pd10-v2-conformance-set.py");
+        start.ArgumentList.Add("--repository-root");
+        start.ArgumentList.Add(RepositoryRoot);
+        start.ArgumentList.Add("--output");
+        start.ArgumentList.Add(matrix);
+
+        using Process process = Process.Start(start) ?? throw new InvalidOperationException("Could not start the conformance-set generator.");
+        process.WaitForExit(60_000).ShouldBeTrue();
+        string diagnostic = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
+        process.ExitCode.ShouldNotBe(0);
+        diagnostic.ShouldContain("must not alias", Case.Insensitive);
+        Sha256(matrix).ShouldBe(before);
     }
 
     private static string Sha256(string path) =>

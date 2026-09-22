@@ -74,6 +74,9 @@ public static class FoldersDomainServiceEndpoints
     private static readonly System.Text.RegularExpressions.Regex CommitMessageClassificationRegex =
         new("^[a-z][a-z0-9_]{0,79}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
+    private static readonly System.Text.RegularExpressions.Regex MetadataFilterRegex =
+        new("^[a-z][A-Za-z0-9_=.,*\\- ]{0,255}$", System.Text.RegularExpressions.RegexOptions.Compiled);
+
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
@@ -1354,6 +1357,68 @@ public static class FoldersDomainServiceEndpoints
                     message: "Operation supports eventually_consistent only.");
             }
 
+            string? cursor = FolderHttpHeaderReader.ReadQuery(httpContext, "cursor");
+            if (cursor is { Length: < 1 or > 256 })
+            {
+                return FolderProblemDetailsFactory.ForAudit(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "cursor_tampered",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null,
+                    message: "Pagination cursor is malformed or tampered.",
+                    evidenceSource: "folder_acl");
+            }
+
+            int limit = 1000;
+            string? rawLimit = FolderHttpHeaderReader.ReadQuery(httpContext, "limit");
+            if (rawLimit is not null
+                && (!int.TryParse(
+                        rawLimit,
+                        System.Globalization.NumberStyles.None,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out limit)
+                    || limit is < 1 or > 1000))
+            {
+                return FolderProblemDetailsFactory.ForAudit(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "invalid_pagination",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null,
+                    evidenceSource: "folder_acl");
+            }
+
+            string? filter = FolderHttpHeaderReader.ReadQuery(httpContext, "filter");
+            if (filter is not null)
+            {
+                if (!MetadataFilterRegex.IsMatch(filter))
+                {
+                    return FolderProblemDetailsFactory.ForAudit(
+                        StatusCodes.Status400BadRequest,
+                        category: "validation_error",
+                        code: "validation_error",
+                        retryable: false,
+                        correlationId: correlationId,
+                        taskId: null,
+                        message: "Filter expression does not match the canonical shape.",
+                        evidenceSource: "folder_acl");
+                }
+
+                return FolderProblemDetailsFactory.ForAudit(
+                    StatusCodes.Status400BadRequest,
+                    category: "validation_error",
+                    code: "filter_not_yet_supported",
+                    retryable: false,
+                    correlationId: correlationId,
+                    taskId: null,
+                    message: "Filter vocabulary is reference-pending C4.",
+                    todoRef: "C4",
+                    evidenceSource: "folder_acl");
+            }
+
             ListFolderAclEntriesQueryResult result = await handler.HandleAsync(
                 new ListFolderAclEntriesQuery(
                     tenantContext.AuthoritativeTenantId,
@@ -1366,7 +1431,7 @@ public static class FoldersDomainServiceEndpoints
                     ClientPrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
-            return ToFolderAclEntryListHttpResult(httpContext, result, correlationId);
+            return ToFolderAclEntryListHttpResult(httpContext, result, correlationId, cursor, limit);
         })
         .WithName("ListFolderAclEntries")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
@@ -2035,7 +2100,9 @@ public static class FoldersDomainServiceEndpoints
     private static IResult ToFolderAclEntryListHttpResult(
         HttpContext httpContext,
         ListFolderAclEntriesQueryResult result,
-        string? correlationId)
+        string? correlationId,
+        string? cursor,
+        int limit)
     {
         if (result.AuthorizationDenial is not null)
         {
@@ -2045,6 +2112,31 @@ public static class FoldersDomainServiceEndpoints
         switch (result.Code)
         {
             case ListFolderAclEntriesQueryResultCode.Allowed:
+                int start = 0;
+                if (cursor is not null)
+                {
+                    int cursorIndex = result.Entries
+                        .Select(static (entry, index) => (entry, index))
+                        .Where(item => string.Equals(item.entry.AclEntryId, cursor, StringComparison.Ordinal))
+                        .Select(static item => item.index)
+                        .DefaultIfEmpty(-1)
+                        .Single();
+                    if (cursorIndex < 0)
+                    {
+                        return FolderProblemDetailsFactory.ForAudit(
+                            StatusCodes.Status400BadRequest,
+                            category: "validation_error",
+                            code: "cursor_tampered",
+                            retryable: false,
+                            correlationId: correlationId,
+                            taskId: null,
+                            message: "Pagination cursor is malformed or tampered.",
+                            evidenceSource: "folder_acl");
+                    }
+
+                    start = cursorIndex + 1;
+                }
+
                 if (!string.IsNullOrWhiteSpace(result.CorrelationId) && FolderHttpHeaderReader.IsSafeHeaderValue(result.CorrelationId))
                 {
                     httpContext.Response.Headers["X-Correlation-Id"] = result.CorrelationId;
@@ -2052,11 +2144,17 @@ public static class FoldersDomainServiceEndpoints
 
                 httpContext.Response.Headers[FreshnessHeaderName] = EventuallyConsistent;
 
+                FolderAclEntryView[] page = [.. result.Entries.Skip(start).Take(limit)];
+                bool isTruncated = start + page.Length < result.Entries.Count;
+                string? nextCursor = isTruncated ? page[^1].AclEntryId : null;
                 return Results.Json(
                     new FolderAclEntryListResponse(
-                        [.. result.Entries.Select(static e => new FolderAclEntryResponse(e.AclEntryId, e.SubjectRef, e.PermissionLevel, e.Effect))],
-                        // The in-memory MVP returns the full ACL set in a single page (no cursor).
-                        new PaginationMetadataResponse(Cursor: null, Limit: 1000, IsTruncated: false, TruncatedReason: null),
+                        [.. page.Select(static e => new FolderAclEntryResponse(e.AclEntryId, e.SubjectRef, e.PermissionLevel, e.Effect))],
+                        new PaginationMetadataResponse(
+                            nextCursor,
+                            limit,
+                            isTruncated,
+                            isTruncated ? "result_count_limit" : null),
                         new FreshnessMetadataResponse(
                             EventuallyConsistent,
                             result.Freshness.ObservedAt,

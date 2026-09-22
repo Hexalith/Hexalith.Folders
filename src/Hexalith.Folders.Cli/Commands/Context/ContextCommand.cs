@@ -55,7 +55,7 @@ internal static class ContextCommand
                     sourcing.CorrelationId,
                     sourcing.TaskId!,
                     freshness,
-                    CommandOptions.ReadBody<FileMetadataRequest>(body),
+                    CommandOptions.ReadRequiredBody<FileMetadataRequest>(body),
                     ct))));
 
         command.Subcommands.Add(BodyQuery(
@@ -70,7 +70,7 @@ internal static class ContextCommand
                     sourcing.CorrelationId,
                     sourcing.TaskId!,
                     freshness,
-                    CommandOptions.ReadBody<FileSearchRequest>(body),
+                    CommandOptions.ReadRequiredBody<FileSearchRequest>(body),
                     ct))));
 
         command.Subcommands.Add(BodyQuery(
@@ -85,7 +85,7 @@ internal static class ContextCommand
                     sourcing.CorrelationId,
                     sourcing.TaskId!,
                     freshness,
-                    CommandOptions.ReadBody<FileGlobRequest>(body),
+                    CommandOptions.ReadRequiredBody<FileGlobRequest>(body),
                     ct))));
 
         command.Subcommands.Add(BodyQuery(
@@ -100,7 +100,7 @@ internal static class ContextCommand
                     sourcing.CorrelationId,
                     sourcing.TaskId!,
                     freshness,
-                    CommandOptions.ReadBody<FileRangeReadRequest>(body),
+                    CommandOptions.ReadRequiredBody<FileRangeReadRequest>(body),
                     ct))));
 
         command.Subcommands.Add(BodyQuery(
@@ -115,7 +115,7 @@ internal static class ContextCommand
                     sourcing.CorrelationId,
                     sourcing.TaskId!,
                     freshness,
-                    CommandOptions.ReadBody<ContextIndexSearchRequest>(body),
+                    CommandOptions.ReadRequiredBody<ContextIndexSearchRequest>(body),
                     ct))));
 
         Option<string> indexingStatusFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");

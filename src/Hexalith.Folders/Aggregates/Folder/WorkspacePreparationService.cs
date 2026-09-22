@@ -29,8 +29,7 @@ public sealed class WorkspacePreparationService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
-        LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
+        LayeredFolderAuthorizationContext authorizationContext = new(
                 request.AuthoritativeTenantId,
                 request.PrincipalId,
                 ActorSafeIdentifier: request.PrincipalId,
@@ -41,7 +40,9 @@ public sealed class WorkspacePreparationService(
                 request.CorrelationId,
                 request.TaskId,
                 clientTenantValues,
-                request.ClientControlledPrincipalValues),
+                request.ClientControlledPrincipalValues);
+        LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -116,6 +117,13 @@ public sealed class WorkspacePreparationService(
             FolderResultCode readinessCode = MapReadiness(readiness);
             if (readinessCode is FolderResultCode.UnknownProviderOutcome or FolderResultCode.ReconciliationRequired)
             {
+                LayeredFolderAuthorizationResult unknownOutcomeAuthorization = await _authorizationService
+                    .ReauthorizeTaskMutationAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
+                if (!unknownOutcomeAuthorization.IsAllowed)
+                {
+                    return FolderResult.Rejected(command, MapAuthorization(unknownOutcomeAuthorization.Decision.OutcomeCode));
+                }
+
                 return AppendUnknownWorkspaceOutcome(
                     streamName,
                     command,
@@ -124,6 +132,13 @@ public sealed class WorkspacePreparationService(
             }
 
             return FolderResult.Rejected(command, readinessCode);
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeTaskMutationAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(

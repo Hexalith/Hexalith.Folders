@@ -28,7 +28,7 @@ internal static class ProviderTools
         [Description("Request body as inline JSON matching the ConfigureProviderBindingRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ConfigureProviderBindingAsync(providerBindingRef, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<ConfigureProviderBindingRequest>(requestJson), ct)), cancellationToken);
+            client.ConfigureProviderBindingAsync(providerBindingRef, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<ConfigureProviderBindingRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-provider-binding")]
     [Description("Inspect a redacted provider binding reference (query).")]
@@ -50,7 +50,7 @@ internal static class ProviderTools
         [Description("Request body as inline JSON matching the ValidateProviderReadinessRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId: null, taskIdRequired: false, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ValidateProviderReadinessAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness), RequestBody.Read<ValidateProviderReadinessRequest>(requestJson), ct)), cancellationToken);
+            client.ValidateProviderReadinessAsync(s.CorrelationId, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<ValidateProviderReadinessRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-provider-support-evidence")]
     [Description("Inspect provider-neutral support and capability evidence (query).")]

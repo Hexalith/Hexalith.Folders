@@ -162,6 +162,33 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         accepted.ObservedByteLength.ShouldBe(12);
     }
 
+    [Fact]
+    public async Task RevokedAuthorityAfterPathPolicyShouldRejectBeforeContentOrRepositoryEffects()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore contentStore = new();
+        RecordingDeleteOperationStore deleteStore = new();
+        SequencedFolderPermissionEvidenceProvider permissions = new(
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
+        WorkspaceFileMutationService service = Service(
+            repository,
+            evidence,
+            contentStore,
+            deleteStore,
+            permissions);
+
+        FolderResult result = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        evidence.Requests.ShouldBe(1);
+        permissions.Calls.ShouldBe(2);
+        contentStore.Requests.ShouldBeEmpty();
+        deleteStore.Requests.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
     [Theory]
     [InlineData("workspace-b", "task-a", FolderResultCode.StateTransitionInvalid)]
     [InlineData("workspace-a", "task-b", FolderResultCode.LockNotOwned)]
@@ -412,9 +439,10 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         IFolderRepository repository,
         IWorkspacePathPolicyEvidenceProvider evidence,
         IWorkspaceFileContentStore? contentStore = null,
-        IWorkspaceFileDeleteOperationStore? deleteOperationStore = null)
+        IWorkspaceFileDeleteOperationStore? deleteOperationStore = null,
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
         => new(
-            AuthorizationService(),
+            AuthorizationService(folderPermissionEvidenceProvider),
             repository,
             evidence,
             new FixedTimeProvider(Now),
@@ -551,7 +579,8 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         ];
     }
 
-    private static LayeredFolderAuthorizationService AuthorizationService()
+    private static LayeredFolderAuthorizationService AuthorizationService(
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
         => new(
             new TenantAccessAuthorizer(
                 TenantStore(),
@@ -561,7 +590,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
                     MutationFreshnessBudget = TimeSpan.FromMinutes(5),
                     DiagnosticStalenessBudget = TimeSpan.FromMinutes(5),
                 }),
-            new RecordingFolderPermissionEvidenceProvider(),
+            folderPermissionEvidenceProvider ?? new RecordingFolderPermissionEvidenceProvider(),
             new RecordingEventStoreAuthorizationValidator(),
             new RecordingDaprPolicyEvidenceProvider(),
             new FixedUtcClock(Now));

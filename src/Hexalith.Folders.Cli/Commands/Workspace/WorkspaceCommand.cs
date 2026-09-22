@@ -31,7 +31,7 @@ internal static class WorkspaceCommand
                     sourcing.IdempotencyKey,
                     sourcing.CorrelationId,
                     sourcing.TaskId,
-                    CommandOptions.ReadBody<PrepareWorkspaceRequest>(body),
+                    CommandOptions.ReadRequiredBody<PrepareWorkspaceRequest>(body),
                     ct))));
 
         command.Subcommands.Add(PrepareLikeMutation(
@@ -46,7 +46,7 @@ internal static class WorkspaceCommand
                     sourcing.IdempotencyKey,
                     sourcing.CorrelationId,
                     sourcing.TaskId,
-                    CommandOptions.ReadBody<LockWorkspaceRequest>(body),
+                    CommandOptions.ReadRequiredBody<LockWorkspaceRequest>(body),
                     ct))));
 
         command.Subcommands.Add(PrepareLikeMutation(
@@ -61,7 +61,7 @@ internal static class WorkspaceCommand
                     sourcing.IdempotencyKey,
                     sourcing.CorrelationId,
                     sourcing.TaskId,
-                    CommandOptions.ReadBody<ReleaseWorkspaceLockRequest>(body),
+                    CommandOptions.ReadRequiredBody<ReleaseWorkspaceLockRequest>(body),
                     ct))));
 
         command.Subcommands.Add(WorkspaceQuery(

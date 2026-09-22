@@ -115,6 +115,7 @@ internal sealed class CommandPipeline
     /// <summary>Executes a query command (never accepts idempotency keys).</summary>
     /// <param name="global">The resolved global options.</param>
     /// <param name="taskIdOption">The <c>--task-id</c> value, when the operation requires one.</param>
+    /// <param name="taskIdSupplied">Whether the caller explicitly supplied <c>--task-id</c>.</param>
     /// <param name="taskIdRequired">Whether the operation signature requires a task ID.</param>
     /// <param name="invoke">The typed SDK call, given the resolved sourcing values.</param>
     /// <param name="cancellationToken">A cancellation token.</param>
@@ -122,6 +123,7 @@ internal sealed class CommandPipeline
     public async Task<int> ExecuteQueryAsync(
         GlobalOptions global,
         string? taskIdOption,
+        bool taskIdSupplied,
         bool taskIdRequired,
         Func<IClient, QuerySourcing, CancellationToken, Task<object?>> invoke,
         CancellationToken cancellationToken)
@@ -133,7 +135,7 @@ internal sealed class CommandPipeline
         EmitCorrelation(correlationId);
 
         string? taskId = null;
-        if (!string.IsNullOrWhiteSpace(taskIdOption))
+        if (taskIdSupplied)
         {
             try
             {

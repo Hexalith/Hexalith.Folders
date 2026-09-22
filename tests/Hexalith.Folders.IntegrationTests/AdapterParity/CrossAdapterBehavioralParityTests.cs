@@ -115,7 +115,7 @@ public sealed class CrossAdapterBehavioralParityTests
     {
         // Cross-adapter drift guard (AC #10): enum members carried by the oracle must hit an explicit
         // projection arm on BOTH adapters (CLI exit code != 1 unless oracle says so; MCP kind != "internal_error"
-        // unless oracle says so). Members absent from the oracle must be the 4-row documented exception set.
+        // unless oracle says so). Members absent from the oracle must be the documented exception set.
         IReadOnlySet<string> oracleCategories = ParityOracle.DistinctCategories();
         IReadOnlyDictionary<string, int> oracleCliExitCodes = ParityOracle.CategoryCliExitCodes();
         IReadOnlyDictionary<string, string> oracleMcpFailureKinds = ParityOracle.CategoryMcpFailureKinds();
@@ -157,8 +157,8 @@ public sealed class CrossAdapterBehavioralParityTests
             }
         }
 
-        oracleCategories.Count.ShouldBe(43);
-        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(46);
+        oracleCategories.Count.ShouldBe(44);
+        Enum.GetValues<CanonicalErrorCategory>().Length.ShouldBe(47);
     }
 
     // =====================================================================================================
@@ -444,9 +444,9 @@ public sealed class CrossAdapterBehavioralParityTests
 
     // =====================================================================================================
     // Task 5 — end-to-end behavioral symmetry: post-SDK error categories driven through a fake
-    // HttpMessageHandler. CreateRepositoryBackedFolder declares 400/401/403/404/409/422/503 — wide enough to
-    // exercise 7 distinct typed-projection categories on a single operation, plus one undeclared status (500)
-    // for the bare-exception fall-through that both adapters project to internal_error.
+    // HttpMessageHandler. CreateRepositoryBackedFolder declares 400/401/403/404/409/422/503 and exercises the
+    // general and idempotency categories; LockWorkspace provides the operation-owned lock-conflict tuple. An
+    // undeclared status (500) exercises the bare-exception fall-through on both adapters.
     // =====================================================================================================
 
     private const string ServerCorrelation = "corr_SERVER_0123456789ABCDEF";
@@ -456,8 +456,9 @@ public sealed class CrossAdapterBehavioralParityTests
         TheoryData<string, int, int, string, bool, string> data = [];
 
         // (canonical_error_category, http_status, expected_cli_exit_code, expected_mcp_failure_kind, server_retryable, server_client_action)
-        // Status codes pair the oracle's category with a CreateRepositoryBackedFolder-declared response so the
-        // SDK reads the body as ProblemDetails (typed projection). The category in the body drives the kind.
+        // Status codes pair the oracle's category with a response declared by the operation driven below so the
+        // SDK reads the body as ProblemDetails (typed projection). The full tuple and originating operation bind
+        // the projection; a tuple valid only on another operation must remain internal_error.
         data.Add("authentication_failure", 401, 65, "authentication_failure", false, "check_credentials");
         data.Add("idempotency_conflict", 409, 68, "idempotency_conflict", false, "revise_request");
         data.Add("idempotency_key_expired", 409, 76, "idempotency_key_expired", false, "refresh_state_then_submit_with_new_key");
@@ -488,8 +489,9 @@ public sealed class CrossAdapterBehavioralParityTests
         // ---- CLI ----
         CliTestHarness cliHarness = new();
         CapturingHttpHandler cliHandler = cliHarness.UseRealClient((HttpStatusCode)httpStatus, problemJson);
-        int cliExit = category == "unknown_provider_outcome"
-            ? await cliHarness.RunAsync(
+        int cliExit = category switch
+        {
+            "unknown_provider_outcome" => await cliHarness.RunAsync(
                 "workspace", "prepare",
                 "--folder-id", "folder_1",
                 "--workspace-id", "workspace_1",
@@ -498,15 +500,26 @@ public sealed class CrossAdapterBehavioralParityTests
                 "--task-id", "task_1",
                 "--idempotency-key", "key_1",
                 "--correlation-id", "client_correlation_cli",
-                "--request", "{}")
-            : await cliHarness.RunAsync(
+                "--request", "{}"),
+            "lock_conflict" => await cliHarness.RunAsync(
+                "workspace", "lock",
+                "--folder-id", "folder_1",
+                "--workspace-id", "workspace_1",
+                "--base-address", CliBaseAddress,
+                "--token", CliToken,
+                "--task-id", "task_1",
+                "--idempotency-key", "key_1",
+                "--correlation-id", "client_correlation_cli",
+                "--request", "{}"),
+            _ => await cliHarness.RunAsync(
                 "folder", "create-repo-backed",
                 "--base-address", CliBaseAddress,
                 "--token", CliToken,
                 "--task-id", "task_1",
                 "--idempotency-key", "key_1",
                 "--correlation-id", "client_correlation_cli",
-                "--request", "{}");
+                "--request", "{}"),
+        };
         cliExit.ShouldBe(expectedCliExitCode, cliHarness.Console.StdErr);
         cliHandler.Header("X-Correlation-Id").ShouldBe("client_correlation_cli"); // caller-supplied correlation is on the wire unchanged.
         cliHarness.Console.StdErr.ShouldContain(ServerCorrelation); // server-supplied correlation is surfaced to the operator.
@@ -514,8 +527,9 @@ public sealed class CrossAdapterBehavioralParityTests
         // ---- MCP ----
         TestSupport.CapturingHandler mcpHandler = new((HttpStatusCode)httpStatus, problemJson, "application/problem+json");
         ToolPipeline mcpPipeline = TestSupport.Pipeline(TestSupport.RealClient(mcpHandler));
-        string mcpResult = category == "unknown_provider_outcome"
-            ? await WorkspaceTools.PrepareWorkspace(
+        string mcpResult = category switch
+        {
+            "unknown_provider_outcome" => await WorkspaceTools.PrepareWorkspace(
                 mcpPipeline,
                 folderId: "folder_1",
                 workspaceId: "workspace_1",
@@ -523,14 +537,24 @@ public sealed class CrossAdapterBehavioralParityTests
                 taskId: "task_1",
                 correlationId: "client_correlation_mcp",
                 requestJson: "{}",
-                TestContext.Current.CancellationToken)
-            : await FolderTools.CreateRepositoryBackedFolder(
+                TestContext.Current.CancellationToken),
+            "lock_conflict" => await WorkspaceTools.LockWorkspace(
+                mcpPipeline,
+                folderId: "folder_1",
+                workspaceId: "workspace_1",
+                idempotencyKey: "key_1",
+                taskId: "task_1",
+                correlationId: "client_correlation_mcp",
+                requestJson: "{}",
+                TestContext.Current.CancellationToken),
+            _ => await FolderTools.CreateRepositoryBackedFolder(
                 mcpPipeline,
                 idempotencyKey: "key_1",
                 taskId: "task_1",
                 correlationId: "client_correlation_mcp",
                 requestJson: "{}",
-                TestContext.Current.CancellationToken);
+                TestContext.Current.CancellationToken),
+        };
 
         Newtonsoft.Json.Linq.JObject mcpJson = TestSupport.Parse(mcpResult);
         mcpJson.Value<string>("kind").ShouldBe(expectedMcpFailureKind);

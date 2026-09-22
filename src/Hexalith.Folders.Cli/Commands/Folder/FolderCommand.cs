@@ -30,7 +30,7 @@ internal static class FolderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<CreateFolderRequest>(parseResult.GetValue(createBody)),
+                CommandOptions.ReadRequiredBody<CreateFolderRequest>(parseResult.GetValue(createBody)),
                 ct))));
 
         Option<string?> repoBackedBody = CommandOptions.Request();
@@ -44,7 +44,7 @@ internal static class FolderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<CreateRepositoryBackedFolderRequest>(parseResult.GetValue(repoBackedBody)),
+                CommandOptions.ReadRequiredBody<CreateRepositoryBackedFolderRequest>(parseResult.GetValue(repoBackedBody)),
                 ct))));
 
         Option<string> bindFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
@@ -60,7 +60,7 @@ internal static class FolderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<BindRepositoryRequest>(parseResult.GetValue(bindBody)),
+                CommandOptions.ReadRequiredBody<BindRepositoryRequest>(parseResult.GetValue(bindBody)),
                 ct))));
 
         Option<string> getBindingFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
@@ -108,7 +108,7 @@ internal static class FolderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<ArchiveFolderRequest>(parseResult.GetValue(archiveBody)),
+                CommandOptions.ReadRequiredBody<ArchiveFolderRequest>(parseResult.GetValue(archiveBody)),
                 ct))));
 
         Option<string> permsFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");
@@ -173,7 +173,7 @@ internal static class FolderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<UpdateFolderAclEntryRequest>(parseResult.GetValue(updateBody)),
+                CommandOptions.ReadRequiredBody<UpdateFolderAclEntryRequest>(parseResult.GetValue(updateBody)),
                 ct))));
 
         return acl;
@@ -196,7 +196,7 @@ internal static class FolderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<BranchRefPolicyRequest>(parseResult.GetValue(setBody)),
+                CommandOptions.ReadRequiredBody<BranchRefPolicyRequest>(parseResult.GetValue(setBody)),
                 ct))));
 
         Option<string> getFolderId = CommandOptions.RequiredId("--folder-id", "Opaque folder identifier.");

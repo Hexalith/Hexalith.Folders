@@ -175,7 +175,7 @@ oracle (`tests/fixtures/parity-contract.yaml`).
 | `70` | `ProviderFailure` | `provider_failure_known`, `provider_unavailable`, `provider_rate_limited`, `provider_readiness_failed`, `provider_permission_insufficient`, `repository_binding_unavailable`, `repository_conflict`, `duplicate_binding`, `unsupported_provider_capability`, `failed_operation`, `commit_failed`, `file_operation_failed` |
 | `71` | `UnknownProviderOutcome` | `unknown_provider_outcome` (surfaced truthfully, never hidden) |
 | `72` | `ReconciliationRequired` | `reconciliation_required`, `file_policy_unavailable`, `workspace_not_ready`, `workspace_preparation_failed`, `dirty_workspace` |
-| `73` | `AuthorityUnavailable` | `read_model_unavailable`, `projection_stale`, `projection_unavailable` |
+| `73` | `AuthorityUnavailable` | `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `idempotency_admission_unavailable` |
 | `74` | `StateTransitionInvalid` | `state_transition_invalid` |
 | `75` | `Redacted` | `redacted` (visibly distinct from missing/unknown) |
 | `76` | `IdempotencyKeyExpired` | `idempotency_key_expired` (refresh state, then submit with a new key) |

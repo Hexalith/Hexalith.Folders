@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 using static GeneratorConstants;
 
@@ -214,9 +215,9 @@ static void ValidateSchemaType(YamlNode value, string? type, string path)
         "object" => value is YamlMappingNode,
         "array" => value is YamlSequenceNode,
         "string" => value is YamlScalarNode,
-        "integer" => value is YamlScalarNode scalar
+        "integer" => value is YamlScalarNode { Style: ScalarStyle.Plain } scalar
             && long.TryParse(scalar.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out _),
-        "boolean" => value is YamlScalarNode scalar
+        "boolean" => value is YamlScalarNode { Style: ScalarStyle.Plain } scalar
             && bool.TryParse(scalar.Value, out _),
         null => true,
         _ => throw new InvalidOperationException($"parity-schema-drift: unsupported JSON Schema type '{type}' at {path}."),
@@ -595,6 +596,32 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
         string path = NormalizePath(ReadFlexibleScalar(operation, "path", "normalized_path"));
         string identity = method + " " + path + " " + operationId;
 
+        bool carriesHistoricalFingerprints = operation.Children.ContainsKey(new YamlScalarNode("historical_v1_status_codes"))
+            || operation.Children.ContainsKey(new YamlScalarNode("historical_v1_canonical_error_categories"))
+            || operation.Children.ContainsKey(new YamlScalarNode("historical_v1_status_code_fingerprint_sha256"))
+            || operation.Children.ContainsKey(new YamlScalarNode("historical_v1_error_vocabulary_fingerprint_sha256"));
+        if (carriesHistoricalFingerprints)
+        {
+            if (!historicalV1ByOperationId.TryGetValue(operationId, out OperationModel? historical))
+            {
+                throw new InvalidOperationException(
+                    $"previous-spine-drift: operation '{operationId}' is absent from the immutable historical v1 spine.");
+            }
+
+            string[] historicalStatuses = ReadStringSequence(operation, "historical_v1_status_codes").Order(StringComparer.Ordinal).ToArray();
+            string[] historicalCategories = ReadStringSequence(operation, "historical_v1_canonical_error_categories").Order(StringComparer.Ordinal).ToArray();
+            if (!historicalStatuses.SequenceEqual(historical.StatusCodes, StringComparer.Ordinal)
+                || ReadFlexibleScalar(operation, "historical_v1_status_code_fingerprint_sha256") != Fingerprint(historical.StatusCodes))
+            {
+                throw new InvalidOperationException($"previous-spine-drift: historical v1 status-code fingerprint changed for '{operationId}'.");
+            }
+            if (!historicalCategories.SequenceEqual(historical.ErrorCategories, StringComparer.Ordinal)
+                || ReadFlexibleScalar(operation, "historical_v1_error_vocabulary_fingerprint_sha256") != Fingerprint(historical.ErrorCategories))
+            {
+                throw new InvalidOperationException($"previous-spine-drift: historical v1 error vocabulary fingerprint changed for '{operationId}'.");
+            }
+        }
+
         if (currentByOperationId.TryGetValue(operationId, out OperationModel? current))
         {
             string[] previousStatusCodes = ReadStringSequence(operation, "status_codes").Order(StringComparer.Ordinal).ToArray();
@@ -610,20 +637,6 @@ static void ValidatePreviousSpine(string previousSpinePath, IReadOnlyList<Operat
                 || errorFingerprint != Fingerprint(current.ErrorCategories))
             {
                 throw new InvalidOperationException($"previous-spine-drift: error vocabulary changed for '{operationId}'.");
-            }
-
-            OperationModel historical = historicalV1ByOperationId[operationId];
-            string[] historicalStatuses = ReadStringSequence(operation, "historical_v1_status_codes").Order(StringComparer.Ordinal).ToArray();
-            string[] historicalCategories = ReadStringSequence(operation, "historical_v1_canonical_error_categories").Order(StringComparer.Ordinal).ToArray();
-            if (!historicalStatuses.SequenceEqual(historical.StatusCodes, StringComparer.Ordinal)
-                || ReadFlexibleScalar(operation, "historical_v1_status_code_fingerprint_sha256") != Fingerprint(historical.StatusCodes))
-            {
-                throw new InvalidOperationException($"previous-spine-drift: historical v1 status-code fingerprint changed for '{operationId}'.");
-            }
-            if (!historicalCategories.SequenceEqual(historical.ErrorCategories, StringComparer.Ordinal)
-                || ReadFlexibleScalar(operation, "historical_v1_error_vocabulary_fingerprint_sha256") != Fingerprint(historical.ErrorCategories))
-            {
-                throw new InvalidOperationException($"previous-spine-drift: historical v1 error vocabulary fingerprint changed for '{operationId}'.");
             }
         }
 
@@ -1609,6 +1622,7 @@ internal static class GeneratorConstants
             ["path_validation_failed"] = new(69, "path_validation_failed", "none"),
             ["idempotency_conflict"] = new(68, "idempotency_conflict", "none"),
             ["idempotency_key_expired"] = new(76, "idempotency_key_expired", "none"),
+            ["idempotency_admission_unavailable"] = new(73, "idempotency_admission_unavailable", "none"),
             ["input_limit_exceeded"] = new(69, "input_limit_exceeded", "none"),
             ["response_limit_exceeded"] = new(69, "response_limit_exceeded", "none"),
             ["query_timeout"] = new(1, "query_timeout", "none"),

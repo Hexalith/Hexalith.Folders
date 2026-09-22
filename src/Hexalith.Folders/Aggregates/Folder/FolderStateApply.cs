@@ -54,6 +54,7 @@ public static class FolderStateApply
                 WorkspaceOperationId = null,
                 WorkspaceCorrelationId = null,
                 WorkspaceTaskId = null,
+                WorkspaceActorPrincipalId = null,
                 WorkspaceLifecycleUpdatedAt = null,
                 WorkspaceLockId = null,
                 WorkspaceLockIntent = null,
@@ -459,6 +460,7 @@ public static class FolderStateApply
             WorkspaceOperationId = requested.WorkspaceId,
             WorkspaceCorrelationId = requested.CorrelationId,
             WorkspaceTaskId = requested.TaskId,
+            WorkspaceActorPrincipalId = requested.ActorPrincipalId,
             WorkspaceLifecycleUpdatedAt = requested.OccurredAt,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
         };
@@ -478,7 +480,21 @@ public static class FolderStateApply
             WorkspaceOperationId = string.IsNullOrWhiteSpace(operationId) ? state.WorkspaceOperationId : operationId,
             WorkspaceCorrelationId = folderEvent.CorrelationId,
             WorkspaceTaskId = folderEvent.TaskId,
+            WorkspaceActorPrincipalId = ActorPrincipalId(folderEvent) ?? state.WorkspaceActorPrincipalId,
             WorkspaceLifecycleUpdatedAt = folderEvent.OccurredAt,
+        };
+
+    private static string? ActorPrincipalId(IFolderEvent folderEvent)
+        => folderEvent switch
+        {
+            WorkspacePreparationRequested value => value.ActorPrincipalId,
+            WorkspaceLockAcquired value => value.ActorPrincipalId,
+            WorkspaceLockReleased value => value.ActorPrincipalId,
+            WorkspaceFileMutationAccepted value => value.ActorPrincipalId,
+            WorkspaceCommitSucceeded value => value.ActorPrincipalId,
+            WorkspaceCommitFailed value => value.ActorPrincipalId,
+            WorkspaceCommitOutcomeUnknown value => value.ActorPrincipalId,
+            _ => null,
         };
 
     private static IReadOnlyDictionary<FolderAccessEntryKey, FolderAccessOverride> RecordGrant(

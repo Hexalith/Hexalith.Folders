@@ -27,7 +27,7 @@ internal static class FolderTools
         [Description("Request body as inline JSON matching the CreateFolderRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.CreateFolderAsync(s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<CreateFolderRequest>(requestJson), ct)), cancellationToken);
+            client.CreateFolderAsync(s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<CreateFolderRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "create-repository-backed-folder")]
     [Description("Request repository creation for a new folder where provider capabilities permit it (mutating).")]
@@ -39,7 +39,7 @@ internal static class FolderTools
         [Description("Request body as inline JSON matching the CreateRepositoryBackedFolderRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.CreateRepositoryBackedFolderAsync(s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<CreateRepositoryBackedFolderRequest>(requestJson), ct)), cancellationToken);
+            client.CreateRepositoryBackedFolderAsync(s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<CreateRepositoryBackedFolderRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "bind-repository")]
     [Description("Bind an existing repository reference to a folder where supported (mutating).")]
@@ -52,7 +52,7 @@ internal static class FolderTools
         [Description("Request body as inline JSON matching the BindRepositoryRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.BindRepositoryAsync(folderId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<BindRepositoryRequest>(requestJson), ct)), cancellationToken);
+            client.BindRepositoryAsync(folderId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<BindRepositoryRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-repository-binding")]
     [Description("Inspect repository binding metadata without exposing protected repository existence (query).")]
@@ -88,7 +88,7 @@ internal static class FolderTools
         [Description("Request body as inline JSON matching the ArchiveFolderRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ArchiveFolderAsync(folderId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<ArchiveFolderRequest>(requestJson), ct)), cancellationToken);
+            client.ArchiveFolderAsync(folderId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<ArchiveFolderRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "list-folder-acl-entries")]
     [Description("List metadata-only folder ACL entries (query).")]
@@ -116,7 +116,7 @@ internal static class FolderTools
         [Description("Request body as inline JSON matching the UpdateFolderAclEntryRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.UpdateFolderAclEntryAsync(folderId, aclEntryId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<UpdateFolderAclEntryRequest>(requestJson), ct)), cancellationToken);
+            client.UpdateFolderAclEntryAsync(folderId, aclEntryId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<UpdateFolderAclEntryRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-effective-permissions")]
     [Description("Inspect caller effective permissions without exposing tenant authority fields (query).")]
@@ -141,7 +141,7 @@ internal static class FolderTools
         [Description("Request body as inline JSON matching the BranchRefPolicyRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ConfigureBranchRefPolicyAsync(folderId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<BranchRefPolicyRequest>(requestJson), ct)), cancellationToken);
+            client.ConfigureBranchRefPolicyAsync(folderId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<BranchRefPolicyRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-branch-ref-policy")]
     [Description("Inspect branch and ref policy metadata (query).")]

@@ -99,6 +99,26 @@ public sealed class FolderWorkspaceCommitServiceTests
     }
 
     [Fact]
+    public async Task RevokedAuthorityAfterReadinessShouldRejectBeforeCommitExecutorOrAppend()
+    {
+        RecordingFolderRepository repository = StagedRepository();
+        RecordingCommitExecutor executor = new();
+        RecordingCommitReadinessValidator readiness = new();
+        SequencedFolderPermissionEvidenceProvider permissions = new(
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
+        WorkspaceCommitService service = Service(repository, executor, permissions, readiness);
+
+        FolderResult result = await service.CommitAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        readiness.Requests.Count.ShouldBe(1);
+        permissions.Calls.ShouldBe(2);
+        executor.Requests.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task UnsupportedCommitCapabilityShouldRejectBeforeCommitExecutorAndAppend()
     {
         RecordingFolderRepository repository = StagedRepository();

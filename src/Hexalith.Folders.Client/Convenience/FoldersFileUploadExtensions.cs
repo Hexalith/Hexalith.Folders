@@ -155,6 +155,11 @@ public static class FoldersFileUploadExtensions
         {
             throw new FileUploadStreamingRequiredException(apiException);
         }
+        catch (HexalithFoldersApiException<ProblemDetails> apiException)
+            when (IsExactStreamingRetry(apiException))
+        {
+            throw new FileUploadStreamingRequiredException(apiException);
+        }
     }
 
     private static bool IsExactStreamingRetry(HexalithFoldersApiException<FileInlineTransportRequiredProblem> exception) =>
@@ -166,6 +171,21 @@ public static class FoldersFileUploadExtensions
             Code: FileInlineTransportRequiredProblemCode.D9_inline_limit_exceeded,
             Retryable: true,
             ClientAction: FileInlineTransportRequiredProblemClientAction.Revise_request,
+        }
+        && exception.Headers
+            .FirstOrDefault(static header => string.Equals(header.Key, "X-Hexalith-Retry-Transport", StringComparison.OrdinalIgnoreCase))
+            .Value is { } values
+        && values.Any(static value => string.Equals(value, "stream", StringComparison.Ordinal));
+
+    private static bool IsExactStreamingRetry(HexalithFoldersApiException<ProblemDetails> exception) =>
+        exception.StatusCode == 413
+        && exception.Result is
+        {
+            Status: 413,
+            Category: CanonicalErrorCategory.Input_limit_exceeded,
+            Code: CanonicalErrorCode.D9_inline_limit_exceeded,
+            Retryable: true,
+            ClientAction: ProblemDetailsClientAction.Revise_request,
         }
         && exception.Headers
             .FirstOrDefault(static header => string.Equals(header.Key, "X-Hexalith-Retry-Transport", StringComparison.OrdinalIgnoreCase))

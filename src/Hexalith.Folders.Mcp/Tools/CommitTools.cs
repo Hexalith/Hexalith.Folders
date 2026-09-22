@@ -30,7 +30,7 @@ internal static class CommitTools
         [Description("Request body as inline JSON matching the CommitWorkspaceRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.CommitWorkspaceAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<CommitWorkspaceRequest>(requestJson), ct)), cancellationToken);
+            client.CommitWorkspaceAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<CommitWorkspaceRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-commit-evidence")]
     [Description("Inspect commit evidence for an operation (query).")]

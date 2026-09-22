@@ -37,7 +37,7 @@ internal static class CommitCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<CommitWorkspaceRequest>(parseResult.GetValue(commitBody)),
+                CommandOptions.ReadRequiredBody<CommitWorkspaceRequest>(parseResult.GetValue(commitBody)),
                 ct))));
 
         command.Subcommands.Add(OperationQuery(

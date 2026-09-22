@@ -23,6 +23,7 @@ public sealed class Pd10ProtectedOperationExecutorTests
         result.Outcome.ShouldBe(Pd10AuthorizationOutcome.AuthenticationRequired);
         probe.BindingReads.ShouldBe(0);
         probe.ProtectedReads.ShouldBe(0);
+        probe.AuditWrites.ShouldBe(1);
     }
 
     [Theory]
@@ -152,11 +153,27 @@ public sealed class Pd10ProtectedOperationExecutorTests
         probe.ProtectedReads.ShouldBe(0);
     }
 
+    [Fact]
+    public async Task AuditSinkFailureStopsEnvelopeBindingAndProtectedObservation()
+    {
+        Probe probe = new() { AuditFailure = new InvalidOperationException("audit unavailable") };
+
+        InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>(
+            async () => await ExecuteAsync(Allowed() with { RequiresTaskFolderBinding = true }, probe).ConfigureAwait(false));
+
+        exception.Message.ShouldBe("audit unavailable");
+        probe.AuditWrites.ShouldBe(1);
+        probe.EnvelopeChecks.ShouldBe(0);
+        probe.BindingReads.ShouldBe(0);
+        probe.ProtectedReads.ShouldBe(0);
+    }
+
     private static ValueTask<Pd10ProtectedOperationResult<string>> ExecuteAsync(
         Pd10AuthorizationContext context,
         Probe probe)
         => Pd10ProtectedOperationExecutor.ExecuteAsync(
             context,
+            probe.AuditAsync,
             probe.ValidateEnvelopeAsync,
             probe.VerifyBindingAsync,
             probe.ObserveAsync);
@@ -191,9 +208,22 @@ public sealed class Pd10ProtectedOperationExecutorTests
 
         public int EnvelopeChecks { get; private set; }
 
+        public int AuditWrites { get; private set; }
+
+        public Exception? AuditFailure { get; init; }
+
         public bool EnvelopeValid { get; init; } = true;
 
         public bool TaskBelongsToFolder { get; init; }
+
+        public ValueTask AuditAsync(Pd10AuthorizationOutcome outcome, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            AuditWrites++;
+            return AuditFailure is null
+                ? ValueTask.CompletedTask
+                : ValueTask.FromException(AuditFailure);
+        }
 
         public ValueTask<bool> ValidateEnvelopeAsync(CancellationToken cancellationToken)
         {

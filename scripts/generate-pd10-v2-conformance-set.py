@@ -24,6 +24,7 @@ REQUIRED_CANDIDATE_PATHS = {
     "docs/sdk/api-reference.md",
     "scripts/generate-pd10-v2-conformance-set.py",
     "scripts/generate-pd10-v2-contract.py",
+    "scripts/generate-pd10-v2-runtime-catalog.py",
     "scripts/generate-v2-conformance-set.ps1",
     "src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj",
     "src/Hexalith.Folders.Client/nswag.json",
@@ -32,6 +33,7 @@ REQUIRED_CANDIDATE_PATHS = {
     "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs",
     "src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs",
     "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml",
+    "src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs",
     "tests/fixtures/parity-contract.schema.json",
     "tests/fixtures/parity-contract.yaml",
     "tests/fixtures/previous-spine.yaml",
@@ -128,6 +130,12 @@ def main() -> int:
     if not output.is_absolute():
         output = root / output
     output = output.resolve()
+    try:
+        output_relative = output.relative_to(root).as_posix()
+    except ValueError:
+        output_relative = None
+    if output_relative in REQUIRED_CANDIDATE_PATHS:
+        raise RuntimeError("The conformance-set output must not alias a required candidate input.")
     paths, root_gitlinks = candidate_paths(root, arguments.baseline_commit, output)
     entries = [artifact_entry(root, path, root_gitlinks) for path in paths]
     entry_digests = {path: digest for path, _, _, digest, _ in entries}
@@ -144,7 +152,7 @@ def main() -> int:
         "evidence_id: PD10-V2-CONFORMANCE-SET",
         "candidate_version: '2.0.0'",
         "generated_for_date: '2026-09-17'",
-        f"baseline_commit: '{arguments.baseline_commit}'",
+        f"baseline_commit: {json.dumps(arguments.baseline_commit)}",
         f"historical_v1_path: {HISTORICAL_V1_PATH}",
         f"historical_v1_sha256: {historical_v1_digest}",
         f"authorization_matrix_path: {MATRIX_PATH}",

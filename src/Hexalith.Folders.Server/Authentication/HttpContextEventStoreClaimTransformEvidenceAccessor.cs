@@ -19,10 +19,15 @@ public sealed class HttpContextEventStoreClaimTransformEvidenceAccessor(IHttpCon
         PreauthorizedRequestState? preauthorized = PreauthorizedRequestContext.Current;
         if (preauthorized is not null)
         {
+            if (!string.Equals(preauthorized.HistoricalActionToken, actionToken, StringComparison.Ordinal))
+            {
+                return EventStoreClaimTransformEvidence.MalformedEvidence();
+            }
+
             return EventStoreClaimTransformEvidence.Allowed(
                 preauthorized.TenantId,
                 preauthorized.PrincipalId,
-                [actionToken]);
+                [preauthorized.CandidateActionToken, preauthorized.HistoricalActionToken]);
         }
 
         ClaimsPrincipal? user = httpContextAccessor.HttpContext?.User;

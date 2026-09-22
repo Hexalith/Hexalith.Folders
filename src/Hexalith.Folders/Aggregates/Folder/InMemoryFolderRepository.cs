@@ -410,7 +410,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             new FolderLifecycleFreshness("read_your_writes", clamped, "in-memory-folder-repository", Stale: false, ReasonCode: null),
             new FolderLifecycleEvidenceScope(
                 state.ManagedTenantId,
-                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                state.WorkspaceActorPrincipalId,
                 WorkspaceLockStatusQueryHandler.ActionToken,
                 state.WorkspaceTaskId,
                 state.WorkspaceCorrelationId,
@@ -476,7 +476,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             LastFailureCategoryFor(currentState, state.WorkspaceCommitFailureCategory ?? state.RepositoryBindingFailureCategory),
             new FolderLifecycleEvidenceScope(
                 state.ManagedTenantId,
-                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                state.WorkspaceActorPrincipalId,
                 WorkspaceStatusQueryHandler.ActionToken,
                 state.WorkspaceTaskId,
                 state.WorkspaceCorrelationId,
@@ -522,7 +522,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             currentState is "requested" or "preparing" ? null : clamped,
             new FolderLifecycleEvidenceScope(
                 state.ManagedTenantId,
-                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                state.WorkspaceActorPrincipalId,
                 WorkspaceCleanupStatusQueryHandler.ActionToken,
                 state.WorkspaceTaskId,
                 state.WorkspaceCorrelationId,
@@ -568,7 +568,7 @@ public sealed class InMemoryFolderRepository : IFolderRepository
             freshness,
             new FolderLifecycleEvidenceScope(
                 state.ManagedTenantId,
-                state.WorkspaceLockHolderTaskId ?? state.WorkspaceTaskId,
+                state.WorkspaceActorPrincipalId,
                 TaskStatusQueryHandler.ActionToken,
                 state.WorkspaceTaskId,
                 state.WorkspaceCorrelationId,

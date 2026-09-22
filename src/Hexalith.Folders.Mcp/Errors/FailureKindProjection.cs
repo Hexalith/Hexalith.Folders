@@ -46,6 +46,7 @@ internal static class FailureKindProjection
         CanonicalErrorCategory.Validation_error => "validation_error",
         CanonicalErrorCategory.Idempotency_conflict => "idempotency_conflict",
         CanonicalErrorCategory.Idempotency_key_expired => "idempotency_key_expired",
+        CanonicalErrorCategory.Idempotency_admission_unavailable => "idempotency_admission_unavailable",
         CanonicalErrorCategory.Provider_readiness_failed => "provider_readiness_failed",
         CanonicalErrorCategory.Provider_permission_insufficient => "provider_permission_insufficient",
         CanonicalErrorCategory.Provider_unavailable => "provider_unavailable",

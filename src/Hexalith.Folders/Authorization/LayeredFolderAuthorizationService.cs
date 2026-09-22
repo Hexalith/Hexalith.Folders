@@ -25,7 +25,8 @@ public sealed class LayeredFolderAuthorizationService(
         if (preauthorized is not null && PreauthorizedRequestContext.Covers(
                 context.AuthoritativeTenantId,
                 context.PrincipalId,
-                context.OperationScope))
+                context.OperationScope,
+                context.ActionToken))
         {
             LayeredFolderAuthorizationAllowedContext allowedContext = new(
                 context.AuthoritativeTenantId!,
@@ -271,6 +272,66 @@ public sealed class LayeredFolderAuthorizationService(
             decision,
             safeContext,
             evaluatedLayers.ToArray());
+    }
+
+    /// <summary>Obtains fresh candidate-action evidence immediately before a task mutation effect.</summary>
+    public async Task<LayeredFolderAuthorizationResult> ReauthorizeTaskMutationAsync(
+        LayeredFolderAuthorizationContext context,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        PreauthorizedRequestState? preauthorized = PreauthorizedRequestContext.Current;
+        if (preauthorized is null)
+        {
+            return await AuthorizeAsync(context, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (!PreauthorizedRequestContext.Covers(
+                context.AuthoritativeTenantId,
+                context.PrincipalId,
+                context.OperationScope,
+                context.ActionToken))
+        {
+            return LayeredFolderAuthorizationResult.Denied(
+                Snapshot(
+                    AuthorizationLayer.EventStoreClaimTransform,
+                    LayeredAuthorizationOutcomeCodes.AuthorizationEvidenceMalformed,
+                    retryable: false,
+                    freshnessClass: "malformed",
+                    freshnessWatermark: null,
+                    context,
+                    SafeActorIdentifier(context)),
+                [AuthorizationLayer.JwtValidation, AuthorizationLayer.EventStoreClaimTransform]);
+        }
+
+        LayeredFolderAuthorizationContext actorContext = context with
+        {
+            ActionToken = preauthorized.CandidateActionToken,
+            ClaimTransformEvidence = EventStoreClaimTransformEvidence.Allowed(
+                preauthorized.TenantId,
+                preauthorized.PrincipalId,
+                [preauthorized.CandidateActionToken]),
+        };
+
+        using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
+        LayeredFolderAuthorizationResult actor = await AuthorizeAsync(actorContext, cancellationToken).ConfigureAwait(false);
+        if (!actor.IsAllowed || actor.AllowedContext is null || preauthorized.DelegatorPrincipalId is null)
+        {
+            return actor;
+        }
+
+        LayeredFolderAuthorizationContext delegatorContext = actorContext with
+        {
+            PrincipalId = preauthorized.DelegatorPrincipalId,
+            ActorSafeIdentifier = preauthorized.PrincipalId,
+            ClaimTransformEvidence = EventStoreClaimTransformEvidence.Allowed(
+                preauthorized.TenantId,
+                preauthorized.DelegatorPrincipalId,
+                [preauthorized.CandidateActionToken]),
+            ClientControlledPrincipalValues = null,
+        };
+        LayeredFolderAuthorizationResult delegator = await AuthorizeAsync(delegatorContext, cancellationToken).ConfigureAwait(false);
+        return delegator.IsAllowed ? actor : delegator;
     }
 
     private static string MergeFreshnessClass(string current, string incoming)

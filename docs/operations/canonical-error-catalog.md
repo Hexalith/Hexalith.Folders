@@ -17,9 +17,9 @@ and [`docs/sdk/authentication.md`](../sdk/authentication.md). For provider failu
 [`audit-and-redaction.md`](audit-and-redaction.md) and
 [`incident-alerting-and-recovery.md`](incident-alerting-and-recovery.md).
 
-## Generated canonical category vocabulary (46)
+## Generated canonical category vocabulary (47)
 
-The wire vocabulary is the generated `CanonicalErrorCategory` enum — **exactly 46 members**, emitted on the
+The wire vocabulary is the generated `CanonicalErrorCategory` enum — **exactly 47 members**, emitted on the
 RFC 9457 `category` extension. This is the authoritative SDK-facing set; the catalog never invents categories
 the generated enum does not declare.
 
@@ -36,6 +36,7 @@ the generated enum does not declare.
 | `validation_error` |
 | `idempotency_conflict` |
 | `idempotency_key_expired` |
+| `idempotency_admission_unavailable` |
 | `provider_readiness_failed` |
 | `provider_permission_insufficient` |
 | `provider_unavailable` |
@@ -74,10 +75,10 @@ the generated enum does not declare.
 | `internal_error` |
 | `concurrency_conflict` |
 
-## Parity oracle outcome mappings (43)
+## Parity oracle outcome mappings (44)
 
 The parity oracle `tests/fixtures/parity-contract.yaml` is the source of truth for cross-surface outcome
-mappings. Its `outcome_mapping` rows currently carry **43 distinct canonical categories**. The **three**
+mappings. Its `outcome_mapping` rows currently carry **44 distinct canonical categories**. The **three**
 generated categories intentionally outside the oracle path are `success` (the non-error outcome),
 `client_configuration_error`, and `credential_missing` (pre-SDK behavior with no HTTP call).
 
@@ -98,6 +99,7 @@ generated categories intentionally outside the oracle path are `success` (the no
 | `file_policy_unavailable` |
 | `idempotency_conflict` |
 | `idempotency_key_expired` |
+| `idempotency_admission_unavailable` |
 | `input_limit_exceeded` |
 | `internal_error` |
 | `lock_conflict` |
@@ -142,7 +144,7 @@ classes to `422`; unavailable/projection/internal classes to `503`; and all rema
 ## Retryability and client-action guidance
 
 `FolderCanonicalErrorMapper.RetryableFor` marks a small set retryable: `provider_rate_limited`,
-`provider_unavailable`, `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `lock_expired`,
+`provider_unavailable`, `read_model_unavailable`, `projection_stale`, `projection_unavailable`, `idempotency_admission_unavailable`, `lock_expired`,
 and `query_timeout`. The two ambiguous-outcome categories `unknown_provider_outcome` and
 `reconciliation_required` are deliberately **not** retryable — retrying them could duplicate a repository,
 file change, or commit. The typed client-action vocabulary is the generated `ProblemDetailsClientAction`
@@ -182,7 +184,7 @@ oracle `cli_exit_code` column and are deliberately not the EventStore admin CLI 
 | `70` | ProviderFailure | provider / repository operation failures |
 | `71` | UnknownProviderOutcome | `unknown_provider_outcome`, surfaced never hidden |
 | `72` | ReconciliationRequired | reconciliation / workspace readiness pending |
-| `73` | AuthorityUnavailable | `read_model_unavailable` / projection unavailable or stale |
+| `73` | AuthorityUnavailable | `read_model_unavailable` / projection unavailable or stale / `idempotency_admission_unavailable` |
 | `74` | StateTransitionInvalid | `state_transition_invalid` |
 | `75` | Redacted | `redacted`, visibly distinct from missing/unknown |
 | `76` | IdempotencyKeyExpired | `idempotency_key_expired` |
@@ -200,7 +202,7 @@ for the full surface; this catalog does not duplicate them.
 ## MCP failure-kind behavior
 
 The MCP projection `FailureKindProjection` projects each post-SDK oracle category to a failure kind where
-**the kind equals the category name verbatim** (the 43 oracle values). Two pre-SDK kinds are layered by the
+**the kind equals the category name verbatim** (the 44 oracle values). Two pre-SDK kinds are layered by the
 tool pipeline and never produced by the projection. Both `range_unsatisfiable` and
 `file_policy_unavailable` are therefore preserved exactly rather than collapsed into a fallback.
 
@@ -208,7 +210,7 @@ tool pipeline and never produced by the projection. Both `range_unsatisfiable` a
 
 | Rule | Behavior |
 |---|---|
-| `verbatim` | Oracle category name equals the MCP failure kind (43 post-SDK values) |
+| `verbatim` | Oracle category name equals the MCP failure kind (44 post-SDK values) |
 | `usage_error` | Pre-SDK only; layered by the tool pipeline; never produced by the projection |
 | `credential_missing` | Pre-SDK only; layered by the tool pipeline; never produced by the projection |
 

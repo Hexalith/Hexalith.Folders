@@ -24,8 +24,7 @@ public sealed class WorkspaceLockReleaseService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
-        LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
+        LayeredFolderAuthorizationContext authorizationContext = new(
                 request.AuthoritativeTenantId,
                 request.PrincipalId,
                 ActorSafeIdentifier: request.PrincipalId,
@@ -36,7 +35,9 @@ public sealed class WorkspaceLockReleaseService(
                 request.CorrelationId,
                 request.TaskId,
                 clientTenantValues,
-                request.ClientControlledPrincipalValues),
+                request.ClientControlledPrincipalValues);
+        LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -93,6 +94,13 @@ public sealed class WorkspaceLockReleaseService(
         if (aggregateResult.Events.Count == 0)
         {
             return aggregateResult;
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeTaskMutationAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(

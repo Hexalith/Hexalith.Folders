@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Security.Claims;
+using System.Net.Http.Headers;
 
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -28,6 +29,7 @@ public static class Pd10V2CandidateCompatibilitySeam
     private const string AuthorizedFolderItem = "pd10.authorized-folder";
     private const string AuthorizedWatermarkItem = "pd10.authorized-watermark";
     private const string AuthorizedOrganizationItem = "pd10.authorized-organization";
+    private const string AuthorizedDelegatorItem = "pd10.authorized-delegator";
     private const string TaskSnapshotItem = "pd10.task-snapshot";
     private static readonly HashSet<string> TaskLifecycleStates = new(StringComparer.Ordinal)
     {
@@ -38,7 +40,7 @@ public static class Pd10V2CandidateCompatibilitySeam
     {
         "success", "authentication_failure", "client_configuration_error", "credential_missing",
         "credential_reference_invalid", "tenant_access_denied", "validation_error", "concurrency_conflict",
-        "idempotency_conflict", "idempotency_key_expired", "provider_readiness_failed",
+        "idempotency_conflict", "idempotency_key_expired", "idempotency_admission_unavailable", "provider_readiness_failed",
         "provider_permission_insufficient", "provider_unavailable", "provider_rate_limited",
         "repository_binding_unavailable", "branch_ref_policy_invalid", "workspace_not_ready",
         "workspace_preparation_failed", "workspace_locked", "lock_conflict", "lock_expired", "lock_not_owned",
@@ -61,6 +63,53 @@ public static class Pd10V2CandidateCompatibilitySeam
     {
         "CreateRepositoryBackedFolder", "BindRepository",
     };
+    private static readonly HashSet<string> RequiredBodyOperations = new(StringComparer.Ordinal)
+    {
+        "CreateFolder", "ArchiveFolder", "UpdateFolderAclEntry", "ConfigureProviderBinding",
+        "ValidateProviderReadiness", "CreateRepositoryBackedFolder", "BindRepository",
+        "ConfigureBranchRefPolicy", "PrepareWorkspace", "LockWorkspace", "ReleaseWorkspaceLock",
+        "AddFile", "ChangeFile", "RemoveFile", "GetFolderFileMetadata", "SearchFolderFiles",
+        "SearchFolderIndexedFiles", "GlobFolderFiles", "ReadFileRange", "CommitWorkspace",
+    };
+    private static readonly IReadOnlyDictionary<string, string> OperationFreshness =
+        new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["GetFolderLifecycleStatus"] = "eventually_consistent",
+            ["ListFolderAclEntries"] = "eventually_consistent",
+            ["GetEffectivePermissions"] = "read_your_writes",
+            ["GetProviderBinding"] = "eventually_consistent",
+            ["ValidateProviderReadiness"] = "snapshot_per_task",
+            ["GetProviderSupportEvidence"] = "eventually_consistent",
+            ["GetRepositoryBinding"] = "eventually_consistent",
+            ["GetBranchRefPolicy"] = "eventually_consistent",
+            ["GetWorkspaceLock"] = "read_your_writes",
+            ["GetWorkspaceRetryEligibility"] = "eventually_consistent",
+            ["GetWorkspaceTransitionEvidence"] = "snapshot_per_task",
+            ["ListFolderFiles"] = "snapshot_per_task",
+            ["GetFolderFileMetadata"] = "snapshot_per_task",
+            ["SearchFolderFiles"] = "snapshot_per_task",
+            ["SearchFolderIndexedFiles"] = "eventually_consistent",
+            ["GetFolderIndexingStatus"] = "eventually_consistent",
+            ["GlobFolderFiles"] = "snapshot_per_task",
+            ["ReadFileRange"] = "snapshot_per_task",
+            ["GetWorkspaceStatus"] = "read_your_writes",
+            ["GetWorkspaceCleanupStatus"] = "read_your_writes",
+            ["GetTaskStatus"] = "eventually_consistent",
+            ["GetCommitEvidence"] = "eventually_consistent",
+            ["GetProviderOutcome"] = "eventually_consistent",
+            ["GetReconciliationStatus"] = "eventually_consistent",
+            ["ListAuditTrail"] = "eventually_consistent",
+            ["GetAuditRecord"] = "eventually_consistent",
+            ["ListOperationTimeline"] = "eventually_consistent",
+            ["GetOperationTimelineEntry"] = "eventually_consistent",
+            ["GetReadinessDiagnostics"] = "eventually_consistent",
+            ["GetLockDiagnostics"] = "eventually_consistent",
+            ["GetDirtyStateDiagnostics"] = "eventually_consistent",
+            ["GetFailedOperationDiagnostics"] = "eventually_consistent",
+            ["GetProviderStatusDiagnostics"] = "eventually_consistent",
+            ["GetSyncStatusDiagnostics"] = "eventually_consistent",
+            ["GetProjectionFreshness"] = "eventually_consistent",
+        };
 
     /// <summary>Adds the candidate-only authorization and historical transport seam.</summary>
     public static IApplicationBuilder UsePd10V2CandidateCompatibilitySeam(this IApplicationBuilder app)
@@ -104,7 +153,8 @@ public static class Pd10V2CandidateCompatibilitySeam
                 return;
             }
 
-            if (!await BufferBoundedRequestBodyAsync(context.Request, context.RequestAborted).ConfigureAwait(false))
+            if (RequiresRequestBody(descriptor)
+                && !await BufferBoundedRequestBodyAsync(context.Request, context.RequestAborted).ConfigureAwait(false))
             {
                 await WriteInputLimitProblemAsync(context).ConfigureAwait(false);
                 return;
@@ -129,11 +179,13 @@ public static class Pd10V2CandidateCompatibilitySeam
                 descriptor.TaskBinding == Pd10TaskBindingRule.RouteTaskBelongsToRouteFolder
                     ? token => VerifyTaskBindingAsync(context, routeValues, token)
                     : null;
-            Pd10ProtectedOperationResult<bool> result;
-            try
-            {
-                result = await Pd10ProtectedOperationExecutor.ExecuteAsync(
+            Pd10ProtectedOperationResult<bool> result = await Pd10ProtectedOperationExecutor.ExecuteAsync(
                     authorization,
+                    (outcome, _) => AuditAsync(
+                        context,
+                        descriptor.OperationId,
+                        ToKebabCase(descriptor.OperationFamily.ToString()),
+                        outcome.IsAllowed ? "allow" : "deny"),
                     token => ValidateCandidateEnvelopeAsync(context, descriptor, routeValues, token),
                     binding,
                     async token =>
@@ -152,13 +204,16 @@ public static class Pd10V2CandidateCompatibilitySeam
                             (string)context.Items[AuthorizedPrincipalItem]!,
                             context.Items.TryGetValue(AuthorizedFolderItem, out object? folder) ? folder as string : null,
                             context.Items.TryGetValue(AuthorizedWatermarkItem, out object? watermark) ? watermark as string : null,
-                            context.Items.TryGetValue(AuthorizedOrganizationItem, out object? organization) ? organization as string : null);
+                            context.Items.TryGetValue(AuthorizedOrganizationItem, out object? organization) ? organization as string : null,
+                            descriptor.ActionToken,
+                            descriptor.HistoricalActionToken,
+                            context.Items.TryGetValue(AuthorizedDelegatorItem, out object? delegator) ? delegator as string : null);
                         try
                         {
                             PreauthorizedRequestContext.Begin(preauthorized);
                             context.Request.Path = Pd10ProtectedOperationCatalog.HistoricalPath(descriptor, routeValues);
                             await RewriteRequestAsync(context.Request, descriptor, token).ConfigureAwait(false);
-                            await InvokeHistoricalAsync(context, next).ConfigureAwait(false);
+                            await InvokeHistoricalAsync(context, next, descriptor).ConfigureAwait(false);
                             return true;
                         }
                         finally
@@ -168,23 +223,6 @@ public static class Pd10V2CandidateCompatibilitySeam
                         }
                     },
                     context.RequestAborted).ConfigureAwait(false);
-            }
-            catch
-            {
-                // The direct authorization decision is already established before protected observation.
-                // Preserve that evidence even when downstream execution or request cancellation fails.
-                await AuditAsync(
-                    context,
-                    descriptor.OperationId,
-                    ToKebabCase(descriptor.OperationFamily.ToString()),
-                    result: "allow").ConfigureAwait(false);
-                throw;
-            }
-            await AuditAsync(
-                context,
-                descriptor.OperationId,
-                ToKebabCase(descriptor.OperationFamily.ToString()),
-                result.Outcome.IsAllowed ? "allow" : "deny").ConfigureAwait(false);
             if (!result.Outcome.IsAllowed)
             {
                 await WriteProblemAsync(context, result.Outcome, null).ConfigureAwait(false);
@@ -220,6 +258,11 @@ public static class Pd10V2CandidateCompatibilitySeam
         if (!isUsable)
         {
             return Unusable(descriptor, Pd10AuthorityEvidenceState.Incomplete, V2AccessState.DelegatedServiceAgent);
+        }
+
+        if (delegatorId is not null)
+        {
+            context.Items[AuthorizedDelegatorItem] = delegatorId;
         }
 
         if (isDelegated && !IsDelegable(descriptor.OperationFamily))
@@ -429,6 +472,14 @@ public static class Pd10V2CandidateCompatibilitySeam
             return Pd10TaskFolderBindingState.Unavailable;
         }
 
+        if (!string.Equals(
+                result.Freshness.ProjectionWatermark,
+                result.Snapshot.Freshness.ProjectionWatermark,
+                StringComparison.Ordinal))
+        {
+            return Pd10TaskFolderBindingState.Unavailable;
+        }
+
         bool isBound = result.Snapshot.ManagedTenantId == tenant.AuthoritativeTenantId
             && result.Snapshot.FolderId == folderId
             && result.Snapshot.TaskId == taskId;
@@ -476,12 +527,38 @@ public static class Pd10V2CandidateCompatibilitySeam
             || !HeaderValuesAreExactIdentifiers(context, "X-Forwarded-Principal")
             || !QueryValuesAreExactIdentifiers(context, "tenantId")
             || !QueryValuesAreExactIdentifiers(context, "managedTenantId")
-            || !QueryValuesAreExactIdentifiers(context, "principalId"))
+            || !QueryValuesAreExactIdentifiers(context, "principalId")
+            || !AllHeaderValuesAgree(context, "X-Correlation-Id")
+            || !AllHeaderValuesAgree(context, "X-Hexalith-Task-Id")
+            || !AllHeaderValuesAgree(context, "Idempotency-Key"))
         {
             await WriteValidationProblemAsync(
                 context,
                 "validation_error",
                 "Request validation failed.",
+                cancellationToken).ConfigureAwait(false);
+            return false;
+        }
+
+        IReadOnlyList<string> freshnessValues = HeaderValues(context, "X-Hexalith-Freshness");
+        if (OperationFreshness.TryGetValue(descriptor.OperationId, out string? acceptedFreshness))
+        {
+            if (freshnessValues.Any(value => !string.Equals(value, acceptedFreshness, StringComparison.Ordinal)))
+            {
+                await WriteValidationProblemAsync(
+                    context,
+                    "unsupported_read_consistency",
+                    $"Operation supports {acceptedFreshness} only.",
+                    cancellationToken).ConfigureAwait(false);
+                return false;
+            }
+        }
+        else if (freshnessValues.Count > 0)
+        {
+            await WriteValidationProblemAsync(
+                context,
+                "unsupported_read_consistency",
+                "Operation does not accept a freshness value.",
                 cancellationToken).ConfigureAwait(false);
             return false;
         }
@@ -499,25 +576,17 @@ public static class Pd10V2CandidateCompatibilitySeam
                     cancellationToken).ConfigureAwait(false);
                 return false;
             }
-
-            IReadOnlyList<string> freshnessValues = HeaderValues(context, "X-Hexalith-Freshness");
-            if (freshnessValues.Any(value =>
-                    !string.Equals(value, "eventually_consistent", StringComparison.Ordinal)))
-            {
-                await WriteValidationProblemAsync(
-                    context,
-                    "unsupported_read_consistency",
-                    "Operation supports eventually_consistent only.",
-                    cancellationToken).ConfigureAwait(false);
-                return false;
-            }
         }
-        else if (!AllHeaderValuesAgree(context, "X-Hexalith-Freshness"))
+
+        bool hasBody = HasRequestBody(context.Request);
+        if (RequiresRequestBody(descriptor) != hasBody)
         {
             await WriteValidationProblemAsync(
                 context,
-                "unsupported_read_consistency",
-                "Supplied read-consistency values must agree.",
+                "validation_error",
+                RequiresRequestBody(descriptor)
+                    ? "The request body is required for this operation."
+                    : "The operation does not accept a request body.",
                 cancellationToken).ConfigureAwait(false);
             return false;
         }
@@ -538,7 +607,10 @@ public static class Pd10V2CandidateCompatibilitySeam
         return true;
     }
 
-    private static async Task InvokeHistoricalAsync(HttpContext context, RequestDelegate next)
+    private static async Task InvokeHistoricalAsync(
+        HttpContext context,
+        RequestDelegate next,
+        Pd10ProtectedOperationDescriptor descriptor)
     {
         Stream destination = context.Response.Body;
         using MemoryStream captured = new();
@@ -563,7 +635,41 @@ public static class Pd10V2CandidateCompatibilitySeam
                 return;
             }
 
-            NormalizeHistoricalProblem(captured, context.Response.ContentType);
+            if (!Pd10V2RuntimeResponseCatalog.AllowsStatus(descriptor.OperationId, context.Response.StatusCode))
+            {
+                context.Response.Body = destination;
+                await WriteProblemAsync(
+                    context,
+                    Pd10AuthorizationOutcome.AuthorityUnavailable,
+                    ValidateCorrelationId(ReadCorrelationId(captured))).ConfigureAwait(false);
+                return;
+            }
+
+            if (descriptor.OperationId == "GetBranchRefPolicy"
+                && context.Response.StatusCode is >= 200 and < 300)
+            {
+                TranslateBranchRefPolicySuccess(captured, context.Response.ContentType);
+            }
+            else
+            {
+                bool normalized = NormalizeHistoricalProblem(captured, context.Response.ContentType);
+                if (context.Response.StatusCode >= 400
+                    && (!normalized || !IsDeclaredProblem(captured, descriptor.OperationId, context.Response.StatusCode)))
+                {
+                    context.Response.Body = destination;
+                    await WriteProblemAsync(
+                        context,
+                        Pd10AuthorizationOutcome.AuthorityUnavailable,
+                        ValidateCorrelationId(ReadCorrelationId(captured))).ConfigureAwait(false);
+                    return;
+                }
+            }
+            context.Response.Headers.Remove("X-Hexalith-Read-Consistency");
+            if (context.Response.StatusCode is >= 200 and < 300
+                && OperationFreshness.TryGetValue(descriptor.OperationId, out string? responseFreshness))
+            {
+                context.Response.Headers["X-Hexalith-Freshness"] = responseFreshness;
+            }
             context.Response.ContentLength = captured.Length;
             await captured.CopyToAsync(destination, context.RequestAborted).ConfigureAwait(false);
         }
@@ -573,10 +679,9 @@ public static class Pd10V2CandidateCompatibilitySeam
         }
     }
 
-    private static void NormalizeHistoricalProblem(MemoryStream body, string? contentType)
+    private static void TranslateBranchRefPolicySuccess(MemoryStream body, string? contentType)
     {
-        if (contentType is null
-            || !contentType.StartsWith("application/problem+json", StringComparison.OrdinalIgnoreCase))
+        if (!IsExactJsonMediaType(contentType))
         {
             body.Position = 0;
             return;
@@ -594,6 +699,52 @@ public static class Pd10V2CandidateCompatibilitySeam
             return;
         }
 
+        if (parsed is JsonObject response
+            && RewriteSuccessSchemaDiscriminator(response, "GetBranchRefPolicy"))
+        {
+            body.SetLength(0);
+            JsonSerializer.Serialize(body, response);
+        }
+
+        body.Position = 0;
+    }
+
+    /// <summary>Translates only the one schema-owned successful response discriminator changed by v2.</summary>
+    internal static bool RewriteSuccessSchemaDiscriminator(JsonObject response, string operationId)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        if (!string.Equals(operationId, "GetBranchRefPolicy", StringComparison.Ordinal)
+            || response["requestSchemaVersion"] is not JsonValue version
+            || !version.TryGetValue(out string? value)
+            || !string.Equals(value, "v1", StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        response["requestSchemaVersion"] = "v2";
+        return true;
+    }
+
+    private static bool NormalizeHistoricalProblem(MemoryStream body, string? contentType)
+    {
+        if (!IsExactProblemJsonMediaType(contentType))
+        {
+            body.Position = 0;
+            return false;
+        }
+
+        body.Position = 0;
+        JsonNode? parsed;
+        try
+        {
+            parsed = JsonNode.Parse(body);
+        }
+        catch (JsonException)
+        {
+            body.Position = 0;
+            return false;
+        }
+
         if (parsed is not JsonObject problem
             || problem["category"] is not JsonValue categoryValue
             || !categoryValue.TryGetValue(out string? category)
@@ -601,19 +752,35 @@ public static class Pd10V2CandidateCompatibilitySeam
             || !codeValue.TryGetValue(out string? code))
         {
             body.Position = 0;
-            return;
+            return false;
         }
 
-        // Historical handlers expose task and retry metadata as open top-level extensions. The v2
-        // candidate owns a closed Problem Details shape, so retain only its schema-owned locations.
+        // Historical handlers expose task, retry, and RFC 9457 extension metadata at the top level.
+        // The v2 candidate owns a closed Problem Details shape, so retain only schema-owned fields.
         problem.Remove("taskId");
         problem.Remove("retryAfterSeconds");
+        problem.Remove("detail");
+        problem.Remove("instance");
         if (problem["details"] is JsonObject details)
         {
             details.Remove("retryReasonCode");
             details.Remove("reasonCategory");
             details.Remove("evidenceSource");
             details.Remove("taskId");
+            foreach ((string key, JsonNode? value) in details.ToArray())
+            {
+                if (value is JsonValue scalar && scalar.TryGetValue(out string? _))
+                {
+                    continue;
+                }
+
+                details[key] = value switch
+                {
+                    null => "null",
+                    JsonValue boolean when boolean.TryGetValue(out bool boolValue) => boolValue ? "true" : "false",
+                    _ => value.ToJsonString(new JsonSerializerOptions { WriteIndented = false }),
+                };
+            }
         }
 
         if (category == "lock_conflict")
@@ -649,6 +816,7 @@ public static class Pd10V2CandidateCompatibilitySeam
                 or ("commit_failed", _) or ("provider_readiness_failed", _) => "contact_operator",
             ("unknown_provider_outcome", _) or ("reconciliation_required", _) => "wait_for_reconciliation",
             ("provider_failure_known", _) => "do_not_retry",
+            ("idempotency_admission_unavailable", _) => "retry",
             ("lock_conflict", _) or ("lock_expired", _) or ("projection_stale", _)
                 or ("projection_unavailable", _) or ("provider_unavailable", _)
                 or ("file_policy_unavailable", _) or ("read_model_unavailable", _) => "retry",
@@ -658,6 +826,68 @@ public static class Pd10V2CandidateCompatibilitySeam
         body.SetLength(0);
         JsonSerializer.Serialize(body, problem);
         body.Position = 0;
+        return true;
+    }
+
+    private static bool IsDeclaredProblem(Stream body, string operationId, int httpStatus)
+    {
+        body.Position = 0;
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(body);
+            JsonElement root = document.RootElement;
+            string[] requiredNames =
+            [
+                "type", "title", "status", "category", "code", "message", "correlationId",
+                "retryable", "clientAction", "details",
+            ];
+            HashSet<string> allowedNames = new(requiredNames, StringComparer.Ordinal);
+            if (root.ValueKind != JsonValueKind.Object
+                || HasDuplicateProperties(root)
+                || root.EnumerateObject().Any(property => !allowedNames.Contains(property.Name))
+                || requiredNames.Any(name => !root.TryGetProperty(name, out _))
+                || !root.TryGetProperty("status", out JsonElement status)
+                || status.ValueKind != JsonValueKind.Number
+                || !status.TryGetInt32(out int statusValue)
+                || statusValue != httpStatus
+                || StringProperty(root, "type") is null
+                || StringProperty(root, "title") is null
+                || StringProperty(root, "category") is not { } category
+                || StringProperty(root, "code") is not { } code
+                || StringProperty(root, "message") is null
+                || !Pd10OpaqueIdentifier.IsValid(StringProperty(root, "correlationId"))
+                || !root.TryGetProperty("retryable", out JsonElement retryable)
+                || retryable.ValueKind is not JsonValueKind.True and not JsonValueKind.False
+                || StringProperty(root, "clientAction") is not { } clientAction
+                || !root.TryGetProperty("details", out JsonElement details)
+                || details.ValueKind != JsonValueKind.Object
+                || !details.TryGetProperty("visibility", out JsonElement visibility)
+                || visibility.ValueKind != JsonValueKind.String
+                || details.EnumerateObject().Any(property => property.Value.ValueKind != JsonValueKind.String))
+            {
+                return false;
+            }
+
+            string tuple = string.Join(
+                '|',
+                statusValue,
+                category,
+                code,
+                retryable.GetBoolean() ? "true" : "false",
+                clientAction,
+                string.Join(',', details.EnumerateObject()
+                    .Select(static property => property.Name)
+                    .Order(StringComparer.Ordinal)));
+            return Pd10V2RuntimeResponseCatalog.AllowsProblem(operationId, tuple);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+        finally
+        {
+            body.Position = 0;
+        }
     }
 
     private static bool IsAuthorityUnavailable(Stream body)
@@ -741,8 +971,7 @@ public static class Pd10V2CandidateCompatibilitySeam
 
     private static async Task<string?> ReadRequestFolderAsync(HttpRequest request, CancellationToken cancellationToken)
     {
-        if (request.Body == Stream.Null || request.ContentType is null
-            || !request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+        if (request.Body == Stream.Null || !IsExactJsonMediaType(request.ContentType))
         {
             throw new Pd10RequestValidationException();
         }
@@ -751,9 +980,14 @@ public static class Pd10V2CandidateCompatibilitySeam
         try
         {
             using JsonDocument document = await JsonDocument.ParseAsync(request.Body, cancellationToken: cancellationToken).ConfigureAwait(false);
+            if (HasDuplicateProperties(document.RootElement))
+            {
+                throw new Pd10RequestValidationException();
+            }
+
             string? folderId = document.RootElement.ValueKind == JsonValueKind.Object
                 ? StringProperty(document.RootElement, "folderId") : null;
-            return string.IsNullOrWhiteSpace(folderId)
+            return !Pd10OpaqueIdentifier.IsValid(folderId)
                 ? throw new Pd10RequestValidationException()
                 : folderId;
         }
@@ -772,8 +1006,7 @@ public static class Pd10V2CandidateCompatibilitySeam
         Pd10ProtectedOperationDescriptor descriptor,
         CancellationToken cancellationToken)
     {
-        if (request.Body == Stream.Null || request.ContentType is null
-            || !request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+        if (request.Body == Stream.Null || !IsExactJsonMediaType(request.ContentType))
         {
             return;
         }
@@ -984,7 +1217,7 @@ public static class Pd10V2CandidateCompatibilitySeam
             context.Response.Headers["X-Correlation-Id"] = correlationId;
         }
 
-        context.Response.Headers["X-Hexalith-Read-Consistency"] = "eventually_consistent";
+        context.Response.Headers["X-Hexalith-Freshness"] = "eventually_consistent";
         context.Response.StatusCode = StatusCodes.Status200OK;
         context.Response.ContentType = "application/json";
         Dictionary<string, object?> response = new(StringComparer.Ordinal)
@@ -1043,18 +1276,28 @@ public static class Pd10V2CandidateCompatibilitySeam
             string tenantId,
             string actorId)
     {
-        string? delegatorId = principal.FindFirstValue(DelegatorClaimType);
+        string[] rawDelegatorIds = principal.FindAll(DelegatorClaimType)
+            .Select(static claim => claim.Value)
+            .ToArray();
+        string[] delegatorIds = rawDelegatorIds
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        string? delegatorId = delegatorIds.Length == 1 ? delegatorIds[0] : null;
         string[] permissions = principal.FindAll(DelegatorPermissionClaimType)
             .Select(static claim => claim.Value)
             .Where(static value => !string.IsNullOrWhiteSpace(value))
             .ToArray();
-        bool isDelegated = delegatorId is not null || permissions.Length > 0;
+        bool isDelegated = rawDelegatorIds.Length > 0 || permissions.Length > 0;
         if (!isDelegated)
         {
             return (false, true, null, null);
         }
 
-        bool usable = !string.IsNullOrWhiteSpace(delegatorId)
+        bool usable = rawDelegatorIds.Length > 0
+            && rawDelegatorIds.All(static value => !string.IsNullOrWhiteSpace(value))
+            && delegatorIds.Length == 1
+            && !string.IsNullOrWhiteSpace(delegatorId)
             && !string.Equals(delegatorId, actorId, StringComparison.Ordinal)
             && permissions.Contains(actionToken, StringComparer.Ordinal);
         return usable
@@ -1064,7 +1307,45 @@ public static class Pd10V2CandidateCompatibilitySeam
 
     private static V2AccessState CanonicalAccessState(ClaimsPrincipal principal, bool isDelegated)
     {
-        V2AccessState claimedState = principal.FindFirstValue(AccessStateClaimType) switch
+        string[] values = principal.FindAll(AccessStateClaimType)
+            .Select(static claim => claim.Value)
+            .Where(static value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        V2AccessState[] states = values.Select(static value => value switch
+        {
+            "tenant-administrator" => V2AccessState.TenantAdministrator,
+            "tenant-member" => V2AccessState.TenantMember,
+            "tenant-scoped-operator" => V2AccessState.TenantScopedOperator,
+            "audit-reviewer" => V2AccessState.AuditReviewer,
+            "incident-administrator" => V2AccessState.IncidentAdministrator,
+            "wrong-tenant" => V2AccessState.WrongTenant,
+            "revoked" => V2AccessState.Revoked,
+            "stale" => V2AccessState.Stale,
+            "disabled" => V2AccessState.Disabled,
+            "unknown" => V2AccessState.Unknown,
+            "hidden-resource" => V2AccessState.HiddenResource,
+            "absent-resource" => V2AccessState.AbsentResource,
+            "insufficient-scope" => V2AccessState.InsufficientScope,
+            _ => (V2AccessState)(-1),
+        }).ToArray();
+        if (states.Any(static state => (int)state < 0))
+        {
+            return (V2AccessState)(-1);
+        }
+
+        if (states.Distinct().Count() > 1)
+        {
+            return (V2AccessState)(-1);
+        }
+
+        V2AccessState[] negativeStates = states.Where(IsNegativeAccessState).ToArray();
+        if (negativeStates.Length > 0)
+        {
+            return negativeStates[0];
+        }
+
+        V2AccessState claimedState = values.SingleOrDefault() switch
         {
             "tenant-administrator" => V2AccessState.TenantAdministrator,
             "tenant-member" => V2AccessState.TenantMember,
@@ -1158,6 +1439,13 @@ public static class Pd10V2CandidateCompatibilitySeam
     private static bool RequiresBinding(Pd10ProtectedOperationDescriptor descriptor)
         => descriptor.TaskBinding != Pd10TaskBindingRule.None;
 
+    private static bool RequiresRequestBody(Pd10ProtectedOperationDescriptor descriptor)
+        => RequiredBodyOperations.Contains(descriptor.OperationId);
+
+    private static bool HasRequestBody(HttpRequest request)
+        => request.ContentLength is > 0
+            || request.Headers.ContainsKey("Transfer-Encoding");
+
     private static bool IsCandidatePath(string path)
         => path == CandidatePrefix || path.StartsWith(CandidatePrefix + "/", StringComparison.Ordinal);
 
@@ -1196,13 +1484,15 @@ public static class Pd10V2CandidateCompatibilitySeam
         Pd10ProtectedOperationDescriptor descriptor,
         CancellationToken cancellationToken)
     {
-        if (!RootSchemaVersionOperations.Contains(descriptor.OperationId))
+        bool requiresSchemaVersion = RootSchemaVersionOperations.Contains(descriptor.OperationId);
+        bool requiresBodyValidation = requiresSchemaVersion
+            || string.Equals(descriptor.OperationId, "ValidateProviderReadiness", StringComparison.Ordinal);
+        if (!requiresBodyValidation)
         {
             return true;
         }
 
-        if (request.Body == Stream.Null || request.ContentType is null
-            || !request.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase))
+        if (request.Body == Stream.Null || !IsExactJsonMediaType(request.ContentType))
         {
             return false;
         }
@@ -1216,6 +1506,17 @@ public static class Pd10V2CandidateCompatibilitySeam
             if (document.RootElement.ValueKind != JsonValueKind.Object)
             {
                 return false;
+            }
+
+            if (HasDuplicateProperties(document.RootElement)
+                || !HasValidSchemaOwnedIdentifiers(document.RootElement))
+            {
+                return false;
+            }
+
+            if (!requiresSchemaVersion)
+            {
+                return true;
             }
 
             if (!HasExactV2SchemaVersion(document.RootElement))
@@ -1246,6 +1547,75 @@ public static class Pd10V2CandidateCompatibilitySeam
         => element.TryGetProperty("requestSchemaVersion", out JsonElement version)
             && version.ValueKind == JsonValueKind.String
             && string.Equals(version.GetString(), "v2", StringComparison.Ordinal);
+
+    private static bool IsExactJsonMediaType(string? contentType)
+        => MediaTypeHeaderValue.TryParse(contentType, out MediaTypeHeaderValue? parsed)
+            && string.Equals(parsed.MediaType, "application/json", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsExactProblemJsonMediaType(string? contentType)
+        => MediaTypeHeaderValue.TryParse(contentType, out MediaTypeHeaderValue? parsed)
+            && string.Equals(parsed.MediaType, "application/problem+json", StringComparison.OrdinalIgnoreCase);
+
+    private static bool HasDuplicateProperties(JsonElement element)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            HashSet<string> names = new(StringComparer.Ordinal);
+            foreach (JsonProperty property in element.EnumerateObject())
+            {
+                if (!names.Add(property.Name) || HasDuplicateProperties(property.Value))
+                {
+                    return true;
+                }
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            return element.EnumerateArray().Any(HasDuplicateProperties);
+        }
+
+        return false;
+    }
+
+    private static bool HasValidSchemaOwnedIdentifiers(JsonElement element)
+    {
+        HashSet<string> identifierProperties = new(StringComparer.Ordinal)
+        {
+            "parentFolderId", "folderId", "subjectRef", "providerFamilyRef", "capabilityProfileRef",
+            "nonSecretCredentialReference", "providerBindingRef", "repositoryProfileRef", "externalRepositoryRef",
+            "repositoryBindingId", "policyRef", "branchRefPolicyRef", "workspacePolicyRef", "lockId",
+            "lockOwnershipProof", "operationId", "stagingReference", "taskId",
+        };
+
+        return ValidateIdentifiers(element, identifierProperties);
+    }
+
+    private static bool ValidateIdentifiers(JsonElement element, IReadOnlySet<string> identifierProperties)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            foreach (JsonProperty property in element.EnumerateObject())
+            {
+                if (identifierProperties.Contains(property.Name)
+                    && (property.Value.ValueKind != JsonValueKind.String
+                        || !Pd10OpaqueIdentifier.IsValid(property.Value.GetString())))
+                {
+                    return false;
+                }
+
+                if (!ValidateIdentifiers(property.Value, identifierProperties))
+                {
+                    return false;
+                }
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            return element.EnumerateArray().All(item => ValidateIdentifiers(item, identifierProperties));
+        }
+
+        return true;
+    }
 
     private static bool HasClientControlledMismatch(
         string authoritativeValue,

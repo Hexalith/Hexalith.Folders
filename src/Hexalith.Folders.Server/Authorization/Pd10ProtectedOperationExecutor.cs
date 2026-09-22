@@ -31,6 +31,7 @@ internal static class Pd10ProtectedOperationExecutor
     /// </summary>
     /// <typeparam name="T">The protected value type.</typeparam>
     /// <param name="context">Derived authorization facts.</param>
+    /// <param name="auditDecision">Persists the direct authorization decision before protected work.</param>
     /// <param name="validateRequestEnvelope">Optional envelope validator, invoked only after authorization and before task binding or observation.</param>
     /// <param name="verifyTaskFolderBinding">Task-to-folder binding verifier, invoked only after parent authorization.</param>
     /// <param name="observeProtectedResource">Protected lookup/read delegate.</param>
@@ -38,15 +39,18 @@ internal static class Pd10ProtectedOperationExecutor
     /// <returns>The closed authorization outcome and optional protected value.</returns>
     public static async ValueTask<Pd10ProtectedOperationResult<T>> ExecuteAsync<T>(
         Pd10AuthorizationContext context,
+        Func<Pd10AuthorizationOutcome, CancellationToken, ValueTask> auditDecision,
         Func<CancellationToken, ValueTask<bool>>? validateRequestEnvelope,
         Func<CancellationToken, ValueTask<Pd10TaskFolderBindingState>>? verifyTaskFolderBinding,
         Func<CancellationToken, ValueTask<T>> observeProtectedResource,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(auditDecision);
         ArgumentNullException.ThrowIfNull(observeProtectedResource);
 
         Pd10AuthorizationOutcome outcome = Evaluate(context);
+        await auditDecision(outcome, cancellationToken).ConfigureAwait(false);
         if (!outcome.IsAllowed)
         {
             return new(outcome, default);

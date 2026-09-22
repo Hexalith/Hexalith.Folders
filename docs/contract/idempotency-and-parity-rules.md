@@ -154,6 +154,7 @@ Field names in `x_hexalith_idempotency_equivalence` are ordered lexicographicall
 | idempotent replay | typed same logical result | success output with replay metadata when format supports it | tool success result with replay metadata | success | 0 | none |
 | conflict/non-equivalent replay | `HexalithFoldersException` | error output | tool failure result | idempotency_conflict | 68 | idempotency_conflict |
 | expired key reuse | `HexalithFoldersException` | error output | tool failure result | idempotency_key_expired | 76 | idempotency_key_expired |
+| idempotency admission unavailable | `HexalithFoldersException` | authority-unavailable output | tool failure result | idempotency_admission_unavailable | 73 | idempotency_admission_unavailable |
 | missing credentials | local authentication/config exception | credential error before SDK call | server startup or tool credential failure | credential_missing | 65 | credential_missing |
 | wrong-tenant or insufficient-scope credentials | canonical service exception | authorization error | tool failure result | tenant_access_denied | 66 | tenant_access_denied |
 | invalid input before SDK call | validation/config exception | usage error before SDK call | schema/usage failure | client_configuration_error | 64 | usage_error |

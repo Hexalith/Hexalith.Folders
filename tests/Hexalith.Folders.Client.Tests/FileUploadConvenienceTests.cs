@@ -394,7 +394,7 @@ public sealed class FileUploadConvenienceTests
         CapturingHandler handler = new(HttpStatusCode.RequestEntityTooLarge, payloadTooLargeJson);
         IClient client = NewClient(handler);
 
-        _ = await Should.ThrowAsync<HexalithFoldersApiException<FileInlineTransportRequiredProblem>>(
+        _ = await Should.ThrowAsync<HexalithFoldersApiException<ProblemDetails>>(
             () => client.UploadFileAsync(InlineDescriptor(), Encoding.UTF8.GetBytes("synthetic"), "idem_01HZY7Z6N7J4Q2X8Y9V0IDK001", "corr_01HZY7Z6N7J4Q2X8Y9V0COR001", "task_01HZY7Z6N7J4Q2X8Y9V0TSK001", TestContext.Current.CancellationToken)).ConfigureAwait(true);
     }
 

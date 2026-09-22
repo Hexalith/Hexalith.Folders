@@ -10,12 +10,14 @@ internal static class ToolInputs
 {
     /// <summary>Maps a freshness tool-input value to the typed read-consistency class.</summary>
     /// <param name="freshness">The raw freshness value (<c>snapshot_per_task</c>, <c>read_your_writes</c>, <c>eventually_consistent</c>), or <see langword="null"/>.</param>
-    /// <returns>The mapped class, or <see langword="null"/> when unspecified or unrecognized.</returns>
+    /// <returns>The mapped class, or <see langword="null"/> when unspecified.</returns>
+    /// <exception cref="McpUsageException">Thrown when a supplied value is not in the closed freshness vocabulary.</exception>
     public static ReadConsistencyClass? ParseFreshness(string? freshness) => freshness switch
     {
+        null => null,
         "snapshot_per_task" => ReadConsistencyClass.Snapshot_per_task,
         "read_your_writes" => ReadConsistencyClass.Read_your_writes,
         "eventually_consistent" => ReadConsistencyClass.Eventually_consistent,
-        _ => null,
+        _ => throw new McpUsageException("The supplied freshness value is invalid."),
     };
 }

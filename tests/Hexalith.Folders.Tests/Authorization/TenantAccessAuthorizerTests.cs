@@ -102,7 +102,8 @@ public sealed class TenantAccessAuthorizerTests
     public async Task TenantOnlyAuthorizationReusesAnExactlyMatchingOuterDecision()
     {
         TenantAccessAuthorizer authorizer = CreateAuthorizer(new ThrowingFolderTenantAccessProjectionStore());
-        PreauthorizedRequestContext.Begin(new("tenant-a", "user-a", null, "watermark-1", "org-a"));
+        PreauthorizedRequestContext.Begin(new(
+            "tenant-a", "user-a", null, "watermark-1", "org-a", "candidate_action", "historical_action", null));
         try
         {
             TenantAccessAuthorizationResult result = await authorizer.AuthorizeMutationAsync(
@@ -126,7 +127,8 @@ public sealed class TenantAccessAuthorizerTests
         string principalId)
     {
         TenantAccessAuthorizer authorizer = CreateAuthorizer(new ThrowingFolderTenantAccessProjectionStore());
-        PreauthorizedRequestContext.Begin(new("tenant-a", "user-a", null, "watermark-1", "org-a"));
+        PreauthorizedRequestContext.Begin(new(
+            "tenant-a", "user-a", null, "watermark-1", "org-a", "candidate_action", "historical_action", null));
         try
         {
             TenantAccessAuthorizationResult result = await authorizer.AuthorizeMutationAsync(

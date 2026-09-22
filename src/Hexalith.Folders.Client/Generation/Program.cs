@@ -19,7 +19,7 @@ string configuration = NormalizeText(File.ReadAllText(configurationPath));
 YamlMappingNode root = LoadYaml(contractPath);
 IReadOnlyList<OperationModel> operations = EnumerateOperations(root).ToArray();
 IReadOnlyList<HelperModel> helpers = BuildHelpers(root, operations);
-string output = Render(helpers, Sha256(contract), Sha256(configuration));
+string output = Render(helpers, operations, Sha256(contract), Sha256(configuration));
 string helperHash = Sha256(NormalizeGeneratedHelperHash(output));
 const string PlaceholderToken = "__GENERATED_HELPERS_SHA256__";
 const string ConstDeclarationPrefix = "    public const string GeneratedHelpersSha256 = \"";
@@ -318,9 +318,185 @@ static IEnumerable<OperationModel> EnumerateOperations(YamlMappingNode root)
             List<ParameterModel> parameters = [.. pathParameters, .. EnumerateParameters(operation)];
             string? requestSchema = TryReadRequestSchema(operation);
             IReadOnlyList<string> fields = ReadStringSequence(operation, "x-hexalith-idempotency-equivalence");
-            yield return new OperationModel(path, method, operationId, requestSchema, parameters, fields);
+            IReadOnlyList<string> problemTuples = ReadProblemTuples(root, operation, method, requestSchema, parameters);
+            yield return new OperationModel(path, method, operationId, requestSchema, parameters, fields, problemTuples);
         }
     }
+}
+
+static IReadOnlyList<string> ReadProblemTuples(
+    YamlMappingNode root,
+    YamlMappingNode operation,
+    string method,
+    string? requestSchema,
+    IReadOnlyList<ParameterModel> parameters)
+{
+    HashSet<string> tuples = new(StringComparer.Ordinal);
+    YamlMappingNode responses = RequiredMapping(operation, "responses");
+    HashSet<int> statuses = [];
+    foreach (KeyValuePair<YamlNode, YamlNode> responseEntry in responses.Children)
+    {
+        if (!int.TryParse(responseEntry.Key.ShouldBeScalar("response status").Value, CultureInfo.InvariantCulture, out int status)
+            || status < 400)
+        {
+            continue;
+        }
+
+        statuses.Add(status);
+        YamlMappingNode response = ResolveLocalMapping(root, responseEntry.Value.ShouldBeMapping("response"));
+        if (!response.Children.TryGetValue(new YamlScalarNode("content"), out YamlNode? contentNode))
+        {
+            continue;
+        }
+
+        YamlMappingNode content = contentNode.ShouldBeMapping("response content");
+        if (!content.Children.TryGetValue(new YamlScalarNode("application/problem+json"), out YamlNode? mediaNode))
+        {
+            continue;
+        }
+
+        YamlMappingNode media = mediaNode.ShouldBeMapping("problem media type");
+        if (!media.Children.TryGetValue(new YamlScalarNode("examples"), out YamlNode? examplesNode))
+        {
+            continue;
+        }
+
+        foreach (YamlNode exampleNode in examplesNode.ShouldBeMapping("problem examples").Children.Values)
+        {
+            YamlMappingNode example = ResolveLocalMapping(root, exampleNode.ShouldBeMapping("problem example"));
+            if (example.Children.TryGetValue(new YamlScalarNode("value"), out YamlNode? valueNode)
+                && TryReadProblemTuple(valueNode.ShouldBeMapping("problem example value"), out string? tuple))
+            {
+                tuples.Add(tuple!);
+            }
+        }
+    }
+
+    AddDirectTuple(tuples, statuses, 401, "authentication_failure", "authentication_required", false, "check_credentials", "visibility");
+    AddDirectTuple(tuples, statuses, 404, "tenant_access_denied", "resource_unavailable", false, "no_action", "visibility");
+    AddDirectTuple(tuples, statuses, 503, "read_model_unavailable", "projection_unavailable", true, "retry", "visibility");
+    AddDirectTuple(tuples, statuses, 503, "read_model_unavailable", "evidence_unavailable", true, "retry", "visibility");
+    if (operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-idempotency-key")))
+    {
+        AddDirectTuple(tuples, statuses, 409, "idempotency_conflict", "idempotency_conflict", false, "revise_request", "visibility");
+        AddDirectTuple(tuples, statuses, 409, "idempotency_key_expired", "idempotency_key_expired", false, "refresh_state_then_submit_with_new_key", "visibility");
+        AddDirectTuple(tuples, statuses, 503, "idempotency_admission_unavailable", "idempotency_admission_unavailable", true, "retry", "visibility");
+    }
+
+    AddDirectTuple(tuples, statuses, 400, "validation_error", "validation_error", false, "revise_request", "visibility");
+    if (requestSchema is not null)
+    {
+        AddDirectTuple(tuples, statuses, 400, "validation_error", "unsupported_request_schema_version", false, "revise_request", "visibility");
+    }
+
+    if (method == "get" || operation.Children.ContainsKey(new YamlScalarNode("x-hexalith-read-consistency")))
+    {
+        AddDirectTuple(tuples, statuses, 400, "validation_error", "idempotency_key_not_allowed", false, "revise_request", "visibility");
+        AddDirectTuple(tuples, statuses, 400, "validation_error", "unsupported_read_consistency", false, "revise_request", "visibility");
+    }
+
+    HashSet<string> parameterFields = parameters.Select(static parameter => parameter.Field).ToHashSet(StringComparer.Ordinal);
+    if (parameterFields.Contains("page_cursor") || parameterFields.Contains("page_limit"))
+    {
+        AddDirectTuple(tuples, statuses, 400, "validation_error", "cursor_tampered", false, "revise_request", "visibility");
+        AddDirectTuple(tuples, statuses, 400, "validation_error", "invalid_pagination", false, "revise_request", "visibility");
+    }
+
+    string operationId = RequiredScalar(operation, "operationId");
+    if (operationId == "UpdateFolderAclEntry")
+    {
+        AddDirectTuple(tuples, statuses, 400, "validation_error", "acl_entry_id_mismatch", false, "revise_request", "visibility");
+    }
+
+    return tuples.Order(StringComparer.Ordinal).ToArray();
+}
+
+static void AddDirectTuple(
+    HashSet<string> tuples,
+    IReadOnlySet<int> statuses,
+    int status,
+    string category,
+    string code,
+    bool retryable,
+    string clientAction,
+    params string[] detailKeys)
+{
+    if (statuses.Contains(status))
+    {
+        tuples.Add(ProblemTupleKey(status, category, code, retryable, clientAction, detailKeys));
+    }
+}
+
+static bool TryReadProblemTuple(YamlMappingNode value, out string? tuple)
+{
+    tuple = null;
+    if (!TryScalar(value, "status", out string? statusText)
+        || !int.TryParse(statusText, CultureInfo.InvariantCulture, out int status)
+        || !TryScalar(value, "category", out string? category)
+        || !TryScalar(value, "code", out string? code)
+        || !TryScalar(value, "retryable", out string? retryableText)
+        || !bool.TryParse(retryableText, out bool retryable)
+        || !TryScalar(value, "clientAction", out string? clientAction)
+        || !value.Children.TryGetValue(new YamlScalarNode("details"), out YamlNode? detailsNode))
+    {
+        return false;
+    }
+
+    string[] detailKeys = detailsNode.ShouldBeMapping("problem details").Children.Keys
+        .Select(static key => key.ShouldBeScalar("problem detail key").Value ?? string.Empty)
+        .Order(StringComparer.Ordinal)
+        .ToArray();
+    tuple = ProblemTupleKey(status, category!, code!, retryable, clientAction!, detailKeys);
+    return true;
+}
+
+static bool TryScalar(YamlMappingNode mapping, string key, out string? value)
+{
+    value = null;
+    if (!mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node))
+    {
+        return false;
+    }
+
+    value = node.ShouldBeScalar(key).Value;
+    return value is not null;
+}
+
+static string ProblemTupleKey(
+    int status,
+    string category,
+    string code,
+    bool retryable,
+    string clientAction,
+    IEnumerable<string> detailKeys)
+    => string.Join('|', status, category, code, retryable.ToString().ToLowerInvariant(), clientAction, string.Join(',', detailKeys.Order(StringComparer.Ordinal)));
+
+static YamlMappingNode ResolveLocalMapping(YamlMappingNode root, YamlMappingNode mapping)
+{
+    if (!mapping.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
+    {
+        return mapping;
+    }
+
+    string reference = referenceNode.ShouldBeScalar("$ref").Value ?? string.Empty;
+    if (!reference.StartsWith("#/", StringComparison.Ordinal))
+    {
+        throw new InvalidOperationException($"Only local references are supported, found '{reference}'.");
+    }
+
+    YamlNode current = root;
+    foreach (string segment in reference[2..].Split('/'))
+    {
+        YamlMappingNode currentMapping = current.ShouldBeMapping("local reference segment");
+        if (!currentMapping.Children.TryGetValue(new YamlScalarNode(segment), out YamlNode? resolved))
+        {
+            throw new InvalidOperationException($"Local reference '{reference}' could not be resolved at '{segment}'.");
+        }
+
+        current = resolved;
+    }
+
+    return current.ShouldBeMapping("local reference target");
 }
 
 static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
@@ -349,7 +525,11 @@ static IEnumerable<ParameterModel> EnumerateParameters(YamlMappingNode mapping)
 
 // TryReadRequestSchema is provided by YamlContractLoader (imported via `using static`).
 
-static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, string configurationHash)
+static string Render(
+    IReadOnlyList<HelperModel> helpers,
+    IReadOnlyList<OperationModel> operations,
+    string contractHash,
+    string configurationHash)
 {
     StringBuilder code = new();
     code.AppendLine("// <auto-generated />");
@@ -495,8 +675,37 @@ static string Render(IReadOnlyList<HelperModel> helpers, string contractHash, st
     code.AppendLine("        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(value))).ToLowerInvariant();");
     code.AppendLine("}");
     code.AppendLine();
+    code.AppendLine("internal static class HexalithFoldersGeneratedOperationCatalog");
+    code.AppendLine("{");
+    code.AppendLine("    internal static IReadOnlyList<(string Method, string Path, string OperationId)> Routes { get; } =");
+    code.AppendLine("    [");
+    foreach (OperationModel operation in operations.OrderBy(static operation => operation.OperationId, StringComparer.Ordinal))
+    {
+        code.AppendLine($"        (\"{operation.Method.ToUpperInvariant()}\", \"{operation.Path}\", \"{operation.OperationId}\"),");
+    }
+
+    code.AppendLine("    ];");
+    code.AppendLine();
+    code.AppendLine("    private static IReadOnlySet<string> GenericProblemTuples { get; } = new HashSet<string>(StringComparer.Ordinal)");
+    code.AppendLine("    {");
+    foreach (OperationModel operation in operations.OrderBy(static operation => operation.OperationId, StringComparer.Ordinal))
+    {
+        foreach (string tuple in operation.ProblemTuples)
+        {
+            code.AppendLine($"        \"{operation.OperationId}|{tuple}\",");
+        }
+    }
+
+    code.AppendLine("    };");
+    code.AppendLine();
+    code.AppendLine("    internal static bool AllowsGenericProblemTuple(string operationId, string tuple) =>");
+    code.AppendLine("        GenericProblemTuples.Contains(operationId + \"|\" + tuple);");
+    code.AppendLine("}");
+    code.AppendLine();
     code.AppendLine("public partial class HexalithFoldersApiException");
     code.AppendLine("{");
+    code.AppendLine("    internal string? OriginatingOperationId { get; } = Hexalith.Folders.Client.Serialization.HexalithFoldersOperationContext.Current;");
+    code.AppendLine();
     code.AppendLine("    // Thread-safe lazy cache for the parsed Problem Details. Reference-typed wrapper plus");
     code.AppendLine("    // Interlocked.CompareExchange gives lock-free single-VISIBLE-value across concurrent readers.");
     code.AppendLine("    // Note (Round 4 external P11): the actual ParseProblemDetails call may run more than once");
@@ -874,7 +1083,8 @@ internal sealed record OperationModel(
     string OperationId,
     string? RequestSchema,
     IReadOnlyList<ParameterModel> Parameters,
-    IReadOnlyList<string> IdempotencyFields);
+    IReadOnlyList<string> IdempotencyFields,
+    IReadOnlyList<string> ProblemTuples);
 
 internal sealed record ParameterModel(string Field, string Name);
 

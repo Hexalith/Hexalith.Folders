@@ -1562,14 +1562,34 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 503)
+                        if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<CreateFolderUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<CreateFolderUnavailableProblem>("Candidate runtime service-unavailable response. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1671,6 +1691,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -1857,14 +1887,34 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 503)
+                        if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ArchiveFolderUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ArchiveFolderUnavailableProblem>("Candidate runtime service-unavailable response. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -1986,6 +2036,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -2178,14 +2238,34 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 503)
+                        if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<UpdateFolderAclEntryUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<UpdateFolderAclEntryUnavailableProblem>("Candidate runtime service-unavailable response. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -2292,6 +2372,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -2477,6 +2567,26 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 503)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ConfigureProviderBindingUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2585,6 +2695,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -2718,6 +2838,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -2736,6 +2866,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<SafeDenialProblem>("Non-enumerating denial emitted before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 429)
@@ -2864,6 +3004,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -3043,6 +3193,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Repository creation or binding conflict represented without external resource hints. Returns canonical category `repository_conflict` (distinct from `idempotency_conflict`).", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3051,6 +3211,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Requested provider capability is not supported by the bound provider profile.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -3217,6 +3387,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Duplicate repository binding outcome for an authorized caller. Returns canonical category `duplicate_binding` (distinct from `idempotency_conflict`).", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3352,6 +3532,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -3538,14 +3728,34 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Same idempotency key with non-equivalent tenant-scoped payload semantics. Distinct from `idempotency_key_expired`.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
-                        if (status_ == 503)
+                        if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AuthorityUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<AuthorityUnavailableProblem>("Authority evidence is stale, unavailable, conflicting, or incomplete. No protected lookup has occurred.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 503)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ConfigureBranchRefPolicyUnavailableProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ConfigureBranchRefPolicyUnavailableProblem>("Candidate runtime service-unavailable response. The exact authority-unavailable branch is emitted only before protected observation.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -3647,6 +3857,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -3847,6 +4067,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Workspace cannot be prepared because the idempotency key conflicts with a non-equivalent payload, the workspace is currently locked, provider outcome is unknown and requires reconciliation, or another caller-visible conflict has occurred. Authorization-first contract \u2014 these distinguishable responses are only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -3855,6 +4085,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Validation outcome carrying a canonical workspace preparation failure category. Authorization-first contract \u2014 these distinguishable responses are only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -4045,6 +4285,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Lock lease is expired or stale and must be handled through the visible contract outcome. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead, so lease history is never exposed to a caller who is not already authorized for the lock scope.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4053,6 +4303,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -4177,6 +4437,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -4397,6 +4667,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Lock lease is expired or stale and must be handled through the visible contract outcome. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead, so lease history is never exposed to a caller who is not already authorized for the lock scope.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -4405,6 +4685,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("C6 state transition is invalid and leaves the state unchanged. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -4528,6 +4818,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -4677,6 +4977,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -4839,12 +5149,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContentEvidenceInvalidOrValidationProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContentEvidenceInvalidOrValidationProblem>("Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -4889,12 +5199,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileInlineTransportRequiredProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileInlineTransportRequiredProblem>("Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
@@ -4925,6 +5235,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -5067,12 +5387,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 400)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileContentEvidenceInvalidOrValidationProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileContentEvidenceInvalidOrValidationProblem>("Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Validation failure preserving generic validation outcomes while adding the exact malformed-base64 or decoded-length/trusted-hash outcome.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -5117,12 +5437,12 @@ namespace Hexalith.Folders.Client.Generated
                         else
                         if (status_ == 413)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<FileInlineTransportRequiredProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new HexalithFoldersApiException<FileInlineTransportRequiredProblem>("Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            throw new HexalithFoldersApiException<ProblemDetails>("Exact outcome for 262145 through 1048576 decoded inline bytes; retry using streamed transport.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 422)
@@ -5153,6 +5473,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -5343,6 +5673,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Lock lease is expired or stale and must be handled through the visible contract outcome. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed; unauthorized callers receive the safe-denial envelope instead, so lease history is never exposed to a caller who is not already authorized for the lock scope.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -5371,6 +5711,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Authorization revocation is visible as metadata-only Problem Details without silently preserving or discarding lock state. Authorization-first contract \u2014 this response is only reachable after authentication and authorization succeed.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -6906,6 +7256,16 @@ namespace Hexalith.Folders.Client.Generated
                             throw new HexalithFoldersApiException<ProblemDetails>("Commit conflict after authorization succeeds; includes idempotency conflict, dirty workspace, unknown provider outcome, and reconciliation-required cases without blind retry guidance.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
+                        if (status_ == 413)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 422)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -6914,6 +7274,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new HexalithFoldersApiException<ProblemDetails>("Commit cannot proceed because workspace, lock, staged-change, branch/ref, or C6 state prerequisites are invalid after authorization succeeds.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 429)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 503)
@@ -7038,6 +7408,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -7189,6 +7569,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7331,6 +7721,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -7484,6 +7884,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7635,6 +8045,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -7784,6 +8204,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -7943,6 +8373,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8094,6 +8534,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -8263,6 +8713,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8416,6 +8876,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8561,6 +9031,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -8717,6 +9197,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -8869,6 +9359,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -9025,6 +9525,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9170,6 +9680,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -9326,6 +9846,16 @@ namespace Hexalith.Folders.Client.Generated
                             return objectResponse_.Object;
                         }
                         else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
                         if (status_ == 401)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthenticationFailureProblem>(response_, headers_, cancellationToken).ConfigureAwait(false);
@@ -9471,6 +10001,16 @@ namespace Hexalith.Folders.Client.Generated
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ProblemDetails>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new HexalithFoldersApiException<ProblemDetails>("Candidate runtime problem response derived from reachable producers.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -12877,143 +13417,146 @@ namespace Hexalith.Folders.Client.Generated
     public enum CanonicalErrorCategory
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"success")]
-        Success = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"authentication_failure")]
-        Authentication_failure = 1,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
-        Client_configuration_error = 2,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
-        Credential_missing = 3,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
-        Credential_reference_invalid = 4,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
-        Tenant_access_denied = 5,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 6,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
-        Concurrency_conflict = 7,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 8,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
-        Idempotency_key_expired = 9,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 10,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
-        Provider_permission_insufficient = 11,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 12,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
-        Provider_rate_limited = 13,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
-        Repository_binding_unavailable = 14,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
-        Branch_ref_policy_invalid = 15,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
-        Workspace_not_ready = 16,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 17,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 18,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
-        Lock_conflict = 19,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 20,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
-        Lock_not_owned = 21,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
-        Stale_workspace = 22,
+        Authentication_failure = 0,
 
         [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 23,
+        Authorization_revocation_detected = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 24,
+        [System.Runtime.Serialization.EnumMember(Value = @"branch_ref_policy_invalid")]
+        Branch_ref_policy_invalid = 2,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 25,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
-        Unsupported_provider_capability = 26,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
-        Path_validation_failed = 27,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
-        File_operation_failed = 28,
-
-        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 29,
+        [System.Runtime.Serialization.EnumMember(Value = @"client_configuration_error")]
+        Client_configuration_error = 3,
 
         [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 30,
+        Commit_failed = 4,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 31,
+        [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
+        Concurrency_conflict = 5,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 32,
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_missing")]
+        Credential_missing = 6,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 33,
+        [System.Runtime.Serialization.EnumMember(Value = @"credential_reference_invalid")]
+        Credential_reference_invalid = 7,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 34,
+        [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
+        Dirty_workspace = 8,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
+        Duplicate_binding = 9,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
+        Failed_operation = 10,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_operation_failed")]
+        File_operation_failed = 11,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
+        File_policy_unavailable = 12,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 13,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
+        Idempotency_conflict = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
+        Idempotency_key_expired = 15,
 
         [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
-        Input_limit_exceeded = 35,
+        Input_limit_exceeded = 16,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
+        Internal_error = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_conflict")]
+        Lock_conflict = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
+        Lock_expired = 19,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"lock_not_owned")]
+        Lock_not_owned = 20,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"path_validation_failed")]
+        Path_validation_failed = 21,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
+        Projection_stale = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 23,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
+        Provider_failure_known = 24,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_permission_insufficient")]
+        Provider_permission_insufficient = 25,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
+        Provider_rate_limited = 26,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
+        Provider_readiness_failed = 27,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
+        Provider_unavailable = 28,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
+        Range_unsatisfiable = 30,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 31,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
+        Reconciliation_required = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 33,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_binding_unavailable")]
+        Repository_binding_unavailable = 34,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
+        Repository_conflict = 35,
 
         [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
         Response_limit_exceeded = 36,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
-        Query_timeout = 37,
+        [System.Runtime.Serialization.EnumMember(Value = @"stale_workspace")]
+        Stale_workspace = 37,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 38,
+        [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
+        State_transition_invalid = 38,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 39,
+        [System.Runtime.Serialization.EnumMember(Value = @"success")]
+        Success = 39,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 40,
+        [System.Runtime.Serialization.EnumMember(Value = @"tenant_access_denied")]
+        Tenant_access_denied = 40,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 41,
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 41,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 42,
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_provider_capability")]
+        Unsupported_provider_capability = 42,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"failed_operation")]
-        Failed_operation = 43,
+        [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
+        Validation_error = 43,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 44,
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
+        Workspace_locked = 44,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
-        Internal_error = 45,
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_not_ready")]
+        Workspace_not_ready = 45,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
+        Workspace_preparation_failed = 46,
 
     }
 
@@ -13361,6 +13904,49 @@ namespace Hexalith.Folders.Client.Generated
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class CreateFolderUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateFolderUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateFolderUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public CreateFolderUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateFolderUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateFolderUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateFolderUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public CreateFolderUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details9 Details { get; set; } = new Details9();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
     public partial class GetFolderLifecycleStatusUnavailableProblem
     {
 
@@ -13398,7 +13984,50 @@ namespace Hexalith.Folders.Client.Generated
         public GetFolderLifecycleStatusUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details9 Details { get; set; } = new Details9();
+        public Details10 Details { get; set; } = new Details10();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ArchiveFolderUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ArchiveFolderUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ArchiveFolderUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ArchiveFolderUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ArchiveFolderUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ArchiveFolderUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ArchiveFolderUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ArchiveFolderUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details11 Details { get; set; } = new Details11();
 
     }
 
@@ -13441,7 +14070,50 @@ namespace Hexalith.Folders.Client.Generated
         public ListFolderAclEntriesUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details10 Details { get; set; } = new Details10();
+        public Details12 Details { get; set; } = new Details12();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class UpdateFolderAclEntryUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateFolderAclEntryUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateFolderAclEntryUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public UpdateFolderAclEntryUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateFolderAclEntryUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateFolderAclEntryUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateFolderAclEntryUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public UpdateFolderAclEntryUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details13 Details { get; set; } = new Details13();
 
     }
 
@@ -13484,7 +14156,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetEffectivePermissionsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details11 Details { get; set; } = new Details11();
+        public Details14 Details { get; set; } = new Details14();
 
     }
 
@@ -13527,7 +14199,7 @@ namespace Hexalith.Folders.Client.Generated
         public ConfigureProviderBindingUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details12 Details { get; set; } = new Details12();
+        public Details15 Details { get; set; } = new Details15();
 
     }
 
@@ -13570,7 +14242,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetProviderBindingUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details13 Details { get; set; } = new Details13();
+        public Details16 Details { get; set; } = new Details16();
 
     }
 
@@ -13613,7 +14285,7 @@ namespace Hexalith.Folders.Client.Generated
         public ValidateProviderReadinessUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details14 Details { get; set; } = new Details14();
+        public Details17 Details { get; set; } = new Details17();
 
     }
 
@@ -13656,7 +14328,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetProviderSupportEvidenceUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details15 Details { get; set; } = new Details15();
+        public Details18 Details { get; set; } = new Details18();
 
     }
 
@@ -13699,7 +14371,7 @@ namespace Hexalith.Folders.Client.Generated
         public CreateRepositoryBackedFolderUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details16 Details { get; set; } = new Details16();
+        public Details19 Details { get; set; } = new Details19();
 
     }
 
@@ -13742,7 +14414,7 @@ namespace Hexalith.Folders.Client.Generated
         public BindRepositoryUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details17 Details { get; set; } = new Details17();
+        public Details20 Details { get; set; } = new Details20();
 
     }
 
@@ -13785,7 +14457,50 @@ namespace Hexalith.Folders.Client.Generated
         public GetRepositoryBindingUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details18 Details { get; set; } = new Details18();
+        public Details21 Details { get; set; } = new Details21();
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    [Newtonsoft.Json.JsonConverter(typeof(Hexalith.Folders.Client.Serialization.Oq2WireObjectConverter))]
+    public partial class ConfigureBranchRefPolicyUnavailableProblem
+    {
+
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureBranchRefPolicyUnavailableProblemType Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureBranchRefPolicyUnavailableProblemTitle Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public ConfigureBranchRefPolicyUnavailableProblemStatus Status { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureBranchRefPolicyUnavailableProblemCategory Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("code", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureBranchRefPolicyUnavailableProblemCode Code { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("message", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureBranchRefPolicyUnavailableProblemMessage Message { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
+        public string CorrelationId { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("retryable", Required = Newtonsoft.Json.Required.Always)]
+        public bool Retryable { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("clientAction", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public ConfigureBranchRefPolicyUnavailableProblemClientAction ClientAction { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
+        public Details22 Details { get; set; } = new Details22();
 
     }
 
@@ -13828,7 +14543,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetBranchRefPolicyUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details19 Details { get; set; } = new Details19();
+        public Details23 Details { get; set; } = new Details23();
 
     }
 
@@ -13871,7 +14586,7 @@ namespace Hexalith.Folders.Client.Generated
         public PrepareWorkspaceUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details20 Details { get; set; } = new Details20();
+        public Details24 Details { get; set; } = new Details24();
 
     }
 
@@ -13914,7 +14629,7 @@ namespace Hexalith.Folders.Client.Generated
         public LockWorkspaceUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details21 Details { get; set; } = new Details21();
+        public Details25 Details { get; set; } = new Details25();
 
     }
 
@@ -13957,7 +14672,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetWorkspaceLockUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details22 Details { get; set; } = new Details22();
+        public Details26 Details { get; set; } = new Details26();
 
     }
 
@@ -14000,7 +14715,7 @@ namespace Hexalith.Folders.Client.Generated
         public ReleaseWorkspaceLockUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details23 Details { get; set; } = new Details23();
+        public Details27 Details { get; set; } = new Details27();
 
     }
 
@@ -14043,7 +14758,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetWorkspaceRetryEligibilityUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details24 Details { get; set; } = new Details24();
+        public Details28 Details { get; set; } = new Details28();
 
     }
 
@@ -14086,7 +14801,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetWorkspaceTransitionEvidenceUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details25 Details { get; set; } = new Details25();
+        public Details29 Details { get; set; } = new Details29();
 
     }
 
@@ -14129,7 +14844,7 @@ namespace Hexalith.Folders.Client.Generated
         public AddFileUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details26 Details { get; set; } = new Details26();
+        public Details30 Details { get; set; } = new Details30();
 
     }
 
@@ -14172,7 +14887,7 @@ namespace Hexalith.Folders.Client.Generated
         public ChangeFileUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details27 Details { get; set; } = new Details27();
+        public Details31 Details { get; set; } = new Details31();
 
     }
 
@@ -14215,7 +14930,7 @@ namespace Hexalith.Folders.Client.Generated
         public RemoveFileUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details28 Details { get; set; } = new Details28();
+        public Details32 Details { get; set; } = new Details32();
 
     }
 
@@ -14258,7 +14973,7 @@ namespace Hexalith.Folders.Client.Generated
         public ListFolderFilesUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details29 Details { get; set; } = new Details29();
+        public Details33 Details { get; set; } = new Details33();
 
     }
 
@@ -14301,7 +15016,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetFolderFileMetadataUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details30 Details { get; set; } = new Details30();
+        public Details34 Details { get; set; } = new Details34();
 
     }
 
@@ -14344,7 +15059,7 @@ namespace Hexalith.Folders.Client.Generated
         public SearchFolderFilesUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details31 Details { get; set; } = new Details31();
+        public Details35 Details { get; set; } = new Details35();
 
     }
 
@@ -14387,7 +15102,7 @@ namespace Hexalith.Folders.Client.Generated
         public SearchFolderIndexedFilesUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details32 Details { get; set; } = new Details32();
+        public Details36 Details { get; set; } = new Details36();
 
     }
 
@@ -14430,7 +15145,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetFolderIndexingStatusUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details33 Details { get; set; } = new Details33();
+        public Details37 Details { get; set; } = new Details37();
 
     }
 
@@ -14473,7 +15188,7 @@ namespace Hexalith.Folders.Client.Generated
         public GlobFolderFilesUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details34 Details { get; set; } = new Details34();
+        public Details38 Details { get; set; } = new Details38();
 
     }
 
@@ -14516,7 +15231,7 @@ namespace Hexalith.Folders.Client.Generated
         public ReadFileRangeUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details35 Details { get; set; } = new Details35();
+        public Details39 Details { get; set; } = new Details39();
 
     }
 
@@ -14559,7 +15274,7 @@ namespace Hexalith.Folders.Client.Generated
         public CommitWorkspaceUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details36 Details { get; set; } = new Details36();
+        public Details40 Details { get; set; } = new Details40();
 
     }
 
@@ -14602,7 +15317,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetWorkspaceStatusUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details37 Details { get; set; } = new Details37();
+        public Details41 Details { get; set; } = new Details41();
 
     }
 
@@ -14645,7 +15360,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetWorkspaceCleanupStatusUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details38 Details { get; set; } = new Details38();
+        public Details42 Details { get; set; } = new Details42();
 
     }
 
@@ -14688,7 +15403,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetTaskStatusUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details39 Details { get; set; } = new Details39();
+        public Details43 Details { get; set; } = new Details43();
 
     }
 
@@ -14731,7 +15446,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetCommitEvidenceUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details40 Details { get; set; } = new Details40();
+        public Details44 Details { get; set; } = new Details44();
 
     }
 
@@ -14774,7 +15489,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetProviderOutcomeUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details41 Details { get; set; } = new Details41();
+        public Details45 Details { get; set; } = new Details45();
 
     }
 
@@ -14817,7 +15532,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetReconciliationStatusUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details42 Details { get; set; } = new Details42();
+        public Details46 Details { get; set; } = new Details46();
 
     }
 
@@ -14860,7 +15575,7 @@ namespace Hexalith.Folders.Client.Generated
         public ListAuditTrailUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details43 Details { get; set; } = new Details43();
+        public Details47 Details { get; set; } = new Details47();
 
     }
 
@@ -14903,7 +15618,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetAuditRecordUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details44 Details { get; set; } = new Details44();
+        public Details48 Details { get; set; } = new Details48();
 
     }
 
@@ -14946,7 +15661,7 @@ namespace Hexalith.Folders.Client.Generated
         public ListOperationTimelineUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details45 Details { get; set; } = new Details45();
+        public Details49 Details { get; set; } = new Details49();
 
     }
 
@@ -14989,7 +15704,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetOperationTimelineEntryUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details46 Details { get; set; } = new Details46();
+        public Details50 Details { get; set; } = new Details50();
 
     }
 
@@ -15032,7 +15747,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetReadinessDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details47 Details { get; set; } = new Details47();
+        public Details51 Details { get; set; } = new Details51();
 
     }
 
@@ -15075,7 +15790,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetLockDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details48 Details { get; set; } = new Details48();
+        public Details52 Details { get; set; } = new Details52();
 
     }
 
@@ -15118,7 +15833,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetDirtyStateDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details49 Details { get; set; } = new Details49();
+        public Details53 Details { get; set; } = new Details53();
 
     }
 
@@ -15161,7 +15876,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetFailedOperationDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details50 Details { get; set; } = new Details50();
+        public Details54 Details { get; set; } = new Details54();
 
     }
 
@@ -15204,7 +15919,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetProviderStatusDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details51 Details { get; set; } = new Details51();
+        public Details55 Details { get; set; } = new Details55();
 
     }
 
@@ -15247,7 +15962,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetSyncStatusDiagnosticsUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details52 Details { get; set; } = new Details52();
+        public Details56 Details { get; set; } = new Details56();
 
     }
 
@@ -15290,7 +16005,7 @@ namespace Hexalith.Folders.Client.Generated
         public GetProjectionFreshnessUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details53 Details { get; set; } = new Details53();
+        public Details57 Details { get; set; } = new Details57();
 
     }
 
@@ -15329,7 +16044,7 @@ namespace Hexalith.Folders.Client.Generated
         public AuthenticationFailureProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details54 Details { get; set; } = new Details54();
+        public Details58 Details { get; set; } = new Details58();
 
         [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
@@ -15371,7 +16086,7 @@ namespace Hexalith.Folders.Client.Generated
         public SafeDenialProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details55 Details { get; set; } = new Details55();
+        public Details59 Details { get; set; } = new Details59();
 
         [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
@@ -15413,7 +16128,7 @@ namespace Hexalith.Folders.Client.Generated
         public AuthorityUnavailableProblemClientAction ClientAction { get; set; }
 
         [Newtonsoft.Json.JsonProperty("details", Required = Newtonsoft.Json.Required.Always)]
-        public Details56 Details { get; set; } = new Details56();
+        public Details60 Details { get; set; } = new Details60();
 
         [Newtonsoft.Json.JsonProperty("correlationId", Required = Newtonsoft.Json.Required.Always)]
         public string CorrelationId { get; set; }
@@ -15427,122 +16142,152 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"acl_entry_id_mismatch")]
         Acl_entry_id_mismatch = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"archive_state_unsupported")]
+        Archive_state_unsupported = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"authentication_required")]
-        Authentication_required = 1,
+        Authentication_required = 2,
 
         [System.Runtime.Serialization.EnumMember(Value = @"authorization_revocation_detected")]
-        Authorization_revocation_detected = 2,
+        Authorization_revocation_detected = 3,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_input_limit_exceeded")]
-        C4_input_limit_exceeded = 3,
+        C4_input_limit_exceeded = 4,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_query_timeout")]
-        C4_query_timeout = 4,
+        C4_query_timeout = 5,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_range_limit_exceeded")]
-        C4_range_limit_exceeded = 5,
+        C4_range_limit_exceeded = 6,
 
         [System.Runtime.Serialization.EnumMember(Value = @"c4_response_budget_exceeded")]
-        C4_response_budget_exceeded = 6,
+        C4_response_budget_exceeded = 7,
 
         [System.Runtime.Serialization.EnumMember(Value = @"commit_failed")]
-        Commit_failed = 7,
+        Commit_failed = 8,
 
         [System.Runtime.Serialization.EnumMember(Value = @"concurrency_conflict")]
-        Concurrency_conflict = 8,
+        Concurrency_conflict = 9,
 
         [System.Runtime.Serialization.EnumMember(Value = @"content_evidence_invalid")]
-        Content_evidence_invalid = 9,
+        Content_evidence_invalid = 10,
 
         [System.Runtime.Serialization.EnumMember(Value = @"cursor_tampered")]
-        Cursor_tampered = 10,
+        Cursor_tampered = 11,
 
         [System.Runtime.Serialization.EnumMember(Value = @"d9_inline_limit_exceeded")]
-        D9_inline_limit_exceeded = 11,
+        D9_inline_limit_exceeded = 12,
 
         [System.Runtime.Serialization.EnumMember(Value = @"dirty_workspace")]
-        Dirty_workspace = 12,
+        Dirty_workspace = 13,
 
         [System.Runtime.Serialization.EnumMember(Value = @"duplicate_binding")]
-        Duplicate_binding = 13,
+        Duplicate_binding = 14,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"evidence_unavailable")]
+        Evidence_unavailable = 15,
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_content_limit_exceeded")]
-        File_content_limit_exceeded = 14,
+        File_content_limit_exceeded = 16,
 
         [System.Runtime.Serialization.EnumMember(Value = @"file_policy_unavailable")]
-        File_policy_unavailable = 15,
+        File_policy_unavailable = 17,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"filter_not_yet_supported")]
+        Filter_not_yet_supported = 18,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 19,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_conflict")]
-        Idempotency_conflict = 16,
+        Idempotency_conflict = 20,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_expired")]
-        Idempotency_key_expired = 17,
+        Idempotency_key_expired = 21,
 
         [System.Runtime.Serialization.EnumMember(Value = @"idempotency_key_not_allowed")]
-        Idempotency_key_not_allowed = 18,
+        Idempotency_key_not_allowed = 22,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"input_limit_exceeded")]
+        Input_limit_exceeded = 23,
 
         [System.Runtime.Serialization.EnumMember(Value = @"invalid_pagination")]
-        Invalid_pagination = 19,
+        Invalid_pagination = 24,
 
         [System.Runtime.Serialization.EnumMember(Value = @"invalid_sort")]
-        Invalid_sort = 20,
+        Invalid_sort = 25,
 
         [System.Runtime.Serialization.EnumMember(Value = @"lock_expired")]
-        Lock_expired = 21,
+        Lock_expired = 26,
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_stale")]
-        Projection_stale = 22,
+        Projection_stale = 27,
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 23,
+        Projection_unavailable = 28,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
-        Provider_failure_known = 24,
+        Provider_failure_known = 29,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"provider_rate_limited")]
+        Provider_rate_limited = 30,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_readiness_failed")]
-        Provider_readiness_failed = 25,
+        Provider_readiness_failed = 31,
 
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
-        Provider_unavailable = 26,
+        Provider_unavailable = 32,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"query_timeout")]
+        Query_timeout = 33,
 
         [System.Runtime.Serialization.EnumMember(Value = @"range_reversed")]
-        Range_reversed = 27,
+        Range_reversed = 34,
 
         [System.Runtime.Serialization.EnumMember(Value = @"range_unsatisfiable")]
-        Range_unsatisfiable = 28,
+        Range_unsatisfiable = 35,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 36,
 
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
-        Reconciliation_required = 29,
+        Reconciliation_required = 37,
 
         [System.Runtime.Serialization.EnumMember(Value = @"repository_conflict")]
-        Repository_conflict = 30,
+        Repository_conflict = 38,
 
         [System.Runtime.Serialization.EnumMember(Value = @"resource_unavailable")]
-        Resource_unavailable = 31,
+        Resource_unavailable = 39,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"response_limit_exceeded")]
+        Response_limit_exceeded = 40,
 
         [System.Runtime.Serialization.EnumMember(Value = @"state_transition_invalid")]
-        State_transition_invalid = 32,
+        State_transition_invalid = 41,
 
         [System.Runtime.Serialization.EnumMember(Value = @"tampered_cursor_or_changed_filter")]
-        Tampered_cursor_or_changed_filter = 33,
+        Tampered_cursor_or_changed_filter = 42,
 
         [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
-        Unknown_provider_outcome = 34,
+        Unknown_provider_outcome = 43,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unsupported_archive_reason_code")]
+        Unsupported_archive_reason_code = 44,
 
         [System.Runtime.Serialization.EnumMember(Value = @"unsupported_read_consistency")]
-        Unsupported_read_consistency = 35,
+        Unsupported_read_consistency = 45,
 
         [System.Runtime.Serialization.EnumMember(Value = @"unsupported_request_schema_version")]
-        Unsupported_request_schema_version = 36,
+        Unsupported_request_schema_version = 46,
 
         [System.Runtime.Serialization.EnumMember(Value = @"validation_error")]
-        Validation_error = 37,
+        Validation_error = 47,
 
         [System.Runtime.Serialization.EnumMember(Value = @"workspace_locked")]
-        Workspace_locked = 38,
+        Workspace_locked = 48,
 
         [System.Runtime.Serialization.EnumMember(Value = @"workspace_preparation_failed")]
-        Workspace_preparation_failed = 39,
+        Workspace_preparation_failed = 49,
 
     }
 
@@ -16893,6 +17638,90 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum CreateFolderUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details9
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details9Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum GetFolderLifecycleStatusUnavailableProblemType
     {
 
@@ -16908,8 +17737,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -16928,6 +17760,9 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"internal_error")]
+        Internal_error = 1,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -16936,6 +17771,12 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
         Projection_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"archive_state_unsupported")]
+        Archive_state_unsupported = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 2,
 
     }
 
@@ -16946,8 +17787,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -16958,15 +17802,102 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"retry")]
         Retry = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"no_action")]
+        No_action = 1,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details9
+    public partial class Details10
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details9Visibility Visibility { get; set; }
+        public Details10Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ArchiveFolderUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details11
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details11Visibility Visibility { get; set; }
 
     }
 
@@ -16986,8 +17917,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17024,8 +17958,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17039,12 +17976,96 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details10
+    public partial class Details12
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details10Visibility Visibility { get; set; }
+        public Details12Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum UpdateFolderAclEntryUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details13
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details13Visibility Visibility { get; set; }
 
     }
 
@@ -17064,8 +18085,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17102,8 +18126,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17117,12 +18144,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details11
+    public partial class Details14
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details11Visibility Visibility { get; set; }
+        public Details14Visibility Visibility { get; set; }
 
     }
 
@@ -17142,8 +18169,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17162,8 +18192,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 1,
+        Read_model_unavailable = 2,
 
     }
 
@@ -17174,8 +18207,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 1,
+        Projection_unavailable = 2,
 
     }
 
@@ -17186,8 +18222,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
         Provider_dependency_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17201,12 +18240,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details12
+    public partial class Details15
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details12Visibility Visibility { get; set; }
+        public Details15Visibility Visibility { get; set; }
 
     }
 
@@ -17226,8 +18265,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17264,8 +18306,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17279,12 +18324,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details13
+    public partial class Details16
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details13Visibility Visibility { get; set; }
+        public Details16Visibility Visibility { get; set; }
 
     }
 
@@ -17304,8 +18349,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17348,8 +18396,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
         Provider_dependency_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17363,12 +18414,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details14
+    public partial class Details17
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details14Visibility Visibility { get; set; }
+        public Details17Visibility Visibility { get; set; }
 
     }
 
@@ -17388,8 +18439,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17426,8 +18480,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17441,12 +18498,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details15
+    public partial class Details18
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details15Visibility Visibility { get; set; }
+        public Details18Visibility Visibility { get; set; }
 
     }
 
@@ -17466,8 +18523,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17486,8 +18546,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 1,
+        Read_model_unavailable = 2,
 
     }
 
@@ -17498,8 +18561,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 1,
+        Projection_unavailable = 2,
 
     }
 
@@ -17510,8 +18576,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
         Provider_dependency_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17525,12 +18594,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details16
+    public partial class Details19
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details16Visibility Visibility { get; set; }
+        public Details19Visibility Visibility { get; set; }
 
     }
 
@@ -17550,8 +18619,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17570,8 +18642,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 1,
+        Read_model_unavailable = 2,
 
     }
 
@@ -17582,8 +18657,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 1,
+        Projection_unavailable = 2,
 
     }
 
@@ -17594,8 +18672,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
         Provider_dependency_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17609,12 +18690,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details17
+    public partial class Details20
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details17Visibility Visibility { get; set; }
+        public Details20Visibility Visibility { get; set; }
 
     }
 
@@ -17634,8 +18715,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17672,8 +18756,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17687,12 +18774,96 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details18
+    public partial class Details21
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details18Visibility Visibility { get; set; }
+        public Details21Visibility Visibility { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemType
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
+        AboutBlank = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemTitle
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
+        Authorization_evidence_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemStatus
+    {
+
+        _503 = 503,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemCategory
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
+        Read_model_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemCode
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
+        Projection_unavailable = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemMessage
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
+        Authorization_evidence_is_temporarily_unavailable_ = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum ConfigureBranchRefPolicyUnavailableProblemClientAction
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"retry")]
+        Retry = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Details22
+    {
+
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public Details22Visibility Visibility { get; set; }
 
     }
 
@@ -17712,8 +18883,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17750,8 +18924,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17765,12 +18942,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details19
+    public partial class Details23
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details19Visibility Visibility { get; set; }
+        public Details23Visibility Visibility { get; set; }
 
     }
 
@@ -17793,8 +18970,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Unknown provider outcome")]
         Unknown_provider_outcome = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -17816,8 +18996,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
         Unknown_provider_outcome = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 2,
+        Read_model_unavailable = 3,
 
     }
 
@@ -17831,8 +19014,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
         Unknown_provider_outcome = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 2,
+        Projection_unavailable = 3,
 
     }
 
@@ -17846,8 +19032,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider outcome is unknown for the requested workspace operation.")]
         Provider_outcome_is_unknown_for_the_requested_workspace_operation_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -17864,12 +19053,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details20
+    public partial class Details24
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details20Visibility Visibility { get; set; }
+        public Details24Visibility Visibility { get; set; }
 
     }
 
@@ -17889,8 +19078,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -17909,8 +19101,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 1,
+        Read_model_unavailable = 2,
 
     }
 
@@ -17921,8 +19116,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 1,
+        Projection_unavailable = 2,
 
     }
 
@@ -17933,8 +19131,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
         Provider_dependency_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -17948,12 +19149,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details21
+    public partial class Details25
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details21Visibility Visibility { get; set; }
+        public Details25Visibility Visibility { get; set; }
 
     }
 
@@ -17973,8 +19174,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -18011,8 +19215,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -18026,12 +19233,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details22
+    public partial class Details26
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details22Visibility Visibility { get; set; }
+        public Details26Visibility Visibility { get; set; }
 
     }
 
@@ -18051,8 +19258,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -18071,8 +19281,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 1,
+        Read_model_unavailable = 2,
 
     }
 
@@ -18083,8 +19296,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_unavailable")]
         Provider_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 1,
+        Projection_unavailable = 2,
 
     }
 
@@ -18095,8 +19311,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider dependency is temporarily unavailable.")]
         Provider_dependency_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -18110,12 +19329,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details23
+    public partial class Details27
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details23Visibility Visibility { get; set; }
+        public Details27Visibility Visibility { get; set; }
 
     }
 
@@ -18135,8 +19354,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -18173,8 +19395,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -18188,12 +19413,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details24
+    public partial class Details28
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details24Visibility Visibility { get; set; }
+        public Details28Visibility Visibility { get; set; }
 
     }
 
@@ -18213,8 +19438,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -18251,8 +19479,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -18266,12 +19497,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details25
+    public partial class Details29
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details25Visibility Visibility { get; set; }
+        public Details29Visibility Visibility { get; set; }
 
     }
 
@@ -18294,8 +19525,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Reconciliation required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18317,8 +19551,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 2,
+        Read_model_unavailable = 3,
 
     }
 
@@ -18332,8 +19569,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 2,
+        Projection_unavailable = 3,
 
     }
 
@@ -18347,8 +19587,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"The mutation outcome requires reconciliation before it can be finalized.")]
         The_mutation_outcome_requires_reconciliation_before_it_can_be_finalized_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18365,12 +19608,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details26
+    public partial class Details30
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details26Visibility Visibility { get; set; }
+        public Details30Visibility Visibility { get; set; }
 
     }
 
@@ -18393,8 +19636,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Reconciliation required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18416,8 +19662,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 2,
+        Read_model_unavailable = 3,
 
     }
 
@@ -18431,8 +19680,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 2,
+        Projection_unavailable = 3,
 
     }
 
@@ -18446,8 +19698,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"The mutation outcome requires reconciliation before it can be finalized.")]
         The_mutation_outcome_requires_reconciliation_before_it_can_be_finalized_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18464,12 +19719,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details27
+    public partial class Details31
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details27Visibility Visibility { get; set; }
+        public Details31Visibility Visibility { get; set; }
 
     }
 
@@ -18492,8 +19747,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Reconciliation required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18515,8 +19773,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 2,
+        Read_model_unavailable = 3,
 
     }
 
@@ -18530,8 +19791,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"reconciliation_required")]
         Reconciliation_required = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 2,
+        Projection_unavailable = 3,
 
     }
 
@@ -18545,8 +19809,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"The mutation outcome requires reconciliation before it can be finalized.")]
         The_mutation_outcome_requires_reconciliation_before_it_can_be_finalized_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18563,12 +19830,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details28
+    public partial class Details32
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details28Visibility Visibility { get; set; }
+        public Details32Visibility Visibility { get; set; }
 
     }
 
@@ -18591,8 +19858,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18638,8 +19908,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18653,12 +19926,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details29
+    public partial class Details33
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details29Visibility Visibility { get; set; }
+        public Details33Visibility Visibility { get; set; }
 
     }
 
@@ -18681,8 +19954,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18728,8 +20004,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18743,12 +20022,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details30
+    public partial class Details34
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details30Visibility Visibility { get; set; }
+        public Details34Visibility Visibility { get; set; }
 
     }
 
@@ -18771,8 +20050,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18818,8 +20100,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18833,12 +20118,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details31
+    public partial class Details35
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details31Visibility Visibility { get; set; }
+        public Details35Visibility Visibility { get; set; }
 
     }
 
@@ -18858,8 +20143,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -18896,8 +20184,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -18911,12 +20202,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details32
+    public partial class Details36
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details32Visibility Visibility { get; set; }
+        public Details36Visibility Visibility { get; set; }
 
     }
 
@@ -18936,8 +20227,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -18974,8 +20268,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -18989,12 +20286,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details33
+    public partial class Details37
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details33Visibility Visibility { get; set; }
+        public Details37Visibility Visibility { get; set; }
 
     }
 
@@ -19017,8 +20314,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -19064,8 +20364,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -19079,12 +20382,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details34
+    public partial class Details38
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details34Visibility Visibility { get; set; }
+        public Details38Visibility Visibility { get; set; }
 
     }
 
@@ -19107,8 +20410,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -19154,8 +20460,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -19169,12 +20478,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details35
+    public partial class Details39
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details35Visibility Visibility { get; set; }
+        public Details39Visibility Visibility { get; set; }
 
     }
 
@@ -19197,8 +20506,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider failure known")]
         Provider_failure_known = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -19220,8 +20532,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
         Provider_failure_known = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
-        Read_model_unavailable = 2,
+        Read_model_unavailable = 3,
 
     }
 
@@ -19235,8 +20550,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"provider_failure_known")]
         Provider_failure_known = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"idempotency_admission_unavailable")]
+        Idempotency_admission_unavailable = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
-        Projection_unavailable = 2,
+        Projection_unavailable = 3,
 
     }
 
@@ -19250,8 +20568,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Provider reported a known terminal failure for the requested workspace operation.")]
         Provider_reported_a_known_terminal_failure_for_the_requested_workspace_operation_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -19268,12 +20589,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details36
+    public partial class Details40
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details36Visibility Visibility { get; set; }
+        public Details40Visibility Visibility { get; set; }
 
     }
 
@@ -19293,8 +20614,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19331,8 +20655,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19346,12 +20673,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details37
+    public partial class Details41
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details37Visibility Visibility { get; set; }
+        public Details41Visibility Visibility { get; set; }
 
     }
 
@@ -19371,8 +20698,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19409,8 +20739,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19424,12 +20757,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details38
+    public partial class Details42
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details38Visibility Visibility { get; set; }
+        public Details42Visibility Visibility { get; set; }
 
     }
 
@@ -19449,8 +20782,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19487,8 +20823,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19502,12 +20841,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details39
+    public partial class Details43
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details39Visibility Visibility { get; set; }
+        public Details43Visibility Visibility { get; set; }
 
     }
 
@@ -19527,8 +20866,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19565,8 +20907,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19580,12 +20925,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details40
+    public partial class Details44
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details40Visibility Visibility { get; set; }
+        public Details44Visibility Visibility { get; set; }
 
     }
 
@@ -19605,8 +20950,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19643,8 +20991,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19658,12 +21009,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details41
+    public partial class Details45
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details41Visibility Visibility { get; set; }
+        public Details45Visibility Visibility { get; set; }
 
     }
 
@@ -19683,8 +21034,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19721,8 +21075,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19736,12 +21093,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details42
+    public partial class Details46
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details42Visibility Visibility { get; set; }
+        public Details46Visibility Visibility { get; set; }
 
     }
 
@@ -19761,8 +21118,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection unavailable")]
         Projection_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19802,8 +21162,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19817,12 +21180,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details43
+    public partial class Details47
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details43Visibility Visibility { get; set; }
+        public Details47Visibility Visibility { get; set; }
 
     }
 
@@ -19842,8 +21205,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19880,8 +21246,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19895,12 +21264,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details44
+    public partial class Details48
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details44Visibility Visibility { get; set; }
+        public Details48Visibility Visibility { get; set; }
 
     }
 
@@ -19920,8 +21289,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -19958,8 +21330,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -19973,12 +21348,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details45
+    public partial class Details49
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details45Visibility Visibility { get; set; }
+        public Details49Visibility Visibility { get; set; }
 
     }
 
@@ -19998,8 +21373,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20036,8 +21414,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20051,12 +21432,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details46
+    public partial class Details50
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details46Visibility Visibility { get; set; }
+        public Details50Visibility Visibility { get; set; }
 
     }
 
@@ -20076,8 +21457,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20114,8 +21498,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20129,12 +21516,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details47
+    public partial class Details51
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details47Visibility Visibility { get; set; }
+        public Details51Visibility Visibility { get; set; }
 
     }
 
@@ -20154,8 +21541,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20192,8 +21582,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20207,12 +21600,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details48
+    public partial class Details52
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details48Visibility Visibility { get; set; }
+        public Details52Visibility Visibility { get; set; }
 
     }
 
@@ -20232,8 +21625,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20270,8 +21666,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20285,12 +21684,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details49
+    public partial class Details53
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details49Visibility Visibility { get; set; }
+        public Details53Visibility Visibility { get; set; }
 
     }
 
@@ -20310,8 +21709,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20348,8 +21750,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20363,12 +21768,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details50
+    public partial class Details54
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details50Visibility Visibility { get; set; }
+        public Details54Visibility Visibility { get; set; }
 
     }
 
@@ -20388,8 +21793,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20426,8 +21834,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20441,12 +21852,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details51
+    public partial class Details55
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details51Visibility Visibility { get; set; }
+        public Details55Visibility Visibility { get; set; }
 
     }
 
@@ -20466,8 +21877,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable")]
         Read_model_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20504,8 +21918,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20519,12 +21936,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details52
+    public partial class Details56
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details52Visibility Visibility { get; set; }
+        public Details56Visibility Visibility { get; set; }
 
     }
 
@@ -20544,8 +21961,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection unavailable")]
         Projection_unavailable = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
+        Candidate_request_or_downstream_outcome = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 1,
+        Authorization_evidence_unavailable = 2,
 
     }
 
@@ -20585,8 +22005,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Projection data is temporarily unavailable.")]
         Projection_data_is_temporarily_unavailable_ = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
+        The_request_could_not_be_completed_ = 1,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 1,
+        Authorization_evidence_is_temporarily_unavailable_ = 2,
 
     }
 
@@ -20600,12 +22023,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details53
+    public partial class Details57
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details53Visibility Visibility { get; set; }
+        public Details57Visibility Visibility { get; set; }
 
     }
 
@@ -20672,12 +22095,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details54
+    public partial class Details58
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details54Visibility Visibility { get; set; }
+        public Details58Visibility Visibility { get; set; }
 
     }
 
@@ -20744,12 +22167,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details55
+    public partial class Details59
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details55Visibility Visibility { get; set; }
+        public Details59Visibility Visibility { get; set; }
 
     }
 
@@ -20816,12 +22239,12 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class Details56
+    public partial class Details60
     {
 
         [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.Always)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public Details56Visibility Visibility { get; set; }
+        public Details60Visibility Visibility { get; set; }
 
     }
 
@@ -21138,11 +22561,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details26Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 1,
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
 
     }
 
@@ -21150,11 +22573,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details27Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 1,
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
 
     }
 
@@ -21162,11 +22585,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details28Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 1,
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
 
     }
 
@@ -21174,11 +22597,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details29Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 1,
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
 
     }
 
@@ -21210,11 +22633,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details32Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 1,
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
 
     }
 
@@ -21222,11 +22645,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details33Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 1,
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
 
     }
 
@@ -21282,11 +22705,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details38Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 1,
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
 
     }
 
@@ -21294,11 +22717,11 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details39Visibility
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
-        Metadata_only = 0,
-
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 1,
+        Redacted = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 1,
 
     }
 
@@ -21474,13 +22897,52 @@ namespace Hexalith.Folders.Client.Generated
     public enum Details54Visibility
     {
 
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
-        Redacted = 0,
+        Redacted = 1,
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
     public enum Details55Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details56Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details57Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"metadata_only")]
+        Metadata_only = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 1,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details58Visibility
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
@@ -21489,7 +22951,16 @@ namespace Hexalith.Folders.Client.Generated
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum Details56Visibility
+    public enum Details59Visibility
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"redacted")]
+        Redacted = 0,
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Details60Visibility
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"redacted")]

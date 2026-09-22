@@ -9,4 +9,10 @@ public partial class Client
         // unexpected members and duplicate-name rejection; the stream-only NSwag path discards it.
         ReadResponseAsString = true;
     }
+
+    partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
+    {
+        _ = ReadResponseAsString;
+        Hexalith.Folders.Client.Serialization.HexalithFoldersOperationContext.Set(request.Method.Method, url);
+    }
 }

@@ -32,8 +32,7 @@ public sealed class WorkspaceFileMutationService(
             request.ClientControlledTenantValues,
             request.PayloadTenantId);
 
-        LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
+        LayeredFolderAuthorizationContext authorizationContext = new(
                 request.AuthoritativeTenantId,
                 request.PrincipalId,
                 ActorSafeIdentifier: request.PrincipalId,
@@ -44,7 +43,9 @@ public sealed class WorkspaceFileMutationService(
                 request.CorrelationId,
                 request.TaskId,
                 clientTenantValues,
-                request.ClientControlledPrincipalValues),
+                request.ClientControlledPrincipalValues);
+        LayeredFolderAuthorizationResult authorization = await _authorizationService.AuthorizeAsync(
+            authorizationContext,
             cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed || authorization.AllowedContext is null)
@@ -135,6 +136,13 @@ public sealed class WorkspaceFileMutationService(
                 evidence.Decision == WorkspacePathPolicyEvidenceDecision.Unavailable
                     ? FolderResultCode.PolicyEvidenceUnavailable
                     : FolderResultCode.PathPolicyDenied);
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeTaskMutationAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         if (command.FileOperationKind is "add" or "change")

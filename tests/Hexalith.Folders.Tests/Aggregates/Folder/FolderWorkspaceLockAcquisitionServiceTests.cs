@@ -66,6 +66,22 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
     }
 
     [Fact]
+    public async Task RevokedAuthorityAfterPreconditionsShouldRejectBeforeLockAppend()
+    {
+        RecordingFolderRepository repository = ReadyRepository();
+        SequencedFolderPermissionEvidenceProvider permissions = new(
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
+        WorkspaceLockAcquisitionService service = Service(repository, permissions);
+
+        FolderResult result = await service.AcquireAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        permissions.Calls.ShouldBe(2);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
     public async Task EquivalentReplayShouldReturnBeforeAppend()
     {
         RecordingFolderRepository repository = LockedRepository();
@@ -144,8 +160,10 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         repository.AppendsAttempted.ShouldBe(1);
     }
 
-    private static WorkspaceLockAcquisitionService Service(IFolderRepository repository)
-        => new(AuthorizationService(), repository, new FixedTimeProvider(Now));
+    private static WorkspaceLockAcquisitionService Service(
+        IFolderRepository repository,
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
+        => new(AuthorizationService(folderPermissionEvidenceProvider), repository, new FixedTimeProvider(Now));
 
     private static WorkspaceLockAcquisitionRequest Request(
         string? authoritativeTenantId = "tenant-a",
@@ -246,7 +264,8 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         return [.. created.Events, .. requested.Events, bound, .. configured.Events, .. prepare.Events, prepared];
     }
 
-    private static LayeredFolderAuthorizationService AuthorizationService()
+    private static LayeredFolderAuthorizationService AuthorizationService(
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
         => new(
             new TenantAccessAuthorizer(
                 TenantStore(),
@@ -256,7 +275,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
                     MutationFreshnessBudget = TimeSpan.FromMinutes(5),
                     DiagnosticStalenessBudget = TimeSpan.FromMinutes(5),
                 }),
-            new RecordingFolderPermissionEvidenceProvider(),
+            folderPermissionEvidenceProvider ?? new RecordingFolderPermissionEvidenceProvider(),
             new RecordingEventStoreAuthorizationValidator(),
             new RecordingDaprPolicyEvidenceProvider(),
             new FixedUtcClock(Now));

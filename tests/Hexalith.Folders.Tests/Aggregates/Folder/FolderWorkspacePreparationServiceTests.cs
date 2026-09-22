@@ -86,6 +86,47 @@ public sealed class FolderWorkspacePreparationServiceTests
     }
 
     [Fact]
+    public async Task RevokedAuthorityAfterReadinessShouldRejectBeforeAppendingIntent()
+    {
+        RecordingFolderRepository repository = ConfiguredPreparingRepository();
+        RecordingWorkspaceReadinessValidator readiness = new(ReadinessReady());
+        SequencedFolderPermissionEvidenceProvider permissions = new(
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
+        WorkspacePreparationService service = Service(repository, readiness, permissions);
+
+        FolderResult result = await service.PrepareAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        readiness.Calls.ShouldBe(1);
+        permissions.Calls.ShouldBe(2);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task UnknownProviderOutcomeWithRevokedAuthorityShouldRejectBeforeAppendingLifecycleEvent()
+    {
+        RecordingFolderRepository repository = ConfiguredPreparingRepository();
+        RecordingWorkspaceReadinessValidator readiness = new(
+            ReadinessFailed(ProviderFailureCategory.UnknownProviderOutcome));
+        SequencedFolderPermissionEvidenceProvider permissions = new(
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
+        WorkspacePreparationService service = Service(repository, readiness, permissions);
+
+        FolderResult result = await service.PrepareAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        readiness.Calls.ShouldBe(1);
+        permissions.Calls.ShouldBe(2);
+        repository.AppendsAttempted.ShouldBe(0);
+        repository.LastAppendedEvents.ShouldBeEmpty();
+        repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+            .WorkspaceLifecycleState
+            .ShouldBe(FolderWorkspaceLifecycleState.Preparing);
+    }
+
+    [Fact]
     public async Task ReadinessUnknownOutcomeShouldRejectWithoutAppendingIntent()
     {
         RecordingFolderRepository repository = ConfiguredPreparingRepository();
@@ -129,8 +170,9 @@ public sealed class FolderWorkspacePreparationServiceTests
 
     private static WorkspacePreparationService Service(
         IFolderRepository repository,
-        IWorkspacePreparationReadinessValidator readiness)
-        => new(AuthorizationService(), readiness, repository, new FixedTimeProvider(Now));
+        IWorkspacePreparationReadinessValidator readiness,
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
+        => new(AuthorizationService(folderPermissionEvidenceProvider), readiness, repository, new FixedTimeProvider(Now));
 
     private static WorkspacePreparationRequest Request(
         string? authoritativeTenantId = "tenant-a",
@@ -243,7 +285,8 @@ public sealed class FolderWorkspacePreparationServiceTests
             category,
             category.ToCategoryCode());
 
-    private static LayeredFolderAuthorizationService AuthorizationService()
+    private static LayeredFolderAuthorizationService AuthorizationService(
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
         => new(
             new TenantAccessAuthorizer(
                 TenantStore(),
@@ -253,7 +296,7 @@ public sealed class FolderWorkspacePreparationServiceTests
                     MutationFreshnessBudget = TimeSpan.FromMinutes(5),
                     DiagnosticStalenessBudget = TimeSpan.FromMinutes(5),
                 }),
-            new RecordingFolderPermissionEvidenceProvider(),
+            folderPermissionEvidenceProvider ?? new RecordingFolderPermissionEvidenceProvider(),
             new RecordingEventStoreAuthorizationValidator(),
             new RecordingDaprPolicyEvidenceProvider(),
             new FixedUtcClock(Now));

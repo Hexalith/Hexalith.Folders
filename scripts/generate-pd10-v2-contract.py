@@ -140,6 +140,22 @@ DIRECT_RUNTIME_PROBLEMS = [
         "clientAction": "revise_request",
         "detailKeys": ["visibility"],
     },
+    {
+        "status": 503,
+        "category": "read_model_unavailable",
+        "code": "evidence_unavailable",
+        "retryable": True,
+        "clientAction": "retry",
+        "detailKeys": ["visibility"],
+    },
+    {
+        "status": 503,
+        "category": "idempotency_admission_unavailable",
+        "code": "idempotency_admission_unavailable",
+        "retryable": True,
+        "clientAction": "retry",
+        "detailKeys": ["visibility"],
+    },
 ]
 RUNTIME_DETAIL_KEYS = {
     "evidenceSource",
@@ -149,6 +165,23 @@ RUNTIME_DETAIL_KEYS = {
     "taskId",
     "todoRef",
     "visibility",
+}
+REQUIRED_BODY_OPERATIONS = {
+    "CreateFolder", "ArchiveFolder", "UpdateFolderAclEntry", "ConfigureProviderBinding",
+    "ValidateProviderReadiness", "CreateRepositoryBackedFolder", "BindRepository",
+    "ConfigureBranchRefPolicy", "PrepareWorkspace", "LockWorkspace", "ReleaseWorkspaceLock",
+    "AddFile", "ChangeFile", "RemoveFile", "GetFolderFileMetadata", "SearchFolderFiles",
+    "SearchFolderIndexedFiles", "GlobFolderFiles", "ReadFileRange", "CommitWorkspace",
+}
+GATEWAY_MUTATION_OPERATIONS = {
+    "CreateFolder", "ArchiveFolder", "UpdateFolderAclEntry", "ConfigureProviderBinding",
+    "CreateRepositoryBackedFolder", "BindRepository", "ConfigureBranchRefPolicy",
+    "PrepareWorkspace", "LockWorkspace", "ReleaseWorkspaceLock", "AddFile", "ChangeFile",
+    "RemoveFile", "CommitWorkspace",
+}
+CONTEXT_QUERY_OPERATIONS = {
+    "ListFolderFiles", "GetFolderFileMetadata", "SearchFolderFiles", "SearchFolderIndexedFiles",
+    "GlobFolderFiles", "ReadFileRange",
 }
 
 
@@ -250,10 +283,23 @@ def transform_operation(
 ) -> None:
     responses = operation.setdefault("responses", {})
     existing_unavailable = copy.deepcopy(responses.get("503"))
+    runtime_problems = operation_runtime_problems(operation_id, operation)
     responses.pop("403", None)
     responses["401"] = {"$ref": "#/components/responses/AuthenticationFailure401"}
     responses["404"] = {"$ref": "#/components/responses/SafeDenial404"}
-    responses["503"] = response_with_authority_unavailable(operation_id, existing_unavailable, components)
+    responses["503"] = response_with_authority_unavailable(
+        operation_id,
+        existing_unavailable,
+        components,
+        [problem for problem in runtime_problems if problem["status"] == 503],
+    )
+    for status in sorted({problem["status"] for problem in runtime_problems if problem["status"] != 503}):
+        ensure_runtime_problem_response(
+            responses,
+            status,
+            [problem for problem in runtime_problems if problem["status"] == status],
+            components,
+        )
 
     categories = [
         category
@@ -263,8 +309,10 @@ def transform_operation(
     for category in ("authentication_failure", "tenant_access_denied", "read_model_unavailable"):
         if category not in categories:
             categories.append(category)
-    if operation.get("x-hexalith-idempotency-key", {}).get("required") is True and "concurrency_conflict" not in categories:
-        categories.append("concurrency_conflict")
+    if operation.get("x-hexalith-idempotency-key", {}).get("required") is True:
+        for category in ("concurrency_conflict", "idempotency_admission_unavailable"):
+            if category not in categories:
+                categories.append(category)
     operation["x-hexalith-canonical-error-categories"] = categories
     operation["x-hexalith-operation-family"] = matrix["family"]
 
@@ -297,16 +345,206 @@ def transform_operation(
     if operation_id == "GetEffectivePermissions":
         ensure_parameter(operation, "#/components/parameters/TaskId")
 
+    constrain_freshness(operation, components)
+    operation["x-hexalith-runtime-problem-inventory"] = [
+        inventory_entry(problem) for problem in runtime_problems
+    ]
+
+
+def runtime_problem(
+    status: int,
+    category: str,
+    code: str,
+    retryable: bool,
+    client_action: str,
+    *,
+    detail_values: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    details = {"visibility": "metadata_only"}
+    if detail_values:
+        details.update(detail_values)
+    return {
+        "type": "about:blank",
+        "title": "Candidate request or downstream outcome",
+        "status": status,
+        "category": category,
+        "code": code,
+        "message": "The request could not be completed.",
+        "correlationId": "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+        "retryable": retryable,
+        "clientAction": client_action,
+        "details": details,
+    }
+
+
+def operation_runtime_problems(operation_id: str, operation: dict[str, Any]) -> list[dict[str, Any]]:
+    problems = [
+        runtime_problem(400, "validation_error", "validation_error", False, "revise_request"),
+        runtime_problem(503, "read_model_unavailable", "evidence_unavailable", True, "retry"),
+    ]
+    idempotency_required = operation.get("x-hexalith-idempotency-key", {}).get("required") is True
+    if not idempotency_required:
+        problems.append(runtime_problem(
+            400, "validation_error", "idempotency_key_not_allowed", False, "revise_request"))
+    else:
+        problems.append(runtime_problem(
+            503,
+            "idempotency_admission_unavailable",
+            "idempotency_admission_unavailable",
+            True,
+            "retry",
+        ))
+    if operation.get("x-hexalith-read-consistency", {}).get("class"):
+        problems.append(runtime_problem(
+            400, "validation_error", "unsupported_read_consistency", False, "revise_request"))
+    if operation_id in REQUIRED_BODY_OPERATIONS:
+        if operation_id in {
+            "CreateFolder", "ArchiveFolder", "UpdateFolderAclEntry", "ConfigureProviderBinding",
+            "CreateRepositoryBackedFolder", "BindRepository", "ConfigureBranchRefPolicy",
+            "PrepareWorkspace", "LockWorkspace", "ReleaseWorkspaceLock", "AddFile", "ChangeFile",
+            "RemoveFile", "GetFolderFileMetadata", "SearchFolderFiles", "SearchFolderIndexedFiles",
+            "GlobFolderFiles", "ReadFileRange", "CommitWorkspace",
+        }:
+            problems.append(runtime_problem(
+                400, "validation_error", "unsupported_request_schema_version", False, "revise_request"))
+        problems.append(runtime_problem(
+            413, "input_limit_exceeded", "c4_input_limit_exceeded", False, "revise_request"))
+    if operation_id in GATEWAY_MUTATION_OPERATIONS:
+        problems.extend([
+            runtime_problem(429, "provider_rate_limited", "provider_rate_limited", True, "retry"),
+            runtime_problem(503, "read_model_unavailable", "evidence_unavailable", True, "retry"),
+        ])
+    if operation_id == "ArchiveFolder":
+        problems.append(runtime_problem(
+            400, "validation_error", "unsupported_archive_reason_code", False, "revise_request"))
+    if operation_id == "UpdateFolderAclEntry":
+        problems.append(runtime_problem(
+            400, "validation_error", "acl_entry_id_mismatch", False, "revise_request"))
+    if operation_id == "GetFolderLifecycleStatus":
+        problems.extend([
+            runtime_problem(503, "internal_error", "archive_state_unsupported", False, "no_action"),
+            runtime_problem(503, "internal_error", "read_model_unavailable", False, "no_action"),
+        ])
+    if operation_id in {"ListAuditTrail", "ListOperationTimeline", "ListFolderAclEntries"}:
+        problems.extend([
+            runtime_problem(400, "validation_error", "cursor_tampered", False, "revise_request"),
+            runtime_problem(400, "validation_error", "invalid_pagination", False, "revise_request"),
+            runtime_problem(
+                400,
+                "validation_error",
+                "filter_not_yet_supported",
+                False,
+                "revise_request",
+                detail_values={"todoRef": "C4"},
+            ),
+        ])
+    if operation_id in CONTEXT_QUERY_OPERATIONS:
+        problems.extend([
+            runtime_problem(408, "query_timeout", "query_timeout", True, "retry"),
+            runtime_problem(413, "response_limit_exceeded", "response_limit_exceeded", False, "revise_request"),
+            runtime_problem(422, "input_limit_exceeded", "input_limit_exceeded", False, "revise_request"),
+        ])
+    return deduplicate_problems(problems)
+
+
+def deduplicate_problems(problems: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    distinct: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for problem in problems:
+        entry = inventory_entry(problem)
+        key = (
+            entry["status"], entry["category"], entry["code"], entry["retryable"],
+            entry["clientAction"], tuple(entry["detailKeys"]),
+        )
+        distinct[key] = problem
+    return [distinct[key] for key in sorted(distinct, key=lambda item: tuple(str(part) for part in item))]
+
+
+def inventory_entry(problem: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "status": problem["status"],
+        "category": problem["category"],
+        "code": problem["code"],
+        "retryable": problem["retryable"],
+        "clientAction": problem["clientAction"],
+        "detailKeys": sorted(problem["details"]),
+    }
+
+
+def ensure_runtime_problem_response(
+    responses: dict[str, Any],
+    status: int,
+    problems: list[dict[str, Any]],
+    components: dict[str, Any],
+) -> None:
+    status_key = str(status)
+    existing = copy.deepcopy(responses.get(status_key, {}))
+    if isinstance(existing, dict) and isinstance(existing.get("$ref"), str):
+        reference = existing["$ref"]
+        if reference.startswith("#/components/responses/"):
+            existing = copy.deepcopy(components["responses"][reference.rsplit("/", 1)[-1]])
+    response = existing if isinstance(existing, dict) else {}
+    response["description"] = response.get(
+        "description", "Candidate runtime problem response derived from reachable producers."
+    )
+    media_type = response.setdefault("content", {}).setdefault("application/problem+json", {})
+    media_type["schema"] = {"$ref": "#/components/schemas/ProblemDetails"}
+    examples = media_type.setdefault("examples", {})
+    for index, problem in enumerate(problems, start=1):
+        examples[f"candidateRuntime{status}_{index}"] = {"value": copy.deepcopy(problem)}
+    responses[status_key] = response
+
+
+def constrain_freshness(operation: dict[str, Any], components: dict[str, Any]) -> None:
+    accepted = operation.get("x-hexalith-read-consistency", {}).get("class")
+    if not isinstance(accepted, str):
+        return
+    parameters = operation.get("parameters", [])
+    for index, parameter in enumerate(parameters):
+        if not isinstance(parameter, dict) or parameter.get("$ref") != "#/components/parameters/Freshness":
+            continue
+        exact_parameter = copy.deepcopy(components["parameters"]["Freshness"])
+        exact_parameter["schema"] = {
+            "$ref": "#/components/schemas/ReadConsistencyClass",
+            "enum": [accepted],
+        }
+        exact_parameter["x-hexalith-accepted-values"] = [accepted]
+        parameters[index] = exact_parameter
+
+    for status, response in list(operation.get("responses", {}).items()):
+        if not str(status).startswith("2") or not isinstance(response, dict):
+            continue
+        if isinstance(response.get("$ref"), str):
+            reference = response["$ref"]
+            if reference.startswith("#/components/responses/"):
+                response = copy.deepcopy(components["responses"][reference.rsplit("/", 1)[-1]])
+                operation["responses"][status] = response
+        response.setdefault("headers", {})["X-Hexalith-Freshness"] = {
+            "description": "The operation's declared read-consistency class.",
+            "schema": {
+                "$ref": "#/components/schemas/ReadConsistencyClass",
+                "enum": [accepted],
+            },
+        }
+
 
 def response_with_authority_unavailable(
     operation_id: str,
     existing: dict[str, Any] | None,
     components: dict[str, Any],
+    runtime_problems: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    if existing is None:
+    if existing is None and not runtime_problems:
         return {"$ref": "#/components/responses/ProtectedOperationUnavailable503"}
 
-    response = copy.deepcopy(existing)
+    response = copy.deepcopy(existing) if existing is not None else {
+        "description": "Candidate runtime service-unavailable response.",
+        "content": {
+            "application/problem+json": {
+                "schema": {"$ref": "#/components/schemas/ProblemDetails"},
+                "examples": {},
+            }
+        },
+    }
     reference = response.get("$ref")
     if isinstance(reference, str) and reference.startswith("#/components/responses/"):
         response_name = reference.rsplit("/", 1)[-1]
@@ -320,6 +558,10 @@ def response_with_authority_unavailable(
     if not examples and reference == "#/components/responses/ProviderUnavailable":
         examples = {"providerUnavailable": {"$ref": "#/components/examples/ProviderUnavailableProblem"}}
         media_type["examples"] = copy.deepcopy(examples)
+
+    for index, problem in enumerate(runtime_problems, start=1):
+        examples[f"candidateRuntime503_{index}"] = {"value": copy.deepcopy(problem)}
+    media_type["examples"] = examples
 
     exact_legacy_branches: list[dict[str, Any]] = []
     exact_values: list[dict[str, Any]] = []
@@ -468,8 +710,14 @@ def collect_error_codes(node: Any, codes: set[str]) -> None:
 def normalize_problem_examples(node: Any) -> None:
     if isinstance(node, dict):
         if isinstance(node.get("category"), str) and isinstance(node.get("code"), str):
+            category = node["category"]
+            code = node["code"]
+            node.pop("taskId", None)
+            node.pop("retryAfterSeconds", None)
             details = node.get("details")
             if isinstance(details, dict):
+                for removed_key in ("retryReasonCode", "reasonCategory", "evidenceSource", "taskId"):
+                    details.pop(removed_key, None)
                 for key, value in list(details.items()):
                     if key == "visibility" or isinstance(value, str):
                         continue
@@ -481,11 +729,85 @@ def normalize_problem_examples(node: Any) -> None:
                         details[key] = "null"
                     else:
                         details[key] = str(value)
+            if category == "lock_conflict":
+                node["code"] = "workspace_locked"
+                node["retryable"] = True
+                if isinstance(details, dict):
+                    details["lockStatus"] = "active"
+            elif category in {
+                "projection_stale", "projection_unavailable", "provider_unavailable",
+                "file_policy_unavailable", "read_model_unavailable", "lock_expired",
+            }:
+                node["retryable"] = True
+                if category == "read_model_unavailable":
+                    node["code"] = "projection_unavailable"
+            node["clientAction"] = client_action_for(category, code, node.get("clientAction"))
         for value in node.values():
             normalize_problem_examples(value)
     elif isinstance(node, list):
         for item in node:
             normalize_problem_examples(item)
+
+
+def client_action_for(category: str, code: str, existing: Any) -> Any:
+    if category == "authentication_failure":
+        return "check_credentials"
+    if category == "validation_error" and code == "tampered_cursor_or_changed_filter":
+        return "restart_query"
+    if category in {
+        "validation_error", "duplicate_binding", "idempotency_conflict", "repository_conflict",
+        "input_limit_exceeded", "response_limit_exceeded", "range_unsatisfiable",
+        "state_transition_invalid", "workspace_preparation_failed", "query_timeout",
+    }:
+        return "revise_request"
+    if category == "idempotency_key_expired":
+        return "refresh_state_then_submit_with_new_key"
+    if category in {
+        "authorization_revocation_detected", "dirty_workspace", "commit_failed",
+        "provider_readiness_failed",
+    }:
+        return "contact_operator"
+    if category in {"unknown_provider_outcome", "reconciliation_required"}:
+        return "wait_for_reconciliation"
+    if category == "provider_failure_known":
+        return "do_not_retry"
+    if category in {
+        "idempotency_admission_unavailable", "lock_conflict", "lock_expired", "projection_stale",
+        "projection_unavailable", "provider_unavailable", "file_policy_unavailable",
+        "read_model_unavailable", "provider_rate_limited",
+    }:
+        return "retry"
+    return existing
+
+
+def operation_problem_inventory(
+    contract: dict[str, Any],
+    operation: dict[str, Any],
+) -> list[dict[str, Any]]:
+    values: list[dict[str, Any]] = []
+    for response in operation.get("responses", {}).values():
+        if not isinstance(response, dict):
+            continue
+        if isinstance(response.get("$ref"), str):
+            response = resolve_local_reference(contract, response["$ref"])
+        media_type = response.get("content", {}).get("application/problem+json")
+        if not isinstance(media_type, dict):
+            continue
+        for example in media_type.get("examples", {}).values():
+            if isinstance(example, dict) and isinstance(example.get("$ref"), str):
+                example = resolve_local_reference(contract, example["$ref"])
+            if isinstance(example, dict) and isinstance(example.get("value"), dict):
+                values.append(copy.deepcopy(example["value"]))
+
+    for exact_name in ("AuthenticationFailureProblem", "SafeDenialProblem", "AuthorityUnavailableProblem"):
+        exact = EXACT_AUTHORIZATION_PROBLEMS[exact_name]
+        values.append({
+            **{key: value for key, value in exact.items() if key != "visibility"},
+            "correlationId": "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+            "details": {"visibility": exact["visibility"]},
+        })
+    normalize_problem_examples(values)
+    return build_runtime_problem_inventory(values, include_direct=False)
 
 
 def exact_problem_schema(values: dict[str, Any]) -> dict[str, Any]:
@@ -535,12 +857,20 @@ def exact_problem_response(schema_name: str, description: str) -> dict[str, Any]
     }
 
 
-def build_runtime_problem_inventory(node: Any) -> list[dict[str, Any]]:
+def build_runtime_problem_inventory(node: Any, *, include_direct: bool = True) -> list[dict[str, Any]]:
     inventory: dict[tuple[Any, ...], dict[str, Any]] = {}
 
     def add_problem(value: dict[str, Any]) -> None:
-        required = ("status", "category", "code", "retryable", "clientAction", "details")
-        if not all(key in value for key in required) or not isinstance(value["details"], dict):
+        required = ("status", "category", "code", "retryable", "clientAction")
+        if not all(key in value for key in required):
+            return
+        if isinstance(value.get("details"), dict):
+            detail_keys = sorted(value["details"])
+        elif isinstance(value.get("detailKeys"), list) and all(
+            isinstance(key, str) for key in value["detailKeys"]
+        ):
+            detail_keys = sorted(value["detailKeys"])
+        else:
             return
         entry = {
             "status": value["status"],
@@ -548,7 +878,7 @@ def build_runtime_problem_inventory(node: Any) -> list[dict[str, Any]]:
             "code": value["code"],
             "retryable": value["retryable"],
             "clientAction": value["clientAction"],
-            "detailKeys": sorted(value["details"]),
+            "detailKeys": detail_keys,
         }
         key = (
             entry["status"],
@@ -570,8 +900,9 @@ def build_runtime_problem_inventory(node: Any) -> list[dict[str, Any]]:
                 visit(child)
 
     visit(node)
-    for problem in DIRECT_RUNTIME_PROBLEMS:
-        add_problem({**problem, "details": {key: "inventory" for key in problem["detailKeys"]}})
+    if include_direct:
+        for problem in DIRECT_RUNTIME_PROBLEMS:
+            add_problem({**problem, "details": {key: "inventory" for key in problem["detailKeys"]}})
     return [inventory[key] for key in sorted(inventory, key=lambda item: tuple(str(part) for part in item))]
 
 
@@ -668,11 +999,28 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
     problem_schema["properties"]["clientAction"]["enum"] = CLIENT_ACTION_VALUES
 
     normalize_problem_examples(components.get("examples", {}))
-    runtime_problem_inventory = build_runtime_problem_inventory(components.get("examples", {}))
+    normalize_problem_examples(contract.get("paths", {}))
+    operation_inventories: list[list[dict[str, Any]]] = []
+    for path_item in contract["paths"].values():
+        for operation in path_item.values():
+            if not isinstance(operation, dict) or "operationId" not in operation:
+                continue
+            inventory = operation_problem_inventory(contract, operation)
+            operation["x-hexalith-runtime-problem-inventory"] = inventory
+            operation_inventories.append(inventory)
+    runtime_problem_inventory = build_runtime_problem_inventory(
+        operation_inventories,
+        include_direct=True,
+    )
+    canonical_categories = components["schemas"]["CanonicalErrorCategory"]["enum"]
+    components["schemas"]["CanonicalErrorCategory"]["enum"] = sorted(
+        set(canonical_categories) | {item["category"] for item in runtime_problem_inventory}
+    )
 
     details_schema = problem_schema["properties"]["details"]
     detail_keys: set[str] = set(RUNTIME_DETAIL_KEYS)
     collect_detail_keys(components.get("examples", {}), detail_keys)
+    collect_detail_keys(contract.get("paths", {}), detail_keys)
     details_schema["required"] = ["visibility"]
     details_schema["additionalProperties"] = False
     details_schema["properties"] = {
@@ -693,6 +1041,7 @@ def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict
         "concurrency_conflict",
     }
     collect_error_codes(components.get("examples", {}), error_codes)
+    collect_error_codes(contract.get("paths", {}), error_codes)
     error_codes.update(item["code"] for item in runtime_problem_inventory)
     components["schemas"]["CanonicalErrorCode"] = {
         "type": "string",
@@ -801,6 +1150,8 @@ def main() -> int:
     arguments = parse_arguments()
     if arguments.output.resolve() == arguments.source.resolve():
         raise ValueError("Candidate output must not alias the immutable historical v1 source.")
+    if arguments.output.resolve() == arguments.matrix.resolve():
+        raise ValueError("Candidate output must not alias the authorization matrix input.")
     source = yaml.safe_load(arguments.source.read_text(encoding="utf-8"))
     matrix = read_matrix(arguments.matrix)
     candidate = transform(source, matrix)

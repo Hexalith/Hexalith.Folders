@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Authorization;
+
 namespace Hexalith.Folders.Aggregates.Organization;
 
 public static partial class OrganizationAclCommandValidator
@@ -103,7 +105,8 @@ public static partial class OrganizationAclCommandValidator
     internal static bool IsValidIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
             && value.Length <= MaxIdentifierLength
-            && CanonicalIdentifierPattern().IsMatch(value);
+            && (CanonicalIdentifierPattern().IsMatch(value)
+                || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
     [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalIdentifierPattern();

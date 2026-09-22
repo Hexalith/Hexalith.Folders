@@ -13,8 +13,7 @@ namespace Hexalith.Folders.Mcp.Tests;
 
 /// <summary>
 /// Verifies query read-consistency sourcing: <c>ParseFreshness</c> maps each canonical freshness token to its
-/// typed <see cref="ReadConsistencyClass"/> (and unknown/blank values to <see langword="null"/>, introducing
-/// no new request semantics), and a supplied freshness threads through to the wire <c>X-Hexalith-Freshness</c>
+/// typed <see cref="ReadConsistencyClass"/> (while rejecting supplied unknown or blank values), and a supplied freshness threads through to the wire <c>X-Hexalith-Freshness</c>
 /// header while an omitted one sends no header.
 /// </summary>
 public sealed class ToolInputsTests
@@ -26,12 +25,16 @@ public sealed class ToolInputsTests
     public void ParsesKnownFreshnessTokens(string token, ReadConsistencyClass expected)
         => ToolInputs.ParseFreshness(token).ShouldBe(expected);
 
+    [Fact]
+    public void OmittedFreshnessMapsToNull()
+        => ToolInputs.ParseFreshness(null).ShouldBeNull();
+
     [Theory]
-    [InlineData(null)]
     [InlineData("")]
+    [InlineData(" ")]
     [InlineData("not_a_real_class")]
-    public void UnknownOrBlankFreshnessMapsToNull(string? token)
-        => ToolInputs.ParseFreshness(token).ShouldBeNull();
+    public void SuppliedUnknownOrBlankFreshnessIsAUsageError(string token)
+        => Should.Throw<McpUsageException>(() => ToolInputs.ParseFreshness(token));
 
     [Fact]
     public async Task SuppliedFreshnessIsSentOnTheWire()
@@ -75,5 +78,23 @@ public sealed class ToolInputsTests
 
         handler.Requests.ShouldHaveSingleItem();
         handler.Requests[0].TaskId.ShouldBe(taskId);
+    }
+
+    [Fact]
+    public async Task EffectivePermissionsRejectsExplicitlyBlankOptionalTaskContextBeforeDispatch()
+    {
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.OK, "{}");
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
+
+        string result = await FolderTools.GetEffectivePermissions(
+            pipeline,
+            folderId: "folder_000000001",
+            taskId: " ",
+            correlationId: "correlation-effective-permissions-mcp",
+            freshness: "read_your_writes",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        result.ShouldContain("usage_error");
+        handler.Requests.ShouldBeEmpty();
     }
 }

@@ -29,7 +29,7 @@ internal static class WorkspaceTools
         [Description("Request body as inline JSON matching the PrepareWorkspaceRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.PrepareWorkspaceAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<PrepareWorkspaceRequest>(requestJson), ct)), cancellationToken);
+            client.PrepareWorkspaceAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<PrepareWorkspaceRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "lock-workspace")]
     [Description("Accept task-scoped workspace lock acquisition (mutating, task-scoped).")]
@@ -43,7 +43,7 @@ internal static class WorkspaceTools
         [Description("Request body as inline JSON matching the LockWorkspaceRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.LockWorkspaceAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<LockWorkspaceRequest>(requestJson), ct)), cancellationToken);
+            client.LockWorkspaceAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<LockWorkspaceRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-workspace-lock")]
     [Description("Inspect metadata-only workspace lock state (query).")]
@@ -69,7 +69,7 @@ internal static class WorkspaceTools
         [Description("Request body as inline JSON matching the ReleaseWorkspaceLockRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteMutationAsync(idempotencyKey, taskId, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ReleaseWorkspaceLockAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.Read<ReleaseWorkspaceLockRequest>(requestJson), ct)), cancellationToken);
+            client.ReleaseWorkspaceLockAsync(folderId, workspaceId, s.IdempotencyKey, s.CorrelationId, s.TaskId, RequestBody.ReadRequired<ReleaseWorkspaceLockRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-workspace-retry-eligibility")]
     [Description("Inspect workspace retry eligibility (query, task-scoped).")]

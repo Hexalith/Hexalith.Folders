@@ -45,7 +45,7 @@ internal static class ContextTools
         [Description("Request body as inline JSON matching the FileMetadataRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GetFolderFileMetadataAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<FileMetadataRequest>(requestJson), ct)), cancellationToken);
+            client.GetFolderFileMetadataAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<FileMetadataRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "search-folder-files")]
     [Description("Search folder files (query, task-scoped).")]
@@ -59,7 +59,7 @@ internal static class ContextTools
         [Description("Request body as inline JSON matching the FileSearchRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.SearchFolderFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<FileSearchRequest>(requestJson), ct)), cancellationToken);
+            client.SearchFolderFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<FileSearchRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "glob-folder-files")]
     [Description("Glob folder files by pattern (query, task-scoped).")]
@@ -73,7 +73,7 @@ internal static class ContextTools
         [Description("Request body as inline JSON matching the FileGlobRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.GlobFolderFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<FileGlobRequest>(requestJson), ct)), cancellationToken);
+            client.GlobFolderFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<FileGlobRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "read-file-range")]
     [Description("Read a file byte range (query, task-scoped). Authorized content is dropped from output (metadata-only).")]
@@ -87,7 +87,7 @@ internal static class ContextTools
         [Description("Request body as inline JSON matching the FileRangeReadRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.ReadFileRangeAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<FileRangeReadRequest>(requestJson), ct)), cancellationToken);
+            client.ReadFileRangeAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<FileRangeReadRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "search-folder-indexed-files")]
     [Description("Search the authorized Folders semantic search index (query, task-scoped). Metadata-only results.")]
@@ -101,7 +101,7 @@ internal static class ContextTools
         [Description("Request body as inline JSON matching the ContextIndexSearchRequest contract schema.")] string? requestJson = null,
         CancellationToken cancellationToken = default)
         => pipeline.ExecuteQueryAsync(taskId, taskIdRequired: true, correlationId, (client, s, ct) => ToolPipeline.AsObject(
-            client.SearchFolderIndexedFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.Read<ContextIndexSearchRequest>(requestJson), ct)), cancellationToken);
+            client.SearchFolderIndexedFilesAsync(folderId, workspaceId, s.CorrelationId, s.TaskId!, ToolInputs.ParseFreshness(freshness), RequestBody.ReadRequired<ContextIndexSearchRequest>(requestJson), ct)), cancellationToken);
 
     [McpServerTool(Name = "get-folder-indexing-status")]
     [Description("Inspect the metadata-only semantic-indexing status of a folder's file versions (query). Not task-scoped.")]

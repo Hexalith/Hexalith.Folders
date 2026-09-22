@@ -35,17 +35,18 @@ internal static class Oq2ProblemProjection
         TupleKey(400, "validation_error", "acl_entry_id_mismatch", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "content_evidence_invalid", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "cursor_tampered", false, "revise_request", ["visibility"]),
+        TupleKey(400, "validation_error", "filter_not_yet_supported", false, "revise_request", ["todoRef", "visibility"]),
         TupleKey(400, "validation_error", "idempotency_key_not_allowed", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "invalid_pagination", false, "revise_request", ["visibility"]),
-        TupleKey(400, "validation_error", "invalid_sort", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "range_reversed", false, "revise_request", ["rangeRule", "visibility"]),
-        TupleKey(400, "validation_error", "tampered_cursor_or_changed_filter", false, "restart_query", ["visibility"]),
+        TupleKey(400, "validation_error", "unsupported_archive_reason_code", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "unsupported_read_consistency", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "unsupported_request_schema_version", false, "revise_request", ["visibility"]),
         TupleKey(400, "validation_error", "validation_error", false, "revise_request", ["visibility"]),
         TupleKey(401, "authentication_failure", "authentication_required", false, "check_credentials", ["visibility"]),
         TupleKey(404, "tenant_access_denied", "resource_unavailable", false, "no_action", ["visibility"]),
         TupleKey(408, "query_timeout", "c4_query_timeout", false, "revise_request", ["configuredLimit", "unit", "visibility"]),
+        TupleKey(408, "query_timeout", "query_timeout", true, "revise_request", ["visibility"]),
         TupleKey(409, "authorization_revocation_detected", "authorization_revocation_detected", false, "contact_operator", ["currentState", "visibility"]),
         TupleKey(409, "dirty_workspace", "dirty_workspace", false, "contact_operator", ["visibility"]),
         TupleKey(409, "duplicate_binding", "duplicate_binding", false, "revise_request", ["visibility"]),
@@ -60,20 +61,27 @@ internal static class Oq2ProblemProjection
         TupleKey(413, "input_limit_exceeded", "c4_input_limit_exceeded", false, "revise_request", ["visibility"]),
         TupleKey(413, "input_limit_exceeded", "d9_inline_limit_exceeded", true, "revise_request", ["visibility"]),
         TupleKey(413, "response_limit_exceeded", "c4_response_budget_exceeded", false, "revise_request", ["configuredLimit", "unit", "visibility"]),
+        TupleKey(413, "response_limit_exceeded", "response_limit_exceeded", false, "revise_request", ["visibility"]),
         TupleKey(416, "range_unsatisfiable", "range_unsatisfiable", false, "revise_request", ["visibility"]),
         TupleKey(422, "commit_failed", "commit_failed", false, "contact_operator", ["visibility"]),
         TupleKey(422, "input_limit_exceeded", "c4_input_limit_exceeded", false, "revise_request", ["dimension", "visibility"]),
         TupleKey(422, "input_limit_exceeded", "c4_range_limit_exceeded", false, "revise_request", ["configuredLimit", "unit", "visibility"]),
         TupleKey(422, "input_limit_exceeded", "file_content_limit_exceeded", false, "revise_request", ["visibility"]),
+        TupleKey(422, "input_limit_exceeded", "input_limit_exceeded", false, "revise_request", ["visibility"]),
         TupleKey(422, "provider_readiness_failed", "provider_readiness_failed", false, "contact_operator", ["visibility"]),
         TupleKey(422, "state_transition_invalid", "state_transition_invalid", false, "revise_request", ["attemptedTransition", "currentState", "visibility"]),
         TupleKey(422, "state_transition_invalid", "state_transition_invalid", false, "revise_request", ["visibility"]),
         TupleKey(422, "workspace_preparation_failed", "workspace_preparation_failed", false, "revise_request", ["visibility"]),
+        TupleKey(429, "provider_rate_limited", "provider_rate_limited", true, "retry", ["visibility"]),
         TupleKey(503, "file_policy_unavailable", "file_policy_unavailable", true, "retry", ["visibility"]),
+        TupleKey(503, "idempotency_admission_unavailable", "idempotency_admission_unavailable", true, "retry", ["visibility"]),
+        TupleKey(503, "internal_error", "archive_state_unsupported", false, "no_action", ["visibility"]),
+        TupleKey(503, "internal_error", "read_model_unavailable", false, "no_action", ["visibility"]),
         TupleKey(503, "projection_unavailable", "projection_unavailable", true, "retry", ["visibility"]),
         TupleKey(503, "provider_failure_known", "provider_failure_known", false, "do_not_retry", ["visibility"]),
         TupleKey(503, "provider_unavailable", "provider_unavailable", true, "retry", ["visibility"]),
         TupleKey(503, "read_model_unavailable", "projection_unavailable", true, "retry", ["visibility"]),
+        TupleKey(503, "read_model_unavailable", "evidence_unavailable", true, "retry", ["visibility"]),
         TupleKey(503, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["visibility"]),
         TupleKey(503, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["visibility"]),
     };
@@ -123,6 +131,18 @@ internal static class Oq2ProblemProjection
     private static readonly ExactProblemTuple ReconciliationRequired = new(
         503, "reconciliation_required", "reconciliation_required", "Reconciliation required",
         "The mutation outcome requires reconciliation before it can be finalized.", false, "wait_for_reconciliation", "metadata_only");
+    private static readonly ExactProblemTuple CandidateProjectionUnavailable = new(
+        503, "read_model_unavailable", "projection_unavailable", "Candidate request or downstream outcome",
+        "The request could not be completed.", true, "retry", "metadata_only");
+    private static readonly ExactProblemTuple CandidateIdempotencyAdmissionUnavailable = new(
+        503, "idempotency_admission_unavailable", "idempotency_admission_unavailable", "Candidate request or downstream outcome",
+        "The request could not be completed.", true, "retry", "metadata_only");
+    private static readonly ExactProblemTuple CandidateArchiveStateUnsupported = new(
+        503, "internal_error", "archive_state_unsupported", "Candidate request or downstream outcome",
+        "The request could not be completed.", false, "no_action", "metadata_only");
+    private static readonly ExactProblemTuple CandidateReadModelUnavailable = new(
+        503, "internal_error", "read_model_unavailable", "Candidate request or downstream outcome",
+        "The request could not be completed.", false, "no_action", "metadata_only");
 
     private static readonly HashSet<string> ReadModelUnavailableTypes = new(StringComparer.Ordinal)
     {
@@ -172,6 +192,24 @@ internal static class Oq2ProblemProjection
         "SearchFolderFilesUnavailableProblem",
         "GlobFolderFilesUnavailableProblem",
         "ReadFileRangeUnavailableProblem",
+    };
+
+    private static readonly HashSet<string> IdempotentMutationUnavailableTypes = new(StringComparer.Ordinal)
+    {
+        "CreateFolderUnavailableProblem",
+        "ArchiveFolderUnavailableProblem",
+        "UpdateFolderAclEntryUnavailableProblem",
+        "ConfigureProviderBindingUnavailableProblem",
+        "CreateRepositoryBackedFolderUnavailableProblem",
+        "BindRepositoryUnavailableProblem",
+        "ConfigureBranchRefPolicyUnavailableProblem",
+        "PrepareWorkspaceUnavailableProblem",
+        "LockWorkspaceUnavailableProblem",
+        "ReleaseWorkspaceLockUnavailableProblem",
+        "AddFileUnavailableProblem",
+        "ChangeFileUnavailableProblem",
+        "RemoveFileUnavailableProblem",
+        "CommitWorkspaceUnavailableProblem",
     };
 
     public static (ProblemDetails? Problem, string? Diagnostic) Project(HexalithFoldersApiException exception)
@@ -257,14 +295,22 @@ internal static class Oq2ProblemProjection
             || details.Properties().Any(property => !GenericProblemDetailNames.Contains(property.Name)
                 || property.Value.Type != JTokenType.String)
             || !GenericProblemVisibilities.Contains(details.Value<string>("visibility") ?? string.Empty)
-            || !IsOpaqueIdentifier(wire.Value<string>("correlationId"))
+            || !IsOpaqueIdentifier((string?)wire["correlationId"])
             || !GenericProblemTuples.Contains(TupleKey(
                 wire.Value<int>("status"),
                 wire.Value<string>("category") ?? string.Empty,
                 wire.Value<string>("code") ?? string.Empty,
                 wire.Value<bool>("retryable"),
                 wire.Value<string>("clientAction") ?? string.Empty,
-                details.Properties().Select(static property => property.Name))))
+                details.Properties().Select(static property => property.Name)))
+            || !IsGenericTupleAllowedForOperation(
+                exception.OriginatingOperationId,
+                wire.Value<int>("status"),
+                wire.Value<string>("category") ?? string.Empty,
+                wire.Value<string>("code") ?? string.Empty,
+                wire.Value<bool>("retryable"),
+                wire.Value<string>("clientAction") ?? string.Empty,
+                details.Properties().Select(static property => property.Name)))
         {
             return (null, "problem_shape_mismatch");
         }
@@ -274,6 +320,25 @@ internal static class Oq2ProblemProjection
         return problem.Status == httpStatus
             ? (problem, null)
             : (null, "http_status_mismatch");
+    }
+
+    private static bool IsGenericTupleAllowedForOperation(
+        string? operationId,
+        int status,
+        string category,
+        string code,
+        bool retryable,
+        string clientAction,
+        IEnumerable<string> detailKeys)
+    {
+        if (operationId is null)
+        {
+            return true;
+        }
+
+        return HexalithFoldersGeneratedOperationCatalog.AllowsGenericProblemTuple(
+            operationId,
+            TupleKey(status, category, code, retryable, clientAction, detailKeys));
     }
 
     private static (ProblemDetails? Problem, string? Diagnostic) ProjectUnknownTypedProblem(
@@ -315,7 +380,9 @@ internal static class Oq2ProblemProjection
             return (null, "exact_problem_shape_mismatch");
         }
 
-        string? correlationId = wire.Value<string>("correlationId");
+        string? correlationId = wire["correlationId"]?.Type == JTokenType.String
+            ? wire.Value<string>("correlationId")
+            : null;
         if (!IsOpaqueIdentifier(correlationId))
         {
             return (null, "exact_problem_correlation_mismatch");
@@ -336,31 +403,48 @@ internal static class Oq2ProblemProjection
 
     private static ExactProblemTuple[]? AllowedUnavailableTuples(string resultTypeName)
     {
+        if (!HexalithFoldersGeneratedOperationCatalog.Routes.Any(
+            route => string.Equals(route.OperationId + "UnavailableProblem", resultTypeName, StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
+        List<ExactProblemTuple> allowed = [];
         if (ReadModelUnavailableTypes.Contains(resultTypeName))
         {
-            return [ReadModelUnavailable, AuthorityUnavailable];
+            allowed.Add(ReadModelUnavailable);
         }
 
         if (ProviderUnavailableTypes.Contains(resultTypeName))
         {
-            return [ProviderUnavailable, AuthorityUnavailable];
+            allowed.Add(ProviderUnavailable);
         }
 
         if (FileContextUnavailableTypes.Contains(resultTypeName))
         {
-            return [FilePolicyUnavailable, ReadModelUnavailable, AuthorityUnavailable];
+            allowed.AddRange([FilePolicyUnavailable, ReadModelUnavailable]);
         }
 
-        return resultTypeName switch
+        allowed.AddRange(resultTypeName switch
         {
-            "PrepareWorkspaceUnavailableProblem" => [ProviderUnavailable, UnknownProviderOutcome, AuthorityUnavailable],
+            "PrepareWorkspaceUnavailableProblem" => [ProviderUnavailable, UnknownProviderOutcome],
             "AddFileUnavailableProblem" or "ChangeFileUnavailableProblem" or "RemoveFileUnavailableProblem" =>
-                [FilePolicyUnavailable, ReconciliationRequired, AuthorityUnavailable],
-            "CommitWorkspaceUnavailableProblem" => [ProviderUnavailable, ProviderFailureKnown, AuthorityUnavailable],
+                [FilePolicyUnavailable, ReconciliationRequired],
+            "CommitWorkspaceUnavailableProblem" => [ProviderUnavailable, ProviderFailureKnown],
             "ListAuditTrailUnavailableProblem" or "GetProjectionFreshnessUnavailableProblem" =>
-                [ProjectionUnavailable, AuthorityUnavailable],
-            _ => null,
-        };
+                [ProjectionUnavailable],
+            "GetFolderLifecycleStatusUnavailableProblem" =>
+                [CandidateArchiveStateUnsupported, CandidateReadModelUnavailable],
+            _ => [],
+        });
+        if (IdempotentMutationUnavailableTypes.Contains(resultTypeName))
+        {
+            allowed.Add(CandidateIdempotencyAdmissionUnavailable);
+        }
+
+        allowed.Add(CandidateProjectionUnavailable);
+        allowed.Add(AuthorityUnavailable);
+        return allowed.Distinct().ToArray();
     }
 
     internal static void ValidateGeneratedUnavailableProblem(string resultTypeName, JObject wire)
@@ -379,6 +463,7 @@ internal static class Oq2ProblemProjection
             || wire["details"] is not JObject details
             || !details.Properties().Select(static property => property.Name)
                 .SequenceEqual(["visibility"], StringComparer.Ordinal)
+            || wire["correlationId"]?.Type != JTokenType.String
             || !IsOpaqueIdentifier(wire.Value<string>("correlationId"))
             || !allowed.Any(tuple => tuple.Matches(wire, details)))
         {

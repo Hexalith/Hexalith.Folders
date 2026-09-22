@@ -116,7 +116,54 @@ internal static class Pd10ProtectedOperationCatalog
         FolderOperationPolicyClass policyClass,
         Pd10FolderScopeRule folderScope = Pd10FolderScopeRule.RouteFolder,
         Pd10TaskBindingRule taskBinding = Pd10TaskBindingRule.None)
-        => new(operationId, method, candidateRoute, historicalRoute, family, actionToken, policyClass, folderScope, taskBinding);
+        => new(
+            operationId,
+            method,
+            candidateRoute,
+            historicalRoute,
+            family,
+            actionToken,
+            HistoricalActionToken(operationId),
+            policyClass,
+            folderScope,
+            taskBinding);
+
+    private static string HistoricalActionToken(string operationId)
+        => operationId switch
+        {
+            "CreateFolder" => "create_folder",
+            "GetFolderLifecycleStatus" => "read_metadata",
+            "ArchiveFolder" => "archive_folder",
+            "ListFolderAclEntries" => "read_metadata",
+            "UpdateFolderAclEntry" => "manage_folder_access",
+            "GetEffectivePermissions" => "read_metadata",
+            "ConfigureProviderBinding" => "configure_provider_binding",
+            "GetProviderBinding" => "tenant-context-and-provider-binding-read",
+            "ValidateProviderReadiness" => "provider_readiness_read",
+            "GetProviderSupportEvidence" => "tenant-context-and-provider-support-read",
+            "CreateRepositoryBackedFolder" => "create_repository_backed_folder",
+            "BindRepository" => "bind_repository",
+            "GetRepositoryBinding" => "read_metadata",
+            "ConfigureBranchRefPolicy" => "configure_branch_ref_policy",
+            "GetBranchRefPolicy" => "read_branch_ref_policy",
+            "PrepareWorkspace" => "prepare_workspace",
+            "LockWorkspace" or "ReleaseWorkspaceLock" => "lock_workspace",
+            "GetWorkspaceLock" or "GetWorkspaceRetryEligibility" => "read_workspace_lock",
+            "GetWorkspaceTransitionEvidence" => "read_metadata",
+            "AddFile" or "ChangeFile" or "RemoveFile" => "mutate_files",
+            "ListFolderFiles" or "GetFolderFileMetadata" or "SearchFolderFiles" or "GlobFolderFiles" => "read_metadata",
+            "SearchFolderIndexedFiles" or "GetFolderIndexingStatus" => "read_context_search",
+            "ReadFileRange" => "read_file_content",
+            "CommitWorkspace" => "commit",
+            "GetWorkspaceStatus" or "GetCommitEvidence" or "GetProviderOutcome" or "GetReconciliationStatus" => "read_workspace_status",
+            "GetWorkspaceCleanupStatus" => "read_workspace_cleanup_status",
+            "GetTaskStatus" => "read_task_status",
+            "ListAuditTrail" or "GetAuditRecord" or "ListOperationTimeline" or "GetOperationTimelineEntry" => "read_metadata",
+            "GetReadinessDiagnostics" or "GetProjectionFreshness" => "tenant-context-and-ops-console-diagnostic-read",
+            "GetLockDiagnostics" or "GetDirtyStateDiagnostics" or "GetFailedOperationDiagnostics"
+                or "GetProviderStatusDiagnostics" or "GetSyncStatusDiagnostics" => "read_metadata",
+            _ => throw new InvalidOperationException($"No historical action is bound for operation '{operationId}'."),
+        };
 
     private static bool TryMatch(string template, string path, out Dictionary<string, string> values)
     {

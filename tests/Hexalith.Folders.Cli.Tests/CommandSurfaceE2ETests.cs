@@ -191,6 +191,24 @@ public sealed class CommandSurfaceE2ETests : IDisposable
     }
 
     [Fact]
+    public async Task EffectivePermissionsCommandRejectsExplicitlyBlankOptionalTaskContext()
+    {
+        IClient client = Substitute.For<IClient>();
+        CliTestHarness harness = new() { Client = client };
+
+        int exit = await harness.RunAsync(
+            "folder", "effective-permissions",
+            "--folder-id", "folder_1",
+            "--task-id", " ",
+            "--freshness", "read_your_writes",
+            "--base-address", BaseAddress,
+            "--token", Token);
+
+        exit.ShouldBe(64);
+        harness.ClientFactoryInvoked.ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task ContextIndexSearchParsesAndDelegatesToTheSdk()
     {
         IClient client = Substitute.For<IClient>();

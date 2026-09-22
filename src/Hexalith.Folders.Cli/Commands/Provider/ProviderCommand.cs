@@ -31,7 +31,7 @@ internal static class ProviderCommand
                 sourcing.IdempotencyKey,
                 sourcing.CorrelationId,
                 sourcing.TaskId,
-                CommandOptions.ReadBody<ConfigureProviderBindingRequest>(parseResult.GetValue(configureBody)),
+                CommandOptions.ReadRequiredBody<ConfigureProviderBindingRequest>(parseResult.GetValue(configureBody)),
                 ct))));
 
         Option<string> getRef = CommandOptions.RequiredId("--provider-binding-ref", "Opaque provider binding reference.");
@@ -61,7 +61,7 @@ internal static class ProviderCommand
             (parseResult, client, sourcing, ct) => CommandFactory.AsObject(client.ValidateProviderReadinessAsync(
                 sourcing.CorrelationId,
                 CommandOptions.ParseFreshness(parseResult.GetValue(readinessFreshness)),
-                CommandOptions.ReadBody<ValidateProviderReadinessRequest>(parseResult.GetValue(readinessBody)),
+                CommandOptions.ReadRequiredBody<ValidateProviderReadinessRequest>(parseResult.GetValue(readinessBody)),
                 ct))));
 
         Option<string?> evidenceFreshness = CommandOptions.Freshness();

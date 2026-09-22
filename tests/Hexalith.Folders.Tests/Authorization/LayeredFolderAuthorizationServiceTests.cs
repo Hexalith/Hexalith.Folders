@@ -391,6 +391,107 @@ public sealed class LayeredFolderAuthorizationServiceTests
         result.Decision.ActorSafeIdentifier.ShouldBe("actor-safe-user-a");
     }
 
+    [Fact]
+    public async Task PreauthorizationReuseRequiresTheExactHistoricalAction()
+    {
+        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("folder_watermark_v1"));
+        LayeredFolderAuthorizationService service = CreateService(
+            TenantStore("tenant-a", "user-a"),
+            folderEvidence,
+            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
+        PreauthorizedRequestContext.Begin(new(
+            "tenant-a", "user-a", "folder-a", "watermark-a", "org-a",
+            "manage_folder_access", "read_metadata", null));
+        try
+        {
+            LayeredFolderAuthorizationResult reused = await service.AuthorizeAsync(
+                Context(actionToken: "read_metadata"),
+                TestContext.Current.CancellationToken);
+            reused.EvaluatedLayers.ShouldBe([AuthorizationLayer.JwtValidation]);
+
+            LayeredFolderAuthorizationResult mismatched = await service.AuthorizeAsync(
+                Context(actionToken: "archive_folder"),
+                TestContext.Current.CancellationToken);
+            mismatched.EvaluatedLayers.ShouldBe(AuthorizationOrder.LayeredFolderAuthorization);
+            folderEvidence.Requests.ShouldHaveSingleItem().ActionToken.ShouldBe("archive_folder");
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
+    [Fact]
+    public async Task FinalTaskMutationReauthorizationUsesFreshCandidateActionEvidence()
+    {
+        RecordingFolderPermissionEvidenceProvider folderEvidence = new(FolderPermissionEvidenceResult.Allowed("fresh-folder-watermark"));
+        LayeredFolderAuthorizationService service = CreateService(
+            TenantStore("tenant-a", "user-a"),
+            folderEvidence,
+            new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator-watermark")),
+            new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1")));
+        PreauthorizedRequestContext.Begin(new(
+            "tenant-a", "user-a", "folder-a", "outer-watermark", "org-a",
+            "manage_folder_access", "bind_repository", null));
+        try
+        {
+            LayeredFolderAuthorizationResult result = await service.ReauthorizeTaskMutationAsync(
+                Context(actionToken: "bind_repository"),
+                TestContext.Current.CancellationToken);
+
+            result.IsAllowed.ShouldBeTrue();
+            result.EvaluatedLayers.ShouldBe(AuthorizationOrder.LayeredFolderAuthorization);
+            folderEvidence.Requests.ShouldHaveSingleItem().ActionToken.ShouldBe("manage_folder_access");
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
+    [Fact]
+    public async Task FinalTaskMutationReauthorizationRejectsDeniedDelegatorAfterAllowingActor()
+    {
+        RecordingFolderPermissionEvidenceProvider folderEvidence = new(
+            FolderPermissionEvidenceResult.Allowed("fresh-actor-watermark"),
+            FolderPermissionEvidenceResult.FromStatus(
+                FolderPermissionEvidenceStatus.Denied,
+                "revoked-delegator-watermark"));
+        RecordingEventStoreAuthorizationValidator validator = new(
+            EventStoreAuthorizationValidationResult.Allowed("validator-watermark"));
+        RecordingDaprPolicyEvidenceProvider dapr = new(
+            DaprPolicyEvidenceResult.Allowed("folders", "service_invocation_v1"));
+        LayeredFolderAuthorizationService service = CreateService(
+            TenantStoreWithPrincipals("tenant-a", "user-a", "delegator-a"),
+            folderEvidence,
+            validator,
+            dapr);
+        PreauthorizedRequestContext.Begin(new(
+            "tenant-a", "user-a", "folder-a", "outer-watermark", "org-a",
+            "manage_folder_access", "bind_repository", "delegator-a"));
+        try
+        {
+            LayeredFolderAuthorizationResult result = await service.ReauthorizeTaskMutationAsync(
+                Context(actionToken: "bind_repository"),
+                TestContext.Current.CancellationToken);
+
+            result.IsAllowed.ShouldBeFalse();
+            result.Decision.TerminalLayer.ShouldBe(AuthorizationLayer.FolderAcl);
+            result.Decision.OutcomeCode.ShouldBe(LayeredAuthorizationOutcomeCodes.FolderAclDenied);
+            folderEvidence.Requests.Select(static request => request.PrincipalId)
+                .ShouldBe(["user-a", "delegator-a"]);
+            folderEvidence.Requests.Select(static request => request.ActionToken)
+                .ShouldBe(["manage_folder_access", "manage_folder_access"]);
+            validator.Requests.ShouldHaveSingleItem().SafeContext.ActorSafeIdentifier.ShouldBe("actor-user-a");
+            dapr.Requests.ShouldHaveSingleItem();
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
     private static LayeredFolderAuthorizationService CreateService(
         IFolderTenantAccessProjectionStore tenantStore,
         IFolderPermissionEvidenceProvider folderEvidence,
@@ -455,6 +556,25 @@ public sealed class LayeredFolderAuthorizationServiceTests
     {
         RecordingTenantAccessProjectionStore store = new();
         store.Save(Projection(tenantId, principalId, lastEventTimestamp ?? Now.AddSeconds(-30), enabled: true));
+        return store;
+    }
+
+    private static RecordingTenantAccessProjectionStore TenantStoreWithPrincipals(
+        string tenantId,
+        params string[] principalIds)
+    {
+        RecordingTenantAccessProjectionStore store = new();
+        FolderTenantAccessProjection projection = Projection(
+            tenantId,
+            principalIds[0],
+            Now.AddSeconds(-30),
+            enabled: true);
+        foreach (string principalId in principalIds.Skip(1))
+        {
+            projection.Principals[principalId] = new(principalId, "Member");
+        }
+
+        store.Save(projection);
         return store;
     }
 
@@ -523,8 +643,11 @@ public sealed class LayeredFolderAuthorizationServiceTests
         }
     }
 
-    private sealed class RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult result) : IFolderPermissionEvidenceProvider
+    private sealed class RecordingFolderPermissionEvidenceProvider(
+        params FolderPermissionEvidenceResult[] results) : IFolderPermissionEvidenceProvider
     {
+        private readonly Queue<FolderPermissionEvidenceResult> _results = new(results);
+
         public List<FolderPermissionEvidenceRequest> Requests { get; } = [];
 
         public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
@@ -532,7 +655,7 @@ public sealed class LayeredFolderAuthorizationServiceTests
             CancellationToken cancellationToken = default)
         {
             Requests.Add(request);
-            return Task.FromResult(result);
+            return Task.FromResult(_results.Count > 1 ? _results.Dequeue() : _results.Peek());
         }
     }
 

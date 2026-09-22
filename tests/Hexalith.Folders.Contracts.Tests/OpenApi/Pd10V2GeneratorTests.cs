@@ -13,6 +13,8 @@ public sealed class Pd10V2GeneratorTests
     private static readonly string SourcePath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
     private static readonly string MatrixPath = Path.Combine(RepositoryRoot, "docs", "contract", "authorization-matrix.md");
     private static readonly string CandidatePath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
+    private static readonly string RuntimeCatalogGeneratorPath = Path.Combine(RepositoryRoot, "scripts", "generate-pd10-v2-runtime-catalog.py");
+    private static readonly string RuntimeCatalogPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Server", "Pd10V2RuntimeResponseCatalog.g.cs");
 
     [Fact]
     public void GeneratorReproducesTheCommittedCandidateByteForByte()
@@ -33,6 +35,27 @@ public sealed class Pd10V2GeneratorTests
 
         diagnostics.ShouldContain("must not alias", Case.Insensitive);
         Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(SourcePath))).ShouldBe(before);
+    }
+
+    [Fact]
+    public void GeneratorRejectsAnOutputAliasWithoutChangingAuthorizationMatrix()
+    {
+        string before = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(MatrixPath)));
+
+        Run(SourcePath, MatrixPath, MatrixPath, out string diagnostics).ShouldNotBe(0);
+
+        diagnostics.ShouldContain("must not alias", Case.Insensitive);
+        Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(MatrixPath))).ShouldBe(before);
+    }
+
+    [Fact]
+    public void RuntimeCatalogGeneratorReproducesTheCommittedCatalogByteForByte()
+    {
+        string output = NewTempPath("Pd10V2RuntimeResponseCatalog.g.cs");
+
+        RunRuntimeCatalog(CandidatePath, output, out string diagnostics).ShouldBe(0, diagnostics);
+
+        File.ReadAllBytes(output).ShouldBe(File.ReadAllBytes(RuntimeCatalogPath));
     }
 
     [Fact]
@@ -81,6 +104,29 @@ public sealed class Pd10V2GeneratorTests
         startInfo.ArgumentList.Add(output);
 
         using Process process = Process.Start(startInfo) ?? throw new InvalidOperationException("Could not start the PD10 v2 generator.");
+        string stdout = process.StandardOutput.ReadToEnd();
+        string stderr = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+        diagnostics = stdout + stderr;
+        return process.ExitCode;
+    }
+
+    private static int RunRuntimeCatalog(string contract, string output, out string diagnostics)
+    {
+        ProcessStartInfo startInfo = new("python3")
+        {
+            WorkingDirectory = RepositoryRoot,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+        };
+        startInfo.ArgumentList.Add(RuntimeCatalogGeneratorPath);
+        startInfo.ArgumentList.Add("--contract");
+        startInfo.ArgumentList.Add(contract);
+        startInfo.ArgumentList.Add("--output");
+        startInfo.ArgumentList.Add(output);
+
+        using Process process = Process.Start(startInfo) ?? throw new InvalidOperationException("Could not start the PD10 v2 runtime catalog generator.");
         string stdout = process.StandardOutput.ReadToEnd();
         string stderr = process.StandardError.ReadToEnd();
         process.WaitForExit();

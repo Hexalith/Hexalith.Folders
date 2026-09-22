@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Authorization;
+
 namespace Hexalith.Folders.Server;
 
 /// <summary>
@@ -15,7 +17,7 @@ internal static partial class FolderCanonicalSegmentIdentifier
     public static bool IsValid(string? value)
         => !string.IsNullOrWhiteSpace(value)
         && value.Length <= FoldersServerModule.MaxCanonicalIdentifierLength
-        && Pattern().IsMatch(value);
+        && (Pattern().IsMatch(value) || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
     [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
     private static partial Regex Pattern();

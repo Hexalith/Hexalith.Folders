@@ -35,23 +35,29 @@
 # - Developer typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: '2026-05-12T07:11:18+02:00'
-last_updated: '2026-09-21'
+generated: '05-12-2026 07:11'
+last_updated: '09-22-2026 07:45'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
-project: Hexalith.Folders
+project: Folders
 project_key: NOKEY
 tracking_system: file-system
 story_location: "{project-root}/_bmad-output/implementation-artifacts"
 reconciliation_journal:
   - recorded_on: '2026-09-21'
-    reason: A8-approved deterministic lifecycle and provenance reconciliation under the continuing general execution hold.
-    approval_record: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
-    approval_record_sha256: 471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
-    pre_a8_section9_result: _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
-    pre_a8_section9_sha256: 247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
-    input_sha256: 98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
+    reason: A8-approved deterministic lifecycle and provenance reconciliation 
+      under the continuing general execution hold.
+    approval_record: 
+      _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml
+    approval_record_sha256: 
+      471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972
+    pre_a8_section9_result: 
+      _bmad-output/planning-artifacts/relock-section9-result-2026-09-17.yaml
+    pre_a8_section9_sha256: 
+      247b197c772df185af9710257c1042714ddb2d04a6836ed43ba4a0e3745c92bc
+    input_sha256: 
+      98e779e58c2e5ebea18cd669c4913ffb410b1977a832f4b34cf4948523b7dc7e
     lifecycle_changes:
       - story_id: '10.8'
         old: done
@@ -77,7 +83,7 @@ reconciliation_journal:
 development_status:
   # Epic 1: Bootstrap Canonical Contract For Consumers And Adapters
   epic-1: done
-  1-1-establish-a-consumer-buildable-module-scaffold: done
+  1-1-scaffold-the-consumer-ready-folders-module: done
   1-2-establish-root-configuration-and-submodule-policy: done
   1-3-seed-minimally-valid-normative-fixtures: done
   1-4-author-phase-0-5-pre-spine-workshop-deliverables: done
@@ -218,7 +224,7 @@ development_status:
   epic-9-retrospective: done
 
   epic-10: in-progress
-  10-1-define-the-worker-side-semantic-indexing-port-and-memories-d: done
+  10-1-define-the-worker-side-search-index-publication-port: done
   10-2-build-the-folders-owned-indexing-bridge-projection: done
   10-3-author-authorized-asynchronous-indexing-on-file-write-and-co: done
   10-4-emit-searchindexentryremoved-on-removal-archive-and-prove-en: done
@@ -226,7 +232,7 @@ development_status:
   10-6-replace-the-fail-closed-content-materializer-with-a-metadata: done
   10-7-eventstore-backed-search-bridge-and-deployed-server-registra: done
   10-8-real-produce-index-authorize-hydrate-redact-search-round-tri: in-progress
-  10-9-authorized-body-content-materialization-c9-gated: done
+  10-9-preserve-metadata-only-indexing-until-c9-body-content-approv: done
   epic-10-retrospective: done
 
   epic-11: in-progress

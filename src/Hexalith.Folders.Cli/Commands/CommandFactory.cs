@@ -97,6 +97,7 @@ internal static class CommandFactory
             return pipeline.ExecuteQueryAsync(
                 go,
                 taskId is null ? null : parseResult.GetValue(taskId),
+                taskId is not null && parseResult.GetResult(taskId) is not null,
                 taskIdRequired,
                 (client, sourcing, ct) => invoke(parseResult, client, sourcing, ct),
                 cancellationToken);

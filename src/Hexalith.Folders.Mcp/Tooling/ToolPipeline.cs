@@ -116,7 +116,7 @@ internal sealed class ToolPipeline
         string correlation = CorrelationAndTaskId.ResolveCorrelationId(correlationId);
 
         string? resolvedTaskId = null;
-        if (!string.IsNullOrWhiteSpace(taskId))
+        if (taskId is not null)
         {
             try
             {

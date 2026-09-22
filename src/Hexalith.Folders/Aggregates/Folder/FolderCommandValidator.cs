@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Authorization;
+
 namespace Hexalith.Folders.Aggregates.Folder;
 
 public static partial class FolderCommandValidator
@@ -240,7 +242,8 @@ public static partial class FolderCommandValidator
     internal static bool IsValidIdentifier(string? value)
         => !string.IsNullOrWhiteSpace(value)
             && value.Length <= MaxIdentifierLength
-            && CanonicalIdentifierPattern().IsMatch(value);
+            && (CanonicalIdentifierPattern().IsMatch(value)
+                || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
     internal static string CanonicalMetadata(string? value)
         => string.IsNullOrWhiteSpace(value)

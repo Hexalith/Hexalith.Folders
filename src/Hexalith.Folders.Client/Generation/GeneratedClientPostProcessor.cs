@@ -110,9 +110,9 @@ internal static class GeneratedClientPostProcessor
                 && entry.Schema.Children.ContainsKey(new YamlScalarNode("oneOf"))
                 && entry.Schema.Children.ContainsKey(new YamlScalarNode("properties")))
             .ToDictionary(static entry => entry.Name, static entry => entry.Schema, StringComparer.Ordinal);
-        if (wrappers.Count != 45)
+        if (wrappers.Count != 49)
         {
-            throw new InvalidOperationException($"Expected 45 generated operation-unavailable wrappers, found {wrappers.Count}.");
+            throw new InvalidOperationException($"Expected 49 generated operation-unavailable wrappers, found {wrappers.Count}.");
         }
 
         foreach ((string typeName, YamlMappingNode wrapper) in wrappers.OrderBy(static item => item.Key, StringComparer.Ordinal))

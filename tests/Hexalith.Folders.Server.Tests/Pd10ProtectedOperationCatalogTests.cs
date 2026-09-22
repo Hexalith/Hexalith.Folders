@@ -25,6 +25,7 @@ public sealed class Pd10ProtectedOperationCatalogTests
         descriptors.Select(item => item.OperationId).Distinct(StringComparer.Ordinal).Count().ShouldBe(49);
         descriptors.Select(item => $"{item.Method} {item.CandidateRoute}").Distinct(StringComparer.Ordinal).Count().ShouldBe(49);
         descriptors.ShouldAllBe(item => !string.IsNullOrWhiteSpace(item.ActionToken));
+        descriptors.ShouldAllBe(item => !string.IsNullOrWhiteSpace(item.HistoricalActionToken));
         Enum.GetValues<V2ProtectedOperationFamily>().Length.ShouldBe(11);
         descriptors.Select(item => item.OperationFamily).Distinct().Count().ShouldBe(10);
 
@@ -40,6 +41,45 @@ public sealed class Pd10ProtectedOperationCatalogTests
         Descriptor("CreateRepositoryBackedFolder").ActionToken.ShouldBe("manage_folder_access");
         Descriptor("BindRepository").ActionToken.ShouldBe("manage_folder_access");
         Descriptor("ValidateProviderReadiness").ActionToken.ShouldBe("create_folder");
+    }
+
+    [Fact]
+    public void EveryCandidateActionIsBoundToTheExactHistoricalHandlerAction()
+    {
+        Dictionary<string, string> differingActions = new(StringComparer.Ordinal)
+        {
+            ["ListFolderAclEntries"] = "read_metadata",
+            ["ValidateProviderReadiness"] = "provider_readiness_read",
+            ["CreateRepositoryBackedFolder"] = "create_repository_backed_folder",
+            ["BindRepository"] = "bind_repository",
+            ["GetWorkspaceRetryEligibility"] = "read_workspace_lock",
+            ["ListFolderFiles"] = "read_metadata",
+            ["GetFolderFileMetadata"] = "read_metadata",
+            ["SearchFolderFiles"] = "read_metadata",
+            ["GlobFolderFiles"] = "read_metadata",
+            ["ReadFileRange"] = "read_file_content",
+            ["GetTaskStatus"] = "read_task_status",
+            ["GetCommitEvidence"] = "read_workspace_status",
+            ["GetProviderOutcome"] = "read_workspace_status",
+            ["GetReconciliationStatus"] = "read_workspace_status",
+            ["ListAuditTrail"] = "read_metadata",
+            ["GetAuditRecord"] = "read_metadata",
+            ["ListOperationTimeline"] = "read_metadata",
+            ["GetOperationTimelineEntry"] = "read_metadata",
+            ["GetReadinessDiagnostics"] = "tenant-context-and-ops-console-diagnostic-read",
+            ["GetLockDiagnostics"] = "read_metadata",
+            ["GetDirtyStateDiagnostics"] = "read_metadata",
+            ["GetFailedOperationDiagnostics"] = "read_metadata",
+            ["GetProviderStatusDiagnostics"] = "read_metadata",
+            ["GetSyncStatusDiagnostics"] = "read_metadata",
+            ["GetProjectionFreshness"] = "tenant-context-and-ops-console-diagnostic-read",
+        };
+
+        foreach (Pd10ProtectedOperationDescriptor descriptor in Pd10ProtectedOperationCatalog.Descriptors)
+        {
+            string expected = differingActions.GetValueOrDefault(descriptor.OperationId, descriptor.ActionToken);
+            descriptor.HistoricalActionToken.ShouldBe(expected, descriptor.OperationId);
+        }
     }
 
     [Fact]
@@ -266,6 +306,26 @@ public sealed class Pd10ProtectedOperationCatalogTests
         repository["requestSchemaVersion"]!.GetValue<string>().ShouldBe("v1");
         repository["branchRefPolicy"]!["requestSchemaVersion"]!.GetValue<string>().ShouldBe("v1");
         repository["clientMetadata"]!["requestSchemaVersion"]!.GetValue<string>().ShouldBe("v2");
+    }
+
+    [Fact]
+    public void SuccessCompatibilityTranslationTouchesOnlyGetBranchRefPolicyRootDiscriminator()
+    {
+        JsonObject branchPolicy = new()
+        {
+            ["requestSchemaVersion"] = "v1",
+            ["clientMetadata"] = new JsonObject { ["requestSchemaVersion"] = "v1" },
+        };
+
+        Pd10V2CandidateCompatibilitySeam.RewriteSuccessSchemaDiscriminator(branchPolicy, "GetBranchRefPolicy")
+            .ShouldBeTrue();
+        branchPolicy["requestSchemaVersion"]!.GetValue<string>().ShouldBe("v2");
+        branchPolicy["clientMetadata"]!["requestSchemaVersion"]!.GetValue<string>().ShouldBe("v1");
+
+        JsonObject other = new() { ["requestSchemaVersion"] = "v1" };
+        Pd10V2CandidateCompatibilitySeam.RewriteSuccessSchemaDiscriminator(other, "GetRepositoryBinding")
+            .ShouldBeFalse();
+        other["requestSchemaVersion"]!.GetValue<string>().ShouldBe("v1");
     }
 
     private static Pd10ProtectedOperationDescriptor Descriptor(string operationId)

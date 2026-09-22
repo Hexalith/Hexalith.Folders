@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Authorization;
+
 namespace Hexalith.Folders.Aggregates.Organization;
 
 public sealed partial record OrganizationStreamName(string Value)
@@ -54,7 +56,8 @@ public sealed partial record OrganizationStreamName(string Value)
     internal static bool IsValidSegment(string? value)
         => !string.IsNullOrWhiteSpace(value)
             && value.Length <= MaxSegmentLength
-            && CanonicalSegmentPattern().IsMatch(value);
+            && (CanonicalSegmentPattern().IsMatch(value)
+                || PreauthorizedRequestContext.IsCandidateOpaqueIdentifier(value));
 
     [GeneratedRegex("^[a-z0-9._-]+$", RegexOptions.CultureInvariant)]
     private static partial Regex CanonicalSegmentPattern();

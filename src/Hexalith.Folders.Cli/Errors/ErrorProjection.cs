@@ -84,6 +84,7 @@ internal static class ErrorProjection
         CanonicalErrorCategory.Read_model_unavailable => FoldersExitCodes.AuthorityUnavailable,
         CanonicalErrorCategory.Projection_stale => FoldersExitCodes.AuthorityUnavailable,
         CanonicalErrorCategory.Projection_unavailable => FoldersExitCodes.AuthorityUnavailable,
+        CanonicalErrorCategory.Idempotency_admission_unavailable => FoldersExitCodes.AuthorityUnavailable,
 
         // Invalid lifecycle transition → 74.
         CanonicalErrorCategory.State_transition_invalid => FoldersExitCodes.StateTransitionInvalid,

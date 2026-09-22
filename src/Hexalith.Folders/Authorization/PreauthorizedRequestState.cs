@@ -6,4 +6,7 @@ public sealed record PreauthorizedRequestState(
     string PrincipalId,
     string? FolderId,
     string? FreshnessWatermark,
-    string? OrganizationId);
+    string? OrganizationId,
+    string CandidateActionToken,
+    string HistoricalActionToken,
+    string? DelegatorPrincipalId);

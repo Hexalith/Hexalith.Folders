@@ -836,6 +836,39 @@ public sealed class ClientGenerationTests
     }
 
     [Fact]
+    public void GenericProblemTupleIsAcceptedOnlyForItsOriginatingOperation()
+    {
+        JObject wire = GenericProblemWithOptionalFields();
+        wire["code"] = "acl_entry_id_mismatch";
+        ProblemDetails typedResult = wire.ToObject<ProblemDetails>().ShouldNotBeNull();
+
+        HexalithFoldersOperationContext.Set("POST", "api/v2/folders");
+        var wrongOperation = new HexalithFoldersApiException<ProblemDetails>(
+            "wrong operation",
+            400,
+            wire.ToString(Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            typedResult,
+            null!);
+        wrongOperation.ProblemDetails.ShouldBeNull();
+        wrongOperation.ProblemDetailsParseDiagnostic.ShouldBe("problem_shape_mismatch");
+
+        HexalithFoldersOperationContext.Set(
+            "PUT",
+            "api/v2/folders/folder_000000001/acl/acl_entry_000001");
+        var originatingOperation = new HexalithFoldersApiException<ProblemDetails>(
+            "originating operation",
+            400,
+            wire.ToString(Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            typedResult,
+            null!);
+        originatingOperation.ProblemDetails.ShouldNotBeNull(originatingOperation.ProblemDetailsParseDiagnostic);
+
+        HexalithFoldersOperationContext.Set("GET", "api/v2/not-an-operation");
+    }
+
+    [Fact]
     public void GenericProblemProjectionValidatesDeclaredOptionalFieldsAndClosedScalars()
     {
         JObject valid = GenericProblemWithOptionalFields();
@@ -963,10 +996,14 @@ public sealed class ClientGenerationTests
         malformedScalar.ProblemDetails.ShouldBeNull();
         malformedScalar.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch");
 
-        foreach ((string name, string malformedBody) in new[]
+        foreach ((string name, string malformedBody, string expectedDiagnostic) in new[]
         {
-            ("numeric status string", validAuthority.Replace("\"status\":503", "\"status\":\"503\"", StringComparison.Ordinal)),
-            ("boolean retryable string", validAuthority.Replace("\"retryable\":true", "\"retryable\":\"true\"", StringComparison.Ordinal)),
+            ("numeric status string", validAuthority.Replace("\"status\":503", "\"status\":\"503\"", StringComparison.Ordinal), "exact_problem_tuple_mismatch"),
+            ("boolean retryable string", validAuthority.Replace("\"retryable\":true", "\"retryable\":\"true\"", StringComparison.Ordinal), "exact_problem_tuple_mismatch"),
+            ("numeric correlation identifier", validAuthority.Replace(
+                $"\"correlationId\":\"{correlationId}\"",
+                "\"correlationId\":1234567890123456",
+                StringComparison.Ordinal), "exact_problem_correlation_mismatch"),
         })
         {
             var wrongScalarKind = new HexalithFoldersApiException<AuthorityUnavailableProblem>(
@@ -977,7 +1014,7 @@ public sealed class ClientGenerationTests
                 authorityResult,
                 null!);
             wrongScalarKind.ProblemDetails.ShouldBeNull(name);
-            wrongScalarKind.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch", name);
+            wrongScalarKind.ProblemDetailsParseDiagnostic.ShouldBe(expectedDiagnostic, name);
         }
     }
 
@@ -1008,7 +1045,7 @@ public sealed class ClientGenerationTests
                 && !directlyProjectedTypes.Contains(type.Name, StringComparer.Ordinal))
             .ToArray();
 
-        operationUnavailableTypes.Length.ShouldBe(45);
+        operationUnavailableTypes.Length.ShouldBe(49);
         foreach (Type type in operationUnavailableTypes)
         {
             object mapped = map.Invoke(null, [type.Name]).ShouldNotBeNull(type.Name);

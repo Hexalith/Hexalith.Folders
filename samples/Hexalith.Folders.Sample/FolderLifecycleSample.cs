@@ -126,7 +126,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
         // 4) Prepare the workspace on the ready repository-backed folder.
         PrepareWorkspaceRequest prepareRequest = new()
         {
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
             RepositoryBindingId = inputs.RepositoryBindingId,
             BranchRefPolicyRef = "branch_ref_default",
             WorkspacePolicyRef = "workspace_policy_default",
@@ -144,7 +144,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
         // 5) Lock the workspace (single active writer) before any file mutation.
         LockWorkspaceRequest lockRequest = new()
         {
-            RequestSchemaVersion = "v1",
+            RequestSchemaVersion = "v2",
             LockIntent = LockWorkspaceRequestLockIntent.Exclusive_write,
             RequestedLeaseSeconds = 300,
         };

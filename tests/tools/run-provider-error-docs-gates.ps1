@@ -175,7 +175,7 @@ try {
         if ($testOutputText -match 'System\.Net\.Sockets\.SocketException.*Permission denied|Testing with VSTest target is no longer supported') {
             Invoke-XunitInProcessFallback -Reason 'vstest-unavailable'
         }
-        elseif ($LASTEXITCODE -eq 5 -and $testOutputText -match 'Zero tests ran') {
+        elseif ($LASTEXITCODE -in @(5, 8) -and $testOutputText -match 'Zero tests ran') {
             Invoke-XunitInProcessFallback -Reason 'mtp-vstest-filter-empty'
         }
         else {
