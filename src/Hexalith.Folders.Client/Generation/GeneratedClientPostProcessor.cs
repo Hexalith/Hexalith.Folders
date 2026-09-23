@@ -90,9 +90,132 @@ internal static class GeneratedClientPostProcessor
         source = RequireClosedProblemFields(source);
         source = RequireClosedSuccessFields(source, contractPath);
         source = RestoreOperationUnavailableEnumUnions(source, contractPath);
+        source = BindProviderReadinessUnion(source, contractPath);
 
         WriteAtomically(clientPath, source);
     }
+
+    private static string BindProviderReadinessUnion(string source, string contractPath)
+    {
+        YamlMappingNode schemas = RequiredMapping(RequiredMapping(LoadYaml(contractPath), "components"), "schemas");
+        YamlMappingNode union = RequiredMapping(schemas, "ProviderReadiness");
+        YamlMappingNode mapping = RequiredMapping(RequiredMapping(union, "discriminator"), "mapping");
+        if (mapping.Children.Count != 2
+            || mapping.Children[new YamlScalarNode("consumer")].ShouldBeScalar("consumer mapping").Value
+                != "#/components/schemas/ProviderReadinessConsumer"
+            || mapping.Children[new YamlScalarNode("authorized_operator")].ShouldBeScalar("operator mapping").Value
+                != "#/components/schemas/ProviderReadinessOperator")
+        {
+            throw new InvalidOperationException("ProviderReadiness discriminator no longer has the approved consumer/operator mapping.");
+        }
+
+        const string oldReturn = "System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync";
+        if (CountOccurrences(source, oldReturn) != 4)
+        {
+            throw new InvalidOperationException("Expected four generated readiness method declarations.");
+        }
+
+        source = source.Replace(oldReturn, "System.Threading.Tasks.Task<ProviderReadinessResult> ValidateProviderReadinessAsync", StringComparison.Ordinal);
+        const string oldSuccess = "var objectResponse_ = await ReadObjectResponseAsync<ProviderReadinessConsumer>(response_, headers_, cancellationToken).ConfigureAwait(false);";
+        source = ReplaceExactly(source, oldSuccess,
+            "var objectResponse_ = await ReadObjectResponseAsync<ProviderReadinessResult>(response_, headers_, cancellationToken).ConfigureAwait(false);",
+            expectedCount: 1);
+
+        const string namespaceEnd = "\n}\n\n#pragma warning restore";
+        string generatedUnion = "\n" + ProviderReadinessUnionSource + "\n";
+        return ReplaceExactly(source, namespaceEnd, generatedUnion + namespaceEnd, expectedCount: 1);
+    }
+
+    private const string ProviderReadinessUnionSource = """
+    #nullable enable
+    /// <summary>A closed readiness response selected by the contract's audience discriminator.</summary>
+    [Newtonsoft.Json.JsonConverter(typeof(ProviderReadinessResultConverter))]
+    public abstract record ProviderReadinessResult
+    {
+        public abstract string Audience { get; }
+
+        public abstract ProviderReadinessStatus Status { get; }
+
+        public sealed record Consumer(ProviderReadinessConsumer Value) : ProviderReadinessResult
+        {
+            public override string Audience => "consumer";
+
+            public override ProviderReadinessStatus Status => Value.Status;
+        }
+
+        public sealed record Operator(ProviderReadinessOperator Value) : ProviderReadinessResult
+        {
+            public override string Audience => "authorized_operator";
+
+            public override ProviderReadinessStatus Status => Value.Status;
+        }
+    }
+
+    /// <summary>Binds the two declared readiness response shapes without coercing their audiences.</summary>
+    public sealed class ProviderReadinessResultConverter : Newtonsoft.Json.JsonConverter
+    {
+        private static readonly System.Collections.Generic.HashSet<string> ConsumerFields = new(System.StringComparer.Ordinal)
+        {
+            "audience", "status", "retryHint", "freshness",
+        };
+
+        private static readonly System.Collections.Generic.HashSet<string> OperatorFields = new(System.StringComparer.Ordinal)
+        {
+            "audience", "providerBindingRef", "status", "capabilityProfileRef", "evidence", "sanitizedErrorCategory",
+            "safeRemediationCode", "safeReasonCode", "retryable", "retryAfterSeconds", "remediationCategory",
+            "providerReference", "correlationId", "freshness",
+        };
+
+        public override bool CanConvert(System.Type objectType) => objectType == typeof(ProviderReadinessResult);
+
+        public override object? ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object? existingValue, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            Newtonsoft.Json.Linq.JObject body = Newtonsoft.Json.Linq.JObject.Load(reader,
+                new Newtonsoft.Json.Linq.JsonLoadSettings
+                {
+                    DuplicatePropertyNameHandling = Newtonsoft.Json.Linq.DuplicatePropertyNameHandling.Error,
+                });
+            string? audience = body.Value<string>("audience");
+            System.Collections.Generic.HashSet<string> allowed = audience switch
+            {
+                "consumer" => ConsumerFields,
+                "authorized_operator" => OperatorFields,
+                _ => throw new Newtonsoft.Json.JsonSerializationException("Unknown readiness audience."),
+            };
+            string[] required = audience == "consumer"
+                ? ["audience", "status", "freshness"]
+                : ["audience", "providerBindingRef", "status", "safeRemediationCode", "safeReasonCode",
+                    "retryable", "remediationCategory", "providerReference", "correlationId", "freshness"];
+            if (body.Properties().Any(property => !allowed.Contains(property.Name))
+                || required.Any(name => body.Property(name, System.StringComparison.Ordinal) is null))
+            {
+                throw new Newtonsoft.Json.JsonSerializationException("Readiness response does not match its declared audience shape.");
+            }
+
+            return audience == "consumer"
+                ? new ProviderReadinessResult.Consumer(body.ToObject<ProviderReadinessConsumer>(serializer)
+                    ?? throw new Newtonsoft.Json.JsonSerializationException("Consumer readiness body was empty."))
+                : new ProviderReadinessResult.Operator(body.ToObject<ProviderReadinessOperator>(serializer)
+                    ?? throw new Newtonsoft.Json.JsonSerializationException("Operator readiness body was empty."));
+        }
+
+        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object? value, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            switch (value)
+            {
+                case ProviderReadinessResult.Consumer consumer:
+                    serializer.Serialize(writer, consumer.Value);
+                    break;
+                case ProviderReadinessResult.Operator operatorResult:
+                    serializer.Serialize(writer, operatorResult.Value);
+                    break;
+                default:
+                    throw new Newtonsoft.Json.JsonSerializationException("Unknown readiness result arm.");
+            }
+        }
+    }
+    #nullable restore
+    """;
 
     private static string RelaxGeneratedRequiredFields(string source)
         => source.Replace(

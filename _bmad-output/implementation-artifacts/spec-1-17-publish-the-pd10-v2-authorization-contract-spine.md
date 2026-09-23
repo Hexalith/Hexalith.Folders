@@ -235,6 +235,12 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - Worktree state: `cf9d2e81ef5884a20663d87b9687cf9ad3e609c6` plus only the named SDK test; no F14 production edit. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.SdkValidateProviderReadinessBindsAuthorizedOperatorAudience"` exited 1: 1 total, 1 failed. The `Should.NotThrowAsync` assertion failed because the generated SDK threw `HexalithFoldersApiException` while deserializing `ProviderReadinessConsumer`; its response status was 200 with `audience: authorized_operator`. The test asserts the serialized SDK result's audience, binding ref and evidence without presupposing a CLR return type.
 - The existing contract declares a `ProviderReadiness` oneOf discriminator but the generated SDK exposes `Task<ProviderReadinessConsumer>`. The public SDK return shape for a mixed consumer/operator response needs a human contract decision before the green edit.
+- Red test commit: `c661340fccb61cd8eeea67967d01a6930f8da82f`.
+
+### T6 F14 green
+
+- Jerome selected a discriminated union of the approved consumer and operator response shapes. `GeneratedClientPostProcessor` now emits `ProviderReadinessResult` with consumer/operator arms and a strict audience converter, and binds the generated method's 200 response to it. The sample uses the union's common status. The prior golden lifecycle expectation of an SDK throw on 200 was replaced with an operator-arm assertion. The new named test also asserts the arm and required `safeReasonCode`; its initial `evidence` assertion was corrected because that field is optional in the approved operator schema.
+- `dotnet msbuild src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug` regenerated `HexalithFoldersClient.g.cs` through the post-processor; no generated file was hand-edited. The named `RUN` test passed: 1 total, 0 failed. Full IntegrationTests passed: 716 total, 0 failed, 0 skipped. The sample project built with zero warnings and errors.
 
 ## Spec Change Log
 

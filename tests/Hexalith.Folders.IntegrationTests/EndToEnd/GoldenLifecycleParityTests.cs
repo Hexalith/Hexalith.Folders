@@ -1154,10 +1154,11 @@ public sealed class GoldenLifecycleParityTests
                     cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
             }).ConfigureAwait(true);
 
+            result.ShouldBeOfType<ProviderReadinessResult.Operator>();
             Newtonsoft.Json.Linq.JObject readiness = Newtonsoft.Json.Linq.JObject.FromObject(result.ShouldNotBeNull());
             readiness.Value<string>("audience").ShouldBe("authorized_operator");
             readiness.Value<string>("providerBindingRef").ShouldBe("provider_binding_0001");
-            readiness["evidence"].ShouldNotBeNull();
+            readiness["safeReasonCode"].ShouldNotBeNull();
         }
         finally
         {
@@ -2595,28 +2596,17 @@ public sealed class GoldenLifecycleParityTests
                 reachedTerminalClass.Add("provider_readiness");
             }
 
-            // SDK-surface seam (documented): the server returns the authorized-operator readiness shape
-            // (audience "authorized_operator"), but the generated ValidateProviderReadinessAsync binds the
-            // response to the *consumer*-audience DTO (ProviderReadinessConsumer), whose audience enum has no
-            // "authorized_operator" member. The SDK therefore still drives the real route to its real
-            // transport-terminal class (HTTP 200) — proven by the deserialization exception carrying
-            // StatusCode 200 — but cannot bind the operator body into the consumer DTO. We assert the real
-            // 200 transport outcome rather than an oracle-metadata-only claim (mirrors the
-            // RestInspectionOperationId substitution rationale: drive the real route, assert its real result).
-            HexalithFoldersApiException sdkReadinessSeam = await Should.ThrowAsync<HexalithFoldersApiException>(async () =>
-                await host.SdkClient.ValidateProviderReadinessAsync(
-                    x_Correlation_Id: "corr-provider-readiness-sdk",
-                    x_Hexalith_Freshness: ReadConsistencyClass.Snapshot_per_task,
-                    body: new ValidateProviderReadinessRequest
-                    {
-                        ProviderBindingRef = "provider_binding_0001",
-                        RequestedCapability = ProviderCapabilityName.Repository_creation,
-                    },
-                    cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true))
-                .ConfigureAwait(true);
-            sdkReadinessSeam.StatusCode.ShouldBe(
-                (int)HttpStatusCode.OK,
-                $"SDK ValidateProviderReadiness reaches the real 'projected' transport-terminal class (200); the consumer-audience DTO simply cannot bind the operator-audience body. Response: {sdkReadinessSeam.Response}");
+            ProviderReadinessResult sdkReadiness = await host.SdkClient.ValidateProviderReadinessAsync(
+                x_Correlation_Id: "corr-provider-readiness-sdk",
+                x_Hexalith_Freshness: ReadConsistencyClass.Snapshot_per_task,
+                body: new ValidateProviderReadinessRequest
+                {
+                    ProviderBindingRef = "provider_binding_0001",
+                    RequestedCapability = ProviderCapabilityName.Repository_creation,
+                },
+                cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+            sdkReadiness.ShouldBeOfType<ProviderReadinessResult.Operator>()
+                .Value.Audience.ShouldBe(ProviderReadinessOperatorAudience.Authorized_operator);
 
             // ---- Step 2: CreateRepositoryBackedFolder — mutating_command → 202 (REST + SDK equivalence) ----
             // Makes an existing Unbound folder repository-backed (the aggregate requires IsCreated && Unbound),

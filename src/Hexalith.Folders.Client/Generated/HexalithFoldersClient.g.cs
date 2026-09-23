@@ -224,7 +224,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body);
+        System.Threading.Tasks.Task<ProviderReadinessResult> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -234,7 +234,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProviderReadinessResult> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Inspect provider-neutral support and capability evidence.
@@ -2763,7 +2763,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body)
+        public virtual System.Threading.Tasks.Task<ProviderReadinessResult> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body)
         {
             return ValidateProviderReadinessAsync(x_Correlation_Id, x_Hexalith_Freshness, body, System.Threading.CancellationToken.None);
         }
@@ -2776,7 +2776,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProviderReadinessResult> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2830,7 +2830,7 @@ namespace Hexalith.Folders.Client.Generated
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProviderReadinessConsumer>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProviderReadinessResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -22971,6 +22971,95 @@ namespace Hexalith.Folders.Client.Generated
             Result = result;
         }
     }
+
+#nullable enable
+/// <summary>A closed readiness response selected by the contract's audience discriminator.</summary>
+[Newtonsoft.Json.JsonConverter(typeof(ProviderReadinessResultConverter))]
+public abstract record ProviderReadinessResult
+{
+    public abstract string Audience { get; }
+
+    public abstract ProviderReadinessStatus Status { get; }
+
+    public sealed record Consumer(ProviderReadinessConsumer Value) : ProviderReadinessResult
+    {
+        public override string Audience => "consumer";
+
+        public override ProviderReadinessStatus Status => Value.Status;
+    }
+
+    public sealed record Operator(ProviderReadinessOperator Value) : ProviderReadinessResult
+    {
+        public override string Audience => "authorized_operator";
+
+        public override ProviderReadinessStatus Status => Value.Status;
+    }
+}
+
+/// <summary>Binds the two declared readiness response shapes without coercing their audiences.</summary>
+public sealed class ProviderReadinessResultConverter : Newtonsoft.Json.JsonConverter
+{
+    private static readonly System.Collections.Generic.HashSet<string> ConsumerFields = new(System.StringComparer.Ordinal)
+    {
+        "audience", "status", "retryHint", "freshness",
+    };
+
+    private static readonly System.Collections.Generic.HashSet<string> OperatorFields = new(System.StringComparer.Ordinal)
+    {
+        "audience", "providerBindingRef", "status", "capabilityProfileRef", "evidence", "sanitizedErrorCategory",
+        "safeRemediationCode", "safeReasonCode", "retryable", "retryAfterSeconds", "remediationCategory",
+        "providerReference", "correlationId", "freshness",
+    };
+
+    public override bool CanConvert(System.Type objectType) => objectType == typeof(ProviderReadinessResult);
+
+    public override object? ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object? existingValue, Newtonsoft.Json.JsonSerializer serializer)
+    {
+        Newtonsoft.Json.Linq.JObject body = Newtonsoft.Json.Linq.JObject.Load(reader,
+            new Newtonsoft.Json.Linq.JsonLoadSettings
+            {
+                DuplicatePropertyNameHandling = Newtonsoft.Json.Linq.DuplicatePropertyNameHandling.Error,
+            });
+        string? audience = body.Value<string>("audience");
+        System.Collections.Generic.HashSet<string> allowed = audience switch
+        {
+            "consumer" => ConsumerFields,
+            "authorized_operator" => OperatorFields,
+            _ => throw new Newtonsoft.Json.JsonSerializationException("Unknown readiness audience."),
+        };
+        string[] required = audience == "consumer"
+            ? ["audience", "status", "freshness"]
+            : ["audience", "providerBindingRef", "status", "safeRemediationCode", "safeReasonCode",
+                "retryable", "remediationCategory", "providerReference", "correlationId", "freshness"];
+        if (body.Properties().Any(property => !allowed.Contains(property.Name))
+            || required.Any(name => body.Property(name, System.StringComparison.Ordinal) is null))
+        {
+            throw new Newtonsoft.Json.JsonSerializationException("Readiness response does not match its declared audience shape.");
+        }
+
+        return audience == "consumer"
+            ? new ProviderReadinessResult.Consumer(body.ToObject<ProviderReadinessConsumer>(serializer)
+                ?? throw new Newtonsoft.Json.JsonSerializationException("Consumer readiness body was empty."))
+            : new ProviderReadinessResult.Operator(body.ToObject<ProviderReadinessOperator>(serializer)
+                ?? throw new Newtonsoft.Json.JsonSerializationException("Operator readiness body was empty."));
+    }
+
+    public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object? value, Newtonsoft.Json.JsonSerializer serializer)
+    {
+        switch (value)
+        {
+            case ProviderReadinessResult.Consumer consumer:
+                serializer.Serialize(writer, consumer.Value);
+                break;
+            case ProviderReadinessResult.Operator operatorResult:
+                serializer.Serialize(writer, operatorResult.Value);
+                break;
+            default:
+                throw new Newtonsoft.Json.JsonSerializationException("Unknown readiness result arm.");
+        }
+    }
+}
+#nullable restore
 
 }
 
