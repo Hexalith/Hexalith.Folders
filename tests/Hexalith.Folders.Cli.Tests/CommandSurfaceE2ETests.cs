@@ -62,16 +62,23 @@ public sealed class CommandSurfaceE2ETests : IDisposable
 
         IClient client = Substitute.For<IClient>();
 
-        // Configure the accepted-command mutations to acknowledge truthfully; queries default to null (exit 0).
+        // Configure accepted mutations and the readiness union; other queries default to null (exit 0).
         client.CreateRepositoryBackedFolderAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CreateRepositoryBackedFolderRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(TestData.Accepted()));
+        client.ValidateProviderReadinessAsync(Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<ValidateProviderReadinessRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<ProviderReadinessResult>(new ProviderReadinessResult.Consumer(new ProviderReadinessConsumer
+            {
+                Audience = ProviderReadinessConsumerAudience.Consumer,
+                Status = ProviderReadinessStatus.Ready,
+                Freshness = new FreshnessMetadata { ReadConsistency = ReadConsistencyClass.Snapshot_per_task, ObservedAt = DateTimeOffset.UnixEpoch },
+            })));
         client.AddFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<AddFileRequest>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(TestData.Accepted()));
 
         // configure provider binding → validate readiness → create repo-backed folder → prepare → lock →
         // add file → commit → query context → release lock → inspect audit.
         await RunStepAsync(client, correlation, "provider", "configure-binding", "--provider-binding-ref", "pbr_1", "--task-id", "task_1", "--idempotency-key", "key_provider", "--request", "{}");
-        await RunStepAsync(client, correlation, "provider", "validate-readiness", "--request", "{}");
+        await RunStepAsync(client, correlation, "provider", "validate-readiness", "--request", "{\"providerBindingRef\":\"provider_binding_0001\",\"requestedCapability\":\"repository_creation\"}");
         await RunStepAsync(client, correlation, "folder", "create-repo-backed", "--task-id", "task_1", "--idempotency-key", "key_folder", "--request", "{}");
         await RunStepAsync(client, correlation, "workspace", "prepare", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_prepare", "--request", "{}");
         await RunStepAsync(client, correlation, "workspace", "lock", "--folder-id", "folder_1", "--workspace-id", "workspace_1", "--task-id", "task_1", "--idempotency-key", "key_lock", "--request", "{}");
@@ -373,7 +380,7 @@ public sealed class CommandSurfaceE2ETests : IDisposable
 
         int exit = await harness.RunAsync(args).ConfigureAwait(false);
 
-        exit.ShouldBe(0);
+        exit.ShouldBe(0, harness.Console.StdErr);
         // The overridden correlation ID is propagated unchanged and observable on every invocation.
         harness.Console.StdErr.ShouldContain($"correlation-id: {correlation}");
     }

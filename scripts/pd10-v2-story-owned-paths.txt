@@ -114,6 +114,7 @@ src/Hexalith.Folders/Aggregates/Folder/WorkspacePreparationService.cs
 src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs
 src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs
 src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs
+src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
 src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
 src/Hexalith.Folders/Authorization/PreauthorizedRequestContext.cs
 src/Hexalith.Folders/Authorization/PreauthorizedRequestState.cs
@@ -142,8 +143,10 @@ tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2ContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs
 tests/Hexalith.Folders.IntegrationTests/AdapterParity/CrossAdapterBehavioralParityTests.cs
+tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
 tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
 tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs
 tests/Hexalith.Folders.IntegrationTests/V2CandidateTestClient.cs
 tests/Hexalith.Folders.Mcp.Tests/MetadataOnlyOutputTests.cs
 tests/Hexalith.Folders.Mcp.Tests/ParityOracleConformanceTests.cs
@@ -167,7 +170,10 @@ tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspaceLockReleaseService
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspacePreparationServiceTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/SequencedFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs
+tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
 tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
+tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
+tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceLifecycleProjectionDeterminismTests.cs
 tests/Hexalith.Folders.UI.Tests/AuditTrailPageTests.cs
@@ -179,6 +185,7 @@ tests/Hexalith.Folders.UI.Tests/IncidentStreamPageTests.cs
 tests/Hexalith.Folders.UI.Tests/OperationTimelinePageTests.cs
 tests/Hexalith.Folders.UI.Tests/ProviderPageTests.cs
 tests/Hexalith.Folders.UI.Tests/ProviderSupportPageTests.cs
+tests/Hexalith.Folders.UI.Tests/UiOperationFreshnessConformanceTests.cs
 tests/Hexalith.Folders.UI.Tests/WorkspacePageTests.cs
 tests/fixtures/parity-contract.schema.json
 tests/fixtures/parity-contract.yaml
@@ -194,10 +201,3 @@ tests/tools/run-governance-completeness-gates.ps1
 tests/tools/run-operations-audit-docs-gates.ps1
 tests/tools/run-production-observability-gates.ps1
 tests/tools/run-provider-error-docs-gates.ps1
-tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
-tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
-tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
-tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs
-src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
-tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
-tests/Hexalith.Folders.UI.Tests/UiOperationFreshnessConformanceTests.cs

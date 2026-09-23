@@ -148,6 +148,10 @@ internal static class Oq2ProblemProjection
     private static readonly ExactProblemTuple CandidateReadModelUnavailable = new(
         503, "internal_error", "read_model_unavailable", "Candidate request or downstream outcome",
         "The request could not be completed.", false, "no_action", "metadata_only");
+    private static readonly ExactProblemTuple CandidateUnknownProviderOutcome = new(
+        503, "unknown_provider_outcome", "unknown_provider_outcome", "Read model unavailable.",
+        "Provider outcome is unknown and requires safe reconciliation.", false, "wait_for_reconciliation", "metadata_only",
+        "https://hexalith.dev/errors/folders/unknown_provider_outcome", "unknown_provider_outcome");
 
     private static readonly HashSet<string> ReadModelUnavailableTypes = new(StringComparer.Ordinal)
     {
@@ -369,15 +373,6 @@ internal static class Oq2ProblemProjection
             return (null, "unsupported_problem_result_type");
         }
 
-        if (generatedOperationUnavailableProblem)
-        {
-            (ProblemDetails? problem, _) = ProjectGenericProblem(exception, exception.StatusCode);
-            if (problem is not null)
-            {
-                return (problem, null);
-            }
-        }
-
         ExactProblemTuple[]? allowed = AllowedUnavailableTuples(resultType.Name);
         return allowed is null
             ? (null, "unsupported_problem_result_type")
@@ -399,8 +394,7 @@ internal static class Oq2ProblemProjection
         ];
         if (wire.Properties().Select(static property => property.Name).Order(StringComparer.Ordinal)
             .SequenceEqual(expectedNames.Order(StringComparer.Ordinal), StringComparer.Ordinal) is false
-            || wire["details"] is not JObject details
-            || details.Properties().Select(static property => property.Name).SequenceEqual(["visibility"], StringComparer.Ordinal) is false)
+            || wire["details"] is not JObject details)
         {
             return (null, "exact_problem_shape_mismatch");
         }
@@ -468,6 +462,11 @@ internal static class Oq2ProblemProjection
         }
 
         allowed.Add(CandidateProjectionUnavailable);
+        if (resultTypeName is "CreateRepositoryBackedFolderUnavailableProblem" or "BindRepositoryUnavailableProblem")
+        {
+            allowed.Add(CandidateUnknownProviderOutcome);
+        }
+
         allowed.Add(AuthorityUnavailable);
         return allowed.Distinct().ToArray();
     }
@@ -478,10 +477,6 @@ internal static class Oq2ProblemProjection
         ArgumentNullException.ThrowIfNull(wire);
         ExactProblemTuple[] allowed = AllowedUnavailableTuples(resultTypeName)
             ?? throw new JsonSerializationException($"Unsupported operation-unavailable problem type '{resultTypeName}'.");
-        if (IsGenericWire(wire, resultTypeName[..^"UnavailableProblem".Length]))
-        {
-            return;
-        }
         string[] expectedNames =
         [
             "type", "title", "status", "category", "code", "message", "correlationId",
@@ -490,8 +485,6 @@ internal static class Oq2ProblemProjection
         if (!wire.Properties().Select(static property => property.Name).Order(StringComparer.Ordinal)
                 .SequenceEqual(expectedNames.Order(StringComparer.Ordinal), StringComparer.Ordinal)
             || wire["details"] is not JObject details
-            || !details.Properties().Select(static property => property.Name)
-                .SequenceEqual(["visibility"], StringComparer.Ordinal)
             || wire["correlationId"]?.Type != JTokenType.String
             || !IsOpaqueIdentifier(wire.Value<string>("correlationId"))
             || !allowed.Any(tuple => tuple.Matches(wire, details)))
@@ -554,7 +547,9 @@ internal static class Oq2ProblemProjection
         string Message,
         bool Retryable,
         string ClientAction,
-        string Visibility)
+        string Visibility,
+        string Type = "about:blank",
+        string? FinalState = null)
     {
         public bool Matches(JObject wire, JObject details)
             => wire["type"]?.Type == JTokenType.String
@@ -566,7 +561,12 @@ internal static class Oq2ProblemProjection
                 && wire["retryable"]?.Type == JTokenType.Boolean
                 && wire["clientAction"]?.Type == JTokenType.String
                 && details["visibility"]?.Type == JTokenType.String
-                && wire.Value<string>("type") == "about:blank"
+                && details.Properties().Select(static property => property.Name).Order(StringComparer.Ordinal)
+                    .SequenceEqual(FinalState is null ? ["visibility"] : ["finalState", "visibility"], StringComparer.Ordinal)
+                && (FinalState is null
+                    || details["finalState"]?.Type == JTokenType.String
+                    && details.Value<string>("finalState") == FinalState)
+                && wire.Value<string>("type") == Type
                 && wire.Value<string>("title") == Title
                 && wire.Value<int>("status") == Status
                 && wire.Value<string>("category") == Category

@@ -274,6 +274,12 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - `ClientGenerationTests.CanonicalErrorCodeNumberingIsPinned` pins all 51 generated SDK enum names to their numeric values. The approved residual renumbering is 0–50 in the current candidate SDK; release notes for 1.17-G must call out that public numeric enum values are now pinned. This is a baseline pin, with no F12 fix. `RUN(Hexalith.Folders.Client.Tests, Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalErrorCodeNumberingIsPinned)` passed: 1 total, 0 failed.
 
+### Close-out follow-up from full suites
+
+- The first full-suite pass found one CLI regression and two client projection regressions after F14/F16. The CLI golden-path mock had no concrete `ProviderReadinessResult`; its serializer raised `JsonSerializationException` and the command returned usage exit 64. The test now provides an approved consumer arm with required metadata and a valid readiness request; the named path and full CLI suite pass, 719 total.
+- `Oq2ProblemProjection` initially let generated unavailable wrappers bypass exact tuple validation through the generic path. The client suite exposed that a wrong `GetTaskStatus` title was accepted, and its tuple-map test found the F16 `503 unknown_provider_outcome`/`finalState` branch absent. Projection now pins that exact branch for `CreateRepositoryBackedFolder` and `BindRepository`, checks its type/title/message/detail, and retains exact checks for other wrappers. Full client suite passed, 325 total; full IntegrationTests passed, 719 total. The already-approved F16 tuple is the only added map entry. No generated file was hand-edited.
+- The seven new allowlist paths were sorted ordinally after append because the conformance generator rejects an unsorted list. This changed only `scripts/pd10-v2-story-owned-paths.txt`; no conformance set was regenerated or resealed.
+
 
 ## Spec Change Log
 
