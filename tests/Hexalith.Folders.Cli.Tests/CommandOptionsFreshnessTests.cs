@@ -24,4 +24,8 @@ public sealed class CommandOptionsFreshnessTests
     [Fact]
     public void ParseFreshnessShouldMapTheClosedVocabulary()
         => CommandOptions.ParseFreshness("eventually_consistent").ShouldBe(ReadConsistencyClass.Eventually_consistent);
+
+    [Fact]
+    public void KnownFreshnessNotAcceptedByOperationIsUsageFailureBeforeDispatch()
+        => Should.Throw<CliUsageException>(() => CommandOptions.ParseFreshness("eventually_consistent", "GetEffectivePermissions"));
 }

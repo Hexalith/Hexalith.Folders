@@ -250,6 +250,27 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - The six affected pages now send `read_your_writes` for `GetEffectivePermissions`; Workspace also sends `read_your_writes` for status, lock and cleanup status, and `snapshot_per_task` for file listing. The other reads retain their accepted `eventually_consistent` value. `dotnet build tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed with zero warnings and errors. The named theory passed all 8 rows. The unfiltered UI suite passed: 533 total, 0 failed, 0 skipped.
 
+### T8 F08 mutation-red regressions
+
+- Worktree base: `984e022ae11ec27dd20af4e3be35dfc81b18a6d1`. For every row below, the named `RUN(P, FQN)` build and test passed before mutation (1 total, 0 failed), except where a shared build covered adjacent tests. Each mutation was applied only locally, the same named test was rerun and exited 1 with 1 failed assertion, then the production lines were restored. `git diff` over all seven mutated production paths was empty after restoration. No generated output was edited.
+
+| Group and named method (class as specified in T8) | Temporary production mutation | Assertion failure excerpt |
+| --- | --- | --- |
+| (a) `CommandOptionsFreshnessTests.KnownFreshnessNotAcceptedByOperationIsUsageFailureBeforeDispatch` | `OperationFreshness.TryParse`: replace generated operation-specific accepted freshness comparison with a closed-vocabulary-only comparison | `CommandOptions.ParseFreshness("eventually_consistent", "GetEffectivePermissions") should throw CliUsageException but did not` |
+| (a) `ToolInputsTests.KnownFreshnessNotAcceptedByOperationIsRejectedBeforeDispatch` | Same `OperationFreshness.TryParse` mutation | `ToolInputs.ParseFreshness("eventually_consistent", "GetEffectivePermissions") should throw McpUsageException but did not` |
+| (b) `GoldenLifecycleParityTests.CandidateFileMutationLockConflictRemapsToDeclared423` | `Pd10V2CandidateCompatibilitySeam`: map file-mutation `lock_conflict` back to historical `409` instead of `423` | `response.StatusCode should be HttpStatusCode.Locked but was HttpStatusCode.ServiceUnavailable` |
+| (b) `GoldenLifecycleParityTests.CandidateFileMutationPreconditionFailureRemapsToDeclared428` | Same seam: map file-mutation `authorization_revocation_detected` back to historical `409` instead of `428` | `response.StatusCode should be HttpStatusCode.PreconditionRequired but was HttpStatusCode.ServiceUnavailable` |
+| (c) `GatewayMutationFinalReauthorizationTests.RepositoryBindingFinalReauthorizationDetectsRevocationBetweenChecks` | Both repository-binding final `ReauthorizeMutationAsync` calls: `includeFolderAcl: true` → `false` | `result.Code should be FolderResultCode.FolderAclDenied but was FolderResultCode.Accepted` |
+| (c) `GatewayMutationFinalReauthorizationTests.BranchRefPolicyConfigurationFinalReauthorizationDetectsRevocationBetweenChecks` | Branch-policy final `ReauthorizeMutationAsync`: `includeFolderAcl: true` → `false` | Same `FolderAclDenied` versus `Accepted` assertion |
+| (c) `GatewayMutationFinalReauthorizationTests.FolderAccessMutationFinalReauthorizationDetectsRevocationBetweenChecks` | Folder-access final `ReauthorizeMutationAsync`: `includeFolderAcl: true` → `false` | Same `FolderAclDenied` versus `Accepted` assertion |
+| (d) `GoldenLifecycleParityTests.CandidateCaseVariantDuplicateSchemaPropertyIsCanonicalValidationFailure` | `HasDuplicateProperties`: `StringComparer.OrdinalIgnoreCase` → `Ordinal` | `response.StatusCode should be HttpStatusCode.BadRequest but was HttpStatusCode.Accepted` |
+| (e) `ParityOracleGeneratorTests.OperationAbsentFromHistoricalV1TakesTheDeclaredBranch` | Disable the `currentByOperationId.ContainsKey(operationId)` rejection branch for an operation absent from historical v1 | `result.ExitCode should not be 0 but was 0` |
+| (f) `ParityOracleGeneratorTests.InitializeBaselineRejectsDuplicateOperationIdsBeforeWriting` | Omit `ValidateOperationInventory(baselineOps, baselineDiagnostics)` in initialize-baseline | `result.ExitCode should not be 0 but was 0`; duplicate baseline was written in scratch |
+| (g) `FailureKindProjectionTests.LockConflictProjectsToClosedMcpFailureKind` | `FailureKindProjection`: map `Lock_conflict` to `InternalError` | `should be "lock_conflict" but was "internal_error"` |
+
+- Exact red commands: for every row, `dotnet build tests/P/P.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` followed by `tests/P/bin/Debug/net10.0/P -method "<full namespace, class and method from T8>"`; for (e) and (f), first build `tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj` with the same Debug options because the contract test shells out to the generator with `--no-build`. All builds succeeded. Mutation output excerpts were captured in `/tmp/story117-t8{a,b,c,d,e,f,g}-*-red*.log`; each named run had 1 total, 1 failed. The (d) fixture was tightened to use an accepting downstream override after its first version was rejected by the historical handler too; the final test proves rejection before downstream dispatch. The (f) fixture copies historical v1 into scratch so omitting inventory validation actually writes a duplicate baseline. These fixture corrections changed no production or bound v1 bytes.
+
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.

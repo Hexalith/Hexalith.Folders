@@ -437,6 +437,56 @@ operations:
     }
 
     [Fact]
+    public void OperationAbsentFromHistoricalV1TakesTheDeclaredBranch()
+    {
+        string temp = NewTempDirectory("hexalith-parity-candidate-only");
+        string contractPath = Path.Combine(temp, "hexalith.folders.v2.yaml");
+        string previousSpinePath = Path.Combine(temp, "previous-spine.yaml");
+        const string existing = "GetFolderLifecycleStatus";
+        const string synthetic = "SyntheticCandidateOnlyOperation";
+        string contract = File.ReadAllText(_openApiFilePath);
+        contract.ShouldContain($"operationId: {existing}", Case.Sensitive);
+        File.WriteAllText(contractPath,
+            contract.Replace($"operationId: {existing}", $"operationId: {synthetic}", StringComparison.Ordinal),
+            new UTF8Encoding(false));
+        string baseline = File.ReadAllText(_previousSpineFilePath);
+        baseline.ShouldContain($"operation_id: '{existing}'", Case.Sensitive);
+        File.WriteAllText(previousSpinePath,
+            baseline.Replace($"operation_id: '{existing}'", $"operation_id: '{synthetic}'", StringComparison.Ordinal),
+            new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(contractPath, Path.Combine(temp, "parity.yaml"), previousSpinePath);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain(
+            $"operation '{synthetic}' is absent from the immutable historical v1 spine", Case.Sensitive);
+    }
+
+    [Fact]
+    public void InitializeBaselineRejectsDuplicateOperationIdsBeforeWriting()
+    {
+        string temp = NewTempDirectory("hexalith-parity-baseline-duplicate-operation");
+        string contractPath = Path.Combine(temp, "hexalith.folders.v2.yaml");
+        string previousSpinePath = Path.Combine(temp, "previous-spine.yaml");
+        File.Copy(
+            Path.Combine(_repositoryRootPath, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml"),
+            Path.Combine(temp, "hexalith.folders.v1.yaml"));
+        string contract = File.ReadAllText(_openApiFilePath);
+        contract.ShouldContain("operationId: GetFolderLifecycleStatus", Case.Sensitive);
+        File.WriteAllText(contractPath,
+            contract.Replace("operationId: GetFolderLifecycleStatus", "operationId: GetEffectivePermissions", StringComparison.Ordinal),
+            new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(
+            contractPath, Path.Combine(temp, "parity.yaml"), previousSpinePath,
+            initializeBaseline: true);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("duplicate operationId 'GetEffectivePermissions'", Case.Sensitive);
+        File.Exists(previousSpinePath).ShouldBeFalse();
+    }
+
+    [Fact]
     public void ParitySchemaCanonicalEnumDoesNotDuplicateProviderOutcomeUnknown()
     {
         using JsonDocument schema = JsonDocument.Parse(File.ReadAllText(_schemaFilePath));
@@ -501,14 +551,15 @@ operations:
         string contractPath,
         string outputPath,
         string? previousSpinePath = null,
-        string? schemaPath = null)
+        string? schemaPath = null,
+        bool initializeBaseline = false)
     {
         string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
         string schemaArgument = schemaPath is null ? string.Empty : $" --schema \"{schemaPath}\"";
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}",
+            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}{(initializeBaseline ? " --initialize-baseline" : string.Empty)}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

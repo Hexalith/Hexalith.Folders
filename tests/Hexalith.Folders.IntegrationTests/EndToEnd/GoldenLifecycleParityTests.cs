@@ -864,6 +864,51 @@ public sealed class GoldenLifecycleParityTests
     }
 
     [Fact]
+    public async Task CandidateCaseVariantDuplicateSchemaPropertyIsCanonicalValidationFailure()
+    {
+        int downstreamCalls = 0;
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: async context =>
+            {
+                downstreamCalls++;
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(
+                    "{\"acceptedAt\":\"2026-05-28T12:00:00Z\",\"correlationId\":\"correlation_case_duplicate_0001\",\"taskId\":\"task_case_duplicate_0001\",\"status\":\"accepted\",\"idempotentReplay\":false}")
+                    .ConfigureAwait(false);
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            using HttpRequestMessage request = new(HttpMethod.Post, $"/api/v2/folders/{CandidateFolderA}/archive")
+            {
+                Content = new StringContent(
+                    "{\"requestSchemaVersion\":\"v2\",\"RequestSchemaVersion\":\"v2\",\"archiveReasonCode\":\"caller_requested\"}",
+                    Encoding.UTF8,
+                    "application/json"),
+            };
+            AddMutationHeaders(request, "idempotency_case_duplicate_0001", "correlation_case_duplicate_0001", "task_case_duplicate_0001");
+
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, body);
+            using JsonDocument document = JsonDocument.Parse(body);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("validation_error");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("unsupported_request_schema_version");
+            host.Gateway.ProcessCalls.ShouldBe(0);
+            downstreamCalls.ShouldBe(0);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task CandidateAcceptsUppercaseOpaqueRouteIdentifiersThroughHistoricalDispatch()
     {
         const string uppercaseFolder = "Folder_0000000001";
@@ -1258,6 +1303,71 @@ public sealed class GoldenLifecycleParityTests
             translated.RootElement.GetProperty("requestSchemaVersion").GetString().ShouldBe("v1");
             translated.RootElement.GetProperty("fileOperationKind").GetString().ShouldBe("change");
             translated.RootElement.GetProperty("operationId").GetString().ShouldBe("Operation_ChangeFile_0001");
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public Task CandidateFileMutationLockConflictRemapsToDeclared423()
+        => AssertFileMutationRemapAsync("lock_conflict", "workspace_locked", HttpStatusCode.Locked);
+
+    [Fact]
+    public Task CandidateFileMutationPreconditionFailureRemapsToDeclared428()
+        => AssertFileMutationRemapAsync("authorization_revocation_detected", "authorization_revocation_detected", HttpStatusCode.PreconditionRequired);
+
+    private static async Task AssertFileMutationRemapAsync(string category, string code, HttpStatusCode expectedStatus)
+    {
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: async context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                context.Response.ContentType = "application/problem+json";
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                {
+                    type = "about:blank",
+                    title = "Workspace state changed",
+                    status = 409,
+                    category,
+                    code,
+                    message = "The workspace state changed.",
+                    correlationId = "correlation-file-remap",
+                    retryable = category == "lock_conflict",
+                    clientAction = category == "lock_conflict" ? "retry" : "contact_operator",
+                    details = category == "lock_conflict"
+                        ? new Dictionary<string, string> { ["visibility"] = "metadata_only" }
+                        : new Dictionary<string, string> { ["visibility"] = "metadata_only", ["currentState"] = "inaccessible" },
+                })).ConfigureAwait(false);
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a", "mutate_files");
+            using HttpRequestMessage request = new(
+                HttpMethod.Put,
+                $"/api/v2/folders/{CandidateFolderA}/workspaces/{CandidateWorkspace}/files/change")
+            {
+                Content = new StringContent(
+                    "{\"requestSchemaVersion\":\"v2\",\"fileOperationKind\":\"change\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"Operation_ChangeFile_0001\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"contentHashReference\":\"hashref_0123456789abcdef0123456789abcdef\",\"byteLength\":1,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"YQ==\"}}",
+                    Encoding.UTF8,
+                    "application/json"),
+            };
+            AddMutationHeaders(request, "Idempotency_FileRemap_0001", "correlation-file-remap", "Task_FileRemap_0000001");
+
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(expectedStatus, body);
+            using JsonDocument document = JsonDocument.Parse(body);
+            document.RootElement.GetProperty("status").GetInt32().ShouldBe((int)expectedStatus);
+            document.RootElement.GetProperty("category").GetString().ShouldBe(category);
+            document.RootElement.GetProperty("code").GetString().ShouldBe(code);
+            host.Gateway.ProcessCalls.ShouldBe(0);
         }
         finally
         {
