@@ -32,6 +32,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 using Shouldly;
 using Xunit;
@@ -75,6 +76,79 @@ public sealed class GoldenLifecycleParityTests
     private const string CandidateTaskStatus = "task-status-0001";
     private const string CandidateWorkspace = "workspace_000001";
     private static readonly DateTimeOffset Now = new(2026, 5, 28, 12, 0, 0, TimeSpan.Zero);
+
+    [Fact]
+    public async Task CandidateAuthorizationEvaluationFailureLogsMetadataOnly()
+    {
+        const string tenantSentinel = "tenant-secret-sentinel-1-17";
+        const string principalSentinel = "principal-secret-sentinel-1-17";
+        RecordingCandidateLogProvider logs = new();
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            tenantAccessorOverride: new ThrowingTenantContextAccessor(tenantSentinel, principalSentinel),
+            loggerProvider: logs).ConfigureAwait(true);
+        try
+        {
+            using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            CandidateLogEntry failure = logs.Entries.Single(entry => entry.EventId.Id == 1018);
+            failure.Exception.ShouldBeNull();
+            foreach (string field in failure.Fields.Values.Select(value => value?.ToString() ?? string.Empty))
+            {
+                field.ShouldNotContain(tenantSentinel);
+                field.ShouldNotContain(principalSentinel);
+            }
+
+            failure.Message.ShouldNotContain(tenantSentinel);
+            failure.Message.ShouldNotContain(principalSentinel);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private sealed class ThrowingTenantContextAccessor(string tenantSentinel, string principalSentinel) : ITenantContextAccessor
+    {
+        private int _tenantReads;
+
+        public string? AuthoritativeTenantId => Interlocked.Increment(ref _tenantReads) == 2
+            ? throw new InvalidOperationException(tenantSentinel, new InvalidOperationException(principalSentinel))
+            : "tenant-a";
+
+        public string? PrincipalId => "user-a";
+    }
+
+    private sealed record CandidateLogEntry(EventId EventId, Exception? Exception, string Message, IReadOnlyDictionary<string, object?> Fields);
+
+    private sealed class RecordingCandidateLogProvider : ILoggerProvider
+    {
+        private readonly List<CandidateLogEntry> _entries = [];
+
+        public IReadOnlyList<CandidateLogEntry> Entries => _entries;
+
+        public ILogger CreateLogger(string categoryName) => new RecordingCandidateLogger(_entries);
+
+        public void Dispose() { }
+
+        private sealed class RecordingCandidateLogger(List<CandidateLogEntry> entries) : ILogger
+        {
+            public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+            public bool IsEnabled(LogLevel logLevel) => true;
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            {
+                IReadOnlyDictionary<string, object?> fields = state is IEnumerable<KeyValuePair<string, object?>> pairs
+                    ? pairs.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal)
+                    : new Dictionary<string, object?>();
+                entries.Add(new CandidateLogEntry(eventId, exception, formatter(state, exception), fields));
+            }
+        }
+    }
 
     [Fact]
     public void GoldenLifecycleStepListPinsToOracleRowsForEverySurface()
@@ -2818,7 +2892,9 @@ public sealed class GoldenLifecycleParityTests
             IPd10AuthorizationAuditSink? auditSinkOverride = null,
             Func<HttpContext, Task>? downstreamOverride = null,
             IEventStoreGatewayClient? gatewayOverride = null,
-            bool headerlessTransportBody = false)
+            bool headerlessTransportBody = false,
+            ITenantContextAccessor? tenantAccessorOverride = null,
+            ILoggerProvider? loggerProvider = null)
         {
             MutableTenantAndClaimContext context = new(tenantId, principalId);
             InMemoryFolderTenantAccessProjectionStore tenantStore = new();
@@ -2846,7 +2922,11 @@ public sealed class GoldenLifecycleParityTests
             builder.Services.RemoveAll<IEventStoreGatewayClient>();
             builder.Services.AddSingleton(gatewayOverride ?? gateway);
             builder.Services.RemoveAll<ITenantContextAccessor>();
-            builder.Services.AddSingleton<ITenantContextAccessor>(context);
+            builder.Services.AddSingleton<ITenantContextAccessor>(tenantAccessorOverride ?? context);
+            if (loggerProvider is not null)
+            {
+                builder.Logging.AddProvider(loggerProvider);
+            }
             builder.Services.RemoveAll<IEventStoreClaimTransformEvidenceAccessor>();
             builder.Services.AddSingleton<IEventStoreClaimTransformEvidenceAccessor>(context);
             builder.Services.RemoveAll<IFolderRepository>();

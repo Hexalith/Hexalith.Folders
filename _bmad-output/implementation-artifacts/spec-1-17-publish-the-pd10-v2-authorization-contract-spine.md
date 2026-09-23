@@ -208,6 +208,10 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - The allowed context carries the authenticated `PrincipalId` through both authorization paths. Archive final reauthorization uses it for the principal and claim-transform evidence, while retaining the actor-safe identifier as actor metadata. A missing principal rejects with `PolicyEvidenceUnavailable` before the effect. The named `RUN` test passed: 3 total, 0 failed. Full IntegrationTests passed: 710 total, 0 failed, 0 skipped. No generated file changed.
 
+### T4 F11 red
+
+- Worktree state: `a77b446e5fab5d257d747747f812492ee8306df0` plus only the named test and its host-local test support. The synthetic tenant accessor throws on its second read inside candidate authorization, with tenant and principal sentinels in the exception chain; later audit reads succeed. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateAuthorizationEvaluationFailureLogsMetadataOnly"` exited 1: 1 total, 1 failed. The response was canonical 503; event 1018 was present, but assertion `failure.Exception should be null` failed because the attached `InvalidOperationException` contained both sentinels and a stack trace.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.
