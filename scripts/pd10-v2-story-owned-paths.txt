@@ -194,3 +194,6 @@ tests/tools/run-governance-completeness-gates.ps1
 tests/tools/run-operations-audit-docs-gates.ps1
 tests/tools/run-production-observability-gates.ps1
 tests/tools/run-provider-error-docs-gates.ps1
+tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
+tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
+tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs

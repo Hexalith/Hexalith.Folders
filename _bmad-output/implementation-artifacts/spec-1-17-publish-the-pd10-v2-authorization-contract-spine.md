@@ -186,6 +186,13 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - `CanonicalAccessState` now selects stale evidence first and selects fresh negative evidence deterministically. The earlier repeated-negative test was renamed and aligned with the approved stale precedence. The named `RUN` test passed: 4 total, 0 failed. Full `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests` passed: 707 total, 0 failed, 0 skipped. No generated file changed.
 
+### T2 F04 red
+
+- Worktree state: `c2120e371117e6731e395f5e77b3c0ca5ceec5cd` plus only the three named tests and their test support; no F04 production edit. `dotnet build tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed, zero warnings and errors.
+- `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests -method "Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.FolderCreationFinalReauthorizationDetectsFolderAclRevocationBetweenChecks"` exited 1, 1 failed: `repository.EventsAppended should be 0 but was 1`.
+- `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests -method "Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.RepositoryBackedFolderCreationFinalReauthorizationDetectsFolderAclRevocationBetweenChecks"` exited 1, 1 failed: `repository.EventsAppended should be 0 but was 1`.
+- `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests -method "Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.ConfigureProviderBindingFinalReauthorizationDetectsFolderAclRevocationBetweenChecks"` exited 1, 1 failed: `repository.EventsAppended should be 0 but was 1`.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.
