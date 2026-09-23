@@ -1134,6 +1134,38 @@ public sealed class GoldenLifecycleParityTests
     }
 
     [Fact]
+    public async Task SdkValidateProviderReadinessBindsAuthorizedOperatorAudience()
+    {
+        GoldenLifecycleHost host = await GoldenLifecycleHost.StartAsync().ConfigureAwait(true);
+        try
+        {
+            host.SeedTenant("tenant-a", "user-a");
+            object? result = null;
+            await Should.NotThrowAsync(async () =>
+            {
+                result = await host.SdkClient.ValidateProviderReadinessAsync(
+                    x_Correlation_Id: "correlation_readiness_operator_001",
+                    x_Hexalith_Freshness: ReadConsistencyClass.Snapshot_per_task,
+                    body: new ValidateProviderReadinessRequest
+                    {
+                        ProviderBindingRef = "provider_binding_0001",
+                        RequestedCapability = ProviderCapabilityName.Repository_creation,
+                    },
+                    cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+            }).ConfigureAwait(true);
+
+            Newtonsoft.Json.Linq.JObject readiness = Newtonsoft.Json.Linq.JObject.FromObject(result.ShouldNotBeNull());
+            readiness.Value<string>("audience").ShouldBe("authorized_operator");
+            readiness.Value<string>("providerBindingRef").ShouldBe("provider_binding_0001");
+            readiness["evidence"].ShouldNotBeNull();
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task CandidateStripsForbiddenHistoricalProblemDetailAndInstanceFields()
     {
         TestHost host = await TestHost.StartAsync(

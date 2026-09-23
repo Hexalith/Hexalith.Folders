@@ -231,6 +231,11 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 - Regenerated from R7.3 commands: `hexalith.folders.v2.yaml`, `Pd10V2RuntimeResponseCatalog.g.cs`, `HexalithFoldersClient.g.cs`, `HexalithFoldersIdempotencyHelpers.g.cs`, and `tests/fixtures/parity-contract.yaml`. Scratch contract, catalog and parity bytes matched committed copies with `cmp`; `VerifyHexalithFoldersGeneratedArtifacts` passed.
 - Both named `RUN` tests passed (2/2 each). Full IntegrationTests passed: 715 total, 0 failed, 0 skipped.
 
+### T6 F14 red
+
+- Worktree state: `cf9d2e81ef5884a20663d87b9687cf9ad3e609c6` plus only the named SDK test; no F14 production edit. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.SdkValidateProviderReadinessBindsAuthorizedOperatorAudience"` exited 1: 1 total, 1 failed. The `Should.NotThrowAsync` assertion failed because the generated SDK threw `HexalithFoldersApiException` while deserializing `ProviderReadinessConsumer`; its response status was 200 with `audience: authorized_operator`. The test asserts the serialized SDK result's audience, binding ref and evidence without presupposing a CLR return type.
+- The existing contract declares a `ProviderReadiness` oneOf discriminator but the generated SDK exposes `Task<ProviderReadinessConsumer>`. The public SDK return shape for a mixed consumer/operator response needs a human contract decision before the green edit.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.
