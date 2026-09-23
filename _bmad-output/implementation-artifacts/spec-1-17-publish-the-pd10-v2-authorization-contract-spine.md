@@ -201,7 +201,12 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 ### T3 F13 red
 
 - Worktree state: `811273a4fd1846ad411773749e79ce43d2af8e10` plus the named archive test, a recording test provider, and a compile-only `PrincipalId` property stub on `LayeredFolderAuthorizationAllowedContext`; no F13 behavior fix. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.ArchiveFolderProcessWiringTests.ArchiveFinalReauthorizationEvaluatesTheAuthenticatedPrincipal"` exited 1: 3 total, 3 failed. Assertion excerpts: `evidence.Requests[1].PrincipalId should be "user-a" but was "actor-alias"`; null actor-safe row was `"actor_present"`; missing-principal row asserted `result.IsRejection should be True but was False`.
-- The existing archive test file and allowed-context production file were absent from the 196-artifact story-owned set. Jerome explicitly authorized adding and editing these two paths in the reply to the T3 path authorization prompt. No approval for any other outside path was inferred.
+- The existing archive test file and allowed-context production file were absent from the 196-artifact story-owned set. Jerome explicitly authorized these two paths, then authorized all six identified outside paths for T3–T8 in a separate reply. No further outside path is authorized.
+- Red test commit: `33cec1afdd32e1054c3a801eb3f136205245e6c3`.
+
+### T3 F13 green
+
+- The allowed context carries the authenticated `PrincipalId` through both authorization paths. Archive final reauthorization uses it for the principal and claim-transform evidence, while retaining the actor-safe identifier as actor metadata. A missing principal rejects with `PolicyEvidenceUnavailable` before the effect. The named `RUN` test passed: 3 total, 0 failed. Full IntegrationTests passed: 710 total, 0 failed, 0 skipped. No generated file changed.
 
 ## Spec Change Log
 

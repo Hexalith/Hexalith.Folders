@@ -51,6 +51,7 @@ public sealed class LayeredFolderAuthorizationService(
                 AuthorizationOrder.LayeredFolderAuthorization)
             {
                 OrganizationId = preauthorized.OrganizationId,
+                PrincipalId = context.PrincipalId,
             };
             LayeredFolderAuthorizationDecisionSnapshot reusedDecision = Snapshot(
                 AuthorizationLayer.JwtValidation,
@@ -202,7 +203,10 @@ public sealed class LayeredFolderAuthorizationService(
             context.CorrelationId,
             context.TaskId,
             folderWatermark,
-            AuthorizationOrder.LayeredFolderAuthorization);
+            AuthorizationOrder.LayeredFolderAuthorization)
+        {
+            PrincipalId = context.PrincipalId,
+        };
 
         evaluatedLayers.Add(AuthorizationLayer.EventStoreValidator);
         EventStoreAuthorizationValidationResult validatorResult;

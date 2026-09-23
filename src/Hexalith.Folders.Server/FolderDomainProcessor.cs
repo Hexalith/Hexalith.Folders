@@ -490,6 +490,11 @@ public sealed partial class FolderDomainProcessor(
 
         // taskId is a /process extension; sanitize the bytes that came over the wire before
         // they end up in command/event metadata or audit subjects.
+        if (string.IsNullOrWhiteSpace(allowed.PrincipalId))
+        {
+            return Rejection(envelope, FolderResultCode.PolicyEvidenceUnavailable, null);
+        }
+
         string taskId = ReadRequiredTaskId(envelope);
 
         ArchiveFolder command = new(
@@ -524,13 +529,13 @@ public sealed partial class FolderDomainProcessor(
             .ReauthorizeMutationAsync(
                 new LayeredFolderAuthorizationContext(
                     allowed.AuthoritativeTenantId,
-                    allowed.ActorSafeIdentifier,
+                    allowed.PrincipalId,
                     allowed.ActorSafeIdentifier,
                     FolderArchiveAclEvidence.ArchiveAction,
                     LayeredFolderOperationPolicy.Mutation(),
                     EventStoreClaimTransformEvidence.Allowed(
                         allowed.AuthoritativeTenantId,
-                        allowed.ActorSafeIdentifier,
+                        allowed.PrincipalId,
                         [FolderArchiveAclEvidence.ArchiveAction]),
                     command.FolderId,
                     command.CorrelationId,
