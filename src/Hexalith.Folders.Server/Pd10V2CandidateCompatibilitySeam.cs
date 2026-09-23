@@ -191,7 +191,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 {
                     LogAuthorizationEvaluationFailed(
                         loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)),
-                        ex);
+                        descriptor.OperationId,
+                        ex.GetType().Name);
                 }
 
                 authorization = Unusable(descriptor);
@@ -1612,8 +1613,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
     [LoggerMessage(
         EventId = 1018,
         Level = LogLevel.Error,
-        Message = "PD10 candidate authorization evaluation failed.")]
-    private static partial void LogAuthorizationEvaluationFailed(ILogger logger, Exception exception);
+        Message = "PD10 candidate authorization evaluation failed for {OperationId}: {ExceptionType}.")]
+    private static partial void LogAuthorizationEvaluationFailed(ILogger logger, string operationId, string exceptionType);
 
     private static string ToKebabCase(string value)
     {

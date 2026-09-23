@@ -211,6 +211,11 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 ### T4 F11 red
 
 - Worktree state: `a77b446e5fab5d257d747747f812492ee8306df0` plus only the named test and its host-local test support. The synthetic tenant accessor throws on its second read inside candidate authorization, with tenant and principal sentinels in the exception chain; later audit reads succeed. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateAuthorizationEvaluationFailureLogsMetadataOnly"` exited 1: 1 total, 1 failed. The response was canonical 503; event 1018 was present, but assertion `failure.Exception should be null` failed because the attached `InvalidOperationException` contained both sentinels and a stack trace.
+- Red test commit: `89483ae42298bbee503e04ae8b66829980c8adaf`.
+
+### T4 F11 green
+
+- Event 1018 logs only the operation id and exception type; its `Exception` argument is null. The named `RUN` test passed: 1 total, 0 failed, and its response remained canonical 503. Full IntegrationTests passed: 711 total, 0 failed, 0 skipped. No generated file changed.
 
 ## Spec Change Log
 
