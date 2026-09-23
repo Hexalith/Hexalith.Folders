@@ -246,6 +246,10 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - Worktree state: `686fd78b1538921ab74f3ec43d4892d586834bab` plus only the new named theory and its allowlist entry; no F15 production edit. The theory renders all eight Code Map pages, records every SDK read with a freshness argument, and compares its wire value to the generated catalog's accepted value from the v2 contract. `dotnet build tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed, zero warnings and errors. `tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.UI.Tests -method "Hexalith.Folders.UI.Tests.UiOperationFreshnessConformanceTests.EveryPageSendsEachOperationsAcceptedFreshness"` exited 1: 8 total, 6 failed. FolderDetail, Workspace, Provider, AuditTrail, OperationTimeline and IncidentStream failed `wire should be "read_your_writes" but was "eventually_consistent"` for `GetEffectivePermissions`; ProviderSupport and IndexingStatus already sent accepted freshness and passed.
 
+### T7 F15 green
+
+- The six affected pages now send `read_your_writes` for `GetEffectivePermissions`; Workspace also sends `read_your_writes` for status, lock and cleanup status, and `snapshot_per_task` for file listing. The other reads retain their accepted `eventually_consistent` value. `dotnet build tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed with zero warnings and errors. The named theory passed all 8 rows. The unfiltered UI suite passed: 533 total, 0 failed, 0 skipped.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.

@@ -85,7 +85,7 @@ public partial class IncidentStream : ComponentBase, IDisposable
 
         // Advisory for the scope banner; a real authorization denial surfaces on the primary read below.
         _permissions = await TryReadAsync(ct =>
-            Client.GetEffectivePermissionsAsync(Folder, _correlationId, freshness, null, ct), token).ConfigureAwait(false);
+            Client.GetEffectivePermissionsAsync(Folder, _correlationId, ReadConsistencyClass.Read_your_writes, null, ct), token).ConfigureAwait(false);
 
         // Primary read. C4: the filter key vocabulary is rejection-only today, so always pass filter: null.
         try
