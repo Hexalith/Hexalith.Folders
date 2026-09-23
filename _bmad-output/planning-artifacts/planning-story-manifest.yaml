@@ -19,7 +19,7 @@ authority_register:
     this manifest execution graph; sprint status tracking only.
 approval_binding:
   register_path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  register_sha256: 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a
+  register_sha256: ed3160645e9225b1ffff535f950ec9e583991d464e68a3d6dd775de50a0f49f7
   approved_pre_generation_gates:
   - A1
   - A2
@@ -55,7 +55,7 @@ provenance:
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
   sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
 - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  sha256: 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a
+  sha256: ed3160645e9225b1ffff535f950ec9e583991d464e68a3d6dd775de50a0f49f7
 - path: docs/exit-criteria/nfr-traceability.md
   sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
 - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
@@ -685,6 +685,7 @@ status_model:
   - relock-only
   - not-applicable
   - external-owner-controlled
+  - authorized-scoped
   delivery_evidence_status_vocabulary:
   - accepted
   - partial
@@ -2567,7 +2568,9 @@ stories:
   - DEC-A6B-OQ3
   execution_rank: 10
   decision_status: not-applicable
-  execution_authorization_status: held
+  execution_authorization_status: authorized-scoped
+  execution_authorization_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml
+  execution_authorization_record_sha256: 45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be
   delivery_evidence_status: open
   evidence_posture: open-governed-delivery-evidence-required
 - id: '2.1'

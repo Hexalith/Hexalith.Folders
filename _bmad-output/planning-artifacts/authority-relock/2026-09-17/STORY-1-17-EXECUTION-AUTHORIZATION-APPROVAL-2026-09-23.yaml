@@ -1,0 +1,85 @@
+schema_version: '1.0.0'
+record_id: STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23
+gate_id: DEC-EXEC-1.17
+status: approved
+approved_on: '2026-09-23'
+recorded_at: '2026-09-23T07:35:28+02:00'
+approver: Jerome
+response: "DEC-EXEC-1.17 (2026-09-23): I, Jerome, approve for Product, Architecture, Security and Delivery, each authority stated separately, on 2026-09-23. Story 1.17 alone moves from held to authorized-scoped, against preparation STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml sha256 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443. Bound inputs: register 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a; manifest c70dc3285e138d58cabdd49e5dcec3615633ab88be0bd30c51589f9a079f14b4; conformance set 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7 (candidate c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts); authorization matrix 2.0.0 d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420; sprint-status 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26 (unchanged, not regenerated); Section 9 result fdb6221639c1500c2619a3665d796c7daa7d30e580dbde68554ef79f30fe8d14; review c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e. I accept the 17-finding triage as stated (8 must-fix, 6 follow-up, 3 accepted residual risk) and the manifest/register change set out in the package. All work happens on an isolated branch; main keeps the bound artifacts byte-identical until one combined closure change carries the A6b, Section 9 and A8 re-approvals. This does not approve closing Story 1.17, exposing, routing or publishing v2, editing or regenerating sprint-status, admitting Story 1.18 or re-scoping 11.6/13.2, execution of any other ordinary story, or any dependency or submodule change."
+source: Explicit approval statement pasted by Jerome in the 2026-09-23 Story 1.17 execution-authorization exchange after presentation of the exact preparation package.
+approval_scope: story-1-17-execution-authorization-only
+represented_authorities: [Product, Architecture, Security, Delivery]
+approval_inference_forbidden: true
+
+preparation_package:
+  path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml
+  sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+
+exact_approval_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a
+    binding_role: pre-approval-input
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: c70dc3285e138d58cabdd49e5dcec3615633ab88be0bd30c51589f9a079f14b4
+    binding_role: pre-approval-input
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    artifact_count: 196
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    regeneration_status: prohibited-and-unchanged
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-22-post-a8-corrective.yaml
+    sha256: fdb6221639c1500c2619a3665d796c7daa7d30e580dbde68554ef79f30fe8d14
+  - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+    sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+    binding_role: 17-deferred-findings-triage-accepted
+exact_approval_inputs_verification: All digests recomputed from repository bytes at 5fb88be on 2026-09-23T07:35:28+02:00 before recording and matched the signed statement.
+
+approvals:
+  - authority: Product
+    approver: Jerome
+    approved_on: '2026-09-23'
+    preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+  - authority: Architecture
+    approver: Jerome
+    approved_on: '2026-09-23'
+    preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+  - authority: Security
+    approver: Jerome
+    approved_on: '2026-09-23'
+    preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+  - authority: Delivery
+    approver: Jerome
+    approved_on: '2026-09-23'
+    preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+
+accepted_findings_triage:
+  must_fix_before_closure: [F03, F04, F08, F11, F13, F14, F15, F16]
+  follow_up_story: [F01, F05, F06, F07, F09, F10]
+  accepted_residual_risk: [F02, F12, F17]
+
+approval_effect:
+  story_1_17_execution_authorized: true
+  story_1_17_execution_authorization_status: authorized-scoped
+  story_1_17_lifecycle_changed: false
+  story_1_17_closure_authorized: false
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  v2_routing_authorized: false
+  release_publication_authorized: false
+  sprint_status_regeneration_authorized: false
+  sprint_status_edit_authorized: false
+  story_1_18_admission_authorized: false
+  stories_11_6_13_2_rescoping_authorized: false
+  dependency_or_submodule_change_authorized: false
+  manifest_register_delta_authorized: true
+
+preserved_boundaries:
+  - All Story 1.17 code, generated, and conformance changes happen on an isolated branch or worktree; main keeps the 196 bound artifacts, the authorization matrix, and sprint-status byte-identical until one combined closure change carries the A6b, Section 9, and A8 re-approvals.
+  - Every other ordinary story remains held.
+  - Story 1.17 lifecycle remains backlog in both the manifest and the tracker; BMAD workflows must not auto-transition its tracker row.
+  - Revocation by any represented authority restores Story 1.17 to held with no main-branch effect.

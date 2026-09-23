@@ -2,7 +2,7 @@ schema_version: '1.0.0'
 register_id: folders-planning-authority-relock-2026-09-17
 status: corrective-a8-complete-hold-removed-recovery-closed
 prepared_on: '2026-09-17'
-last_updated_on: '2026-09-22'
+last_updated_on: '2026-09-23'
 digest_algorithm: sha256
 digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
 approval_policy:
@@ -401,6 +401,72 @@ corrective_a8_reapproval_2026_09_22:
     v2_exposed: false
     v2_routed: false
     dependency_acceptance_changed: false
+
+story_1_17_execution_authorization:
+  gate_id: DEC-EXEC-1.17
+  status: approved-execution-authorized-scoped
+  approver: Jerome
+  approved_on: '2026-09-23'
+  required_authorities: [Product, Architecture, Security, Delivery]
+  preparation_package_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml
+  preparation_package_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+  approval_record_path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml
+  approval_record_sha256: 45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be
+  pre_approval_register_sha256: 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a
+  pre_approval_manifest_sha256: c70dc3285e138d58cabdd49e5dcec3615633ab88be0bd30c51589f9a079f14b4
+  approvals:
+    - authority: Product
+      approver: Jerome
+      approved_on: '2026-09-23'
+      preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+    - authority: Architecture
+      approver: Jerome
+      approved_on: '2026-09-23'
+      preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+    - authority: Security
+      approver: Jerome
+      approved_on: '2026-09-23'
+      preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+    - authority: Delivery
+      approver: Jerome
+      approved_on: '2026-09-23'
+      preparation_sha256: 4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443
+  exact_bound_artifacts:
+    - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+      sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+      declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+      artifact_count: 196
+    - path: docs/contract/authorization-matrix.md
+      version: '2.0.0'
+      sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+      sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+      regeneration_status: prohibited-and-unchanged
+    - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-22-post-a8-corrective.yaml
+      sha256: fdb6221639c1500c2619a3665d796c7daa7d30e580dbde68554ef79f30fe8d14
+    - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+      sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+  accepted_findings_triage:
+    must_fix_before_closure: [F03, F04, F08, F11, F13, F14, F15, F16]
+    follow_up_story: [F01, F05, F06, F07, F09, F10]
+    accepted_residual_risk: [F02, F12, F17]
+  approval_inference_forbidden: true
+  approval_effect:
+    story_1_17_execution_authorized: true
+    story_1_17_execution_authorization_status: authorized-scoped
+    story_1_17_lifecycle_changed: false
+    story_1_17_closure_authorized: false
+    ordinary_story_execution_authorized: false
+    v2_exposure_authorized: false
+    v2_routing_authorized: false
+    sprint_status_regeneration_authorized: false
+    sprint_status_edit_authorized: false
+    story_1_18_admission_authorized: false
+    stories_11_6_13_2_rescoping_authorized: false
+    dependency_or_submodule_change_authorized: false
+  execution_lane: Isolated branch or worktree only; main keeps the 196 bound artifacts, the authorization matrix, and sprint-status byte-identical until one combined closure change carries the A6b, Section 9, and A8 re-approvals.
+  general_execution_hold: false
+  every_other_ordinary_story: held
 
 gate_ordering_amendment:
   status: approved

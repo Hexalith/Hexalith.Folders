@@ -1,0 +1,340 @@
+schema_version: '1.0.0'
+package_id: STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23
+package_kind: authorization-preparation-not-approval
+prepared_on: '2026-09-23'
+prepared_at: '2026-09-23T00:45:14+02:00'
+prepared_from_commit: 5fb88be
+prepared_from_branch: main
+prepared_worktree: clean-at-preparation
+status: ready-for-human-decision
+approval_readiness: ready-for-explicit-product-architecture-security-delivery-decision
+approval_status: pending
+approvals: []
+required_authorities: [Product, Architecture, Security, Delivery]
+approval_inference_forbidden: true
+general_execution_hold: false
+planning_recovery_closed: true
+sprint_status_regeneration_authorized: false
+ordinary_story_execution_authorized: false
+story_1_17_execution_authorized: false
+story_1_17_closure_authorized: false
+v2_exposure_authorized: false
+v2_routing_authorized: false
+
+decision_target:
+  story_id: '1.17'
+  title: Publish the PD10 v2 Authorization Contract Spine
+  execution_rank: 10
+  canonical_definition: _bmad-output/planning-artifacts/epics.md#Story-1.17
+  canonical_definition_sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+  tracker_key: 1-17-publish-the-pd10-v2-authorization-contract-spine
+  current_state:
+    story_lifecycle_status: backlog
+    execution_authorization_status: held
+    delivery_evidence_status: open
+    prerequisites: [DEC-A8-HOLD, 1.17-GENERATE, DEC-A6B-OQ3]
+    prerequisite_state:
+      DEC-A8-HOLD: accepted
+      DEC-A6B-OQ3: accepted
+      1.17-GENERATE: relock-only-delivery-evidence-open
+  requested_decision: Move Story 1.17 alone from held to an execution-authorized state under the boundaries in this package. It is not a closure, exposure, routing, publication, or tracker decision.
+
+authority_basis:
+  finding: No existing gate, validation rule, or register record defines the held-to-authorized transition for an ordinary story. The decision is therefore new and must be explicitly signed; it cannot be derived from A8 or from hold removal.
+  evidence:
+    - source: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml
+      statement: preserved_boundaries - "Hold removal does not by itself authorize any ordinary story execution, Story 1.17 closure, or v2 exposure or routing."
+    - source: _bmad-output/planning-artifacts/planning-story-manifest.yaml#ordinary_execution_control
+      statement: Defines only status_while_hold_true held, universal_prerequisite DEC-A8-HOLD, and relock-only nodes; it defines no status or authority for hold-false ordinary execution.
+    - source: _bmad-output/planning-artifacts/planning-story-manifest.yaml#status_model
+      statement: execution_authorization_status_vocabulary is [completed, held, relock-only, not-applicable, external-owner-controlled]; no authorized value exists. Rule "A design approval never implies execution authorization."
+    - source: _bmad-output/planning-artifacts/planning-story-manifest.yaml#validation_rules
+      statement: V2-011 requires DEC-A8-HOLD on every rank>=10 ordinary node (satisfied); V2-012 requires hold true until Section 9 accepted and A8 exact-digest approvals exist (now satisfied, hold false); V2-013 rejects non-held ordinary status only while the hold is true (not currently triggered); V2-014 limits relock-only authorization to RELOCK-PLANNING, 1.17-GENERATE, and RELOCK-SECTION9 (Story 1.17 cannot be executed as relock-only).
+    - source: _bmad-output/planning-artifacts/architecture.md (rank 7 and rank 10 rows; execution-hold semantics)
+      statement: Rank 10 is "the canonical story's post-freeze closure/consumption boundary"; candidate generation already happened in the relock lane.
+    - source: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml#approval_policy
+      statement: infer_approval false; named human approver; approval date; exact payload digest; generic tokens rejected; reopen on payload or bound-artifact digest change. recording_rules require per-authority signatures that name the authority represented.
+  proposed_gate_id: DEC-EXEC-1.17
+  required_authorities_rationale:
+    Product: Precedent A8 (execution-state change) and A6 (PD10 scope).
+    Architecture: Precedent A8 and A6/A6b; owns rank/graph semantics and the vocabulary amendment.
+    Security: Precedent A6/A6b for the PD10 authorization spine; required to sign the accepted-residual-risk dispositions below, which concern authorization and client-side validation behavior.
+    Delivery: Precedent A8 and A3; owns execution authorization, lifecycle, and tracker handling.
+  signature_rule: Jerome may sign all four authorities only with an explicit per-authority statement; identity alone implies no role.
+
+exact_bound_inputs:
+  - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+    sha256: 6f4fcae39983adf4a133d969ae45e144ebbe2d4d9cc1cbaa7245e499e879f69a
+    binding_role: current-approval-authority
+  - path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
+    sha256: c70dc3285e138d58cabdd49e5dcec3615633ab88be0bd30c51589f9a079f14b4
+    binding_role: current-execution-authority
+  - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
+    sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+    declared_candidate_set_sha256: c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f
+    artifact_count: 196
+    binding_role: a6b-approved-candidate
+  - path: docs/contract/authorization-matrix.md
+    version: '2.0.0'
+    sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
+    binding_role: a6b-approved-matrix
+  - path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    sha256: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    binding_role: immutable-tracker-regeneration-prohibited
+  - path: _bmad-output/planning-artifacts/relock-section9-result-2026-09-22-post-a8-corrective.yaml
+    sha256: fdb6221639c1500c2619a3665d796c7daa7d30e580dbde68554ef79f30fe8d14
+    status: pass-post-a8-corrective
+    binding_role: hold-removal-evidence
+  - path: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+    sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+    binding_role: 17-deferred-findings-triaged-here
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml
+    sha256: 57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390
+    binding_role: current-a8-authority
+  - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
+    sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
+    binding_role: current-a6b-authority
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+    binding_role: canonical-story-definition
+  - path: _bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md
+    sha256: 5472e48e72abb597e2cc28c10d3f9e93ff5fda59bed19efbf20177411695b136
+    binding_role: generate-spec-in-progress-loop-13
+  - path: _bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md
+    sha256: 409d1535ab9e54d7ad175236347c37a9b683249417bcb97ba2d0ee51ddc20a04
+    binding_role: draft-spec-frozen-intent-decision-stop
+exact_bound_inputs_verification: All digests recomputed from repository bytes at 5fb88be on 2026-09-23 and match the register, manifest, A8, and Section 9 bindings.
+
+blocking_structural_findings:
+  - id: SF-1
+    title: Story 1.17 closure requires v2 production routing
+    evidence: epics.md Story 1.17 AC1 "v1 remains historical evidence and is not exposed by the supported production profile"; final AC "the build contains no supported-production route or client target that still selects v1". Program.cs currently maps only historical /api/v1 endpoints; the v2 seam is test-only.
+    consequence: Closure cannot be achieved without a separate v2 exposure and routing decision. This package does not request that decision, and execution authorization alone cannot close Story 1.17.
+  - id: SF-2
+    title: Executing 1.17 on main would invalidate A6b and A8 and reinstate the hold
+    evidence: A6b and corrective A8 bind the conformance set 4c8f33f0, the matrix d5daa483, and sprint-status 230889ef. Register policy reopens a gate on any bound-artifact digest change; V2-012 then requires the hold true, and V2-013 would force Story 1.17 back to held. The 2026-09-22 reopen is the precedent.
+    consequence: Every must-fix below changes at least one of the 196 bound artifacts. Main must stay byte-stable for those artifacts until one atomic closure change carries re-approvals.
+  - id: SF-3
+    title: No vocabulary value for an authorized ordinary story
+    evidence: status_model.execution_authorization_status_vocabulary lacks an authorized value.
+    consequence: Recording approval requires an exact vocabulary amendment in the manifest (Architecture + Delivery), made in the same change that records DEC-EXEC-1.17.
+  - id: SF-4
+    title: Stopped draft spec and open GENERATE evidence
+    evidence: spec-1-17-publish... is draft with frozen intent "Decision stop. Story 1.17 stays backlog."; the 1.17-GENERATE node has delivery_evidence_status open, and its spec is in-progress at review_loop_iteration 13.
+    consequence: Execution needs a renegotiated 1.17 spec (new frozen intent), and closure needs accepted 1.17-GENERATE delivery evidence.
+
+story_1_17_acceptance_state:
+  basis: Committed 196-artifact candidate (conformance 4c8f33f0) plus A6b, Section 9, and A8 records. Status is evidence-for-closure, not closure.
+  criteria:
+    - ac: AC1 lockstep regeneration; v1 historical and not exposed by the supported production profile
+      state: partially-met
+      detail: Lockstep regeneration is met by the candidate. The v1-not-exposed half is unmet because production still serves v1 only (SF-1).
+    - ac: AC2 fourteen access states, every protected family once, folder-scoped diagnostics/freshness/task with task binding
+      state: met-by-candidate
+      detail: 49/14/11 denominators preserved; task binding and folder scope were implemented through loop 13. Order-dependent state resolution (F03) is a residual defect.
+    - ac: AC3 401 / byte-equivalent 404 / retryable 503 before protected lookup
+      state: met-with-must-fix-defects
+      detail: Met for the approved candidate. F03 (order-dependent 404 vs 503) and F04 (final reauthorization omits ACL) undermine determinism and the effect-boundary guarantee.
+    - ac: AC4 forbidden legacy outcomes absent; closed vocabularies; CLI 73/77 and MCP concurrency_conflict
+      state: met-by-candidate
+      detail: The contract-parity gate is 12 of 12 and Contracts is 340 of 340 per Section 9. F09 (base-URL prefix) weakens the mapping only in prefixed deployments.
+    - ac: AC5 previous-spine fingerprints and C13 denominator; block on a deployed external v1 consumer
+      state: partially-met
+      detail: Fingerprints and C13 are regenerated. No recorded consumer-discovery evidence was found; closure needs an explicit external v1 consumer discovery record.
+    - ac: AC6 A6b bound to the exact matrix 2.0.0 digest; any change invalidates it
+      state: met
+      detail: A6b re-approved 2026-09-22 (record 4f2429e4). Any closure fix will reopen it (SF-2).
+    - ac: AC7 candidate not exposed or closed during the hold; closure only after A6b, Section 9, and A8
+      state: met
+      detail: Prerequisites are accepted. The hold is false as of 2026-09-22T23:21:13+02:00.
+    - ac: AC8 post-freeze closure check (contract, golden, drift, parity, safe-denial, authority-unavailable, adapter); no v1-selecting production route or client target
+      state: not-started
+      detail: Requires the must-fix set, the production cutover (SF-1), and a final reseal.
+  slices:
+    1.17-A: met-by-candidate
+    1.17-B: met-by-candidate-with-must-fix (F03, F04, F13, F16)
+    1.17-C: met-by-candidate-with-must-fix (F14)
+    1.17-D: met-by-candidate
+    1.17-E: met-by-candidate-with-must-fix (F15)
+    1.17-F: met-by-candidate
+    1.17-G: partially-met - the A6b, Section 9, and A8 relock records exist, but closure-digest re-approvals are still required (SF-2)
+  remaining_work:
+    - R1 Renegotiate Story 1.17 spec frozen intent (replace "Decision stop") under DEC-EXEC-1.17.
+    - R2 Close 1.17-GENERATE delivery evidence (GENERATE spec is in-progress; loop ceiling exceeded).
+    - R3 Fix the eight must-fix findings (F03, F04, F08, F11, F13, F14, F15, F16), each red-first with a regression test.
+    - R4 Record external v1 consumer discovery evidence (AC5).
+    - R5 Prepare the production cutover (v2 routing; v1 not selectable) on the isolated branch only; merging or activating it needs a separate v2 exposure/routing decision (SF-1).
+    - R6 Regenerate, reproduce byte-identically, and reseal the conformance set.
+    - R7 Run the full closure check: contract, golden, drift, parity (12 of 12), safe-denial, authority-unavailable, adapter, full Contracts/Server/Integration/Cli/Mcp/UI suites, and both build profiles.
+    - R8 1.17-G: A6b re-approval on the new matrix and conformance digests, a new Section 9 run, and corrective A8 confirmation, merged atomically with the code and the single-row tracker delta.
+  closure_does_not_imply:
+    - production release publication
+    - authorization of any other ordinary story
+    - external dependency acceptance
+  closure_does_imply: A v2 production routing and exposure decision, because AC1 and AC8 cannot pass without it. That decision is separate and outside this package.
+
+deferred_findings_triage:
+  source: _bmad-output/implementation-artifacts/review-1-17-generate-scoped-a6b-2026-09-22.md
+  source_sha256: c1346b762de7135f5c66ac4d46cfe0f853d7caf48cf5df4a2f72cce53e631b6e
+  counts: {must_fix_before_closure: 8, follow_up_story: 6, accepted_residual_risk: 3, total: 17}
+  follow_up_admission_note: Proposed story 1.18 does not exist. Admitting it requires a bmad-correct-course change (canonical count 158 to 159 under V2-003). Mappings onto existing stories 11.6 and 13.2 need only scope annotation in that change.
+  findings:
+    - id: F01
+      ref: BH16-12 remainder
+      summary: EffectivePermissions.permissions and CommitEvidence.auditMetadataKeys deserialize an omitted member to an empty list.
+      disposition: follow-up-story
+      owner: Proposed 1.18 PD10 v2 generator and SDK strictness hardening (Delivery / Contract)
+      rationale: Fails restrictive; no authorization or disclosure effect; generator post-processor fix.
+    - id: F02
+      ref: BH16-13
+      summary: Unknown members on additionalProperties false success bodies are silently ignored client-side.
+      disposition: accepted-residual-risk
+      rationale: Client-side tolerant reading has no server authorization or disclosure effect; the server seam validates emitted shapes.
+    - id: F03
+      ref: BH16-05
+      summary: CanonicalAccessState returns negativeStates[0], so [revoked, stale] yields 404 while [stale, revoked] yields 503.
+      disposition: must-fix-before-closure
+      rationale: Confirmed at Pd10V2CandidateCompatibilitySeam.cs:1547. A nondeterministic 404/503 choice violates AC3's single canonical outcome per authority class.
+    - id: F04
+      ref: BH16-08
+      summary: Final reauthorization in FolderCreationService, RepositoryBackedFolderCreationService, and ConfigureProviderBindingService uses includeFolderAcl false, although the initial AuthorizeAsync includes it.
+      disposition: must-fix-before-closure
+      rationale: Confirmed at FolderCreationService.cs:118 versus LayeredFolderAuthorizationService.cs:24. A time-of-check to time-of-use gap at the effect boundary contradicts the claimed complete-stack final check.
+    - id: F05
+      ref: BH16-07
+      summary: Folderless StrictRead operations run validator and Dapr layers with LayeredFolderOperationPolicy.Mutation().
+      disposition: follow-up-story
+      owner: Existing 13.2 Fail-safe fallback authorization policy (Security / Delivery)
+      rationale: Mutation and StrictRead have identical staleness strictness and differ only in the class code and invocation class, so the effect is a label/policy-match defect that fails closed.
+    - id: F06
+      ref: BH16-15
+      summary: The conformance inventory is a hand-kept allowlist read by its own test (circular); the gitlink binding was dropped.
+      disposition: follow-up-story
+      owner: Proposed 1.18 (Delivery / Architecture)
+      rationale: No omission today (verified by the reviewer); governance-tooling hardening against future drift.
+    - id: F07
+      ref: generator example overwrite
+      summary: The generator overwrites example status and feeds 422/423/428/429 examples into the runtime catalog instead of failing on mismatch.
+      disposition: follow-up-story
+      owner: Proposed 1.18 (Delivery / Contract)
+      rationale: The new validate_declared_statuses_have_runtime_tuples guard covers the blocking class; this closes residual drift masking.
+    - id: F08
+      ref: missing regressions
+      summary: Claimed fixes lack regression tests (CLI/MCP freshness mismatch, 409 to 423/428 remap, per-service final-reauth revocation race, case-variant duplicate JSON, parity absent-from-v1 branch, EC16-05 baseline-init validation, MCP lock_conflict projection).
+      disposition: must-fix-before-closure
+      rationale: AC8 requires passing tests for the closure behaviors; an unpinned security fix (revocation race) is unverified.
+    - id: F09
+      ref: base-URL path prefix
+      summary: Typed-problem projection fails closed when the SDK BaseUrl carries a path prefix.
+      disposition: follow-up-story
+      owner: Existing 11.6 Consolidate CLI/MCP adapter core and secure bearer transport (Delivery)
+      rationale: Fails closed; affects only prefixed deployments. Story 13.7 must either forbid path-prefixed base URLs or depend on this fix.
+    - id: F10
+      ref: CLI/MCP freshness descriptions
+      summary: CLI --freshness and MCP descriptions advertise three values while each operation accepts one; a test-only ParseFreshness overload defaults to ListAuditTrail.
+      disposition: follow-up-story
+      owner: Existing 11.6 (Delivery)
+      rationale: Help-text accuracy only; runtime rejects invalid values with the established usage failure.
+    - id: F11
+      ref: Event 1018 logging
+      summary: LogAuthorizationEvaluationFailed (EventId 1018, Error) logs the full exception.
+      disposition: must-fix-before-closure
+      rationale: Settle before production v2 routing. Prove that authorization exceptions carry no tenant or principal values (and pin that with a test), or redact. The production floor requires metadata-only sensitive-data exclusion.
+    - id: F12
+      ref: PrepareWorkspace 422 example
+      summary: The 422 example content is copied from the lock scenario.
+      disposition: accepted-residual-risk
+      rationale: Cosmetic documentation with no runtime effect; may be corrected opportunistically in the closure reseal.
+    - id: F13
+      ref: archive PrincipalId
+      summary: Archive final reauthorization passes ActorSafeIdentifier as PrincipalId.
+      disposition: must-fix-before-closure
+      rationale: Settle by asserting actor-safe id equals principal id on the /process path. If they diverge, the final check evaluates the wrong principal.
+    - id: F14
+      ref: PRE-EXISTING ValidateProviderReadinessAsync
+      summary: The generated SDK binds success to ProviderReadinessConsumer, while the server returns audience authorized_operator, so every real 200 throws in the SDK (pinned by GoldenLifecycleParityTests).
+      disposition: must-fix-before-closure
+      rationale: Closure makes the v2 SDK consumable at rank 10. A protected operation whose success is unusable through the published SDK is a material contract defect in 1.17 scope.
+    - id: F15
+      ref: PRE-EXISTING UI freshness
+      summary: UI pages send eventually_consistent to operations that the v2 seam restricts to another class.
+      disposition: must-fix-before-closure
+      rationale: Slice 1.17-E owns UI contract consumption. After the v2 cutover these pages would receive 400, a material behavioral delta.
+    - id: F16
+      ref: PRE-EXISTING undeclared repository-backed tuples
+      summary: The create/bind fallback 422 provider_readiness_failed and details.finalState on reconciliation_required and unknown_provider_outcome are undeclared and collapse to the canonical 503.
+      disposition: must-fix-before-closure
+      rationale: Same class as the blocking 429 finding. Closure applies "admits every reachable response" to all 49 operations, and collapsing unknown_provider_outcome to a retryable 503 discards the reconciliation signal.
+    - id: F17
+      ref: CanonicalErrorCode renumbering
+      summary: CanonicalErrorCode members were renumbered by inserting Unsupported_provider_capability.
+      disposition: accepted-residual-risk
+      rationale: v2 is unreleased with no consumers. The numbering becomes the baseline at closure; pin it with a test and record it in release notes.
+
+authority_scope_if_approved:
+  authorized: Story 1.17 execution only, from DEC-EXEC-1.17 recording until closure or revocation.
+  every_other_ordinary_story: held (4.22, 11.4 to 11.20, 12.x, 13.x, and 3.14 unchanged)
+  global_flags_unchanged:
+    ordinary_story_execution_authorized: false
+    v2_exposure_authorized: false
+    sprint_status_regeneration_authorized: false
+    general_execution_hold: false
+  execution_lane:
+    isolation: All Story 1.17 code, generated, and conformance changes are made on a dedicated branch or worktree. Main keeps the 196 bound artifacts, the matrix, and sprint-status byte-identical until the atomic closure change (SF-2).
+    permitted: R1 to R7 on the isolated branch, including preparing, but not merging or activating, the v2 production route change.
+    prohibited:
+      - Merging to main any change to a bound artifact without A6b re-approval, a new passing Section 9, and corrective A8 confirmation in the same change.
+      - Mapping /api/v2 in production Program.cs on main, publishing a release, or changing deployment exposure.
+      - Editing or regenerating sprint-status.yaml.
+      - Starting or authorizing any other ordinary story.
+      - Accepting external dependencies, or changing submodule pins or dependency versions.
+      - Inferring any A6b, A8, Section 9, exposure, or closure approval.
+  revocation: Any authority may revoke it; revocation restores Story 1.17 to held with no main-branch effect.
+
+permitted_manifest_and_register_delta_if_approved:
+  applied_by: A separate follow-up change after the signed approval record exists. Not applied by this package.
+  manifest:
+    - path: status_model.execution_authorization_status_vocabulary
+      change: append authorized-scoped
+    - path: stories[id='1.17'].execution_authorization_status
+      from: held
+      to: authorized-scoped
+    - path: stories[id='1.17']
+      change: add execution_authorization_record_path and execution_authorization_record_sha256 (the approval record)
+    - path: approval_binding.register_sha256 and provenance register digest
+      change: update to the post-record register digest
+    - path: stories[id='1.17'].story_lifecycle_status
+      change: none (stays backlog)
+    - path: ordinary_story_execution_authorized, v2_exposure_authorized, sprint_status_regeneration_authorized, general_execution_hold
+      change: none
+  register:
+    - add record story_1_17_execution_authorization with the approvals, the exact bound inputs listed here, this preparation's sha256, and an approval_effect mirroring authority_scope_if_approved.
+  validation_after_delta: YAML parse; V2-001 to V2-025 re-evaluated, with V2-013 and V2-014 explicitly shown unaffected; the lifecycle agreement check of S9-05 still holds because lifecycle values are unchanged; the conformance set, matrix, and sprint-status digests are recomputed and unchanged.
+
+sprint_status_handling:
+  rule: sprint-status.yaml stays byte-identical at 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26 throughout execution. Corrective A8 binds it, so any byte change would reopen A8 and reinstate the hold.
+  lifecycle_during_execution: Stays backlog in both the manifest and the tracker. Execution authorization is recorded only in the manifest and register; the 2026-09-17 precedence rule makes the tracker tracking-only.
+  closure_path: At 1.17-G, one exact single-row targeted delta changes 1-17-publish-the-pd10-v2-authorization-contract-spine from backlog to done in the tracker and the manifest together. It needs its own explicit approval (precedent 2026-09-21 A8 deterministic tracker delta), is bundled with the A6b, Section 9, and A8 re-approvals, and is never a regeneration.
+  tooling_constraint: BMAD dev and build workflows must not auto-transition the tracker row for 1.17; the renegotiated spec must state that.
+
+approval_effect_if_yes:
+  story_1_17_execution_authorized: true
+  story_1_17_closure_authorized: false
+  ordinary_story_execution_authorized: false
+  v2_exposure_authorized: false
+  v2_routing_authorized: false
+  sprint_status_regeneration_authorized: false
+  deferred_findings_dispositions_accepted: true
+approval_effect_if_no_or_revise: Story 1.17 stays held and nothing changes. A revision produces a new preparation package with new digests.
+
+prohibited_without_explicit_approval:
+  - Recording DEC-EXEC-1.17 in the register or manifest.
+  - Changing any execution_authorization_status.
+  - Closing Story 1.17, or exposing, routing, or publishing v2.
+  - Regenerating or editing sprint-status.yaml.
+  - Admitting proposed story 1.18 or re-scoping 11.6 or 13.2.
+  - Committing this preparation package.
+
+observations_not_in_scope:
+  - The manifest validation_results block (validated_on 2026-09-21, final_post_a8_section9 fail) predates the passing 2026-09-22 Section 9 and is stale; hygiene only.
+  - The sealed conformance-set header still reads approval_status pending-a6b and governance_status candidate-awaiting-a6b. Those bytes are approval-bound; correct them only in the closure reseal.
