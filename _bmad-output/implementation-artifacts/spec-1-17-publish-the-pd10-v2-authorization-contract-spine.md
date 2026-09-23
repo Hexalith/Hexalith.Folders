@@ -136,14 +136,14 @@ Record every red run (command, failing assertion, commit or worktree state) unde
   (f) `…ParityOracleGeneratorTests.InitializeBaselineRejectsDuplicateOperationIdsBeforeWriting`;
   (g) `Hexalith.Folders.Mcp.Tests.FailureKindProjectionTests.LockConflictProjectsToClosedMcpFailureKind`.
 - [x] D-7 F17 pin (accepted residual; approved 2026-09-23) -- add `RUN(Hexalith.Folders.Client.Tests, Hexalith.Folders.Client.Tests.ClientGenerationTests.CanonicalErrorCodeNumberingIsPinned)`, which pins every `CanonicalErrorCode` member-to-value pair of the resealed SDK. Record the renumbering for release notes in the 1.17-G preparation. This is a baseline pin, not a red-first fix. Do not change F12.
-- [ ] T9 R4 external v1 consumer discovery -- rerun and date these checks, then rewrite `docs/contract/pd10-v2-consumer-discovery.md`, which is a bound artifact:
+- [x] T9 R4 external v1 consumer discovery -- rerun and date these checks, then rewrite `docs/contract/pd10-v2-consumer-discovery.md`, which is a bound artifact:
   - `gh search code '"/api/v1/folders"' --owner Hexalith`
   - `gh search code '"Hexalith.Folders.Client"' --owner Hexalith`
   - `gh api repos/Hexalith/Hexalith.Folders/deployments`
   - `gh release list -R Hexalith/Hexalith.Folders`
   - `curl -s 'https://azuresearch-usnc.nuget.org/query?q=packageid:Hexalith.Folders.Client&prerelease=true'`
   - `git grep -n "/api/v1/folders"` in each root-declared `references/*` checkout and in the local `Hexalith.Projects` checkout, if present.
-  Any hit outside `Hexalith/Hexalith.Folders` means stop and escalate.
+  Classify and record every hit outside `Hexalith.Folders`. Historical documentation and test-only fixtures do not themselves establish a consumer. Stop and escalate if external runtime code or configuration selects a Folders `/api/v1` route, a deployed external v1 consumer is found, or a potential runtime hit cannot be classified.
 - [ ] T10 R5 cutover, prepared on the branch only and kept in dedicated commits that can be excluded:
   - Production composition applies the v2 seam.
   - Historical `/api/v1` endpoints stay mapped only for seam-internal dispatch. An endpoint filter keyed to a seam-set dispatch marker returns the canonical `404` to external callers.
@@ -300,6 +300,14 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 - Contracts failures: five are the expected intermediate state until T11 reseals the changed candidate bytes and prior-spine baseline: `Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest`, `Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte`, `Pd10V2ContractTests.PreviousSpinePreservesHistoricalV1DigestAndV2StatusAndErrorFingerprints`, `Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority`, and `Pd10V2ContractTests.DirectCandidateRuntimeProblemsStayInsideTheClosedContractVocabulary`. The sixth is the pre-existing `NfrTraceabilityConformanceTests.NfrTraceabilityGatePreservesNativeFailureExitWithoutEchoingOutput` (expected exit 37, observed 1). No check was weakened or reseal performed.
 - Generated files changed by R7.3 generators only: `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml`, `src/Hexalith.Folders.Server/Pd10V2RuntimeResponseCatalog.g.cs`, `src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs`, `src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs`, `tests/fixtures/parity-contract.yaml`. The bound conformance set and `tests/fixtures/previous-spine.yaml` remain unchanged.
 - Final R7.0 on main: clean HEAD `19c29e00eb6679bbf7a0d20a8b4dbf30182243cf`; seven bound SHA-256 prefixes `4c8f33f0`, `d5daa483`, `230889ef`, `ed316064`, `927641dd`, `409d1535`, `5472e48e` match; 196/196 artifact lengths and digests match; scratch conformance regeneration `cmp` passes. The branch frozen block remains byte-identical to the approved proposal (block SHA-256 `11c2b4ec…`). No T1–T7 finding was marked not reproduced.
+
+### T9 R4 external v1 consumer discovery (2026-09-24)
+
+- Jerome's 2026-09-24 instruction, "do recommended", followed the presented narrow T9 stop-rule proposal. Only the T9 stop sentence was clarified; the approved frozen block remains byte-identical to the proposal (SHA-256 `11c2b4eca901c7dd02e706049684e0afb130c713e1d8a27b6131c638e8ef296b`). This direction does not approve production routing, A6b, Section 9, A8, a migration window, T10–T14, tracker changes, or Story 1.17 closure.
+- The lane was clean at `03dd38e9a95a8acc4cc493a8554797f2ef989104` before editing. Pre-work R7.0 on clean main `19c29e00eb6679bbf7a0d20a8b4dbf30182243cf` matched all seven bound digests, all 196 listed artifact byte lengths and SHA-256 values, and scratch conformance regeneration by `cmp`.
+- All six specified T9 command shapes ran on 2026-09-24. `docs/contract/pd10-v2-consumer-discovery.md` records each exact command, working directory, time, exit code, and result, including the eight root-declared submodule searches and local Projects search. The Folders route search found only Folders; the eight root checkouts had no route match. Projects hits were historical documents and non-publishable E2E fixtures. No examined external runtime source or configuration selected a Folders `/api/v1` route.
+- Folders and Projects `production` deployment records are package-release jobs with no runtime environment URL. Folders client `1.0.0` is published; its assembly has v2 route markers and no v1 route marker for the examined path. Downloads do not identify a consumer. No deployed external v1 consumer was identified by these checks; private runtime deployments and callers are not established either way. Stop and escalate if a later runtime hit appears or cannot be classified.
+- The discovery document is a bound candidate artifact. Its changed digest is intentionally not resealed in T9; T11 owns that work. `ConsumerDocsConformanceTests` passed 22/22. Documentation structure verification passed for all 14 dated command rows, exact command shapes, links, two-file scope, and frozen-block equality; `git diff --check` passed. No generated output, tracker, manifest, or approval record changed.
 
 
 ## Spec Change Log
