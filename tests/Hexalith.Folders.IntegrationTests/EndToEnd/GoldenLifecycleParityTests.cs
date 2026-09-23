@@ -1054,16 +1054,16 @@ public sealed class GoldenLifecycleParityTests
     }
 
     [Theory]
-    [InlineData("reconciliation_required")]
-    [InlineData("unknown_provider_outcome")]
-    public async Task CandidateUnknownProviderOutcomeKeepsFinalStateDetail(string category)
+    [InlineData("reconciliation_required", StatusCodes.Status409Conflict)]
+    [InlineData("unknown_provider_outcome", StatusCodes.Status503ServiceUnavailable)]
+    public async Task CandidateUnknownProviderOutcomeKeepsFinalStateDetail(string category, int expectedStatus)
     {
         const string correlation = "correlation-f16-final-state";
         TestHost host = await TestHost.StartAsync(
             tenantId: "tenant-a",
             principalId: "user-a",
             downstreamOverride: context => FolderProblemDetailsFactory.ForDomain(
-                StatusCodes.Status409Conflict,
+                expectedStatus,
                 category,
                 category,
                 false,
@@ -1076,8 +1076,11 @@ public sealed class GoldenLifecycleParityTests
 
             HexalithFoldersApiException exception = await CallRepositoryMutationForF16Async(
                 host, "CreateRepositoryBackedFolder", correlation).ConfigureAwait(true);
-            exception.StatusCode.ShouldBe(StatusCodes.Status409Conflict, exception.Response);
+            exception.StatusCode.ShouldBe(expectedStatus, exception.Response);
             ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+            problem.Category.ShouldBe(category == "reconciliation_required"
+                ? CanonicalErrorCategory.Reconciliation_required
+                : CanonicalErrorCategory.Unknown_provider_outcome);
             problem.Details.FinalState.ShouldBe(category);
         }
         finally
