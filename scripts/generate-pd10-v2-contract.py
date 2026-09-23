@@ -377,6 +377,18 @@ def runtime_problem(
     }
 
 
+def repository_outcome_problem(status: int, category: str, title: str, message: str) -> dict[str, Any]:
+    problem = runtime_problem(
+        status, category, category, False, "wait_for_reconciliation",
+        detail_values={"finalState": category})
+    problem.update({
+        "type": f"https://hexalith.dev/errors/folders/{category}",
+        "title": title,
+        "message": message,
+    })
+    return problem
+
+
 def operation_runtime_problems(
     operation_id: str,
     operation: dict[str, Any],
@@ -449,13 +461,16 @@ def operation_runtime_problems(
             runtime_problem(422, "input_limit_exceeded", "input_limit_exceeded", False, "revise_request"),
         ])
     if operation_id in {"CreateRepositoryBackedFolder", "BindRepository"}:
-        problems.append(runtime_problem(
-            422,
-            "unsupported_provider_capability",
-            "unsupported_provider_capability",
-            False,
-            "contact_operator",
-        ))
+        problems.extend([
+            runtime_problem(422, "unsupported_provider_capability", "unsupported_provider_capability", False, "contact_operator"),
+            runtime_problem(422, "provider_readiness_failed", "provider_readiness_failed", False, "contact_operator"),
+            repository_outcome_problem(
+                409, "reconciliation_required", "Idempotency conflict.",
+                "Reconciliation is required before this operation can continue."),
+            repository_outcome_problem(
+                503, "unknown_provider_outcome", "Read model unavailable.",
+                "Provider outcome is unknown and requires safe reconciliation."),
+        ])
     if operation_id == "ValidateProviderReadiness":
         problems.append(runtime_problem(429, "provider_rate_limited", "provider_rate_limited", True, "retry"))
     problems.extend(declared_runtime_problems(operation, components))

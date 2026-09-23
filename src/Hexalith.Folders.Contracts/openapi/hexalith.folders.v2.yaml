@@ -2879,7 +2879,40 @@ paths:
         '404':
           $ref: '#/components/responses/SafeDenial404'
         '409':
-          $ref: '#/components/responses/RepositoryConflict'
+          description: Repository creation or binding conflict represented without external resource hints. Returns canonical category `repository_conflict` (distinct
+            from `idempotency_conflict`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Repository conflict
+                    status: 409
+                    category: repository_conflict
+                    code: repository_conflict
+                    message: The requested repository operation conflicts with current state.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                candidateRuntime409_1:
+                  value:
+                    type: https://hexalith.dev/errors/folders/reconciliation_required
+                    title: Idempotency conflict.
+                    status: 409
+                    category: reconciliation_required
+                    code: reconciliation_required
+                    message: Reconciliation is required before this operation can continue.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: wait_for_reconciliation
+                    details:
+                      visibility: metadata_only
+                      finalState: reconciliation_required
         '422':
           description: Requested provider capability is not supported by the bound provider profile.
           content:
@@ -2888,6 +2921,19 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Candidate request or downstream outcome
+                    status: 422
+                    category: provider_readiness_failed
+                    code: provider_readiness_failed
+                    message: The request could not be completed.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_2:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -2936,6 +2982,20 @@ paths:
                     clientAction: retry
                     details:
                       visibility: metadata_only
+                candidateRuntime503_3:
+                  value:
+                    type: https://hexalith.dev/errors/folders/unknown_provider_outcome
+                    title: Read model unavailable.
+                    status: 503
+                    category: unknown_provider_outcome
+                    code: unknown_provider_outcome
+                    message: Provider outcome is unknown and requires safe reconciliation.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: wait_for_reconciliation
+                    details:
+                      visibility: metadata_only
+                      finalState: unknown_provider_outcome
         '413':
           description: Candidate runtime problem response derived from reachable producers.
           content:
@@ -3104,6 +3164,14 @@ paths:
         detailKeys:
         - visibility
       - status: 409
+        category: reconciliation_required
+        code: reconciliation_required
+        retryable: false
+        clientAction: wait_for_reconciliation
+        detailKeys:
+        - finalState
+        - visibility
+      - status: 409
         category: repository_conflict
         code: repository_conflict
         retryable: false
@@ -3115,6 +3183,13 @@ paths:
         code: c4_input_limit_exceeded
         retryable: false
         clientAction: revise_request
+        detailKeys:
+        - visibility
+      - status: 422
+        category: provider_readiness_failed
+        code: provider_readiness_failed
+        retryable: false
+        clientAction: contact_operator
         detailKeys:
         - visibility
       - status: 422
@@ -3151,6 +3226,14 @@ paths:
         retryable: true
         clientAction: retry
         detailKeys:
+        - visibility
+      - status: 503
+        category: unknown_provider_outcome
+        code: unknown_provider_outcome
+        retryable: false
+        clientAction: wait_for_reconciliation
+        detailKeys:
+        - finalState
         - visibility
   /api/v2/folders/{folderId}/repository-bindings:
     post:
@@ -3211,7 +3294,39 @@ paths:
         '404':
           $ref: '#/components/responses/SafeDenial404'
         '409':
-          $ref: '#/components/responses/DuplicateBinding'
+          description: Duplicate repository binding outcome for an authorized caller. Returns canonical category `duplicate_binding` (distinct from `idempotency_conflict`).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+              examples:
+                synthetic:
+                  value:
+                    type: about:blank
+                    title: Duplicate binding
+                    status: 409
+                    category: duplicate_binding
+                    code: duplicate_binding
+                    message: A repository binding already exists for this folder.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: revise_request
+                    details:
+                      visibility: metadata_only
+                candidateRuntime409_1:
+                  value:
+                    type: https://hexalith.dev/errors/folders/reconciliation_required
+                    title: Idempotency conflict.
+                    status: 409
+                    category: reconciliation_required
+                    code: reconciliation_required
+                    message: Reconciliation is required before this operation can continue.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: wait_for_reconciliation
+                    details:
+                      visibility: metadata_only
+                      finalState: reconciliation_required
         '422':
           description: Requested provider capability is not supported by the bound provider profile.
           content:
@@ -3220,6 +3335,19 @@ paths:
                 $ref: '#/components/schemas/ProblemDetails'
               examples:
                 candidateRuntime422_1:
+                  value:
+                    type: about:blank
+                    title: Candidate request or downstream outcome
+                    status: 422
+                    category: provider_readiness_failed
+                    code: provider_readiness_failed
+                    message: The request could not be completed.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: contact_operator
+                    details:
+                      visibility: metadata_only
+                candidateRuntime422_2:
                   value:
                     type: about:blank
                     title: Candidate request or downstream outcome
@@ -3288,6 +3416,20 @@ paths:
                     clientAction: retry
                     details:
                       visibility: metadata_only
+                candidateRuntime503_3:
+                  value:
+                    type: https://hexalith.dev/errors/folders/unknown_provider_outcome
+                    title: Read model unavailable.
+                    status: 503
+                    category: unknown_provider_outcome
+                    code: unknown_provider_outcome
+                    message: Provider outcome is unknown and requires safe reconciliation.
+                    correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
+                    retryable: false
+                    clientAction: wait_for_reconciliation
+                    details:
+                      visibility: metadata_only
+                      finalState: unknown_provider_outcome
         '413':
           description: Candidate runtime problem response derived from reachable producers.
           content:
@@ -3442,11 +3584,26 @@ paths:
         clientAction: revise_request
         detailKeys:
         - visibility
+      - status: 409
+        category: reconciliation_required
+        code: reconciliation_required
+        retryable: false
+        clientAction: wait_for_reconciliation
+        detailKeys:
+        - finalState
+        - visibility
       - status: 413
         category: input_limit_exceeded
         code: c4_input_limit_exceeded
         retryable: false
         clientAction: revise_request
+        detailKeys:
+        - visibility
+      - status: 422
+        category: provider_readiness_failed
+        code: provider_readiness_failed
+        retryable: false
+        clientAction: contact_operator
         detailKeys:
         - visibility
       - status: 422
@@ -3483,6 +3640,14 @@ paths:
         retryable: true
         clientAction: retry
         detailKeys:
+        - visibility
+      - status: 503
+        category: unknown_provider_outcome
+        code: unknown_provider_outcome
+        retryable: false
+        clientAction: wait_for_reconciliation
+        detailKeys:
+        - finalState
         - visibility
   /api/v2/folders/{folderId}/repository-bindings/{repositoryBindingId}:
     get:
@@ -24357,11 +24522,13 @@ components:
           type: string
           enum:
           - about:blank
+          - https://hexalith.dev/errors/folders/unknown_provider_outcome
         title:
           type: string
           enum:
           - Provider unavailable
           - Candidate request or downstream outcome
+          - Read model unavailable.
           - Authorization evidence unavailable
         status:
           type: integer
@@ -24373,17 +24540,20 @@ components:
           - provider_unavailable
           - idempotency_admission_unavailable
           - read_model_unavailable
+          - unknown_provider_outcome
         code:
           type: string
           enum:
           - provider_unavailable
           - idempotency_admission_unavailable
           - projection_unavailable
+          - unknown_provider_outcome
         message:
           type: string
           enum:
           - Provider dependency is temporarily unavailable.
           - The request could not be completed.
+          - Provider outcome is unknown and requires safe reconciliation.
           - Authorization evidence is temporarily unavailable.
         correlationId:
           $ref: '#/components/schemas/OpaqueIdentifier'
@@ -24391,16 +24561,22 @@ components:
           type: boolean
           enum:
           - true
+          - false
         clientAction:
           type: string
           enum:
           - retry
+          - wait_for_reconciliation
         details:
           type: object
           additionalProperties: false
           required:
           - visibility
           properties:
+            finalState:
+              type: string
+              enum:
+              - unknown_provider_outcome
             visibility:
               type: string
               enum:
@@ -24581,6 +24757,69 @@ components:
                 type: string
                 enum:
                 - metadata_only
+      - type: object
+        additionalProperties: false
+        required:
+        - type
+        - title
+        - status
+        - category
+        - code
+        - message
+        - correlationId
+        - retryable
+        - clientAction
+        - details
+        properties:
+          type:
+            type: string
+            enum:
+            - https://hexalith.dev/errors/folders/unknown_provider_outcome
+          title:
+            type: string
+            enum:
+            - Read model unavailable.
+          status:
+            type: integer
+            enum:
+            - 503
+          category:
+            type: string
+            enum:
+            - unknown_provider_outcome
+          code:
+            type: string
+            enum:
+            - unknown_provider_outcome
+          message:
+            type: string
+            enum:
+            - Provider outcome is unknown and requires safe reconciliation.
+          correlationId:
+            $ref: '#/components/schemas/OpaqueIdentifier'
+          retryable:
+            type: boolean
+            enum:
+            - false
+          clientAction:
+            type: string
+            enum:
+            - wait_for_reconciliation
+          details:
+            type: object
+            additionalProperties: false
+            required:
+            - visibility
+            - finalState
+            properties:
+              visibility:
+                type: string
+                enum:
+                - metadata_only
+              finalState:
+                type: string
+                enum:
+                - unknown_provider_outcome
       - $ref: '#/components/schemas/AuthorityUnavailableProblem'
     BindRepositoryUnavailableProblem:
       description: Exact operation-specific historical outcomes plus the exact authority-unavailable branch.
@@ -24602,11 +24841,13 @@ components:
           type: string
           enum:
           - about:blank
+          - https://hexalith.dev/errors/folders/unknown_provider_outcome
         title:
           type: string
           enum:
           - Provider unavailable
           - Candidate request or downstream outcome
+          - Read model unavailable.
           - Authorization evidence unavailable
         status:
           type: integer
@@ -24618,17 +24859,20 @@ components:
           - provider_unavailable
           - idempotency_admission_unavailable
           - read_model_unavailable
+          - unknown_provider_outcome
         code:
           type: string
           enum:
           - provider_unavailable
           - idempotency_admission_unavailable
           - projection_unavailable
+          - unknown_provider_outcome
         message:
           type: string
           enum:
           - Provider dependency is temporarily unavailable.
           - The request could not be completed.
+          - Provider outcome is unknown and requires safe reconciliation.
           - Authorization evidence is temporarily unavailable.
         correlationId:
           $ref: '#/components/schemas/OpaqueIdentifier'
@@ -24636,16 +24880,22 @@ components:
           type: boolean
           enum:
           - true
+          - false
         clientAction:
           type: string
           enum:
           - retry
+          - wait_for_reconciliation
         details:
           type: object
           additionalProperties: false
           required:
           - visibility
           properties:
+            finalState:
+              type: string
+              enum:
+              - unknown_provider_outcome
             visibility:
               type: string
               enum:
@@ -24826,6 +25076,69 @@ components:
                 type: string
                 enum:
                 - metadata_only
+      - type: object
+        additionalProperties: false
+        required:
+        - type
+        - title
+        - status
+        - category
+        - code
+        - message
+        - correlationId
+        - retryable
+        - clientAction
+        - details
+        properties:
+          type:
+            type: string
+            enum:
+            - https://hexalith.dev/errors/folders/unknown_provider_outcome
+          title:
+            type: string
+            enum:
+            - Read model unavailable.
+          status:
+            type: integer
+            enum:
+            - 503
+          category:
+            type: string
+            enum:
+            - unknown_provider_outcome
+          code:
+            type: string
+            enum:
+            - unknown_provider_outcome
+          message:
+            type: string
+            enum:
+            - Provider outcome is unknown and requires safe reconciliation.
+          correlationId:
+            $ref: '#/components/schemas/OpaqueIdentifier'
+          retryable:
+            type: boolean
+            enum:
+            - false
+          clientAction:
+            type: string
+            enum:
+            - wait_for_reconciliation
+          details:
+            type: object
+            additionalProperties: false
+            required:
+            - visibility
+            - finalState
+            properties:
+              visibility:
+                type: string
+                enum:
+                - metadata_only
+              finalState:
+                type: string
+                enum:
+                - unknown_provider_outcome
       - $ref: '#/components/schemas/AuthorityUnavailableProblem'
     GetRepositoryBindingUnavailableProblem:
       description: Exact operation-specific historical outcomes plus the exact authority-unavailable branch.
@@ -33239,6 +33552,14 @@ x-hexalith-runtime-problem-inventory:
   retryable: false
   clientAction: wait_for_reconciliation
   detailKeys:
+  - finalState
+  - visibility
+- status: 409
+  category: reconciliation_required
+  code: reconciliation_required
+  retryable: false
+  clientAction: wait_for_reconciliation
+  detailKeys:
   - visibility
 - status: 409
   category: repository_conflict
@@ -33466,6 +33787,14 @@ x-hexalith-runtime-problem-inventory:
   retryable: false
   clientAction: wait_for_reconciliation
   detailKeys:
+  - visibility
+- status: 503
+  category: unknown_provider_outcome
+  code: unknown_provider_outcome
+  retryable: false
+  clientAction: wait_for_reconciliation
+  detailKeys:
+  - finalState
   - visibility
 - status: 503
   category: unknown_provider_outcome

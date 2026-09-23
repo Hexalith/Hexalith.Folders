@@ -1077,7 +1077,8 @@ public sealed class GoldenLifecycleParityTests
             HexalithFoldersApiException exception = await CallRepositoryMutationForF16Async(
                 host, "CreateRepositoryBackedFolder", correlation).ConfigureAwait(true);
             exception.StatusCode.ShouldBe(expectedStatus, exception.Response);
-            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(
+                exception.ProblemDetailsParseDiagnostic + " " + exception.GetType().Name + " " + exception.InnerException + " " + exception.Response);
             problem.Category.ShouldBe(category == "reconciliation_required"
                 ? CanonicalErrorCategory.Reconciliation_required
                 : CanonicalErrorCategory.Unknown_provider_outcome);

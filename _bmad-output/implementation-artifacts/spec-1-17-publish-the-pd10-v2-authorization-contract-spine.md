@@ -223,6 +223,13 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 - `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateRepositoryBackedProviderReadinessFailureKeepsDeclared422"` exited 1: 2 total, 2 failed. For both `CreateRepositoryBackedFolder` and `BindRepository`, `exception.StatusCode should be 422 but was 503`; the response was canonical `read_model_unavailable/projection_unavailable`.
 - `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateUnknownProviderOutcomeKeepsFinalStateDetail"` exited 1: 2 total, 2 failed. The first red draft expected 409 for both rows; the existing `FolderCanonicalErrorMapper.StatusFor` instead assigns 503 to `unknown_provider_outcome`. A red-only correction pins 409 for `reconciliation_required` and 503 for `unknown_provider_outcome`, and asserts category and `finalState`. The corrected run still exited 1 with 2 failures: reconciliation was rewritten to 503; unknown was 503 but `problem.Category should be Unknown_provider_outcome but was Read_model_unavailable`.
 - Initial red test commit: `459ce44a5a0c3a7fb5171673f9bfee281ce82206`. The status correction is a test-only red commit before any F16 production edit.
+- Corrected red test commit: `7d655d9c6e1f1abf0af773d49c7baede47c55bfd`.
+
+### T5 F16 green
+
+- The contract generator now declares the existing repository producer tuples: `422 provider_readiness_failed`, `409 reconciliation_required` with `finalState`, and `503 unknown_provider_outcome` with `finalState` for both repository-backed operations. The examples mirror the existing producer's type, title and message so the generated 503 SDK union can deserialize the reachable outcome. The client projection accepts only the declared operation tuple and detail keys, retaining exact validation for other unavailable results. The producer required no edit.
+- Regenerated from R7.3 commands: `hexalith.folders.v2.yaml`, `Pd10V2RuntimeResponseCatalog.g.cs`, `HexalithFoldersClient.g.cs`, `HexalithFoldersIdempotencyHelpers.g.cs`, and `tests/fixtures/parity-contract.yaml`. Scratch contract, catalog and parity bytes matched committed copies with `cmp`; `VerifyHexalithFoldersGeneratedArtifacts` passed.
+- Both named `RUN` tests passed (2/2 each). Full IntegrationTests passed: 715 total, 0 failed, 0 skipped.
 
 ## Spec Change Log
 

@@ -55,6 +55,7 @@ internal static class Oq2ProblemProjection
         TupleKey(409, "lock_conflict", "workspace_locked", true, "retry", ["lockStatus", "visibility"]),
         TupleKey(409, "projection_stale", "projection_stale", true, "retry", ["visibility"]),
         TupleKey(409, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["visibility"]),
+        TupleKey(409, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["finalState", "visibility"]),
         TupleKey(409, "repository_conflict", "repository_conflict", false, "revise_request", ["visibility"]),
         TupleKey(409, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["visibility"]),
         TupleKey(410, "lock_expired", "lock_expired", true, "retry", ["leaseStatus", "visibility"]),
@@ -87,6 +88,7 @@ internal static class Oq2ProblemProjection
         TupleKey(503, "read_model_unavailable", "evidence_unavailable", true, "retry", ["visibility"]),
         TupleKey(503, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["visibility"]),
         TupleKey(503, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["visibility"]),
+        TupleKey(503, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["finalState", "visibility"]),
     };
 
     private static readonly ExactProblemTuple AuthenticationRequired = new(
@@ -265,10 +267,30 @@ internal static class Oq2ProblemProjection
             return (null, "typed_problem_result_missing");
         }
 
+        return ProjectGenericProblem(exception, httpStatus);
+    }
+
+    private static (ProblemDetails? Problem, string? Diagnostic) ProjectGenericProblem(HexalithFoldersApiException exception, int httpStatus)
+    {
+
         JObject wire = JObject.Parse(exception.Response, new JsonLoadSettings
         {
             DuplicatePropertyNameHandling = DuplicatePropertyNameHandling.Error,
         });
+        if (!IsGenericWire(wire, exception.OriginatingOperationId))
+        {
+            return (null, "problem_shape_mismatch");
+        }
+
+        ProblemDetails problem = wire.ToObject<ProblemDetails>()
+            ?? throw new JsonSerializationException("The typed problem result could not be projected to ProblemDetails.");
+        return problem.Status == httpStatus
+            ? (problem, null)
+            : (null, "http_status_mismatch");
+    }
+
+    private static bool IsGenericWire(JObject wire, string? operationId)
+    {
         string[] requiredNames =
         [
             "type", "title", "status", "category", "code", "message", "correlationId",
@@ -279,7 +301,7 @@ internal static class Oq2ProblemProjection
             "detail",
             "instance",
         };
-        if (requiredNames.Any(name => wire.Property(name, StringComparison.Ordinal) is null)
+        return !(requiredNames.Any(name => wire.Property(name, StringComparison.Ordinal) is null)
             || wire.Properties().Any(property => !allowedNames.Contains(property.Name))
             || !IsUriReference(wire["type"])
             || wire["title"]?.Type != JTokenType.String
@@ -307,22 +329,13 @@ internal static class Oq2ProblemProjection
                 wire.Value<string>("clientAction") ?? string.Empty,
                 details.Properties().Select(static property => property.Name)))
             || !IsGenericTupleAllowedForOperation(
-                exception.OriginatingOperationId,
+                operationId,
                 wire.Value<int>("status"),
                 wire.Value<string>("category") ?? string.Empty,
                 wire.Value<string>("code") ?? string.Empty,
                 wire.Value<bool>("retryable"),
                 wire.Value<string>("clientAction") ?? string.Empty,
-                details.Properties().Select(static property => property.Name)))
-        {
-            return (null, "problem_shape_mismatch");
-        }
-
-        ProblemDetails problem = wire.ToObject<ProblemDetails>()
-            ?? throw new JsonSerializationException("The typed problem result could not be projected to ProblemDetails.");
-        return problem.Status == httpStatus
-            ? (problem, null)
-            : (null, "http_status_mismatch");
+                details.Properties().Select(static property => property.Name)));
     }
 
     private static bool IsGenericTupleAllowedForOperation(
@@ -354,6 +367,15 @@ internal static class Oq2ProblemProjection
         if (typedResult is not ProblemDetails && !generatedOperationUnavailableProblem)
         {
             return (null, "unsupported_problem_result_type");
+        }
+
+        if (generatedOperationUnavailableProblem)
+        {
+            (ProblemDetails? problem, _) = ProjectGenericProblem(exception, exception.StatusCode);
+            if (problem is not null)
+            {
+                return (problem, null);
+            }
         }
 
         ExactProblemTuple[]? allowed = AllowedUnavailableTuples(resultType.Name);
@@ -456,6 +478,10 @@ internal static class Oq2ProblemProjection
         ArgumentNullException.ThrowIfNull(wire);
         ExactProblemTuple[] allowed = AllowedUnavailableTuples(resultTypeName)
             ?? throw new JsonSerializationException($"Unsupported operation-unavailable problem type '{resultTypeName}'.");
+        if (IsGenericWire(wire, resultTypeName[..^"UnavailableProblem".Length]))
+        {
+            return;
+        }
         string[] expectedNames =
         [
             "type", "title", "status", "category", "code", "message", "correlationId",
