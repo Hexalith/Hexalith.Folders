@@ -192,6 +192,11 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 - `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests -method "Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.FolderCreationFinalReauthorizationDetectsFolderAclRevocationBetweenChecks"` exited 1, 1 failed: `repository.EventsAppended should be 0 but was 1`.
 - `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests -method "Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.RepositoryBackedFolderCreationFinalReauthorizationDetectsFolderAclRevocationBetweenChecks"` exited 1, 1 failed: `repository.EventsAppended should be 0 but was 1`.
 - `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests -method "Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.ConfigureProviderBindingFinalReauthorizationDetectsFolderAclRevocationBetweenChecks"` exited 1, 1 failed: `repository.EventsAppended should be 0 but was 1`.
+- Red test commit: `fab7bef39d433aabce477d648e132e04dfc9d218`.
+
+### T2 F04 green
+
+- The three services now run `ReauthorizeMutationAsync` with `includeFolderAcl: true`, retaining the original `OperationScope` and repeating the ACL layer before append. Each named `RUN` test passed (1/1), proving rejection and zero appended events after revocation. Full `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests` passed: 1979 total, 0 failed, 1 skipped. No generated file changed.
 
 ## Spec Change Log
 
