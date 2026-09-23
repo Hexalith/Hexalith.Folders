@@ -1,0 +1,53 @@
+schema_version: '1.0.0'
+record_id: STORY-1-17-SPEC-RENEGOTIATION-APPROVAL-2026-09-23
+gate_id: 1.17-SPEC-RENEGOTIATION
+status: approved
+approved_on: '2026-09-23'
+recorded_at: '2026-09-23T07:59:50+02:00'
+approver: Jerome
+response: "1.17-SPEC-RENEGOTIATION (2026-09-23): I, Jerome, approve for Product, Architecture, Security and Delivery, each authority stated separately, the renegotiated frozen intent and task list for spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md exactly as proposed in spec-1-17-publish-the-pd10-v2-authorization-contract-spine.proposed.md sha256 f53bdc1ff5b61a05e77719812ea6ffddb3852af03e1ee382f334944cf43a41bd (diff sha256 2e7e0fdf25befc488864825e9e7c3b4934265ee903dba7c24b91da1ab23d7841), replacing 409d1535ab9e54d7ad175236347c37a9b683249417bcb97ba2d0ee51ddc20a04, effective only on branch feat/story-1-17-pd10-v2-closure from 19c29e0. Decisions: D-2 option A inside the 1.17-G change; D-3 unusable-evidence precedence (503); D-4 branch-local commits allowed, no push; D-5 seam-internal v1 with external canonical 404 and composed-endpoint guards; D-6 single --no-ff merge; D-7 F17 pin yes, F12 no; D-8 commit the Section 9 validator. This does not approve closing Story 1.17, v2 exposure or routing (DEC-V2-ROUTING-1.17), A6b, Section 9, A8, GENERATE evidence acceptance, any sprint-status or tracker edit, Story 1.18, re-scoping 11.6/13.2, any other story, or any dependency or submodule change."
+source: Explicit approval statement pasted by Jerome in the 2026-09-23 Story 1.17 spec-renegotiation exchange after presentation of the exact proposal and diff digests.
+represented_authorities: [Product, Architecture, Security, Delivery]
+approval_inference_forbidden: true
+effective_scope: branch feat/story-1-17-pd10-v2-closure from 19c29e00eb6679bbf7a0d20a8b4dbf30182243cf only
+
+exact_approval_inputs:
+  - path: _bmad-output/implementation-artifacts/renegotiation-1-17-2026-09-23/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.proposed.md
+    sha256: f53bdc1ff5b61a05e77719812ea6ffddb3852af03e1ee382f334944cf43a41bd
+  - path: _bmad-output/implementation-artifacts/renegotiation-1-17-2026-09-23/spec-1-17-publish-renegotiation.diff
+    sha256: 2e7e0fdf25befc488864825e9e7c3b4934265ee903dba7c24b91da1ab23d7841
+  - path: _bmad-output/implementation-artifacts/spec-1-17-publish-the-pd10-v2-authorization-contract-spine.md
+    sha256: 409d1535ab9e54d7ad175236347c37a9b683249417bcb97ba2d0ee51ddc20a04
+    binding_role: replaced-on-branch-only-main-unchanged
+  - path: _bmad-output/implementation-artifacts/renegotiation-1-17-2026-09-23/generate-evidence-closure-proposal.md
+    sha256: 9c4ca202d534c05625bebe5d7f386df8797569eccdfe264f2ad4236cd604d232
+    binding_role: d-2-option-a-reference
+exact_approval_inputs_verification: Proposal and diff digests recomputed from worktree bytes before recording and matched the signed statement; git apply of the diff reproduced the proposal byte-for-byte.
+
+decisions:
+  D-2: option-a-accept-generate-as-is-inside-1.17-G
+  D-2b: inside-1.17-G-change
+  D-3: unusable-evidence-precedence-503
+  D-4: branch-local-commits-allowed-no-push
+  D-5: seam-internal-v1-external-canonical-404-composed-endpoint-guards
+  D-6: single-no-ff-merge
+  D-7: f17-pin-yes-f12-no
+  D-8: commit-section9-validator
+
+approval_effect:
+  spec_status_on_branch: ready-for-dev
+  frozen_block_matches_approved_proposal: true
+  story_1_17_lifecycle_changed: false
+  story_1_17_closure_authorized: false
+  v2_exposure_authorized: false
+  v2_routing_authorized: false
+  a6b_section9_a8_approved: false
+  generate_evidence_accepted: false
+  sprint_status_edit_authorized: false
+  tracker_transition_authorized: false
+  story_1_18_admission_authorized: false
+  stories_11_6_13_2_rescoping_authorized: false
+  other_story_execution_authorized: false
+  dependency_or_submodule_change_authorized: false
+  push_authorized: false
+  register_or_manifest_recording: not-performed-not-authorized-deferred-to-1.17-G-change
