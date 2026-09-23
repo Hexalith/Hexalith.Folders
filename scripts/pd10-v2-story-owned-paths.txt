@@ -200,3 +200,4 @@ tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvi
 tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs
 src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
 tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
+tests/Hexalith.Folders.UI.Tests/UiOperationFreshnessConformanceTests.cs
