@@ -268,6 +268,19 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 | (f) `ParityOracleGeneratorTests.InitializeBaselineRejectsDuplicateOperationIdsBeforeWriting` | Omit `ValidateOperationInventory(baselineOps, baselineDiagnostics)` in initialize-baseline | `result.ExitCode should not be 0 but was 0`; duplicate baseline was written in scratch |
 | (g) `FailureKindProjectionTests.LockConflictProjectsToClosedMcpFailureKind` | `FailureKindProjection`: map `Lock_conflict` to `InternalError` | `should be "lock_conflict" but was "internal_error"` |
 
+- Exact mutation-red `RUN(P, FQN)` targets (the Notation above expands each to its build and `-method` commands), in execution order:
+  - `RUN(Hexalith.Folders.Cli.Tests, Hexalith.Folders.Cli.Tests.CommandOptionsFreshnessTests.KnownFreshnessNotAcceptedByOperationIsUsageFailureBeforeDispatch)`
+  - `RUN(Hexalith.Folders.Mcp.Tests, Hexalith.Folders.Mcp.Tests.ToolInputsTests.KnownFreshnessNotAcceptedByOperationIsRejectedBeforeDispatch)`
+  - `RUN(Hexalith.Folders.IntegrationTests, Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateFileMutationLockConflictRemapsToDeclared423)`
+  - `RUN(Hexalith.Folders.IntegrationTests, Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateFileMutationPreconditionFailureRemapsToDeclared428)`
+  - `RUN(Hexalith.Folders.Tests, Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.RepositoryBindingFinalReauthorizationDetectsRevocationBetweenChecks)`
+  - `RUN(Hexalith.Folders.Tests, Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.BranchRefPolicyConfigurationFinalReauthorizationDetectsRevocationBetweenChecks)`
+  - `RUN(Hexalith.Folders.Tests, Hexalith.Folders.Tests.Authorization.GatewayMutationFinalReauthorizationTests.FolderAccessMutationFinalReauthorizationDetectsRevocationBetweenChecks)`
+  - `RUN(Hexalith.Folders.IntegrationTests, Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateCaseVariantDuplicateSchemaPropertyIsCanonicalValidationFailure)`
+  - `RUN(Hexalith.Folders.Contracts.Tests, Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.OperationAbsentFromHistoricalV1TakesTheDeclaredBranch)`
+  - `RUN(Hexalith.Folders.Contracts.Tests, Hexalith.Folders.Contracts.Tests.OpenApi.ParityOracleGeneratorTests.InitializeBaselineRejectsDuplicateOperationIdsBeforeWriting)`
+  - `RUN(Hexalith.Folders.Mcp.Tests, Hexalith.Folders.Mcp.Tests.FailureKindProjectionTests.LockConflictProjectsToClosedMcpFailureKind)`
+
 - Exact red commands: for every row, `dotnet build tests/P/P.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` followed by `tests/P/bin/Debug/net10.0/P -method "<full namespace, class and method from T8>"`; for (e) and (f), first build `tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj` with the same Debug options because the contract test shells out to the generator with `--no-build`. All builds succeeded. Mutation output excerpts were captured in `/tmp/story117-t8{a,b,c,d,e,f,g}-*-red*.log`; each named run had 1 total, 1 failed. The (d) fixture was tightened to use an accepting downstream override after its first version was rejected by the historical handler too; the final test proves rejection before downstream dispatch. The (f) fixture copies historical v1 into scratch so omitting inventory validation actually writes a duplicate baseline. These fixture corrections changed no production or bound v1 bytes.
 
 ### D-7 F17 baseline pin
