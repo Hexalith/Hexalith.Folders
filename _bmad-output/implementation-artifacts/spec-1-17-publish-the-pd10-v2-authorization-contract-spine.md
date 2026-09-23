@@ -217,6 +217,12 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - Event 1018 logs only the operation id and exception type; its `Exception` argument is null. The named `RUN` test passed: 1 total, 0 failed, and its response remained canonical 503. Full IntegrationTests passed: 711 total, 0 failed, 0 skipped. No generated file changed.
 
+### T5 F16 red
+
+- Worktree state: `4d3c50a93283a5db9bb0791ac27a3b07609932f2` plus only the two named tests and their shared SDK call helper; no F16 production edit. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed, zero warnings and errors. Both theories use the real v2 seam and generated SDK with `FolderProblemDetailsFactory` as the downstream producer.
+- `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateRepositoryBackedProviderReadinessFailureKeepsDeclared422"` exited 1: 2 total, 2 failed. For both `CreateRepositoryBackedFolder` and `BindRepository`, `exception.StatusCode should be 422 but was 503`; the response was canonical `read_model_unavailable/projection_unavailable`.
+- `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateUnknownProviderOutcomeKeepsFinalStateDetail"` exited 1: 2 total, 2 failed. For both `reconciliation_required` and `unknown_provider_outcome`, `exception.StatusCode should be 409 but was 503`; the response was the same canonical 503 and lost `finalState`.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.

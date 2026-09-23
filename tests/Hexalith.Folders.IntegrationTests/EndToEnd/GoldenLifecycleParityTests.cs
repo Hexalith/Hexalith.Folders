@@ -1019,6 +1019,116 @@ public sealed class GoldenLifecycleParityTests
         }
     }
 
+    [Theory]
+    [InlineData("CreateRepositoryBackedFolder")]
+    [InlineData("BindRepository")]
+    public async Task CandidateRepositoryBackedProviderReadinessFailureKeepsDeclared422(string operationId)
+    {
+        const string correlation = "correlation-f16-readiness";
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: context => FolderProblemDetailsFactory.ForDomain(
+                StatusCodes.Status422UnprocessableEntity,
+                "provider_readiness_failed",
+                "provider_readiness_failed",
+                false,
+                correlation,
+                null).ExecuteAsync(context)).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+
+            HexalithFoldersApiException exception = await CallRepositoryMutationForF16Async(host, operationId, correlation).ConfigureAwait(true);
+            exception.StatusCode.ShouldBe(StatusCodes.Status422UnprocessableEntity, exception.Response);
+            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+            problem.Category.ShouldBe(CanonicalErrorCategory.Provider_readiness_failed);
+            problem.Code.ShouldBe(CanonicalErrorCode.Provider_readiness_failed);
+            problem.Details.Visibility.ShouldBe(DetailsVisibility.Metadata_only);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("reconciliation_required")]
+    [InlineData("unknown_provider_outcome")]
+    public async Task CandidateUnknownProviderOutcomeKeepsFinalStateDetail(string category)
+    {
+        const string correlation = "correlation-f16-final-state";
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: context => FolderProblemDetailsFactory.ForDomain(
+                StatusCodes.Status409Conflict,
+                category,
+                category,
+                false,
+                correlation,
+                null).ExecuteAsync(context)).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+
+            HexalithFoldersApiException exception = await CallRepositoryMutationForF16Async(
+                host, "CreateRepositoryBackedFolder", correlation).ConfigureAwait(true);
+            exception.StatusCode.ShouldBe(StatusCodes.Status409Conflict, exception.Response);
+            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+            problem.Details.FinalState.ShouldBe(category);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private static async Task<HexalithFoldersApiException> CallRepositoryMutationForF16Async(TestHost host, string operationId, string correlation)
+    {
+        Func<Task> call = operationId switch
+        {
+            "CreateRepositoryBackedFolder" => () => host.SdkClient.CreateRepositoryBackedFolderAsync(
+                "idempotency-f16-create", correlation, "task-f16-create-0001",
+                new CreateRepositoryBackedFolderRequest
+                {
+                    RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V2,
+                    FolderId = CandidateFolderA,
+                    ProviderBindingRef = "provider-binding-a",
+                    RepositoryProfileRef = "repository-profile-a",
+                    FolderMetadata = new FolderMetadata { DisplayName = "Folder", MetadataClass = SensitiveMetadataTier.Tenant_sensitive },
+                    BranchRefPolicy = new BranchRefPolicyRequest
+                    {
+                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
+                        RepositoryBindingId = "repository-binding-a",
+                        PolicyRef = "branch-ref-policy-a",
+                        DefaultRef = "branch-ref-primary",
+                        AllowedRefPatterns = ["branch-ref-feature"],
+                    },
+                }, TestContext.Current.CancellationToken),
+            "BindRepository" => () => host.SdkClient.BindRepositoryAsync(
+                CandidateFolderA, "idempotency-f16-bind", correlation, "task-f16-bind-0001",
+                new Hexalith.Folders.Client.Generated.BindRepositoryRequest
+                {
+                    RequestSchemaVersion = BindRepositoryRequestRequestSchemaVersion.V2,
+                    ProviderBindingRef = "provider-binding-a",
+                    ExternalRepositoryRef = "repository-f16-0001",
+                    BranchRefPolicy = new BranchRefPolicyRequest
+                    {
+                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
+                        RepositoryBindingId = "repository-binding-a",
+                        PolicyRef = "branch-ref-policy-a",
+                        DefaultRef = "branch-ref-primary",
+                        AllowedRefPatterns = ["branch-ref-feature"],
+                    },
+                }, TestContext.Current.CancellationToken),
+            _ => throw new ArgumentOutOfRangeException(nameof(operationId)),
+        };
+        return await Should.ThrowAsync<HexalithFoldersApiException>(call).ConfigureAwait(true);
+    }
+
     [Fact]
     public async Task CandidateStripsForbiddenHistoricalProblemDetailAndInstanceFields()
     {
