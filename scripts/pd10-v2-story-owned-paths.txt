@@ -197,3 +197,6 @@ tests/tools/run-provider-error-docs-gates.ps1
 tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
 tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
 tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
+tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs
+src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
+tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs

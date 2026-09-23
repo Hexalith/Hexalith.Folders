@@ -198,6 +198,11 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 - The three services now run `ReauthorizeMutationAsync` with `includeFolderAcl: true`, retaining the original `OperationScope` and repeating the ACL layer before append. Each named `RUN` test passed (1/1), proving rejection and zero appended events after revocation. Full `tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests` passed: 1979 total, 0 failed, 1 skipped. No generated file changed.
 
+### T3 F13 red
+
+- Worktree state: `811273a4fd1846ad411773749e79ce43d2af8e10` plus the named archive test, a recording test provider, and a compile-only `PrincipalId` property stub on `LayeredFolderAuthorizationAllowedContext`; no F13 behavior fix. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.ArchiveFolderProcessWiringTests.ArchiveFinalReauthorizationEvaluatesTheAuthenticatedPrincipal"` exited 1: 3 total, 3 failed. Assertion excerpts: `evidence.Requests[1].PrincipalId should be "user-a" but was "actor-alias"`; null actor-safe row was `"actor_present"`; missing-principal row asserted `result.IsRejection should be True but was False`.
+- The existing archive test file and allowed-context production file were absent from the 196-artifact story-owned set. Jerome explicitly authorized adding and editing these two paths in the reply to the T3 path authorization prompt. No approval for any other outside path was inferred.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.
