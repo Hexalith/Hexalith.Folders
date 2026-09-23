@@ -1797,6 +1797,44 @@ public sealed class GoldenLifecycleParityTests
         }
     }
 
+    [Theory]
+    [InlineData("revoked", "stale")]
+    [InlineData("stale", "revoked")]
+    [InlineData("disabled", "stale")]
+    [InlineData("stale", "wrong-tenant")]
+    public async Task CandidateMixedAccessStatesResolveIndependentlyOfClaimOrder(string first, string second)
+    {
+        List<string> bodies = [];
+        foreach ((string accessState, string additionalAccessState) in new[] { (first, second), (second, first) })
+        {
+            TestHost host = await TestHost.StartAsync(
+                "tenant-a",
+                "user-a",
+                accessState: accessState,
+                additionalAccessState: additionalAccessState).ConfigureAwait(true);
+            try
+            {
+                using HttpRequestMessage request = new(
+                    HttpMethod.Get,
+                    $"/api/v2/folders/{CandidateFolderA}/lifecycle-status");
+                request.Headers.Add("X-Correlation-Id", "correlation-mixed-access-state");
+                using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                    request,
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+                response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+                bodies.Add(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+                host.Gateway.ProcessCalls.ShouldBe(0);
+            }
+            finally
+            {
+                await host.DisposeAsync().ConfigureAwait(true);
+            }
+        }
+
+        bodies[0].ShouldBe(bodies[1]);
+    }
+
     [Fact]
     public async Task CandidateRejectsConflictingDelegatorIdentitiesAsUnavailable()
     {

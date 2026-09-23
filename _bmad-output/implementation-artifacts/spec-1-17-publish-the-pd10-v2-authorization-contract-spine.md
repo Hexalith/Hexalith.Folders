@@ -171,6 +171,16 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 
 ## Implementation Notes
 
+### T0 lane guard (2026-09-23)
+
+- Main HEAD `19c29e0`; clean. Main SHA-256: conformance `4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7`, matrix `d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420`, sprint-status `230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26`, register `ed3160645e9225b1ffff535f950ec9e583991d464e68a3d6dd775de50a0f49f7`, manifest `927641dd75a7a7a0175beae7b36d665adb43b470eea968cb1dd4f19fb27888d7`, publish spec `409d1535ab9e54d7ad175236347c37a9b683249417bcb97ba2d0ee51ddc20a04`, GENERATE spec `5472e48e72abb597e2cc28c10d3f9e93ff5fda59bed19efbf20177411695b136`. All 196 listed artifacts matched length and SHA-256; scratch regeneration of the conformance set matched with `cmp`.
+- Branch HEAD `d33dafe`; clean before test editing. Branch spec SHA-256 `91b9513cebd971b4068ebacb3fdb8871f3fd9b1bd193c55fe9e42d8fcb369601`; frozen block byte-identical to approved proposal `f53bdc1ff5b61a05e77719812ea6ffddb3852af03e1ee382f334944cf43a41bd`. `git -c submodule.recurse=false submodule update --init` initialized only the eight root-declared submodules and changed no gitlink.
+- R7.1 Debug project-reference restore and build passed, zero warnings and errors. Baseline full suites: Folders.Tests 1976 total, 0 failed, 1 skipped; Server.Tests 757/0/0; IntegrationTests 703/0/0; Cli.Tests 718/0/0; Mcp.Tests 667/0/0; UI.Tests 525/0/0; Client.Tests 324/0/0; Contracts.Tests 340 total, 1 failed, 0 skipped. The pre-existing Contracts failure is `NfrTraceabilityConformanceTests.NfrTraceabilityGatePreservesNativeFailureExitWithoutEchoingOutput`: expected native exit 37, observed 1. Aspire AppHost started in isolated mode; `aspire describe` found waiting resources and `memories` finished; stopped before test builds.
+
+### T1 F03 red
+
+- Worktree state: `d33dafe` plus only the named test in `GoldenLifecycleParityTests.cs`; no production edit. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateMixedAccessStatesResolveIndependentlyOfClaimOrder"` exited 1: 4 total, 4 failed. Assertion excerpt: `response.StatusCode should be HttpStatusCode.ServiceUnavailable but was HttpStatusCode.NotFound` for `(first: "revoked", second: "stale")`; the same mismatch occurred for the remaining theory rows. This is the specified claim-order failure.
+
 ## Spec Change Log
 
 - 2026-09-23 (draft renegotiation): Proposed a replacement for the "Decision: stop" frozen intent under DEC-EXEC-1.17. Lane: `feat/story-1-17-pd10-v2-closure` from `19c29e0`.
