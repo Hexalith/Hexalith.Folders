@@ -1541,10 +1541,15 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             return (V2AccessState)(-1);
         }
 
+        if (states.Contains(V2AccessState.Stale))
+        {
+            return V2AccessState.Stale;
+        }
+
         V2AccessState[] negativeStates = states.Where(IsNegativeAccessState).Distinct().ToArray();
         if (negativeStates.Length > 0)
         {
-            return negativeStates[0];
+            return negativeStates.Order().First();
         }
 
         V2AccessState claimedState = states.FirstOrDefault(V2AccessState.TenantMember);

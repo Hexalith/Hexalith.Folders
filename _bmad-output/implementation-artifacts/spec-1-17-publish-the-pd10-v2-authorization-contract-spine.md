@@ -180,6 +180,11 @@ Record every red run (command, failing assertion, commit or worktree state) unde
 ### T1 F03 red
 
 - Worktree state: `d33dafe` plus only the named test in `GoldenLifecycleParityTests.cs`; no production edit. `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --configuration Debug -p:UseNuGetDeps=false -m:1` passed. `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests -method "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests.CandidateMixedAccessStatesResolveIndependentlyOfClaimOrder"` exited 1: 4 total, 4 failed. Assertion excerpt: `response.StatusCode should be HttpStatusCode.ServiceUnavailable but was HttpStatusCode.NotFound` for `(first: "revoked", second: "stale")`; the same mismatch occurred for the remaining theory rows. This is the specified claim-order failure.
+- Red test commit: `1f49615d99894b656c01dbbdba3d936f0ea24cea`.
+
+### T1 F03 green
+
+- `CanonicalAccessState` now selects stale evidence first and selects fresh negative evidence deterministically. The earlier repeated-negative test was renamed and aligned with the approved stale precedence. The named `RUN` test passed: 4 total, 0 failed. Full `tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.IntegrationTests` passed: 707 total, 0 failed, 0 skipped. No generated file changed.
 
 ## Spec Change Log
 
