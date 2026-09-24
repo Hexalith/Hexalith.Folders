@@ -35,6 +35,10 @@ public static partial class Pd10V2CandidateCompatibilitySeam
     private const string TaskSnapshotItem = "pd10.task-snapshot";
     private const string DeferredInputLimitItem = "pd10.deferred-input-limit";
     private const string PendingUnknownLengthBodyItem = "pd10.pending-unknown-length-body";
+
+    // Object-identity key: request data cannot produce it, so only this seam can mark its own
+    // in-process historical dispatch (D-5) as internal.
+    private static readonly object HistoricalDispatchMarker = new();
     private static readonly HashSet<string> TaskLifecycleStates = new(StringComparer.Ordinal)
     {
         "requested", "preparing", "ready", "locked", "changes_staged", "dirty", "committed", "failed",
@@ -301,11 +305,13 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                                 return true;
                             }
 
+                            context.Items[HistoricalDispatchMarker] = HistoricalDispatchMarker;
                             await InvokeHistoricalAsync(context, next, descriptor).ConfigureAwait(false);
                             return true;
                         }
                         finally
                         {
+                            context.Items.Remove(HistoricalDispatchMarker);
                             PreauthorizedRequestContext.End();
                             context.Request.Path = originalPath;
                         }
@@ -316,6 +322,22 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 await WriteProblemAsync(context, result.Outcome, null).ConfigureAwait(false);
             }
         });
+    }
+
+    /// <summary>
+    /// Returns whether the request is this seam's own in-process historical dispatch of an authorized v2 call.
+    /// </summary>
+    internal static bool IsHistoricalDispatch(HttpContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return context.Items.ContainsKey(HistoricalDispatchMarker);
+    }
+
+    /// <summary>Writes the canonical non-enumerating 404 used for a retired external historical route.</summary>
+    internal static Task WriteRetiredHistoricalRouteAsync(HttpContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return WriteProblemAsync(context, Pd10AuthorizationOutcome.SafeDenial, null);
     }
 
     private static async ValueTask<Pd10AuthorizationContext> AuthorizeAsync(

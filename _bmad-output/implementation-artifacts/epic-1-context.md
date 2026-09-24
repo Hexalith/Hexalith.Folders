@@ -4,7 +4,7 @@
 
 ## Goal
 
-Give API consumers and adapter implementers one versioned OpenAPI contract for REST, the generated .NET SDK, CLI, MCP, schemas, errors, and parity evidence, so later work reuses one set of operation names, lifecycle terms, authorization outcomes, and idempotency rules. This epic scaffolds the module, authors that spine, generates the client and parity inventory, and gates drift and leakage. The v2 authorization candidate has digest-bound approval but is not yet exposed for production consumption.
+Give API consumers and adapter implementers one versioned OpenAPI contract for REST, the generated .NET SDK, CLI, MCP, schemas, errors, and parity evidence, so later work reuses one set of operation names, lifecycle terms, authorization outcomes, and idempotency rules. This epic scaffolds the module, authors that spine, generates the client and parity inventory, and gates drift and leakage. Historical v2 candidate approvals bind earlier digests. The current candidate is technically validated but not approved for exposure, and it is not exposed for production consumption.
 
 ## Stories
 

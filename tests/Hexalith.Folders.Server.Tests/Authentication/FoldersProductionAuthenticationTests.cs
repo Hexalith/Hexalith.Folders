@@ -126,7 +126,10 @@ public sealed class FoldersProductionAuthenticationTests
     [Fact]
     public void ProgramShouldUseAuthenticationBeforeAuthorizationAndEndpointMapping()
     {
-        string program = File.ReadAllText(RepositoryPath("src/Hexalith.Folders.Server/Program.cs"));
+        // Program.cs delegates its pipeline to the extracted host composition.
+        File.ReadAllText(RepositoryPath("src/Hexalith.Folders.Server/Program.cs"))
+            .ShouldContain("app.UseFoldersServerPipeline();", Case.Sensitive);
+        string program = File.ReadAllText(RepositoryPath("src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"));
         int authentication = program.IndexOf("app.UseAuthentication();", StringComparison.Ordinal);
         int authorization = program.IndexOf("app.UseAuthorization();", StringComparison.Ordinal);
         int endpoints = program.IndexOf("app.MapFoldersServerEndpoints();", StringComparison.Ordinal);

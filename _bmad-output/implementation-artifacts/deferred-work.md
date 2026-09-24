@@ -2772,3 +2772,31 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-generate-pd10-v2-relock-milestone.md`
   summary: The Aspire host still pins CommunityToolkit.Aspire.Hosting.Dapr 13.0.0 while the shared catalog follows the 13.5 preview stream.
   evidence: Re-verified BH14-14. Directory.Packages.props still applies that conditional package update when MSBuildProjectName is Hexalith.Folders.Aspire. Central package management cannot isolate the pin per project, and this non-routed candidate does not own that package graph.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: The planning story manifest's provenance entry for generated-v2-conformance-set-2026-09-17.yaml still binds e89ee580…, so Section 9 S9-02/S9-11 fail and the A8 technical condition is not met for the resealed candidate.
+  evidence: The readiness addendum records S9-02 19/20. The fix edits the execution-authority manifest, which is outside the Story 1.17 preparation spec and needs owner direction; rerun S9-02/S9-11 afterwards.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: references/Hexalith.Projects is pinned at 3f12e4c, while the readiness and migration documents claim the deployed consumer revision c767d38.
+  evidence: Verified with git ls-tree HEAD in owner commit 2de4279. The owner must choose between repinning to c767d38 and correcting the documents.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: Commons, EventStore, FrontComposer, PolymorphicSerializations and Tenants submodule pins were bumped in commit 2de4279 without recorded scope or verification, against the spec's no-pin-change rule.
+  evidence: Gitlinks differ between 19c29e0 and HEAD. This is an owner-authored change that needs an explicit owner disposition.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: The A6b register-coherence assertion was removed from GovernanceCompletenessGateTests, so drift between the conformance set and the approval register no longer fails a gate.
+  evidence: Removed in owner commit 2de4279 under the single-owner policy. S9-02 provenance still catches manifest drift. Decide whether an explicit "current candidate is not approval-bound" gate is wanted.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: approval_policy.max_age_days was set to 0 and pinned by a test, so approval-backed criteria (including the C3 Legal sign-off) never expire.
+  evidence: Owner commit 2de4279. The governance doc says a positive value remains supported, but the test hard-pins 0. Needs an owner decision to keep this or restore annual review.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: The single-owner approval policy and the plan-B acceptance have no decision note, although the policy requires one, and the register approval_policy dropped its named-approver and exact-digest keys.
+  evidence: Owner-authored governance in 2de4279. The acceptances are cited only as "the 2026-09-24 conversation".
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
+  summary: Folders emits no API-version or consumer-attributed route telemetry, and retired-v1 404s are not audited, although the migration entry and exit checks depend on route attribution.
+  evidence: Neither Pd10HistoricalRouteRetirement nor the seam tags version or consumer. Migration package entry check 3 lists this as open. It was not part of the Story 1.17 preparation intent.
