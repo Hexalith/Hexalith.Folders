@@ -184,11 +184,26 @@ public sealed class FolderRepositoryBackedCreationGateTests
         readiness.Calls.ShouldBe(1);
     }
 
+    [Fact]
+    public async Task RevokedFolderAclAtFinalCheckPreventsRepositoryAppend()
+    {
+        RecordingFolderRepository repository = SeededRepository();
+        RecordingFolderPermissionEvidenceProvider permissions = new(revokeAfterFirstRead: true);
+        RepositoryBackedFolderCreationService service = Service(repository, new RecordingRepositoryCreationReadinessValidator(ReadinessReady()), permissions);
+
+        FolderResult result = await service.CreateAsync(Request(), TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        permissions.Calls.ShouldBe(2);
+        repository.AppendsAttempted.ShouldBe(0);
+    }
+
     private static RepositoryBackedFolderCreationService Service(
         IFolderRepository repository,
-        IRepositoryCreationReadinessValidator readiness)
+        IRepositoryCreationReadinessValidator readiness,
+        IFolderPermissionEvidenceProvider? permissions = null)
         => new(
-            AuthorizationService(),
+            AuthorizationService(permissions),
             readiness,
             repository,
             new FixedTimeProvider(Now));
@@ -257,7 +272,7 @@ public sealed class FolderRepositoryBackedCreationGateTests
         return repository;
     }
 
-    private static LayeredFolderAuthorizationService AuthorizationService()
+    private static LayeredFolderAuthorizationService AuthorizationService(IFolderPermissionEvidenceProvider? permissions = null)
         => new(
             new TenantAccessAuthorizer(
                 TenantStore(),
@@ -267,7 +282,7 @@ public sealed class FolderRepositoryBackedCreationGateTests
                     MutationFreshnessBudget = TimeSpan.FromMinutes(5),
                     DiagnosticStalenessBudget = TimeSpan.FromMinutes(5),
                 }),
-            new RecordingFolderPermissionEvidenceProvider(),
+            permissions ?? new RecordingFolderPermissionEvidenceProvider(),
             new RecordingEventStoreAuthorizationValidator(),
             new RecordingDaprPolicyEvidenceProvider(),
             new FixedUtcClock(Now));
@@ -337,14 +352,19 @@ public sealed class FolderRepositoryBackedCreationGateTests
         }
     }
 
-    private sealed class RecordingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    private sealed class RecordingFolderPermissionEvidenceProvider(bool revokeAfterFirstRead = false) : IFolderPermissionEvidenceProvider
     {
+        public int Calls { get; private set; }
+
         public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
             FolderPermissionEvidenceRequest request,
             CancellationToken cancellationToken = default)
-            => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
-                "folder-a:7",
-                organizationId: "organization-a"));
+        {
+            Calls++;
+            return Task.FromResult(revokeAfterFirstRead && Calls > 1
+                ? FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8")
+                : FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"));
+        }
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

@@ -1108,6 +1108,30 @@ public sealed class ClientGenerationTests
         }
     }
 
+    [Theory]
+    [InlineData("CreateRepositoryBackedFolderUnavailableProblem")]
+    [InlineData("BindRepositoryUnavailableProblem")]
+    public void RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem(string resultTypeName)
+    {
+        JObject valid = JObject.Parse("""
+            {"type":"about:blank","title":"Candidate request or downstream outcome","status":503,
+             "category":"unknown_provider_outcome","code":"unknown_provider_outcome",
+             "message":"The request could not be completed.","correlationId":"correlation_repo_0001",
+             "retryable":false,"clientAction":"wait_for_reconciliation",
+             "details":{"visibility":"metadata_only","finalState":"unknown_provider_outcome"}}
+            """);
+
+        Should.NotThrow(() => Oq2ProblemProjection.ValidateGeneratedUnavailableProblem(resultTypeName, valid));
+
+        JObject missing = (JObject)valid.DeepClone();
+        ((JObject)missing["details"]!).Remove("finalState");
+        Should.Throw<JsonSerializationException>(() => Oq2ProblemProjection.ValidateGeneratedUnavailableProblem(resultTypeName, missing));
+
+        JObject contradictory = (JObject)valid.DeepClone();
+        contradictory["details"]!["finalState"] = "reconciliation_required";
+        Should.Throw<JsonSerializationException>(() => Oq2ProblemProjection.ValidateGeneratedUnavailableProblem(resultTypeName, contradictory));
+    }
+
     private static YamlMappingNode ResolveExactProperties(YamlMappingNode schemas, YamlMappingNode branch)
     {
         if (branch.Children.TryGetValue(new YamlScalarNode("$ref"), out YamlNode? referenceNode))
@@ -1123,6 +1147,7 @@ public sealed class ClientGenerationTests
 
     private static string ExactTupleKey(YamlMappingNode properties)
     {
+        YamlMappingNode detailProperties = RequiredMapping(RequiredMapping(properties, "details"), "properties");
         string[] values =
         [
             ExactEnumValue(properties, "status"),
@@ -1132,7 +1157,10 @@ public sealed class ClientGenerationTests
             ExactEnumValue(properties, "message"),
             ExactEnumValue(properties, "retryable"),
             ExactEnumValue(properties, "clientAction"),
-            ExactEnumValue(RequiredMapping(RequiredMapping(properties, "details"), "properties"), "visibility"),
+            ExactEnumValue(detailProperties, "visibility"),
+            detailProperties.Children.ContainsKey(new YamlScalarNode("finalState"))
+                ? ExactEnumValue(detailProperties, "finalState")
+                : string.Empty,
         ];
         return string.Join('\u001f', values);
     }
@@ -1151,7 +1179,7 @@ public sealed class ClientGenerationTests
                 return value is bool boolean
                     ? (boolean ? "true" : "false")
                     : Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture).ShouldNotBeNull();
-            }));
+            }).Append((string?)tuple.GetType().GetProperty("FinalState").ShouldNotBeNull().GetValue(tuple) ?? string.Empty));
     }
 
     private static string ExactEnumValue(YamlMappingNode properties, string propertyName)

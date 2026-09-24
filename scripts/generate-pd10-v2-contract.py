@@ -282,6 +282,16 @@ def transform_operation(
     components: dict[str, Any],
 ) -> None:
     responses = operation.setdefault("responses", {})
+    if operation_id == "ValidateProviderReadiness":
+        # This protected route returns the authorized-operator variant. NSwag chooses
+        # the first oneOf branch for a method return type, which would bind it to
+        # ProviderReadinessConsumer and reject every successful operator response.
+        responses["200"]["content"]["application/json"]["schema"] = {
+            "$ref": "#/components/schemas/ProviderReadinessOperator"
+        }
+        responses["200"]["content"]["application/json"]["examples"] = {
+            "authorizedOperator": {"$ref": "#/components/examples/ProviderReadinessOperatorDiagnostic"}
+        }
     existing_unavailable = copy.deepcopy(responses.get("503"))
     runtime_problems = operation_runtime_problems(operation_id, operation, components)
     responses.pop("403", None)
@@ -449,13 +459,14 @@ def operation_runtime_problems(
             runtime_problem(422, "input_limit_exceeded", "input_limit_exceeded", False, "revise_request"),
         ])
     if operation_id in {"CreateRepositoryBackedFolder", "BindRepository"}:
-        problems.append(runtime_problem(
-            422,
-            "unsupported_provider_capability",
-            "unsupported_provider_capability",
-            False,
-            "contact_operator",
-        ))
+        problems.extend([
+            runtime_problem(422, "unsupported_provider_capability", "unsupported_provider_capability", False, "contact_operator"),
+            runtime_problem(422, "provider_readiness_failed", "provider_readiness_failed", False, "contact_operator"),
+            runtime_problem(409, "reconciliation_required", "reconciliation_required", False,
+                            "wait_for_reconciliation", detail_values={"finalState": "reconciliation_required"}),
+            runtime_problem(503, "unknown_provider_outcome", "unknown_provider_outcome", False,
+                            "wait_for_reconciliation", detail_values={"finalState": "unknown_provider_outcome"}),
+        ])
     if operation_id == "ValidateProviderReadiness":
         problems.append(runtime_problem(429, "provider_rate_limited", "provider_rate_limited", True, "retry"))
     problems.extend(declared_runtime_problems(operation, components))

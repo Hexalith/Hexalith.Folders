@@ -2,17 +2,19 @@ schema_version: '1.0.0'
 register_id: folders-planning-authority-relock-2026-09-17
 status: corrective-a8-complete-hold-removed-recovery-closed
 prepared_on: '2026-09-17'
-last_updated_on: '2026-09-23'
+last_updated_on: '2026-09-24'
 digest_algorithm: sha256
 digest_canonicalization: Exact raw bytes of the referenced UTF-8 file as stored in the repository.
 approval_policy:
-  infer_approval: false
-  accept_blanket_sponsor_approval_as_role_attestation: false
-  require_named_human_approver: true
-  require_approval_date: true
-  require_exact_payload_digest_match: true
-  reject_generic_approver_tokens: true
-  reopen_on_payload_or_bound_artifact_digest_change: true
+  current_policy: docs/governance/approval-policy.md
+  effective_on: '2026-09-24'
+  decision_owner: Jerome
+  accept_clear_contextual_owner_decision: true
+  require_separate_role_attestations: false
+  require_owner_to_recite_digests: false
+  reopen_on_material_scope_change_only: true
+  require_technical_checks: true
+  infer_unstated_approval: false
 
 sponsor_routing_record:
   proposal_path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-15.md

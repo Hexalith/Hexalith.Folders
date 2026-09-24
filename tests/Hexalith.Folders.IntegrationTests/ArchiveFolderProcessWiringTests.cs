@@ -418,6 +418,48 @@ public sealed class ArchiveFolderProcessWiringTests
     }
 
     [Fact]
+    public async Task ArchiveProcessRejectsActorPrincipalMismatchBeforePolicyOrAppend()
+    {
+        DenyingFolderArchivePolicyEvidenceProvider policyProvider = new();
+        MismatchedArchiveIdentityAccessor authorizationAccessor = new();
+        TestHost host = await StartHostAsync(
+            policyProvider,
+            authorizationAccessor: authorizationAccessor).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
+            using HttpResponseMessage response = await host.Client
+                .SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string responseJson = await response.Content
+                .ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, responseJson);
+            using JsonDocument document = JsonDocument.Parse(responseJson);
+            JsonElement problem = document.RootElement;
+            problem.GetProperty("category").GetString().ShouldBe("validation_error");
+            problem.GetProperty("code").GetString().ShouldBe("validation_error");
+            problem.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("metadata_only");
+            FindDisclosedValue(problem).ShouldBeNull();
+            host.Gateway.ProcessCalls.ShouldBe(1, "the mismatched context must reach the archive /process processor");
+            authorizationAccessor.BeginCalls.ShouldBe(1);
+            authorizationAccessor.EndCalls.ShouldBe(1);
+            authorizationAccessor.Current.ShouldBeNull();
+            policyProvider.Calls.ShouldBe(0, "archive evidence must not be read after the identity mismatch");
+            host.Repository.EventsAppended.ShouldBe(0);
+            host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"))
+                .LifecycleState.ShouldBe(FolderLifecycleState.Active);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task ArchiveRequestShouldSurfaceAlreadyArchivedAsSafeDenialThroughProcess()
     {
         TestHost host = await StartHostAsync().ConfigureAwait(true);
@@ -1044,7 +1086,7 @@ public sealed class ArchiveFolderProcessWiringTests
     private static async Task<TestHost> StartHostAsync(
         IFolderArchivePolicyEvidenceProvider? archivePolicyEvidenceProvider = null,
         Func<string, string>? envelopeTenantTransform = null,
-        ScopedLayeredFolderAuthorizationResultAccessor? authorizationAccessor = null)
+        ILayeredFolderAuthorizationResultAccessor? authorizationAccessor = null)
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();

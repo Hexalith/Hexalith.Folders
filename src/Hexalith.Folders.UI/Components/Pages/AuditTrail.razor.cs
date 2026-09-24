@@ -58,7 +58,7 @@ public partial class AuditTrail : ComponentBase, IDisposable
 
         // Advisory for the scope banner; a real authorization denial surfaces on the primary read below.
         _permissions = await TryReadAsync(ct =>
-            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, null, ct), token).ConfigureAwait(false);
+            Client.GetEffectivePermissionsAsync(FolderId, _correlationId, ReadConsistencyClass.Read_your_writes, null, ct), token).ConfigureAwait(false);
 
         // Primary read. C4: the filter key vocabulary is rejection-only today, so always pass filter: null —
         // a populated filter returns validation_error. Authorization-before-observation: a canonical denial

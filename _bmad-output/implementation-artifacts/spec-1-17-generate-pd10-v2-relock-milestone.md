@@ -76,6 +76,8 @@ context:
 
 ## Implementation Notes
 
+- 2026-09-24 reconciliation: GENERATE remains in progress. The previously sealed candidate is historical evidence while the authorized Story 1.17 closure preparation repairs it. [Consumer discovery](../../docs/contract/pd10-v2-consumer-discovery.md) now identifies a deployed Projects consumer of Folders Client 1.0.0; its v1 dependency blocks the branch production route change pending a consumer-specific migration decision. This records no A6b, A8, exposure, or Story 1.17 closure approval.
+
 - The rejected review input remained non-routed and unpublished, and it correctly preserved `Program.cs`, supported deployment profiles, the historical v1 Spine, OQ3 evidence, execution hold, and sprint status. Preserve those properties during re-derivation.
 - Preserve the working 49-operation, 14-access-state, and 11-family denominators; CLI exits 73/77; closed MCP `concurrency_conflict`; distinct UI denial/unavailable dispositions; v1 byte stability; and deterministic SDK/parity generation.
 - The earlier 75-artifact manifest (`649ecf...` / candidate set `535c67...`) is historical rejected evidence: review proved that its executable seam bypassed v2 scope/binding checks and that its allowlist could omit candidate-affecting files. Regenerate and report new digests after correction; do not modify or infer approval from the concurrent approval-register work.

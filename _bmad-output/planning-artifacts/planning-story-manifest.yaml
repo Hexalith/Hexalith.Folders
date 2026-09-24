@@ -1,8 +1,8 @@
 manifest_version: 2
-revision: folders-planning-authority-relock-corrective-a8-finalization-2026-09-22
+revision: folders-single-owner-decision-policy-2026-09-24
 project: Hexalith.Folders
 generated_on: '2026-09-17'
-reconciled_on: '2026-09-22'
+reconciled_on: '2026-09-24'
 status: corrective-a8-complete-hold-removed-recovery-closed
 general_execution_hold: false
 v2_exposure_authorized: false
@@ -15,11 +15,12 @@ authority_register:
   execution_authority: _bmad-output/planning-artifacts/planning-story-manifest.yaml
   lifecycle_tracking_only: _bmad-output/implementation-artifacts/sprint-status.yaml
   approval_authority: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
+  current_decision_policy: docs/governance/approval-policy.md
   precedence_rule: PRD product truth; architecture technical boundaries; approved proposal/register decisions; epics canonical story identities;
     this manifest execution graph; sprint status tracking only.
 approval_binding:
   register_path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  register_sha256: ed3160645e9225b1ffff535f950ec9e583991d464e68a3d6dd775de50a0f49f7
+  register_sha256: 2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff
   approved_pre_generation_gates:
   - A1
   - A2
@@ -35,6 +36,7 @@ approval_binding:
   - A8
   pending_post_generation_gates: []
   approval_inference_forbidden: true
+  current_policy_effect: The 2026-09-24 single-owner policy governs new decisions. Historical role attestations and exact digests below remain provenance; Jerome's accepted Projects coexistence plan is conditional on current candidate checks and does not expose v2 or close Story 1.17.
   statement: A2b, A3, historical A8, and corrective A8 remain explicitly approved for the bytes they bound. On 2026-09-22 A6b was reopened (245c38f5742bc51f9284ab822d31b1032a037ce28d155892c7e2f30990a49483 superseded), the scoped review's blocking finding was fixed and resealed, and A6b was explicitly re-approved against conformance set 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7 (candidate set c5bea4292e918605ba9a4331012806fc0e3e3da818dea66ae68c080929bf2c7f, 196 artifacts). On 2026-09-22 corrective A8 was explicitly approved for Product, Architecture, and Delivery against preparation 3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d (approval record 57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390). The new corrective post-A8 Section 9 passed against the final provenance bytes, so the conditionally authorized hold removal and planning-recovery closure are recorded at 2026-09-22T23:21:13+02:00. v2 remains unexposed and unrouted, Story 1.17 stays open, and no ordinary story was started.
 supersedes_snapshot:
   path: _bmad-output/planning-artifacts/planning-story-manifest.yaml
@@ -55,7 +57,7 @@ provenance:
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
   sha256: 3e869bcc1d543d71254ef0a3848976fea0ee62ed3c5be37583fec2f9e8862ebf
 - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
-  sha256: ed3160645e9225b1ffff535f950ec9e583991d464e68a3d6dd775de50a0f49f7
+  sha256: 2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff
 - path: docs/exit-criteria/nfr-traceability.md
   sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
 - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
@@ -71,9 +73,9 @@ provenance:
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
   sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
-  sha256: 4ccea8a340fabd9c5e02437d7f6c008b53a7e9db26b9dc09a987869a050ba488
+  sha256: bfdf6276b7457819b3836a9da90b36687e6c16e537ff5e3d244edbe4fdede810
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: 4c8f33f0cb00afac3a5541eab7b9d30ec15b832d6114316ff672338cc02f5be7
+  sha256: e89ee58008e3ff4b34d08eac6e8d6a3d357d7df3ce7b1f13eadd53781e8e500c
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
   sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml

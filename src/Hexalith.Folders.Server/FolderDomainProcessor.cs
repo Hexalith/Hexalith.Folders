@@ -483,7 +483,9 @@ public sealed partial class FolderDomainProcessor(
         if (allowed is null
             || string.IsNullOrWhiteSpace(allowed.OrganizationId)
             || string.IsNullOrWhiteSpace(allowed.AuthoritativeTenantId)
-            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier))
+            || string.IsNullOrWhiteSpace(allowed.ActorSafeIdentifier)
+            || string.IsNullOrWhiteSpace(allowed.PrincipalId)
+            || !string.Equals(allowed.ActorSafeIdentifier, allowed.PrincipalId, StringComparison.Ordinal))
         {
             return Rejection(envelope, FolderResultCode.MalformedEvidence, null);
         }
@@ -524,7 +526,7 @@ public sealed partial class FolderDomainProcessor(
             .ReauthorizeMutationAsync(
                 new LayeredFolderAuthorizationContext(
                     allowed.AuthoritativeTenantId,
-                    allowed.ActorSafeIdentifier,
+                    allowed.PrincipalId,
                     allowed.ActorSafeIdentifier,
                     FolderArchiveAclEvidence.ArchiveAction,
                     LayeredFolderOperationPolicy.Mutation(),

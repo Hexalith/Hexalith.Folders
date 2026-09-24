@@ -11,9 +11,9 @@ public sealed record HexalithFoldersGeneratedArtifactsVerification(bool IsCurren
 
 public static class HexalithFoldersGeneratedArtifacts
 {
-    public const string ContractSpineSha256 = "9a0822ac786e601878fd2ee5f9aee431c9974f3caa1c41e5497d88af2f6c4ec1";
+    public const string ContractSpineSha256 = "586eb24b09d5dfec1d9946ef88e00cdb31684333c81b9d76f3862713ce4ab0c0";
     public const string GenerationConfigurationSha256 = "3d5bfcdd90ad711647d76c0188e75f1dfa03aab99ad309041400af462fd9bf8d";
-    public const string GeneratedHelpersSha256 = "33a2768f5a147cce5a804c3ea8b155e844c6648562a7bbf203ddf149725e9ab5";
+    public const string GeneratedHelpersSha256 = "406356322cc231042f2df528420938e291b45d538febe979978106bce02e16fe";
 
     // HelperSchemaVersion is a deterministic SHA-256 prefix of the canonical helper-signature
     // shape (schema names, parameter names in declared order, idempotency field paths per
@@ -277,13 +277,16 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "BindRepository|409|duplicate_binding|duplicate_binding|false|revise_request|visibility",
         "BindRepository|409|idempotency_conflict|idempotency_conflict|false|revise_request|visibility",
         "BindRepository|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
+        "BindRepository|409|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|finalState,visibility",
         "BindRepository|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+        "BindRepository|422|provider_readiness_failed|provider_readiness_failed|false|contact_operator|visibility",
         "BindRepository|422|unsupported_provider_capability|unsupported_provider_capability|false|contact_operator|visibility",
         "BindRepository|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "BindRepository|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
         "BindRepository|503|provider_unavailable|provider_unavailable|true|retry|visibility",
         "BindRepository|503|read_model_unavailable|evidence_unavailable|true|retry|visibility",
         "BindRepository|503|read_model_unavailable|projection_unavailable|true|retry|visibility",
+        "BindRepository|503|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|finalState,visibility",
         "ChangeFile|400|validation_error|content_evidence_invalid|false|revise_request|visibility",
         "ChangeFile|400|validation_error|unsupported_request_schema_version|false|revise_request|visibility",
         "ChangeFile|400|validation_error|validation_error|false|revise_request|visibility",
@@ -362,14 +365,17 @@ internal static class HexalithFoldersGeneratedOperationCatalog
         "CreateRepositoryBackedFolder|404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
         "CreateRepositoryBackedFolder|409|idempotency_conflict|idempotency_conflict|false|revise_request|visibility",
         "CreateRepositoryBackedFolder|409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
+        "CreateRepositoryBackedFolder|409|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|finalState,visibility",
         "CreateRepositoryBackedFolder|409|repository_conflict|repository_conflict|false|revise_request|visibility",
         "CreateRepositoryBackedFolder|413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+        "CreateRepositoryBackedFolder|422|provider_readiness_failed|provider_readiness_failed|false|contact_operator|visibility",
         "CreateRepositoryBackedFolder|422|unsupported_provider_capability|unsupported_provider_capability|false|contact_operator|visibility",
         "CreateRepositoryBackedFolder|429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
         "CreateRepositoryBackedFolder|503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
         "CreateRepositoryBackedFolder|503|provider_unavailable|provider_unavailable|true|retry|visibility",
         "CreateRepositoryBackedFolder|503|read_model_unavailable|evidence_unavailable|true|retry|visibility",
         "CreateRepositoryBackedFolder|503|read_model_unavailable|projection_unavailable|true|retry|visibility",
+        "CreateRepositoryBackedFolder|503|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|finalState,visibility",
         "GetAuditRecord|400|validation_error|idempotency_key_not_allowed|false|revise_request|visibility",
         "GetAuditRecord|400|validation_error|unsupported_read_consistency|false|revise_request|visibility",
         "GetAuditRecord|400|validation_error|validation_error|false|revise_request|visibility",

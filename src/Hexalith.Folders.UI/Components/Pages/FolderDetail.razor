@@ -110,7 +110,7 @@
 
         try
         {
-            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, correlationId, freshness, null, token).ConfigureAwait(false);
+            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, correlationId, ReadConsistencyClass.Read_your_writes, null, token).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (_cts.IsCancellationRequested)
         {

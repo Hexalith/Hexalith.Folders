@@ -674,7 +674,7 @@ public sealed class IncidentStreamPageTests
         // load (via the swallow-denial TryReadAsync helper) and must receive the page's per-load token so the
         // F-7 Cancel affordance can abort it. Asserted via the CancellationToken overload of the read.
         client.Received(1).GetEffectivePermissionsAsync(
-            Arg.Is("folder-1"), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
+            Arg.Is("folder-1"), Arg.Any<string>(), ReadConsistencyClass.Read_your_writes, Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
     }
 
     [Fact]

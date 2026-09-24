@@ -126,7 +126,7 @@ public sealed class RepositoryBackedFolderCreationService(
         }
 
         LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
-            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: false, cancellationToken)
+            .ReauthorizeMutationAsync(authorizationContext, includeFolderAcl: true, cancellationToken)
             .ConfigureAwait(false);
         if (!finalAuthorization.IsAllowed)
         {

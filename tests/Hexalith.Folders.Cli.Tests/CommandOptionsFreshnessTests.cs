@@ -24,4 +24,11 @@ public sealed class CommandOptionsFreshnessTests
     [Fact]
     public void ParseFreshnessShouldMapTheClosedVocabulary()
         => CommandOptions.ParseFreshness("eventually_consistent").ShouldBe(ReadConsistencyClass.Eventually_consistent);
+
+    [Theory]
+    [InlineData("ListFolderFiles", "eventually_consistent")]
+    [InlineData("GetEffectivePermissions", "snapshot_per_task")]
+    [InlineData("GetFolderLifecycleStatus", "read_your_writes")]
+    public void ParseFreshnessShouldRejectKnownClassForWrongOperation(string operationId, string freshness)
+        => Should.Throw<CliUsageException>(() => CommandOptions.ParseFreshness(freshness, operationId));
 }

@@ -1,6 +1,8 @@
 # Governance And Completeness CI Gates
 
-The governance/completeness gate is the local and CI entry point for Story 1.16 checks. It validates exit-criteria evidence (including fresh, exact approval records for approval-backed criteria), idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exceptions, and parity completeness without Aspire, Dapr sidecars, provider credentials, network calls, or nested submodule initialization.
+The governance/completeness gate is the local and CI entry point for Story 1.16 checks. It validates exit-criteria evidence (including exact historical approval records for approval-backed criteria), idempotency corpus consumption, opt-in pattern examples, tenant-prefixed cache-key exceptions, and parity completeness without Aspire, Dapr sidecars, provider credentials, network calls, or nested submodule initialization.
+
+The [current project decision policy](../governance/approval-policy.md) uses one decision from Jerome for new proposals. The role and digest checks below validate historical exit-criteria records; their reapproval wording describes the old process. They do not require Jerome to make separate persona statements or recite hashes for new decisions. Technical evidence checks remain in force.
 
 ## Local Command
 
@@ -55,7 +57,7 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `approval_approver_generic`: an approval record names a generic approver (for example "Legal", "PM", or "signed") or repeats the authority name instead of an exact signer.
 - `approval_date_invalid`: an approval record's `approved_on`, or a criterion's `review_by`, is missing or is not a valid `yyyy-MM-dd` date.
 - `approval_date_future`: an approval record's `approved_on` is dated in the future.
-- `approval_stale`: an approval record is older than the mandatory `approval_policy.max_age_days` window, or a per-criterion `review_by` date has already passed.
+- `approval_stale`: an explicit per-criterion `review_by` date has passed; legacy synthetic checks also exercise a configured age window. The current project policy sets the global age window to zero (disabled).
 - `approval_evidence_version_mismatch`: an approval-backed artifact or approval record does not carry the governed evidence version.
 - `approval_evidence_digest_missing`: an approval-backed artifact or approval record omits its required SHA-256 digest.
 - `approval_evidence_digest_mismatch`: an approval-backed artifact or approval record's SHA-256 digest does not match the canonical artifact.
@@ -108,10 +110,10 @@ Diagnostics may include gate names, rule IDs, criterion IDs, sample IDs, operati
 
 ## Approval Records
 
-Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention, `C4` input limits, `C7` lock/authorization timing, and `C12` provider drift) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryFreshExactApprovalRecords` enforces the generic floor, while `C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` applies C7's stricter bounded exact-value checks:
+Approval-backed criteria (those whose `approved` status rests on a human governance sign-off rather than a machine-validated gate — today `C3` retention, `C4` input limits, `C7` lock/authorization timing, and `C12` provider drift) must carry a structured `approval` block in `docs/exit-criteria/c0-c13-governance-evidence.yaml`, not just a free-text `result_summary`. Each block declares the `required_authorities` and one exact `records` entry per authority with a named `approver` and a `yyyy-MM-dd` `approved_on` date. `GovernanceCompletenessGateTests.ApprovalBackedCriteriaCarryExactHistoricalApprovalRecords` enforces the generic floor, while `C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` applies C7's stricter bounded exact-value checks:
 
 - Every required authority has exactly one record with a specific (non-generic, non-authority-name) approver and a valid, non-future `approved_on`.
-- `approval_policy.max_age_days` is a mandatory global freshness window: an approval older than the window fails closed and forces a governance re-review. This time-based redden is intentional — refresh the sign-off (or widen the window by decision) to clear it.
+- `approval_policy.max_age_days` is zero for current project decisions: historical approvals do not expire just because time passes. A positive value remains supported for legacy fixture checks.
 - An optional per-criterion `review_by` date must be a valid date strictly in the future.
 
 C7 additionally binds `evidence_version`, the SHA-256 digest of `docs/exit-criteria/c7-lock-authorization-timing.md`, and the four whole-second timing values to both Architecture and Security records. `GovernanceCompletenessGateTests.C7DecisionPackageBindsProfileVersionDigestAndExactApprovals` rejects value, version, digest, authority, signer, or date drift. A C7 artifact change reopens OQ1 until both authorities approve the new version and digest. This governance approval does not claim runtime coverage: NFR7 and NFR21 remain `reference-pending` until renewal and revocation behavior is executable and evidenced.
@@ -128,7 +130,7 @@ The manifest deliberately keeps Stories 12.1,
 12.3, and 4.20 and FR32-FR35 runtime evidence incomplete; design approval is not runtime completion.
 
 OQ3 uses the same separate-manifest shape because it governs the authorization denominator rather than one
-C0-C13 criterion row. `GovernanceCompletenessGateTests.Oq3AuthorizationMatrixPackageBindsVersionDigestApprovalsAndRuntimePosture`
+C0-C13 criterion row. `GovernanceCompletenessGateTests.Oq3AuthorizationMatrixPackageBindsVersionDigestAndRuntimePosture`
 binds `docs/contract/authorization-matrix.md` version `1.0.0` and its LF-stable SHA-256 digest to exactly one
 Security and one PM approval by Administrator dated 2026-09-14, and
 `AuthorizationMatrixContractTests` enforces the denominator itself: 49 Contract Spine operations mapped exactly
@@ -139,6 +141,9 @@ diagnostics. A matrix content/version/digest, required-authority, signer-identit
 reopens both approvals. The manifest deliberately keeps Stories 12.1, 4.19, 4.20, 4.21, 6.14, and 10.8 and
 FR8-FR10 runtime evidence incomplete, and the matrix records rather than hides the current Contract Spine and
 runtime drift under gap IDs `G1` through `G11`, whose downstream owners are PD10, OQ9, Story 12.1, and Epic 13.
+The current v2 candidate check verifies that the generated conformance set names the actual matrix digest;
+it does not compare current candidate bytes with a historical human approval. Current candidate inventory
+reproduction is checked separately by `Pd10ConformanceSetTests`.
 
 OQ4 uses the same separate-manifest shape because it governs the provider compatibility catalog rather than a
 single C0-C13 criterion row, while also carrying the C12 criterion approval.

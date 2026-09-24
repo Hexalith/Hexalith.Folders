@@ -11,4 +11,7 @@ public sealed record LayeredFolderAuthorizationAllowedContext(
     IReadOnlyList<AuthorizationLayer> PolicyLayers)
 {
     public string? OrganizationId { get; init; }
+
+    /// <summary>The authenticated principal used for the authorization decision.</summary>
+    public string? PrincipalId { get; init; }
 }

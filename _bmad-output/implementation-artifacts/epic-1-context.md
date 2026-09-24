@@ -4,7 +4,7 @@
 
 ## Goal
 
-Give API consumers and adapter implementers one versioned OpenAPI contract for REST, the generated .NET SDK, CLI, MCP, schemas, errors, and parity evidence, so later work reuses one set of operation names, lifecycle terms, authorization outcomes, and idempotency rules. This epic scaffolds the module, authors that spine, generates the client and parity inventory, and gates drift and leakage. The corrected authorization contract is consumable only after its digest-bound approvals.
+Give API consumers and adapter implementers one versioned OpenAPI contract for REST, the generated .NET SDK, CLI, MCP, schemas, errors, and parity evidence, so later work reuses one set of operation names, lifecycle terms, authorization outcomes, and idempotency rules. This epic scaffolds the module, authors that spine, generates the client and parity inventory, and gates drift and leakage. The v2 authorization candidate has digest-bound approval but is not yet exposed for production consumption.
 
 ## Stories
 
@@ -38,7 +38,7 @@ Errors are problem details with category, code, message, correlation id, retryab
 
 File contents, diffs, generated context, provider payloads, tokens, credentials, secrets, absolute paths, and unauthorized existence stay out of events, logs, projections, audit, diagnostics, errors, and generated evidence. Authorized context-read responses may contain bounded content after authorization and path policy. Visible, redacted, withheld, unknown, and missing stay distinct from read-model availability. File mutations do not auto-commit; move or rename is add plus remove under one task and one commit.
 
-Supported production exposure is version 2. Version 1 is historical. A discovered external v1 consumer blocks release until a consumer-specific migration is approved. A post-approval change invalidates that approval; ordinary story execution and v2 exposure remain unauthorized in the current manifest.
+The target production contract is version 2. Version 1 is historical. A discovered external v1 consumer blocks release until a consumer-specific migration is approved. A6b, Section 9 conformance, and corrective A8 were accepted for their bound candidate bytes, and the general planning hold is removed. Changes to those bytes require new approval. Story 1.17 has scoped execution authorization; closure, other ordinary-story execution, and v2 exposure remain unauthorized.
 
 Build with .NET 10, `.slnx`, central package management, nullable references, implicit usings, and warnings as errors. Debug uses sibling project references; Release or an explicit NuGet-deps switch uses centrally versioned packages. Only root-declared submodules are required. Placeholders must not look like release evidence, and the contract is repository-backed.
 
@@ -58,6 +58,6 @@ Preserve the console vocabulary without designing the console. Disposition label
 
 ## Cross-Story Dependencies
 
-Scaffold and root policy precede fixtures and the pre-spine decision record, then equivalence rules, the shared spine, operation groups, SDK and parity generation, the CI gates, and v2 publication. Publication is a governed aggregate: the parent closes only after every slice, the signed matrix digest, conformance, and the freeze decision. Relock-lane generation does not close the story or expose version 2.
+Scaffold and root policy precede fixtures and the pre-spine decision record, then equivalence rules, the shared spine, operation groups, SDK and parity generation, the CI gates, and v2 publication. Story 1.17 is a governed aggregate of bounded slices A–G; its parent closes only after all slices and post-freeze contract, drift, parity, safe-denial, and adapter evidence pass. Candidate generation and prior approvals do not close the story or expose version 2.
 
-Later epics consume this contract and do not rename operations, reopen error fields, or hand-author parity rows. Workspace runtime, durable content, the console, and security hardening stay separate; hardening reuses these envelopes. Epic numbers are not execution order. The manifest rank graph governs delivery, and the execution hold remains until relock approvals and the freeze decision.
+Later epics consume this contract and do not rename operations, reopen error fields, or hand-author parity rows. Workspace runtime, durable content, the console, and security hardening stay separate; hardening reuses these envelopes. Epic numbers are not execution order; the manifest rank graph and explicit execution authorization govern delivery.

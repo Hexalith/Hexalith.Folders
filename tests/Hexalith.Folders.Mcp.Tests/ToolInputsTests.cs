@@ -36,6 +36,13 @@ public sealed class ToolInputsTests
     public void SuppliedUnknownOrBlankFreshnessIsAUsageError(string token)
         => Should.Throw<McpUsageException>(() => ToolInputs.ParseFreshness(token, "GetFolderLifecycleStatus"));
 
+    [Theory]
+    [InlineData("ListFolderFiles", "eventually_consistent")]
+    [InlineData("GetEffectivePermissions", "snapshot_per_task")]
+    [InlineData("GetFolderLifecycleStatus", "read_your_writes")]
+    public void KnownFreshnessForAnotherOperationIsAUsageError(string operationId, string token)
+        => Should.Throw<McpUsageException>(() => ToolInputs.ParseFreshness(token, operationId));
+
     [Fact]
     public async Task SuppliedFreshnessIsSentOnTheWire()
     {

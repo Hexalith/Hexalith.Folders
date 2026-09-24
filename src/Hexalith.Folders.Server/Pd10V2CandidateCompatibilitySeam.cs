@@ -144,9 +144,27 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 return;
             }
 
-            ITenantContextAccessor tenant = context.RequestServices.GetRequiredService<ITenantContextAccessor>();
-            if (string.IsNullOrWhiteSpace(tenant.AuthoritativeTenantId)
-                || string.IsNullOrWhiteSpace(tenant.PrincipalId))
+            bool hasAuthenticatedIdentity;
+            try
+            {
+                ITenantContextAccessor tenant = context.RequestServices.GetRequiredService<ITenantContextAccessor>();
+                hasAuthenticatedIdentity = !string.IsNullOrWhiteSpace(tenant.AuthoritativeTenantId)
+                    && !string.IsNullOrWhiteSpace(tenant.PrincipalId);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                ILoggerFactory? loggerFactory = context.RequestServices.GetService<ILoggerFactory>();
+                if (loggerFactory is not null)
+                {
+                    LogAuthorizationEvaluationFailed(loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)));
+                }
+
+                await AuditAsync(context, descriptor.OperationId, ToKebabCase(descriptor.OperationFamily.ToString()), "deny").ConfigureAwait(false);
+                await WriteProblemAsync(context, Pd10AuthorizationOutcome.AuthorityUnavailable, null).ConfigureAwait(false);
+                return;
+            }
+
+            if (!hasAuthenticatedIdentity)
             {
                 await AuditAsync(
                     context,
@@ -190,8 +208,7 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 if (loggerFactory is not null)
                 {
                     LogAuthorizationEvaluationFailed(
-                        loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)),
-                        ex);
+                        loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)));
                 }
 
                 authorization = Unusable(descriptor);
@@ -1389,12 +1406,26 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         string operationFamily,
         string result)
     {
-        ITenantContextAccessor? tenant = context.RequestServices.GetService<ITenantContextAccessor>();
+        string actorId = "actor_absent";
+        string tenantId = "tenant_absent";
+        try
+        {
+            ITenantContextAccessor? tenant = context.RequestServices.GetService<ITenantContextAccessor>();
+            actorId = tenant?.PrincipalId ?? actorId;
+            tenantId = tenant?.AuthoritativeTenantId ?? tenantId;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // The audit event still records a safe denial when identity evidence itself fails.
+            actorId = "actor_absent";
+            tenantId = "tenant_absent";
+        }
+
         IPd10AuthorizationAuditSink sink = context.RequestServices.GetRequiredService<IPd10AuthorizationAuditSink>();
         await sink.WriteAsync(
             new Pd10AuthorizationAuditRecord(
-                tenant?.PrincipalId ?? "actor_absent",
-                tenant?.AuthoritativeTenantId ?? "tenant_absent",
+                actorId,
+                tenantId,
                 operation,
                 operationFamily,
                 result,
@@ -1544,7 +1575,10 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         V2AccessState[] negativeStates = states.Where(IsNegativeAccessState).Distinct().ToArray();
         if (negativeStates.Length > 0)
         {
-            return negativeStates[0];
+            // Unusable evidence must win over a fresh negative fact regardless of claim order.
+            return negativeStates.Contains(V2AccessState.Stale)
+                ? V2AccessState.Stale
+                : negativeStates.Min();
         }
 
         V2AccessState claimedState = states.FirstOrDefault(V2AccessState.TenantMember);
@@ -1608,7 +1642,7 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         EventId = 1018,
         Level = LogLevel.Error,
         Message = "PD10 candidate authorization evaluation failed.")]
-    private static partial void LogAuthorizationEvaluationFailed(ILogger logger, Exception exception);
+    private static partial void LogAuthorizationEvaluationFailed(ILogger logger);
 
     private static string ToKebabCase(string value)
     {
