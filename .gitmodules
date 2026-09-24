@@ -22,3 +22,6 @@
 [submodule "Hexalith.PolymorphicSerializations"]
 	path = references/Hexalith.PolymorphicSerializations
 	url = https://github.com/Hexalith/Hexalith.PolymorphicSerializations.git
+[submodule "Hexalith.Projects"]
+	path = references/Hexalith.Projects
+	url = https://github.com/Hexalith/Hexalith.Projects.git
