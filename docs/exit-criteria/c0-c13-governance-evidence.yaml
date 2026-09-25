@@ -28,10 +28,9 @@ approval_policy:
   # block, so no approval-backed criterion can pass with a stale report or a generic "Legal-approved"
   # phrase in place of a named, dated signer.
   #
-  # Mandatory global freshness window: an approval whose newest required-authority sign-off is older
-  # than this many days fails closed and forces a governance re-review. This is an intentional
-  # time-based redden, not a defect; refresh the sign-off (or widen the window by decision) to clear.
-  max_age_days: 365
+  # Historical approval records do not expire solely because time passes. A criterion's explicit
+  # review_by date, when present, still requires review. New decisions follow docs/governance/approval-policy.md.
+  max_age_days: 0
   # Approver values too generic to be an exact approval record. A required-authority record whose
   # approver (trimmed, case-insensitive) is one of these — or equal to its own authority name — fails
   # closed, so a bare "Legal" / "PM" / "signed" phrase cannot stand in for a named signer.

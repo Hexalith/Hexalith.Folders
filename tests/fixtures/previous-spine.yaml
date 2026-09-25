@@ -1,6 +1,6 @@
 version: pd10-v2-candidate-baseline
 source_marker: generated-from-pd10-v2-openapi
-contract_sha256: 9a0822ac786e601878fd2ee5f9aee431c9974f3caa1c41e5497d88af2f6c4ec1
+contract_sha256: 586eb24b09d5dfec1d9946ef88e00cdb31684333c81b9d76f3862713ce4ab0c0
 historical_v1_sha256: 3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2
 intent: PD10 v2 baseline with route, status-code, and canonical-error fingerprints for symmetric drift detection.
 ownership:

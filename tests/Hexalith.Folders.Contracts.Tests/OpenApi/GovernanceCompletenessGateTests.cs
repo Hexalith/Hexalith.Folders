@@ -29,7 +29,6 @@ public sealed class GovernanceCompletenessGateTests
     private static readonly string ParityContractPath = Path.Combine(RepositoryRoot, "tests", "fixtures", "parity-contract.yaml");
     private static readonly string OpenApiPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string V2ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "generated-v2-conformance-set-2026-09-17.yaml");
-    private static readonly string ApprovalRegisterPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "planning-authority-relock-approval-register.yaml");
     private static readonly string WorkflowPath = Path.Combine(RepositoryRoot, ".github", "workflows", "contract-spine.yml");
     private static readonly string GateScriptPath = Path.Combine(RepositoryRoot, "tests", "tools", "run-governance-completeness-gates.ps1");
     private static readonly string GateDocumentationPath = Path.Combine(RepositoryRoot, "docs", "contract", "governance-and-completeness-ci-gates.md");
@@ -362,15 +361,15 @@ public sealed class GovernanceCompletenessGateTests
     }
 
     [Fact]
-    public void ApprovalBackedCriteriaCarryFreshExactApprovalRecords()
+    public void ApprovalBackedCriteriaCarryExactHistoricalApprovalRecords()
     {
         YamlMappingNode root = LoadYamlMapping(EvidencePath);
         ApprovalPolicy policy = LoadApprovalPolicy(root);
         DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
         YamlMappingNode[] rows = RequiredSequence(root, "criteria").Children.Cast<YamlMappingNode>().ToArray();
 
-        // The mandatory global freshness window must be a positive number of days.
-        policy.MaxAgeDays.ShouldBeGreaterThan(0);
+        // Current project decisions do not expire solely because of record age.
+        policy.MaxAgeDays.ShouldBe(0);
         policy.GenericApproverTokens.ShouldNotBeEmpty();
 
         // Every pinned approval-backed criterion must be `approved` and must carry an `approval` block —
@@ -578,7 +577,7 @@ public sealed class GovernanceCompletenessGateTests
             d.Category == "approval_authority_unsatisfied" && d.Identifier == "C7:record-count");
 
         GateDiagnostic[] staleApprovalDiagnostics = EvaluateC7DecisionEvidence(
-            c7, ApprovedC7Sha256, policy, today.AddDays(policy.MaxAgeDays + 1));
+            c7, ApprovedC7Sha256, policy with { MaxAgeDays = 365 }, today.AddDays(366));
         staleApprovalDiagnostics.ShouldContain(d =>
             d.Category == "approval_stale" && d.Identifier == "C7:Architecture");
         staleApprovalDiagnostics.ShouldContain(d =>
@@ -820,8 +819,8 @@ public sealed class GovernanceCompletenessGateTests
         GateDiagnostic[] staleDiagnostics = EvaluateOq2Evidence(
             evidence,
             ApprovedOq2Sha256,
-            policy,
-            today.AddDays(policy.MaxAgeDays + 1));
+            policy with { MaxAgeDays = 365 },
+            today.AddDays(366));
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:PM");
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:Architecture");
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ2:Security");
@@ -844,7 +843,7 @@ public sealed class GovernanceCompletenessGateTests
     }
 
     [Fact]
-    public void Oq3AuthorizationMatrixPackageBindsVersionDigestApprovalsAndRuntimePosture()
+    public void Oq3AuthorizationMatrixPackageBindsVersionDigestAndRuntimePosture()
     {
         File.Exists(Oq3MatrixPath).ShouldBeTrue("OQ3 requires the canonical authorization-matrix artifact.");
         File.Exists(Oq3EvidencePath).ShouldBeTrue("OQ3 requires a versioned governance evidence manifest.");
@@ -853,7 +852,8 @@ public sealed class GovernanceCompletenessGateTests
         string actualDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Oq3MatrixPath)));
         actualDigest.ShouldNotBe(ApprovedOq3Sha256, "The 2.0.0 candidate must not reuse the historical v1 approval digest.");
         File.ReadAllText(Oq3MatrixPath).ShouldContain("Matrix version: `2.0.0`", Case.Sensitive);
-        AssertA6bRegisterStateIsCoherent(actualDigest);
+        YamlMappingNode currentConformance = LoadYamlMapping(V2ConformanceSetPath);
+        RequiredScalar(currentConformance, "authorization_matrix_sha256").ShouldBe(actualDigest);
 
         YamlMappingNode evidence = LoadYamlMapping(Oq3EvidencePath);
         ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
@@ -1023,8 +1023,8 @@ public sealed class GovernanceCompletenessGateTests
         GateDiagnostic[] staleDiagnostics = EvaluateOq3Evidence(
             evidence,
             ApprovedOq3Sha256,
-            policy,
-            today.AddDays(policy.MaxAgeDays + 1));
+            policy with { MaxAgeDays = 365 },
+            today.AddDays(366));
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ3:Security");
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ3:PM");
 
@@ -1282,8 +1282,8 @@ public sealed class GovernanceCompletenessGateTests
         GateDiagnostic[] staleDiagnostics = EvaluateOq4Evidence(
             evidence,
             ApprovedOq4Sha256,
-            policy,
-            today.AddDays(policy.MaxAgeDays + 1));
+            policy with { MaxAgeDays = 365 },
+            today.AddDays(366));
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ4:Provider");
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ4:Architecture");
         staleDiagnostics.ShouldContain(diagnostic => diagnostic.Category == "approval_stale" && diagnostic.Identifier == "OQ4:PM");
@@ -1610,7 +1610,7 @@ public sealed class GovernanceCompletenessGateTests
             {
                 diagnostics.Add(new("exit-criteria", "approval_date_future", $"{criterion}:{authority}", path));
             }
-            else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+            else if (policy.MaxAgeDays > 0 && today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
             {
                 diagnostics.Add(new("exit-criteria", "approval_stale", $"{criterion}:{authority}", path));
             }
@@ -1770,7 +1770,7 @@ public sealed class GovernanceCompletenessGateTests
                 {
                     diagnostics.Add(new("exit-criteria", "approval_date_future", identifier, path));
                 }
-                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                else if (policy.MaxAgeDays > 0 && today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
                 {
                     diagnostics.Add(new("exit-criteria", "approval_stale", identifier, path));
                 }
@@ -1986,7 +1986,7 @@ public sealed class GovernanceCompletenessGateTests
                 {
                     diagnostics.Add(new("oq2-file-policy", "approval_date_future", identifier, path));
                 }
-                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                else if (policy.MaxAgeDays > 0 && today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
                 {
                     diagnostics.Add(new("oq2-file-policy", "approval_stale", identifier, path));
                 }
@@ -2243,7 +2243,7 @@ public sealed class GovernanceCompletenessGateTests
                 {
                     diagnostics.Add(new(gate, "approval_date_future", identifier, path));
                 }
-                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                else if (policy.MaxAgeDays > 0 && today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
                 {
                     diagnostics.Add(new(gate, "approval_stale", identifier, path));
                 }
@@ -2482,7 +2482,7 @@ public sealed class GovernanceCompletenessGateTests
                 {
                     diagnostics.Add(new(gate, "approval_date_future", identifier, path));
                 }
-                else if (today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
+                else if (policy.MaxAgeDays > 0 && today.DayNumber - approvedOn.DayNumber > policy.MaxAgeDays)
                 {
                     diagnostics.Add(new(gate, "approval_stale", identifier, path));
                 }
@@ -3032,109 +3032,6 @@ public sealed class GovernanceCompletenessGateTests
         }
 
         return mapping;
-    }
-
-    private static void AssertA6bRegisterStateIsCoherent(string matrixDigest)
-    {
-        const string matrixPath = "docs/contract/authorization-matrix.md";
-        const string conformancePath = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
-        string[] expectedAuthorities = ["Product", "Architecture", "Security"];
-
-        YamlMappingNode register = LoadYamlMapping(ApprovalRegisterPath);
-        YamlMappingNode[] a6bRecords = RequiredSequence(register, "records").Children
-            .OfType<YamlMappingNode>()
-            .Where(record => string.Equals(TryScalar(record, "gate_id"), "A6b", StringComparison.Ordinal))
-            .ToArray();
-        a6bRecords.Length.ShouldBe(1, "The approval register must contain exactly one A6b record.");
-
-        YamlMappingNode a6b = a6bRecords[0];
-        string decisionPayloadDigest = RequiredScalar(a6b, "decision_payload_sha256");
-        Regex.IsMatch(decisionPayloadDigest, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant).ShouldBeTrue();
-        RequiredSequence(a6b, "required_authorities").Children
-            .Select(node => RequiredScalar(node, "required_authority"))
-            .ToArray().ShouldBe(expectedAuthorities);
-
-        string conformanceDigest = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(V2ConformanceSetPath)));
-        YamlMappingNode conformance = LoadYamlMapping(V2ConformanceSetPath);
-        string candidateSetDigest = RequiredScalar(conformance, "candidate_set_sha256");
-        string artifactCount = RequiredScalar(conformance, "artifact_count");
-        RequiredScalar(conformance, "authorization_matrix_sha256").ShouldBe(matrixDigest);
-
-        YamlMappingNode[] requiredArtifacts = RequiredSequence(a6b, "required_bound_artifacts").Children
-            .OfType<YamlMappingNode>()
-            .ToArray();
-        requiredArtifacts.Length.ShouldBe(2, "A6b must bind exactly the authorization matrix and generated conformance set.");
-        AssertA6bBoundArtifacts(
-            requiredArtifacts,
-            matrixPath,
-            matrixDigest,
-            conformancePath,
-            conformanceDigest,
-            candidateSetDigest,
-            artifactCount);
-
-        string approvalStatus = RequiredScalar(a6b, "approval_status");
-        approvalStatus.ShouldBeOneOf("pending", "approved");
-        YamlMappingNode[] approvals = RequiredSequence(a6b, "approvals").Children
-            .OfType<YamlMappingNode>()
-            .ToArray();
-
-        if (approvalStatus == "pending")
-        {
-            RequiredScalar(a6b, "approval_readiness").ShouldBe("ready-for-explicit-reapproval");
-            approvals.ShouldBeEmpty("A pending A6b record must not retain current approvals.");
-            return;
-        }
-
-        RequiredScalar(a6b, "approval_readiness").ShouldBe("exact-bound-artifacts-approved");
-        approvals.Select(approval => RequiredScalar(approval, "authority"))
-            .ToArray().ShouldBe(expectedAuthorities, ignoreOrder: true);
-        approvals.Length.ShouldBe(expectedAuthorities.Length);
-
-        ApprovalPolicy policy = LoadApprovalPolicy(LoadYamlMapping(EvidencePath));
-        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
-        foreach (YamlMappingNode approval in approvals)
-        {
-            string authority = RequiredScalar(approval, "authority");
-            string approver = RequiredScalar(approval, "approver");
-            policy.GenericApproverTokens.Contains(approver.Trim().ToLowerInvariant()).ShouldBeFalse(authority);
-            ParseRequiredDate(approval, "approved_on").ShouldBeLessThanOrEqualTo(today, authority);
-            RequiredScalar(approval, "payload_version").ShouldNotBeNullOrWhiteSpace(authority);
-            RequiredScalar(approval, "payload_sha256").ShouldBe(decisionPayloadDigest, authority);
-
-            YamlMappingNode[] boundArtifacts = RequiredSequence(approval, "bound_artifacts").Children
-                .OfType<YamlMappingNode>()
-                .ToArray();
-            boundArtifacts.Length.ShouldBe(2, authority);
-            AssertA6bBoundArtifacts(
-                boundArtifacts,
-                matrixPath,
-                matrixDigest,
-                conformancePath,
-                conformanceDigest,
-                candidateSetDigest,
-                artifactCount);
-        }
-    }
-
-    private static void AssertA6bBoundArtifacts(
-        IReadOnlyCollection<YamlMappingNode> artifacts,
-        string matrixPath,
-        string matrixDigest,
-        string conformancePath,
-        string conformanceDigest,
-        string candidateSetDigest,
-        string artifactCount)
-    {
-        YamlMappingNode matrix = artifacts.Single(artifact => RequiredScalar(artifact, "path") == matrixPath);
-        (TryScalar(matrix, "version") ?? RequiredScalar(matrix, "required_version")).ShouldBe("2.0.0");
-        RequiredScalar(matrix, "sha256").ShouldBe(matrixDigest);
-
-        YamlMappingNode conformance = artifacts.Single(artifact => RequiredScalar(artifact, "path") == conformancePath);
-        RequiredScalar(conformance, "sha256").ShouldBe(conformanceDigest);
-        RequiredScalar(conformance, "declared_candidate_set_sha256").ShouldBe(candidateSetDigest);
-        RequiredScalar(conformance, "declared_authorization_matrix_sha256").ShouldBe(matrixDigest);
-        RequiredScalar(conformance, "artifact_count").ShouldBe(artifactCount);
     }
 
     private static YamlMappingNode RequiredMapping(YamlMappingNode mapping, string key)

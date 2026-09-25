@@ -186,6 +186,7 @@ public sealed class Pd10V2ContractTests
             "409|idempotency_key_expired|idempotency_key_expired|false|refresh_state_then_submit_with_new_key|visibility",
             "409|lock_conflict|workspace_locked|true|retry|lockStatus,visibility",
             "409|projection_stale|projection_stale|true|retry|visibility",
+            "409|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|finalState,visibility",
             "409|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|visibility",
             "409|repository_conflict|repository_conflict|false|revise_request|visibility",
             "409|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|visibility",
@@ -218,6 +219,7 @@ public sealed class Pd10V2ContractTests
             "503|read_model_unavailable|evidence_unavailable|true|retry|visibility",
             "503|read_model_unavailable|projection_unavailable|true|retry|visibility",
             "503|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|visibility",
+            "503|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|finalState,visibility",
             "503|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|visibility",
         ];
         inventory.Children.Cast<YamlMappingNode>()

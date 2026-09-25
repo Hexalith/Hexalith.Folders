@@ -114,6 +114,7 @@ src/Hexalith.Folders/Aggregates/Folder/WorkspacePreparationService.cs
 src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs
 src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs
 src/Hexalith.Folders/Aggregates/Organization/OrganizationStreamName.cs
+src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationAllowedContext.cs
 src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs
 src/Hexalith.Folders/Authorization/PreauthorizedRequestContext.cs
 src/Hexalith.Folders/Authorization/PreauthorizedRequestState.cs
@@ -142,7 +143,10 @@ tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2CandidateContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2ContractTests.cs
 tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs
 tests/Hexalith.Folders.IntegrationTests/AdapterParity/CrossAdapterBehavioralParityTests.cs
+tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs
 tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
+tests/Hexalith.Folders.IntegrationTests/EndToEnd/RecordingPd10LoggerProvider.cs
+tests/Hexalith.Folders.IntegrationTests/MismatchedArchiveIdentityAccessor.cs
 tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
 tests/Hexalith.Folders.IntegrationTests/V2CandidateTestClient.cs
 tests/Hexalith.Folders.Mcp.Tests/MetadataOnlyOutputTests.cs
@@ -158,7 +162,13 @@ tests/Hexalith.Folders.Server.Tests/Pd10AuthorizationAuditSinkTests.cs
 tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationCatalogTests.cs
 tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationExecutorTests.cs
 tests/Hexalith.Folders.Testing.Tests/ContractRulesArtifactTests.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingDapr.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclAllowingValidator.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclFixedTimeProvider.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclReauthorizationTests.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclRevokingPermissions.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationMetadataLeakageTests.cs
+tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderRepositoryBackedCreationGateTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderStreamShapeTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspaceCommitServiceTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspaceFileMutationServiceTests.cs

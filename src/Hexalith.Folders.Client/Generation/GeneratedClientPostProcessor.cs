@@ -53,6 +53,14 @@ internal static class GeneratedClientPostProcessor
 
         AssertPartialRangeIsSuccessful(source);
 
+        // The readiness route returns the operator discriminator. Fail generation if
+        // NSwag ever binds the method to the consumer branch of a readiness union.
+        if (!source.Contains("Task<ProviderReadinessOperator> ValidateProviderReadinessAsync(", StringComparison.Ordinal)
+            || !source.Contains("ReadObjectResponseAsync<ProviderReadinessOperator>(response_", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Generated provider readiness SDK must bind the authorized-operator response.");
+        }
+
         string[] strictWireTypes =
         [
             "PathMetadata",

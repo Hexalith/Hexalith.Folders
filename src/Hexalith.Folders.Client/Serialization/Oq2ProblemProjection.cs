@@ -55,6 +55,7 @@ internal static class Oq2ProblemProjection
         TupleKey(409, "lock_conflict", "workspace_locked", true, "retry", ["lockStatus", "visibility"]),
         TupleKey(409, "projection_stale", "projection_stale", true, "retry", ["visibility"]),
         TupleKey(409, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["visibility"]),
+        TupleKey(409, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["finalState", "visibility"]),
         TupleKey(409, "repository_conflict", "repository_conflict", false, "revise_request", ["visibility"]),
         TupleKey(409, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["visibility"]),
         TupleKey(410, "lock_expired", "lock_expired", true, "retry", ["leaseStatus", "visibility"]),
@@ -86,6 +87,7 @@ internal static class Oq2ProblemProjection
         TupleKey(503, "read_model_unavailable", "projection_unavailable", true, "retry", ["visibility"]),
         TupleKey(503, "read_model_unavailable", "evidence_unavailable", true, "retry", ["visibility"]),
         TupleKey(503, "reconciliation_required", "reconciliation_required", false, "wait_for_reconciliation", ["visibility"]),
+        TupleKey(503, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["finalState", "visibility"]),
         TupleKey(503, "unknown_provider_outcome", "unknown_provider_outcome", false, "wait_for_reconciliation", ["visibility"]),
     };
 
@@ -140,6 +142,9 @@ internal static class Oq2ProblemProjection
     private static readonly ExactProblemTuple CandidateIdempotencyAdmissionUnavailable = new(
         503, "idempotency_admission_unavailable", "idempotency_admission_unavailable", "Candidate request or downstream outcome",
         "The request could not be completed.", true, "retry", "metadata_only");
+    private static readonly ExactProblemTuple CandidateUnknownProviderOutcome = new(
+        503, "unknown_provider_outcome", "unknown_provider_outcome", "Candidate request or downstream outcome",
+        "The request could not be completed.", false, "wait_for_reconciliation", "metadata_only", "unknown_provider_outcome");
     private static readonly ExactProblemTuple CandidateArchiveStateUnsupported = new(
         503, "internal_error", "archive_state_unsupported", "Candidate request or downstream outcome",
         "The request could not be completed.", false, "no_action", "metadata_only");
@@ -377,8 +382,7 @@ internal static class Oq2ProblemProjection
         ];
         if (wire.Properties().Select(static property => property.Name).Order(StringComparer.Ordinal)
             .SequenceEqual(expectedNames.Order(StringComparer.Ordinal), StringComparer.Ordinal) is false
-            || wire["details"] is not JObject details
-            || details.Properties().Select(static property => property.Name).SequenceEqual(["visibility"], StringComparer.Ordinal) is false)
+            || wire["details"] is not JObject details)
         {
             return (null, "exact_problem_shape_mismatch");
         }
@@ -446,6 +450,11 @@ internal static class Oq2ProblemProjection
         }
 
         allowed.Add(CandidateProjectionUnavailable);
+        if (resultTypeName is "CreateRepositoryBackedFolderUnavailableProblem" or "BindRepositoryUnavailableProblem")
+        {
+            allowed.Add(CandidateUnknownProviderOutcome);
+        }
+
         allowed.Add(AuthorityUnavailable);
         return allowed.Distinct().ToArray();
     }
@@ -464,8 +473,6 @@ internal static class Oq2ProblemProjection
         if (!wire.Properties().Select(static property => property.Name).Order(StringComparer.Ordinal)
                 .SequenceEqual(expectedNames.Order(StringComparer.Ordinal), StringComparer.Ordinal)
             || wire["details"] is not JObject details
-            || !details.Properties().Select(static property => property.Name)
-                .SequenceEqual(["visibility"], StringComparer.Ordinal)
             || wire["correlationId"]?.Type != JTokenType.String
             || !IsOpaqueIdentifier(wire.Value<string>("correlationId"))
             || !allowed.Any(tuple => tuple.Matches(wire, details)))
@@ -528,7 +535,8 @@ internal static class Oq2ProblemProjection
         string Message,
         bool Retryable,
         string ClientAction,
-        string Visibility)
+        string Visibility,
+        string? FinalState = null)
     {
         public bool Matches(JObject wire, JObject details)
             => wire["type"]?.Type == JTokenType.String
@@ -540,6 +548,10 @@ internal static class Oq2ProblemProjection
                 && wire["retryable"]?.Type == JTokenType.Boolean
                 && wire["clientAction"]?.Type == JTokenType.String
                 && details["visibility"]?.Type == JTokenType.String
+                && details.Properties().Select(static property => property.Name).Order(StringComparer.Ordinal)
+                    .SequenceEqual(FinalState is null ? ["visibility"] : ["finalState", "visibility"], StringComparer.Ordinal)
+                && (FinalState is null || (details["finalState"]?.Type == JTokenType.String
+                    && details.Value<string>("finalState") == FinalState))
                 && wire.Value<string>("type") == "about:blank"
                 && wire.Value<string>("title") == Title
                 && wire.Value<int>("status") == Status

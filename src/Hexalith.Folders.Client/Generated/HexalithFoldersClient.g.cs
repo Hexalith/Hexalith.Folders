@@ -224,7 +224,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body);
+        System.Threading.Tasks.Task<ProviderReadinessOperator> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -234,7 +234,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ProviderReadinessOperator> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
         /// Inspect provider-neutral support and capability evidence.
@@ -2763,7 +2763,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body)
+        public virtual System.Threading.Tasks.Task<ProviderReadinessOperator> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body)
         {
             return ValidateProviderReadinessAsync(x_Correlation_Id, x_Hexalith_Freshness, body, System.Threading.CancellationToken.None);
         }
@@ -2776,7 +2776,7 @@ namespace Hexalith.Folders.Client.Generated
         /// <param name="x_Hexalith_Freshness">Requested read-consistency or projection freshness hint for query families.</param>
         /// <returns>Provider readiness validation result.</returns>
         /// <exception cref="HexalithFoldersApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ProviderReadinessConsumer> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ProviderReadinessOperator> ValidateProviderReadinessAsync(string x_Correlation_Id, ReadConsistencyClass? x_Hexalith_Freshness, ValidateProviderReadinessRequest body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -2830,7 +2830,7 @@ namespace Hexalith.Folders.Client.Generated
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<ProviderReadinessConsumer>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<ProviderReadinessOperator>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new HexalithFoldersApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -11092,11 +11092,11 @@ namespace Hexalith.Folders.Client.Generated
     public partial class ProviderReadinessConsumer
     {
 
-        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("audience", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessConsumerAudience Audience { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessStatus Status { get; set; }
 
@@ -11104,7 +11104,7 @@ namespace Hexalith.Folders.Client.Generated
         [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public ProviderReadinessConsumerRetryHint RetryHint { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("freshness", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public FreshnessMetadata Freshness { get; set; } = new FreshnessMetadata();
 
     }
@@ -18483,6 +18483,9 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
         Read_model_unavailable = 2,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 3,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -18497,6 +18500,9 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
         Projection_unavailable = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 3,
 
     }
 
@@ -18521,6 +18527,9 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"retry")]
         Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"wait_for_reconciliation")]
+        Wait_for_reconciliation = 1,
 
     }
 
@@ -18579,6 +18588,9 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"read_model_unavailable")]
         Read_model_unavailable = 2,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 3,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -18593,6 +18605,9 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"projection_unavailable")]
         Projection_unavailable = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown_provider_outcome")]
+        Unknown_provider_outcome = 3,
 
     }
 
@@ -18617,6 +18632,9 @@ namespace Hexalith.Folders.Client.Generated
 
         [System.Runtime.Serialization.EnumMember(Value = @"retry")]
         Retry = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"wait_for_reconciliation")]
+        Wait_for_reconciliation = 1,
 
     }
 

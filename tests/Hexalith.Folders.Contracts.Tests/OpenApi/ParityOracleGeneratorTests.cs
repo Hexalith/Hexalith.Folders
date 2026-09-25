@@ -309,6 +309,51 @@ operations:
     }
 
     [Fact]
+    public void BaselineInitializationRejectsDuplicateOperationIdsBeforeReplacingOutput()
+    {
+        string temp = NewTempDirectory("hexalith-parity-baseline-duplicate");
+        string mutatedContract = Path.Combine(temp, "candidate.yaml");
+        string baselineOutput = Path.Combine(temp, "previous-spine.yaml");
+        string contract = File.ReadAllText(_openApiFilePath);
+        contract.ShouldContain("operationId: BindRepository", Case.Sensitive);
+        File.WriteAllText(mutatedContract,
+            contract.Replace("operationId: BindRepository", "operationId: CreateRepositoryBackedFolder", StringComparison.Ordinal),
+            new UTF8Encoding(false));
+        File.WriteAllText(baselineOutput, "unchanged baseline sentinel", new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"),
+            previousSpinePath: baselineOutput, initializeBaseline: true);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("duplicate", Case.Insensitive);
+        File.ReadAllText(baselineOutput).ShouldBe("unchanged baseline sentinel");
+    }
+
+    [Fact]
+    public void GeneratorRejectsBaselineOperationAbsentFromHistoricalV1()
+    {
+        string temp = NewTempDirectory("hexalith-parity-absent-v1");
+        string mutatedContract = Path.Combine(temp, "candidate.yaml");
+        string mutatedBaseline = Path.Combine(temp, "previous-spine.yaml");
+        const string syntheticId = "SyntheticBindRepository";
+        string contract = File.ReadAllText(_openApiFilePath);
+        string baseline = File.ReadAllText(_previousSpineFilePath);
+        contract.ShouldContain("operationId: BindRepository", Case.Sensitive);
+        baseline.ShouldContain("operation_id: 'BindRepository'", Case.Sensitive);
+        File.WriteAllText(mutatedContract,
+            contract.Replace("operationId: BindRepository", $"operationId: {syntheticId}", StringComparison.Ordinal),
+            new UTF8Encoding(false));
+        File.WriteAllText(mutatedBaseline,
+            baseline.Replace("operation_id: 'BindRepository'", $"operation_id: '{syntheticId}'", StringComparison.Ordinal),
+            new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"), mutatedBaseline);
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain("absent from the immutable historical v1 spine", Case.Insensitive);
+    }
+
+    [Fact]
     public void GeneratorAcceptsApprovedDeprecationWithYamlBooleanLiteral()
     {
         string temp = NewTempDirectory("hexalith-parity-yaml-bool");
@@ -501,14 +546,16 @@ operations:
         string contractPath,
         string outputPath,
         string? previousSpinePath = null,
-        string? schemaPath = null)
+        string? schemaPath = null,
+        bool initializeBaseline = false)
     {
         string previousArgument = previousSpinePath is null ? string.Empty : $" --previous-spine \"{previousSpinePath}\"";
         string schemaArgument = schemaPath is null ? string.Empty : $" --schema \"{schemaPath}\"";
+        string baselineArgument = initializeBaseline ? " --initialize-baseline" : string.Empty;
         ProcessStartInfo info = new()
         {
             FileName = "dotnet",
-            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}",
+            Arguments = $"run --no-restore --no-build --configuration \"{_buildConfiguration}\" --project \"{_generatorProjectPath}\" -- --repository-root \"{_repositoryRootPath}\" --contract \"{contractPath}\" --output \"{outputPath}\"{previousArgument}{schemaArgument}{baselineArgument}",
             RedirectStandardError = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,

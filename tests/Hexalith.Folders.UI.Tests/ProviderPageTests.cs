@@ -485,6 +485,28 @@ public sealed class ProviderPageTests
     }
 
     [Fact]
+    public void V2ReadsSendEachOperationsAcceptedFreshness()
+    {
+        (BunitContext ctx, IClient client) = ArrangeHappyPath();
+        using BunitContext _ctx = ctx;
+
+        IRenderedComponent<Provider> rendered = Render(ctx);
+        rendered.WaitForAssertion(() =>
+            rendered.Find("[data-testid=\"console-page-provider-section-identity\"]").ShouldNotBeNull());
+
+        _ = client.Received(1).GetEffectivePermissionsAsync(
+            "folder-1", Arg.Any<string>(), ReadConsistencyClass.Read_your_writes, Arg.Is<string?>(taskId => taskId == null), Arg.Any<CancellationToken>());
+        _ = client.Received(1).GetProviderStatusDiagnosticsAsync(
+            "folder-1", Arg.Any<string>(), ReadConsistencyClass.Eventually_consistent, Arg.Any<CancellationToken>());
+        _ = client.Received(1).GetFolderLifecycleStatusAsync(
+            "folder-1", Arg.Any<string>(), ReadConsistencyClass.Eventually_consistent, Arg.Any<CancellationToken>());
+        _ = client.Received(1).GetProviderBindingAsync(
+            "pbr-1", Arg.Any<string>(), ReadConsistencyClass.Eventually_consistent, Arg.Any<CancellationToken>());
+        _ = client.Received(1).GetRepositoryBindingAsync(
+            "folder-1", "rb-1", Arg.Any<string>(), ReadConsistencyClass.Eventually_consistent, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public void CancelDuringLoad_RendersNeutralCancelledReloadState_NotErrorNorUnavailable()
     {
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();

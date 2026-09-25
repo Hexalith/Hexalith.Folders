@@ -121,6 +121,46 @@ public sealed class PostSdkMappingTests
         TestSupport.Kind(result).ShouldBe("unknown_provider_outcome");
     }
 
+    [Fact]
+    public async Task LockConflictProjectsExactWorkspaceLockedProblemThroughGeneratedSdk()
+    {
+        ProblemDetails problem = new()
+        {
+            Type = "about:blank",
+            Title = "Workspace locked",
+            Status = 409,
+            Category = CanonicalErrorCategory.Lock_conflict,
+            Code = CanonicalErrorCode.Workspace_locked,
+            Message = "The workspace is locked by another task.",
+            CorrelationId = "server-lock-correlation",
+            Retryable = true,
+            ClientAction = ProblemDetailsClientAction.Retry,
+            Details = new Details { Visibility = DetailsVisibility.Metadata_only, LockStatus = "locked" },
+        };
+        TestSupport.CapturingHandler handler = new(HttpStatusCode.Conflict, JsonConvert.SerializeObject(problem));
+        ToolPipeline pipeline = TestSupport.Pipeline(TestSupport.RealClient(handler));
+
+        string result = await WorkspaceTools.LockWorkspace(
+            pipeline,
+            folderId: "folder_000000001",
+            workspaceId: "workspace_000000001",
+            idempotencyKey: "idempotency_000000001",
+            taskId: "task_000000001",
+            correlationId: "client-lock-correlation",
+            requestJson: """{"requestSchemaVersion":"v2","lockIntent":"exclusive_write","requestedLeaseSeconds":60}""",
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        Newtonsoft.Json.Linq.JObject json = TestSupport.Parse(result);
+        json.Value<string>("kind").ShouldBe("lock_conflict");
+        json.Value<string>("code").ShouldBe("workspace_locked");
+        json.Value<string>("correlationId").ShouldBe("server-lock-correlation");
+        json.Value<bool>("retryable").ShouldBeTrue();
+        json.Value<string>("clientAction").ShouldBe("retry");
+        ((string?)json["details"]?["lockStatus"]).ShouldBe("locked");
+        handler.Requests.Count.ShouldBe(1);
+        handler.Requests[0].Uri?.AbsolutePath.ShouldBe("/api/v2/folders/folder_000000001/workspaces/workspace_000000001/lock");
+    }
+
     [Theory]
     [InlineData("file_policy_unavailable")]
     [InlineData("range_unsatisfiable")]

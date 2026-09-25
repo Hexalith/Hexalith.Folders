@@ -31,6 +31,7 @@ public sealed class LayeredFolderAuthorizationServiceTests
         result.AllowedContext.ShouldNotBeNull();
         result.AllowedContext.AuthoritativeTenantId.ShouldBe("tenant-a");
         result.AllowedContext.ActorSafeIdentifier.ShouldBe("actor-user-a");
+        result.AllowedContext.PrincipalId.ShouldBe("user-a");
         result.AllowedContext.ActionToken.ShouldBe("read_metadata");
         result.AllowedContext.CorrelationId.ShouldBe("corr-a");
         result.AllowedContext.TaskId.ShouldBe("task-a");

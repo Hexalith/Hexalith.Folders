@@ -191,7 +191,7 @@ public sealed class FolderDetailPageTests
         // Story 6.10 AC #5/#14: the supplementary effective-permissions read (run unconditionally before the
         // lifecycle read to feed the tenant-scope banner) is also threaded the page's per-load CancellationToken.
         client.Received(1).GetEffectivePermissionsAsync(
-            Arg.Is("folder-1"), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
+            Arg.Is("folder-1"), Arg.Any<string>(), ReadConsistencyClass.Read_your_writes, Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
     }
 
     [Fact]

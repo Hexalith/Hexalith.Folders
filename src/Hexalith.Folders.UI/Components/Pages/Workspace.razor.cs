@@ -60,7 +60,7 @@ public partial class Workspace : ComponentBase, IDisposable
         // Advisory for the banner; a real authorization denial surfaces on the workspace-status read.
         try
         {
-            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, _correlationId, freshness, null, token).ConfigureAwait(false);
+            _permissions = await Client.GetEffectivePermissionsAsync(FolderId, _correlationId, ReadConsistencyClass.Read_your_writes, null, token).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (_cts.IsCancellationRequested)
         {
@@ -86,7 +86,7 @@ public partial class Workspace : ComponentBase, IDisposable
         // Primary read. Authorization-before-observation: a denial here is the page-level safe denial.
         try
         {
-            _status = await Client.GetWorkspaceStatusAsync(FolderId, WorkspaceId, _correlationId, freshness, token).ConfigureAwait(false);
+            _status = await Client.GetWorkspaceStatusAsync(FolderId, WorkspaceId, _correlationId, ReadConsistencyClass.Read_your_writes, token).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (_cts.IsCancellationRequested)
         {
@@ -129,7 +129,7 @@ public partial class Workspace : ComponentBase, IDisposable
             Client.GetFolderLifecycleStatusAsync(FolderId, _correlationId, freshness, ct), token).ConfigureAwait(false);
 
         _lock = await TryReadAsync(ct =>
-            Client.GetWorkspaceLockAsync(FolderId, WorkspaceId, _correlationId, freshness, ct), token).ConfigureAwait(false);
+            Client.GetWorkspaceLockAsync(FolderId, WorkspaceId, _correlationId, ReadConsistencyClass.Read_your_writes, ct), token).ConfigureAwait(false);
 
         _dirty = await TryReadAsync(ct =>
             Client.GetDirtyStateDiagnosticsAsync(FolderId, WorkspaceId, _correlationId, freshness, ct), token).ConfigureAwait(false);
@@ -143,10 +143,10 @@ public partial class Workspace : ComponentBase, IDisposable
         if (_taskId is not null)
         {
             _cleanup = await TryReadAsync(ct =>
-                Client.GetWorkspaceCleanupStatusAsync(FolderId, WorkspaceId, _correlationId, _taskId, freshness, ct), token).ConfigureAwait(false);
+                Client.GetWorkspaceCleanupStatusAsync(FolderId, WorkspaceId, _correlationId, _taskId, ReadConsistencyClass.Read_your_writes, ct), token).ConfigureAwait(false);
 
             FileTreeResult? tree = await TryReadAsync(ct =>
-                Client.ListFolderFilesAsync(FolderId, WorkspaceId, _correlationId, _taskId, freshness, null, null, ct), token).ConfigureAwait(false);
+                Client.ListFolderFilesAsync(FolderId, WorkspaceId, _correlationId, _taskId, ReadConsistencyClass.Snapshot_per_task, null, null, ct), token).ConfigureAwait(false);
             _fileItems = tree?.Items is null ? null : [.. tree.Items];
         }
 

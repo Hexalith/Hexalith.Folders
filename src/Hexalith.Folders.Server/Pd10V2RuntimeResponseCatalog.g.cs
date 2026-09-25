@@ -106,12 +106,15 @@ internal static class Pd10V2RuntimeResponseCatalog
                 "401|authentication_failure|authentication_required|false|check_credentials|visibility",
                 "404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
                 "409|duplicate_binding|duplicate_binding|false|revise_request|visibility",
+                "409|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|finalState,visibility",
                 "413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+                "422|provider_readiness_failed|provider_readiness_failed|false|contact_operator|visibility",
                 "422|unsupported_provider_capability|unsupported_provider_capability|false|contact_operator|visibility",
                 "429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
                 "503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
                 "503|provider_unavailable|provider_unavailable|true|retry|visibility",
                 "503|read_model_unavailable|projection_unavailable|true|retry|visibility",
+                "503|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|finalState,visibility",
             ],
             ["ChangeFile"] =
             [
@@ -201,13 +204,16 @@ internal static class Pd10V2RuntimeResponseCatalog
                 "400|validation_error|validation_error|false|revise_request|visibility",
                 "401|authentication_failure|authentication_required|false|check_credentials|visibility",
                 "404|tenant_access_denied|resource_unavailable|false|no_action|visibility",
+                "409|reconciliation_required|reconciliation_required|false|wait_for_reconciliation|finalState,visibility",
                 "409|repository_conflict|repository_conflict|false|revise_request|visibility",
                 "413|input_limit_exceeded|c4_input_limit_exceeded|false|revise_request|visibility",
+                "422|provider_readiness_failed|provider_readiness_failed|false|contact_operator|visibility",
                 "422|unsupported_provider_capability|unsupported_provider_capability|false|contact_operator|visibility",
                 "429|provider_rate_limited|provider_rate_limited|true|retry|visibility",
                 "503|idempotency_admission_unavailable|idempotency_admission_unavailable|true|retry|visibility",
                 "503|provider_unavailable|provider_unavailable|true|retry|visibility",
                 "503|read_model_unavailable|projection_unavailable|true|retry|visibility",
+                "503|unknown_provider_outcome|unknown_provider_outcome|false|wait_for_reconciliation|finalState,visibility",
             ],
             ["GetAuditRecord"] =
             [

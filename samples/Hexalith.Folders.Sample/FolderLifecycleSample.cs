@@ -86,7 +86,7 @@ public sealed class FolderLifecycleSample(IClient client, Action<string>? log = 
             ProviderBindingRef = inputs.ProviderBindingRef,
             RequestedCapability = ProviderCapabilityName.Repository_creation,
         };
-        ProviderReadinessConsumer readiness = await _client.ValidateProviderReadinessAsync(
+        ProviderReadinessOperator readiness = await _client.ValidateProviderReadinessAsync(
             correlationId,
             x_Hexalith_Freshness: null,
             readinessRequest,

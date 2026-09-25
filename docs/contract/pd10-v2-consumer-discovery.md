@@ -1,20 +1,18 @@
 # PD10 v2 consumer discovery evidence
 
-Recorded: 2026-09-19
+Recorded: 2026-09-24
 
-Status: no deployed external v1 consumer discovered; candidate generation may continue. This is discovery evidence only and does not authorize production routing, A6b, Section 9, or A8.
+Status: **v2 cutover blocked.** A deployed consumer outside the Folders repository uses the published v1 generated client. This discovery does not authorize a migration, v2 exposure, or Story 1.17 closure.
 
 ## Checks
 
-| Check | Result |
+| Check | Observed result |
 | --- | --- |
-| GitHub organization code search for `"/api/v1/folders"` | Matches occur only in `Hexalith/Hexalith.Folders` source/tests. No other Hexalith repository contains the v1 route. |
-| GitHub organization code search for `"Hexalith.Folders.Client"` | `Hexalith/Hexalith.Projects` declares a centrally managed `1.0.0` package reference; no v1 route literal was found there. `Hexalith.Builds` carries only the shared package-version catalog. |
-| GitHub deployments for `Hexalith/Hexalith.Folders` | The deployments API returned an empty array. |
-| NuGet.org query `packageid:Hexalith.Folders.Client`, including prerelease | `totalHits: 0`; no client package is available for a deployed consumer to restore. |
+| [Folders deployments](https://github.com/Hexalith/Hexalith.Folders/deployments) | GitHub deployment IDs `6546802692` and `6546836679` for `production` on 2026-09-19 both reached `success`; the later deployment selected commit `823dce16bca7d1eb9c10c4d871bf581fc9dc61ef`. |
+| [Folders v1.0.0 release](https://github.com/Hexalith/Hexalith.Folders/releases/tag/v1.0.0) and [NuGet package index](https://api.nuget.org/v3-flatcontainer/hexalith.folders.client/index.json) | The release was published on 2026-09-19; NuGet lists `Hexalith.Folders.Client` version `1.0.0`. |
+| [Projects deployments](https://github.com/Hexalith/Hexalith.Projects/deployments) | Deployment ID `6547910236` for `production` selected commit `c767d38d8ae76f9ad949965ac4870a842c699f9c` and reached `success` on 2026-09-20. |
+| [Projects package pin](https://github.com/Hexalith/Hexalith.Projects/blob/c767d38d8ae76f9ad949965ac4870a842c699f9c/Directory.Packages.props) | The deployed commit pins `Hexalith.Folders.Client` and `Hexalith.Folders.Contracts` to `1.0.0`. |
+| [Projects Folders client use](https://github.com/Hexalith/Hexalith.Projects/blob/c767d38d8ae76f9ad949965ac4870a842c699f9c/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs) and [registration](https://github.com/Hexalith/Hexalith.Projects/blob/c767d38d8ae76f9ad949965ac4870a842c699f9c/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs) | The deployed source uses `Hexalith.Folders.Client.Generated.IClient` for folder lifecycle and effective-permissions reads and registers it against the `folders` service. |
+| GitHub organization code search for `"/api/v1/folders"` | Matches in `Hexalith.Projects` are historical documents, while the deployed source selects v1 indirectly through the pinned generated package. A missing route literal therefore does not clear the consumer. |
 
-`Hexalith.Projects` is recorded as a first-party declared consumer that must compile against the published v2-generated client after release. It is not evidence of an external deployed v1 client because the package is unpublished, its repository contains no v1 route selection, and the Folders repository has no recorded deployment.
-
-## Escalation rule
-
-Any later package-feed hit, deployment record, or repository outside `Hexalith.Folders` that selects `/api/v1` invalidates this evidence and blocks release until Product, Security, and Architecture approve a consumer-specific migration window.
+The 2026-09-19 observation of no package or deployment is superseded by the subsequent successful deployments and package publication. `Hexalith.Projects` is a first-party repository but an external deployed consumer of the Folders service. Its v1 client must be migrated through a consumer-specific window approved by Product, Security, and Architecture before any production v2 cutover. The branch candidate remains unexposed.

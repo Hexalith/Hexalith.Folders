@@ -31,6 +31,26 @@ namespace Hexalith.Folders.UI.Tests;
 public sealed class WorkspacePageTests
 {
     [Fact]
+    public void V2ReadsSendEachOperationsAcceptedFreshness()
+    {
+        (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
+        using BunitContext _ctx = ctx;
+        client.GetWorkspaceStatusAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<ReadConsistencyClass?>(), Arg.Any<CancellationToken>())
+            .Returns(Status());
+
+        IRenderedComponent<Workspace> rendered = ctx.Render<Workspace>(parameters => parameters
+            .Add(page => page.FolderId, "folder-1")
+            .Add(page => page.WorkspaceId, "workspace-1"));
+        rendered.WaitForAssertion(() => rendered.Find("[data-testid=\"workspace-trust-summary\"]").ShouldNotBeNull());
+
+        client.Received(1).GetEffectivePermissionsAsync("folder-1", Arg.Any<string>(), ReadConsistencyClass.Read_your_writes, Arg.Is<string?>(value => value == null), Arg.Any<CancellationToken>());
+        client.Received(1).GetWorkspaceStatusAsync("folder-1", "workspace-1", Arg.Any<string>(), ReadConsistencyClass.Read_your_writes, Arg.Any<CancellationToken>());
+        client.Received(1).GetWorkspaceLockAsync("folder-1", "workspace-1", Arg.Any<string>(), ReadConsistencyClass.Read_your_writes, Arg.Any<CancellationToken>());
+        client.Received(1).GetWorkspaceCleanupStatusAsync("folder-1", "workspace-1", Arg.Any<string>(), "task-1", ReadConsistencyClass.Read_your_writes, Arg.Any<CancellationToken>());
+        client.Received(1).ListFolderFilesAsync("folder-1", "workspace-1", Arg.Any<string>(), "task-1", ReadConsistencyClass.Snapshot_per_task, Arg.Is<string?>(value => value == null), Arg.Is<int?>(value => value == null), Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
     public void RendersTrustSummary_Sections_AndTrustMatrix()
     {
         (BunitContext ctx, IClient client, _) = DiagnosticTestContext.Create();
