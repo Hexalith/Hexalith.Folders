@@ -1969,6 +1969,10 @@ public sealed class GoldenLifecycleParityTests
             records.ShouldHaveSingleItem();
             records[0].Message.ShouldNotContain(secret);
             records[0].Exception.ShouldBeNull();
+            Pd10AuthorizationAuditRecord audit = host.AuditSink.Records.ShouldHaveSingleItem();
+            audit.Result.ShouldBe("deny");
+            audit.Actor.ShouldBe("actor_absent");
+            audit.Tenant.ShouldBe("tenant_absent");
         }
         finally
         {

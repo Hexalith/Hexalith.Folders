@@ -41,6 +41,12 @@ Run the conformance gate `pwsh ./tests/tools/run-adr-runbook-docs-gates.ps1`, wh
 - If post-rollback `/health/ready` does not recover, escalate to the on-call operator and hand off the correlation ID and UTC window only.
 - If a rollback appears to require folder-state repair, stop: that is out of scope for rollback and hands off to the reconciliation runbook (`./reconciliation.md`); never repair or retry silently.
 
+## Story 1.17 route reversal before coexistence
+
+Keep `Folders:ApiRouting:Mode=V1Only` until the accepted Projects migration package's entry checklist is recorded. Before setting `Coexistence`, Delivery must record the exact Folders and Projects artifact IDs, prior configuration, UTC activation slot, calculated T0 + 168-hour deadline, on-call and operations owners, pre-switch request/error/latency baseline, alert thresholds, and retirement slot. The route mode is read at startup, so rehearse each switch with a restart or redeploy in preproduction. The rehearsal uses the exact proposed artifacts and confirms v1 reads, v2 lifecycle/permission/metadata reads, restoration of the prior Projects v1 artifact, disabling v2 with `V1Only`, and recovered v1 reads. Record only counts, status, duration, trace IDs, UTC times, artifact IDs, and configuration IDs.
+
+For an ordinary rollback during coexistence, retain the Folders v1 route, restore the prior Projects v1 artifact, verify all three inventoried read families through v1, then restart Folders with `V1Only`. For an authorization or disclosure incident, disable v2 immediately with `V1Only`, restore Projects v1, then verify those reads. Stop on failed smoke, missing attribution, unexplained v2 errors, an unplanned v1 consumer, breached agreed thresholds, or an infeasible T0 deadline. A rollback never undoes completed v2 writes; prohibit mutating v2 callers until their effect and reconciliation disposition is approved. At the 168-hour deadline without complete exit evidence, stop the exception, restore and verify the v1 path, and seek a new decision. Do not retire v1 or extend the window by changing a clock entry.
+
 ## Related evidence
 
 - `../operations/release-packages.md` - the published package set and release-tag model.

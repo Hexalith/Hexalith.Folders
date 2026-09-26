@@ -881,6 +881,42 @@ public sealed class ClientGenerationTests
         unbound.ProblemDetailsParseDiagnostic.ShouldBe("problem_shape_mismatch");
     }
 
+    [Theory]
+    [InlineData("api/v2/folders/folder_000000001/repository-bindings")]
+    [InlineData("api/v2/folders/repository-backed")]
+    public void RepositoryReconciliationConflictWithFinalStateIsAcceptedForItsOperation(string path)
+    {
+        JObject wire = JObject.FromObject(new
+        {
+            type = "about:blank",
+            title = "Candidate request or downstream outcome",
+            status = 409,
+            category = "reconciliation_required",
+            code = "reconciliation_required",
+            message = "The request could not be completed.",
+            correlationId = "opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3",
+            retryable = false,
+            clientAction = "wait_for_reconciliation",
+            details = new
+            {
+                visibility = "metadata_only",
+                finalState = "reconciliation_required",
+            },
+        });
+        ProblemDetails typedResult = wire.ToObject<ProblemDetails>().ShouldNotBeNull();
+
+        HexalithFoldersOperationContext.Set("POST", path);
+        var exception = new HexalithFoldersApiException<ProblemDetails>(
+            "reconciliation conflict",
+            409,
+            wire.ToString(Formatting.None),
+            new Dictionary<string, IEnumerable<string>>(),
+            typedResult,
+            null!);
+
+        exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+    }
+
     [Fact]
     public void GenericProblemProjectionValidatesDeclaredOptionalFieldsAndClosedScalars()
     {
@@ -1012,8 +1048,15 @@ public sealed class ClientGenerationTests
         malformedScalar.ProblemDetails.ShouldBeNull();
         malformedScalar.ProblemDetailsParseDiagnostic.ShouldBe("exact_problem_tuple_mismatch");
 
+        Newtonsoft.Json.Linq.JObject arbitraryDetailBody = Newtonsoft.Json.Linq.JObject.Parse(validAuthority);
+        arbitraryDetailBody["details"]!["arbitrary"] = "must not be accepted";
+        Newtonsoft.Json.Linq.JObject finalStateDetailBody = Newtonsoft.Json.Linq.JObject.Parse(validAuthority);
+        finalStateDetailBody["details"]!["finalState"] = "reconciliation_required";
+
         foreach ((string name, string malformedBody, string expectedDiagnostic) in new[]
         {
+            ("extra arbitrary details key", arbitraryDetailBody.ToString(Newtonsoft.Json.Formatting.None), "exact_problem_tuple_mismatch"),
+            ("extra finalState details key", finalStateDetailBody.ToString(Newtonsoft.Json.Formatting.None), "exact_problem_tuple_mismatch"),
             ("numeric status string", validAuthority.Replace("\"status\":503", "\"status\":\"503\"", StringComparison.Ordinal), "exact_problem_tuple_mismatch"),
             ("boolean retryable string", validAuthority.Replace("\"retryable\":true", "\"retryable\":\"true\"", StringComparison.Ordinal), "exact_problem_tuple_mismatch"),
             ("numeric correlation identifier", validAuthority.Replace(
