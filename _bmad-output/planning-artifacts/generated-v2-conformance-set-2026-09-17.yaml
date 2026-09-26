@@ -13,8 +13,8 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 19cc81d1b469d46c5d99f0d3b3703297e4c98f321e98e87d848fdc85ba86a605
-artifact_count: 222
+candidate_set_sha256: f44f59e7c0596fdf0f1785c9ac87fd3ddaa0c06faf323d58fd617ca8131a1cca
+artifact_count: 223
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
@@ -50,8 +50,8 @@ artifacts:
     sha256: 62cc54742272e147c49a98f38b94d7acb1cf21abeff8eee0a2aabb1969f9e4a8
   - path: "docs/contract/pd10-v2-consumer-discovery.md"
     kind: file
-    bytes: 4712
-    sha256: 799f8346b464b023a8d8962ba3b3f0ed1056b008728ab89fddfe3789188ea300
+    bytes: 6326
+    sha256: 692b7629f04fe6955b6fa42e85dacf3406d11490c62e09a7d2d2b1ed4738a111
   - path: "docs/contract/sdk-generation-and-idempotency-helpers.md"
     kind: file
     bytes: 6928
@@ -106,8 +106,8 @@ artifacts:
     sha256: 2c129ee0460c8504cd2c69a1345ebd89e75bae8418cc6551ea23e992e1f75deb
   - path: "scripts/pd10-v2-story-owned-paths.txt"
     kind: file
-    bytes: 14024
-    sha256: cd4c636d40d18ea21942cfb00bd7468ae92c4d1b25c50f3e7a2c1491ab2cd76c
+    bytes: 14080
+    sha256: ef02e7ecea852194523d3d10f49cd1c079cce94170c0d46a39b18bcfe258ff37
   - path: "src/Hexalith.Folders.Cli/Commands/Audit/AuditCommand.cs"
     kind: file
     bytes: 5320
@@ -348,6 +348,10 @@ artifacts:
     kind: file
     bytes: 1777
     sha256: 104624e16a95ac1c5f3b371dcc2fd5a9355290b8f746781ce671641f22e02484
+  - path: "src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs"
+    kind: file
+    bytes: 3225
+    sha256: 52d5588cd38c2d5ae0c3815fa0226eb4594ddc91475977d86cff6a9534294737
   - path: "src/Hexalith.Folders.Server/FoldersApiRouting.cs"
     kind: file
     bytes: 1608
@@ -362,8 +366,8 @@ artifacts:
     sha256: 3c5375156ccfbc68edf7801a3fa3dc47bd8fa01fda3b76e5fcd4e94d31b9ffd3
   - path: "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"
     kind: file
-    bytes: 4078
-    sha256: a96edaf679d6244ccc7c180fbdd81f950e835fd7bf1d0d6c374c8a789379d483
+    bytes: 4121
+    sha256: b6457b0b50969f9089af4c313e64c1ed39016929941bc82132c970a6047b433b
   - path: "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs"
     kind: file
     bytes: 8625
@@ -650,16 +654,16 @@ artifacts:
     sha256: 677012fa6675a15033b40b5eee307939064e27b6c48bcbea63f39b332f7ca973
   - path: "tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs"
     kind: file
-    bytes: 10146
-    sha256: b0f1e17b3f0868dfcaa976dfee3ad27b7b65b5c5cb605a4ea0b44e2b2a99863e
+    bytes: 13076
+    sha256: 885c1e5b6df16652df516b5918cfb841882003eb3d75a218c43ad16a16cba504
   - path: "tests/Hexalith.Folders.IntegrationTests/Routing/RecordingRoutingAuditSink.cs"
     kind: file
     bytes: 944
     sha256: 46a71948a91cde67c251211c2f066d1eebe814047bfc666630d951a58b106de6
   - path: "tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeAuthenticationHandler.cs"
     kind: file
-    bytes: 1805
-    sha256: 907da7c422e10510b14c4c73d4d20ad05db02e4356b46049a7db8fc4adbf8b88
+    bytes: 1866
+    sha256: 65a3a36fd077c6b480b2a178f667a17efdbd51b0056a016f5c56871575331823
   - path: "tests/Hexalith.Folders.IntegrationTests/Routing/RoutingModeFixedTimeProvider.cs"
     kind: file
     bytes: 374

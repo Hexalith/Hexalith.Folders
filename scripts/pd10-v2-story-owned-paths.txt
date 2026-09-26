@@ -81,6 +81,7 @@ src/Hexalith.Folders.Server/Authorization/V2ProtectedOperationFamily.cs
 src/Hexalith.Folders.Server/FolderCanonicalSegmentIdentifier.cs
 src/Hexalith.Folders.Server/FolderDomainProcessor.cs
 src/Hexalith.Folders.Server/FolderRepositoryStartupAssertion.cs
+src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs
 src/Hexalith.Folders.Server/FoldersApiRouting.cs
 src/Hexalith.Folders.Server/FoldersApiRoutingMode.cs
 src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs

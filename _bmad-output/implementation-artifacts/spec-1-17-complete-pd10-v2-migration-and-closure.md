@@ -2,9 +2,10 @@
 title: 'Complete Story 1.17 PD10 v2 migration and closure'
 type: 'feature'
 created: '2026-09-25'
-status: 'draft'
+status: 'in-progress'
 route: 'dispatch'
 review_loop_iteration: 0
+baseline_commit: '37d348945b35620da6ba4e524a09bee202712460'
 context:
   - '{project-root}/_bmad-output/implementation-artifacts/epic-1-context.md'
   - '{project-root}/_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md'
@@ -18,7 +19,7 @@ context:
 
 **Approach:** Finish the accepted seven-day Projects coexistence plan: establish packages and consumer readiness, make route use observable, rehearse reversal, execute after entry checks, then prove retirement and close the story.
 
-**Scope decision (2026-09-26):** Full migration includes package publication, Folders and Projects deployments, observation, v1 retirement, and the closure decision after their gates pass.
+**Scope decision (2026-09-26):** Full migration includes publication, deployments, observation, v1 retirement, and gated closure.
 
 ## Boundaries & Constraints
 
@@ -40,18 +41,18 @@ context:
 
 ## Code Map
 
-- `src/Hexalith.Folders.Server/FoldersServerHostComposition.cs`, `FoldersApiRouting.cs`, `Pd10V2CandidateCompatibilitySeam.cs` -- existing three-mode route; reuse its canonical denial and hold default.
+- `src/Hexalith.Folders.Server/FoldersServerHostComposition.cs`, `FoldersApiRouting.cs`, `Pd10V2CandidateCompatibilitySeam.cs` -- reuse the three-mode route and canonical denial.
 - `tests/Hexalith.Folders.IntegrationTests/EndToEnd/FoldersApiRoutingModeTests.cs` -- composed-host routing coverage.
-- `src/Hexalith.Folders.Client/`, `src/Hexalith.Folders.Contracts/`, `tools/release-packages.json`, `.github/workflows/release.yml` -- exact v2 pair and existing package lane; generated output remains generator-owned.
-- `references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/` -- three known generated-client calls and safe outcome mapping; Projects owns its own edits and tests.
+- `src/Hexalith.Folders.Client/`, `src/Hexalith.Folders.Contracts/`, `tools/release-packages.json`, `.github/workflows/release.yml` -- v2 pair and package lane; generated output remains generator-owned.
+- `references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/` -- known calls and outcome mapping; Projects owns its edits.
 - `docs/contract/pd10-v2-consumer-discovery.md`, `_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md` -- inventory and entry/exit rules; reconcile the stale reseal note with current readiness.
-- `_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml`, `_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md` -- current candidate digests and technical evidence; reseal only from owners.
+- `_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml`, `_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md` -- candidate digests and technical evidence.
 
 ## Tasks & Acceptance
 
 **Execution:**
 - [ ] `references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/`, `references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/ProjectFolderDirectoryTests.cs`, `ProjectFileReferenceDirectoryTests.cs` -- inventory calls and schedule; adapt and test the exact v2 client, including 401/404/503 and metadata reads, in the Projects repository.
-- [ ] `src/Hexalith.Folders.Server/`, server and integration tests -- add bounded version/consumer request attribution, counts, errors, and trace correlation without resource identifiers; prove hold, coexistence, and retirement behavior.
+- [x] `src/Hexalith.Folders.Server/`, server and integration tests -- add bounded version/consumer request attribution, counts, errors, and trace correlation without resource identifiers; prove hold, coexistence, and retirement behavior.
 - [ ] `tools/release-packages.json`, `.github/workflows/release.yml`, package tests -- verify Client/Contracts identity and hashes through the existing release lane; record the exact package pair and Projects build artifact.
 - [ ] `docs/contract/pd10-v2-consumer-discovery.md`, `_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md`, `docs/runbooks/rollback.md` -- complete discovery, baseline, thresholds, reversal, mutation disposition, UTC schedule, owners, and deadline; correct superseded status.
 - [ ] `_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md` -- rerun A6b, Section 9, parity, focused and package-profile checks on final bytes; append exact evidence without rewriting history.
@@ -65,6 +66,11 @@ context:
 - Given any missing exit evidence or rollback trigger, when the window ends, then the safe v1 path is restored and Story 1.17 remains open pending a new decision.
 
 ## Implementation Notes
+
+- This `bmad-build` implementation step prohibits push and remote operations. Publication, deployment, observation, and retirement remain pending until they can run through an authorized execution path.
+- Added bounded version/consumer/status metrics and trace tags through the registered Folders meter, composed-host coverage, source call inventory, rollback instructions, and a reproducible 223-artifact candidate manifest. Final-byte Debug routing tests passed 16/16; the Release CI solution build, twelve parity categories, and governance/completeness gate passed. The current Projects checkout remains clean and pinned to v1 packages.
+- Projects v2 testing needs an exact released Client/Contracts pair. Its source-profile test build is also blocked by the absent `Hexalith.Conversations.Contracts` sibling project; nested Projects submodules were not initialized under repository policy. Production baselines, attributed traffic, rehearsal, UTC slot/owners, T0, observation, and retirement evidence are absent. The ordinary `Program.cs` production host also requires an EventStore-backed folder repository registration before it can boot; its current composition only registers the in-memory repository in Development or Staging.
+- Matrix audit: hold, coexistence, and retired-route behavior ran in `FoldersApiRoutingModeTests` (16/16). Projects migration and expiry/incident rows have no executable end-to-end result while their prerequisites are absent. Story 1.17 and its tracker row remain open; no tracker transition was authorized.
 
 ## Spec Change Log
 

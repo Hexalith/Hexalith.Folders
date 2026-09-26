@@ -67,6 +67,7 @@ public static class FoldersServerHostComposition
 
         app.UseCloudEvents();
         app.UseAuthentication();
+        app.UseFoldersApiRouteTelemetry();
         if (mode != FoldersApiRoutingMode.V1Only)
         {
             // The seam rewrites /api/v2 requests onto their v1 handlers, so it must run before routing

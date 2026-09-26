@@ -1,4 +1,5 @@
 using System.Net;
+using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
@@ -24,6 +25,64 @@ public sealed class FoldersApiRoutingModeTests
 {
     private const string V1LifecyclePath = $"/api/v1/folders/{RoutingModeTestHost.FolderId}/lifecycle-status";
     private const string V2LifecyclePath = $"/api/v2/folders/{RoutingModeTestHost.FolderId}/lifecycle-status";
+
+    [Theory]
+    [InlineData("V1Only", 200, 404)]
+    [InlineData("Coexistence", 200, 200)]
+    [InlineData("V2Only", 404, 200)]
+    public async Task RouteTelemetryAttributesVersionConsumerAndStatusWithoutResourceIds(
+        string mode,
+        int expectedV1Status,
+        int expectedV2Status)
+    {
+        List<(string Name, string Version, string Consumer, int Status)> measurements = [];
+        using MeterListener listener = new();
+        listener.InstrumentPublished = (instrument, observed) =>
+        {
+            if (instrument.Meter.Name == FoldersApiRouteTelemetry.MeterName
+                && instrument.Name.StartsWith("folders.api.", StringComparison.Ordinal))
+            {
+                observed.EnableMeasurementEvents(instrument);
+            }
+        };
+        listener.SetMeasurementEventCallback<long>((instrument, _, tags, _) =>
+        {
+            string version = string.Empty;
+            string consumer = string.Empty;
+            int status = 0;
+            List<string> tagKeys = [];
+            foreach (KeyValuePair<string, object?> tag in tags)
+            {
+                tagKeys.Add(tag.Key);
+                switch (tag.Key)
+                {
+                    case "api.version": version = tag.Value?.ToString() ?? string.Empty; break;
+                    case "consumer": consumer = tag.Value?.ToString() ?? string.Empty; break;
+                    case "http.status_code": status = Convert.ToInt32(tag.Value, System.Globalization.CultureInfo.InvariantCulture); break;
+                }
+            }
+
+            measurements.Add((instrument.Name, version, consumer, status));
+            tagKeys.ShouldBe(["api.version", "consumer", "http.status_code"]);
+        });
+        listener.Start();
+
+        RoutingModeTestHost host = await RoutingModeTestHost.StartAsync(mode, claimsIdentity: true).ConfigureAwait(true);
+        await using ConfiguredAsyncDisposable hostScope = host.ConfigureAwait(true);
+        foreach (string path in new[] { V1LifecyclePath, V2LifecyclePath })
+        {
+            using HttpRequestMessage request = new(HttpMethod.Get, path);
+            request.Headers.Add("X-Correlation-Id", RoutingModeTestHost.CorrelationId);
+            request.Headers.TryAddWithoutValidation("Authorization", RoutingModeAuthenticationHandler.SchemeName);
+            using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+        }
+
+        measurements.Where(item => item.Name == "folders.api.requests")
+            .Select(item => (item.Version, item.Consumer, item.Status))
+            .ShouldBe([("v1", "projects", expectedV1Status), ("v2", "projects", expectedV2Status)]);
+        measurements.Count(item => item.Name == "folders.api.errors")
+            .ShouldBe((expectedV1Status >= 400 ? 1 : 0) + (expectedV2Status >= 400 ? 1 : 0));
+    }
 
     [Theory]
     [InlineData(null)]

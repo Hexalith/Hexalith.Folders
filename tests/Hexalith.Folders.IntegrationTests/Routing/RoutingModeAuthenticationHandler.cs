@@ -36,6 +36,7 @@ internal sealed class RoutingModeAuthenticationHandler(
             [
                 new Claim("eventstore:tenant", RoutingModeTestHost.TenantId),
                 new Claim("sub", RoutingModeTestHost.PrincipalId),
+                new Claim("client_id", "Hexalith.Projects"),
                 new Claim("eventstore:permission", "read_metadata"),
             ],
             SchemeName);
