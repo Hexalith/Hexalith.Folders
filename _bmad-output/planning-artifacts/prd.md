@@ -120,6 +120,9 @@ editHistory:
 
 # Product Requirements Document — Hexalith.Folders
 
+**Approved McpCli course correction (2026-09-27):** `Hexalith.McpCli` is the target Hexalith-owned CLI/MCP surface for Folders operations that pass contract enrollment and authorization. Any proprietary module CLI, MCP host, plug-in, or planned adapter described below is an obsolete migration source or historical design, not a new target. The module retains its domain, UI, and security semantics; replacement or approved withdrawal and parity evidence precede retirement. External development CLIs are unaffected.
+
+
 **Author:** Jerome
 **Date:** 2026-05-05
 
@@ -938,8 +941,8 @@ Functional Requirements are organized by capability area. Each block traces back
 ### Cross-Surface Contract
 
 - FR47: API consumers can use the versioned REST transport for every current Contract Spine operation, with emitted schemas validated against the canonical OpenAPI 3.1 spine and every C13-required REST cell passing the shared authorization, idempotency, lifecycle, error, and audit scenarios.
-- FR48: CLI users can perform every C13-required CLI cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
-- FR49: MCP clients can perform every C13-required MCP cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
+- FR48: `Hexalith.McpCli` CLI users can perform every owner-approved, agent-eligible C13 CLI cell of the canonical repository-backed task lifecycle after Folders Contracts and Gateway enrollment. Shared operation-identity, authorization, idempotency, status, error, and audit scenarios must pass; unsupported legacy-only cells require an explicit replace, withdraw, or defer inventory decision before the Folders CLI retires.
+- FR49: `Hexalith.McpCli` MCP clients can perform every owner-approved, agent-eligible C13 MCP cell of the canonical repository-backed task lifecycle after Folders Contracts and Gateway enrollment. The same operation-identity, authorization, idempotency, status, error, and audit scenarios must pass; unsupported legacy-only tools and resources require an explicit replace, withdraw, or defer inventory decision before the Folders MCP server retires.
 - FR50: SDK consumers can perform every C13-required SDK cell of the canonical repository-backed task lifecycle and pass the shared operation-identity, authorization, idempotency, status, error, and audit scenarios.
 - FR51: The system can expose cross-surface equivalence for authorization behavior, error categories, operation IDs, audit records, status transitions, and provider capability behavior; the C13 parity oracle reports zero material deltas across REST, SDK, CLI, and MCP for every supported cell, and any delta fails the release gate.
 

@@ -21,6 +21,9 @@ inputDocuments:
 
 # Hexalith.Folders - Epic Breakdown
 
+**Approved McpCli course correction (2026-09-27).** Stories 5.2–5.11, 7.13, 8.3, and 11.6 that name Folders CLI/MCP adapters now feed an owner-approved operation inventory, decorated Contracts, Gateway readiness, and parity tests for `Hexalith.McpCli` CLI/MCP heads. Preserve C13 lifecycle, authorization, idempotency, status, error, and audit behavior. Completed adapter stories remain historical compatibility evidence; McpCli Epic 5 owns cutover and package retirement.
+
+
 ## Overview
 
 This document provides the complete epic and story breakdown for Hexalith.Folders, decomposing the requirements from the PRD, UX Design if it exists, and Architecture requirements into implementable stories.
