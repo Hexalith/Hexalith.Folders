@@ -38,33 +38,32 @@ context:
 
 ## Open Questions
 
-- **Prerequisite route** — EventStore evolution is pending and Story 12.1 is held. Should this work first deliver EventStore Stories 6.5/6.6 as a separate platform release and record 12.1 admission (then implement Folders), or wait for platform/Delivery to complete those gates (keep this spec draft and Folders unchanged)? Current EventStore code is not an accepted release.
+- **Prerequisite route** — A6b/A8 are approved, but EventStore 6.5/6.6 remain backlog, the release acceptance record is absent, and 12.1 is held. Choose **platform first** (deliver and accept the EventStore release, record 12.1 admission, then implement Folders) or **wait for platform** (leave this draft and Folders unchanged until those gates arrive).
 
 ## Code Map
 
-- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs`, `FolderDomainProcessor.cs` — authorized processor path currently returns eventless NoOp.
-- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` — `/project` returns 501.
-- `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `InMemoryFolderRepository.cs`, `FolderStateApply.cs` — memory contract and existing fold.
-- `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs`, `OrganizationState.cs` — organization contract and fold.
-- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `FolderRepositoryStartupAssertion.cs` — memory defaults and Production check.
-- `references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/IDomainProjectionHandler.cs` — reuse SDK full-replay seam; current envelope lacks required version/registry.
+- `_bmad-output/planning-artifacts/planning-story-manifest.yaml` — A6b/A8 approved; 12.1 held by the absent `EXT-ES-EVENT-EVOLUTION` acceptance record.
+- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs`, `FolderDomainProcessor.cs` — authorization precedes processing; processor ignores actor state and discards accepted result events into NoOp.
+- `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `FolderStateApply.cs`; `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs`, `OrganizationState.cs` — memory append contracts and reusable event folds.
+- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `FoldersServerHostComposition.cs`, `FolderRepositoryStartupAssertion.cs` — memory organization default; Production lacks durable folder registration.
+- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`; `references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/IDomainProjectionHandler.cs` — replace `/project` 501 using SDK replay after the accepted version API arrives; actor already owns transactional append.
 
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-event-evolution-v1.yaml` — verify accepted version/digest and published API before Folders edits.
-- [ ] `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs` — expose EventStore-folded state reads without an independent append path; keep memory implementations test/dev only.
-- [ ] `src/Hexalith.Folders/Aggregates/Folder/*Service.cs`, `src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs` — convert repository-writing command services to pure event decisions; only the actor appends.
-- [ ] `src/Hexalith.Folders.Server/FolderDomainProcessor.cs`, `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs` — emit events after authorization; bound conflict re-evaluation.
-- [ ] `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `src/Hexalith.Folders.Server/FolderRepositoryStartupAssertion.cs` — register durable repositories and reject Production memory stores.
-- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` — replace 501 with stateless SDK replay.
-- [ ] `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`, `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderLifecycleReplayDeterminismTests.cs`, `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs` — cover matrix, persisted end state, restart, tenants, and version fixtures.
+- [ ] `references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-event-evolution-v1.yaml` — verify accepted release digest/API and 12.1 admission before Folders edits.
+- [ ] `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs` — remove Production independent append; read actor-folded state.
+- [ ] `src/Hexalith.Folders/Aggregates/Folder/` (`FolderCreationService.cs`, `FolderAccessMutationService.cs`, `RepositoryBackedFolderCreationService.cs`, `RepositoryBindingService.cs`, `BranchRefPolicyConfigurationService.cs`, `WorkspacePreparationService.cs`, `WorkspaceLockAcquisitionService.cs`, `WorkspaceLockReleaseService.cs`, `WorkspaceFileMutationService.cs`, `WorkspaceCommitService.cs`); `src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs` — return event decisions; preserve authorization and avoid repeating provider effects.
+- [ ] `src/Hexalith.Folders.Server/FolderDomainProcessor.cs`, `FoldersDomainServiceRequestHandler.cs` — emit result events after authorization and bound full conflict re-evaluation to one attempt.
+- [ ] `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `FoldersServerHostComposition.cs`, `FolderRepositoryStartupAssertion.cs` — register durable folder/organization state and reject Production memory.
+- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` — use stateless versioned SDK projection replay.
+- [ ] `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`, `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderLifecycleReplayDeterminismTests.cs`, `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs`, `tests/fixtures/event-evolution/` — prove the matrix, retained bytes, persisted end state, restart, conflict, and safe failures.
 
 **Acceptance Criteria:**
-- Given the accepted event-evolution release and Story 12.1 admission, when an authorized folder or organization command completes, then EventStore contains one ordered, versioned, metadata-only event stream and Production resolves durable state.
-- Given retained legacy and current event bytes, when `/project` replays from an empty checkpoint after restart, then current state is rebuilt without rewriting bytes and unsupported history fails closed.
-- Given concurrent writers across supported replicas, when append conflicts, then EventStore is the sole transactional writer and at most one full re-evaluation occurs before canonical conflict.
-- Given wrong-tenant, denied, unavailable, corrupt, and timeout paths, when a command or replay runs, then it exposes no protected state or confidential value and returns its canonical safe outcome.
+- Given accepted EventStore evolution and 12.1 admission, when Production accepts a folder or organization command, then one versioned metadata-only stream persists and survives restart.
+- Given retained events and an empty checkpoint, when `/project` replays, then current state rebuilds without byte rewrite and unsupported versions fail closed.
+- Given concurrent replicas, when append conflicts, then at most one authorized re-evaluation occurs before canonical conflict.
+- Given denial, wrong tenant, corrupt or unavailable store, or timeout, when command/replay runs, then no protected state or confidential value leaks.
 
 ## Implementation Notes
 
@@ -76,4 +75,4 @@ context:
 
 **Commands:**
 - `dotnet build Hexalith.Folders.slnx -c Debug` — builds against accepted EventStore API.
-- `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj -c Debug` — builds durable lane; run built xUnit v3 assemblies individually with `-class` and inspect persisted end state.
+- `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj -c Debug` — build durable lane; run focused xUnit v3 assemblies and inspect persisted state.
