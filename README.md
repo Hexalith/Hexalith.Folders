@@ -14,7 +14,7 @@ dotnet build Hexalith.Folders.slnx --no-restore
 Initialize only repository-declared submodules under `references/`:
 
 ```text
-git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants references/platform
+git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.McpCli references/Hexalith.Memories references/Hexalith.Platform references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants
 ```
 
 Do not use:

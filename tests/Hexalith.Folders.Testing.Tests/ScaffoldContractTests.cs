@@ -107,11 +107,12 @@ public sealed class ScaffoldContractTests
         "references/Hexalith.Commons",
         "references/Hexalith.EventStore",
         "references/Hexalith.FrontComposer",
+        "references/Hexalith.McpCli",
         "references/Hexalith.Memories",
+        "references/Hexalith.Platform",
         "references/Hexalith.PolymorphicSerializations",
         "references/Hexalith.Projects",
         "references/Hexalith.Tenants",
-        "references/platform",
     ];
 
     private static readonly Regex DirectedRecursiveSubmoduleProhibitionPattern = new(
