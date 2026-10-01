@@ -19,6 +19,8 @@ context:
 
 **Approach:** After EventStore event-evolution release and Story 12.1 admission, make EventStore the sole writer of versioned folder/organization events and replay them through its projection seam. Preserve REST, authorization, and Contract Spine behavior.
 
+**Decisions (2026-09-29):** Platform first: EventStore 6.5c, 6.5 approval, 6.6, and the `ext-es-event-evolution-v1.yaml` acceptance record are delivered in the EventStore repository under its own sessions, never authored from Folders. Folders stays unchanged until that record exists. `DEC-EXEC-12.1` is recorded after that platform gate, on the Story 1.17 authorization pattern, and binds the digests current at that time.
+
 ## Boundaries & Constraints
 
 **Always:** A6b v2 authorization precedes lookup and append. EventStore AggregateActor transactionally advances state and events; one conflict permits one full authorization/domain re-evaluation. Events use stable `urn:hexalith:folders:event:<kebab-name>` types, positive payload versions distinct from `MetadataVersion`, and closed legacy aliases with byte fixtures. Persist metadata only; fail closed on bad versions/store failures. Production resolves durable repositories and replay handlers. Prove restart, replay, replica conflict, denial, timeout, idempotency, and leakage exclusion on the deployed path.
@@ -35,10 +37,6 @@ context:
 | Protected failure | Wrong tenant, denial, outage, timeout | No mutation or existence disclosure | Canonical metadata-only result |
 
 </frozen-after-approval>
-
-## Open Questions
-
-- **Prerequisite route** — A6b/A8 are approved, but EventStore 6.5/6.6 remain backlog, the release acceptance record is absent, and 12.1 is held. Choose **platform first** (deliver and accept the EventStore release, record 12.1 admission, then implement Folders) or **wait for platform** (leave this draft and Folders unchanged until those gates arrive).
 
 ## Code Map
 
