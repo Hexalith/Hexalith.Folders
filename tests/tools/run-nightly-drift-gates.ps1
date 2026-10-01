@@ -5,7 +5,10 @@ param(
     [switch]$SkipRestoreBuild,
 
     [ValidateSet('pinned-snapshots', 'latest-supported')]
-    [string]$ProviderProfile = 'pinned-snapshots'
+    [string]$ProviderProfile = 'pinned-snapshots',
+
+    [ValidateSet('Debug', 'Release')]
+    [string]$Configuration = 'Debug'
 )
 
 Set-StrictMode -Version Latest
@@ -28,16 +31,13 @@ $manifestPath = 'tests/contracts/forgejo/supported-versions.json'
 $githubProfilePath = 'tests/contracts/github/pinned-profile.json'
 $githubPackagePinPath = 'references/Hexalith.Builds/Props/Directory.Packages.props'
 $githubTestClass = 'Hexalith.Folders.Tests.Providers.GitHub.GitHubDriftConformanceTests'
-$githubTrxName = 'nightly-drift-github.trx'
 $classificationFixturePath = 'tests/tools/forgejo-drift/classification-fixtures.json'
 $sanitizedReportScriptPath = 'tests/tools/forgejo-drift/Write-SanitizedForgejoDriftReport.ps1'
 $testProjectPath = 'tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj'
-$trxName = 'nightly-drift-forgejo.trx'
-$trxPath = Join-Path $reportDirectory $trxName
-$githubTrxPath = Join-Path $reportDirectory $githubTrxName
+$solutionPath = if ($Configuration -eq 'Release') { 'Hexalith.Folders.CI.slnx' } else { 'Hexalith.Folders.slnx' }
+$testAssemblyPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Tests.dll"
 $pushed = $false
 $results = @()
-$usedXunitFallback = $false
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
 
 $categories = @(
@@ -508,11 +508,7 @@ function Assert-GitHubPinnedProfile {
 }
 
 function Assert-TestAssembly {
-    $assembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests') -Recurse -Filter 'Hexalith.Folders.Tests.dll' -ErrorAction SilentlyContinue |
-        Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-        Select-Object -First 1
-
-    if ($null -eq $assembly) {
+    if (-not (Test-Path $testAssemblyPath -PathType Leaf)) {
         Fail-Gate -Category 'forgejo-drift-classification' -Reason 'missing-test-assembly'
     }
 }
@@ -520,63 +516,61 @@ function Assert-TestAssembly {
 function Get-ExecutedTestCount {
     param(
         [AllowEmptyCollection()]
-        [Parameter(Mandatory = $true)][array]$Output
+        [Parameter(Mandatory = $true)][array]$Output,
+        [Parameter(Mandatory = $true)][string]$Category
     )
 
     $joined = ($Output -join [Environment]::NewLine)
-    $total = 0
-    foreach ($match in [regex]::Matches($joined, 'Total:\s+(\d+)')) {
-        $total += [int]$match.Groups[1].Value
+    $summaries = [regex]::Matches($joined, '(?m)^[ \t]*Hexalith\.Folders\.Tests[ \t]+Total:[^\r\n]*')
+    if ($summaries.Count -ne 1) {
+        Fail-Gate -Category $Category -Reason 'missing-or-ambiguous-test-summary'
     }
 
-    return $total
+    $summary = [regex]::Match($summaries[0].Value, '^\s*Hexalith\.Folders\.Tests\s+Total:\s*(?<total>\d+),\s*Errors:\s*(?<errors>\d+),\s*Failed:\s*(?<failed>\d+),\s*Skipped:\s*(?<skipped>\d+),\s*Not Run:\s*(?<notRun>\d+)(?:,\s*Time:\s*\d+(?:\.\d+)?s)?\s*$')
+    if (-not $summary.Success) {
+        Fail-Gate -Category $Category -Reason 'malformed-test-summary'
+    }
+
+    foreach ($counter in @('errors', 'failed', 'skipped', 'notRun')) {
+        if ([int]$summary.Groups[$counter].Value -ne 0) {
+            Fail-Gate -Category $Category -Reason 'unsuccessful-test-summary'
+        }
+    }
+
+    return [int]$summary.Groups['total'].Value
 }
 
-function Invoke-XunitInProcessFallback {
+function Invoke-XunitInProcess {
     param(
         [Parameter(Mandatory = $true)][string]$Category,
-        [Parameter(Mandatory = $true)][string]$ClassName,
-        [Parameter(Mandatory = $true)][int]$ExpectedCount
+        [Parameter(Mandatory = $true)][string]$ClassName
     )
 
-    $script:usedXunitFallback = $true
-    Write-Host "NIGHTLY-DRIFT category=$Category vstest-socket-denied=true fallback=xunit-in-process"
-    $runnerPath = Join-Path $repositoryRoot 'tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests'
-    if (-not (Test-Path $runnerPath)) {
-        Fail-Gate -Category $Category -Reason 'xunit-in-process-runner-missing'
-    }
-
-    $runnerOutput = & $runnerPath -noLogo -noColor -class $ClassName 2>&1
+    # Project-level VSTest filters select zero cases under Microsoft.Testing.Platform.
+    # The built xUnit entry point accepts the class selector in both local and hosted builds.
+    Write-Host "NIGHTLY-DRIFT category=$Category runner=xunit-in-process configuration=$Configuration"
+    $runnerOutput = & dotnet $testAssemblyPath -noLogo -noColor -class $ClassName 2>&1
     $runnerExitCode = $LASTEXITCODE
     $runnerOutput | ForEach-Object { Write-Host $_ }
-
-    if ((Get-ExecutedTestCount -Output $runnerOutput) -ne $ExpectedCount) {
-        Fail-Gate -Category $Category -Reason "zero-or-partial-test-selection expected=$ExpectedCount"
-    }
 
     if ($runnerExitCode -ne 0) {
         Add-Result -Category $Category -Status 'failed' -Severity 'failure' -ExitCode $runnerExitCode
         Write-NightlyDriftReport -Status 'failed' -Results $script:results -Manifest $null -SanitizedReport $null
         exit $runnerExitCode
     }
+
+    return Get-ExecutedTestCount -Output $runnerOutput -Category $Category
 }
 
 function Invoke-DotNet {
     param(
         [Parameter(Mandatory = $true)][string]$Category,
-        [Parameter(Mandatory = $true)][string[]]$Arguments,
-        [string]$FallbackClassName,
-        [int]$FallbackExpectedCount = 0
+        [Parameter(Mandatory = $true)][string[]]$Arguments
     )
 
     $output = & dotnet @Arguments 2>&1
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
-        if ($FallbackClassName -and (($output -join [Environment]::NewLine) -match 'System\.Net\.Sockets\.SocketException.*Permission denied|Testing with VSTest target is no longer supported')) {
-            Invoke-XunitInProcessFallback -Category $Category -ClassName $FallbackClassName -ExpectedCount $FallbackExpectedCount
-            return
-        }
-
         Add-Result -Category $Category -Status 'failed' -Severity 'failure' -ExitCode $exitCode
         Write-NightlyDriftReport -Status 'failed' -Results $script:results -Manifest $null -SanitizedReport $null
         Write-Error "NIGHTLY-DRIFT-FAILED: category=$Category exit_code=$exitCode output=$($output -join ' ')"
@@ -598,8 +592,9 @@ try {
     Assert-ProviderHermeticStatusDerivation
 
     if (-not $SkipRestoreBuild) {
-        Invoke-DotNet -Category 'forgejo-manifest-integrity' -Arguments @('restore', 'Hexalith.Folders.slnx', '-m:1', '-p:NuGetAudit=false')
-        Invoke-DotNet -Category 'forgejo-manifest-integrity' -Arguments @('build', 'Hexalith.Folders.slnx', '--no-restore', '-m:1')
+        $useNuGetDependencies = if ($Configuration -eq 'Release') { 'true' } else { 'false' }
+        Invoke-DotNet -Category 'forgejo-manifest-integrity' -Arguments @('restore', $solutionPath, '-m:1', "-p:Configuration=$Configuration", "-p:UseNuGetDeps=$useNuGetDependencies")
+        Invoke-DotNet -Category 'forgejo-manifest-integrity' -Arguments @('build', $solutionPath, '--no-restore', '-m:1', '--configuration', $Configuration, "-p:UseNuGetDeps=$useNuGetDependencies")
     }
 
     Assert-TestAssembly
@@ -615,25 +610,8 @@ try {
 
     Assert-DriftClassificationFixtures -Fixtures $fixtures
 
-    if (Test-Path $trxPath) {
-        Remove-Item $trxPath -Force
-    }
-
-    Invoke-DotNet -Category 'forgejo-drift-classification' -Arguments @(
-        'test', $testProjectPath,
-        '--no-build',
-        '--filter', 'FullyQualifiedName~Hexalith.Folders.Tests.Providers.Forgejo.ForgejoManifestAndDriftTests',
-        '--results-directory', $reportDirectory,
-        '--logger', "trx;LogFileName=$trxName"
-    ) -FallbackClassName 'Hexalith.Folders.Tests.Providers.Forgejo.ForgejoManifestAndDriftTests' -FallbackExpectedCount 10
-
-    [int]$executedTests = 0
-    if (Test-Path $trxPath) {
-        [xml]$trx = Get-Content -Raw -Path $trxPath
-        $executedTests = [int]$trx.TestRun.ResultSummary.Counters.total
-    }
-
-    if (-not $usedXunitFallback -and (Test-Path $trxPath) -and $executedTests -ne 10) {
+    [int]$executedTests = Invoke-XunitInProcess -Category 'forgejo-drift-classification' -ClassName 'Hexalith.Folders.Tests.Providers.Forgejo.ForgejoManifestAndDriftTests'
+    if ($executedTests -ne 10) {
         Fail-Gate -Category 'forgejo-drift-classification' -Reason "zero-or-partial-test-selection expected=10 actual=$executedTests"
     }
 
@@ -652,26 +630,8 @@ try {
     Assert-GitHubPinnedProfile -PinnedProfile $githubProfile
     Add-Result -Category 'github-pinned-profile-integrity' -Status 'passed' -Severity 'none' -ExitCode 0
 
-    if (Test-Path $githubTrxPath) {
-        Remove-Item $githubTrxPath -Force
-    }
-
-    $script:usedXunitFallback = $false
-    Invoke-DotNet -Category 'github-failure-mode-coverage' -Arguments @(
-        'test', $testProjectPath,
-        '--no-build',
-        '--filter', "FullyQualifiedName~$githubTestClass",
-        '--results-directory', $reportDirectory,
-        '--logger', "trx;LogFileName=$githubTrxName"
-    ) -FallbackClassName $githubTestClass -FallbackExpectedCount 5
-
-    [int]$githubExecutedTests = 0
-    if (Test-Path $githubTrxPath) {
-        [xml]$githubTrx = Get-Content -Raw -Path $githubTrxPath
-        $githubExecutedTests = [int]$githubTrx.TestRun.ResultSummary.Counters.total
-    }
-
-    if (-not $usedXunitFallback -and (Test-Path $githubTrxPath) -and $githubExecutedTests -ne 5) {
+    [int]$githubExecutedTests = Invoke-XunitInProcess -Category 'github-failure-mode-coverage' -ClassName $githubTestClass
+    if ($githubExecutedTests -ne 5) {
         Fail-Gate -Category 'github-failure-mode-coverage' -Reason "zero-or-partial-test-selection expected=5 actual=$githubExecutedTests"
     }
 

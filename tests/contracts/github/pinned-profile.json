@@ -6,7 +6,7 @@
   "packagePinPath": "references/Hexalith.Builds/Props/Directory.Packages.props",
   "octokitPackageVersion": "14.0.0",
   "libGit2SharpPackageVersion": "0.32.0",
-  "libGit2SharpPinPath": "Directory.Packages.props",
+  "libGit2SharpPinPath": "references/Hexalith.Builds/Props/Directory.Packages.props",
   "restApiVersion": "2022-11-28",
   "productHeader": "Hexalith-Folders",
   "driftLane": "pinned-profile-manifest-plus-failure-mode-coverage-matrix",

@@ -17,7 +17,7 @@ The full `Hexalith.Folders.UI.E2E.Tests` surface — all 63 tests across the fou
 3. **Smoke** (8 tests) — route smoke tests asserting the console, folder, provider, audit, and incident routes load and render their page roots against the hermetic backend-less host.
 4. **StateLabels** (4 tests) — operator disposition-label gallery rendering.
 
-Each test drives a real Playwright Chromium browser against an in-process console host bound to localhost.
+Each test drives a real Playwright browser (Chromium by default) against an in-process console host bound to localhost.
 
 ## Route and Selector Contract
 
@@ -38,6 +38,7 @@ E2E tests under this project must follow the contract below. Any deviation is a 
 ### Hosting
 
 - A host fixture must stand the console up deterministically. No test may target a hand-started `dotnet run` process.
+- Create browser contexts through `PlaywrightFixture.CreateAuthenticatedContextAsync` with the fixture's `BaseAddress`. It supplies the existing hermetic bearer token and blocks requests outside that loopback origin, so both prerender and the Blazor circuit carry the test tenant/user without weakening FrontComposer's tenant boundary. Redirects are rejected because these hermetic routes have no redirects and a redirect chain could escape the origin guard.
 
 ### Network discipline
 
@@ -69,7 +70,16 @@ Run once per developer machine after first build:
 pwsh tests\install-playwright.ps1
 ```
 
-The script builds this project to materialize the Playwright runtime, then invokes the generated `playwright.ps1` to install the Chromium browser. Other browsers are not in scope for MVP.
+The script builds this project to materialize the Playwright runtime, then invokes the generated `playwright.ps1` to install Chromium, the default browser used by CI.
+
+For local environments where Chromium's canvas API stalls the axe color-contrast scan, select Firefox without changing the test suite or its WCAG rules:
+
+```powershell
+$env:FOLDERS_PLAYWRIGHT_BROWSER = 'firefox'
+pwsh tests/install-playwright.ps1
+```
+
+The installer honors the same variable as `PlaywrightFixture`; an explicit `-Browser` argument overrides it. Remove the variable to restore the default Chromium lane. A Firefox result is evidence for Firefox; CI continues to validate Chromium.
 
 ## Local execution
 

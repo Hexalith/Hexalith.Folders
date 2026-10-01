@@ -1,7 +1,7 @@
 #requires -Version 7.0
 [CmdletBinding()]
 param(
-    [string] $Browser = 'chromium',
+    [string] $Browser = $(if ([string]::IsNullOrWhiteSpace($env:FOLDERS_PLAYWRIGHT_BROWSER)) { 'chromium' } else { $env:FOLDERS_PLAYWRIGHT_BROWSER.Trim().ToLowerInvariant() }),
     [switch] $SkipBuild
 )
 

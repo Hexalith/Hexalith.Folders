@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: f44f59e7c0596fdf0f1785c9ac87fd3ddaa0c06faf323d58fd617ca8131a1cca
+candidate_set_sha256: 3cb9502def7fe9789337541bf675a8f6aaf1f26f329523e937e02b537cdd41e8
 artifact_count: 223
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -82,8 +82,8 @@ artifacts:
     sha256: 1952b1f1e287d178e727687f6296c79106b8f7d032de491338bc71d40002d584
   - path: "samples/Hexalith.Folders.Sample.Tests/FolderLifecycleSampleTests.cs"
     kind: file
-    bytes: 12102
-    sha256: 74d6aa67c68dd97a4f8cbfac1fd7d3ca6f4572ada1380f0cff5eee766c7e6f58
+    bytes: 12425
+    sha256: 1da148e2c4fe8198306b00560142c69e6aadc8b8c9cbadf56c5f14ff46dd0c8e
   - path: "samples/Hexalith.Folders.Sample/FolderLifecycleSample.cs"
     kind: file
     bytes: 11709

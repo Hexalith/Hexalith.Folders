@@ -82,7 +82,7 @@ public sealed class ConsoleZoomReflowGateTests : IClassFixture<DenseIdentifierCo
 
     public async ValueTask InitializeAsync()
     {
-        _context = await _playwright.Browser.NewContextAsync(new BrowserNewContextOptions
+        _context = await _playwright.CreateAuthenticatedContextAsync(_host.BaseAddress, new BrowserNewContextOptions
         {
             ViewportSize = new ViewportSize { Width = BaseWidth, Height = BaseHeight },
         }).ConfigureAwait(false);

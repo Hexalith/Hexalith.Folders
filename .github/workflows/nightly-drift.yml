@@ -43,17 +43,17 @@ jobs:
             **/*.csproj
 
       - name: Restore
-        run: dotnet restore Hexalith.Folders.slnx -m:1
+        run: dotnet restore Hexalith.Folders.CI.slnx -m:1 -p:Configuration=Release -p:UseNuGetDeps=true
 
       - name: Build
-        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+        run: dotnet build Hexalith.Folders.CI.slnx --no-restore -m:1 --configuration Release -p:UseNuGetDeps=true
 
       # One command covers both hermetic provider lanes: the Forgejo pinned-snapshot manifest and the
       # GitHub pinned-profile manifest plus its C12 failure-mode coverage matrix. Neither makes a network call.
       - name: Run nightly provider drift gates
         shell: pwsh
         timeout-minutes: 20
-        run: ./tests/tools/run-nightly-drift-gates.ps1 -SkipRestoreBuild -ProviderProfile '${{ inputs.provider_profile || 'pinned-snapshots' }}'
+        run: ./tests/tools/run-nightly-drift-gates.ps1 -SkipRestoreBuild -Configuration Release -ProviderProfile '${{ inputs.provider_profile || 'pinned-snapshots' }}'
 
       - name: Run Forgejo Alpine smart-HTTP smoke
         shell: pwsh

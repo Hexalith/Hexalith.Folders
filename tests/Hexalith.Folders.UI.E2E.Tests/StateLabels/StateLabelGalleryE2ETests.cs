@@ -26,7 +26,7 @@ public sealed class StateLabelGalleryE2ETests : IClassFixture<AspireConsoleHostF
 
     public async ValueTask InitializeAsync()
     {
-        _context = await _playwright.Browser.NewContextAsync().ConfigureAwait(false);
+        _context = await _playwright.CreateAuthenticatedContextAsync(_host.BaseAddress).ConfigureAwait(false);
         _page = await _context.NewPageAsync().ConfigureAwait(false);
     }
 

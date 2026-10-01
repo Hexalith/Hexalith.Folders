@@ -43,12 +43,12 @@ jobs:
             **/*.csproj
 
       - name: Restore
-        run: dotnet restore Hexalith.Folders.slnx -m:1
+        run: dotnet restore Hexalith.Folders.CI.slnx -m:1 -p:Configuration=Release -p:UseNuGetDeps=true
 
       - name: Build
-        run: dotnet build Hexalith.Folders.slnx --no-restore -m:1
+        run: dotnet build Hexalith.Folders.CI.slnx --no-restore -m:1 --configuration Release -p:UseNuGetDeps=true
 
       - name: Run scheduled policy conformance gates
         shell: pwsh
         timeout-minutes: 20
-        run: ./tests/tools/run-scheduled-policy-conformance-gates.ps1 -SkipRestoreBuild -PolicyMode '${{ inputs.policy_mode || 'static-plus-live-reference' }}'
+        run: ./tests/tools/run-scheduled-policy-conformance-gates.ps1 -SkipRestoreBuild -Configuration Release -PolicyMode '${{ inputs.policy_mode || 'static-plus-live-reference' }}'

@@ -5,7 +5,10 @@ param(
     [switch]$SkipRestoreBuild,
 
     [ValidateSet('static-plus-live-reference', 'static-only')]
-    [string]$PolicyMode = 'static-plus-live-reference'
+    [string]$PolicyMode = 'static-plus-live-reference',
+
+    [ValidateSet('Debug', 'Release')]
+    [string]$Configuration = 'Debug'
 )
 
 Set-StrictMode -Version Latest
@@ -26,6 +29,8 @@ $staticGateReportRelativePath = '_bmad-output/gates/dapr-policy-conformance/late
 $staticGateReportPath = Join-Path $repositoryRoot $staticGateReportRelativePath
 $staticGateScript = 'tests/tools/run-dapr-policy-conformance-gates.ps1'
 $testProjectPath = 'tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj'
+$solutionPath = if ($Configuration -eq 'Release') { 'Hexalith.Folders.CI.slnx' } else { 'Hexalith.Folders.slnx' }
+$testAssemblyPath = Join-Path $repositoryRoot "tests/Hexalith.Folders.Contracts.Tests/bin/$Configuration/net10.0/Hexalith.Folders.Contracts.Tests.dll"
 $pushed = $false
 $results = @()
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
@@ -133,11 +138,7 @@ function Assert-RequiredInput {
 }
 
 function Assert-TestAssembly {
-    $assembly = Get-ChildItem -Path (Join-Path $repositoryRoot 'tests') -Recurse -Filter 'Hexalith.Folders.Contracts.Tests.dll' -ErrorAction SilentlyContinue |
-        Where-Object { $_.FullName -match '[\\/]net\d+\.\d+(?:-[\w]+)?[\\/]' } |
-        Select-Object -First 1
-
-    if ($null -eq $assembly) {
+    if (-not (Test-Path $testAssemblyPath -PathType Leaf)) {
         Fail-Gate -Category 'static-policy-shape' -Reason 'missing-test-assembly'
     }
 }
@@ -152,14 +153,15 @@ function Assert-PolicyFixtureText {
 }
 
 function Invoke-RestoreAndBuild {
-    dotnet restore Hexalith.Folders.slnx -m:1 -p:NuGetAudit=false
+    $useNuGetDependencies = if ($Configuration -eq 'Release') { 'true' } else { 'false' }
+    dotnet restore $solutionPath -m:1 -p:Configuration=$Configuration -p:UseNuGetDeps=$useNuGetDependencies
     if ($LASTEXITCODE -ne 0) {
         Add-Result -Category 'static-policy-shape' -Status 'failed' -Severity 'failure' -ExitCode $LASTEXITCODE
         Write-ScheduledPolicyReport -Status 'failed' -Results $script:results -StaticReport $null
         exit $LASTEXITCODE
     }
 
-    dotnet build Hexalith.Folders.slnx --no-restore -m:1
+    dotnet build $solutionPath --no-restore -m:1 --configuration $Configuration -p:UseNuGetDeps=$useNuGetDependencies
     if ($LASTEXITCODE -ne 0) {
         Add-Result -Category 'static-policy-shape' -Status 'failed' -Severity 'failure' -ExitCode $LASTEXITCODE
         Write-ScheduledPolicyReport -Status 'failed' -Results $script:results -StaticReport $null
@@ -213,17 +215,15 @@ try {
 
     # The scheduled workflow (or this wrapper) has already restored/built the solution, so always
     # invoke the static gate with -SkipRestoreBuild to avoid a redundant second restore/build.
-    & pwsh -NoLogo -NoProfile -File (Join-Path $repositoryRoot $staticGateScript) -SkipRestoreBuild
-    $exitCode = $LASTEXITCODE
-    if ($null -eq $exitCode) {
-        $exitCode = 0
+    # Require this invocation's evidence; a prior successful report cannot prove a new child run.
+    if (Test-Path $staticGateReportPath) {
+        Remove-Item $staticGateReportPath -Force
     }
 
-    if ((Test-Path $staticGateReportPath)) {
-        $postRunStaticReport = Get-Content -Raw -Path $staticGateReportPath | ConvertFrom-Json
-        if ($postRunStaticReport.status -eq 'passed') {
-            $exitCode = 0
-        }
+    & pwsh -NoLogo -NoProfile -File (Join-Path $repositoryRoot $staticGateScript) -SkipRestoreBuild -Configuration $Configuration
+    $exitCode = $LASTEXITCODE
+    if ($null -eq $exitCode) {
+        Fail-Gate -Category 'static-policy-shape' -Reason 'missing-static-gate-exit-code'
     }
 
     if ($exitCode -ne 0) {

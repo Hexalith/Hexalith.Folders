@@ -123,7 +123,9 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         script.ShouldContain("ForgejoManifestAndDriftTests");
         script.ShouldContain("expected_test_count = 10");
         script.ShouldContain("$executedTests -ne 10");
-        script.ShouldContain("fallback=xunit-in-process");
+        script.ShouldContain("runner=xunit-in-process");
+        script.ShouldContain("& dotnet $testAssemblyPath -noLogo -noColor -class $ClassName");
+        script.ShouldNotContain("--filter", Case.Sensitive);
         script.ShouldContain("zero-or-partial-test-selection");
         script.ShouldContain("missing-test-assembly");
         script.ShouldContain("stale-integrity-hash");
@@ -210,6 +212,8 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         script.ShouldContain("deploy/dapr/production/secretstore.yaml");
         script.ShouldContain("deploy/dapr/production/sidecar-config-bindings.yaml");
         script.ShouldContain("tests/fixtures/dapr-policy-conformance.yaml");
+        script.ShouldContain("-SkipRestoreBuild -Configuration $Configuration");
+        script.ShouldContain("'Hexalith.Folders.CI.slnx'");
         script.ShouldContain("missing-test-assembly");
         script.ShouldContain("missing-negative-category");
         script.ShouldContain("static-gate-not-passed");
@@ -406,9 +410,10 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         }
 
         string workflowText = ReadText(workflowPath);
-        workflowText.ShouldContain("dotnet restore Hexalith.Folders.slnx -m:1");
+        workflowText.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -m:1 -p:Configuration=Release -p:UseNuGetDeps=true");
         workflowText.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
-        workflowText.ShouldContain("dotnet build Hexalith.Folders.slnx --no-restore -m:1");
+        workflowText.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --no-restore -m:1 --configuration Release -p:UseNuGetDeps=true");
+        workflowText.ShouldContain($"./{expectedScript} -SkipRestoreBuild -Configuration Release");
         workflowText.ShouldContain($"./{expectedScript}");
         workflowText.ShouldNotContain("run-dapr-policy-conformance-gates.ps1 -SkipRestoreBuild", Case.Insensitive);
         workflowText.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);

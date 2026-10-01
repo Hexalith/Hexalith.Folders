@@ -2800,3 +2800,7 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-1-17-authorized-v2-closure-preparation.md`
   summary: Folders emits no API-version or consumer-attributed route telemetry, and retired-v1 404s are not audited, although the migration entry and exit checks depend on route attribution.
   evidence: Neither Pd10HistoricalRouteRetirement nor the seam tags version or consumer. Migration package entry check 3 lists this as open. It was not part of the Story 1.17 preparation intent.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-fix-test-and-ci-failures-before-release.md`
+  summary: Extend the existing console DOM tests with a server-handled interaction after a real Blazor circuit connects.
+  evidence: Independent review identified a coverage improvement; authentication and foreign-origin boundaries are validated by the isolated probe, while existing 63 browser cases primarily validate prerendered read-only surfaces. This does not demonstrate a current circuit defect.
