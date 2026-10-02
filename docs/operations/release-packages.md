@@ -33,6 +33,8 @@ The protected environment is the publication authority for this repository. The 
 
 Publication remains frozen whenever the effective publication variable is absent or differs from the exact untrimmed lowercase value `true`, including `TRUE`, `True`, and padded values. An absent repository variable can inherit an organization value, including `true`; absence at repository scope alone does not freeze publication. Set an explicit repository override: `true` to authorize publication or `false` to freeze it regardless of an organization `true`. Frozen preparation concludes successfully and skips NuGet login and semantic-release. A missing or whitespace-only `NUGET_USER` fails an enabled run before token exchange. Rejected OIDC authentication fails before semantic-release can create another release tag; there is no stored-key fallback.
 
+The Folders workflow resolves `vars.HEXALITH_RELEASE_PUBLISH_ENABLED` and passes it through the shared action's `publication-flag` input. The composite reads that input rather than the unavailable `vars` context. An omitted input defaults to empty and leaves publication frozen; the exact untrimmed shell comparison and caller-visible `publish-enabled` verdict remain the publication gate.
+
 ## Trusted Publishing Setup
 
 `deploy/nuget/trusted-publishing-policy.yaml` is the concrete repository policy definition to register manually on NuGet.org. It is not a native NuGet API import, and committing this file does not register a remote policy. In the individual creator's [NuGet trusted publishing account page](https://www.nuget.org/account/trustedpublishing), register these exact fields:

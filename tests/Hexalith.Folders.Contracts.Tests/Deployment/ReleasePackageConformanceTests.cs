@@ -12,7 +12,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class ReleasePackageConformanceTests
 {
-    private const string BuildsExecutionSha = "f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f";
+    private const string BuildsExecutionSha = "3639c8d9340fc81d6f8e0a90566a97e56d5d8446";
     private const string ManifestPath = "tools/release-packages.json";
     private const string PolicyPath = "deploy/nuget/release-packages.yaml";
     private const string ReportPath = "_bmad-output/gates/release-packages/latest.json";
@@ -125,6 +125,7 @@ public sealed partial class ReleasePackageConformanceTests
         inputs.GetReleaseScalar("source-ci-workflow").ShouldBe("ci.yml");
         inputs.GetReleaseScalar("package-manifest").ShouldBe(ManifestPath);
         inputs.GetReleaseScalar("expected-package-count").ShouldBe("5");
+        inputs.GetReleaseScalar("publication-flag").ShouldBe("${{ vars.HEXALITH_RELEASE_PUBLISH_ENABLED }}");
         inputs.GetReleaseScalar("nuget-user").ShouldBe("${{ vars.NUGET_USER }}");
         steps[2].GetReleaseScalar("id").ShouldBe("nuget-login");
         steps[2].GetReleaseScalar("uses").ShouldBe("NuGet/login@8d196754b4036150537f80ac539e15c2f1028841");

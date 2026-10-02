@@ -99,6 +99,12 @@ Final local verification after all review patches and the final shared pin: `act
 
 ## Verification
 
+Hosted verification on `116464a2e1e4697ae964efb4a0e358e609eb992d`: CI `36983007505`, Commitlint `36983007548`, CodeQL `36983007527`, and contract-spine `36983006930` all passed. Shared `f1c5f77` CI `36982328464` and Commitlint `36982328465` passed. Release `36983740518` passed exact-source proof and received normal production approval, but the runner rejected the composite before checkout: `Unrecognized named-value: vars` for its publication environment expression. No NuGet login, new tag, or upload occurred; all five public indexes still list only `1.0.0`.
+
+The runtime correction adds an optional shared `publication-flag` input defaulting to empty. Folders resolves `vars.HEXALITH_RELEASE_PUBLISH_ENABLED` in the caller and passes that raw value; the composite binds its internal environment exclusively to the input. The exact case-sensitive/untrimmed shell gate and exported enabled/frozen verdict stay unchanged. Regression coverage checks the declaration, environment binding, omitted input freezing, absence of unsupported direct composite vars expressions, and the caller's variable mapping. This is a patch within the existing intent, with no frozen-boundary change.
+
+Shared runtime correction `3639c8d9340fc81d6f8e0a90566a97e56d5d8446` is pushed after pinned commitlint validation. Its nine focused fixtures pass. Folders uses this SHA consistently in the caller, shell preflight, Python fixture, and Contracts constant; the original root gitlink remains unchanged. Final actionlint and whitespace checks pass; the no-restore Release/package-mode build has zero warnings/errors; all 343 Contracts tests pass; all 38 tooling tests pass in 106.054 seconds. A fresh exact-source hosted CI run and Release attempt follow the corrective Folders commit.
+
 - `actionlint .github/workflows/release.yml`; lint the shared composite through a synthetic caller where necessary.
 - Shared focused behavior fixtures exercise exact freeze values, identity mismatch, missing creator, invalid source and exact push-CI outcomes without live mutation.
 - `python3 -m unittest discover -s scripts/tests -p 'test_*.py'` and focused Contracts project build/direct xUnit class run.
