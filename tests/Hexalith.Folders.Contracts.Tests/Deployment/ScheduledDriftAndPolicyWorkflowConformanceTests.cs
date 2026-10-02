@@ -302,7 +302,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         documentation.ShouldContain("Story 7.15");
         documentation.ShouldContain("Story 7.16");
         documentation.ShouldContain("Story 7.17");
-        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
 
         foreach (string category in _nightlyCategories.Concat(_policyCategories))
         {
@@ -392,8 +392,9 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         string submoduleCommand = GetScalar(GetSequence(job, "steps").Children.Cast<YamlMappingNode>()
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
                 && string.Equals(value.ToString(), "Initialize root-level build submodules", StringComparison.Ordinal)), "run");
-        submoduleCommand.ShouldStartWith("git submodule update --init ", Case.Sensitive);
+        submoduleCommand.ShouldBe($"git submodule update --init --checkout {string.Join(" ", _rootBuildSubmodules)}");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
+        submoduleCommand.ShouldNotContain("--remote", Case.Insensitive);
         foreach (string module in _rootBuildSubmodules)
         {
             submoduleCommand.ShouldContain(module, Case.Sensitive);

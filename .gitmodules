@@ -1,18 +1,22 @@
 [submodule "Hexalith.Tenants"]
 	path = references/Hexalith.Tenants
 	url = https://github.com/Hexalith/Hexalith.Tenants.git
+	update = none
 [submodule "Hexalith.AI.Tools"]
 	path = references/Hexalith.AI.Tools
 	url = https://github.com/Hexalith/Hexalith.AI.Tools.git
 [submodule "Hexalith.EventStore"]
 	path = references/Hexalith.EventStore
 	url = https://github.com/Hexalith/Hexalith.EventStore.git
+	update = none
 [submodule "Hexalith.FrontComposer"]
 	path = references/Hexalith.FrontComposer
 	url = https://github.com/Hexalith/Hexalith.FrontComposer.git
+	update = none
 [submodule "Hexalith.Memories"]
 	path = references/Hexalith.Memories
 	url = https://github.com/Hexalith/Hexalith.Memories.git
+	update = none
 [submodule "Hexalith.Commons"]
 	path = references/Hexalith.Commons
 	url = https://github.com/Hexalith/Hexalith.Commons.git
@@ -25,9 +29,12 @@
 [submodule "Hexalith.Projects"]
 	path = references/Hexalith.Projects
 	url = https://github.com/Hexalith/Hexalith.Projects.git
+	update = none
 [submodule "Hexalith.Platform"]
 	path = references/Hexalith.Platform
 	url = https://github.com/Hexalith/Hexalith.Platform.git
+	update = none
 [submodule "Hexalith.McpCli"]
 	path = references/Hexalith.McpCli
 	url = https://github.com/Hexalith/Hexalith.McpCli.git
+	update = none

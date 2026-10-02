@@ -104,7 +104,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
                 && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
         YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6.0.0");
@@ -371,7 +371,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
             documentation.ShouldContain(excluded, Case.Sensitive);
         }
 
-        documentation.ShouldContain("git -c submodule.recurse=false submodule update --init", Case.Sensitive);
+        documentation.ShouldContain("git -c submodule.recurse=false submodule update --init --checkout", Case.Sensitive);
     }
 
     [Fact]

@@ -61,7 +61,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-declared submodules
-        run: git -c submodule.recurse=false submodule update --init
+        run: git -c submodule.recurse=false submodule update --init --checkout
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v6.0.0
@@ -136,7 +136,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-declared submodules
-        run: git -c submodule.recurse=false submodule update --init
+        run: git -c submodule.recurse=false submodule update --init --checkout
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v6.0.0
@@ -166,7 +166,7 @@ jobs:
           submodules: false
 
       - name: Initialize root-declared submodules
-        run: git -c submodule.recurse=false submodule update --init
+        run: git -c submodule.recurse=false submodule update --init --checkout
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v6.0.0

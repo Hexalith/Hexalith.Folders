@@ -91,7 +91,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
                 && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
         YamlMappingNode setupDotnet = FindStep(contractJob, "actions/setup-dotnet@v6.0.0");
@@ -312,7 +312,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         documentation.ShouldContain("metadata-only");
         documentation.ShouldContain("contract-spine.yml");
         documentation.ShouldContain("Stories 7.6 and 7.8");
-        documentation.ShouldContain("git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
+        documentation.ShouldContain("git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants");
 
         foreach (string category in _categories)
         {

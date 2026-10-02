@@ -255,7 +255,7 @@ public sealed partial class ProductionObservabilityConformanceTests
             "metadata-only",
             "reviewer",
             "rerun",
-            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
+            "git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
         })
         {
             operations.ShouldContain(required, Case.Sensitive);
@@ -306,7 +306,7 @@ public sealed partial class ProductionObservabilityConformanceTests
         // Recursive-submodule detection: the forbidden recursive form is flagged; the approved references command is not.
         string recursiveToken = string.Concat("--", "recursive");
         ("git submodule update --init " + recursiveToken).Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeTrue();
-        "git submodule update --init references/Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
+        "git submodule update --init --checkout references/Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
     }
 
     private static SignalIntent[] ParseSignals(YamlMappingNode spec)

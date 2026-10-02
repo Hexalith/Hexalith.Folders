@@ -87,7 +87,7 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
             "_bmad-output/gates/retention-deletion/latest.json",
             "approved design evidence does not clear live release until the separately governed runtime evidence is complete",
             "metadata-only",
-            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
+            "git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
         })
         {
             operations.ShouldContain(required, Case.Sensitive);
@@ -278,7 +278,7 @@ public sealed partial class RetentionAndTenantDeletionConformanceTests
         // the approved references command is not.
         string recursiveToken = string.Concat("--", "recursive");
         ("git submodule update --init " + recursiveToken).Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeTrue();
-        "git submodule update --init references/Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
+        "git submodule update --init --checkout references/Hexalith.Commons".Contains(recursiveToken, StringComparison.OrdinalIgnoreCase).ShouldBeFalse();
     }
 
     private static void AssertRequiredPolicyRows(MarkdownRow[] rows)

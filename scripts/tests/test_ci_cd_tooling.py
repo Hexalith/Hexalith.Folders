@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import configparser
 import json
 import os
 import pathlib
@@ -22,6 +23,170 @@ from release_package_contract import (  # noqa: E402
     read_symbol_metadata,
     validate_internal_dependencies,
 )
+
+
+class RootSubmoduleCheckoutTests(unittest.TestCase):
+    cyclic_modules = {
+        "Hexalith.Tenants", "Hexalith.EventStore", "Hexalith.FrontComposer",
+        "Hexalith.Memories", "Hexalith.Projects", "Hexalith.Platform", "Hexalith.McpCli",
+    }
+    package_modules = {
+        "Hexalith.AI.Tools", "Hexalith.Builds", "Hexalith.Commons", "Hexalith.PolymorphicSerializations",
+    }
+
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = pathlib.Path(temporary.name)
+        self.environment = {key: value for key, value in os.environ.items() if not key.startswith("GIT_")}
+        self.environment.update({"GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_TERMINAL_PROMPT": "0"})
+
+        # These repositories and their synthetic nested module exist only in the
+        # temporary fixture. No checkout or update touches actual references/.
+        nested = self.create_repository("nested")
+        source = self.create_repository("source")
+        self.git(source, "submodule", "add", nested.as_uri(), "references/Loop")
+        self.git(source, "commit", "-am", "fixture: add nested source")
+        package = self.create_repository("package")
+        self.git(package, "submodule", "add", nested.as_uri(), "references/Loop")
+        self.git(package, "commit", "-am", "fixture: add finite package leaf")
+        self.source = source
+        self.origin = self.create_repository("root")
+        shutil.copyfile(ROOT / ".gitmodules", self.origin / ".gitmodules")
+        modules = configparser.ConfigParser()
+        modules.read(self.origin / ".gitmodules", encoding="utf-8")
+        names = {section.removeprefix('submodule "').removesuffix('"') for section in modules.sections()}
+        self.assertEqual(self.cyclic_modules | self.package_modules, names)
+        skipped = {
+            section.removeprefix('submodule "').removesuffix('"')
+            for section in modules.sections() if modules[section].get("update") == "none"
+        }
+        self.assertEqual(self.cyclic_modules, skipped)
+        self.module_paths = []
+        self.expected_commits = {}
+        for section in modules.sections():
+            name = section.removeprefix('submodule "').removesuffix('"')
+            path = modules[section]["path"]
+            self.assertEqual(f"references/{name}", path)
+            repository = source if name in self.cyclic_modules else package
+            commit = self.git(repository, "rev-parse", "HEAD").stdout.strip()
+            self.git(self.origin, "config", "--file", ".gitmodules", f"submodule.{name}.url", repository.as_uri())
+            self.git(self.origin, "update-index", "--add", "--cacheinfo", f"160000,{commit},{path}")
+            self.module_paths.append(path)
+            self.expected_commits[path] = commit
+        self.git(self.origin, "add", ".gitmodules")
+        self.git(self.origin, "commit", "-m", "fixture: declare root dependency policy")
+        for repository in (source, package):
+            self.git(repository, "commit", "--allow-empty", "-m", "fixture: advance upstream beyond pinned commit")
+
+    def git(self, repository: pathlib.Path, *arguments: str) -> subprocess.CompletedProcess[str]:
+        result = subprocess.run(
+            ["git", "-c", "protocol.file.allow=always", "-c", "user.name=Fixture",
+             "-c", "user.email=fixture@example.invalid", *arguments],
+            cwd=repository, env=self.environment, text=True, capture_output=True, check=False, timeout=30,
+        )
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        return result
+
+    def create_repository(self, name: str) -> pathlib.Path:
+        repository = self.root / name
+        repository.mkdir()
+        self.git(repository, "init", "--initial-branch=main")
+        (repository / "fixture.txt").write_text(name, encoding="utf-8")
+        self.git(repository, "add", "fixture.txt")
+        self.git(repository, "commit", "-m", "fixture: initial content")
+        return repository
+
+    def clone(self, *options: str) -> pathlib.Path:
+        checkout = self.root / "checkout"
+        self.git(self.root, "clone", *options, self.origin.as_uri(), str(checkout))
+        return checkout
+
+    def assert_nested_uninitialized(self, module: pathlib.Path) -> None:
+        nested = module / "references/Loop"
+        self.assertFalse((nested / ".git").exists(), str(module))
+        self.assertFalse((nested / "fixture.txt").exists(), str(module))
+        module_database = module / self.git(module, "rev-parse", "--git-path", "modules/references/Loop").stdout.strip()
+        self.assertFalse((module_database / "objects").exists(), str(module))
+
+    def assert_default_roots(
+        self, checkout: pathlib.Path, *, recursive: bool = False, local_checkout_modules: tuple[str, ...] = (),
+    ) -> None:
+        for name in self.cyclic_modules:
+            module = checkout / "references" / name
+            if name in local_checkout_modules:
+                self.assertTrue((module / ".git").is_file(), name)
+                self.assertEqual(self.expected_commits[f"references/{name}"], self.git(module, "rev-parse", "HEAD").stdout.strip())
+                self.assert_nested_uninitialized(module)
+            else:
+                self.assertFalse((module / ".git").exists(), name)
+                self.assertFalse((module / "fixture.txt").exists(), name)
+                module_database = checkout / self.git(checkout, "rev-parse", "--git-path", f"modules/{name}").stdout.strip()
+                self.assertFalse((module_database / "objects").exists(), name)
+        for name in self.package_modules:
+            module = checkout / "references" / name
+            self.assertTrue((module / ".git").is_file(), name)
+            self.assertEqual("package", (module / "fixture.txt").read_text(encoding="utf-8"))
+            self.assertEqual(self.expected_commits[f"references/{name}"], self.git(module, "rev-parse", "HEAD").stdout.strip())
+            if recursive:
+                self.assertEqual("true", self.git(module, "rev-parse", "--is-shallow-repository").stdout.strip())
+                self.assertTrue((module / "references/Loop/.git").is_file(), name)
+            else:
+                self.assert_nested_uninitialized(module)
+
+    def assert_explicit_roots_without_nested_checkout(self, checkout: pathlib.Path) -> None:
+        for path, commit in self.expected_commits.items():
+            module = checkout / path
+            self.assertTrue((module / ".git").is_file(), path)
+            self.assertEqual(commit, self.git(module, "rev-parse", "HEAD").stdout.strip())
+            self.assert_nested_uninitialized(module)
+
+    def test_recursive_updater_clone_skips_cyclic_source_roots(self) -> None:
+        checkout = self.clone("--no-tags", "--depth", "1", "--recurse-submodules", "--shallow-submodules")
+        self.assertEqual("true", self.git(checkout, "rev-parse", "--is-shallow-repository").stdout.strip())
+        self.assert_default_roots(checkout, recursive=True)
+
+    def test_default_nonrecursive_init_keeps_acyclic_package_roots_available(self) -> None:
+        checkout = self.clone("--no-recurse-submodules")
+        self.git(checkout, "-c", "submodule.recurse=false", "submodule", "update", "--init")
+        self.assert_default_roots(checkout)
+
+    def test_canonical_checkout_overrides_initialized_skip_policy_without_nested_checkout(self) -> None:
+        checkout = self.clone("--no-recurse-submodules")
+        self.git(checkout, "submodule", "update", "--init")
+        self.assert_default_roots(checkout)
+        self.git(checkout, "submodule", "update", "--init", "--checkout", *self.module_paths)
+        self.assert_explicit_roots_without_nested_checkout(checkout)
+
+    def test_local_workflow_checkout_initializes_all_roots_without_nested_checkout(self) -> None:
+        checkout = self.clone("--no-recurse-submodules")
+        self.git(checkout, "-c", "submodule.recurse=false", "submodule", "update", "--init", "--checkout")
+        self.assert_explicit_roots_without_nested_checkout(checkout)
+
+    def test_existing_local_checkout_strategy_takes_precedence_over_module_skip_default(self) -> None:
+        checkout = self.clone("--no-recurse-submodules")
+        self.git(checkout, "config", "submodule.Hexalith.Tenants.update", "checkout")
+        self.git(checkout, "submodule", "update", "--init")
+        self.assert_default_roots(checkout, local_checkout_modules=("Hexalith.Tenants",))
+
+    def test_recorded_gitlink_change_requires_repeated_checkout_override(self) -> None:
+        checkout = self.clone("--no-recurse-submodules")
+        self.git(checkout, "submodule", "update", "--init", "--checkout", *self.module_paths)
+        self.assert_explicit_roots_without_nested_checkout(checkout)
+
+        path = "references/Hexalith.Tenants"
+        new_commit = self.git(self.source, "rev-parse", "HEAD").stdout.strip()
+        self.assertNotEqual(self.expected_commits[path], new_commit)
+        self.git(self.origin, "update-index", "--cacheinfo", f"160000,{new_commit},{path}")
+        self.git(self.origin, "commit", "-m", "fixture: advance recorded source gitlink")
+        self.git(checkout, "fetch", "--no-recurse-submodules", "origin")
+        self.git(checkout, "-c", "submodule.recurse=false", "checkout", "--detach", "origin/main")
+
+        self.git(checkout, "submodule", "update", "--init")
+        self.assert_explicit_roots_without_nested_checkout(checkout)
+        self.expected_commits[path] = new_commit
+        self.git(checkout, "submodule", "update", "--init", "--checkout", *self.module_paths)
+        self.assert_explicit_roots_without_nested_checkout(checkout)
 
 
 class CoverageValidatorTests(unittest.TestCase):

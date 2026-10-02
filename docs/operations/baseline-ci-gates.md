@@ -5,7 +5,7 @@ Story 7.4 defines the pull-request baseline lane for mechanical repository healt
 The workflow is `.github/workflows/ci.yml`. It runs for pull requests and pushes to `main`. Checkout uses `submodules: false`; the workflow then initializes only root-declared submodules and never initializes nested submodules recursively:
 
 ```text
-git -c submodule.recurse=false submodule update --init
+git -c submodule.recurse=false submodule update --init --checkout
 ```
 
 ## Gate Categories

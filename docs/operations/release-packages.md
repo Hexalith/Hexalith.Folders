@@ -66,11 +66,35 @@ Exactly five `.nupkg` and five `.snupkg` files are written to `nupkgs/`. The met
 
 `.github/workflows/ci.yml` delegates standard Release/Microsoft.Testing.Platform build, test, coverage, and consumer validation to Hexalith.Builds. The Folders contract/parity, security/redaction, capacity smoke and calibration, retention/deletion, NFR traceability, safety, governance, accessibility, and end-to-end gates remain additive and blocking for the same commit. CI and release builds select centrally pinned NuGet dependencies through the standard `CI=true` MSBuild property; local Debug development may retain source dependencies.
 
-Checkout uses `submodules: false`, then initializes only root-declared dependencies with the command below. Do not initialize nested submodules by default.
+Checkout uses `submodules: false`. The shared package-only CI and release lanes
+retain their nonrecursive initialization command:
+
+Do not initialize nested submodules by default.
 
 ```text
 git -c submodule.recurse=false submodule update --init
 ```
+
+The seven cyclic source roots have `update = none`, so implicit updater clones
+and that default command skip them. The four acyclic roots (AI.Tools, Builds,
+Commons and PolymorphicSerializations), including the shared package catalog,
+remain available. Local workflow gates and full source setup explicitly override
+the skip policy while keeping initialization limited to root dependencies:
+
+Existing `submodule.<name>.update` values in local `.git/config` take precedence
+over `.gitmodules` during initialization. The explicit `--checkout` overrides
+either strategy. Repeat this canonical command after parent gitlinks change to
+select their newly recorded commits; plain updates still skip roots configured
+as `none`. Explicit root operands also avoid selection through `submodule.active`.
+
+Do not initialize nested submodules by default.
+
+```text
+git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.McpCli references/Hexalith.Memories references/Hexalith.Platform references/Hexalith.PolymorphicSerializations references/Hexalith.Projects references/Hexalith.Tenants
+```
+
+The checkout override selects root source content without enabling recursive or
+remote updates.
 
 NuGet audit stays enabled. Dependabot covers NuGet, npm, and GitHub Actions; CodeQL and dependency review use the shared Hexalith workflows.
 

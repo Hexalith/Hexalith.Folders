@@ -586,6 +586,20 @@ public sealed class ScaffoldContractTests
         string trailingSlashOperands = string.Join(" ", RequiredCanonicalSubmodules.Select(module => $"{module}/"));
         string[] unsafeCommands =
         [
+            $"git submodule update --init {operands}",
+            $"git submodule update --init --CHECKOUT {operands}",
+            $"git submodule update --init {operands} --checkout",
+            $"{canonical} --checkout",
+            $"git submodule update --init --checkout {operands} --checkout",
+            $"{canonical} --remote",
+            $"{canonical} --recursive",
+            $"{canonical} --recurse-submodules",
+            $"{canonical} --merge",
+            $"{canonical} --rebase",
+            $"{canonical} --init",
+            $"{canonical} {RequiredCanonicalSubmodules[0]}",
+            $"git submodule update --init --checkout {nestedOperands}",
+            $"git submodule update --init --checkout {trailingSlashOperands}",
             $"git submodule update --init --remote {operands}",
             $"git submodule update --init --recursive {operands}",
             $"git submodule update --init --recurse-submodules {operands}",
@@ -699,11 +713,11 @@ public sealed class ScaffoldContractTests
     private static string CanonicalInitCommand() => CanonicalInitCommand(RequiredCanonicalSubmodules);
 
     private static string CanonicalInitCommand(IEnumerable<string> submodules) =>
-        $"git submodule update --init {string.Join(" ", submodules)}";
+        $"git submodule update --init --checkout {string.Join(" ", submodules)}";
 
     private static string CanonicalInitCommandWithContinuation(char marker)
     {
-        List<string> lines = [$"git submodule update --init {marker}"];
+        List<string> lines = [$"git submodule update --init --checkout {marker}"];
         for (int index = 0; index < RequiredCanonicalSubmodules.Length; index++)
         {
             string suffix = index == RequiredCanonicalSubmodules.Length - 1 ? string.Empty : $" {marker}";
@@ -810,16 +824,17 @@ public sealed class ScaffoldContractTests
     private static bool IsCanonicalRootInitCommand(string command)
     {
         if (!TryTokenizeCommand(command, out string[] tokens)
-            || tokens.Length != RequiredCanonicalSubmodules.Length + 4
+            || tokens.Length != RequiredCanonicalSubmodules.Length + 5
             || !tokens[0].Equals("git", StringComparison.OrdinalIgnoreCase)
             || !tokens[1].Equals("submodule", StringComparison.OrdinalIgnoreCase)
             || !tokens[2].Equals("update", StringComparison.OrdinalIgnoreCase)
-            || !tokens[3].Equals("--init", StringComparison.OrdinalIgnoreCase))
+            || !tokens[3].Equals("--init", StringComparison.OrdinalIgnoreCase)
+            || !tokens[4].Equals("--checkout", StringComparison.Ordinal))
         {
             return false;
         }
 
-        HashSet<string> operands = new(tokens.Skip(4), StringComparer.OrdinalIgnoreCase);
+        HashSet<string> operands = new(tokens.Skip(5), StringComparer.OrdinalIgnoreCase);
         return operands.Count == RequiredCanonicalSubmodules.Length
             && operands.SetEquals(RequiredCanonicalSubmodules);
     }

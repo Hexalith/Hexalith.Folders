@@ -13,25 +13,25 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 3cb9502def7fe9789337541bf675a8f6aaf1f26f329523e937e02b537cdd41e8
+candidate_set_sha256: d36d35edd348e0893e313d408e2cc8f592429c0701643fb825972c0c10325031
 artifact_count: 223
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
-    bytes: 5539
-    sha256: 83da70764301964bbadf5ab6e39691ba214bb27f0748bf2d82dd32a3127313e0
+    bytes: 5572
+    sha256: 6e722ec58b4f955f1b1e77fc4e5408a78612f565be345589dcb7199c4005b628
   - path: ".github/workflows/contract-spine.yml"
     kind: file
-    bytes: 3092
-    sha256: 3faf407676159cb3f2295ecac0cf87fcef97e586da073649da81776997d7a396
+    bytes: 3103
+    sha256: a2bb2e51b31e367da632c46e7ea0191dd0f4745f216e08136d0c907e07b187b1
   - path: "docs/contract/authorization-matrix.md"
     kind: file
     bytes: 49645
     sha256: d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420
   - path: "docs/contract/contract-parity-ci-gates.md"
     kind: file
-    bytes: 7962
-    sha256: 0f9a77fb59ece0c666ca23337933940317b9d9ccd38469c5444f41f9a75262d0
+    bytes: 7973
+    sha256: bfa0b8a354b89f7b2bc784d52bd978435d418cf50eb7b1761f7ea1946295f440
   - path: "docs/contract/contract-spine-foundation.md"
     kind: file
     bytes: 3194
@@ -58,8 +58,8 @@ artifacts:
     sha256: 1fd6f6e4c1d715f413c5c13e8c6733bba3b2004d53de16c9da2793313c616dff
   - path: "docs/operations/canonical-error-catalog.md"
     kind: file
-    bytes: 13553
-    sha256: 9991fdd8d5b04e9361db984e9cc35a15cc8501c689c1d8b4d9213e01e499ad53
+    bytes: 13564
+    sha256: c2b8a54a88538041a67ebe905be0868f50290e52ec08a56e3ba4461fc2a86183
   - path: "docs/operations/dapr-policy-conformance.md"
     kind: file
     bytes: 5262
@@ -582,12 +582,12 @@ artifacts:
     sha256: 051bb66c2d49410f65243b43f075acb16f0bf83073108482b880ab3954440588
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ContractParityCiWorkflowConformanceTests.cs"
     kind: file
-    bytes: 21383
-    sha256: 824c3f08e01aeeba4a90c4a558e95732d0d5ec059d3af508d537c02e319b34d7
+    bytes: 21405
+    sha256: 91584e8801f9ba1469af034210fb992237d20f3b13b63b7a3d1f5e029971607c
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs"
     kind: file
-    bytes: 32436
-    sha256: 43dbf3b0209c99599ee7938b51d885cd91430486bfaaa50cc6d60975653a8dbe
+    bytes: 32447
+    sha256: 3abcf3bf86a14bc209e362ea5323cf63797c590cb6bbc6e97c45f3ba51772696
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/AuthorizationMatrixContractTests.cs"
     kind: file
     bytes: 47965

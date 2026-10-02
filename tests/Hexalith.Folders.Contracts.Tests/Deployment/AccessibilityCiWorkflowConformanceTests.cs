@@ -55,7 +55,7 @@ public sealed partial class AccessibilityCiWorkflowConformanceTests
             .Single(step => step.Children.TryGetValue(new YamlScalarNode("name"), out YamlNode? value)
                 && string.Equals(value.ToString(), "Initialize root-declared submodules", StringComparison.Ordinal));
         string submoduleCommand = GetScalar(submodules, "run");
-        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init");
+        submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
         YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6.0.0");

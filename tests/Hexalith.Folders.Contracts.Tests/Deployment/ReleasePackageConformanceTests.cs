@@ -65,7 +65,7 @@ public sealed partial class ReleasePackageConformanceTests
         }
 
         text.ShouldContain("submodules: false", Case.Sensitive);
-        text.ShouldContain("git -c submodule.recurse=false submodule update --init", Case.Sensitive);
+        text.ShouldContain("git -c submodule.recurse=false submodule update --init --checkout", Case.Sensitive);
         text.ShouldContain("python3 -m unittest discover -s scripts/tests -p 'test_*.py'", Case.Sensitive);
         text.ShouldNotContain("NuGetAudit=false", Case.Sensitive);
         text.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);

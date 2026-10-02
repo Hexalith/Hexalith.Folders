@@ -168,7 +168,7 @@ public sealed partial class CapacityCalibrationConformanceTests
             "Story 7.12",
             ReportPath,
             EvidencePath,
-            "git submodule update --init references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
+            "git submodule update --init --checkout references/Hexalith.AI.Tools references/Hexalith.Builds references/Hexalith.Commons references/Hexalith.EventStore references/Hexalith.FrontComposer references/Hexalith.Memories references/Hexalith.PolymorphicSerializations references/Hexalith.Tenants",
         })
         {
             documentation.ShouldContain(required, Case.Sensitive);
