@@ -12,7 +12,7 @@ namespace Hexalith.Folders.Contracts.Tests.Deployment;
 
 public sealed partial class ReleasePackageConformanceTests
 {
-    private const string BuildsExecutionSha = "b93e9889e9e7b67036837015b4b2b115e326c4da";
+    private const string BuildsExecutionSha = "f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f";
     private const string ManifestPath = "tools/release-packages.json";
     private const string PolicyPath = "deploy/nuget/release-packages.yaml";
     private const string ReportPath = "_bmad-output/gates/release-packages/latest.json";
@@ -93,23 +93,102 @@ public sealed partial class ReleasePackageConformanceTests
 
         YamlMappingNode release = jobs.GetReleaseMapping("release");
         release.GetReleaseScalar("needs").ShouldBe("verify-source");
-        release.GetReleaseScalar("uses").ShouldBe(
-            $"Hexalith/Hexalith.Builds/.github/workflows/domain-release.yml@{BuildsExecutionSha}");
-        YamlMappingNode inputs = release.GetReleaseMapping("with");
+        release.GetReleaseScalar("runs-on").ShouldBe("ubuntu-latest");
+        release.GetReleaseScalar("timeout-minutes").ShouldBe("60");
+        release.GetReleaseScalar("environment").ShouldBe("production");
+        release.Children.ContainsKey(new YamlScalarNode("uses")).ShouldBeFalse();
+        release.Children.ContainsKey(new YamlScalarNode("secrets")).ShouldBeFalse();
+        YamlMappingNode permissions = release.GetReleaseMapping("permissions");
+        permissions.Children.Keys.Select(static key => key.ToString()).Order(StringComparer.Ordinal)
+            .ShouldBe(new[] { "actions", "contents", "id-token", "issues", "pull-requests" }.Order(StringComparer.Ordinal));
+        permissions.GetReleaseScalar("actions").ShouldBe("read");
+        foreach (string permission in new[] { "contents", "id-token", "issues", "pull-requests" })
+        {
+            permissions.GetReleaseScalar(permission).ShouldBe("write");
+        }
+
+        YamlMappingNode[] steps = release.GetReleaseSequence("steps").Children.Cast<YamlMappingNode>().ToArray();
+        steps.Length.ShouldBe(6, "Checkout, shared preparation, NuGet login, and publication must run consecutively, followed only by the two failure-evidence uploads.");
+        steps[0].GetReleaseScalar("uses").ShouldBe("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1");
+        YamlMappingNode checkout = steps[0].GetReleaseMapping("with");
+        checkout.GetReleaseScalar("ref").ShouldBe("${{ github.sha }}");
+        checkout.GetReleaseScalar("fetch-depth").ShouldBe("0");
+        checkout.GetReleaseScalar("persist-credentials").ShouldBe("false");
+        checkout.GetReleaseScalar("submodules").ShouldBe("false");
+        steps[1].GetReleaseScalar("id").ShouldBe("prepare");
+        steps[1].GetReleaseScalar("uses").ShouldBe(
+            $"Hexalith/Hexalith.Builds/Github/prepare-domain-release@{BuildsExecutionSha}");
+        YamlMappingNode inputs = steps[1].GetReleaseMapping("with");
         inputs.GetReleaseScalar("builds-execution-sha").ShouldBe(BuildsExecutionSha);
-        inputs.GetReleaseScalar("environment-name").ShouldBe("production");
+        inputs.GetReleaseScalar("solution").ShouldBe("Hexalith.Folders.CI.slnx");
         inputs.GetReleaseScalar("source-branch").ShouldBe("main");
         inputs.GetReleaseScalar("source-ci-workflow").ShouldBe("ci.yml");
         inputs.GetReleaseScalar("package-manifest").ShouldBe(ManifestPath);
         inputs.GetReleaseScalar("expected-package-count").ShouldBe("5");
-        inputs.GetReleaseScalar("test-platform").ShouldBe("microsoft-testing-platform");
-        inputs.GetReleaseScalar("publish-containers").ShouldBe("false");
-        inputs.GetReleaseScalar("require-publication-authority").ShouldBe("false");
-        release.GetReleaseMapping("secrets").GetReleaseScalar("NUGET_API_KEY").ShouldBe("${{ secrets.NUGET_API_KEY }}");
+        inputs.GetReleaseScalar("nuget-user").ShouldBe("${{ vars.NUGET_USER }}");
+        steps[2].GetReleaseScalar("id").ShouldBe("nuget-login");
+        steps[2].GetReleaseScalar("uses").ShouldBe("NuGet/login@8d196754b4036150537f80ac539e15c2f1028841");
+        steps[2].GetReleaseScalar("if").ShouldBe("${{ steps.prepare.outputs.publish-enabled == 'true' }}");
+        steps[2].GetReleaseMapping("with").GetReleaseScalar("user").ShouldBe("${{ vars.NUGET_USER }}");
+        steps[3].GetReleaseScalar("if").ShouldBe("${{ steps.prepare.outputs.publish-enabled == 'true' }}");
+        steps[3].GetReleaseScalar("shell").ShouldBe("bash");
+        steps[3].GetReleaseScalar("run").ShouldBe("npm exec --no -- semantic-release");
+        YamlMappingNode publicationEnvironment = steps[3].GetReleaseMapping("env");
+        publicationEnvironment.GetReleaseScalar("NUGET_API_KEY").ShouldBe("${{ steps.nuget-login.outputs.NUGET_API_KEY }}");
+        publicationEnvironment.GetReleaseScalar("GITHUB_TOKEN").ShouldBe("${{ github.token }}");
+        publicationEnvironment.GetReleaseScalar("HEXALITH_BUILDS_EXECUTION_SHA").ShouldBe(BuildsExecutionSha);
+        publicationEnvironment.GetReleaseScalar("HEXALITH_RELEASE_ENVIRONMENT").ShouldBe("production");
+        publicationEnvironment.GetReleaseScalar("HEXALITH_RELEASE_SOURCE_BRANCH").ShouldBe("main");
+        publicationEnvironment.GetReleaseScalar("HEXALITH_RELEASE_SOURCE_CI_WORKFLOW").ShouldBe("ci.yml");
+        publicationEnvironment.GetReleaseScalar("HEXALITH_RELEASE_PACKAGE_MANIFEST").ShouldBe(ManifestPath);
+        publicationEnvironment.GetReleaseScalar("HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT").ShouldBe("5");
+        publicationEnvironment.GetReleaseScalar("HEXALITH_RELEASE_REQUIRE_AUTHORITY").ShouldBe("false");
+        foreach (YamlMappingNode evidenceStep in steps[4..])
+        {
+            evidenceStep.GetReleaseScalar("if").ShouldBe("${{ always() && failure() }}");
+            evidenceStep.GetReleaseScalar("uses").ShouldBe("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a");
+            evidenceStep.GetReleaseMapping("with").GetReleaseScalar("retention-days").ShouldBe("7");
+            evidenceStep.GetReleaseMapping("with").GetReleaseScalar("if-no-files-found").ShouldBe("ignore");
+        }
+        YamlMappingNode reportUpload = steps[4].GetReleaseMapping("with");
+        reportUpload.GetReleaseScalar("name").ShouldBe("release-package-report-${{ github.run_id }}-${{ github.run_attempt }}");
+        reportUpload.GetReleaseScalar("path").ShouldBe(ReportPath);
+        YamlMappingNode archiveUpload = steps[5].GetReleaseMapping("with");
+        archiveUpload.GetReleaseScalar("name").ShouldBe("release-package-archives-${{ github.run_id }}-${{ github.run_attempt }}");
+        archiveUpload.GetReleaseScalar("path").Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .ShouldBe(["nupkgs/*.nupkg", "nupkgs/*.snupkg"]);
 
         string text = ReadText(".github/workflows/release.yml");
         text.ShouldNotContain("secrets: inherit", Case.Insensitive);
+        text.ShouldNotContain("secrets.NUGET_API_KEY", Case.Insensitive);
+        text.ShouldNotContain("attestations:", Case.Insensitive);
         text.ShouldNotContain("nuget.pkg.github.com", Case.Insensitive);
+    }
+
+    [Fact]
+    public void TrustedPublishingPolicyShouldGrantOnlyExistingInventoryToFoldersProduction()
+    {
+        YamlMappingNode policy = LoadSingleYamlDocument("deploy/nuget/trusted-publishing-policy.yaml");
+        policy.GetReleaseScalar("kind").ShouldBe("NuGetTrustedPublishingPolicy");
+        policy.GetReleaseScalar("version").ShouldBe("1");
+        policy.GetReleaseScalar("policyName").ShouldBe("folders-production");
+        policy.GetReleaseScalar("packageOwner").ShouldBe("Hexalith");
+        policy.GetReleaseScalar("scope").ShouldBe("PackagePushVersion");
+        YamlMappingNode publisher = policy.GetReleaseMapping("publisher");
+        publisher.GetReleaseScalar("type").ShouldBe("GitHub");
+        publisher.GetReleaseScalar("owner").ShouldBe("Hexalith");
+        publisher.GetReleaseScalar("repository").ShouldBe("Hexalith.Folders");
+        publisher.GetReleaseScalar("workflow").ShouldBe("release.yml");
+        publisher.GetReleaseScalar("environment").ShouldBe("production");
+        policy.GetReleaseMapping("profile").GetReleaseScalar("creator").ShouldBe("jpiquot");
+        policy.GetReleaseMapping("profile").GetReleaseScalar("creatorRepositoryVariable").ShouldBe("NUGET_USER");
+        using JsonDocument manifest = JsonDocument.Parse(ReadText(ManifestPath));
+        string[] packageIds = manifest.RootElement.GetProperty("packages").EnumerateArray()
+            .Select(static package => package.GetProperty("id").GetString().ShouldNotBeNull()).ToArray();
+        policy.GetReleaseSequence("packages").Children.Select(static value => value.ToString()).ShouldBe(packageIds);
+        packageIds.ShouldBe(_expectedPackages);
+        ReadText("deploy/nuget/trusted-publishing-policy.yaml")
+            .ShouldContain("does not register a remote policy", Case.Sensitive);
     }
 
     [Fact]
@@ -281,7 +360,14 @@ public sealed partial class ReleasePackageConformanceTests
             "NUGET_API_KEY",
             "NuGet.org",
             "tools/release-packages.json",
-            "no package, tag, or GitHub Release",
+            "NuGet/login",
+            "NUGET_USER",
+            "jpiquot",
+            "folders-production",
+            "PackagePushVersion",
+            "not a native NuGet API import",
+            "committing this file does not register a remote policy",
+            "v1.1.0",
             "--skip-duplicate",
             "scripts/validate-consumer-package-references.py",
             "immutable partial-publication incident",

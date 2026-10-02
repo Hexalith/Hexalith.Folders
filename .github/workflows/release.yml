@@ -67,27 +67,69 @@ jobs:
 
   release:
     needs: verify-source
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production
     permissions:
       actions: read
-      attestations: write
       contents: write
       id-token: write
       issues: write
       pull-requests: write
-    uses: Hexalith/Hexalith.Builds/.github/workflows/domain-release.yml@b93e9889e9e7b67036837015b4b2b115e326c4da
-    with:
-      solution: Hexalith.Folders.CI.slnx
-      timeout-minutes: 60
-      test-platform: microsoft-testing-platform
-      environment-name: production
-      governed-release: false
-      publish-containers: false
-      builds-execution-sha: b93e9889e9e7b67036837015b4b2b115e326c4da
-      source-branch: main
-      source-ci-workflow: ci.yml
-      package-manifest: tools/release-packages.json
-      expected-package-count: 5
-      require-publication-authority: false
-      test-projects: ''
-    secrets:
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    steps:
+      - name: Checkout exact dispatched source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          submodules: false
+      - name: Prepare ordinary domain release
+        id: prepare
+        uses: Hexalith/Hexalith.Builds/Github/prepare-domain-release@f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f
+        with:
+          solution: Hexalith.Folders.CI.slnx
+          builds-execution-sha: f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f
+          source-branch: main
+          source-ci-workflow: ci.yml
+          package-manifest: tools/release-packages.json
+          expected-package-count: 5
+          nuget-user: ${{ vars.NUGET_USER }}
+      - name: Authenticate NuGet trusted publishing
+        id: nuget-login
+        if: ${{ steps.prepare.outputs.publish-enabled == 'true' }}
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Semantic Release
+        if: ${{ steps.prepare.outputs.publish-enabled == 'true' }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+          HEXALITH_BUILDS_EXECUTION_SHA: f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f
+          HEXALITH_RELEASE_ENVIRONMENT: production
+          HEXALITH_RELEASE_SOURCE_BRANCH: main
+          HEXALITH_RELEASE_SOURCE_CI_WORKFLOW: ci.yml
+          HEXALITH_RELEASE_PACKAGE_MANIFEST: tools/release-packages.json
+          HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT: '5'
+          HEXALITH_RELEASE_REQUIRE_AUTHORITY: 'false'
+        run: npm exec --no -- semantic-release
+      - name: Retain failed release package report
+        if: ${{ always() && failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-package-report-${{ github.run_id }}-${{ github.run_attempt }}
+          path: _bmad-output/gates/release-packages/latest.json
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Retain failed release package archives
+        if: ${{ always() && failure() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-package-archives-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            nupkgs/*.nupkg
+            nupkgs/*.snupkg
+          retention-days: 7
+          if-no-files-found: ignore

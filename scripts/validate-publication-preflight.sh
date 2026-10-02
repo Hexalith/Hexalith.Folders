@@ -3,7 +3,7 @@ set -euo pipefail
 
 version="${1:-}"
 phase="${2:-}"
-expected_builds_sha="b93e9889e9e7b67036837015b4b2b115e326c4da"
+expected_builds_sha="f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f"
 expected_package_count=5
 manifest="${HEXALITH_RELEASE_PACKAGE_MANIFEST:-}"
 source_sha="${GITHUB_SHA:-}"
@@ -16,18 +16,25 @@ fail() {
 [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || fail "A plain semantic release version is required."
 [[ "$phase" =~ ^(verify|publish)$ ]] || fail "Publication phase must be verify or publish."
 [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]] || fail "GITHUB_SHA must identify the exact release source."
-[[ "${HEXALITH_BUILDS_EXECUTION_SHA:-}" = "$expected_builds_sha" ]] || fail "The approved Builds execution identity does not match the immutable release workflow pin."
+[[ "${HEXALITH_BUILDS_EXECUTION_SHA:-}" = "$expected_builds_sha" ]] || fail "The approved Builds execution identity does not match the immutable shared action pin."
 [[ "${HEXALITH_RELEASE_SOURCE_BRANCH:-}" = "main" ]] || fail "The release source branch must be exactly main."
 [[ "${HEXALITH_RELEASE_SOURCE_CI_WORKFLOW:-}" = "ci.yml" ]] || fail "The exact-source proof must use ci.yml."
 [[ "${HEXALITH_RELEASE_ENVIRONMENT:-}" = "production" ]] || fail "The protected release environment must be production."
 [[ "${HEXALITH_RELEASE_EXPECTED_PACKAGE_COUNT:-}" = "$expected_package_count" ]] || fail "The caller-declared package count must be exactly five."
-[[ "${HEXALITH_RELEASE_REQUIRE_AUTHORITY:-}" = "false" ]] || fail "Folders releases use protected-environment approval as publication authority; the reusable-workflow authority mode must be explicit."
+[[ "${HEXALITH_RELEASE_REQUIRE_AUTHORITY:-}" = "false" ]] || fail "Folders releases use protected-environment approval as publication authority; the caller-owned job authority mode must be explicit."
 [[ "$manifest" = "tools/release-packages.json" && -f "$manifest" ]] || fail "The authoritative package manifest is unavailable."
 [[ -n "${GITHUB_TOKEN:-}" ]] || fail "GITHUB_TOKEN is required for exact-source revalidation."
 [[ -n "${GITHUB_REPOSITORY:-}" ]] || fail "GITHUB_REPOSITORY is required for exact-source revalidation."
 
 manifest_count="$(jq -er '.packages | if type == "array" then length else error("packages must be an array") end' "$manifest")"
 [[ "$manifest_count" = "$expected_package_count" ]] || fail "The package manifest does not contain exactly five packages."
+jq -e --argjson count "$expected_package_count" '
+  .packages | all(.[]; (.id | type == "string" and test("^[A-Za-z0-9][A-Za-z0-9._-]*$")) and
+    (.project | type == "string" and test("^[A-Za-z0-9_./-]+\\.csproj$") and
+      (startswith("/") | not) and (test("(^|/)\\.\\.?(/|$)") | not))) and
+  ([.[].id | ascii_downcase] | unique | length) == $count and
+  ([.[].project] | unique | length) == $count
+' "$manifest" >/dev/null || fail "The manifest must declare five unique valid package IDs and project paths."
 
 live_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')"
 [[ "$live_main_sha" =~ ^[0-9a-f]{40}$ && "$live_main_sha" = "$source_sha" ]] || fail "The release source is no longer the exact live main tip."
@@ -59,6 +66,10 @@ while IFS= read -r package_id; do
   case "$status" in
     404) ;;
     200)
+      jq -e -s '
+        length == 1 and (.[0] | type == "object" and
+          (.versions | type == "array" and all(.[]; type == "string")))
+      ' "$response_file" >/dev/null || fail "NuGet.org returned an invalid package index response for ${package_id}; a single object with a versions array of strings is required."
       if jq -e --arg version "$version" '.versions | index($version) != null' "$response_file" >/dev/null; then
         fail "NuGet.org already contains ${package_id} ${version}; duplicate versions are immutable and are never skipped."
       fi

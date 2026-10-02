@@ -1,6 +1,6 @@
 # Release Packages
 
-Folders uses the shared Hexalith manual semantic-release path. Ordinary pushes and pull requests run CI only; publication starts only from `.github/workflows/release.yml` through `workflow_dispatch`.
+Folders uses the shared Hexalith manual semantic-release path with NuGet trusted publishing. Ordinary pushes and pull requests run CI only; publication starts only from `.github/workflows/release.yml` through `workflow_dispatch`. Preparation stays in the shared Builds action; NuGet login and semantic-release run in the Folders-owned protected job so NuGet receives the package repository's workflow identity.
 
 ## Package Inventory
 
@@ -22,22 +22,47 @@ The release fails closed unless all of these conditions hold:
 
 - the dispatch selected the current `main` tip;
 - the exact-source commit has a successful completed `push` run of `ci.yml`;
-- the reusable `domain-release.yml` reference and `builds-execution-sha` are the same reviewed full Hexalith.Builds commit;
+- the shared `Github/prepare-domain-release` action reference and `builds-execution-sha` are the same reviewed full Hexalith.Builds commit;
 - the protected `production` environment grants operator approval;
-- the repository-level `HEXALITH_RELEASE_PUBLISH_ENABLED` variable is exactly the lowercase string `true`;
-- the `NUGET_API_KEY` secret is available explicitly to the reusable workflow;
+- the effective `vars.HEXALITH_RELEASE_PUBLISH_ENABLED` value supplied to preparation is exactly the lowercase string `true`;
+- a matching trusted publishing policy is registered in the individual creator's NuGet account, and repository variable `NUGET_USER` names that creator;
 - the caller declares exactly five packages and `tools/release-packages.json` still contains exactly five unique IDs/projects;
 - NuGet.org does not already contain the proposed version for any package.
 
-The protected environment is the publication authority for this repository. The reusable workflow therefore declares `require-publication-authority: false` explicitly; partial or accidental use of the separate issue-comment authority mode is rejected by the local preflight.
+The protected environment is the publication authority for this repository. The caller-owned publication job therefore supplies `HEXALITH_RELEASE_REQUIRE_AUTHORITY: 'false'` explicitly; partial or accidental use of the separate issue-comment authority mode is rejected by the local preflight.
 
-Publication remains frozen until maintainers configure the repository variable, protected environment, and secret. This implementation does not create or configure them. As delivered, no package, tag, or GitHub Release has been created.
+Publication remains frozen whenever the effective publication variable is absent or differs from the exact untrimmed lowercase value `true`, including `TRUE`, `True`, and padded values. An absent repository variable can inherit an organization value, including `true`; absence at repository scope alone does not freeze publication. Set an explicit repository override: `true` to authorize publication or `false` to freeze it regardless of an organization `true`. Frozen preparation concludes successfully and skips NuGet login and semantic-release. A missing or whitespace-only `NUGET_USER` fails an enabled run before token exchange. Rejected OIDC authentication fails before semantic-release can create another release tag; there is no stored-key fallback.
+
+## Trusted Publishing Setup
+
+`deploy/nuget/trusted-publishing-policy.yaml` is the concrete repository policy definition to register manually on NuGet.org. It is not a native NuGet API import, and committing this file does not register a remote policy. In the individual creator's [NuGet trusted publishing account page](https://www.nuget.org/account/trustedpublishing), register these exact fields:
+
+| Field | Value |
+| --- | --- |
+| Policy name | `folders-production` |
+| Individual policy creator | `jpiquot` |
+| Package owner | `Hexalith` |
+| Publisher | `GitHub` |
+| GitHub repository owner | `Hexalith` |
+| Repository | `Hexalith.Folders` |
+| Workflow file | `release.yml` |
+| Environment | `production` |
+| Scope | `PackagePushVersion` (push new versions of existing packages) |
+| Glob Patterns and Packages | The five exact package IDs from the inventory table, one per line; no wildcard |
+
+The individual NuGet policy creator `jpiquot` differs from the package owner `Hexalith` and the GitHub actor. Repository variable `NUGET_USER` must equal `jpiquot`, whose account must register the policy through legitimate authenticated access. The policy grants new-version publication only to the five existing package IDs. Keep normal reviewer approval on the `production` environment and set `HEXALITH_RELEASE_PUBLISH_ENABLED` explicitly at repository scope when publication is authorized.
+
+When selecting `Hexalith` as a NuGet organization owner, `jpiquot` must be an active member of that organization. Removing the creator from the organization makes the policy inactive; restoring their membership reactivates it. Confirm active membership and policy status before dispatching an enabled release. See [NuGet policy ownership requirements](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#policy-ownership-warnings).
+
+The pinned `NuGet/login` action requests GitHub OIDC and exchanges it for a temporary NuGet key immediately before semantic-release. The same Folders job has `id-token: write`, `actions: read`, and only the semantic-release `contents`, `issues`, and `pull-requests` write permissions. The publication step's `NUGET_API_KEY` environment value comes exclusively from `steps.nuget-login.outputs.NUGET_API_KEY`; never map a stored `NUGET_API_KEY` secret, transfer the temporary key across jobs, or print it.
+
+Registration status for this change: `NUGET_USER=jpiquot` is configured and verified in the GitHub repository. Remote policy registration is not verified and an authenticated NuGet session is unavailable. The `jpiquot` account must still register the policy before an enabled release can authenticate. The YAML definition is ready for registration; it does not imply registration has occurred.
 
 ## Semantic Release Lifecycle
 
 Conventional Commits determine the next version and release notes. Commit messages and prospective squash titles are checked by `.github/workflows/commitlint.yml`. Semantic Release uses `v<version>` tags and runs these phases:
 
-1. `verifyRelease` verifies the NuGet credential and re-proves live `main`, exact-source push CI, immutable Builds identity, protected-environment mode, manifest count, and destination absence.
+1. Before the lifecycle begins, shared preparation re-proves live `main` and successful exact-source push CI, then NuGet login mints the temporary credential in the protected Folders job. `verifyRelease` verifies its presence and repeats source proof, immutable shared action identity, protected-environment mode, manifest count, and destination absence.
 2. `prepare` invokes `tests/tools/run-release-package-gates.ps1` to pack and seal all five Release/package-mode packages.
 3. `publish` repeats the external preflight immediately before the first write, then publishes the prepared packages to NuGet.org.
 4. `@semantic-release/github` creates the GitHub Release and attaches all five `.nupkg`/`.snupkg` pairs.
@@ -105,10 +130,11 @@ NuGet audit stays enabled. Dependabot covers NuGet, npm, and GitHub Actions; Cod
 ## Failure Handling
 
 - A non-main or stale dispatch, missing exact-source CI proof, or changed Builds identity stops before protected credentials are available.
-- A missing environment, release variable, or `NUGET_API_KEY` prevents publication.
+- A missing environment, exact publication variable, creator variable, or registered matching policy prevents publication. Do not rotate or reintroduce a long-lived key to bypass a trusted publishing failure.
 - Any manifest, package metadata, symbols, archive, dependency closure, or consumer validation drift stops before publication.
 - Any existing NuGet.org version stops the release; do not add `--skip-duplicate` or move an existing tag to bypass the collision.
 - NuGet.org has no atomic multi-package transaction. If a transient service failure occurs after one or more packages were accepted, stop the run and treat the version as an immutable partial-publication incident. Do not retry or skip the occupied packages. Record the accepted package IDs, deprecate the incomplete version where possible, create a corrective Conventional Commit so semantic-release calculates a new version, and publish the complete five-package set under that new version.
-- If `main` advances while a release is pending, the reusable workflow and local preflight fail it as stale. Run CI for the new tip before dispatching again.
+- If `main` advances while a release is pending, shared preparation and the local preflight fail it as stale. Run CI for the new tip before dispatching again.
+- Release run `36973683976` packed the five `1.1.0` packages but failed on the first NuGet upload with HTTP 403. Its immutable `v1.1.0` tag remains untouched. A subsequent corrective Conventional Commit can produce `1.1.1`; do not move or delete the failed tag, skip duplicates, or alter dependency versions to recover. After account setup and exact-source CI, dispatch Release from current `main`, obtain normal production approval, and verify all five NuGet version archives and ten GitHub package/symbol assets.
 
 Diagnostics and retained reports are metadata-only: never include credentials, tenant data, provider payloads, raw file content, environment dumps, local absolute paths, or diffs.

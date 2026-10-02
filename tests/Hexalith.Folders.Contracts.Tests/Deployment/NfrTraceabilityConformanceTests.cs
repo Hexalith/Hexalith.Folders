@@ -478,7 +478,7 @@ public sealed partial class NfrTraceabilityConformanceTests
     {
         string workflow = ReadText(ReleaseWorkflowPath);
         workflow.ShouldContain("verify-source:", Case.Sensitive);
-        workflow.ShouldContain("uses: Hexalith/Hexalith.Builds/.github/workflows/domain-release.yml@", Case.Sensitive);
+        workflow.ShouldContain("uses: Hexalith/Hexalith.Builds/Github/prepare-domain-release@", Case.Sensitive);
         workflow.ShouldNotContain("run-nfr-traceability-gates.ps1", Case.Sensitive);
     }
 

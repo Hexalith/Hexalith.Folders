@@ -2804,3 +2804,7 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-fix-test-and-ci-failures-before-release.md`
   summary: Extend the existing console DOM tests with a server-handled interaction after a real Blazor circuit connects.
   evidence: Independent review identified a coverage improvement; authentication and foreign-origin boundaries are validated by the isolated probe, while existing 63 browser cases primarily validate prerendered read-only surfaces. This does not demonstrate a current circuit defect.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-nuget-trusted-publishing.md`
+  summary: Resolved the pre-existing publication-preflight gap that treated malformed HTTP 200 NuGet responses as version absence.
+  evidence: Review finding B5 was repaired under the original CI/CD repair request. Publication now requires exactly one JSON object with a versions array containing only strings before checking duplicates. The nine focused preflight tests pass, including malformed JSON, concatenated documents, missing or invalid versions fields, existing versions, and unavailable feeds.

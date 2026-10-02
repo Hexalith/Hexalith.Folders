@@ -363,17 +363,43 @@ class PublicationPreflightTests(unittest.TestCase):
         path.write_text(content, encoding="utf-8")
         path.chmod(path.stat().st_mode | stat.S_IXUSR)
 
-    def run_preflight(self, duplicate: bool) -> subprocess.CompletedProcess[str]:
+    def run_preflight(
+        self,
+        duplicate: bool = False,
+        *,
+        overrides: dict[str, str] | None = None,
+        manifest_mutation: str = "",
+        phase: str = "verify",
+    ) -> subprocess.CompletedProcess[str]:
         with tempfile.TemporaryDirectory() as temporary:
-            bin_directory = pathlib.Path(temporary)
+            fixture = pathlib.Path(temporary)
+            bin_directory = fixture / "bin"
+            bin_directory.mkdir()
+            (fixture / "tools").mkdir()
+            manifest = json.loads((ROOT / "tools/release-packages.json").read_text(encoding="utf-8"))
+            packages = manifest["packages"]
+            if manifest_mutation == "count":
+                packages.pop()
+            elif manifest_mutation == "duplicate-id":
+                packages[1]["id"] = packages[0]["id"].upper()
+            elif manifest_mutation == "duplicate-project":
+                packages[1]["project"] = packages[0]["project"]
+            elif manifest_mutation == "invalid-id":
+                packages[0]["id"] = "invalid/id"
+            elif manifest_mutation == "unsafe-project":
+                packages[0]["project"] = "../outside.csproj"
+            (fixture / "tools/release-packages.json").write_text(json.dumps(manifest), encoding="utf-8")
             self.write_executable(
                 bin_directory / "gh",
                 """#!/usr/bin/env python3
-import sys
+import os, sys
 if any('/git/ref/heads/main' in value for value in sys.argv):
-    print('0123456789abcdef0123456789abcdef01234567')
+    print(os.environ['TEST_MAIN_SHA'])
 else:
-    print('{"workflow_runs":[{"head_sha":"0123456789abcdef0123456789abcdef01234567","head_branch":"main","event":"push","status":"completed","conclusion":"success"}]}')
+    required = ['branch=main', 'event=push', 'head_sha=' + os.environ['GITHUB_SHA'], 'status=success']
+    if not all(value in sys.argv for value in required):
+        raise SystemExit(90)
+    print(os.environ['TEST_CI_RUNS'])
 """,
             )
             self.write_executable(
@@ -383,25 +409,17 @@ import json, os, pathlib, sys
 arguments = sys.argv[1:]
 output = pathlib.Path(arguments[arguments.index('--output') + 1])
 duplicate = os.environ.get('TEST_DUPLICATE') == '1'
-output.write_text(json.dumps({'versions':['1.2.3'] if duplicate else []}), encoding='utf-8')
-print('200' if duplicate else '404', end='')
+output.write_text(os.environ.get('TEST_FEED_BODY', json.dumps({'versions':['1.2.3'] if duplicate else []})), encoding='utf-8')
+print(os.environ['TEST_FEED_STATUS'], end='')
 """,
             )
             self.write_executable(
-                bin_directory / "jq",
+                bin_directory / "git",
                 """#!/usr/bin/env python3
 import os, sys
-query = ' '.join(sys.argv[1:])
-if '.packages |' in query:
-    print('5')
-elif '.workflow_runs' in query:
-    sys.stdin.read()
-elif '.packages[].id' in query:
-    print('Hexalith.Folders.Contracts\\nHexalith.Folders\\nHexalith.Folders.Client\\nHexalith.Folders.Aspire\\nHexalith.Folders.Testing')
-elif '.versions' in query:
-    raise SystemExit(0 if os.environ.get('TEST_DUPLICATE') == '1' else 1)
-else:
-    raise SystemExit(2)
+if sys.argv[1:] != ['rev-parse', 'v1.2.3^{commit}']:
+    raise SystemExit(91)
+print(os.environ['TEST_TAG_SHA'])
 """,
             )
             environment = os.environ.copy()
@@ -409,10 +427,17 @@ else:
                 {
                     "PATH": f"{bin_directory}{os.pathsep}{environment['PATH']}",
                     "TEST_DUPLICATE": "1" if duplicate else "0",
+                    "TEST_FEED_STATUS": "200",
+                    "TEST_MAIN_SHA": "0123456789abcdef0123456789abcdef01234567",
+                    "TEST_TAG_SHA": "0123456789abcdef0123456789abcdef01234567",
+                    "TEST_CI_RUNS": json.dumps({"workflow_runs": [{
+                        "head_sha": "0123456789abcdef0123456789abcdef01234567",
+                        "head_branch": "main", "event": "push", "status": "completed", "conclusion": "success",
+                    }]}),
                     "GITHUB_SHA": "0123456789abcdef0123456789abcdef01234567",
                     "GITHUB_TOKEN": "test-token",
                     "GITHUB_REPOSITORY": "Hexalith/Hexalith.Folders",
-                    "HEXALITH_BUILDS_EXECUTION_SHA": "b93e9889e9e7b67036837015b4b2b115e326c4da",
+                    "HEXALITH_BUILDS_EXECUTION_SHA": "f1c5f774975e1d9ffb77ef7e70d560f5e9ba8d3f",
                     "HEXALITH_RELEASE_SOURCE_BRANCH": "main",
                     "HEXALITH_RELEASE_SOURCE_CI_WORKFLOW": "ci.yml",
                     "HEXALITH_RELEASE_ENVIRONMENT": "production",
@@ -421,9 +446,10 @@ else:
                     "HEXALITH_RELEASE_PACKAGE_MANIFEST": "tools/release-packages.json",
                 }
             )
+            environment.update(overrides or {})
             return subprocess.run(
-                ["bash", str(SCRIPTS / "validate-publication-preflight.sh"), "1.2.3", "verify"],
-                cwd=ROOT,
+                ["bash", str(SCRIPTS / "validate-publication-preflight.sh"), "1.2.3", phase],
+                cwd=fixture,
                 env=environment,
                 text=True,
                 capture_output=True,
@@ -438,6 +464,66 @@ else:
     def test_accepts_absent_package_versions(self) -> None:
         result = self.run_preflight(duplicate=False)
         self.assertEqual(0, result.returncode, result.stderr)
+        result = self.run_preflight(overrides={"TEST_FEED_BODY": '{"versions": ["1.2.2"]}'})
+        self.assertEqual(0, result.returncode, result.stderr)
+
+    def test_rejects_wrong_shared_action_identity(self) -> None:
+        result = self.run_preflight(overrides={"HEXALITH_BUILDS_EXECUTION_SHA": "0" * 40})
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("immutable shared action pin", result.stderr)
+
+    def test_rejects_stale_or_malformed_source(self) -> None:
+        for overrides in ({"TEST_MAIN_SHA": "0" * 40}, {"TEST_MAIN_SHA": "malformed"}, {"GITHUB_SHA": "malformed"}):
+            with self.subTest(overrides=overrides):
+                result = self.run_preflight(overrides=overrides)
+                self.assertNotEqual(0, result.returncode)
+
+    def test_rejects_ci_without_exact_completed_successful_push_identity(self) -> None:
+        valid = {
+            "head_sha": "0123456789abcdef0123456789abcdef01234567",
+            "head_branch": "main", "event": "push", "status": "completed", "conclusion": "success",
+        }
+        for key, value in (("head_sha", "0" * 40), ("head_branch", "feature"), ("event", "workflow_dispatch"),
+                           ("status", "in_progress"), ("conclusion", "failure")):
+            with self.subTest(key=key):
+                result = self.run_preflight(overrides={"TEST_CI_RUNS": json.dumps({"workflow_runs": [valid | {key: value}]})})
+                self.assertNotEqual(0, result.returncode)
+                self.assertIn("No successful push CI run", result.stderr)
+        result = self.run_preflight(overrides={"TEST_CI_RUNS": '{"workflow_runs": []}'})
+        self.assertNotEqual(0, result.returncode)
+
+    def test_rejects_manifest_count_duplicates_and_unsafe_paths(self) -> None:
+        for mutation in ("count", "duplicate-id", "duplicate-project", "invalid-id", "unsafe-project"):
+            with self.subTest(mutation=mutation):
+                result = self.run_preflight(manifest_mutation=mutation)
+                self.assertNotEqual(0, result.returncode)
+                self.assertIn("manifest", result.stderr)
+
+    def test_publish_requires_tag_to_target_the_dispatched_source(self) -> None:
+        result = self.run_preflight(phase="publish")
+        self.assertEqual(0, result.returncode, result.stderr)
+        result = self.run_preflight(phase="publish", overrides={"TEST_TAG_SHA": "0" * 40})
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("tag does not target the approved source", result.stderr)
+
+    def test_feed_404_is_absence_and_other_errors_fail(self) -> None:
+        result = self.run_preflight(overrides={"TEST_FEED_STATUS": "404"})
+        self.assertEqual(0, result.returncode, result.stderr)
+        result = self.run_preflight(overrides={"TEST_FEED_STATUS": "403"})
+        self.assertNotEqual(0, result.returncode)
+        self.assertIn("unexpected status 403", result.stderr)
+
+    def test_invalid_200_feed_responses_fail_before_publication(self) -> None:
+        for body in (
+            "{", "", "{}", '{"versions": null}', '{"versions": "1.2.2"}',
+            '{"versions": [1]}', '{"versions": [null]}', '{"versions": [true]}',
+            '{"versions": [{}]}', '{"versions": ["1.2.2", []]}',
+            '[{"versions": []}]', '{"versions": []}\n{"versions": []}',
+        ):
+            with self.subTest(body=body):
+                result = self.run_preflight(phase="publish", overrides={"TEST_FEED_BODY": body})
+                self.assertNotEqual(0, result.returncode)
+                self.assertIn("invalid package index response", result.stderr)
 
 
 @unittest.skipUnless(shutil.which("pwsh"), "PowerShell is required to exercise the nightly drift gate")

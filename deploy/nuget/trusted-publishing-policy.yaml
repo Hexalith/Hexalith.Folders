@@ -1,0 +1,22 @@
+# Repository policy definition for manual registration in the creator's NuGet account.
+# This file is not a native NuGet API import and does not register a remote policy.
+kind: NuGetTrustedPublishingPolicy
+version: 1
+policyName: folders-production
+packageOwner: Hexalith
+publisher:
+  type: GitHub
+  owner: Hexalith
+  repository: Hexalith.Folders
+  workflow: release.yml
+  environment: production
+profile:
+  creator: jpiquot
+  creatorRepositoryVariable: NUGET_USER
+scope: PackagePushVersion
+packages:
+  - Hexalith.Folders.Contracts
+  - Hexalith.Folders
+  - Hexalith.Folders.Client
+  - Hexalith.Folders.Aspire
+  - Hexalith.Folders.Testing
