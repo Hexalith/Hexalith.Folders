@@ -2,6 +2,15 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <!-- The packaged Memories Aspire metadata still reads the pinned server project and its real
+       http launch profile when registering topology. Prepare only that root during the initial CI
+       build because later Microsoft.Testing.Platform runs skip building. Dependencies stay NuGet. -->
+  <Target Name="PreparePinnedMemoriesTopologyMetadata"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(CI)' == 'true'">
+    <Exec Command="git -c submodule.recurse=false submodule update --init --checkout references/Hexalith.Memories"
+          WorkingDirectory="$(MSBuildProjectDirectory)/../.." />
+  </Target>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Hexalith.Folders.Aspire\Hexalith.Folders.Aspire.csproj" />
     <!-- Story 9.1: the Aspire topology test drives the platform EventStore composition (gateway-only

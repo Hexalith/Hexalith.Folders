@@ -78,7 +78,11 @@ git -c submodule.recurse=false submodule update --init
 The seven cyclic source roots have `update = none`, so implicit updater clones
 and that default command skip them. The four acyclic roots (AI.Tools, Builds,
 Commons and PolymorphicSerializations), including the shared package catalog,
-remain available. Local workflow gates and full source setup explicitly override
+remain available. Folders CI also prepares the single pinned Memories root through
+the integration test project's CI-only build target: packaged Aspire topology
+registration needs the server project and its real HTTP launch profile on disk.
+Project dependencies still resolve through NuGet, and nested dependencies remain
+uninitialized. Local workflow gates and full source setup explicitly override
 the skip policy while keeping initialization limited to root dependencies:
 
 Existing `submodule.<name>.update` values in local `.git/config` take precedence
