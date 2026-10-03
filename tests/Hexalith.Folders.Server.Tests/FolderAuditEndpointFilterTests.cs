@@ -164,7 +164,7 @@ public sealed class FolderAuditEndpointFilterTests
     }
 
     [Fact]
-    public async Task AcceptedReplayResponseShouldEmitIdempotentReplayObservation()
+    public async Task AcceptedReplayResponseShouldNotRepeatMutationAudit()
     {
         RecordingTelemetryEmitter telemetry = new();
         await using WebApplication app = BuildApp(telemetry, app =>
@@ -186,15 +186,31 @@ public sealed class FolderAuditEndpointFilterTests
             .ConfigureAwait(true);
 
         response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
-        FolderAuditObservation observation = telemetry.Single();
-        observation.OperationKind.ShouldBe(FolderAuditOperationKind.RestMutation);
-        observation.Result.ShouldBe(FolderAuditResult.Replayed);
-        observation.SanitizedCategory.ShouldBe("idempotent_replay");
-        observation.IsIdempotentReplay.ShouldBeTrue();
-        observation.IsDuplicate.ShouldBeFalse();
-        observation.OperationId.ShouldBe("operation-a");
-        observation.CorrelationId.ShouldBe("correlation-a");
-        observation.TaskId.ShouldBe("task-a");
+        telemetry.Count.ShouldBe(0);
+    }
+
+    [Theory]
+    [InlineData("idempotency_conflict", StatusCodes.Status409Conflict)]
+    [InlineData("idempotency_key_expired", StatusCodes.Status409Conflict)]
+    [InlineData("idempotency_admission_unavailable", StatusCodes.Status503ServiceUnavailable)]
+    public async Task AdmissionDispositionShouldNotAppendMutationAudit(string code, int statusCode)
+    {
+        RecordingTelemetryEmitter telemetry = new();
+        await using WebApplication app = BuildApp(telemetry, app =>
+        {
+            app.MapPost("/mutation", () => Results.Problem(
+                    statusCode: statusCode,
+                    extensions: new Dictionary<string, object?> { ["code"] = code }))
+                .WithName("ArchiveFolder")
+                .AddEndpointFilter<FolderAuditEndpointFilter>();
+        });
+
+        using HttpResponseMessage response = await app.GetTestClient()
+            .PostAsync("/mutation", null, TestContext.Current.CancellationToken)
+            .ConfigureAwait(true);
+
+        ((int)response.StatusCode).ShouldBe(statusCode);
+        telemetry.Count.ShouldBe(0);
     }
 
     [Fact]

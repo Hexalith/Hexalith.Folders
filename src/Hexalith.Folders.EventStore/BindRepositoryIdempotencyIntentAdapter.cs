@@ -36,6 +36,7 @@ internal sealed class BindRepositoryIdempotencyIntentAdapter : IIdempotencyInten
                 ["external_repository_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "externalRepositoryRef"),
                 ["folder_id"] = command.AggregateId,
                 ["provider_binding_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "providerBindingRef"),
-            });
+            },
+            credentialScope: FoldersCanonicalIntentBuilder.ReadCredentialScope(root));
     }
 }

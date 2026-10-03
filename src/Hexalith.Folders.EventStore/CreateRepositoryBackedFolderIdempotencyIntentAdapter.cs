@@ -38,6 +38,7 @@ internal sealed class CreateRepositoryBackedFolderIdempotencyIntentAdapter : IId
                 ["folder_metadata.display_name"] = FoldersCanonicalIntentBuilder.ReadString(root, "folderMetadata", "displayName"),
                 ["provider_binding_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "providerBindingRef"),
                 ["repository_profile_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "repositoryProfileRef"),
-            });
+            },
+            credentialScope: FoldersCanonicalIntentBuilder.ReadCredentialScope(root));
     }
 }

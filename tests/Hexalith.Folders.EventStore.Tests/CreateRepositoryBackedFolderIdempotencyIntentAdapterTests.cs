@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 
 using Hexalith.EventStore.DomainService;
 
@@ -52,6 +53,38 @@ public sealed class CreateRepositoryBackedFolderIdempotencyIntentAdapterTests
 
         first.SemanticOptions!["semantic_payload_sha256"].ShouldBe(reordered.SemanticOptions!["semantic_payload_sha256"]);
         first.SemanticOptions["semantic_payload_sha256"].ShouldNotBe(changed.SemanticOptions!["semantic_payload_sha256"]);
+    }
+
+    [Theory]
+    [InlineData("\"another_scope\"")]
+    [InlineData("null")]
+    [InlineData("42")]
+    public void CallerSelectedCredentialScopeShouldBeRejected(string scope)
+    {
+        CreateRepositoryBackedFolderIdempotencyIntentAdapter adapter = new();
+        BindRepositoryIdempotencyIntentAdapter binding = new();
+        string payload = $$"""{"credentialScopeClass":{{scope}}}""";
+
+        _ = Should.Throw<JsonException>(() => adapter.CreateIntent(Command(payload)));
+        _ = Should.Throw<JsonException>(() => binding.CreateIntent(Command(payload) with { CommandType = binding.CommandType }));
+    }
+
+    [Fact]
+    public void CredentialScopeShouldComeFromTheFixedServerPolicy()
+    {
+        CreateRepositoryBackedFolderIdempotencyIntentAdapter adapter = new();
+        BindRepositoryIdempotencyIntentAdapter binding = new();
+        IdempotencyIntentCommand command = Command("{}") with
+        {
+            Extensions = new Dictionary<string, string> { ["credentialScopeClass"] = "another_scope" },
+        };
+
+        adapter.CreateIntent(command).CredentialScope.ShouldBe("provider_binding");
+        binding.CreateIntent(command with { CommandType = binding.CommandType }).CredentialScope.ShouldBe("provider_binding");
+        IdempotencyCanonicalIntent implicitScope = adapter.CreateIntent(command);
+        IdempotencyCanonicalIntent explicitScope = adapter.CreateIntent(Command("""{"credentialScopeClass":"provider_binding"}"""));
+        implicitScope.SemanticPayload.ShouldBe(explicitScope.SemanticPayload);
+        implicitScope.SemanticOptions!["semantic_payload_sha256"].ShouldBe(explicitScope.SemanticOptions!["semantic_payload_sha256"]);
     }
 
     private static IdempotencyIntentCommand Command(string payload)

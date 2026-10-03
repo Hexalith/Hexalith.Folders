@@ -33,7 +33,7 @@ internal static class FoldersCanonicalIntentBuilder
         "operations.principalKind", "operations.principalId", "operations.action",
         "providerBindingRef", "providerFamilyRef", "capabilityProfileRef",
         "nonSecretCredentialReference", "repositoryBindingId", "repositoryProfileRef",
-        "credentialScopeClass", "externalRepositoryRef",
+        "externalRepositoryRef",
         "branchRefPolicy.requestSchemaVersion", "branchRefPolicy.repositoryBindingId",
         "branchRefPolicy.policyRef", "branchRefPolicy.defaultRef",
         "branchRefPolicy.allowedRefPatterns", "branchRefPolicy.protectedRefPatterns",
@@ -126,12 +126,14 @@ internal static class FoldersCanonicalIntentBuilder
 
     public static string? ReadTaskScope(IdempotencyIntentCommand command, JsonElement root)
     {
-        string? fromPayload = ReadString(root, "taskId");
-        if (string.IsNullOrWhiteSpace(fromPayload))
+        if (!root.TryGetProperty("taskId", out JsonElement task)
+            || task.ValueKind != JsonValueKind.String
+            || string.IsNullOrWhiteSpace(task.GetString()))
         {
             throw new JsonException("Canonical intent requires a payload task scope.");
         }
 
+        string fromPayload = task.GetString()!;
         if (command.Extensions is not null
             && command.Extensions.TryGetValue("taskId", out string? fromExtension)
             && !string.Equals(fromPayload, fromExtension, StringComparison.Ordinal))
@@ -140,6 +142,20 @@ internal static class FoldersCanonicalIntentBuilder
         }
 
         return fromPayload;
+    }
+
+    /// <summary>Validates the fixed server credential scope without accepting a caller-selected scope.</summary>
+    public static string ReadCredentialScope(JsonElement root)
+    {
+        const string scope = "provider_binding";
+        if (root.TryGetProperty("credentialScopeClass", out JsonElement supplied)
+            && (supplied.ValueKind != JsonValueKind.String
+                || !string.Equals(supplied.GetString(), scope, StringComparison.Ordinal)))
+        {
+            throw new JsonException("Canonical intent does not accept a caller-selected credential scope.");
+        }
+
+        return scope;
     }
 
     public static string? ReadCanonicalObject(JsonElement root, params string[] path)

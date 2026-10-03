@@ -72,6 +72,13 @@ public sealed class FolderTelemetryEmitter(
             observation.TaskId ?? "task_absent",
             observation.RedactionState);
 
+        // Replay telemetry remains observable, but a retry must not create another
+        // audit entry for the original mutation, including through a processor path.
+        if (observation.IsIdempotentReplay || observation.Result == FolderAuditResult.Replayed)
+        {
+            return;
+        }
+
         foreach (IFolderAuditObserver observer in _observers)
         {
             try

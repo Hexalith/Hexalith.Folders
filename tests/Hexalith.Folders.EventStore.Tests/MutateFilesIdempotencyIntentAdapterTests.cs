@@ -59,6 +59,18 @@ public sealed class MutateFilesIdempotencyIntentAdapterTests
         _ = Should.Throw<JsonException>(() => adapter.CreateIntent(command));
     }
 
+    [Theory]
+    [InlineData("42")]
+    [InlineData("true")]
+    [InlineData("{}")]
+    [InlineData("[]")]
+    public void NonStringTaskScopeShouldBeRejected(string task)
+    {
+        MutateFilesIdempotencyIntentAdapter adapter = new();
+
+        _ = Should.Throw<JsonException>(() => adapter.CreateIntent(Command($$"""{"taskId":{{task}}}""")));
+    }
+
     [Fact]
     public void ConflictingExtensionTaskScopeShouldBeRejected()
     {

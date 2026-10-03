@@ -35,14 +35,7 @@ public sealed class FolderAuditEndpointFilter(
                 correlationId = null;
             }
 
-            return FolderProblemDetailsFactory.ForDomain(
-                StatusCodes.Status400BadRequest,
-                "validation_error",
-                "idempotency_key_not_allowed",
-                retryable: false,
-                correlationId,
-                taskId: null,
-                message: "Idempotency-Key is not accepted on read operations.");
+            return ReadKeyRejection(endpointName!, correlationId);
         }
 
         Stopwatch stopwatch = Stopwatch.StartNew();
@@ -64,6 +57,45 @@ public sealed class FolderAuditEndpointFilter(
             throw;
         }
     }
+
+    private static IResult ReadKeyRejection(string operation, string? correlationId)
+        => operation switch
+        {
+            "ListAuditTrail" or "GetAuditRecord" or "ListOperationTimeline" or "GetOperationTimelineEntry"
+                => FolderProblemDetailsFactory.ForAudit(
+                    StatusCodes.Status400BadRequest,
+                    "validation_error",
+                    "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId,
+                    taskId: null,
+                    message: "Idempotency-Key is not accepted on read operations.",
+                    evidenceSource: operation is "ListOperationTimeline" or "GetOperationTimelineEntry" ? "timeline" : "audit"),
+            "GetProviderBinding" or "ValidateProviderReadiness" or "GetProviderSupportEvidence"
+                => FolderProblemDetailsFactory.ForProviderReadiness(
+                    StatusCodes.Status400BadRequest,
+                    "validation_error",
+                    "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId),
+            "GetReadinessDiagnostics" or "GetLockDiagnostics" or "GetDirtyStateDiagnostics"
+                or "GetFailedOperationDiagnostics" or "GetProviderStatusDiagnostics"
+                or "GetSyncStatusDiagnostics" or "GetProjectionFreshness"
+                => FolderProblemDetailsFactory.ForOpsConsole(
+                    StatusCodes.Status400BadRequest,
+                    "validation_error",
+                    "idempotency_key_not_allowed",
+                    retryable: false,
+                    correlationId),
+            _ => FolderProblemDetailsFactory.ForDomain(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId,
+                taskId: null,
+                message: "Idempotency-Key is not accepted on read operations."),
+        };
 
     private async ValueTask EmitAsync(HttpContext httpContext, object? result, Exception? exception, TimeSpan duration)
     {
@@ -101,6 +133,16 @@ public sealed class FolderAuditEndpointFilter(
 
     private static bool ShouldSkipEndpointObservation(HttpContext httpContext, object? result)
     {
+        // Admission dispositions describe existing work. Observing them through the
+        // audit emitter would append another mutation audit for a consumed key.
+        if (IsIdempotentReplay(result)
+            || result is ProblemHttpResult problem
+                && problem.ProblemDetails.Extensions.TryGetValue("code", out object? code)
+                && code is "idempotency_conflict" or "idempotency_key_expired" or "idempotency_admission_unavailable")
+        {
+            return true;
+        }
+
         if (!string.Equals(httpContext.Request.Path.Value, FoldersServerModule.ProcessRoute, StringComparison.Ordinal))
         {
             return false;
