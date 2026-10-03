@@ -23,6 +23,28 @@ public sealed class FolderAuditEndpointFilter(
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(next);
 
+        string? endpointName = context.HttpContext.GetEndpoint()?.Metadata.GetMetadata<IEndpointNameMetadata>()?.EndpointName;
+        if (Pd10V2CandidateCompatibilitySeam.IsGeneratedReadOperation(endpointName)
+            && context.HttpContext.Request.Headers.ContainsKey("Idempotency-Key"))
+        {
+            string? correlationId = FolderHttpHeaderReader.ReadHeader(context.HttpContext, "X-Correlation-Id");
+            if (correlationId is null
+                || !FolderCanonicalSegmentIdentifier.IsValid(correlationId)
+                || FolderSensitiveDiagnosticDetector.IsSensitive(correlationId))
+            {
+                correlationId = null;
+            }
+
+            return FolderProblemDetailsFactory.ForDomain(
+                StatusCodes.Status400BadRequest,
+                "validation_error",
+                "idempotency_key_not_allowed",
+                retryable: false,
+                correlationId,
+                taskId: null,
+                message: "Idempotency-Key is not accepted on read operations.");
+        }
+
         Stopwatch stopwatch = Stopwatch.StartNew();
         try
         {

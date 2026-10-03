@@ -1,6 +1,6 @@
 version: pd10-v2-candidate-baseline
 source_marker: generated-from-pd10-v2-openapi
-contract_sha256: 586eb24b09d5dfec1d9946ef88e00cdb31684333c81b9d76f3862713ce4ab0c0
+contract_sha256: 314681a3b1822b1d195c25d83e607014c4f4dc37d64ef8537a6f5144c2edae98
 historical_v1_sha256: 3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2
 intent: PD10 v2 baseline with route, status-code, and canonical-error fingerprints for symmetric drift detection.
 ownership:
@@ -549,8 +549,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -588,8 +589,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -626,8 +628,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -667,8 +670,9 @@ operations:
       - 'response_limit_exceeded'
       - 'stale_workspace'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: e0f036f1a7d470f045ed757dd87c48fa1023a948c82280357a3c97879e0ca3c3
+    error_vocabulary_fingerprint_sha256: b969c5bf3821e3b5e7833c4efe0f156fbf5328b54873f998199f32003b46e864
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -707,8 +711,9 @@ operations:
       - 'projection_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: adaa49190fb8f46e246a4821c13e6674bd43fc800d43c5020066e7c95a4f1905
+    error_vocabulary_fingerprint_sha256: 5e81897cab329fa7de7a7e665deb37084cf7fbfa3d86b78ae4b54216a3f73897
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -748,8 +753,9 @@ operations:
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: 01771ec9e87461104258c9ac64d843360e2c2fbfc69023ae82a1eacaa327c432
+    error_vocabulary_fingerprint_sha256: 46fe69323b226b151da95727a07db79398e8c13cfef9726920aa3e6e0774d06a
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -876,8 +882,9 @@ operations:
       - 'projection_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: adaa49190fb8f46e246a4821c13e6674bd43fc800d43c5020066e7c95a4f1905
+    error_vocabulary_fingerprint_sha256: 5e81897cab329fa7de7a7e665deb37084cf7fbfa3d86b78ae4b54216a3f73897
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -915,9 +922,10 @@ operations:
       - 'redacted'
       - 'stale_workspace'
       - 'tenant_access_denied'
+      - 'validation_error'
       - 'workspace_locked'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: 9f616ece0cc247a7f41b46866fad2998c22f970fc20ff08afda0f5b0c6efac10
+    error_vocabulary_fingerprint_sha256: 3ac9583de13929e5f1ad9a9354215ac91aa0f33537fdceaeba558d5fa57e3011
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -957,8 +965,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -998,8 +1007,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: 43cf23a89797c43887ae9e93b597bd07f5bc2a9c956741a6ad4f14da3b33b278
+    error_vocabulary_fingerprint_sha256: 162b703400e22debe0c30bb1b4257d4dba0e4b06906c2483d5d84d26acc7be1a
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1036,8 +1046,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1077,8 +1088,9 @@ operations:
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: 2b7eccc8499cdb7709bdbb6e419f3a159b9e2986e3115fe997140ddfbbc45d2d
+    error_vocabulary_fingerprint_sha256: 5b1c4b845c14675e7a1a04f2edb51cdc98f94a7ba5274f355bdf3914c922467e
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1123,8 +1135,9 @@ operations:
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: 1e94b2ed581045f283d005adb431c8a7ea2fc335375a04cdab8a2a6f519e4b96
+    error_vocabulary_fingerprint_sha256: 6892a85c5adeabeeb6dc210b182ecc8eae674273810326be866cd6da6db24a8a
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1165,8 +1178,9 @@ operations:
       - 'provider_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: a7ba8687c31637541c9753a49e84eb9e4e74f9189591b48024edba81c3c1877b
+    error_vocabulary_fingerprint_sha256: 544be076c2bc415a880311ecccc775f0dfa7ae0ceb35375fcc814cdc78c73b73
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1204,8 +1218,9 @@ operations:
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: 1e94b2ed581045f283d005adb431c8a7ea2fc335375a04cdab8a2a6f519e4b96
+    error_vocabulary_fingerprint_sha256: 6892a85c5adeabeeb6dc210b182ecc8eae674273810326be866cd6da6db24a8a
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1247,8 +1262,9 @@ operations:
       - 'reconciliation_required'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: 2e83dc8145d7ec340812b97dd6787bc15d5070bfed5bc13814d469449f989e8e
+    error_vocabulary_fingerprint_sha256: 40ffe8d0a2648c4ba2796874940631d5019bc82f6c58d9d1250465241423d808
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1286,8 +1302,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1329,8 +1346,9 @@ operations:
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: ebae5e0067445efb2914a33b67fe808b7d0e4128b4d107b253bd8601f0abab3d
+    error_vocabulary_fingerprint_sha256: c2f86f11b62d6af6b39179561847a5d887d311e487b4684ef2111385d6b25199
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1371,8 +1389,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1407,8 +1426,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1446,8 +1466,9 @@ operations:
       - 'read_model_unavailable'
       - 'stale_workspace'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: e0f682d1fd247a0a19b52f163b9e8957fe707cadb04f054d8cade582edc0db99
-    error_vocabulary_fingerprint_sha256: 0a41a3c8f93c0281e4d71943b37cf5a26f1ab8ed141a026768067f5dc029062f
+    error_vocabulary_fingerprint_sha256: 3ae8762e5fa11bacc2163c09cbda2ce1d59551a234eb37866dfd99262841faef
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1488,8 +1509,9 @@ operations:
       - 'reconciliation_required'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: dec2eadb475e1ceb048c1b34bec7adfa9963faa01a7ee647f448a528341bbc28
+    error_vocabulary_fingerprint_sha256: afb89d540d70a4d4f86de7575f238014ad1dea79ef439e3df1b5de7829bbf42c
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1527,8 +1549,9 @@ operations:
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: d78f7ba6bd2b6cf50c82b21838a3f9b81d07c0c967812b04f9e979df627b727e
+    error_vocabulary_fingerprint_sha256: 54b7d4b7acd23330599f8cb753ee458d0e14e126da4051e607610837dd0cd381
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1563,8 +1586,9 @@ operations:
       - 'projection_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 6e4e934db67d544f26ff6bd83cc3da954145d3e1ba37e1735e33840abe7b018e
-    error_vocabulary_fingerprint_sha256: adaa49190fb8f46e246a4821c13e6674bd43fc800d43c5020066e7c95a4f1905
+    error_vocabulary_fingerprint_sha256: 5e81897cab329fa7de7a7e665deb37084cf7fbfa3d86b78ae4b54216a3f73897
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1654,8 +1678,9 @@ operations:
       - 'redacted'
       - 'response_limit_exceeded'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: ed7b35fb860f6c2892792594408dc85b3a75c68a54eb9c898e6eaf68e27c1079
+    error_vocabulary_fingerprint_sha256: eaab642c5ccb2f36a35f421e80f261fa116e5badcdac426587e391c4cab20653
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -1787,8 +1812,9 @@ operations:
       - 'redacted'
       - 'response_limit_exceeded'
       - 'tenant_access_denied'
+      - 'validation_error'
     status_code_fingerprint_sha256: 3c6912a1f4cd0c64212ce54372312c1f62a6aa4bf86b2f212f32474d893b59cf
-    error_vocabulary_fingerprint_sha256: ed7b35fb860f6c2892792594408dc85b3a75c68a54eb9c898e6eaf68e27c1079
+    error_vocabulary_fingerprint_sha256: eaab642c5ccb2f36a35f421e80f261fa116e5badcdac426587e391c4cab20653
     historical_v1_status_codes:
       - '200'
       - '401'
@@ -2294,8 +2320,9 @@ operations:
       - 'read_model_unavailable'
       - 'tenant_access_denied'
       - 'unsupported_provider_capability'
+      - 'validation_error'
     status_code_fingerprint_sha256: b306607bb6f987ae71bbd9a62dd5266cf30e9abdd403797760527da434c14ec3
-    error_vocabulary_fingerprint_sha256: e4ebb73490933c1685a8f0b22d2dfea895e93dc32ebcacf7c8058c1bc143b0c6
+    error_vocabulary_fingerprint_sha256: 490e09452457e1afb73829c2e25ce38bc8696dc3a18849d08544e78abe28123b
     historical_v1_status_codes:
       - '200'
       - '401'

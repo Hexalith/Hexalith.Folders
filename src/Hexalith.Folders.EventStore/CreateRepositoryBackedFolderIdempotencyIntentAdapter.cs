@@ -33,12 +33,11 @@ internal sealed class CreateRepositoryBackedFolderIdempotencyIntentAdapter : IId
             new Dictionary<string, string?>(StringComparer.Ordinal)
             {
                 ["branch_ref_policy.policy_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "policyRef"),
-                ["repository_binding_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "repositoryBindingId"),
+                ["branch_ref_policy.repository_binding_id"] = FoldersCanonicalIntentBuilder.ReadString(root, "branchRefPolicy", "repositoryBindingId"),
                 ["folder_id"] = command.AggregateId,
                 ["folder_metadata.display_name"] = FoldersCanonicalIntentBuilder.ReadString(root, "folderMetadata", "displayName"),
                 ["provider_binding_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "providerBindingRef"),
                 ["repository_profile_ref"] = FoldersCanonicalIntentBuilder.ReadString(root, "repositoryProfileRef"),
-            },
-            credentialScope: FoldersCanonicalIntentBuilder.ReadString(root, "credentialScopeClass"));
+            });
     }
 }

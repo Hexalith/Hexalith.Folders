@@ -1,11 +1,19 @@
 # generated_by: tests/tools/parity-oracle-generator
-# contract_spine_sha256: 586eb24b09d5dfec1d9946ef88e00cdb31684333c81b9d76f3862713ce4ab0c0
-# parity_schema_sha256: dc20eb8d1083ffb6cf682ac607a1ff4446fce92eddc92a12e8b26261dc1b8916
+# contract_spine_sha256: 314681a3b1822b1d195c25d83e607014c4f4dc37d64ef8537a6f5144c2edae98
+# parity_schema_sha256: 6bbcbc6473d1387d5e814a3e2f5ca0f96ee9a8da5ba7e0c3e21a11760c88a36b
 # source_authority: openapi-operation-metadata + idempotency-and-parity-rules + architecture-adapter-parity-contract
 # diagnostics_count: 0
 - operation_id: 'AddFile'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -164,6 +172,14 @@
 - operation_id: 'ArchiveFolder'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -247,6 +263,14 @@
 - operation_id: 'BindRepository'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -372,6 +396,14 @@
 - operation_id: 'ChangeFile'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -530,6 +562,14 @@
 - operation_id: 'CommitWorkspace'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'commit'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -694,6 +734,14 @@
 - operation_id: 'ConfigureBranchRefPolicy'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -777,6 +825,14 @@
 - operation_id: 'ConfigureProviderBinding'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -870,6 +926,14 @@
 - operation_id: 'CreateFolder'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -953,6 +1017,14 @@
 - operation_id: 'CreateRepositoryBackedFolder'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1068,6 +1140,14 @@
 - operation_id: 'GetAuditRecord'
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1078,6 +1158,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -1124,6 +1205,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1141,6 +1226,14 @@
 - operation_id: 'GetBranchRefPolicy'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1151,6 +1244,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'branch_ref_policy_ref'
@@ -1197,6 +1291,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1214,6 +1312,14 @@
 - operation_id: 'GetCommitEvidence'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1224,6 +1330,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'changed_path_metadata_digest'
@@ -1273,6 +1380,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1290,6 +1401,14 @@
 - operation_id: 'GetDirtyStateDiagnostics'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1303,6 +1422,7 @@
       - 'response_limit_exceeded'
       - 'stale_workspace'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'changed_path_metadata_digest'
@@ -1362,6 +1482,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1380,6 +1504,14 @@
 - operation_id: 'GetEffectivePermissions'
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1389,6 +1521,7 @@
       - 'projection_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'authorization_outcome'
@@ -1431,6 +1564,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1448,6 +1585,14 @@
 - operation_id: 'GetFailedOperationDiagnostics'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1463,6 +1608,7 @@
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -1530,6 +1676,10 @@
       cli_exit_code: 71
       mcp_failure_kind: 'unknown_provider_outcome'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1548,6 +1698,14 @@
 - operation_id: 'GetFolderFileMetadata'
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1649,6 +1807,14 @@
 - operation_id: 'GetFolderIndexingStatus'
   operation_family: 'context_query'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1711,6 +1877,14 @@
 - operation_id: 'GetFolderLifecycleStatus'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1720,6 +1894,7 @@
       - 'projection_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'folder_id'
@@ -1762,6 +1937,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1779,6 +1958,14 @@
 - operation_id: 'GetLockDiagnostics'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1790,6 +1977,7 @@
       - 'redacted'
       - 'stale_workspace'
       - 'tenant_access_denied'
+      - 'validation_error'
       - 'workspace_locked'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
@@ -1842,6 +2030,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
     - canonical_error_category: 'workspace_locked'
       cli_exit_code: 67
       mcp_failure_kind: 'workspace_locked'
@@ -1864,6 +2056,14 @@
 - operation_id: 'GetOperationTimelineEntry'
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1874,6 +2074,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -1921,6 +2122,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -1938,6 +2143,14 @@
 - operation_id: 'GetProjectionFreshness'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -1949,6 +2162,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -1998,6 +2212,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2016,6 +2234,14 @@
 - operation_id: 'GetProviderBinding'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2026,6 +2252,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'operation_id'
@@ -2071,6 +2298,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2088,6 +2319,14 @@
 - operation_id: 'GetProviderOutcome'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2102,6 +2341,7 @@
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -2167,6 +2407,10 @@
       cli_exit_code: 71
       mcp_failure_kind: 'unknown_provider_outcome'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2184,6 +2428,14 @@
 - operation_id: 'GetProviderStatusDiagnostics'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2198,6 +2450,7 @@
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'folder_id'
@@ -2261,6 +2514,10 @@
       cli_exit_code: 71
       mcp_failure_kind: 'unknown_provider_outcome'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2279,6 +2536,14 @@
 - operation_id: 'GetProviderSupportEvidence'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2289,6 +2554,7 @@
       - 'provider_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'capability_profile_ref'
@@ -2334,6 +2600,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2351,6 +2621,14 @@
 - operation_id: 'GetReadinessDiagnostics'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2365,6 +2643,7 @@
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -2426,6 +2705,10 @@
       cli_exit_code: 71
       mcp_failure_kind: 'unknown_provider_outcome'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2444,6 +2727,14 @@
 - operation_id: 'GetReconciliationStatus'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2456,6 +2747,7 @@
       - 'reconciliation_required'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -2513,6 +2805,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2530,6 +2826,14 @@
 - operation_id: 'GetRepositoryBinding'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2540,6 +2844,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'folder_id'
@@ -2586,6 +2891,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2603,6 +2912,14 @@
 - operation_id: 'GetSyncStatusDiagnostics'
   operation_family: 'operations_console_projection'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2617,6 +2934,7 @@
       - 'redacted'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'folder_id'
@@ -2680,6 +2998,10 @@
       cli_exit_code: 71
       mcp_failure_kind: 'unknown_provider_outcome'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2698,6 +3020,14 @@
 - operation_id: 'GetTaskStatus'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2708,6 +3038,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -2756,6 +3087,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2773,6 +3108,14 @@
 - operation_id: 'GetWorkspaceCleanupStatus'
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2783,6 +3126,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'cleanup_status'
@@ -2833,6 +3177,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2850,6 +3198,14 @@
 - operation_id: 'GetWorkspaceLock'
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2861,6 +3217,7 @@
       - 'read_model_unavailable'
       - 'stale_workspace'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -2917,6 +3274,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -2934,6 +3295,14 @@
 - operation_id: 'GetWorkspaceRetryEligibility'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -2947,6 +3316,7 @@
       - 'reconciliation_required'
       - 'tenant_access_denied'
       - 'unknown_provider_outcome'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -3009,6 +3379,10 @@
       cli_exit_code: 71
       mcp_failure_kind: 'unknown_provider_outcome'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -3026,6 +3400,14 @@
 - operation_id: 'GetWorkspaceStatus'
   operation_family: 'query_status'
   read_consistency_class: 'read-your-writes'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3036,6 +3418,7 @@
       - 'read_model_unavailable'
       - 'redacted'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -3085,6 +3468,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -3102,6 +3489,14 @@
 - operation_id: 'GetWorkspaceTransitionEvidence'
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3111,6 +3506,7 @@
       - 'projection_unavailable'
       - 'read_model_unavailable'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -3157,6 +3553,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -3174,6 +3574,14 @@
 - operation_id: 'GlobFolderFiles'
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3276,6 +3684,14 @@
 - operation_id: 'ListAuditTrail'
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3288,6 +3704,7 @@
       - 'redacted'
       - 'response_limit_exceeded'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -3344,6 +3761,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -3361,6 +3782,14 @@
 - operation_id: 'ListFolderAclEntries'
   operation_family: 'query_status'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3433,6 +3862,14 @@
 - operation_id: 'ListFolderFiles'
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3535,6 +3972,14 @@
 - operation_id: 'ListOperationTimeline'
   operation_family: 'audit'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3547,6 +3992,7 @@
       - 'redacted'
       - 'response_limit_exceeded'
       - 'tenant_access_denied'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'correlation_id'
@@ -3602,6 +4048,10 @@
       cli_exit_code: 66
       mcp_failure_kind: 'tenant_access_denied'
       pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
+      pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'
     - 'mcp'
@@ -3619,6 +4069,14 @@
 - operation_id: 'LockWorkspace'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3743,6 +4201,14 @@
 - operation_id: 'PrepareWorkspace'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3887,6 +4353,14 @@
 - operation_id: 'ReadFileRange'
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -3993,6 +4467,14 @@
 - operation_id: 'ReleaseWorkspaceLock'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -4112,6 +4594,14 @@
 - operation_id: 'RemoveFile'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -4263,6 +4753,14 @@
 - operation_id: 'SearchFolderFiles'
   operation_family: 'context_query'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -4365,6 +4863,14 @@
 - operation_id: 'SearchFolderIndexedFiles'
   operation_family: 'context_query'
   read_consistency_class: 'eventually-consistent'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -4447,6 +4953,14 @@
 - operation_id: 'UpdateFolderAclEntry'
   operation_family: 'mutating_command'
   read_consistency_class: 'not_applicable'
+  idempotency_contract:
+    retention_tier: 'mutation'
+    newKey: 'execute_once'
+    liveEquivalent: 'replay_same_logical_result'
+    liveDifferent: 'idempotency_conflict'
+    expiredEquivalent: 'idempotency_key_expired'
+    expiredDifferent: 'idempotency_key_expired'
+    read_key: 'not_applicable'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -4530,6 +5044,14 @@
 - operation_id: 'ValidateProviderReadiness'
   operation_family: 'query_status'
   read_consistency_class: 'snapshot-per-task'
+  idempotency_contract:
+    retention_tier: 'not_applicable'
+    newKey: 'not_applicable'
+    liveEquivalent: 'not_applicable'
+    liveDifferent: 'not_applicable'
+    expiredEquivalent: 'not_applicable'
+    expiredDifferent: 'not_applicable'
+    read_key: 'idempotency_key_not_allowed'
   transport_parity:
     auth_outcome_class: 'tenant_access_denied'
     error_code_set:
@@ -4545,6 +5067,7 @@
       - 'read_model_unavailable'
       - 'tenant_access_denied'
       - 'unsupported_provider_capability'
+      - 'validation_error'
     idempotency_key_rule: 'not_accepted_for_non_mutating_operation'
     audit_metadata_keys:
       - 'operation_id'
@@ -4610,6 +5133,10 @@
     - canonical_error_category: 'unsupported_provider_capability'
       cli_exit_code: 70
       mcp_failure_kind: 'unsupported_provider_capability'
+      pre_sdk_error_class: 'none'
+    - canonical_error_category: 'validation_error'
+      cli_exit_code: 69
+      mcp_failure_kind: 'validation_error'
       pre_sdk_error_class: 'none'
   adapter_expectations:
     - 'cli'

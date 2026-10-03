@@ -85,7 +85,7 @@ internal static class Pd10ProtectedOperationExecutor
         return new(outcome, value);
     }
 
-    private static Pd10AuthorizationOutcome Evaluate(Pd10AuthorizationContext context)
+    internal static Pd10AuthorizationOutcome Evaluate(Pd10AuthorizationContext context)
     {
         if (!context.IsAuthenticated)
         {

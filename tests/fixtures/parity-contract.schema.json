@@ -26,6 +26,7 @@
     "operation_id",
     "operation_family",
     "read_consistency_class",
+    "idempotency_contract",
     "transport_parity",
     "behavioral_parity",
     "outcome_mapping",
@@ -54,6 +55,28 @@
         "read-your-writes",
         "eventually-consistent"
       ]
+    },
+    "idempotency_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "retention_tier",
+        "newKey",
+        "liveEquivalent",
+        "liveDifferent",
+        "expiredEquivalent",
+        "expiredDifferent",
+        "read_key"
+      ],
+      "properties": {
+        "retention_tier": { "enum": ["mutation", "commit", "not_applicable"] },
+        "newKey": { "enum": ["execute_once", "not_applicable"] },
+        "liveEquivalent": { "enum": ["replay_same_logical_result", "not_applicable"] },
+        "liveDifferent": { "enum": ["idempotency_conflict", "not_applicable"] },
+        "expiredEquivalent": { "enum": ["idempotency_key_expired", "not_applicable"] },
+        "expiredDifferent": { "enum": ["idempotency_key_expired", "not_applicable"] },
+        "read_key": { "enum": ["idempotency_key_not_allowed", "not_applicable"] }
+      }
     },
     "transport_parity": {
       "type": "object",

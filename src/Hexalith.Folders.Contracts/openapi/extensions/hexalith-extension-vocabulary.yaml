@@ -105,6 +105,63 @@ x-hexalith-idempotency-ttl-tier:
       - commit
     description: Only mutation and commit are valid; mutation is 24h, commit is C3 retention backed.
   example: mutation
+x-hexalith-idempotency-behavior:
+  summary: Required durable admission behavior for every mutating operation.
+  allowedLocations:
+    - OpenAPI Operation Object for mutating commands
+    - Extension vocabulary definition
+  requirement: All five cells are required and expiry has the same outcome for equivalent and different intent.
+  referencePendingPolicy: No mutation can be generated while any behavior cell is absent.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required: [vocabularyRef, foundationUse]
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: object
+    additionalProperties: false
+    required: [newKey, liveEquivalent, liveDifferent, expiredEquivalent, expiredDifferent]
+    properties:
+      newKey:
+        const: execute_once
+      liveEquivalent:
+        const: replay_same_logical_result
+      liveDifferent:
+        const: idempotency_conflict
+      expiredEquivalent:
+        const: idempotency_key_expired
+      expiredDifferent:
+        const: idempotency_key_expired
+  example:
+    newKey: execute_once
+    liveEquivalent: replay_same_logical_result
+    liveDifferent: idempotency_conflict
+    expiredEquivalent: idempotency_key_expired
+    expiredDifferent: idempotency_key_expired
+x-hexalith-read-idempotency-key:
+  summary: Canonical rejection of a key supplied to a non-mutating operation.
+  allowedLocations:
+    - OpenAPI Operation Object for non-mutating reads
+    - Extension vocabulary definition
+  requirement: Every read rejects a supplied key before query or source execution.
+  referencePendingPolicy: No read can be generated without this explicit rejection.
+  foundationSchema:
+    type: object
+    additionalProperties: false
+    required: [vocabularyRef, foundationUse]
+    properties:
+      vocabularyRef:
+        type: string
+      foundationUse:
+        type: string
+  valueSchema:
+    type: string
+    const: idempotency_key_not_allowed
+  example: idempotency_key_not_allowed
 x-hexalith-correlation:
   summary: Correlation, causation, and task identity propagation.
   allowedLocations:

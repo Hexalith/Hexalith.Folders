@@ -2725,7 +2725,8 @@ public static class FoldersDomainServiceEndpoints
             workspaceId,
             body.RepositoryBindingId,
             body.BranchRefPolicyRef,
-            body.WorkspacePolicyRef);
+            body.WorkspacePolicyRef,
+            taskId);
 
         SubmitCommandResponse submitted;
         try
@@ -2869,7 +2870,8 @@ public static class FoldersDomainServiceEndpoints
             body.RequestSchemaVersion,
             workspaceId,
             body.LockIntent,
-            body.RequestedLeaseSeconds);
+            body.RequestedLeaseSeconds,
+            taskId);
 
         SubmitCommandResponse submitted;
         try
@@ -3014,7 +3016,8 @@ public static class FoldersDomainServiceEndpoints
             workspaceId,
             body.LockId,
             body.LockOwnershipProof,
-            body.ReleaseReasonCode);
+            body.ReleaseReasonCode,
+            taskId);
 
         SubmitCommandResponse submitted;
         try
@@ -3171,7 +3174,8 @@ public static class FoldersDomainServiceEndpoints
             body.ByteLength,
             validation.MediaType,
             validation.TransportEvidenceKind,
-            validation.ObservedByteLength);
+            validation.ObservedByteLength,
+            taskId);
 
         SubmitCommandResponse submitted;
         try
@@ -6031,20 +6035,23 @@ public static class FoldersDomainServiceEndpoints
         string WorkspaceId,
         string? RepositoryBindingId,
         string? BranchRefPolicyRef,
-        string? WorkspacePolicyRef);
+        string? WorkspacePolicyRef,
+        string TaskId);
 
     private sealed record LockWorkspaceGatewayPayload(
         string? RequestSchemaVersion,
         string WorkspaceId,
         string? LockIntent,
-        int? RequestedLeaseSeconds);
+        int? RequestedLeaseSeconds,
+        string TaskId);
 
     private sealed record ReleaseWorkspaceLockGatewayPayload(
         string? RequestSchemaVersion,
         string WorkspaceId,
         string? LockId,
         string? LockOwnershipProof,
-        string? ReleaseReasonCode);
+        string? ReleaseReasonCode,
+        string TaskId);
 
     private sealed record FileMutationGatewayPayload(
         string? RequestSchemaVersion,
@@ -6057,7 +6064,8 @@ public static class FoldersDomainServiceEndpoints
         long? ByteLength,
         string? MediaType,
         string? TransportEvidenceKind,
-        long? ObservedByteLength);
+        long? ObservedByteLength,
+        string TaskId);
 
     private sealed record CommitWorkspaceGatewayPayload(
         string? RequestSchemaVersion,

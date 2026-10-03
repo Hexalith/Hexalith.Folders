@@ -119,6 +119,9 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             ["GetProjectionFreshness"] = "eventually_consistent",
         };
 
+    internal static bool IsGeneratedReadOperation(string? operationId)
+        => operationId is not null && OperationFreshness.ContainsKey(operationId);
+
     /// <summary>Adds the candidate-only authorization and historical transport seam.</summary>
     public static IApplicationBuilder UsePd10V2CandidateCompatibilitySeam(this IApplicationBuilder app)
     {
@@ -145,6 +148,19 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                     operationFamily: "unknown",
                     result: "deny").ConfigureAwait(false);
                 await WriteProblemAsync(context, Pd10AuthorizationOutcome.SafeDenial, null).ConfigureAwait(false);
+                return;
+            }
+
+            // A read key is invalid independently of identity or resource state. Reject it
+            // before authorization can consult an ACL, task binding, or read model.
+            if (IsGeneratedReadOperation(descriptor.OperationId)
+                && context.Request.Headers.ContainsKey("Idempotency-Key"))
+            {
+                await WriteValidationProblemAsync(
+                    context,
+                    "idempotency_key_not_allowed",
+                    "Idempotency-Key is not accepted on read operations.",
+                    context.RequestAborted).ConfigureAwait(false);
                 return;
             }
 
@@ -216,6 +232,33 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 }
 
                 authorization = Unusable(descriptor);
+            }
+
+            if (descriptor.FolderScope == Pd10FolderScopeRule.RequestFolder
+                && context.Items.ContainsKey(PendingUnknownLengthBodyItem)
+                && Pd10ProtectedOperationExecutor.Evaluate(authorization).IsAllowed)
+            {
+                context.Items.Remove(PendingUnknownLengthBodyItem);
+                if (!await BufferBoundedRequestBodyAsync(context.Request, context.RequestAborted).ConfigureAwait(false))
+                {
+                    context.Items[DeferredInputLimitItem] = true;
+                }
+                else
+                {
+                    try
+                    {
+                        authorization = await AuthorizeAsync(context, descriptor, routeValues).ConfigureAwait(false);
+                    }
+                    catch (Pd10RequestValidationException)
+                    {
+                        await WriteValidationProblemAsync(context).ConfigureAwait(false);
+                        return;
+                    }
+                    catch (Exception ex) when (ex is not OperationCanceledException)
+                    {
+                        authorization = Unusable(descriptor);
+                    }
+                }
             }
 
             Func<CancellationToken, ValueTask<Pd10TaskFolderBindingState>>? binding =
@@ -424,10 +467,10 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             context.Items[AuthorizedFolderItem] = folderId;
         }
 
-        if (folderId is null || descriptor.OperationId == "CreateRepositoryBackedFolder")
+        if (folderId is null)
         {
-            // Repository-backed creation names the folder in the body. Authorize the create,
-            // including when that folderId does not exist yet, instead of an existing-folder ACL.
+            // A deferred body receives tenant authorization first. Its folder scope is
+            // checked after bounded buffering and before historical gateway dispatch.
             return await AuthorizeTenantFolderCreationAsync(
                 context,
                 descriptor,
@@ -611,7 +654,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
         IReadOnlyDictionary<string, string> routeValues,
         CancellationToken cancellationToken)
     {
-        if (descriptor.OperationId == "GetTaskStatus" && HeaderValues(context, "Idempotency-Key").Count > 0)
+        if (IsGeneratedReadOperation(descriptor.OperationId)
+            && context.Request.Headers.ContainsKey("Idempotency-Key"))
         {
             await WriteValidationProblemAsync(
                 context,

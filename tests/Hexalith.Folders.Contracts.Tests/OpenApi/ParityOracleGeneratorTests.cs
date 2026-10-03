@@ -109,18 +109,46 @@ public sealed class ParityOracleGeneratorTests
             string family = RequiredScalar(row, "operation_family");
             string readConsistency = RequiredScalar(row, "read_consistency_class");
             string idempotencyRule = RequiredScalar(RequiredMapping(row, "transport_parity"), "idempotency_key_rule");
+            YamlMappingNode contract = RequiredMapping(row, "idempotency_contract");
 
             if (family == "mutating_command")
             {
                 readConsistency.ShouldBe("not_applicable");
                 idempotencyRule.ShouldBeOneOf("required_for_mutating_command", "required_with_operation_id");
+                RequiredScalar(contract, "retention_tier").ShouldBeOneOf("mutation", "commit");
+                RequiredScalar(contract, "newKey").ShouldBe("execute_once");
+                RequiredScalar(contract, "liveEquivalent").ShouldBe("replay_same_logical_result");
+                RequiredScalar(contract, "liveDifferent").ShouldBe("idempotency_conflict");
+                RequiredScalar(contract, "expiredEquivalent").ShouldBe("idempotency_key_expired");
+                RequiredScalar(contract, "expiredDifferent").ShouldBe("idempotency_key_expired");
+                RequiredScalar(contract, "read_key").ShouldBe("not_applicable");
             }
             else
             {
                 readConsistency.ShouldNotBe("not_applicable");
                 idempotencyRule.ShouldBe("not_accepted_for_non_mutating_operation");
+                RequiredScalar(contract, "retention_tier").ShouldBe("not_applicable");
+                RequiredScalar(contract, "read_key").ShouldBe("idempotency_key_not_allowed");
             }
         }
+    }
+
+    [Theory]
+    [InlineData("        newKey: execute_once", "        newKey: omitted", "five-cell idempotency behavior matrix")]
+    [InlineData("      x-hexalith-idempotency-ttl-tier: mutation", "      x-hexalith-idempotency-ttl-tier: omitted", "fixed idempotency retention tier")]
+    [InlineData("      x-hexalith-read-idempotency-key: idempotency_key_not_allowed", "      x-hexalith-read-idempotency-key: omitted", "canonical read-key rejection")]
+    public void GeneratorFailsClosedWhenIdempotencyMatrixMetadataDrifts(string before, string after, string expected)
+    {
+        string temp = NewTempDirectory("hexalith-parity-idempotency-matrix");
+        string mutatedContract = Path.Combine(temp, "hexalith.folders.v2.yaml");
+        string contract = NormalizeLineEndings(File.ReadAllText(_openApiFilePath));
+        contract.ShouldContain(before, Case.Sensitive);
+        File.WriteAllText(mutatedContract, contract.Replace(before, after, StringComparison.Ordinal), new UTF8Encoding(false));
+
+        GeneratorResult result = RunGeneratorDetailed(mutatedContract, Path.Combine(temp, "parity-contract.yaml"));
+
+        result.ExitCode.ShouldNotBe(0);
+        (result.Output + result.Error).ShouldContain(expected, Case.Insensitive);
     }
 
     [Fact]

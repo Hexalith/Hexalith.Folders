@@ -1,14 +1,14 @@
 # Idempotency and Adapter Parity Rules
 
-status: finalized MVP rules with deferred implementation owners
-source inputs: PRD command/query contract, PRD error codes, architecture Adapter Parity Contract, C3 retention artifact, C4 input limits artifact, Story 1.3 fixture seeds, Story 1.4 Phase 0.5 deliverables
-last reviewed: 2026-05-13
+status: OQ8 design approved; runtime and production evidence pending
+source inputs: OQ8 design 1.0.0, Contract Spines v1/v2, C3 retention, architecture Adapter Parity Contract, C13 generator
+last reviewed: 2026-10-03
 
 ## Partition vs Payload Equivalence
 
-This document's per-operation `idempotency_equivalence_fields` column lists every input that participates in idempotency-key partitioning. Story 1.7 onwards splits these into two distinct layers when authoring OpenAPI:
+The managed tenant and opaque key identify the EventStore admission partition. The operation, canonical target, normalized payload/options, policy version, delegated task scope, and behavior-affecting credential scope identify intent within that partition. The Contract Spine declares the payload field paths for each operation:
 
-- **Envelope-derived partitioning keys** — `tenant_id`, `credential_scope_class`, and `retention_policy_class` are always partitioning keys but never appear in OpenAPI request bodies, query parameters, or client-controlled headers. Per Story 1.7 AC #2 (and project-context.md), tenant authority comes exclusively from authenticated principal claims and EventStore envelopes. These keys are applied implicitly by the idempotency layer when computing equivalence hashes; they MUST NOT be added to `x-hexalith-idempotency-equivalence` lists in the OpenAPI Contract Spine.
+- **Server-derived identity and scope** — The managed tenant comes from current authorization; credential and delegated task scope participate in intent equivalence only when they affect behavior. Public extensions never select the partition, digest, tier, or trusted scope.
 - **Payload-derived equivalence fields** — Fields that appear in the request schema (body, path, or non-tenant headers) and contribute to semantic intent. These are the ones listed in `x-hexalith-idempotency-equivalence`, lexicographically ordered.
 
 OpenAPI Contract Spine field-name mapping (Story 1.5 row name → Story 1.7 OpenAPI field path):
@@ -21,13 +21,71 @@ OpenAPI Contract Spine field-name mapping (Story 1.5 row name → Story 1.7 Open
 | `provider_binding_reference` | `provider_binding_ref` | Naming alignment only. |
 | `branch_ref_policy` (structural) | `branch_ref_policy.policy_ref` plus `branch_ref_policy.default_ref`, `branch_ref_policy.allowed_ref_patterns`, `branch_ref_policy.protected_ref_patterns` | Each policy attribute is its own equivalence path so replay with changed contents fails fast. |
 
-Story 1.12 (NSwag helpers) consumes both layers: generated `ComputeIdempotencyHash()` helpers apply the envelope partitioning keys before hashing the payload-derived equivalence fields.
+Generated SDK helpers mirror the Spine's declared payload fields. EventStore remains the authority for tenant/key admission and compares a descriptor built by a registered server adapter after authorization and canonical validation.
 
-last reviewed: 2026-05-11
+The inventory below is derived from the v2 Contract Spine. The historical v1 Spine remains byte-stable under its approved PD10 fingerprint; aligning its new OQ8 behavior metadata requires governed reapproval. The parity generator fails when a v2 mutation lacks a required key, equivalence fields, fixed tier, conflict/expiry error, or any of the five behavior cells, and when a v2 read lacks canonical key rejection.
 
-This document is the implementation-facing contract-rules artifact for Story 1.5. It defines operation metadata, idempotency equivalence, non-mutating read consistency, and adapter behavioral parity before the OpenAPI Contract Spine is authored.
+## Current Generated OQ8 Inventory
 
-It does not author endpoint paths, OpenAPI schemas, SDK methods, CLI commands, MCP tools, REST handlers, generated helpers, parity result rows, idempotency persistence, or domain behavior.
+The row set is generated from the Contract Spine; the current snapshot contains 14 mutations and 35 reads. C13 and tests use the live inventory, so these counts are descriptive.
+
+**M5** means: a new key executes once; a live equivalent request replays the same logical result; a live different request returns metadata-only `idempotency_conflict`; either expired intent returns the identical metadata-only `idempotency_key_expired`. The expired result is HTTP 409, CLI 76, MCP kind `idempotency_key_expired`, `retryable = false`, and `clientAction = refresh_state_then_submit_with_new_key`.
+
+**R** means any supplied `Idempotency-Key` returns `idempotency_key_not_allowed` before query, projection, provider, audit, diagnostic, or content source work. The rejection is HTTP 400 with canonical `validation_error` category.
+
+Mutation replay results remain available for 24 hours after terminal finalization; commit results remain available for seven calendar years. At `now >= expiresAt`, EventStore atomically compacts the result and intent to minimal consumed-key evidence retained for the tenant lifetime plus 400 days after approved deletion, subject to legal hold. Current authorization precedes every key disposition; corruption, legacy uncertainty, and unavailable state fail closed. See `docs/exit-criteria/oq8-idempotency-design.md` for the approved state machine.
+
+| Operation | Kind | Tier | Spine equivalence fields | Matrix |
+| --- | --- | --- | --- | --- |
+| `AddFile` | mutation | mutation | `content_hash_reference`, `file_operation_kind`, `operation_id`, `path_metadata`, `path_policy_class`, `task_id`, `workspace_id` | M5 |
+| `ArchiveFolder` | mutation | mutation | `archive_reason_code`, `folder_id`, `request_schema_version` | M5 |
+| `BindRepository` | mutation | mutation | `branch_ref_policy.policy_ref`, `external_repository_ref`, `folder_id`, `provider_binding_ref` | M5 |
+| `ChangeFile` | mutation | mutation | `content_hash_reference`, `file_operation_kind`, `operation_id`, `path_metadata`, `path_policy_class`, `task_id`, `workspace_id` | M5 |
+| `CommitWorkspace` | mutation | commit | `author_metadata_reference`, `branch_ref_target`, `changed_path_metadata_digest`, `commit_message_classification`, `operation_id`, `task_id`, `workspace_id` | M5 |
+| `ConfigureBranchRefPolicy` | mutation | mutation | `branch_ref_policy.allowed_ref_patterns`, `branch_ref_policy.default_ref`, `branch_ref_policy.policy_ref`, `branch_ref_policy.protected_ref_patterns`, `folder_id`, `repository_binding_id` | M5 |
+| `ConfigureProviderBinding` | mutation | mutation | `capability_profile_ref`, `non_secret_credential_reference`, `provider_binding_ref`, `provider_family_ref` | M5 |
+| `CreateFolder` | mutation | mutation | `folder_metadata.display_name`, `parent_folder_id`, `request_schema_version` | M5 |
+| `CreateRepositoryBackedFolder` | mutation | mutation | `branch_ref_policy.policy_ref`, `branch_ref_policy.repository_binding_id`, `folder_id`, `folder_metadata.display_name`, `provider_binding_ref`, `repository_profile_ref` | M5 |
+| `GetAuditRecord` | read | — | — | R |
+| `GetBranchRefPolicy` | read | — | — | R |
+| `GetCommitEvidence` | read | — | — | R |
+| `GetDirtyStateDiagnostics` | read | — | — | R |
+| `GetEffectivePermissions` | read | — | — | R |
+| `GetFailedOperationDiagnostics` | read | — | — | R |
+| `GetFolderFileMetadata` | read | — | — | R |
+| `GetFolderIndexingStatus` | read | — | — | R |
+| `GetFolderLifecycleStatus` | read | — | — | R |
+| `GetLockDiagnostics` | read | — | — | R |
+| `GetOperationTimelineEntry` | read | — | — | R |
+| `GetProjectionFreshness` | read | — | — | R |
+| `GetProviderBinding` | read | — | — | R |
+| `GetProviderOutcome` | read | — | — | R |
+| `GetProviderStatusDiagnostics` | read | — | — | R |
+| `GetProviderSupportEvidence` | read | — | — | R |
+| `GetReadinessDiagnostics` | read | — | — | R |
+| `GetReconciliationStatus` | read | — | — | R |
+| `GetRepositoryBinding` | read | — | — | R |
+| `GetSyncStatusDiagnostics` | read | — | — | R |
+| `GetTaskStatus` | read | — | — | R |
+| `GetWorkspaceCleanupStatus` | read | — | — | R |
+| `GetWorkspaceLock` | read | — | — | R |
+| `GetWorkspaceRetryEligibility` | read | — | — | R |
+| `GetWorkspaceStatus` | read | — | — | R |
+| `GetWorkspaceTransitionEvidence` | read | — | — | R |
+| `GlobFolderFiles` | read | — | — | R |
+| `ListAuditTrail` | read | — | — | R |
+| `ListFolderAclEntries` | read | — | — | R |
+| `ListFolderFiles` | read | — | — | R |
+| `ListOperationTimeline` | read | — | — | R |
+| `LockWorkspace` | mutation | mutation | `folder_id`, `lock_intent`, `requested_lease_seconds`, `task_id`, `workspace_id` | M5 |
+| `PrepareWorkspace` | mutation | mutation | `branch_ref_policy_ref`, `folder_id`, `repository_binding_id`, `task_id`, `workspace_id`, `workspace_policy_ref` | M5 |
+| `ReadFileRange` | read | — | — | R |
+| `ReleaseWorkspaceLock` | mutation | mutation | `folder_id`, `lock_id`, `lock_ownership_proof`, `task_id`, `workspace_id` | M5 |
+| `RemoveFile` | mutation | mutation | `file_operation_kind`, `operation_id`, `path_metadata`, `path_policy_class`, `task_id`, `workspace_id` | M5 |
+| `SearchFolderFiles` | read | — | — | R |
+| `SearchFolderIndexedFiles` | read | — | — | R |
+| `UpdateFolderAclEntry` | mutation | mutation | `acl_entry_id`, `effect`, `folder_id`, `permission_level`, `subject_ref` | M5 |
+| `ValidateProviderReadiness` | read | — | — | R |
 
 ## Decision Record
 

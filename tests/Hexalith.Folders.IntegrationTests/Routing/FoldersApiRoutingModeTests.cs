@@ -126,6 +126,38 @@ public sealed class FoldersApiRoutingModeTests
     }
 
     [Theory]
+    [InlineData("V1Only")]
+    [InlineData("Coexistence")]
+    public async Task DirectHistoricalMutationDenialPrecedesGatewayAdmission(string mode)
+    {
+        RoutingModeTestHost host = await RoutingModeTestHost.StartAsync(mode).ConfigureAwait(true);
+        await using ConfiguredAsyncDisposable hostScope = host.ConfigureAwait(true);
+
+        using HttpRequestMessage request = new(
+            HttpMethod.Post,
+            $"/api/v1/folders/{RoutingModeTestHost.FolderId}/archive")
+        {
+            Content = new StringContent(
+                """{"requestSchemaVersion":"v1","archiveReasonCode":"caller_requested"}""",
+                Encoding.UTF8,
+                "application/json"),
+        };
+        request.Headers.Add("Idempotency-Key", "idempotency_routing_0001");
+        request.Headers.Add("X-Correlation-Id", RoutingModeTestHost.CorrelationId);
+        request.Headers.Add("X-Hexalith-Task-Id", "task_routing_0001");
+
+        using HttpResponseMessage response = await host.Client
+            .SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        using JsonDocument problem = JsonDocument.Parse(
+            await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+        problem.RootElement.GetProperty("category").GetString().ShouldBe("not_found_to_caller");
+        host.TenantStore.Reads.ShouldBeGreaterThan(0);
+        host.Gateway.ReceivedCalls().ShouldBeEmpty();
+    }
+
+    [Theory]
     [InlineData("Coexistence")]
     [InlineData("V2Only")]
     public async Task AuthenticationRunsBeforeTheSeamWithTheRealClaimsBasedAccessors(string mode)

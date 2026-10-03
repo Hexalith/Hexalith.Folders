@@ -202,6 +202,26 @@ public sealed class Pd10ProtectedOperationCatalogTests
             .ShouldBeFalse();
     }
 
+    [Fact]
+    public void HistoricalMutationResolutionCoversEveryDeclaredMutation()
+    {
+        Pd10ProtectedOperationDescriptor[] mutations = Pd10ProtectedOperationCatalog.Descriptors
+            .Where(descriptor => descriptor.PolicyClass == FolderOperationPolicyClass.Mutation)
+            .ToArray();
+        mutations.Length.ShouldBe(14);
+
+        foreach (Pd10ProtectedOperationDescriptor mutation in mutations)
+        {
+            string path = Regex.Replace(mutation.HistoricalRoute, @"\{[^/{}]+\}", "folder-a");
+            Pd10ProtectedOperationCatalog.TryResolveHistorical(
+                mutation.Method,
+                path,
+                out Pd10ProtectedOperationDescriptor? resolved,
+                out _).ShouldBeTrue(mutation.OperationId);
+            resolved.ShouldNotBeNull().OperationId.ShouldBe(mutation.OperationId);
+        }
+    }
+
     [Theory]
     [InlineData("short")]
     [InlineData("folder.with.dot_001")]

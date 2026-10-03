@@ -29,6 +29,12 @@ public sealed class ContractSpineFoundationTests
         "x-hexalith-sensitive-metadata-tier",
     ];
 
+    private static readonly string[] V2OnlyExtensions =
+    [
+        "x-hexalith-idempotency-behavior",
+        "x-hexalith-read-idempotency-key",
+    ];
+
     [Fact]
     public void ContractSpineFoundation_IsOpenApi31WithSharedSurface()
     {
@@ -90,7 +96,8 @@ public sealed class ContractSpineFoundationTests
         YamlMappingNode vocabulary = LoadYamlMapping(ExtensionVocabularyPath);
 
         EnumerateExtensionKeys(openApi).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ShouldBe(RequiredExtensions);
-        EnumerateExtensionKeys(vocabulary).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ShouldBe(RequiredExtensions);
+        EnumerateExtensionKeys(vocabulary).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal)
+            .ShouldBe(RequiredExtensions.Concat(V2OnlyExtensions).Order(StringComparer.Ordinal));
 
         foreach (string extension in RequiredExtensions)
         {
@@ -102,6 +109,14 @@ public sealed class ContractSpineFoundationTests
             GetScalar(definition, "requirement").ShouldNotBeNullOrWhiteSpace();
             definition.Children.ContainsKey(new YamlScalarNode("example")).ShouldBeTrue(extension);
             GetScalar(definition, "referencePendingPolicy").ShouldNotBeNullOrWhiteSpace();
+        }
+
+        foreach (string extension in V2OnlyExtensions)
+        {
+            YamlMappingNode definition = RequiredMapping(vocabulary, extension);
+            RequiredMapping(definition, "valueSchema");
+            RequiredMapping(definition, "foundationSchema");
+            definition.Children.ContainsKey(new YamlScalarNode("example")).ShouldBeTrue(extension);
         }
 
         YamlMappingNode parityValueSchema = RequiredMapping(RequiredMapping(vocabulary, "x-hexalith-parity-dimensions"), "valueSchema");

@@ -1465,20 +1465,23 @@ public sealed partial class FolderDomainProcessor(
         [property: JsonRequired] string? WorkspaceId,
         [property: JsonRequired] string? RepositoryBindingId,
         [property: JsonRequired] string? BranchRefPolicyRef,
-        [property: JsonRequired] string? WorkspacePolicyRef);
+        [property: JsonRequired] string? WorkspacePolicyRef,
+        string? TaskId);
 
     private sealed record LockWorkspacePayload(
         [property: JsonRequired] string? RequestSchemaVersion,
         [property: JsonRequired] string? WorkspaceId,
         [property: JsonRequired] string? LockIntent,
-        [property: JsonRequired] int? RequestedLeaseSeconds);
+        [property: JsonRequired] int? RequestedLeaseSeconds,
+        string? TaskId);
 
     private sealed record ReleaseWorkspaceLockPayload(
         [property: JsonRequired] string? RequestSchemaVersion,
         [property: JsonRequired] string? WorkspaceId,
         [property: JsonRequired] string? LockId,
         [property: JsonRequired] string? LockOwnershipProof,
-        [property: JsonRequired] string? ReleaseReasonCode);
+        [property: JsonRequired] string? ReleaseReasonCode,
+        string? TaskId);
 
     private sealed record PathMetadataPayload(
         [property: JsonRequired] string? NormalizedPath,
@@ -1497,7 +1500,8 @@ public sealed partial class FolderDomainProcessor(
         long? ByteLength,
         string? MediaType,
         string? TransportEvidenceKind,
-        long? ObservedByteLength);
+        long? ObservedByteLength,
+        string? TaskId);
 
     private sealed record CommitWorkspacePayload(
         [property: JsonRequired] string? RequestSchemaVersion,

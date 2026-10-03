@@ -304,6 +304,12 @@ paths:
       - parent_folder_id
       - request_schema_version
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -590,6 +596,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: returns-projection-watermark-when-available
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -621,6 +628,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -868,6 +876,12 @@ paths:
       - folder_id
       - request_schema_version
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -1163,6 +1177,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-pagination-and-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -1194,9 +1209,9 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
-      - validation_error
       - read_model_unavailable
       - projection_stale
       - projection_unavailable
@@ -1450,6 +1465,12 @@ paths:
       - permission_level
       - subject_ref
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -1703,6 +1724,7 @@ paths:
       x-hexalith-read-consistency:
         class: read_your_writes
         freshnessBehavior: reports-authorization-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -1735,6 +1757,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -1959,6 +1982,12 @@ paths:
       - provider_binding_ref
       - provider_family_ref
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -2213,6 +2242,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: redacted-binding-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -2245,6 +2275,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -2473,6 +2504,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: readiness-evidence-generated-for-request
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -2505,6 +2537,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - provider_readiness_failed
@@ -2716,6 +2749,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-capability-catalog-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -2748,6 +2782,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - provider_unavailable
@@ -3052,6 +3087,12 @@ paths:
       - provider_binding_ref
       - repository_profile_ref
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -3464,6 +3505,12 @@ paths:
       - folder_id
       - provider_binding_ref
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -3758,6 +3805,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: redacted-binding-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -3791,6 +3839,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - redacted
@@ -4018,6 +4067,12 @@ paths:
       - folder_id
       - repository_binding_id
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -4264,6 +4319,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: redacted-policy-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -4297,6 +4353,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - redacted
@@ -4645,6 +4702,12 @@ paths:
       - workspace_id
       - workspace_policy_ref
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -5085,6 +5148,12 @@ paths:
       - task_id
       - workspace_id
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -5408,6 +5477,7 @@ paths:
       x-hexalith-read-consistency:
         class: read_your_writes
         freshnessBehavior: reports-lock-projection-watermark-and-stale-lease-state
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -5442,6 +5512,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - lock_expired
@@ -5761,6 +5832,12 @@ paths:
       - task_id
       - workspace_id
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -6075,6 +6152,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-retry-projection-watermark-and-provider-uncertainty
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -6108,6 +6186,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - provider_unavailable
@@ -6322,6 +6401,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-transition-evidence-timestamp-and-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -6355,6 +6435,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -6798,6 +6879,12 @@ paths:
       - task_id
       - workspace_id
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -7389,6 +7476,12 @@ paths:
       - task_id
       - workspace_id
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -7915,6 +8008,12 @@ paths:
       - task_id
       - workspace_id
       x-hexalith-idempotency-ttl-tier: mutation
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -8399,6 +8498,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -8439,6 +8539,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - path_validation_failed
@@ -8449,7 +8550,6 @@ paths:
       - projection_stale
       - projection_unavailable
       - file_policy_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -8897,6 +8997,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -8937,6 +9038,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - path_validation_failed
@@ -8947,7 +9049,6 @@ paths:
       - projection_stale
       - projection_unavailable
       - file_policy_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -9409,6 +9510,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -9449,6 +9551,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - path_validation_failed
@@ -9459,7 +9562,6 @@ paths:
       - projection_stale
       - projection_unavailable
       - file_policy_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -9917,6 +10019,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-eventually-consistent-search-index-watermark-and-non-authoritative-hydration
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-query-timeout-ms: 2000
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
@@ -9955,13 +10058,13 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - input_limit_exceeded
       - response_limit_exceeded
       - query_timeout
       - read_model_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -10233,6 +10336,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-eventually-consistent-bridge-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -10269,10 +10373,10 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -10646,6 +10750,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -10686,6 +10791,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - path_validation_failed
@@ -10696,7 +10802,6 @@ paths:
       - projection_stale
       - projection_unavailable
       - file_policy_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -11198,6 +11303,7 @@ paths:
       x-hexalith-read-consistency:
         class: snapshot_per_task
         freshnessBehavior: reports-workspace-snapshot-watermark-and-projection-lag
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -11238,6 +11344,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - path_validation_failed
@@ -11249,7 +11356,6 @@ paths:
       - projection_unavailable
       - range_unsatisfiable
       - file_policy_unavailable
-      - validation_error
       - internal_error
       x-hexalith-audit-metadata-keys:
       - name: folder_id
@@ -11684,6 +11790,12 @@ paths:
       - task_id
       - workspace_id
       x-hexalith-idempotency-ttl-tier: commit
+      x-hexalith-idempotency-behavior:
+        newKey: execute_once
+        liveEquivalent: replay_same_logical_result
+        liveDifferent: idempotency_conflict
+        expiredEquivalent: idempotency_key_expired
+        expiredDifferent: idempotency_key_expired
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -12040,6 +12152,7 @@ paths:
       x-hexalith-read-consistency:
         class: read_your_writes
         freshnessBehavior: reports-accepted-command-state-projected-state-projection-watermark-and-projection-lag
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -12077,6 +12190,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -12283,6 +12397,7 @@ paths:
       x-hexalith-read-consistency:
         class: read_your_writes
         freshnessBehavior: reports-cleanup-status-reason-retryability-projection-watermark-and-observation-timestamps
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -12322,6 +12437,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -12533,6 +12649,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-task-projection-watermark-and-terminal-state
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -12566,6 +12683,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: task.folderId == route.folderId
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -12766,6 +12884,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-commit-evidence-projection-watermark-redaction-and-provider-reference
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -12800,6 +12919,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -13005,6 +13125,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-provider-outcome-class-retry-eligibility-retry-after-and-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -13039,6 +13160,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - provider_failure_known
@@ -13251,6 +13373,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-reconciliation-state-final-evidence-and-projection-watermark
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -13285,6 +13408,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - reconciliation_required
@@ -13540,6 +13664,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-audit-projection-watermark-retention-class-and-page-truncation
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -13571,6 +13696,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -13818,6 +13944,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-audit-record-projection-watermark-and-redaction-state
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -13849,6 +13976,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -14100,6 +14228,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-timeline-projection-watermark-retention-class-and-page-truncation
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -14131,6 +14260,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -14369,6 +14499,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-timeline-entry-projection-watermark-redaction-and-state-transition
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -14400,6 +14531,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -14611,6 +14743,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-readiness-projection-watermark-and-diagnostic-audience
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -14643,6 +14776,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -14853,6 +14987,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-lock-diagnostic-projection-watermark-and-disposition
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -14887,6 +15022,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -15101,6 +15237,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-dirty-state-projection-watermark-changed-path-digest-and-disposition
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -15133,6 +15270,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -15348,6 +15486,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-failed-operation-projection-watermark-retryability-and-escalation-posture
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -15380,6 +15519,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -15596,6 +15736,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-provider-status-projection-watermark-capability-reference-and-redaction
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -15629,6 +15770,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -15845,6 +15987,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-sync-state-projection-watermark-provider-outcome-and-projection-availability
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -15879,6 +16022,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -16093,6 +16237,7 @@ paths:
       x-hexalith-read-consistency:
         class: eventually_consistent
         freshnessBehavior: reports-projection-watermark-age-stale-unavailable-reason-and-reference-pending-c5-target
+      x-hexalith-read-idempotency-key: idempotency_key_not_allowed
       x-hexalith-correlation:
         correlationHeader: X-Correlation-Id
         taskHeader: X-Hexalith-Task-Id
@@ -16124,6 +16269,7 @@ paths:
         protectedLookupAfterAuthorization: true
         taskBinding: not-applicable
       x-hexalith-canonical-error-categories:
+      - validation_error
       - authentication_failure
       - tenant_access_denied
       - read_model_unavailable
@@ -16221,6 +16367,12 @@ x-hexalith-idempotency-equivalence:
 x-hexalith-idempotency-ttl-tier:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-ttl-tier
   foundationUse: Only mutation and commit tiers are valid; C3 commit duration remains approval-bound.
+x-hexalith-idempotency-behavior:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-behavior
+  foundationUse: Every mutation declares five durable admission behavior cells.
+x-hexalith-read-idempotency-key:
+  vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-read-idempotency-key
+  foundationUse: Every read rejects a supplied key before source execution.
 x-hexalith-correlation:
   vocabularyRef: ./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-correlation
   foundationUse: Correlation and task identity flow through REST, SDK, CLI, MCP, EventStore envelopes, audit, logs, and traces.

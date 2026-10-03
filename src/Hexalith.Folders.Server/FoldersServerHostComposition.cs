@@ -80,6 +80,11 @@ public static class FoldersServerHostComposition
             }
         }
 
+        if (mode != FoldersApiRoutingMode.V2Only)
+        {
+            app.UseHistoricalMutationAuthorization();
+        }
+
         app.UseAuthorization();
         app.MapSubscribeHandler();
         app.MapFoldersServerEndpoints();

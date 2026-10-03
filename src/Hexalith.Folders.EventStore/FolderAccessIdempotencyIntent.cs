@@ -16,12 +16,17 @@ internal static class FolderAccessIdempotencyIntent
         string? action = null;
         if (root.TryGetProperty("operations", out JsonElement operations)
             && operations.ValueKind == JsonValueKind.Array
-            && operations.GetArrayLength() > 0)
+            && operations.GetArrayLength() == 1
+            && operations[0].ValueKind == JsonValueKind.Object)
         {
             JsonElement first = operations[0];
             principalKind = FoldersCanonicalIntentBuilder.ReadString(first, "principalKind");
             principalId = FoldersCanonicalIntentBuilder.ReadString(first, "principalId");
             action = FoldersCanonicalIntentBuilder.ReadString(first, "action");
+        }
+        else
+        {
+            throw new JsonException("Folder access canonical intent requires exactly one operation.");
         }
 
         return FoldersCanonicalIntentBuilder.Create(

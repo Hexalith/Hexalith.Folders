@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -12,9 +13,39 @@ internal static class FoldersCanonicalIntentBuilder
 {
     public const string AdapterId = "hexalith-folders";
 
-    public const string PolicyVersion = "folders-contract-spine-v1";
+    public const string PolicyVersion = "folders-contract-spine-v2";
 
     public const int DescriptorVersion = 1;
+
+    private static readonly IReadOnlySet<string> CanonicalSetArrayPaths = new HashSet<string>(StringComparer.Ordinal)
+    {
+        "branchRefPolicy.allowedRefPatterns",
+        "branchRefPolicy.protectedRefPatterns",
+        "auditMetadataKeys",
+    };
+
+    // Domain payload fields are the semantic authority. In particular, file transport
+    // evidence can differ between retries of the same file mutation.
+    private static readonly IReadOnlySet<string> SemanticPayloadPaths = new HashSet<string>(StringComparer.Ordinal)
+    {
+        "requestSchemaVersion", "archiveReasonCode", "folderId", "parentFolderId",
+        "folderMetadata.displayName", "folderMetadata.metadataClass",
+        "operations.principalKind", "operations.principalId", "operations.action",
+        "providerBindingRef", "providerFamilyRef", "capabilityProfileRef",
+        "nonSecretCredentialReference", "repositoryBindingId", "repositoryProfileRef",
+        "credentialScopeClass", "externalRepositoryRef",
+        "branchRefPolicy.requestSchemaVersion", "branchRefPolicy.repositoryBindingId",
+        "branchRefPolicy.policyRef", "branchRefPolicy.defaultRef",
+        "branchRefPolicy.allowedRefPatterns", "branchRefPolicy.protectedRefPatterns",
+        "workspaceId", "branchRefPolicyRef", "workspacePolicyRef", "taskId",
+        "lockIntent", "requestedLeaseSeconds", "lockId", "lockOwnershipProof",
+        "releaseReasonCode", "operationId", "fileOperationKind",
+        "pathMetadata.normalizedPath", "pathMetadata.displayName",
+        "pathMetadata.pathPolicyClass", "pathMetadata.unicodeNormalization",
+        "contentHashReference", "byteLength", "mediaType", "branchRefTarget",
+        "changedPathMetadataDigest", "authorMetadataReference",
+        "commitMessageClassification", "auditMetadataKeys",
+    };
 
     public static IdempotencyCanonicalIntent Create(
         IdempotencyIntentCommand command,
@@ -48,7 +79,7 @@ internal static class FoldersCanonicalIntentBuilder
         return new IdempotencyCanonicalIntent(
             $"{command.Tenant}/{command.Domain}/{command.AggregateId}",
             stream.ToArray(),
-            SemanticOptions: null,
+            SemanticOptions: CanonicalPayloadGuard(command),
             PolicyVersion,
             delegatedTaskScope,
             credentialScope);
@@ -57,7 +88,22 @@ internal static class FoldersCanonicalIntentBuilder
     public static JsonDocument ParsePayload(IdempotencyIntentCommand command)
     {
         ArgumentNullException.ThrowIfNull(command);
-        return JsonDocument.Parse(command.Payload);
+        JsonDocument document = JsonDocument.Parse(command.Payload);
+        try
+        {
+            if (document.RootElement.ValueKind != JsonValueKind.Object)
+            {
+                throw new JsonException("Canonical intent requires an object payload.");
+            }
+
+            ValidateUniqueProperties(document.RootElement);
+            return document;
+        }
+        catch
+        {
+            document.Dispose();
+            throw;
+        }
     }
 
     public static string? ReadString(JsonElement root, params string[] path)
@@ -81,19 +127,19 @@ internal static class FoldersCanonicalIntentBuilder
     public static string? ReadTaskScope(IdempotencyIntentCommand command, JsonElement root)
     {
         string? fromPayload = ReadString(root, "taskId");
-        if (!string.IsNullOrWhiteSpace(fromPayload))
+        if (string.IsNullOrWhiteSpace(fromPayload))
         {
-            return fromPayload;
+            throw new JsonException("Canonical intent requires a payload task scope.");
         }
 
         if (command.Extensions is not null
             && command.Extensions.TryGetValue("taskId", out string? fromExtension)
-            && !string.IsNullOrWhiteSpace(fromExtension))
+            && !string.Equals(fromPayload, fromExtension, StringComparison.Ordinal))
         {
-            return fromExtension;
+            throw new JsonException("Envelope task scope differs from the command payload.");
         }
 
-        return null;
+        return fromPayload;
     }
 
     public static string? ReadCanonicalObject(JsonElement root, params string[] path)
@@ -145,14 +191,23 @@ internal static class FoldersCanonicalIntentBuilder
         List<string> values = [];
         foreach (JsonElement item in current.EnumerateArray())
         {
-            values.Add(item.ValueKind == JsonValueKind.String ? item.GetString() ?? string.Empty : item.GetRawText());
+            using MemoryStream stream = new();
+            using (Utf8JsonWriter writer = new(stream, new JsonWriterOptions { Indented = false }))
+            {
+                WriteCanonicalValue(writer, item);
+            }
+
+            values.Add(Encoding.UTF8.GetString(stream.ToArray()));
         }
 
         values.Sort(StringComparer.Ordinal);
-        return string.Join('\n', values);
+        return $"[{string.Join(',', values)}]";
     }
 
     private static void WriteCanonicalValue(Utf8JsonWriter writer, JsonElement element)
+        => WriteCanonicalValue(writer, element, sortArrays: false, path: string.Empty);
+
+    private static void WriteCanonicalValue(Utf8JsonWriter writer, JsonElement element, bool sortArrays, string path)
     {
         switch (element.ValueKind)
         {
@@ -161,16 +216,42 @@ internal static class FoldersCanonicalIntentBuilder
                 foreach (JsonProperty property in element.EnumerateObject().OrderBy(static item => item.Name, StringComparer.Ordinal))
                 {
                     writer.WritePropertyName(property.Name);
-                    WriteCanonicalValue(writer, property.Value);
+                    WriteCanonicalValue(
+                        writer,
+                        property.Value,
+                        sortArrays,
+                        path.Length == 0 ? property.Name : $"{path}.{property.Name}");
                 }
 
                 writer.WriteEndObject();
                 break;
             case JsonValueKind.Array:
                 writer.WriteStartArray();
-                foreach (JsonElement item in element.EnumerateArray())
+                if (sortArrays && CanonicalSetArrayPaths.Contains(path))
                 {
-                    WriteCanonicalValue(writer, item);
+                    List<string> items = [];
+                    foreach (JsonElement item in element.EnumerateArray())
+                    {
+                        using MemoryStream itemStream = new();
+                        using (Utf8JsonWriter itemWriter = new(itemStream))
+                        {
+                            WriteCanonicalValue(itemWriter, item, sortArrays: true, path: path);
+                        }
+
+                        items.Add(Encoding.UTF8.GetString(itemStream.ToArray()));
+                    }
+
+                    foreach (string item in items.Order(StringComparer.Ordinal))
+                    {
+                        writer.WriteRawValue(item, skipInputValidation: false);
+                    }
+                }
+                else
+                {
+                    foreach (JsonElement item in element.EnumerateArray())
+                    {
+                        WriteCanonicalValue(writer, item, sortArrays, path);
+                    }
                 }
 
                 writer.WriteEndArray();
@@ -183,9 +264,13 @@ internal static class FoldersCanonicalIntentBuilder
                 {
                     writer.WriteNumberValue(integer);
                 }
+                else if (element.TryGetDecimal(out decimal precise))
+                {
+                    writer.WriteNumberValue(precise);
+                }
                 else
                 {
-                    writer.WriteNumberValue(element.GetDouble());
+                    throw new JsonException("Canonical intent contains an unsupported numeric value.");
                 }
 
                 break;
@@ -201,6 +286,103 @@ internal static class FoldersCanonicalIntentBuilder
             default:
                 element.WriteTo(writer);
                 break;
+        }
+    }
+
+    private static IReadOnlyDictionary<string, string> CanonicalPayloadGuard(IdempotencyIntentCommand command)
+    {
+        using JsonDocument document = ParsePayload(command);
+        using MemoryStream stream = new();
+        using (Utf8JsonWriter writer = new(stream))
+        {
+            WriteSemanticValue(writer, document.RootElement, path: string.Empty);
+        }
+
+        return new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["semantic_payload_sha256"] = Convert.ToHexStringLower(SHA256.HashData(stream.ToArray())),
+        };
+    }
+
+    private static void WriteSemanticValue(Utf8JsonWriter writer, JsonElement element, string path)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            writer.WriteStartObject();
+            foreach (JsonProperty property in element.EnumerateObject().OrderBy(static item => item.Name, StringComparer.Ordinal))
+            {
+                string childPath = path.Length == 0 ? property.Name : $"{path}.{property.Name}";
+                if (!SemanticPayloadPaths.Contains(childPath)
+                    && !SemanticPayloadPaths.Any(allowed => allowed.StartsWith($"{childPath}.", StringComparison.Ordinal)))
+                {
+                    continue;
+                }
+
+                writer.WritePropertyName(property.Name);
+                WriteSemanticValue(writer, property.Value, childPath);
+            }
+
+            writer.WriteEndObject();
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            writer.WriteStartArray();
+            if (CanonicalSetArrayPaths.Contains(path))
+            {
+                List<string> items = [];
+                foreach (JsonElement item in element.EnumerateArray())
+                {
+                    using MemoryStream itemStream = new();
+                    using (Utf8JsonWriter itemWriter = new(itemStream))
+                    {
+                        WriteSemanticValue(itemWriter, item, path);
+                    }
+
+                    items.Add(Encoding.UTF8.GetString(itemStream.ToArray()));
+                }
+
+                foreach (string item in items.Order(StringComparer.Ordinal))
+                {
+                    writer.WriteRawValue(item, skipInputValidation: false);
+                }
+            }
+            else
+            {
+                foreach (JsonElement item in element.EnumerateArray())
+                {
+                    WriteSemanticValue(writer, item, path);
+                }
+            }
+
+            writer.WriteEndArray();
+        }
+        else
+        {
+            WriteCanonicalValue(writer, element);
+        }
+    }
+
+    private static void ValidateUniqueProperties(JsonElement element)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            HashSet<string> names = new(StringComparer.OrdinalIgnoreCase);
+            foreach (JsonProperty property in element.EnumerateObject())
+            {
+                if (!names.Add(property.Name))
+                {
+                    throw new JsonException("Canonical intent contains duplicate JSON properties.");
+                }
+
+                ValidateUniqueProperties(property.Value);
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (JsonElement item in element.EnumerateArray())
+            {
+                ValidateUniqueProperties(item);
+            }
         }
     }
 }

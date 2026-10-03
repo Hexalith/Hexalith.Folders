@@ -373,6 +373,9 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
             string[] statusCodes = ReadResponseStatusCodes(operation, operationId);
             string? readConsistency = ReadConsistencyClass(operation);
             bool hasIdempotencyKey = HasIdempotencyKey(parameters, operation);
+            string? idempotencyTier = ReadOptionalScalar(operation, "x-hexalith-idempotency-ttl-tier");
+            IReadOnlyDictionary<string, string> idempotencyBehavior = ReadIdempotencyBehavior(operation);
+            string? readKeyRejection = ReadOptionalScalar(operation, "x-hexalith-read-idempotency-key");
             string correlationHeader = ReadNestedScalar(operation, "x-hexalith-correlation", "correlationHeader") ?? "X-Correlation-Id";
             AuthorizationMetadata? authorization = ReadAuthorization(operation);
             // Treat `x-hexalith-parity-dimensions: null` (or an explicit empty mapping) as undeclared so
@@ -387,6 +390,9 @@ static IReadOnlyList<OperationModel> EnumerateOperations(YamlMappingNode root, L
                 Parameters: parameters,
                 HasIdempotencyKey: hasIdempotencyKey,
                 IdempotencyFields: idempotencyFields,
+                IdempotencyTier: idempotencyTier,
+                IdempotencyBehavior: idempotencyBehavior,
+                ReadKeyRejection: readKeyRejection,
                 ReadConsistencyClass: readConsistency,
                 StatusCodes: statusCodes,
                 ErrorCategories: errorCategories,
@@ -497,6 +503,34 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
             {
                 throw new InvalidOperationException($"prerequisite-drift: operation {operation.OperationId} idempotency fields are not ordinal-sorted.");
             }
+
+            if (operation.IdempotencyTier is not ("mutation" or "commit"))
+            {
+                throw new InvalidOperationException($"prerequisite-drift: mutating operation {operation.OperationId} lacks a fixed idempotency retention tier.");
+            }
+
+            Dictionary<string, string> expectedBehavior = new(StringComparer.Ordinal)
+            {
+                ["newKey"] = "execute_once",
+                ["liveEquivalent"] = "replay_same_logical_result",
+                ["liveDifferent"] = "idempotency_conflict",
+                ["expiredEquivalent"] = "idempotency_key_expired",
+                ["expiredDifferent"] = "idempotency_key_expired",
+            };
+            if (operation.IdempotencyBehavior.Count != expectedBehavior.Count
+                || expectedBehavior.Any(cell => !operation.IdempotencyBehavior.TryGetValue(cell.Key, out string? actual)
+                    || !string.Equals(actual, cell.Value, StringComparison.Ordinal)))
+            {
+                throw new InvalidOperationException($"prerequisite-drift: mutating operation {operation.OperationId} lacks the complete five-cell idempotency behavior matrix.");
+            }
+
+            if (!operation.ErrorCategories.Contains("idempotency_conflict", StringComparer.Ordinal)
+                || !operation.ErrorCategories.Contains("idempotency_key_expired", StringComparer.Ordinal)
+                || !operation.StatusCodes.Contains("409", StringComparer.Ordinal)
+                || operation.ReadKeyRejection is not null)
+            {
+                throw new InvalidOperationException($"prerequisite-drift: mutating operation {operation.OperationId} lacks canonical conflict/expiry errors or accepts read-key metadata.");
+            }
         }
         else
         {
@@ -508,6 +542,15 @@ static void ValidateOperationInventory(IReadOnlyList<OperationModel> operations,
             if (string.IsNullOrWhiteSpace(operation.ReadConsistencyClass))
             {
                 throw new InvalidOperationException($"prerequisite-drift: non-mutating operation {operation.OperationId} lacks x-hexalith-read-consistency.");
+            }
+
+            if (operation.IdempotencyTier is not null
+                || operation.IdempotencyBehavior.Count > 0
+                || operation.ReadKeyRejection != "idempotency_key_not_allowed"
+                || !operation.ErrorCategories.Contains("validation_error", StringComparer.Ordinal)
+                || !operation.StatusCodes.Contains("400", StringComparer.Ordinal))
+            {
+                throw new InvalidOperationException($"prerequisite-drift: non-mutating operation {operation.OperationId} lacks canonical read-key rejection.");
             }
         }
 
@@ -785,6 +828,16 @@ static void RenderRow(StringBuilder builder, OperationModel operation)
     builder.Append("- operation_id: ").Append(Quote(operation.OperationId)).Append('\n');
     builder.Append("  operation_family: ").Append(Quote(family)).Append('\n');
     builder.Append("  read_consistency_class: ").Append(Quote(operation.IsMutatingCommand ? "not_applicable" : operation.ReadConsistencyClass!)).Append('\n');
+    builder.Append("  idempotency_contract:\n");
+    builder.Append("    retention_tier: ").Append(Quote(operation.IdempotencyTier ?? "not_applicable")).Append('\n');
+    foreach (string cell in new[] { "newKey", "liveEquivalent", "liveDifferent", "expiredEquivalent", "expiredDifferent" })
+    {
+        builder.Append("    ").Append(cell).Append(": ")
+            .Append(Quote(operation.IsMutatingCommand ? operation.IdempotencyBehavior[cell] : "not_applicable"))
+            .Append('\n');
+    }
+
+    builder.Append("    read_key: ").Append(Quote(operation.ReadKeyRejection ?? "not_applicable")).Append('\n');
     builder.Append("  transport_parity:\n");
     builder.Append("    auth_outcome_class: ").Append(Quote(AuthOutcomeClass(operation))).Append('\n');
     builder.Append("    error_code_set:\n");
@@ -1057,8 +1110,26 @@ static string StripParameterReferenceSuffix(string referenceFragment)
 }
 
 static bool HasIdempotencyKey(IReadOnlyList<ParameterModel> parameters, YamlMappingNode operation) =>
-    parameters.Any(p => p.Field == "idempotency_key") ||
-    HasNonEmptyExtension(operation, "x-hexalith-idempotency-key");
+    parameters.Any(p => p.Field == "idempotency_key")
+    && string.Equals(ReadNestedScalar(operation, "x-hexalith-idempotency-key", "required"), "true", StringComparison.Ordinal);
+
+static string? ReadOptionalScalar(YamlMappingNode mapping, string key)
+    => mapping.Children.TryGetValue(new YamlScalarNode(key), out YamlNode? node)
+        ? node.AsScalar(key).Value
+        : null;
+
+static IReadOnlyDictionary<string, string> ReadIdempotencyBehavior(YamlMappingNode operation)
+{
+    if (!operation.Children.TryGetValue(new YamlScalarNode("x-hexalith-idempotency-behavior"), out YamlNode? node))
+    {
+        return new Dictionary<string, string>(StringComparer.Ordinal);
+    }
+
+    return node.AsMapping("x-hexalith-idempotency-behavior").Children.ToDictionary(
+        static pair => pair.Key.AsScalar("idempotency behavior cell").Value ?? string.Empty,
+        static pair => pair.Value.AsScalar("idempotency behavior outcome").Value ?? string.Empty,
+        StringComparer.Ordinal);
+}
 
 static bool HasNonEmptyExtension(YamlMappingNode operation, string key)
 {
@@ -1524,6 +1595,9 @@ internal sealed record OperationModel(
     IReadOnlyList<ParameterModel> Parameters,
     bool HasIdempotencyKey,
     IReadOnlyList<string> IdempotencyFields,
+    string? IdempotencyTier,
+    IReadOnlyDictionary<string, string> IdempotencyBehavior,
+    string? ReadKeyRejection,
     string? ReadConsistencyClass,
     IReadOnlyList<string> StatusCodes,
     IReadOnlyList<string> ErrorCategories,
@@ -1534,7 +1608,7 @@ internal sealed record OperationModel(
 {
     public string Identity => Method + " " + Path + " " + OperationId;
 
-    public bool IsMutatingCommand => IdempotencyFields.Count > 0;
+    public bool IsMutatingCommand => ReadConsistencyClass is null;
 
     public string OperationFamily
     {

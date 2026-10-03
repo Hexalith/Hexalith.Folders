@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Net;
 
 using Hexalith.Folders.Observability;
+using Hexalith.Folders.Parity.Testing;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 
@@ -194,6 +195,47 @@ public sealed class FolderAuditEndpointFilterTests
         observation.OperationId.ShouldBe("operation-a");
         observation.CorrelationId.ShouldBe("correlation-a");
         observation.TaskId.ShouldBe("task-a");
+    }
+
+    [Fact]
+    public async Task EveryGeneratedReadShouldRejectAKeyBeforeItsHandlerOrAuditRuns()
+    {
+        ParityRow[] reads = [.. ParityOracle.Rows.Where(static row => row.OperationFamily != "mutating_command")];
+        reads.ShouldNotBeEmpty();
+        RecordingTelemetryEmitter telemetry = new();
+        int handlerCalls = 0;
+        await using WebApplication app = BuildApp(telemetry, app =>
+        {
+            foreach (ParityRow read in reads)
+            {
+                app.MapGet($"/read/{read.OperationId}", () =>
+                    {
+                        handlerCalls++;
+                        return Results.Ok();
+                    })
+                    .WithName(read.OperationId)
+                    .AddEndpointFilter<FolderAuditEndpointFilter>();
+            }
+        });
+
+        foreach (ParityRow read in reads)
+        {
+            using HttpRequestMessage request = new(HttpMethod.Get, $"/read/{read.OperationId}");
+            request.Headers.Add("Idempotency-Key", "key-a");
+            request.Headers.Add("X-Correlation-Id", "correlation-a");
+            using HttpResponseMessage response = await app.GetTestClient()
+                .SendAsync(request, TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, read.OperationId);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)
+                .ConfigureAwait(true);
+            body.ShouldContain("\"code\":\"idempotency_key_not_allowed\"");
+            body.ShouldContain("\"correlationId\":\"correlation-a\"");
+        }
+
+        handlerCalls.ShouldBe(0);
+        telemetry.Count.ShouldBe(0);
     }
 
     private static WebApplication BuildApp(

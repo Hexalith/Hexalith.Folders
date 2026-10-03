@@ -75,11 +75,31 @@ internal static class Pd10ProtectedOperationCatalog
         string path,
         out Pd10ProtectedOperationDescriptor? descriptor,
         out IReadOnlyDictionary<string, string> routeValues)
+        => TryResolveCore(method, path, historical: false, out descriptor, out routeValues);
+
+    /// <summary>Resolves a historical identity before a direct v1 mutation can reach gateway admission.</summary>
+    internal static bool TryResolveHistorical(
+        string method,
+        string path,
+        out Pd10ProtectedOperationDescriptor? descriptor,
+        out IReadOnlyDictionary<string, string> routeValues)
+        => TryResolveCore(method, path, historical: true, out descriptor, out routeValues);
+
+    private static bool TryResolveCore(
+        string method,
+        string path,
+        bool historical,
+        out Pd10ProtectedOperationDescriptor? descriptor,
+        out IReadOnlyDictionary<string, string> routeValues)
     {
         foreach (Pd10ProtectedOperationDescriptor candidate in AllDescriptors)
         {
             if (string.Equals(candidate.Method, method, StringComparison.OrdinalIgnoreCase)
-                && TryMatch(candidate.CandidateRoute, path, out Dictionary<string, string>? values))
+                && TryMatch(
+                    historical ? candidate.HistoricalRoute : candidate.CandidateRoute,
+                    path,
+                    historical,
+                    out Dictionary<string, string>? values))
             {
                 descriptor = candidate;
                 routeValues = values;
@@ -165,7 +185,7 @@ internal static class Pd10ProtectedOperationCatalog
             _ => throw new InvalidOperationException($"No historical action is bound for operation '{operationId}'."),
         };
 
-    private static bool TryMatch(string template, string path, out Dictionary<string, string> values)
+    private static bool TryMatch(string template, string path, bool historical, out Dictionary<string, string> values)
     {
         values = new(StringComparer.Ordinal);
         string[] templateSegments = template.Split('/');
@@ -189,7 +209,9 @@ internal static class Pd10ProtectedOperationCatalog
                 try
                 {
                     string routeValue = Uri.UnescapeDataString(pathSegment);
-                    if (!Pd10OpaqueIdentifier.IsValid(routeValue))
+                    if (!(historical
+                        ? FolderCanonicalSegmentIdentifier.IsValid(routeValue)
+                        : Pd10OpaqueIdentifier.IsValid(routeValue)))
                     {
                         return false;
                     }
