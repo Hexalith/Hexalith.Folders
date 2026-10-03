@@ -85,6 +85,7 @@ src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs
 src/Hexalith.Folders.Server/FoldersApiRouting.cs
 src/Hexalith.Folders.Server/FoldersApiRoutingMode.cs
 src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs
+src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs
 src/Hexalith.Folders.Server/FoldersServerHostComposition.cs
 src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
 src/Hexalith.Folders.Server/Pd10HistoricalRouteRetirement.cs

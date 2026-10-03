@@ -40,6 +40,8 @@ public static class FoldersDomainServiceEndpoints
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        AllowDuplicateProperties = false,
+        Converters = { new FoldersRequestJsonElementConverter() },
     };
 
     // Gateway payload: outbound JSON forwarded to the EventStore gateway. Kept separate from

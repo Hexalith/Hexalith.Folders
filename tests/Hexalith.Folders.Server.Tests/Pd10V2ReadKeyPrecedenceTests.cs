@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+using Hexalith.Folders.Parity.Testing;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authorization;
 
@@ -39,7 +40,11 @@ public sealed class Pd10V2ReadKeyPrecedenceTests
         Pd10ProtectedOperationDescriptor[] reads = Pd10ProtectedOperationCatalog.Descriptors
             .Where(descriptor => Pd10V2CandidateCompatibilitySeam.IsGeneratedReadOperation(descriptor.OperationId))
             .ToArray();
-        reads.Length.ShouldBe(35);
+        reads.Select(static descriptor => descriptor.OperationId).Order(StringComparer.Ordinal).ShouldBe(
+            ParityOracle.Rows
+                .Where(static row => row.IsNonMutating)
+                .Select(static row => row.OperationId)
+                .Order(StringComparer.Ordinal));
 
         foreach (Pd10ProtectedOperationDescriptor descriptor in reads)
         {

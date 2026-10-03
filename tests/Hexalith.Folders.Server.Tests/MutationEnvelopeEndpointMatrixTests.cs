@@ -1,10 +1,16 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Parity.Testing;
+using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Server.Authentication;
 
 using Hexalith.Folders.Testing;
@@ -24,7 +30,10 @@ public sealed class MutationEnvelopeEndpointMatrixTests
     public static TheoryData<string> MutatingRoutes()
         => new()
         {
+            "create_folder",
             "archive_folder",
+            "update_folder_acl_entry",
+            "configure_provider_binding",
             "create_repository_backed_folder",
             "bind_repository",
             "configure_branch_ref_policy",
@@ -36,6 +45,131 @@ public sealed class MutationEnvelopeEndpointMatrixTests
             "remove_workspace_file",
             "commit_workspace",
         };
+
+    [Fact]
+    public void MutationFixturesShouldCoverTheGeneratedMutationInventory()
+    {
+        List<string> operationIds = [];
+        foreach (TheoryDataRow<string> row in MutatingRoutes())
+        {
+            using HttpRequestMessage request = CreateValidRequest(row.Data);
+            Pd10ProtectedOperationCatalog.TryResolveHistorical(
+                request.Method.Method,
+                request.RequestUri!.OriginalString,
+                out Pd10ProtectedOperationDescriptor? descriptor,
+                out _).ShouldBeTrue();
+            operationIds.Add(descriptor!.OperationId);
+        }
+
+        operationIds.Order(StringComparer.Ordinal).ShouldBe(
+            ParityOracle.Rows
+                .Where(static row => row.IsMutating)
+                .Select(static row => row.OperationId)
+                .Order(StringComparer.Ordinal));
+    }
+
+    [Theory]
+    [MemberData(nameof(MutatingRoutes))]
+    public async Task MutatingEndpointShouldRejectDuplicateJsonPropertiesBeforeGatewayAdmission(string routeName)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage valid = CreateValidRequest(routeName);
+        string body = await valid.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using HttpResponseMessage accepted = await client.SendAsync(valid, TestContext.Current.CancellationToken);
+        accepted.StatusCode.ShouldBe(HttpStatusCode.Accepted, routeName);
+        gateway.Requests.ShouldHaveSingleItem();
+
+        using JsonDocument document = JsonDocument.Parse(body);
+        foreach (JsonProperty property in ObjectProperties(document.RootElement).DistinctBy(static property => property.Name))
+        {
+            string propertyName = property.Name;
+            foreach (string duplicateName in new[] { propertyName, propertyName.ToUpperInvariant() })
+            {
+                using HttpRequestMessage ambiguous = CreateValidRequest(routeName);
+                string propertyToken = JsonSerializer.Serialize(propertyName) + ":";
+                // Keep both values valid so rejection proves duplicate detection rather than a type error.
+                string duplicateToken = JsonSerializer.Serialize(duplicateName) + ":" + property.Value.GetRawText() + "," + propertyToken;
+                ambiguous.Content = new StringContent(
+                    body.Replace(propertyToken, duplicateToken, StringComparison.Ordinal),
+                    Encoding.UTF8,
+                    "application/json");
+                using HttpResponseMessage response = await client.SendAsync(ambiguous, TestContext.Current.CancellationToken);
+                string problem = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+                response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, $"{routeName}:{duplicateName}:{problem}");
+                problem.ShouldContain("\"category\":\"validation_error\"");
+                problem.ShouldContain("\"code\":\"validation_error\"");
+                gateway.Requests.Count.ShouldBe(1, $"{routeName}:{duplicateName}");
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task FileMutationShouldRejectDuplicatePropertiesInsideUntypedTransportArrays(bool streamTransport)
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage valid = CreateValidRequest("add_workspace_file");
+        JsonObject body = JsonNode.Parse(
+            await valid.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken))!.AsObject();
+        string transportProperty = streamTransport ? "streamDescriptor" : "inlineContent";
+        if (streamTransport)
+        {
+            body["transportOperation"] = "PutFileStream";
+            body["byteLength"] = 262145;
+            body.Remove("inlineContent");
+            body[transportProperty] = JsonSerializer.SerializeToNode(new
+            {
+                mediaType = "text/plain",
+                declaredLength = 262145,
+                observedLength = 262145,
+                stagingReference = "staging-a",
+                observedContentHashReference = "hashref-a",
+                uploadMode = "request_body_stream",
+            });
+        }
+
+        // Transport objects remain untyped; duplicate detection must inspect even
+        // additional metadata that domain-semantic validation does not consume.
+        body[transportProperty]!["additionalEvidence"] = new JsonArray(new JsonObject
+        {
+            ["classification"] = "metadata_only",
+        });
+        string unambiguousBody = body.ToJsonString();
+        valid.Content = new StringContent(unambiguousBody, Encoding.UTF8, "application/json");
+        using HttpResponseMessage accepted = await client.SendAsync(valid, TestContext.Current.CancellationToken);
+        accepted.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        gateway.Requests.ShouldHaveSingleItem();
+
+        foreach (string duplicateName in new[] { "classification", "CLASSIFICATION" })
+        {
+            using HttpRequestMessage ambiguous = CreateValidRequest("add_workspace_file");
+            ambiguous.Content = new StringContent(
+                unambiguousBody.Replace(
+                    "\"classification\":",
+                    $"\"{duplicateName}\":\"metadata_only\",\"classification\":",
+                    StringComparison.Ordinal),
+                Encoding.UTF8,
+                "application/json");
+            using HttpResponseMessage response = await client.SendAsync(ambiguous, TestContext.Current.CancellationToken);
+            string problem = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, problem);
+            problem.ShouldContain("\"code\":\"validation_error\"");
+            problem.ShouldNotContain("additionalEvidence");
+            problem.ShouldNotContain(duplicateName);
+            gateway.Requests.Count.ShouldBe(1);
+        }
+    }
 
     [Theory]
     [MemberData(nameof(MutatingRoutes))]
@@ -152,12 +286,42 @@ public sealed class MutationEnvelopeEndpointMatrixTests
     {
         HttpRequestMessage request = routeName switch
         {
+            "create_folder" => new(HttpMethod.Post, "/api/v1/folders")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    parentFolderId = "parent-a",
+                    folderMetadata = new { displayName = "My Folder", metadataClass = "tenant_sensitive" },
+                }),
+            },
             "archive_folder" => new(HttpMethod.Post, "/api/v1/folders/folder-a/archive")
             {
                 Content = JsonContent.Create(new
                 {
                     requestSchemaVersion = "v1",
                     archiveReasonCode = "caller_requested",
+                }),
+            },
+            "update_folder_acl_entry" => new(HttpMethod.Put,
+                $"/api/v1/folders/folder-a/acl/{FolderAclContract.DeriveAclEntryId("user", "user-a", "read")}")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    subjectRef = "user:user-a",
+                    permissionLevel = "read",
+                    effect = "grant",
+                }),
+            },
+            "configure_provider_binding" => new(HttpMethod.Put, "/api/v1/provider-bindings/provider-binding-a")
+            {
+                Content = JsonContent.Create(new
+                {
+                    requestSchemaVersion = "v1",
+                    providerFamilyRef = "github",
+                    capabilityProfileRef = "profile-a",
+                    nonSecretCredentialReference = "credential-ref-a",
                 }),
             },
             "create_repository_backed_folder" => new(HttpMethod.Post, "/api/v1/folders/repository-backed")
@@ -278,6 +442,31 @@ public sealed class MutationEnvelopeEndpointMatrixTests
 
         AddEnvelopeHeaders(request);
         return request;
+    }
+
+    private static IEnumerable<JsonProperty> ObjectProperties(JsonElement element)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            foreach (JsonProperty property in element.EnumerateObject())
+            {
+                yield return property;
+                foreach (JsonProperty nested in ObjectProperties(property.Value))
+                {
+                    yield return nested;
+                }
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (JsonElement item in element.EnumerateArray())
+            {
+                foreach (JsonProperty nested in ObjectProperties(item))
+                {
+                    yield return nested;
+                }
+            }
+        }
     }
 
     private static object FileMutationBody(string fileOperationKind, string transportOperation)
