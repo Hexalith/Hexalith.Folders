@@ -1548,6 +1548,8 @@ Developers and AI agents can prepare, lock, modify, query, commit, and diagnose 
 
 _**Reconciled production-closure ownership (2026-08-04):** the workspace transition-evidence seam remains safely unavailable until Story 4.18 authors and deploys its EventStore-backed projection. Stories 4.19–4.21 own the durable prepare/lock, mutation/context, commit, conflict, and reconciliation proof. Story 11.10 owns EventStore admission/subscription seam adoption only and owns no product projection. Existing seed-backed and deterministic component evidence is preserved but is not production-completion evidence._
 
+_**Course correction (2026-10-06):** Story 4.23 owns the canonical lock identity and C7 lock timing (AR-CURRENT-15, AR-AUTHZ-04) that Story 4.19 proves. Stories 4.18–4.21 record deployed evidence on the shared Story 11.15 lane rather than a private production-mode fixture._
+
 ### Story 4.1: Implement Folder aggregate state machine with C6 transition matrix
 
 **Requirements:** FR45; AR-SPINE-03
@@ -1844,7 +1846,7 @@ So that lifecycle decisions can be inspected after restart without a seed-only r
 
 **Acceptance Criteria:**
 
-**Given** Stories 12.1–12.2 supply durable ordered events/projection substrate and Story 4.22 supplies the reapproved total guarded lifecycle model
+**Given** Stories 12.1–12.2 supply durable ordered events/projection substrate, Story 4.22 supplies the reapproved total guarded lifecycle model, and Story 11.15 supplies the DCP-capable verification lane
 **When** the deployed Server registers the EventStore-backed transition-evidence projector and replays from an empty checkpoint
 **Then** C6 transitions, task/operation identity, timestamps, retry eligibility, failure/reconciliation metadata, and freshness are rebuilt deterministically and survive host restart
 **And** correct-tenant reads return populated metadata while wrong-tenant, unauthorized, stale, corrupt, and unavailable paths return safe canonical results without existence or sensitive-data leakage
@@ -1860,7 +1862,7 @@ So that workspace ownership survives restart and prevents colliding writers.
 
 **Acceptance Criteria:**
 
-**Given** Stories 4.18, 12.1–12.3, 12.6, and 4.22 provide transition evidence, durable state/content/idempotency, and the reapproved C6 guarded lifecycle
+**Given** Stories 4.18, 12.1–12.3, 12.6, 4.22, and 4.23 provide transition evidence, durable state/content/idempotency, the reapproved C6 guarded lifecycle, and the canonical lock identity with C7 timing, and Story 11.15 supplies the DCP-capable verification lane
 **When** prepare, acquire, inspect, release, expiry, stale, and revocation paths execute through REST → gateway → processor → authorization gate → EventStore/projection
 **Then** the exact lock vocabulary `unlocked`, `locked`, `expired`, `stale`, `revoked` and the canonical tenant + repository + normalized-ref serialization identity are preserved across restart and empty-checkpoint replay
 **And** positive behavior plus wrong-tenant/unauthorized denial, alias collision, equivalent/conflicting replay, known failure, timeout/unknown outcome, expiry boundary, terminal status, retry eligibility, and metadata-only audit are proven without a mocked gateway
@@ -1876,7 +1878,7 @@ So that safe repository work remains correct across restart and every context-qu
 
 **Acceptance Criteria:**
 
-**Given** Stories 4.18, 12.1–12.3, 12.6, 12.7, and 1.17 provide transition evidence, durable state/content/idempotency, the confidential boundary, and v2 authorization; OQ2 file-policy `1.1.0` plus reapproved OQ3 are active; and the caller has current tenant/folder authority
+**Given** Stories 4.18, 12.1–12.3, 12.6, 12.7, and 1.17 provide transition evidence, durable state/content/idempotency, the confidential boundary, and v2 authorization; Story 11.15 supplies the DCP-capable verification lane; OQ2 file-policy `1.1.0` plus reapproved OQ3 are active; and the caller has current tenant/folder authority
 **When** add/change/remove and tree/metadata/range/glob/search behavior runs through the real deployed production path
 **Then** mutation ordering, all-mutation idempotency, lock ownership, path policy, cancellation, content authority, task/projection state, and replay survive restart without duplicate effects
 **And** C4 enforces 100 requested paths, 2,000 tree entries, 500 search/glob results, 262,144 bytes per range, 1,048,576 aggregate bytes, and 2 seconds; each query family proves canonical success, truncation, denial, limit, unavailable, and cancellation semantics independently
@@ -1892,7 +1894,7 @@ So that a task reaches one trustworthy terminal or recovery state without duplic
 
 **Acceptance Criteria:**
 
-**Given** Story 12.4 plus Stories 4.19, 4.20, and 4.22 provide the real Git path, durable lifecycle proof, and governing guarded transition model
+**Given** Story 12.4 plus Stories 4.19, 4.20, and 4.22 provide the real Git path, durable lifecycle proof, and governing guarded transition model, and Story 11.15 supplies the DCP-capable verification lane
 **When** an authorized lock owner commits, retries an equivalent request, submits a conflicting request, encounters a known failure, or receives an ambiguous post-dispatch result
 **Then** exactly one eligible commit occurs, durable commit evidence and terminal task/projection state survive restart, and `unknown_provider_outcome` runs bounded automatic reconciliation before any `reconciliation_required` state
 **And** deployed success, denial, wrong-tenant access, replay/conflict, provider failure, timeout/unknown outcome, reconciliation-budget boundary, metadata-only audit, and sensitive-data exclusion are proven end to end
@@ -1963,6 +1965,77 @@ So that retryable failures, authorization loss, resume, and deletion cannot disc
 - `4.22-C` — Implement the independent recovery and cleanup clocks, legal-hold checks, and resume cancellation.
 - `4.22-D` — Align lifecycle diagrams, UI disposition mapping, and metadata-only transition evidence.
 - `4.22-E` — Add exhaustive guard-branch, retry, stale-boundary, deletion-negative, and digest-conformance tests.
+
+### Story 4.23: Enforce canonical lock identity and C7 lock timing
+
+**Requirements:** FR25, FR27–FR28; NFR7, NFR21; AR-CURRENT-15, AR-AUTHZ-04
+
+As a developer or AI agent holding a workspace lock,
+I want writers serialized on the canonical repository target and my lease governed by the approved C7 timing,
+So that aliased folders cannot write the same remote ref concurrently and no lock outlives its holder's authority.
+
+**Acceptance Criteria:**
+
+**Given** two folders, workspaces, or bindings in one managed tenant resolve to the same canonical provider/repository identity and normalized target ref, directly or through an alias
+**When** a second task acquires a lock or mutates while the first lock instance is `locked`, `expired`, or `stale`
+**Then** it receives the canonical lock-conflict result before any file, provider, repository, or commit effect, with one metadata-only audit record and no takeover
+**And** the serializing identity is managed tenant plus canonical provider/repository identity plus normalized target-ref token; folder, workspace, and task IDs are lock metadata only, and an identical target in another tenant never collides.
+
+**Given** folders on the same target are separate aggregate streams
+**When** the serializing identity is enforced
+**Then** one tenant-scoped durable lock-identity record, written only through EventStore, holds the active instance, owner task, lease, and fencing information across folders, restart, and supported replicas
+**And** lock-instance IDs and ownership proofs may keep instance metadata, but collision is decided only by the serializing identity, never by a folder-scoped lock ID.
+
+**Given** a repository binding
+**When** its serializing identity is derived
+**Then** the binding durably carries the canonical provider/repository identity through a versioned event payload under the Story 12.1 event-evolution rules, and confidential repository or ref values enter the identity only as the Story 12.7 canonical token
+**And** a binding without a durable canonical identity fails closed with a canonical result instead of acquiring a lock under a weaker identity.
+
+**Given** the approved C7 `1.0.0` profile (30-second renewal, 15-second revalidation, 60-second revocation effect, 60-second expired-to-stale) and any tenant override
+**When** the effective profile is resolved
+**Then** an override may only lower a value to a positive whole number of seconds, and a zero, negative, larger, or incomplete override never becomes active
+**And** the effective expired-to-stale threshold is the value Story 4.22's `LockLeaseBecameStale` transition consumes; this story adds no other stale path.
+
+**Given** the owning task holds a `locked` lease
+**When** it calls the v2 `RenewWorkspaceLock` mutation with its task identity, ownership proof, and an idempotency key under fresh authorization
+**Then** renewal is due at `now >= renewalAnchorAt + effective interval`, a successful renewal moves the anchor to its own `effectiveAt` and durably records the new expiry, and expiry takes precedence: no lease is renewed at or after `expiresAt`, and a lease shorter than the effective interval keeps its requested expiry
+**And** a non-owner, wrong-tenant, locator-only, stale-authority, or revoked caller receives the canonical safe result with no lease change.
+
+**Given** renewal is a new Contract Spine operation
+**When** it is added
+**Then** it exists only in the v2 spine, is added after Story 1.17 closes, and is regenerated in lockstep with the server, SDK, previous-spine fingerprints, C13 cells, parity oracle, OQ3 v2 authorization-matrix row, Story 12.6 admission descriptor, and the `Hexalith.McpCli` operation inventory
+**And** it inherits v2 exposure gating: it is unreachable while v2 exposure is unauthorized, with no v1 route, unversioned route, or flag-gated exception.
+
+**Given** a held lock
+**When** 15 seconds have passed since the last successful authorization validation, or a renewal or mutation is requested
+**Then** current tenant, folder ACL, delegated-actor, binding, and credential authority is revalidated, and stale, unavailable, or unknown authority fails closed for renewal and protected work
+**And** after an authoritative revocation the instance is `revoked` no later than `revocationEffectiveAt + 60 seconds`, measured from the upstream timestamp rather than local receipt; later protected work is denied before any side effect, and the instance never reactivates, so recovery creates a new instance under the unchanged identity
+**And** the revocation reaches Story 4.22's authorization-loss branch, so staged work is preserved rather than released or discarded.
+
+**Given** Stories 4.3 and 2.4 are done but never produced the canonical identity or the `revoked` state
+**When** their evidence is read
+**Then** it remains historical component evidence and this story owns the runtime behavior
+**And** Story 4.19 owns the end-to-end deployed prepare/lock lifecycle proof.
+
+**Given** completion is evaluated
+**When** evidence is attached
+**Then** inclusive boundary tests cover the renewal-due, expiry, stale, revalidation, and revocation-SLO instants; alias collision, cross-tenant non-collision, multi-replica identity races, restart, and empty-checkpoint replay are proven against durable state; and renewal and revalidation are proven on the Story 11.15 lane
+**And** audit, telemetry, and diagnostics stay metadata-only, with no ownership proof, raw repository or ref, or confidential cleartext, and NoOp, in-memory, seed, unavailable, safe-empty, mocked-gateway, or fake-only evidence cannot satisfy completion.
+
+**Given** the execution manifest
+**When** Story 4.23 is scheduled
+**Then** it follows Stories 1.17, 4.22, 12.1, 12.2, 12.6, 12.7, and 11.15 plus accepted OQ1 (C7 `1.0.0`) and precedes Story 4.19
+**And** every dependency uses a strictly lower rank unless it is accepted terminal with evidence.
+
+**Execution model:** Story 4.23 owns AR-CURRENT-15 and AR-AUTHZ-04. Each slice is independently reviewable and testable; the parent closes only when every slice and the deployed renewal evidence agree.
+
+**Single-session slices:**
+
+- `4.23-A` — Carry the canonical provider/repository identity on bindings and derive the tenant-keyed serializing token.
+- `4.23-B` — Enforce the durable lock-identity record, alias collision, and fencing across folders and replicas.
+- `4.23-C` — Resolve the effective C7 profile and implement owner-only renewal through the v2 `RenewWorkspaceLock` operation.
+- `4.23-D` — Implement 15-second revalidation and the revocation producer within the 60-second SLO.
+- `4.23-E` — Prove boundary timing, collision, replay, multi-replica, metadata-only, and lane evidence.
 
 ## Epic 5: Cross-Surface Workflow Parity
 

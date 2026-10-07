@@ -48,8 +48,8 @@ context:
 
 ## Code Map
 
-- `_bmad-output/planning-artifacts/planning-story-manifest.yaml`: 4.19 depends on DEC-A8-HOLD and DEC-A7-C6 (both approved) plus 4.18, 4.22, 12.1–12.3, and 12.6. The header has `ordinary_story_execution_authorized: false`. The new lock-semantics story and 11.15 are pending addition by correct-course (decisions 2–3).
-- Lock-semantics gaps owned by the new story, not 4.19: the lock id hashes tenant/folder/workspace/task; `FolderState` keeps only `BranchRefPolicy`, while `CanonicalRepositoryId` exists only on `Providers/Abstractions/ProviderRepositoryBindingResult.cs`; there is no renewal route (only v2 contract prose); and nothing produces `revoked`.
+- `_bmad-output/planning-artifacts/planning-story-manifest.yaml`: 4.19 depends on DEC-A8-HOLD and DEC-A7-C6 (both approved) plus 4.18, 4.22, 4.23, 11.15, 12.1–12.3, and 12.6. The header has `ordinary_story_execution_authorized: false`. Story 4.23 and the 11.15 edge were added by the 2026-10-06 correct-course (decisions 2–3; `sprint-change-proposal-2026-10-06.md`).
+- Lock-semantics gaps owned by Story 4.23, not 4.19: the lock id hashes tenant/folder/workspace/task; `FolderState` keeps only `BranchRefPolicy`, while `CanonicalRepositoryId` exists only on `Providers/Abstractions/ProviderRepositoryBindingResult.cs`; there is no renewal route (only v2 contract prose); and nothing produces `revoked`.
 - `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`: prepare `POST …/preparation` (~213), acquire `POST …/lock` (~232; `exclusive_write`, lease 1–86400 s), release `POST …/lock/release` (~710), inspect `GET …/lock` (~251), retry eligibility (~322).
 - `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs` and `FolderDomainProcessor.cs`: `/process` runs the gate, then `Process{PrepareWorkspace,LockWorkspace,ReleaseWorkspaceLock}Async`. Accepted results still return `PayloadNoOpDomainResult`; 12.1 owns the replacement.
 - `src/Hexalith.Folders.Server/FoldersServerHostComposition.cs:37-44` and `FolderRepositoryStartupAssertion.cs`: the in-memory repository is registered only in Development and Staging, so Production refuses to boot until 12.1.

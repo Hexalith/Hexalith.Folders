@@ -210,32 +210,32 @@ generated_counts:
   technical_enablers: 3
   release_governance_workstreams: 2
   security_operations_hardening_epics: 1
-  canonical_story_identities: 158
-  inventory_rows_including_aliases: 159
+  canonical_story_identities: 159
+  inventory_rows_including_aliases: 160
   superseded_aliases: 1
   stories_by_classification:
     technical-enabler: 41
-    product: 86
+    product: 87
     release-governance: 24
     security-operations-hardening: 7
   canonical_story_lifecycle_statuses:
     done: 111
-    backlog: 44
+    backlog: 45
     in-progress: 2
     review: 1
   inventory_lifecycle_statuses_including_aliases:
     done: 112
-    backlog: 44
+    backlog: 45
     in-progress: 2
     review: 1
   definition_authorities:
     dedicated-story-file: 111
-    reconciled-epics-anchor: 47
+    reconciled-epics-anchor: 48
   functional_requirements: 58
   non_functional_requirements: 84
   ux_design_requirements: 39
   architecture_derived_requirements: 120
-  scheduled_nonterminal_stories: 47
+  scheduled_nonterminal_stories: 48
 classification_register:
   product:
   - 2
@@ -388,15 +388,18 @@ requirement_inventory:
       FR25:
       - '4.3'
       - '4.19'
+      - '4.23'
       FR26:
       - '4.4'
       - '4.19'
       FR27:
       - '4.3'
       - '4.19'
+      - '4.23'
       FR28:
       - '4.4'
       - '6.3'
+      - '4.23'
       FR29:
       - '4.4'
       - '12.6'
@@ -1747,6 +1750,7 @@ execution_waves:
   nodes:
   - '3.14'
   - '11.21'
+  - '4.23'
 - rank: 40
   nodes:
   - '4.18'
@@ -1959,9 +1963,20 @@ exact_prerequisites:
   - '11.18'
   - '11.19'
   - '11.20'
+  '4.23':
+  - DEC-A8-HOLD
+  - accepted:OQ1
+  - '1.17'
+  - '4.22'
+  - '12.1'
+  - '12.2'
+  - '12.6'
+  - '12.7'
+  - '11.15'
   '4.18':
   - DEC-A8-HOLD
   - '4.22'
+  - '11.15'
   - '12.1'
   - '12.2'
   '6.12':
@@ -1990,6 +2005,8 @@ exact_prerequisites:
   - DEC-A7-C6
   - '4.18'
   - '4.22'
+  - '4.23'
+  - '11.15'
   - '12.1'
   - '12.2'
   - '12.3'
@@ -2000,6 +2017,7 @@ exact_prerequisites:
   - DEC-A6B-OQ3
   - '1.17'
   - '4.18'
+  - '11.15'
   - '12.1'
   - '12.2'
   - '12.3'
@@ -2011,6 +2029,7 @@ exact_prerequisites:
   - '4.19'
   - '4.20'
   - '4.22'
+  - '11.15'
   - '12.4'
   '5.8':
   - DEC-A8-HOLD
@@ -2143,7 +2162,7 @@ validation_rules:
 - id: V2-002
   rule: Require every canonical story identity exactly once; permit only the declared 2.8b alias row.
 - id: V2-003
-  rule: Require 158 canonical story identities and 159 inventory rows including aliases.
+  rule: Require 159 canonical story identities and 160 inventory rows including aliases.
 - id: V2-004
   rule: Require exact FR1-FR58 and NFR1-NFR84 identities with no gap, duplicate, or renumbering.
 - id: V2-005
@@ -2201,6 +2220,26 @@ validation_results:
   frozen_evidence_integrity: pass-10-cited-artifacts-byte-preserved
   nfr_traceability_conformance: pass-17-of-17
   final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
+planning_amendments:
+- amended_on: '2026-10-07'
+  decision_maker: Jerome
+  decision_policy: docs/governance/approval-policy.md
+  proposal: _bmad-output/planning-artifacts/sprint-change-proposal-2026-10-06.md
+  decision_note: _bmad-output/implementation-artifacts/story-4-19-prerequisites-decision-2026-10-07.md
+  accepted_scope: Proposal edits E1-E14; optional O1 not accepted.
+  changes:
+  - Added Story 4.23 (backlog, rank 31) owning AR-CURRENT-15 and AR-AUTHZ-04 as a prerequisite of Story 4.19.
+  - Added Story 11.15 as a prerequisite of Stories 4.18, 4.19, 4.20, and 4.21.
+  - Added Story 4.23 to the FR25, FR27, and FR28 completion owners and updated generated_counts and V2-003.
+  tracker_change:
+    path: _bmad-output/implementation-artifacts/sprint-status.yaml
+    inserted_key: 4-23-enforce-canonical-lock-identity-and-c7-lock-timing
+    sha256_before: 230889efd5d5e5cfa18b5bbd307e093a581f2434656eae85d6f12ff9573b7c26
+    sha256_after: cc964658f61d7cc4bf7ca61478f2fb75720b60c6028708dc65d4cc1a0930e540
+    regeneration: none
+    note: The A8 finalization records above keep sha256_before as historical provenance and are not rewritten.
+  validation: pass-159-canonical-160-with-alias; pass-73-ranked-nodes-262-edges-acyclic-strictly-lower-ranks (V2-002 to V2-009 graph rules; not a Section 9 replay)
+  unchanged: general_execution_hold, v2_exposure_authorized, sprint_status_regeneration_authorized, ordinary_story_execution_authorized, the 2026-09-21 validation_results record, and every approval and provenance digest.
 stories:
 - id: '1.1'
   title: Scaffold the Consumer-Ready Folders Module
@@ -3746,6 +3785,7 @@ stories:
   prerequisites:
   - DEC-A8-HOLD
   - '4.22'
+  - '11.15'
   - '12.1'
   - '12.2'
   requirement_clauses:
@@ -3787,6 +3827,8 @@ stories:
   - DEC-A7-C6
   - '4.18'
   - '4.22'
+  - '4.23'
+  - '11.15'
   - '12.1'
   - '12.2'
   - '12.3'
@@ -3831,6 +3873,7 @@ stories:
   - DEC-A6B-OQ3
   - '1.17'
   - '4.18'
+  - '11.15'
   - '12.1'
   - '12.2'
   - '12.3'
@@ -3876,6 +3919,7 @@ stories:
   - '4.19'
   - '4.20'
   - '4.22'
+  - '11.15'
   - '12.4'
   requirement_clauses:
   - FR24
@@ -3934,6 +3978,36 @@ stories:
   execution_authorization_status: held
   delivery_evidence_status: open
   evidence_posture: open-governed-delivery-evidence-required
+- id: '4.23'
+  title: Enforce canonical lock identity and C7 lock timing
+  epic_id: 4
+  classification: product
+  authoritative_definition: reconciled-epics-anchor:_bmad-output/planning-artifacts/epics.md#Story-4.23
+  aliases: []
+  prerequisites:
+  - DEC-A8-HOLD
+  - accepted:OQ1
+  - '1.17'
+  - '4.22'
+  - '12.1'
+  - '12.2'
+  - '12.6'
+  - '12.7'
+  - '11.15'
+  requirement_clauses:
+  - FR25
+  - FR27
+  - FR28
+  - NFR7
+  - NFR21
+  - AR-CURRENT-15
+  - AR-AUTHZ-04
+  evidence_posture: open-real-production-evidence-required
+  story_lifecycle_status: backlog
+  execution_rank: 31
+  decision_status: not-applicable
+  execution_authorization_status: held
+  delivery_evidence_status: open
 - id: '5.1'
   title: Ship SDK convenience helpers, samples, and quickstart
   epic_id: 5
