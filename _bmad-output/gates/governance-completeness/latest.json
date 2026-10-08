@@ -1,7 +1,7 @@
 {
   "gate": "governance-completeness",
-  "status": "failed",
-  "exit_code": 1,
+  "status": "passed",
+  "exit_code": 0,
   "canonical_inputs": [
     "docs/exit-criteria/c0-c13-governance-evidence.yaml",
     "docs/exit-criteria/c7-lock-authorization-timing.md",
@@ -11,6 +11,7 @@
     "docs/contract/oq3-authorization-evidence.yaml",
     "docs/contract/provider-compatibility-catalog.md",
     "docs/contract/oq4-provider-compatibility-evidence.yaml",
+    "docs/governance/approval-policy.md",
     "tests/fixtures/idempotency-encoding-corpus.json",
     "tests/fixtures/idempotency-encoding-corpus-consumption.yaml",
     "tests/fixtures/pattern-example-manifest.yaml",

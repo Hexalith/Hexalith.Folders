@@ -69,3 +69,17 @@ runtime_posture:
     FR23: incomplete
   evidence_claim: Governance approval closes the OQ4 provider compatibility catalog decision and the C12 provider-drift criterion on the narrowed hermetic plus scheduled evidence standard only; no credentialed live provider run, no live GitHub mutation archive, no Forgejo operator evidence execution, and no dependent story completion is claimed.
 reopen_policy: Any change to the canonical catalog content, catalog version, SHA-256 digest, required authority set, approver identity, or approval date reopens Provider, Architecture, and PM approval.
+# The catalog identity, approvals, and reopen policy above are September 15
+# historical evidence. The September 24 policy governs this current refresh.
+current_evidence:
+  status: technical-refresh
+  catalog_version: '1.0.0'
+  catalog_sha256: 4a9d360e446ddbc622a6bc977a5a7357bd0dbc99d30d6d39d3c36efe0dde1474
+  historical_catalog_sha256: 5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a
+  refreshed_on: '2026-10-08'
+  policy_path: docs/governance/approval-policy.md
+  policy_sha256: 156929f0695d364d515dc71adfdf3292903b4f08538e723f6015633655ebd8a4
+  source_revision: 6b7274ac06f1bdcb03bc6b10071384406bfd7386
+  change_scope: forgejo-live-evidence-classification
+  owner_decision_required: false
+  rationale: The corrected paragraph separates live observations from production admission results without changing accepted compatibility behavior, risk, consumer scope, production exposure, rollback, or the C12 evidence standard. The current approval policy supersedes the historical byte-change reopen rule for this technical refresh; no new approval, credentialed live execution, or provider-ready completion is claimed.

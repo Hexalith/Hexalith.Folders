@@ -4,6 +4,8 @@ The governance/completeness gate is the local and CI entry point for Story 1.16 
 
 The [current project decision policy](../governance/approval-policy.md) uses one decision from Jerome for new proposals. The role and digest checks below validate historical exit-criteria records; their reapproval wording describes the old process. They do not require Jerome to make separate persona statements or recite hashes for new decisions. Technical evidence checks remain in force.
 
+OQ4 retains its September 15 catalog identity, reopen wording, and authority records as historical evidence, together with the historical C12 fixture. Its `current_evidence` block separately binds the reviewed catalog bytes, source correction revision, refresh date, and current policy. A technical refresh does not renew an approval or claim a live run. The gate pins both identities independently, so rebinding the manifest to unreviewed catalog bytes fails even when the manifest and catalog hashes agree. Material changes still require Jerome's decision under the current policy.
+
 ## Local Command
 
 ```powershell
@@ -35,6 +37,7 @@ Workflow YAML may orchestrate setup, but gate decisions live in checked-in tests
 - `docs/contract/oq3-authorization-evidence.yaml`
 - `docs/contract/provider-compatibility-catalog.md`
 - `docs/contract/oq4-provider-compatibility-evidence.yaml`
+- `docs/governance/approval-policy.md`
 - `tests/contracts/github/pinned-profile.json`
 - `tests/fixtures/idempotency-encoding-corpus.json`
 - `tests/fixtures/idempotency-encoding-corpus.schema.json`

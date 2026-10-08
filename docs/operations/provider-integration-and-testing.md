@@ -105,9 +105,13 @@ be advertised as full GitHub provider readiness.
 
 `docs/contract/provider-compatibility-catalog.md` is the canonical, versioned provider compatibility catalog.
 Version `1.0.0` was approved on 2026-09-15 by Provider, Architecture, and PM (signer Administrator) and is bound
-to its SHA-256 digest by `docs/contract/oq4-provider-compatibility-evidence.yaml`. Editing the catalog without
-re-cutting the version, digest, and all three approval records fails the offline governance gate
-(`pwsh ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild`) closed.
+to its historical SHA-256 digest by `docs/contract/oq4-provider-compatibility-evidence.yaml`. Preserve those
+approval records. The [current decision policy](../governance/approval-policy.md) permits technical evidence
+refreshes when accepted behavior, risk, consumer scope, production exposure, and rollback remain unchanged;
+material changes require a new decision from Jerome. The manifest's `current_evidence` separately binds the
+reviewed catalog bytes, correction revision, and policy. The offline governance gate
+(`pwsh ./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild`) checks both the historical
+records and current technical bindings and fails closed for missing, mismatched, or unreviewed evidence.
 
 The catalog publishes three profiles operators should read before changing adapter behavior:
 

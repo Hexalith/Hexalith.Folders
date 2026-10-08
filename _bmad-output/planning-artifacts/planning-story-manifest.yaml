@@ -73,9 +73,9 @@ provenance:
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
   sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
-  sha256: bfdf6276b7457819b3836a9da90b36687e6c16e537ff5e3d244edbe4fdede810
+  sha256: 8b879a5932491056574775a5be3ec37dad7fe1c56ab62d9c298e260c556fa222
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: 8e41c87c1f863010fe95421490c1875deaf7bfcbfedeb5ffb88103b765f876f4
+  sha256: 157c3025375c91ac65b800bcc1b3ba5285cb847bfd99ef8dedee2d1d14c19346
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
   sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
@@ -750,7 +750,7 @@ accepted_terminal_references:
     execution_authorization_status: completed
     delivery_evidence_status: accepted
     evidence_path: docs/contract/oq4-provider-compatibility-evidence.yaml
-    evidence_sha256: 5c36f22434cd6293ce2bb02c089ab6e7558711801fda32367b70df29825da5b8
+    evidence_sha256: 409c72e7d87286f6aa91c8158cf5f35d7c34b86e5dbef93aa2820fe9b8322ce7
   OQ8-DESIGN:
     node_type: accepted-terminal-reference
     acceptance_status: accepted

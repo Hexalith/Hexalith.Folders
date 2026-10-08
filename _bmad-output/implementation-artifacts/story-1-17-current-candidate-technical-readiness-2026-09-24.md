@@ -400,3 +400,47 @@ The user identified `Hexalith.Platform` as the production deployment owner. Its 
 The [Platform source-precedence decision](../../references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md#source-precedence-and-module-integration) and [Folders reconciliation](../../references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/reviews/reconcile-folders.md) accept the common Platform MVP infrastructure envelope and prohibit a separate stricter Folders infrastructure enrollment condition. Module behavior, authorization, durable-data safety, and release gates remain required. This replay adds no infrastructure condition.
 
 **Entry decision: hold.** The stale current planning hashes are resolved. Check 1 still lacks a passing OQ4/governance result and an exact tested release/production artifact tuple; cached `1.1.1` is a different candidate. Check 2 has a committed, locally tested Projects read adapter, but no identified production deployment artifact or verified periodic schedule. Checks 3–5 still lack attributed production traffic, a baseline, numeric thresholds, complete consumer discovery, exact-artifact reversal, UTC slots, and named owners. The ordinary Folders host's durable repository registration remains Story 12.1 work, with no verified production registration supplied here. Local routing and adapter tests do not constitute production migration, observation, retirement, or an expiry/incident rehearsal. No remote publication, deployment, activation, retirement, closure decision, or tracker delta occurred.
+
+## Addendum 2026-10-08: OQ4 current evidence reconciliation
+
+Checked on Folders revision `e189762595018a463f9df3eb2aee4e7fa4b815af` plus the uncommitted reconciliation, with final verification after review corrections complete at `2026-10-08T19:16:39Z`. **The OQ4 mismatch is resolved: governance and the complete Contracts suite pass on the current evidence. Migration entry remains on hold.** The [reconciliation spec](spec-1-17-reconcile-oq4-provider-compatibility-evidence.md) records this bounded work; the [current approval policy](../../docs/governance/approval-policy.md) governs its authority.
+
+### Policy and preservation
+
+Commit `6b7274ac06f1bdcb03bc6b10071384406bfd7386` changed exactly one catalog paragraph. The corrected Forgejo lane separates live version/create/conflict/bind/denial/isolation observations from production admission results, deletes stale reports, and archives evidence-class metadata. It changes no accepted compatibility behavior, governed provider, ceiling, gap, consumer scope, production exposure, rollback plan, or C12 evidence standard. The policy's changed-input rule therefore permits a technical refresh without another owner decision. No new acceptance is invented, and no deployment or credentialed run is claimed.
+
+The original OQ4 manifest bytes are preserved as an exact prefix, including catalog digest `5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a`, September 15 date, required authorities, all three approval records, runtime limits, and historical reopen wording. An appended `current_evidence` block separately binds catalog digest `4a9d360e446ddbc622a6bc977a5a7357bd0dbc99d30d6d39d3c36efe0dde1474`, the correction revision, refresh date, and policy digest. The entire catalog, including its corrected live-evidence paragraph, and the historical C12 fixture remain byte-identical to the starting revision. Operations and gate documentation now explain the current policy and historical/current binding distinction.
+
+The governance gate pins both catalog identities independently and checks the current policy bytes. Missing or tampered current evidence, an attempted transfer of the current digest into a historical approval, or an unreviewed catalog/manifest pair fails closed. Catalog approval still grants no provider-ready or dependent-story completion; credentialed live-provider evidence remains `not-run`.
+
+### Exact current bindings and verification
+
+| Artifact | Current SHA-256 |
+| --- | --- |
+| OQ4 evidence manifest | `409c72e7d87286f6aa91c8158cf5f35d7c34b86e5dbef93aa2820fe9b8322ce7` |
+| Governance test source | `8b879a5932491056574775a5be3ec37dad7fe1c56ab62d9c298e260c556fa222` |
+| Generated conformance manifest | `157c3025375c91ac65b800bcc1b3ba5285cb847bfd99ef8dedee2d1d14c19346` |
+| Candidate set, 224 artifacts | `b0961226f98d3e4c5941bbb8db33abde36f8a243b907614fa09f24ff8b656679` |
+| Current planning manifest | `7f585098d643c8d409d56148ad8d8875e0eed3cf6ecb5ac8c64b5d7d5019eaf2` |
+| Governance gate report | `5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb` |
+
+Only three current digests in the planning manifest changed: its OQ4 evidence reference and the top-level provenance entries for the governance test source and generated conformance manifest. All other parsed content is identical, including every historical approval/finalization binding, execution flag, graph, lifecycle value, and accepted decision. Both isolated generations reproduce the final 224-artifact inventory; the allowlist is unchanged and its only changed artifacts are the governance test source and gate report writer. All 20 current provenance bindings match.
+
+| Command or check | Result |
+| --- | --- |
+| `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` before repair | Exit 1; governance 21/22. Reproduces the historical/current catalog digest mismatch. |
+| `dotnet build tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1 -v:quiet` | Exit 0; zero warnings/errors. |
+| `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` after repair | Exit 0; governance 23/23, authorization matrix 7/7, provider catalog 3/3. |
+| `PATH=/home/administrator/.cache/uv/archive-v0/SMU-_9vAZ4i-6HZv/bin:$PATH tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests -noLogo -noColor` | Exit 0; **347/347**, zero errors/skips/not-run, including current OQ4 negative controls, conformance reproduction, candidate, authorization, package, and NFR contract checks. Uses the previously identified offline Python validator; no dependency update. |
+| `python3 scripts/generate-pd10-v2-conformance-set.py --repository-root /home/administrator/projects/hexalith/folders --output /tmp/oq4-conformance-first.yaml` and the same command with `/tmp/oq4-conformance-second.yaml` | Both exit 0; byte-identical outputs matching the checked-in manifest; 224 unchanged paths. |
+| Independent input and preservation audit | Pass: 20/20 current hashes, current OQ4 manifest binding, original OQ4 prefix, catalog/C12/register/v1/matrix/OQ3/tracker hashes, and all unchanged planning control/history fields. |
+
+Independent review identified an unpinned policy digest input, a missing policy entry in the gate report, acceptance of extra non-scalar YAML keys, and three constraints lost during epic-context regeneration. All six findings were corrected: the policy is LF-pinned and reported as a canonical input, complex keys fail closed with negative controls, and task-binding, bounded-reconciliation, and Story 4.23 dependency requirements are preserved. The focused build, governance command, full 347-test Contracts suite, two generations, and preservation audit all passed again on the final bytes. No findings were deferred.
+
+This supersedes the preceding addendum's OQ4 failures in S9-09 and the complete Contracts suite. The previous Section 9 preservation results remain applicable to their unchanged inputs; this replay refreshes the affected technical evidence and supplies no new production observations. Previous CI/parity/routing/ACL/Projects results are retained as dated evidence; those broader lanes were not rerun by this bounded reconciliation.
+
+### Entry decision
+
+**Hold: keep `V1Only` active, T0 unset, and Story 1.17 `backlog`.** Check 1's OQ4/governance blocker is cleared, but an exact tested released-candidate/production artifact tuple is still absent; cached Client/Contracts `1.1.1` represents a different candidate. Check 2 still lacks the Projects production deployment artifact and verified periodic schedule. Checks 3–5 still require production attribution, baseline/thresholds, consumer census, exact-artifact reversal, UTC slots, and named owners. The ordinary Folders host's durable repository registration remains with Story 12.1. No publication, deployment, route activation, live provider run, T0, retirement, closure, tracker transition, or Git commit occurred.
+
+No new owner decision is needed for this correction. Any future change to provider support or behavior, accepted risk, consumer/production scope, or rollback must be presented to Jerome as an exact proposal under the current policy before its dependent action. Supplying missing operational evidence within the accepted migration conditions does not itself require another approval round.

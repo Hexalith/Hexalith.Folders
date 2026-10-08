@@ -44,6 +44,7 @@ function Write-GovernanceReport {
             'docs/contract/oq3-authorization-evidence.yaml',
             'docs/contract/provider-compatibility-catalog.md',
             'docs/contract/oq4-provider-compatibility-evidence.yaml',
+            'docs/governance/approval-policy.md',
             'tests/fixtures/idempotency-encoding-corpus.json',
             'tests/fixtures/idempotency-encoding-corpus-consumption.yaml',
             'tests/fixtures/pattern-example-manifest.yaml',

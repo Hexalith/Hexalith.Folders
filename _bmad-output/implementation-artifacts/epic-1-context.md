@@ -4,7 +4,7 @@
 
 ## Goal
 
-Give consumers one OpenAPI v2 contract driving REST, SDK, CLI/MCP consumption, and parity. Shared rules and generation gates prevent drift. Generation does not authorize production exposure or closure.
+Give consumers one versioned OpenAPI contract driving REST, SDK, CLI/MCP consumption, and parity. Shared rules and generation gates prevent drift. The v2 authorization correction is the downstream target; generation does not authorize production exposure or closure.
 
 ## Stories
 
@@ -38,6 +38,8 @@ Every operation is mutation or read. Equivalence excludes transport/retry metada
 
 Content, credentials, secrets, raw provider payloads/paths, and unauthorized existence stay out of persisted metadata, telemetry, errors, and evidence. Bounded context responses require authorization/path policy. Mutations do not auto-commit. Use .NET 10, `.slnx`, platform capabilities, and root-declared submodules.
 
+Provider compatibility is capability-based. Approved profiles and client/native pins are governed inputs; changed behavior or support scope requires a decision. Catalog approval is design evidence, distinct from credentialed live-provider delivery.
+
 ## Technical Decisions
 
 OpenAPI 3.1 drives generation. Extensions cannot weaken safety. NSwag generates the SDK and helpers from ordered equivalence fields; reads receive no helper and the SDK never invents a key. Golden regeneration is diff-free; emitted REST schemas match the spine.
@@ -49,6 +51,8 @@ EventStore owns idempotency admission after authentication, authorization, and v
 v1 is historical; accepted migration removes supported production routes/client targets. External v1 consumers block release pending a migration decision. Server/SDK/UI/parity/drift changes are validated together.
 
 The general hold was removed after corrective A8; only Story 1.17 has scoped execution authorization. Closure, v2 exposure, and other ordinary-story execution remain unauthorized. Use its isolated branch/worktree lane and preserve bound main artifacts until combined closure checks pass. Historical digests remain provenance. Jerome's single-owner policy governs new decisions: changed bytes require technical rechecks; materially changed behavior, risk, scope, exposure, or rollback requires another decision. Never infer acceptance.
+
+Keep `V1Only` active and `T0` unset until every migration entry gate passes. Preserve historical approval records separately from current technical evidence bindings; passing a technical gate does not supply production authorization.
 
 ## UX & Interaction Patterns
 
