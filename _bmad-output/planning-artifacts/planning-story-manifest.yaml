@@ -45,13 +45,13 @@ supersedes_snapshot:
   sha256: 206b979040164375b2281b213d3756db02fc3e2e33e8c85587572ae721076e22
 provenance:
 - path: _bmad-output/planning-artifacts/prd.md
-  sha256: 743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c
+  sha256: b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608
 - path: _bmad-output/planning-artifacts/architecture.md
-  sha256: 74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e
+  sha256: da13b2bd481b0c72355ad41ecf52b63f303711f4f5293ea89673cd05f916fce1
 - path: _bmad-output/planning-artifacts/ux-design-specification.md
   sha256: d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b
 - path: _bmad-output/planning-artifacts/epics.md
-  sha256: a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc
+  sha256: d1ac3564c5f50b48f4d2978546703dab82c1b8288d70c203317bf45d23c70492
 - path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md
   sha256: dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
@@ -59,7 +59,7 @@ provenance:
 - path: _bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml
   sha256: 2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff
 - path: docs/exit-criteria/nfr-traceability.md
-  sha256: d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588
+  sha256: 7e3065a226339a78875f0687f39711f31ac8d21a0160f6e8af5ffb061f97423c
 - path: _bmad-output/planning-artifacts/lifecycle-reconciliation-2026-09-17.yaml
   sha256: 08e14c3df216c598942cbb9f585c67c4fe84b0d0f5e3f7de61d1c36a63ce9aec
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md
@@ -75,7 +75,7 @@ provenance:
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
   sha256: bfdf6276b7457819b3836a9da90b36687e6c16e537ff5e3d244edbe4fdede810
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: 835eee602d0f2f1daf8e22d8aef1138076d296c89c3159ba641977c9981de2de
+  sha256: 8e41c87c1f863010fe95421490c1875deaf7bfcbfedeb5ffb88103b765f876f4
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
   sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml

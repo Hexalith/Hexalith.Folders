@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 8b0b70326ba83c95334a9046e0a55a5137e371f7e22ca7651f15bc642de4446f
+candidate_set_sha256: 6f430f554412b79336984bd6440f889830b09fd64129d7d92df1759b659a57f6
 artifact_count: 224
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -50,8 +50,8 @@ artifacts:
     sha256: 62cc54742272e147c49a98f38b94d7acb1cf21abeff8eee0a2aabb1969f9e4a8
   - path: "docs/contract/pd10-v2-consumer-discovery.md"
     kind: file
-    bytes: 11651
-    sha256: 139ab1dcaa8f3dadf1c376905adf52cdce278091d4c07bf658309c438054c16b
+    bytes: 15633
+    sha256: 07c998ae0f6b0cbe5b3c8c950388054766a058c2bbcaac297d913a484abafae9
   - path: "docs/contract/sdk-generation-and-idempotency-helpers.md"
     kind: file
     bytes: 6928
@@ -478,8 +478,8 @@ artifacts:
     sha256: 0b2cf083801ed5b7dcb5ca8b78c64cf1fb8f049d6fe72d44f0931a5cc3a267ab
   - path: "src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs"
     kind: file
-    bytes: 21026
-    sha256: 86ece81ef95652d1be531246d86c015c493959928bfeec7b9690a014ed72664f
+    bytes: 23430
+    sha256: 0c0392229994978e134bf52a0dc5bfaf975f545479befd4aa2b0af6acca2ca3b
   - path: "src/Hexalith.Folders/Aggregates/Folder/WorkspaceCommitService.cs"
     kind: file
     bytes: 11451
@@ -754,12 +754,12 @@ artifacts:
     sha256: 3673a38bcb6c47d8546910b61e5100f2d19d6111614c1ea007e78239541377ac
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclReauthorizationTests.cs"
     kind: file
-    bytes: 3740
-    sha256: 7d0603d0f247c3ac0ebad13cc1a5b051c57048901fff53e7cc2ff2b19e4ee7f8
+    bytes: 9285
+    sha256: 4a6d5e05827b9b07e6c3fd4be938fb7b72582d9a9fde3b8772c53146f19062f4
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FinalAclRevokingPermissions.cs"
     kind: file
-    bytes: 690
-    sha256: d99138389ef8547b32f00e52c082ed97b31c53cb31dcd090d1aaabb42cc32e47
+    bytes: 723
+    sha256: 11f11cadee4a34d7294b983f242cede9b7cd1f58080fffcf363bd64f1f76141e
   - path: "tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderCreationMetadataLeakageTests.cs"
     kind: file
     bytes: 6253

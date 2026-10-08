@@ -312,3 +312,91 @@ Those four bindings stay with the owning planning reconciliation. Because they s
 ### Entry decision
 
 Keep the hold. Check 1 still fails on the four provenance mismatches, the difference between the released `1.1.1` pair and this candidate, and the absent production artifact tuple. Check 2 still lacks a Projects deployment artifact and a verified periodic schedule. Checks 3 through 5 still lack production attribution, a baseline, thresholds, a consumer census, an exact-artifact rehearsal, UTC slots, and named owners. The ordinary production host still does not register a durable EventStore-backed `IFolderRepository`; that seam stays with Story 12.1. No remote release, deployment, route change, retirement, or closure was attempted. Story 1.17 stays open.
+
+## Addendum 2026-10-08: current provenance reconciliation and entry hold
+
+This replay implements the resumed spec's current-only provenance task on Folders revision `039ec7a54a603b64c16e63e53e3640a99ccf5674` plus the recorded evidence edits. The four planning-document mismatches in the preceding addendum are resolved. Current A8 technical readiness is still **not established**: the renewed governance check finds a separate OQ4 catalog mismatch committed after the earlier green result. The technical result and production entry decision remain distinct. `V1Only` stays required and T0 stays unset.
+
+### Checked changes and exact current identity
+
+The current input repair follows Jerome's accepted conditional migration decision and the single-owner policy's changed-input recheck rule; the resumed spec records this bounded task. Commit `fb5511741623f672f51f9aa1192860ae52a0fe2b` records the approved McpCli correction to the PRD, architecture, and epics. Commit `12b3006819968bd52d595a12c9f163eac635478d` applies the [October 7 E1–E14 decision](story-4-19-prerequisites-decision-2026-10-07.md); its new story and dependency graph were checked without executing another story. Commit `ffd029517008b3c9ad5c094244ba8e1a563e9fac` changes the NFR traceability setup command to root-only `--checkout`. The current candidate inventory also needed the committed `RepositoryBindingService.cs`, `FinalAclReauthorizationTests.cs`, and `FinalAclRevokingPermissions.cs` changes. The discovery update adds the supplied Platform production evidence and its limits.
+
+Only five top-level `provenance` digests in the planning manifest changed: the four planning inputs and the generated candidate manifest. All other manifest content is unchanged, including historical approvals/finalization bindings, the accepted October planning amendment, execution flags, graph, and lifecycle values. Historical v1, the authorization matrix, OQ3 evidence, approval register, frozen Story 3.14 specifications, and tracker bytes remain unchanged.
+
+| Artifact | Exact current identity |
+| --- | --- |
+| Conformance manifest | Raw SHA-256 `8e41c87c1f863010fe95421490c1875deaf7bfcbfedeb5ffb88103b765f876f4`; 41,900 bytes; declared candidate set `6f430f554412b79336984bd6440f889830b09fd64129d7d92df1759b659a57f6`; 224 artifacts. Two isolated generations match each other and the checked-in file. Every artifact digest, byte count, and ordered-set binding was independently checked. |
+| Current planning manifest | SHA-256 `8597687044d9d9ac5f3bf9aa3a4d2f67d5e3aa61fd7005ad2c27c3e6a39ca3dd`; 20/20 current bindings match. `v2_exposure_authorized` remains `false`; Story 1.17 remains `backlog`. |
+| Preserved tracker | SHA-256 `cc964658f61d7cc4bf7ca61478f2fb75720b60c6028708dc65d4cc1a0930e540`. No tracker transition or regeneration occurred. |
+| Cached Client/Contracts `1.1.1` | Client archive SHA-256 `e778aad218dcaf670fe8fb40ff40a83d76f224b62d77d6a4d0612aed9eab5db4`; Contracts `cb85fb7d0e6013ccbe3058061c9e6a57fbdd1a95367f97692dc187a73fe0cf0c`. Both archive identities embed release source `d5f49e96dfab10bf2839ec263a343a6a4c13b06f`; Client depends on Contracts `1.1.1`. These cache/archive checks do not claim a new publication or registry observation. The pair remains different from this candidate. |
+| Projects local artifact | Revision `caf3721427f0b4834415369c2b4a5f981725474f`; Server DLL SHA-256 `10b9f57aea20bdc126a46eb45042e2d1c76cfcc33a6b81cf0a2b5187face69d8`; dependencies `f1cb8d209f47932aa9afd38c99f3051972da8583835f5ec504c8ff833563555b`. Assets resolve both Folders packages to `1.1.1`. This is a local build, not a production deployment artifact. |
+
+The root repository and all root-declared submodule revisions were captured before verification and checked again after it. No dependency was updated by this replay. Build-relevant identities are:
+
+| Repository | Exact revision |
+| --- | --- |
+| Folders | `039ec7a54a603b64c16e63e53e3640a99ccf5674` plus the recorded evidence edits |
+| Builds | `58d9b546b4741a246121ab40fc3945703db2e19b` |
+| EventStore | `07d1e23a6c5b06bbbb1fc8ddb5174cc3382d3d93` |
+| Tenants | `032573384d3df4bc7a5bc0e69945ecca4e00967f` |
+| FrontComposer | `0e114214007c22f5cdbac21a6853cff4208340ee` |
+| Memories | `906bc07ad6a8e4912a7222d9d097da434148266a` |
+| Commons | `b247ed116c6523f8c596ec0a933eff8973d11568` |
+| PolymorphicSerializations | `98de6e013840ece9f0fa7c68ab7dcdf2bba3b375` |
+| Projects | `caf3721427f0b4834415369c2b4a5f981725474f` |
+| Platform | `f5a0d72f9b72e88008562147a7085da0607d55f7` |
+
+The loaded Builds central package catalog has SHA-256 `66dafc002f544948ed192971265f4490b11f1c359004cbb486849d8568a3cb5c`.
+
+### Verification and Section 9 replay
+
+| Command or check | Result |
+| --- | --- |
+| `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1 -v:quiet` | Exit 0; zero warnings/errors. |
+| Projects: `dotnet build tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj --configuration Release -p:UseHexalithProjectReferences=false --no-incremental -warnaserror -m:1 -v:quiet` | Exit 0; zero warnings/errors with the tracked `1.1.1` pin and no package override. |
+| `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` | Exit 0; 12/12 categories. Report SHA-256 `03f22fd4ee8d0018b3ee1ea42b5f93fd55cfa81e518a0bbc67b9c1583e78ae43`. |
+| `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` | **Exit 1; governance 21/22.** OQ4 catalog binding fails as detailed below. The script correctly stops on that failure. Report SHA-256 `4bb24c098ca7e79350cd1b5e2eafe1ac4a3adbb47f9788528a3d7a0fedcf90c6`. |
+| Release Contracts executable, full suite | Initial result 340/346: five generator tests lack Python `jsonschema`, plus the OQ4 failure. Repeating with an existing offline Python 3.13 environment supplies the prerequisite: **345/346**, solely OQ4 fails. No repository dependency or generator behavior changed. |
+| Contracts executable: conformance, v2 candidate, matrix, Release package, and NFR classes | Exit 0; 41/41, zero skips, including all 17 NFR traceability cases. |
+| Domain executable: `-class Hexalith.Folders.Tests.Aggregates.Folder.FinalAclReauthorizationTests` | Exit 0; 4/4. Binding ACL revocation stops provider dispatch or event append at the tested boundaries. |
+| Integration executable: `-class Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests` | Exit 0; 18/18. Hold, coexistence, retirement, bounded attribution, and invalid modes are covered locally. |
+| Projects executable: folder and file-reference directory classes | Exit 0; 39/39, zero skips, against released Client/Contracts `1.1.1`. |
+| Current Section 9 input audit and two isolated conformance generations | Exit 0; all current inputs and preserved control/historical bytes pass their direct checks. |
+
+The final evidence wording correction identifies Jerome's existing decision and policy as approval authority, with the resumed spec recording the bounded task. The twelve-category parity replay completed before that documentation correction. The affected candidate inventory was then regenerated twice and its current binding refreshed; `Pd10ConformanceSetTests` passed 3/3 on the final bytes. The final independent input/control audit at `2026-10-08T17:27:29Z` passed without revision drift. No code, package, or historical approval changed during that correction.
+
+Focused executable commands were:
+
+```bash
+tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests -noLogo -noColor -class Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests -class Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests -class Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests -class Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests -class Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests
+tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests -noLogo -noColor -class Hexalith.Folders.Tests.Aggregates.Folder.FinalAclReauthorizationTests
+tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests -noLogo -noColor -class Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests
+# Run from references/Hexalith.Projects:
+tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests -noLogo -noColor -class Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests -class Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests
+```
+
+The full-suite prerequisite retry prefixed `PATH` with the existing `/home/administrator/.cache/uv/archive-v0/SMU-_9vAZ4i-6HZv/bin` environment before invoking the full Release Contracts executable without a class filter. Both offline `uv run --with jsonschema --with PyYAML` probes, including one selecting `/usr/bin/python3`, could not resolve cached native dependencies; the existing environment avoided downloads and supplied the required validator.
+
+**OQ4 failure:** `GovernanceCompletenessGateTests.Oq4ProviderCompatibilityPackageBindsVersionDigestApprovalsAndRuntimePosture` expects catalog SHA-256 `5799e090a005addebb8361ba42f36a075ecafd60350837cdd5e29a1d6bad228a`, but `docs/contract/provider-compatibility-catalog.md` now hashes to `4a9d360e446ddbc622a6bc977a5a7357bd0dbc99d30d6d39d3c36efe0dde1474`. Commit `6b7274a` changed the live-evidence paragraph; the historical OQ4 evidence and test still bind the previous catalog. This replay preserves both the new provider-owner documentation and the historical approvals. The mismatch requires owning reconciliation; refreshing the planning provenance does not approve it or make the governance gate pass.
+
+| Section 9 check | Current result |
+| --- | --- |
+| S9-01 decisions | Pass: all eleven historical A1–A8 decision-payload hashes, authority inventories, and approval payload bindings match. No approval is transferred to this candidate. |
+| S9-02 provenance | Pass: 20/20 current bindings and the register binding match; tracker unchanged. |
+| S9-03 requirements | Pass: FR1–FR58 and NFR1–NFR84 inventories remain complete; FR identities in PRD/epics and NFR identities in epics match. The NFR suite binds the PRD's unnumbered bullets. |
+| S9-04 NFR traceability | Pass: 17/17. |
+| S9-05 lifecycle | Pass: 159 canonical story rows each match one tracker key; 111 done, 45 backlog, two in progress, one review. Story 1.17 remains backlog. |
+| S9-06 frozen lifecycle | Pass: both frozen Story 3.14 specification hashes match their recorded values; its lifecycle remains backlog. |
+| S9-07 candidate inventory | Pass: 224 raw digests and byte counts, the ordered-set digest, matrix/v1 bindings, and two isolated generations match. Exposure and closure flags remain false. |
+| S9-08 graph | Pass: 73 ranked nodes, 262 unique edges, 24 accepted-terminal edges; no unresolved, equal-rank, forward-rank, or duplicate dependencies. Strictly lower prerequisite ranks exclude cycles. |
+| S9-09 verification | **Fail:** builds, parity, focused authorization/package/NFR and consumer checks pass; the full Contracts and governance gates fail only the OQ4 catalog binding after the Python prerequisite retry. |
+| S9-10 authority | Pass: the September planning manifest remains current execution authority; the August snapshot is cited only as superseded provenance. |
+| S9-11 technical condition | **Not met:** S9-09 fails. No execution or exposure flag changed. |
+
+### Platform evidence and entry decision
+
+The user identified `Hexalith.Platform` as the production deployment owner. Its dated [census](../../references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/epic-4/4-26/20261004t085143z-census/inventory.json), captured `2026-10-04T08:52:47Z`, has SHA-256 `401d310ae750916b766486db309901c7577f8c878c76a85f827eec50a107bfaf` and inventories 2,596 resources across 23 namespaces in one cluster. It contains no Folders/Projects workload, service, ingress, or image. That dated, single-cluster observation is not a current/global absence claim and supplies no production artifact tuple or route-attributed traffic. The [native collection procedure](../../references/Hexalith.Platform/eng/cluster-management/QUALIFICATION.md#repeatable-collection-and-validation) documents fresh collection with explicit compatible tools and custody inputs. No live collection occurred here.
+
+The [Platform source-precedence decision](../../references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md#source-precedence-and-module-integration) and [Folders reconciliation](../../references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/reviews/reconcile-folders.md) accept the common Platform MVP infrastructure envelope and prohibit a separate stricter Folders infrastructure enrollment condition. Module behavior, authorization, durable-data safety, and release gates remain required. This replay adds no infrastructure condition.
+
+**Entry decision: hold.** The stale current planning hashes are resolved. Check 1 still lacks a passing OQ4/governance result and an exact tested release/production artifact tuple; cached `1.1.1` is a different candidate. Check 2 has a committed, locally tested Projects read adapter, but no identified production deployment artifact or verified periodic schedule. Checks 3–5 still lack attributed production traffic, a baseline, numeric thresholds, complete consumer discovery, exact-artifact reversal, UTC slots, and named owners. The ordinary Folders host's durable repository registration remains Story 12.1 work, with no verified production registration supplied here. Local routing and adapter tests do not constitute production migration, observation, retirement, or an expiry/incident rehearsal. No remote publication, deployment, activation, retirement, closure decision, or tracker delta occurred.
