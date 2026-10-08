@@ -226,19 +226,28 @@ public sealed partial class ReleasePackageConformanceTests
     [Fact]
     public void StableReleaseShouldUseStableDaprIntegration()
     {
-        XDocument packages = XDocument.Load(RepositoryPath("Directory.Packages.props"));
+        XDocument packages = XDocument.Load(RepositoryPath("references/Hexalith.Builds/Props/Directory.Packages.props"));
+        XElement stableVersion = packages.Descendants("HexalithAspireHostingDaprVersion")
+            .Single(element => (string?)element.Attribute("Condition") ==
+                "'$(MSBuildProjectName)' == 'Hexalith.Folders.Aspire'");
         XElement daprIntegration = packages.Descendants("PackageVersion")
             .Single(element => string.Equals(
-                (string?)element.Attribute("Update"),
+                (string?)element.Attribute("Include"),
                 "CommunityToolkit.Aspire.Hosting.Dapr",
                 StringComparison.Ordinal));
-        string version = ((string?)daprIntegration.Attribute("Version")).ShouldNotBeNull();
+        string version = stableVersion.Value;
 
         version.ShouldBe("13.0.0");
         version.ShouldNotContain("-", Case.Sensitive, "a stable Folders.Aspire release cannot depend on a prerelease integration package");
-        ((string?)daprIntegration.Attribute("Condition")).ShouldBe(
-            "'$(MSBuildProjectName)' == 'Hexalith.Folders.Aspire'",
-            "the stable release override must not downgrade AppHost or test graphs that consume EventStore.Aspire's newer preview dependency");
+        ((string?)daprIntegration.Attribute("Version")).ShouldBe("$(HexalithAspireHostingDaprVersion)");
+
+        XDocument localPackages = XDocument.Load(RepositoryPath("Directory.Packages.props"));
+        localPackages.Descendants("HexalithAspireHostingDaprVersion").ShouldBeEmpty(
+            "the Builds catalog owns the project-conditioned stable version");
+        localPackages.Descendants("PackageVersion").ShouldNotContain(element =>
+            (string?)element.Attribute("Include") == "CommunityToolkit.Aspire.Hosting.Dapr"
+            || (string?)element.Attribute("Update") == "CommunityToolkit.Aspire.Hosting.Dapr",
+            "a second local override must not duplicate or broaden the Builds catalog's stable version");
     }
 
     [Fact]

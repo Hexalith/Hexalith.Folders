@@ -54,7 +54,8 @@ public sealed class MutateFilesIdempotencyIntentAdapterTests
     {
         MutateFilesIdempotencyIntentAdapter adapter = new();
         IdempotencyIntentCommand command = Command("""{"fileOperationKind":"add","workspaceId":"workspace-a"}""")
-            with { Extensions = new Dictionary<string, string> { ["taskId"] = "task-a" } };
+            with
+        { Extensions = new Dictionary<string, string> { ["taskId"] = "task-a" } };
 
         _ = Should.Throw<JsonException>(() => adapter.CreateIntent(command));
     }
@@ -76,7 +77,8 @@ public sealed class MutateFilesIdempotencyIntentAdapterTests
     {
         MutateFilesIdempotencyIntentAdapter adapter = new();
         IdempotencyIntentCommand command = Command("""{"taskId":"task-a","fileOperationKind":"add","workspaceId":"workspace-a"}""")
-            with { Extensions = new Dictionary<string, string> { ["taskId"] = "task-b" } };
+            with
+        { Extensions = new Dictionary<string, string> { ["taskId"] = "task-b" } };
 
         _ = Should.Throw<JsonException>(() => adapter.CreateIntent(command));
     }

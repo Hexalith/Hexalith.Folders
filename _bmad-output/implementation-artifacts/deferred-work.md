@@ -2808,3 +2808,11 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-nuget-trusted-publishing.md`
   summary: Resolved the pre-existing publication-preflight gap that treated malformed HTTP 200 NuGet responses as version absence.
   evidence: Review finding B5 was repaired under the original CI/CD repair request. Publication now requires exactly one JSON object with a versions array containing only strings before checking duplicates. The nine focused preflight tests pass, including malformed JSON, concatenated documents, missing or invalid versions fields, existing versions, and unavailable feeds.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-fix-ci-and-verify-nuget-publication.md`
+  summary: Add returned-snapshot tenant/folder scope validation at the effective-permissions reader boundary, with a foreign fresh snapshot regression.
+  evidence: Review B6: the pre-existing EffectivePermissionsFolderPermissionEvidenceProvider passes request tenant/folder into its reader but FromSnapshot validates lifecycle, freshness and action grants without comparing the returned scope. Current partitioned readers deny cross-tenant requests; a mismatched reader result needs independent fail-closed coverage.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-fix-ci-and-verify-nuget-publication.md`
+  summary: Enable the existing AppHost topology boot test in the DCP-capable lane assigned to Story 11.15.
+  evidence: Verification review V1: FullFoldersTopologyBootsRunningAcrossProcesses is skipped without HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION; normal CI does not enable it and this repair's Aspire startup probe did not reach a running AppHost. SDK/catalog and Release build checks pass but do not prove runtime resource startup.

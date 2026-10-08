@@ -2,9 +2,10 @@
 title: 'Fix CI and verify NuGet publication'
 type: 'bugfix'
 created: '2026-10-08'
-status: 'draft'
+status: 'done'
 route: 'dispatch'
 review_loop_iteration: 0
+baseline_commit: '4affd6e530756b094b8081e7f9afb138856a03af'
 context: []
 ---
 
@@ -14,11 +15,11 @@ context: []
 
 **Problem:** Push CI on `main` (`c8e3d99`) is red, so `.github/workflows/release.yml` cannot prove a new exact-source publication. `folders-specialized-gates` fails whitespace, `contract-spine-gates` fails the PD10 generator, and the previous push CI (`37749981464`) also failed the Aspire SDK pin, the stable Dapr inventory assertion, and four repository-backed create calls that return 404.
 
-**Approach:** Restore those gates without changing the published contract, the five-package inventory, or the trusted-publishing workflow. Then perform the publication check chosen below.
+**Approach:** Restore those gates without changing the committed v2 contract, authorization guarantees, five-package inventory, or trusted-publishing workflow. Perform the read-only publication check selected by the user on 2026-10-08.
 
 ## Boundaries & Constraints
 
-**Always:** Keep `hexalith.folders.v2.yaml` byte-for-byte. Make `scripts/generate-pd10-v2-contract.py` emit the committed extensions again. Keep `Aspire.Hosting` `13.6.1` as the catalog pin and `CommunityToolkit.Aspire.Hosting.Dapr` `13.0.0` only for `Hexalith.Folders.Aspire`. Keep the four golden-lifecycle expected statuses. Leave `v1.1.0` and `v1.1.1` immutable.
+**Always:** Preserve concurrent changes, keep `V1Only` active, and leave Story 1.17 open until its remaining migration gates pass. Keep `hexalith.folders.v2.yaml` byte-for-byte. Make `scripts/generate-pd10-v2-contract.py` emit the committed extensions again. Keep `Aspire.Hosting` `13.6.1` as the catalog pin and `CommunityToolkit.Aspire.Hosting.Dapr` `13.0.0` only for `Hexalith.Folders.Aspire`. Keep the four golden-lifecycle expected statuses. Leave `v1.1.0` and `v1.1.1` immutable.
 
 **Never:** Do not edit the Hexalith.Builds submodule, `tools/release-packages.json`, `release.yml` pins, or `NuGet/login`. Do not add `--skip-duplicate`, a stored NuGet key, or a second Dapr override in the root `Directory.Packages.props`. Do not regenerate the v2 contract down to today's generator output.
 
@@ -30,67 +31,86 @@ context: []
 | AppHost SDK | Catalog `Aspire.Hosting` `13.6.1`; Builds exception already `13.6.1` | `Hexalith.Folders.AppHost.csproj` SDK is `Aspire.AppHost.Sdk/13.6.1` | Do not retarget other AppHosts |
 | Stable Dapr | Catalog property condition for `Hexalith.Folders.Aspire` is `13.0.0` | `StableReleaseShouldUseStableDaprIntegration` passes by reading that property | Missing condition fails the test |
 | PD10 generator | Committed v2 includes idempotency behavior, read-key denial, and current `validation_error` order | Generator stdout bytes equal the committed file | Do not delete those extensions |
-| Missing repository-backed folder | `POST /api/v2/folders/repository-backed` with a valid new `folderId` | 202, one downstream call, allow audit | 404 before the historical handler is the bug |
+| Repository-backed creation | Valid request for an existing folder with fresh administer authority | 202, one downstream call, allow audit | Missing or unauthorized folder remains safe-denial 404 without downstream dispatch |
 | Declared provider outcome | Same route, downstream 422, 409, or 503 | That status and category pass through | Bind-repository cases already pass; leave them |
+
+**Publication decision:** Read-only: verify all five NuGet `1.1.1` indexes and local Release pack/consumer gates. No new version, dispatch, deployment, or tag mutation.
+
+**Authorization decision:** The user's requirement to preserve the committed v2 contract and authorization guarantees controls the repair. `CreateRepositoryBackedFolder` creates a backing repository for an existing folder; correct stale parity fixture prerequisites while retaining 202/422/409/503 expectations. Do not restore the removed tenant-only bypass.
 
 </frozen-after-approval>
 
-## Open Questions
-
-- Publication check — options: **Read-only** (confirm the five `1.1.1` package indexes at `https://api.nuget.org/v3-flatcontainer/<id>/index.json` still list `1.1.1`, and the local Release pack gates pass; no new version and no `workflow_dispatch`) / **Publish** (after this fix is on `main` with green push CI, dispatch Release and confirm a new five-package version on nuget.org plus ten GitHub assets; versions are immutable and the `production` environment must approve).
-
 ## Code Map
 
-- `.github/workflows/ci.yml` — push CI. `folders-specialized-gates` runs `./tests/tools/run-baseline-ci-gates.ps1`, which calls `dotnet format whitespace Hexalith.Folders.CI.slnx --verify-no-changes --include ./src/ ./tests/ ./samples/`.
-- `.github/workflows/contract-spine.yml` — reruns the PD10 generator test. No publish step.
-- `.github/workflows/release.yml` — `workflow_dispatch` from live `main` only after a successful push CI for that SHA. Reuse; do not retune.
-- `docs/operations/release-packages.md` — operator path. Last success is run `37001706122`, version `1.1.1`. `v1.1.0` stays a failed immutable tag.
-- `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj:1` — still `Aspire.AppHost.Sdk/13.6.0`.
-- `references/Hexalith.Builds/Props/Directory.Packages.props` — `Aspire.Hosting` `13.6.1`; `HexalithAspireHostingDaprVersion` is the preview for everyone else and `13.0.0` when `MSBuildProjectName` is `Hexalith.Folders.Aspire`. Root `Directory.Packages.props` only imports this file.
-- `references/Hexalith.Builds/Tools/package-version-exceptions.json` — Folders AppHost exception version is already `13.6.1`.
-- `tests/Hexalith.Folders.Testing.Tests/ScaffoldContractTests.cs:328` — requires the AppHost SDK to equal the catalog `Aspire.Hosting` version.
-- `tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs:227` — still looks for a local `PackageVersion Update="CommunityToolkit.Aspire.Hosting.Dapr"`, which is why `Single()` throws.
-- `scripts/generate-pd10-v2-contract.py` `transform_operation` — drops `x-hexalith-idempotency-behavior`, `x-hexalith-read-idempotency-key`, and moves `validation_error`. Committed v2 has 92 hunks of that drift. v1 does not contain those keys.
-- `tests/Hexalith.Folders.Contracts.Tests/OpenApi/Pd10V2GeneratorTests.cs:20` — byte compare.
-- `src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs` — v2 `CreateRepositoryBackedFolder` uses `RequestFolder`. A resolved `folderId` goes through layered folder authorization before historical dispatch. Safe denial is HTTP 404.
-- `src/Hexalith.Folders.Server/Authorization/Pd10OpaqueIdentifier.cs` — `folder_create_0001` is a valid opaque id. Do not loosen this grammar.
-- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs:164` — historical `POST /api/v1/folders/repository-backed`. Bind route at line 179 already satisfies the passing theory rows.
-- `tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs:1578` — the four failures are the create route only. `bindRepository: true` rows passed on run `37749981464`.
-- `tests/Hexalith.Folders.EventStore.Tests/MutateFilesIdempotencyIntentAdapterTests.cs:57` and `:79` — whitespace error at column 17.
+- `tests/Hexalith.Folders.EventStore.Tests/MutateFilesIdempotencyIntentAdapterTests.cs` -- formatter owns two `with` brace breaks.
+- `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj` -- SDK 13.6.0 is stale; Builds catalog and exception require 13.6.1.
+- `tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs` -- inspect `references/Hexalith.Builds/Props/Directory.Packages.props`: conditioned `HexalithAspireHostingDaprVersion` equals 13.0.0 only for Folders.Aspire; the PackageVersion consumes it. Do not add a root override or modify Builds.
+- `scripts/generate-pd10-v2-contract.py:transform_operation` -- restore committed idempotency extensions at their ordered positions and leading validation_error category. Write generated checks to temporary paths only.
+- `tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs` -- seed existing folder and `manage_folder_access` with `SeedFolder` / `SeedPermissionsForAction` for four creation rows; bind rows already seed these. Retain downstream statuses and assert call counts/audit. Add missing, cross-tenant, absent/administer-denied, write-only, revoked, stale, and unavailable-authority coverage where absent, including known and unknown Content-Length. Assert canonical resource_unavailable redacted denial, one deny audit, and zero downstream calls.
+- `src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationCatalog.cs` and `Pd10V2CandidateCompatibilitySeam.cs` -- RequestFolder + FolderAdministration authorization is intentional. Commit `a20127c` removed the tenant bypass. Do not change authorization to make these tests pass.
+- `src/Hexalith.Folders/Aggregates/Folder/FolderAggregate.cs:Handle(CreateRepositoryBackedFolder)` -- requires IsCreated and Unbound. Committed v2 summary and authorization requirement explicitly require an existing folder.
+- `docs/operations/release-packages.md`, `tools/release-packages.json`, `tests/tools/run-release-package-gates.ps1` -- existing five-package read-only/dry-run path.
 
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `tests/Hexalith.Folders.EventStore.Tests/MutateFilesIdempotencyIntentAdapterTests.cs` -- apply the whitespace formatter -- the specialized gate fails before tests.
-- [ ] `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj` -- set the SDK to `Aspire.AppHost.Sdk/13.6.1` -- match the catalog and the existing Builds exception.
-- [ ] `tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs` -- assert the Builds `HexalithAspireHostingDaprVersion` condition for `Hexalith.Folders.Aspire` is `13.0.0` and contains no prerelease marker -- the local props file no longer holds `PackageVersion` rows.
-- [ ] `scripts/generate-pd10-v2-contract.py` -- emit the committed idempotency-behavior block, read idempotency-key denial, and `validation_error` order -- the generator test is a byte gate, not a license to shrink the contract.
-- [ ] `src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs` -- let `CreateRepositoryBackedFolder` authorize a folder that does not exist yet and then reach the historical handler -- create calls currently die as 404 while bind calls pass. Touch `FoldersDomainServiceEndpoints.cs` only if the historical handler, not the seam, is what returns 404.
-- [ ] Publication evidence -- run the check chosen in Open Questions and record the package ids, version, and run or index URLs in `docs/operations/release-packages.md` only when that check observes a new fact.
+- [x] `tests/Hexalith.Folders.EventStore.Tests/MutateFilesIdempotencyIntentAdapterTests.cs` -- apply scoped whitespace formatter.
+- [x] `src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj` -- align SDK to catalog 13.6.1.
+- [x] `tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs` -- assert conditioned Builds stable Dapr property, consumption, and absence of duplicate local override.
+- [x] `scripts/generate-pd10-v2-contract.py` -- reproduce committed v2 bytes, preserving extensions and order.
+- [x] `tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs` -- correct authorized existing-folder fixtures, retain four expected statuses and bind outcomes, prove missing/unauthorized requests never dispatch.
+- [x] `_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml` -- regenerate the deterministic inventory for the changed generator and golden test hashes; retain pending A6b, disabled production exposure, false closure/routing, the full path inventory, and immutable v1/matrix hashes. This is candidate metadata, not approval resealing.
+- [x] `docs/operations/release-packages.md` -- record read-only five-index observation plus local dry-run evidence with truthful source attribution.
 
 **Acceptance Criteria:**
-- Given `c8e3d99`'s gate set, when baseline format, the scaffold test, the Dapr test, and `GeneratorReproducesTheCommittedCandidateByteForByte` run, then each exits 0 and `hexalith.folders.v2.yaml` is unchanged.
-- Given the golden create tests, when `POST /api/v2/folders/repository-backed` is called for a missing folder and for downstream 422, 409, and 503, then the response matches the existing assertions and the bind-repository rows still pass.
-- Given the chosen publication check, when it finishes, then either all five `1.1.1` indexes still advertise `1.1.1`, or a new complete five-package version is visible on nuget.org with ten GitHub assets. A partial publish stops as an incident under the existing release doc.
+- Given the failing gate set, when baseline, scaffold, stable-Dapr and PD10 generator checks run, then they pass and the committed v2 bytes remain unchanged.
+- Given authorized existing-folder creation, when the downstream returns 202, 422, 409, or 503, then the existing expected status/category passes through with one dispatch and allow audit; bind rows still pass.
+- Given missing, cross-tenant, or insufficient folder authority, when repository creation is requested, then safe-denial 404 occurs with zero downstream calls; unusable authority remains 503.
+- Given read-only publication verification, when all checks finish, then all five indexes advertise 1.1.1 and local Release package/consumer gates pass without remote writes.
 
 ## Implementation Notes
 
+- 2026-10-08: User-directed continuation resolved read-only publication and preservation of existing-folder authorization. Applied only scoped formatting, SDK pin, conditioned Dapr assertion, generator emission, authorized fixture prerequisites and denial regressions; runtime authorization remained unchanged. The regenerated 224-path candidate inventory changed only generator/test hashes and combined digest `299d5cf79ccf38edda84adda8ce847e8068b361e7daae311007297d969c7e720`.
+- Final gates: baseline 36/36 checks; contract-spine 141/141 OpenAPI plus 34/34 generation; parity 12/12 categories; golden lifecycle 82/82 cases including 16 new denials; release conformance 9/9. Package dry run produced five nupkg and five snupkg and passed two isolated consumer builds. All five read-only NuGet indexes advertised 1.1.1 at 2026-10-08T13:11:40Z. Gate-generated parity/release reports were retained as fresh evidence.
+- Parent independently read the complete working-tree diff, verified all seven tasks and every acceptance/matrix row against passing gates, validated all 224 raw-byte artifact hashes, and compared protected files to baseline HEAD. v1/v2, authorization matrix/runtime, package inventory/catalog/workflow, routing and Story 1.17/tracker were unchanged. V1Only remains active; migration approval, exposure, observation, retirement and closure remain pending. No staging, commit, push, release dispatch or dependency/submodule update occurred.
+- Aspire baseline startup did not reach a running AppHost and was cancelled; `aspire ps --non-interactive --format Json` returned an empty list afterward. This does not establish topology readiness. Local 0.0.0-local.1 package metadata carries baseline revision `4affd6e530756b094b8081e7f9afb138856a03af` while archives include uncommitted repair bytes; no exact-source publication is claimed.
+
+- Final review patches parameterized successful creation for both body lengths and asserted complete provider problem tuples. Parent reran baseline (36/36), contract-spine (141/141 plus 34/34), parity (12/12 categories, golden 83/83), and package dry-run gates against the final tree; all exited 0. Python CI/CD tooling tests also passed 38/38. Final candidate digest is `1363d306d5901a5807a3a4cf57ba4b0d31c885580fa36f76b8688754e456c65f`; all 224 entries match final bytes. Two pre-existing review follow-ups were recorded in the deferred-work ledger; neither grants migration authority. Clarification: the expressly requested AppHost SDK pin changed to 13.6.1; catalog and submodule dependency pins did not change.
+
+- Workflow complete: CI repair spec is done; Story 1.17 and sprint status remain unchanged. Repository instructions reserve staging/committing for an explicit request, so the reviewed repair remains uncommitted. The skill's default local-commit step was not applied.
+
 ## Spec Change Log
+
+- 2026-10-08: Required contract-spine checks found only the two repaired candidate artifact hashes stale. Expanded the agent-owned task list to regenerate their deterministic conformance inventory. KEEP pending A6b, disabled production exposure, false closure/routing, v2 bytes and authorization guarantees. No signed approval or Story 1.17 state changes.
 
 ## Review Triage Log
 
+| Finding | Verdict / route | Evidence |
+| --- | --- | --- |
+| B1 effective stable Dapr evaluation | false / reject | The requested assertion targets the conditioned Builds property and checks its actual PackageVersion consumption plus absence of root overrides. The built Aspire nupkg also contains Dapr 13.0.0 and isolated consumers restore it; no divergent assignment/import occurs in the unchanged graph. |
+| B2 stable override exclusivity | false / reject | Exact project-name equality limits the stable property to Folders.Aspire; the unchanged catalog's unconditional default remains preview. Root broad overrides are rejected; no current downgrade of the AppHost/test graph was shown. |
+| B3 missing generator ordering anchors | low / reject | Omitting anchors in a modified source can omit policy emission, but the authoritative historical v1 is immutable and contains every anchor. Current generation matches all committed bytes; adding guards for malformed alternate sources would add complexity for a case outside ordinary use. |
+| B4 inherited generator keys | low / reject | Injecting conflicting derived extensions into a custom source can overwrite generated values. Immutable historical v1 contains neither extension; no production caller supplies the altered source. New input sanitization branches are unnecessary for this repair. |
+| B5 authorized unknown-length success coverage | low / patch | New denial rows cover streaming bodies, while the corrected success fixture only covers known length. Parameterize the same success case to verify legitimate streamed creation dispatches once after body authorization. |
+| B6 foreign permission snapshot boundary | medium / defer | The partitioned cross-tenant fixture correctly returns safe denial, but the unchanged EffectivePermissionsFolderPermissionEvidenceProvider does not compare returned snapshot tenant/folder identity to the request. A fixed reader returning foreign fresh evidence can therefore pass its grant checks. This pre-existing reader-boundary gap was not introduced by these fixture repairs; record separate scope-validation follow-up. |
+| B7 malformed/unproven revocation authority coverage | false / reject | FolderPermissionEvidenceProviderTests already cover future/malformed evidence and unproven revocation freshness for strict/mutation policies; Pd10ProtectedOperationExecutorTests checks incomplete/stale canonical 503 with zero protected reads. These ran in the baseline suites; unchanged layering maps those results fail-closed. |
+| B8 full provider response tuple assertions | low / patch | Corrected create/bind fixtures still asserted a subset of downstream problem fields. Add code, correlation, retryability and visibility assertions so restored outcomes exercise the complete declared tuple. |
+| E1 missing operation policy anchor | low / reject | Same malformed-alternate-source case as B3; committed source has required anchors and the current byte gate passes. Extra rejection guards would add complexity without a reachable ordinary input regression. |
+| E2 missing root policy anchor | low / reject | The immutable historical root contains the TTL-tier anchor, and both root extension declarations reproduce exactly. Removing it changes the forbidden historical input; no current contract omission occurs. |
+| V1 AppHost running-topology verification | medium / defer | Pre-verified gap: topology boot test skips unless HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION is enabled; normal CI leaves it unset and the local startup probe was unestablished. Existing DCP lane work belongs to Story 11.15. Keep this limitation separate from passing local repair gates. |
+
 ## Design Notes
 
-The Dapr stable pin already lives in the Builds catalog property. The failing test is stale, so retarget the assertion. The AppHost SDK string is the stale one; the exception inventory is already `13.6.1`.
-
-The generator diff removes contract policy that v1 never had and that the committed v2 still has. Restoring emission keeps the byte gate honest. Rewriting the yaml would publish a smaller contract.
-
-`folder_create_0001` passes `Pd10OpaqueIdentifier`. The 404 is consistent with RequestFolder authorization treating a not-yet-created folder as a safe denial before `HistoricalPath` runs. Bind rows seed an existing folder and use the route id, which is why they passed.
+The original draft's missing-folder acceptance conflicts with the committed contract, domain aggregate, and the later security fix. User-directed contract preservation resolves it through fixture repair, retaining every downstream outcome assertion. No runtime authorization change is needed. Intent gaps: none. Irreversibles: none. Footprint: six repair/evidence files, their generated candidate conformance manifest, plus this spec; no new public API.
 
 ## Verification
 
-**Commands:**
-- `dotnet format whitespace Hexalith.Folders.CI.slnx --verify-no-changes --include ./tests/Hexalith.Folders.EventStore.Tests/MutateFilesIdempotencyIntentAdapterTests.cs` -- expected: exit 0
-- `dotnet test tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj --filter RootBuildConfigurationOwnsTargetFrameworkAndPackageVersions` -- expected: pass
-- `dotnet test tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj --filter "FullyQualifiedName~StableReleaseShouldUseStableDaprIntegration|FullyQualifiedName~GeneratorReproducesTheCommittedCandidateByteForByte"` -- expected: pass
-- `dotnet test tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj --filter "FullyQualifiedName~CandidateAuthorizesRepositoryBackedCreationOfAMissingFolder|FullyQualifiedName~CandidateRepositoryCreateAndBindPreserveDeclaredProviderOutcome"` -- expected: pass, including the bind rows
+- `python3 -m unittest discover -s scripts/tests -p 'test_*.py'` -- 38 CI/CD tooling tests pass.
+- `pwsh tests/tools/run-baseline-ci-gates.ps1` -- Release restore/build, format, analyzers, hermetic suites and dependency modes pass.
+- `pwsh tests/tools/run-contract-spine-gates.ps1 -NoRestore` -- generator and generated artifacts pass.
+- `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` -- all twelve categories pass.
+- `dotnet tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll -class '*ReleasePackageConformanceTests'` -- full stable-Dapr and release policy class passes.
+- `dotnet tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll -class '*GoldenLifecycleParityTests'` -- creation, bind and denial coverage passes.
+- `pwsh tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId 4affd6e530756b094b8081e7f9afb138856a03af -SkipRestoreBuild` -- five packages, five symbols and package-only consumers pass. This is an unpublished working-tree dry run, not exact committed-source publication.
+
+Baseline Aspire probe was started with `aspire start --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --isolated --non-interactive --format Json`; record its result separately from hermetic gates. Do not install dependencies, initialize nested submodules, commit, stage, push, or overwrite concurrent edits. Run required Release gates sequentially to avoid shared build-output races. Use xUnit v3 direct assembly selectors; project `--filter` is unreliable under Microsoft.Testing.Platform.

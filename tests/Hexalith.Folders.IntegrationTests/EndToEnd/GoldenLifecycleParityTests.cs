@@ -1575,8 +1575,10 @@ public sealed class GoldenLifecycleParityTests
                 FolderId: folderId);
     }
 
-    [Fact]
-    public async Task CandidateAuthorizesRepositoryBackedCreationOfAMissingFolder()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CandidateAuthorizesRepositoryBackedCreationOfAnExistingFolder(bool unknownContentLength)
     {
         int downstreamCalls = 0;
         TestHost host = await TestHost.StartAsync(
@@ -1591,14 +1593,19 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder_create_0001");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", "folder_create_0001", "user-a", "manage_folder_access");
+            byte[] payload = Encoding.UTF8.GetBytes(
+                "{\"requestSchemaVersion\":\"v2\",\"folderId\":\"folder_create_0001\",\"branchRefPolicy\":{\"requestSchemaVersion\":\"v2\"}}");
+            using HttpContent content = unknownContentLength
+                ? new UnknownLengthContent(payload)
+                : new ByteArrayContent(payload);
+            content.Headers.ContentType = new("application/json");
             using HttpRequestMessage request = new(HttpMethod.Post, "/api/v2/folders/repository-backed")
             {
-                Content = new StringContent(
-                    "{\"requestSchemaVersion\":\"v2\",\"folderId\":\"folder_create_0001\",\"branchRefPolicy\":{\"requestSchemaVersion\":\"v2\"}}",
-                    Encoding.UTF8,
-                    "application/json"),
+                Content = content,
             };
-            request.Headers.Add("X-Correlation-Id", "correlation-create-missing");
+            request.Headers.Add("X-Correlation-Id", "correlation-create-existing");
             request.Headers.Add("Idempotency-Key", "idempotency_create_0001");
             request.Headers.Add("X-Hexalith-Task-Id", "task_create_00000001");
 
@@ -1611,7 +1618,149 @@ public sealed class GoldenLifecycleParityTests
             downstreamCalls.ShouldBe(1);
             host.AuditSink.Records.ShouldBe(
             [
-                new("user-a", "tenant-a", "CreateRepositoryBackedFolder", "folder-administration", "allow", "correlation-create-missing"),
+                new("user-a", "tenant-a", "CreateRepositoryBackedFolder", "folder-administration", "allow", "correlation-create-existing"),
+            ]);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("missing", false)]
+    [InlineData("missing", true)]
+    [InlineData("cross-tenant", false)]
+    [InlineData("cross-tenant", true)]
+    [InlineData("absent-authority", false)]
+    [InlineData("absent-authority", true)]
+    [InlineData("administer-denied", false)]
+    [InlineData("administer-denied", true)]
+    [InlineData("write-only", false)]
+    [InlineData("write-only", true)]
+    [InlineData("revoked", false)]
+    [InlineData("revoked", true)]
+    [InlineData("stale", false)]
+    [InlineData("stale", true)]
+    [InlineData("unavailable", false)]
+    [InlineData("unavailable", true)]
+    public async Task CandidateRepositoryCreationDeniesUnusableFolderAuthorityBeforeDispatch(
+        string authorityState,
+        bool unknownContentLength)
+    {
+        const string folderId = "folder_create_0001";
+        const string correlationId = "correlation-create-denied";
+        bool authorityUnavailable = authorityState is "stale" or "unavailable";
+        int downstreamCalls = 0;
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            permissionsOverride: authorityState == "unavailable"
+                ? new FixedEffectivePermissionsReadModel(EffectivePermissionsReadModelResult.Unavailable("projection_unavailable", Now))
+                : null,
+            downstreamOverride: context =>
+            {
+                downstreamCalls++;
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                return Task.CompletedTask;
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            string folderTenantId = authorityState == "cross-tenant" ? "tenant-b" : "tenant-a";
+            if (authorityState != "missing")
+            {
+                SeedFolder(host.Repository, folderTenantId, "org-a", folderId);
+            }
+
+            if (authorityState != "absent-authority")
+            {
+                List<EffectivePermissionEvidenceRow> evidence = [];
+                if (authorityState != "administer-denied")
+                {
+                    evidence.Add(new(
+                        EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                        EffectivePermissionPrincipal.User("user-a"),
+                        authorityState == "write-only" ? "mutate_files" : "manage_folder_access",
+                        Sequence: 1,
+                        EffectiveAt: Now.AddMinutes(-2)));
+                }
+
+                if (authorityState == "revoked")
+                {
+                    evidence.Add(new(
+                        EffectivePermissionEvidenceSource.FolderOverrideRevoke,
+                        EffectivePermissionPrincipal.User("user-a"),
+                        "manage_folder_access",
+                        Sequence: 2,
+                        EffectiveAt: Now.AddMinutes(-1)));
+                }
+
+                host.Permissions.Save(new EffectivePermissionsReadModelSnapshot(
+                    folderTenantId,
+                    "org-a",
+                    folderId,
+                    authorityState == "missing"
+                        ? EffectivePermissionsFolderLifecycleState.Missing
+                        : EffectivePermissionsFolderLifecycleState.Active,
+                    evidence,
+                    new EffectivePermissionsFreshness(
+                        "read_your_writes", Now, "permission-watermark-create-denied",
+                        Stale: authorityState == "stale",
+                        ReasonCode: authorityState == "stale" ? "projection_stale" : null),
+                    RevocationFreshnessEstablished: true,
+                    TaskScope: null));
+            }
+
+            FolderStreamName stream = FolderStreamName.Create(folderTenantId, folderId);
+            FolderState initialState = host.Repository.Load(stream);
+            byte[] payload = Encoding.UTF8.GetBytes(
+                "{\"requestSchemaVersion\":\"v2\",\"folderId\":\"folder_create_0001\",\"branchRefPolicy\":{\"requestSchemaVersion\":\"v2\"}}");
+            using HttpContent content = unknownContentLength
+                ? new UnknownLengthContent(payload)
+                : new ByteArrayContent(payload);
+            content.Headers.ContentType = new("application/json");
+            using HttpRequestMessage request = new(HttpMethod.Post, "/api/v2/folders/repository-backed") { Content = content };
+            AddMutationHeaders(request, "idempotency_create_denied", correlationId, "task_create_denied_01");
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(authorityUnavailable ? HttpStatusCode.ServiceUnavailable : HttpStatusCode.NotFound);
+            response.Content.Headers.ContentType?.MediaType.ShouldBe("application/problem+json");
+            using JsonDocument document = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            JsonElement problem = document.RootElement;
+            problem.EnumerateObject().Select(static property => property.Name).ShouldBe(
+            [
+                "type", "title", "status", "category", "code", "message", "correlationId",
+                "retryable", "clientAction", "details",
+            ]);
+            problem.GetProperty("type").GetString().ShouldBe("about:blank");
+            problem.GetProperty("title").GetString().ShouldBe(authorityUnavailable ? "Authorization evidence unavailable" : "Resource not available");
+            problem.GetProperty("status").GetInt32().ShouldBe(authorityUnavailable ? 503 : 404);
+            problem.GetProperty("category").GetString().ShouldBe(authorityUnavailable ? "read_model_unavailable" : "tenant_access_denied");
+            problem.GetProperty("code").GetString().ShouldBe(authorityUnavailable ? "projection_unavailable" : "resource_unavailable");
+            problem.GetProperty("message").GetString().ShouldBe(authorityUnavailable
+                ? "Authorization evidence is temporarily unavailable."
+                : "The requested resource is unavailable.");
+            problem.GetProperty("correlationId").GetString().ShouldBe(correlationId);
+            problem.GetProperty("retryable").GetBoolean().ShouldBe(authorityUnavailable);
+            problem.GetProperty("clientAction").GetString().ShouldBe(authorityUnavailable ? "retry" : "no_action");
+            JsonElement details = problem.GetProperty("details");
+            details.EnumerateObject().Select(static property => property.Name).ShouldBe(["visibility"]);
+            details.GetProperty("visibility").GetString().ShouldBe("redacted");
+            downstreamCalls.ShouldBe(0);
+            host.Gateway.ProcessCalls.ShouldBe(0);
+            host.Repository.Load(stream).ShouldBe(initialState);
+            host.Repository.EventsAppended.ShouldBe(0);
+            if (authorityState == "cross-tenant")
+            {
+                host.Repository.Load(FolderStreamName.Create("tenant-a", folderId)).IsCreated.ShouldBeFalse();
+            }
+
+            host.AuditSink.Records.ShouldBe(
+            [
+                new("user-a", "tenant-a", "CreateRepositoryBackedFolder", "folder-administration", "deny", correlationId),
             ]);
         }
         finally
@@ -1634,11 +1783,13 @@ public sealed class GoldenLifecycleParityTests
         string clientAction,
         string? finalState)
     {
+        int downstreamCalls = 0;
         TestHost host = await TestHost.StartAsync(
             tenantId: "tenant-a",
             principalId: "user-a",
             downstreamOverride: async context =>
             {
+                downstreamCalls++;
                 context.Response.StatusCode = status;
                 context.Response.ContentType = "application/problem+json";
                 string details = finalState is null
@@ -1650,11 +1801,9 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            if (bindRepository)
-            {
-                SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a", "manage_folder_access");
-                SeedFolder(host.Repository, "tenant-a", "org-a", CandidateFolderA);
-            }
+            string folderId = bindRepository ? CandidateFolderA : "folder_create_0001";
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", folderId, "user-a", "manage_folder_access");
+            SeedFolder(host.Repository, "tenant-a", "org-a", folderId);
             using HttpRequestMessage request = new(HttpMethod.Post,
                 bindRepository ? $"/api/v2/folders/{CandidateFolderA}/repository-bindings" : "/api/v2/folders/repository-backed")
             {
@@ -1670,11 +1819,20 @@ public sealed class GoldenLifecycleParityTests
             using JsonDocument body = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
             response.StatusCode.ShouldBe((HttpStatusCode)status);
             body.RootElement.GetProperty("category").GetString().ShouldBe(category);
+            body.RootElement.GetProperty("code").GetString().ShouldBe(category);
+            body.RootElement.GetProperty("correlationId").GetString().ShouldBe("correlation_create_0001");
+            body.RootElement.GetProperty("retryable").GetBoolean().ShouldBeFalse();
             body.RootElement.GetProperty("clientAction").GetString().ShouldBe(clientAction);
+            body.RootElement.GetProperty("details").GetProperty("visibility").GetString().ShouldBe("metadata_only");
             if (finalState is not null)
             {
                 body.RootElement.GetProperty("details").GetProperty("finalState").GetString().ShouldBe(finalState);
             }
+            downstreamCalls.ShouldBe(1);
+            host.AuditSink.Records.ShouldBe(
+            [
+                new("user-a", "tenant-a", bindRepository ? "BindRepository" : "CreateRepositoryBackedFolder", "folder-administration", "allow", "correlation_create_0001"),
+            ]);
         }
         finally
         {

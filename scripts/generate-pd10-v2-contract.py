@@ -281,6 +281,24 @@ def transform_operation(
     matrix: dict[str, Any],
     components: dict[str, Any],
 ) -> None:
+    idempotency_required = operation.get("x-hexalith-idempotency-key", {}).get("required") is True
+    # Preserve the committed extension order as well as its behavior declarations.
+    ordered_operation: dict[str, Any] = {}
+    for key, value in operation.items():
+        ordered_operation[key] = value
+        if idempotency_required and key == "x-hexalith-idempotency-ttl-tier":
+            ordered_operation["x-hexalith-idempotency-behavior"] = {
+                "newKey": "execute_once",
+                "liveEquivalent": "replay_same_logical_result",
+                "liveDifferent": "idempotency_conflict",
+                "expiredEquivalent": "idempotency_key_expired",
+                "expiredDifferent": "idempotency_key_expired",
+            }
+        elif not idempotency_required and key == "x-hexalith-read-consistency":
+            ordered_operation["x-hexalith-read-idempotency-key"] = "idempotency_key_not_allowed"
+    operation.clear()
+    operation.update(ordered_operation)
+
     responses = operation.setdefault("responses", {})
     if operation_id == "ValidateProviderReadiness":
         # This protected route returns the authorized-operator variant. NSwag chooses
@@ -319,10 +337,12 @@ def transform_operation(
     for category in ("authentication_failure", "tenant_access_denied", "read_model_unavailable"):
         if category not in categories:
             categories.append(category)
-    if operation.get("x-hexalith-idempotency-key", {}).get("required") is True:
+    if idempotency_required:
         for category in ("concurrency_conflict", "idempotency_admission_unavailable"):
             if category not in categories:
                 categories.append(category)
+    else:
+        categories = ["validation_error"] + [category for category in categories if category != "validation_error"]
     operation["x-hexalith-canonical-error-categories"] = categories
     operation["x-hexalith-operation-family"] = matrix["family"]
 
@@ -962,7 +982,18 @@ def build_runtime_problem_inventory(node: Any, *, include_direct: bool = True) -
 
 
 def transform(source: dict[str, Any], matrix: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    contract = copy.deepcopy(source)
+    contract: dict[str, Any] = {}
+    for key, value in copy.deepcopy(source).items():
+        contract[key] = value
+        if key == "x-hexalith-idempotency-ttl-tier":
+            contract["x-hexalith-idempotency-behavior"] = {
+                "vocabularyRef": "./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-idempotency-behavior",
+                "foundationUse": "Every mutation declares five durable admission behavior cells.",
+            }
+            contract["x-hexalith-read-idempotency-key"] = {
+                "vocabularyRef": "./extensions/hexalith-extension-vocabulary.yaml#/x-hexalith-read-idempotency-key",
+                "foundationUse": "Every read rejects a supplied key before source execution.",
+            }
     components = contract["components"]
     contract["info"]["version"] = "v2"
     contract["info"]["summary"] = "Non-routed PD10 v2 authorization Contract Spine candidate."

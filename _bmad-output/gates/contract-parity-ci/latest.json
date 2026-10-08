@@ -1,6 +1,6 @@
 {
   "gate": "contract-parity-ci",
-  "status": "failed",
+  "status": "passed",
   "report_path": "_bmad-output/gates/contract-parity-ci/latest.json",
   "diagnostic_policy": "metadata-only",
   "categories": [
@@ -272,8 +272,8 @@
         "tests/fixtures/parity-contract.yaml",
         "tests/shared/Parity/GoldenLifecycle.cs"
       ],
-      "status": "failed",
-      "exit_code": 1
+      "status": "passed",
+      "exit_code": 0
     },
     {
       "category": "cli-behavioral-parity",

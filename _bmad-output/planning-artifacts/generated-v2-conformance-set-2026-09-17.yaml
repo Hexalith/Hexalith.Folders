@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 52fe4ab7ff3a980e26076179a3327d3a006aa3594ad0131ca0fc973c253777b6
+candidate_set_sha256: 1363d306d5901a5807a3a4cf57ba4b0d31c885580fa36f76b8688754e456c65f
 artifact_count: 224
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -94,8 +94,8 @@ artifacts:
     sha256: 841bc26f7b786d97bbe0a8ee8df9c2c64a0badbcd893f5ffd0b9a76d57771381
   - path: "scripts/generate-pd10-v2-contract.py"
     kind: file
-    bytes: 54155
-    sha256: 0abf6dcde3695a4e859124b580d81dd0cb9b02c059a844b162d6fa3c14775918
+    bytes: 55935
+    sha256: 5c2e8ad727ae161cacafad6f0c0622ccbeac44fe832a027109df2b48b48f16c0
   - path: "scripts/generate-pd10-v2-runtime-catalog.py"
     kind: file
     bytes: 4534
@@ -634,8 +634,8 @@ artifacts:
     sha256: ce2c0b56a1fc678c96d2498ddb79708d6b52d2e2e2efba9acbb409a81c821f48
   - path: "tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs"
     kind: file
-    bytes: 199372
-    sha256: 054225f51a39eba3e75a64a49fda7ad05581a3fc099403e676375ca38098f6d5
+    bytes: 208192
+    sha256: 3de54ec395e27d8ece554bc3b9eefeda327795f65ab63311a0645441126e8b34
   - path: "tests/Hexalith.Folders.IntegrationTests/EndToEnd/RecordingPd10LoggerProvider.cs"
     kind: file
     bytes: 833

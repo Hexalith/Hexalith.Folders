@@ -89,6 +89,32 @@ The gate delegates packing and validation to:
 
 Exactly five `.nupkg` and five `.snupkg` files are written to `nupkgs/`. The metadata-only report is `_bmad-output/gates/release-packages/latest.json`.
 
+## Read-only Verification on 2026-10-08
+
+At `2026-10-08T13:11:40Z`, read-only GET requests to the five NuGet.org flat-container version indexes returned HTTP 200 and each advertised `1.1.1`:
+
+| Package version index | HTTP status | Advertised version |
+| --- | --- | --- |
+| [Hexalith.Folders.Contracts](https://api.nuget.org/v3-flatcontainer/hexalith.folders.contracts/index.json) | 200 | `1.1.1` |
+| [Hexalith.Folders](https://api.nuget.org/v3-flatcontainer/hexalith.folders/index.json) | 200 | `1.1.1` |
+| [Hexalith.Folders.Client](https://api.nuget.org/v3-flatcontainer/hexalith.folders.client/index.json) | 200 | `1.1.1` |
+| [Hexalith.Folders.Aspire](https://api.nuget.org/v3-flatcontainer/hexalith.folders.aspire/index.json) | 200 | `1.1.1` |
+| [Hexalith.Folders.Testing](https://api.nuget.org/v3-flatcontainer/hexalith.folders.testing/index.json) | 200 | `1.1.1` |
+
+This observation confirms version-index availability for the existing release. It does not prove a new exact-source publication of the CI repairs. No version, release dispatch, deployment, remote policy, or tag was changed; `v1.1.0` and `v1.1.1` remain immutable.
+
+The local Release/package-mode dry run passed with:
+
+```powershell
+pwsh tests/tools/run-release-package-gates.ps1 -Version 0.0.0-local.1 -SourceRevisionId 4affd6e530756b094b8081e7f9afb138856a03af -SkipRestoreBuild
+```
+
+The same-run baseline gate had already passed Release restore/build, whitespace, analyzers, hermetic suites, and dependency-mode checks. After refreshing the deterministic candidate conformance inventory for the repaired generator and golden tests, contract-spine and all twelve contract-parity categories passed. The release dry run produced exactly five packages and five symbol archives, validated package metadata, archive safety and dependency closure, and built two isolated package-only consumers covering all five packages. `_bmad-output/gates/release-packages/latest.json` records `mode: DryRun`, `status: passed`, and publication as `skipped-dry-run`.
+
+The supplied source revision is baseline HEAD metadata. The local archives include the uncommitted working-tree repairs and are unpublished `0.0.0-local.1` artifacts; this evidence does not establish exact committed-source publication or replace successful push CI for a future release. The existing NuGet `1.1.1` indexes refer to the prior publication.
+
+The separate baseline Aspire probe used `aspire start --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --isolated --non-interactive --format Json`. It did not establish a running AppHost: two `aspire describe` checks and `aspire stop` reported no running AppHost, and the owned startup was cancelled with `Stopping Aspire` and exit 0. This is an unestablished startup baseline, not a passing topology gate.
+
 ## CI and Supply-Chain Policy
 
 `.github/workflows/ci.yml` delegates standard Release/Microsoft.Testing.Platform build, test, coverage, and consumer validation to Hexalith.Builds. The Folders contract/parity, security/redaction, capacity smoke and calibration, retention/deletion, NFR traceability, safety, governance, accessibility, and end-to-end gates remain additive and blocking for the same commit. CI and release builds select centrally pinned NuGet dependencies through the standard `CI=true` MSBuild property; local Debug development may retain source dependencies.
