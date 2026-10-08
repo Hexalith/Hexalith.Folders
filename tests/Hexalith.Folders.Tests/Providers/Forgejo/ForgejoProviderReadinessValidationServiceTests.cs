@@ -42,7 +42,9 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
 
         result.Code.ShouldBe(ProviderReadinessResultCode.Allowed);
         result.Status.ShouldBe("ready", result.ReasonCode);
-        result.Evidence.ShouldNotBeNull().FileOperations.ShouldBe("supported");
+        result.Evidence.ShouldNotBeNull().RepositoryCreation.ShouldBe("temporarily_unavailable");
+        result.Evidence.FileOperations.ShouldBe("supported");
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
         result.CapabilityProfileRef.ShouldNotBeNullOrWhiteSpace();
         apiClient.LastRequest.ShouldNotBeNull().SupportedSnapshotVersion.ShouldBe("16.0.3");
         apiClient.LastRequest.ShouldNotBeNull().CredentialMode.ShouldBe(ProviderCredentialMode.UserDelegatedReference);

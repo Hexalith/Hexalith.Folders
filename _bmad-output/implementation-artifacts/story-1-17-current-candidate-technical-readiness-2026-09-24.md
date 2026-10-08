@@ -250,3 +250,65 @@ tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Cont
 ```
 
 Independent acceptance inspection again confirmed all 224 candidate artifact hashes, the manifest digest, and unchanged historical v1, authorization matrix, approval register, and tracker bytes. Current provenance still matches 16/20 bindings; the same four mismatches remain. The concurrently created `spec-fix-ci-and-verify-nuget-publication.md` covers the golden creation and stable-Dapr failures and was preserved. Passing local consumer checks, truthful failed-gate evidence, and the refreshed manifest do not authorize production exposure or Story 1.17 closure.
+
+## Addendum 2026-10-08: final-byte recheck and hold
+
+Evaluated at 2026-10-08T14:58:35Z. Folders HEAD is `f0e7154461ff21226851046494b3f2b2fd8a772e`. That commit includes the CI repair that corrected the golden-creation fixtures and the stable-Dapr assertion. `264b555` then changed `tests/Hexalith.Folders.Client.Tests/ClientGenerationTests.cs`. An uncommitted tracker edit had moved Story 1.17 from `backlog` to `in-progress`; it was restored before this evidence was recorded. **Result: local technical gates that previously failed now pass on the resealed candidate, and the migration entry decision remains hold.** `V1Only` remains required, T0 is unset, and no authorized tracker transition occurred.
+
+### Candidate and dependency identity
+
+Two isolated generations of `python3 scripts/generate-pd10-v2-conformance-set.py --repository-root . --output <scratch>/{c,d}.yaml` were byte-identical. Acceptance verification wrote that output over the checked-in inventory, which until then hashed to `7c0e078ff30d4abace4b853c094a920263566c5bf5fa45d529e4392a0d4d17ad` with candidate set `0394783dbf2d5d4ce0c422b08a589c49927efe14d2efd5fafa4c21d45d1f40b2`. The checked-in file now matches both generations. A later regeneration and `Pd10ConformanceSetTests` (3/3), `FoldersApiRoutingModeTests` (18/18), and the Projects folder plus file-reference adapter tests (39/39) passed on that file. Only the current top-level conformance provenance binding was refreshed, from `cae97c1f…` to the new manifest digest. Historical approval bindings were not rewritten. The four pre-existing planning-document mismatches remain.
+
+| Artifact | Exact identity |
+| --- | --- |
+| Final conformance manifest | Raw SHA-256 `835eee602d0f2f1daf8e22d8aef1138076d296c89c3159ba641977c9981de2de`; 41900 bytes; declared candidate set `8b0b70326ba83c95334a9046e0a55a5137e371f7e22ca7651f15bc642de4446f`; 224 artifacts. `production_routed` remains `false` and `story_closure_claimed` remains `false`. |
+| Current planning manifest | SHA-256 `8edc35e93f66ae0e96df87ffbf83c9027785638bb60300eb9e8c80aa2d790b59`. Story 1.17 `story_lifecycle_status` remains `backlog`; `v2_exposure_authorized` remains `false`. |
+| Preserved authority evidence | Authorization matrix SHA-256 `d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420`; historical v1 SHA-256 `3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2`; approval register SHA-256 `2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff`. |
+| Tracker | SHA-256 `cc964658f61d7cc4bf7ca61478f2fb75720b60c6028708dc65d4cc1a0930e540`; Story 1.17 remains `backlog`. |
+| Cached `Hexalith.Folders.Client` `1.1.1` | SHA-256 `e778aad218dcaf670fe8fb40ff40a83d76f224b62d77d6a4d0612aed9eab5db4`, matching the earlier release-lane record for source `d5f49e96dfab10bf2839ec263a343a6a4c13b06f`. |
+| Cached `Hexalith.Folders.Contracts` `1.1.1` | SHA-256 `cb85fb7d0e6013ccbe3058061c9e6a57fbdd1a95367f97692dc187a73fe0cf0c`, matching that same record. |
+| Local Projects Server build output | `Hexalith.Projects.Server.dll` SHA-256 `10b9f57aea20bdc126a46eb45042e2d1c76cfcc33a6b81cf0a2b5187face69d8`; `.deps.json` SHA-256 `f1cb8d209f47932aa9afd38c99f3051972da8583835f5ec504c8ff833563555b`. This remains a local build identity, not a production deployment artifact. |
+
+The released `1.1.1` pair is still not an exact package of this candidate. No new publication was attempted.
+
+| Repository | Exact revision through the checks below |
+| --- | --- |
+| Folders | `f0e7154461ff21226851046494b3f2b2fd8a772e` plus the recorded evidence and inventory edits |
+| Builds | `50b0257001fe91f14bf16c7ea877d3e92bdfdf08` |
+| Tenants | `5bfe0715591ecae8790472b29bb0e7d8986da4ae` |
+| EventStore | `9542d3c9f48bf9ce1c57f2ef68904703eaba56cc` |
+| FrontComposer | `0e114214007c22f5cdbac21a6853cff4208340ee` |
+| Memories | `dbe4ce0a97c6a3a883af800f7873a99b79434d44` |
+| Commons | `116d26815eb81e35b3c161e1799e5ee12805fc0a` |
+| PolymorphicSerializations | `98de6e013840ece9f0fa7c68ab7dcdf2bba3b375` |
+| Projects | `caf3721427f0b4834415369c2b4a5f981725474f` |
+
+The loaded Builds central package catalog remains SHA-256 `1e2621765f2632077f906e945bf4d74916fef5dec04ec34d630dfce545dfbc78`. These submodule revisions were observed again after the final parity run and were unchanged. No submodule was staged, committed, updated, or reverted.
+
+### Verification
+
+| Command or check | Result |
+| --- | --- |
+| `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1` | Exit 0; 0 warnings, 0 errors. Restore reported all projects up to date. |
+| `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` | Exit 0 on the final candidate bytes; 12/12 categories pass, including `rest-sdk-golden-parity` and `pd10-v2-conformance-set`. Report SHA-256 `03f22fd4ee8d0018b3ee1ea42b5f93fd55cfa81e518a0bbc67b9c1583e78ae43`. |
+| `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` | Exit 0; governance 22/22, authorization matrix 7/7, conformance 3/3. Report SHA-256 `4a5630580f3aec35925bef605bfa2616dc16452024abc592ca2be21d074997a7`. This suite does not prove every Section 9 provenance binding. |
+| Integration executable: `-class Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests` | Exit 0; 18/18. Hold, coexistence, retirement, attribution, and invalid modes remain covered. |
+| Contracts executable: A6b conformance, v2 candidate, matrix, Release package, and NFR classes | Exit 0; 41/41, including `StableReleaseShouldUseStableDaprIntegration`. |
+| Contracts executable: `-class Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests` after the final reseal | Exit 0; 3/3, including byte-for-byte generator reproduction. |
+| Projects Release/package build of `tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj` with `UseHexalithProjectReferences=false` and `--no-incremental` | Exit 0; 0 warnings, 0 errors. Assets resolve Client and Contracts to `1.1.1`. |
+| Projects test executable: folder and file-reference directory classes | Exit 0; 39/39. |
+
+Direct comparison of the 20 current provenance bindings matches 16/20. The same four mismatches remain:
+
+| Current provenance path | Bound SHA-256 | Observed SHA-256 |
+| --- | --- | --- |
+| `_bmad-output/planning-artifacts/prd.md` | `743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c` | `b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608` |
+| `_bmad-output/planning-artifacts/architecture.md` | `74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e` | `da13b2bd481b0c72355ad41ecf52b63f303711f4f5293ea89673cd05f916fce1` |
+| `_bmad-output/planning-artifacts/epics.md` | `a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc` | `d1ac3564c5f50b48f4d2978546703dab82c1b8288d70c203317bf45d23c70492` |
+| `docs/exit-criteria/nfr-traceability.md` | `d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588` | `7e3065a226339a78875f0687f39711f31ac8d21a0160f6e8af5ffb061f97423c` |
+
+Those four bindings stay with the owning planning reconciliation. Because they still fail S9-02, this recheck does not establish a passing current A8 technical condition. The earlier September passing replays and the same-day 11/12 parity result remain historical.
+
+### Entry decision
+
+Keep the hold. Check 1 still fails on the four provenance mismatches, the difference between the released `1.1.1` pair and this candidate, and the absent production artifact tuple. Check 2 still lacks a Projects deployment artifact and a verified periodic schedule. Checks 3 through 5 still lack production attribution, a baseline, thresholds, a consumer census, an exact-artifact rehearsal, UTC slots, and named owners. The ordinary production host still does not register a durable EventStore-backed `IFolderRepository`; that seam stays with Story 12.1. No remote release, deployment, route change, retirement, or closure was attempted. Story 1.17 stays open.

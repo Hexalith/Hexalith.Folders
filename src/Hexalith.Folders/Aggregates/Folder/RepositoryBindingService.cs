@@ -325,16 +325,30 @@ public sealed class RepositoryBindingService(
 
         if (string.Equals(binding.ProviderKind, "forgejo", StringComparison.Ordinal))
         {
-            string baseUrl = TryGetSafeMetadata(binding, "authorized_base_url") ?? "https://forgejo.example.test";
-            metadata["authorized_base_url"] = baseUrl;
+            metadata["operation_scope"] = "existing_repository_binding";
+            metadata["authorized_base_url"] = ResolvePolicyAlias(
+                binding,
+                ["authorized_base_url"],
+                IsSafeBaseUrl,
+                "forgejo_authorized_base_url_evidence_missing",
+                "forgejo_authorized_base_url_evidence_conflicting",
+                "forgejo_authorized_base_url_evidence_malformed");
         }
 
         return new ProviderTargetEvidence(
             binding.ProviderKind,
-            TryGetSafeMetadata(binding, "provider_product_version")
-                ?? TryGetSafeMetadata(binding, "product_version")
-                ?? TryGetSafeMetadata(binding, "snapshot_version")
-                ?? "provider_binding_v1",
+            string.Equals(binding.ProviderKind, "forgejo", StringComparison.Ordinal)
+                ? ResolvePolicyAlias(
+                    binding,
+                    ["provider_product_version", "product_version", "snapshot_version", "forgejo_snapshot_version"],
+                    IsSafeVersionAlias,
+                    "forgejo_product_version_evidence_missing",
+                    "forgejo_product_version_evidence_conflicting",
+                    "forgejo_product_version_evidence_malformed")
+                : TryGetSafeMetadata(binding, "provider_product_version")
+                    ?? TryGetSafeMetadata(binding, "product_version")
+                    ?? TryGetSafeMetadata(binding, "snapshot_version")
+                    ?? "provider_binding_v1",
             "provider_api_metadata_only",
             "provider_binding_v1",
             !string.Equals(binding.ConfiguredStatus, "configured", StringComparison.Ordinal),
@@ -356,6 +370,65 @@ public sealed class RepositoryBindingService(
 
         return null;
     }
+
+    private static string ResolvePolicyAlias(
+        OrganizationProviderBinding binding,
+        IReadOnlyList<string> keys,
+        Func<string, bool> isSafe,
+        string missing,
+        string conflicting,
+        string malformed)
+    {
+        List<string> values = [];
+        bool sawMalformed = false;
+        foreach (string key in keys)
+        {
+            CollectAlias(binding.NamingPolicy.Metadata, key, isSafe, values, ref sawMalformed);
+            CollectAlias(binding.BranchPolicy.Metadata, key, isSafe, values, ref sawMalformed);
+        }
+
+        if (sawMalformed)
+        {
+            return malformed;
+        }
+
+        List<string> distinct = values
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        return distinct.Count switch
+        {
+            0 => missing,
+            1 => distinct[0],
+            _ => conflicting,
+        };
+    }
+
+    private static void CollectAlias(
+        IReadOnlyDictionary<string, string> metadata,
+        string key,
+        Func<string, bool> isSafe,
+        List<string> values,
+        ref bool sawMalformed)
+    {
+        if (!metadata.TryGetValue(key, out string? value))
+        {
+            return;
+        }
+
+        if (value is null || !isSafe(value))
+        {
+            sawMalformed = true;
+            return;
+        }
+
+        values.Add(value.Trim());
+    }
+
+    private static bool IsSafeVersionAlias(string value)
+        => IsSafeMetadataValue("provider_product_version", value);
+
+    private static bool IsSafeBaseUrl(string value)
+        => IsSafeMetadataValue("authorized_base_url", value);
 
     private static bool IsSafeMetadataValue(string key, string? value)
     {

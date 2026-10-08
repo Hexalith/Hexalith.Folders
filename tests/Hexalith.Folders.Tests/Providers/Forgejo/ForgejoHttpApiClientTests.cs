@@ -18,8 +18,8 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.Created,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main"}"""));
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(),
@@ -36,8 +36,9 @@ public sealed class ForgejoHttpApiClientTests
         body.RootElement.GetProperty("name").GetString().ShouldBe("forgejo-repository");
         body.RootElement.GetProperty("private").GetBoolean().ShouldBeTrue();
         body.RootElement.GetProperty("auto_init").GetBoolean().ShouldBeFalse();
+        body.RootElement.GetProperty("default_branch").GetString().ShouldBe("main");
         body.RootElement.EnumerateObject().Select(static property => property.Name)
-            .ShouldBe(["auto_init", "name", "private"], ignoreOrder: true);
+            .ShouldBe(["auto_init", "default_branch", "name", "private"], ignoreOrder: true);
     }
 
     [Fact]
@@ -45,7 +46,7 @@ public sealed class ForgejoHttpApiClientTests
     {
         RecordingHttpMessageHandler handler = new(
             JsonResponse(HttpStatusCode.Created, """{"id":42}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
         using CancellationTokenSource cancellation = new();
         cancellation.Cancel();
 
@@ -59,6 +60,38 @@ public sealed class ForgejoHttpApiClientTests
     }
 
     [Fact]
+    public async Task CreateRejectsLiveVersionMismatchBeforeMutation()
+    {
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"15.0.7"}"""));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.VersionIncompatible);
+        handler.Requests.ShouldHaveSingleItem().Uri.AbsolutePath.ShouldBe("/api/v1/version");
+    }
+
+    [Fact]
+    public async Task CreateConflictWithoutAuthorizedObservationDoesNotReadTheRepository()
+    {
+        RecordingHttpMessageHandler handler = new(new HttpResponseMessage(HttpStatusCode.Conflict));
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
+
+        ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            CreationRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.RepositoryConflict);
+        result.SuppressMutationRetry.ShouldBeTrue();
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Post);
+    }
+
+    [Fact]
     public async Task CreateConflictPerformsOneIdentityObservationAndNeverRetriesMutation()
     {
         RecordingHttpMessageHandler handler = new(
@@ -66,7 +99,7 @@ public sealed class ForgejoHttpApiClientTests
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"id":42,"name":"forgejo-repository","private":true,"internal":false}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(Target(expectedCanonicalRepositoryId: "42", equivalentExistingAuthorized: true)),
@@ -90,7 +123,7 @@ public sealed class ForgejoHttpApiClientTests
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"id":42,"name":"forgejo-repository","private":true,"internal":false}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(Target(expectedCanonicalRepositoryId: "42", equivalentExistingAuthorized: true)),
@@ -111,7 +144,7 @@ public sealed class ForgejoHttpApiClientTests
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"id":43,"name":"forgejo-repository","private":true,"internal":false}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(Target(expectedCanonicalRepositoryId: "42", equivalentExistingAuthorized: true)),
@@ -131,7 +164,7 @@ public sealed class ForgejoHttpApiClientTests
         HttpResponseMessage response = new(statusCode);
         response.Headers.TryAddWithoutValidation("Retry-After", "30");
         RecordingHttpMessageHandler handler = new(response);
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(),
@@ -148,7 +181,7 @@ public sealed class ForgejoHttpApiClientTests
     {
         RecordingHttpMessageHandler handler = new(
             JsonResponse(HttpStatusCode.Created, """{"id":"repo-secret","name":"wrong"}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(),
@@ -164,7 +197,7 @@ public sealed class ForgejoHttpApiClientTests
     public async Task MutationTimeoutAfterDispatchIsUnknownAndNeverRetried()
     {
         RecordingHttpMessageHandler handler = new(new TaskCanceledException("provider-secret-timeout"));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(),
@@ -174,6 +207,22 @@ public sealed class ForgejoHttpApiClientTests
         result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.TimeoutDuringMutation);
         JsonSerializer.Serialize(result).ShouldNotContain("provider-secret-timeout", Case.Sensitive);
         handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Post);
+    }
+
+    [Fact]
+    public async Task ValidateBindingRejectsLiveVersionMismatchBeforeRepositoryObservation()
+    {
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"version":"15.0.7"}"""));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest(),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.VersionIncompatible);
+        handler.Requests.ShouldHaveSingleItem().Uri.AbsolutePath.ShouldBe("/api/v1/version");
     }
 
     [Fact]
@@ -187,7 +236,7 @@ public sealed class ForgejoHttpApiClientTests
                 HttpStatusCode.OK,
                 """{"name":"release/1.0","protected":true,"effective_branch_protection_name":"release/*"}"""),
             JsonResponse(HttpStatusCode.OK, """{"rule_name":"release/*"}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(Target(
@@ -225,7 +274,7 @@ public sealed class ForgejoHttpApiClientTests
             _ => """{"id":42,"name":"forgejo-repository","private":false,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}""",
         };
         RecordingHttpMessageHandler handler = new(JsonResponse(HttpStatusCode.OK, response));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -241,7 +290,7 @@ public sealed class ForgejoHttpApiClientTests
     {
         RecordingHttpMessageHandler handler = new(
             JsonResponse(HttpStatusCode.OK, """{"id":42}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(Target(refKind: ProviderRepositoryRefKind.Tag)),
@@ -258,7 +307,7 @@ public sealed class ForgejoHttpApiClientTests
         HttpResponseMessage redirect = new(HttpStatusCode.TemporaryRedirect);
         redirect.Headers.Location = new Uri("https://attacker.example.test/api/v1/repositories");
         RecordingHttpMessageHandler handler = new(redirect);
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(),
@@ -274,7 +323,7 @@ public sealed class ForgejoHttpApiClientTests
     {
         string oversized = "{\"padding\":\"" + new string('a', (256 * 1024) + 1) + "\"}";
         RecordingHttpMessageHandler handler = new(JsonResponse(HttpStatusCode.OK, oversized));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -290,6 +339,7 @@ public sealed class ForgejoHttpApiClientTests
     {
         const string credential = "provider-secret-bearer-a";
         RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"id":7,"login":"forgejo-user"}"""),
             JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""));
         ForgejoHttpApiClientFactory factory = new(() => new HttpClient(handler));
         await using ForgejoCredentialLease lease = ForgejoCredentialLease.CreateForTesting(credential);
@@ -317,7 +367,10 @@ public sealed class ForgejoHttpApiClientTests
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.ShouldBeTrue();
-        RecordedHttpRequest request = handler.Requests.ShouldHaveSingleItem();
+        handler.Requests.Count.ShouldBe(2);
+        handler.Requests[0].Uri.AbsolutePath.ShouldBe("/api/v1/user");
+        RecordedHttpRequest request = handler.Requests[1];
+        request.Uri.AbsolutePath.ShouldBe("/api/v1/version");
         request.AuthorizationScheme.ShouldBe("Bearer");
         request.AuthorizationParameter.ShouldBe(credential);
         request.UserAgent.ShouldBe(ForgejoProviderConstants.ProductHeader);
@@ -331,7 +384,9 @@ public sealed class ForgejoHttpApiClientTests
     [InlineData("[]")]
     public async Task ReadinessMapsMalformedVersionEvidenceWithoutThrowing(string responseBody)
     {
-        RecordingHttpMessageHandler handler = new(JsonResponse(HttpStatusCode.OK, responseBody));
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"id":7,"login":"forgejo-user"}"""),
+            JsonResponse(HttpStatusCode.OK, responseBody));
         ForgejoHttpApiClient client = CreateClient(handler);
 
         ForgejoReadinessResult result = await client.GetReadinessAsync(
@@ -358,7 +413,7 @@ public sealed class ForgejoHttpApiClientTests
             JsonResponse(
                 HttpStatusCode.Accepted,
                 """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -379,7 +434,7 @@ public sealed class ForgejoHttpApiClientTests
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"name":"other","protected":true,"effective_branch_protection_name":"main"}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -401,7 +456,7 @@ public sealed class ForgejoHttpApiClientTests
                 HttpStatusCode.OK,
                 """{"name":"main","protected":true,"effective_branch_protection_name":"main"}"""),
             JsonResponse(HttpStatusCode.OK, """{"rule_name":"other"}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -428,7 +483,7 @@ public sealed class ForgejoHttpApiClientTests
                     @protected = true,
                     effective_branch_protection_name = unboundedProtectionName,
                 })));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
             BindingRequest(),
@@ -444,7 +499,7 @@ public sealed class ForgejoHttpApiClientTests
     {
         RecordingHttpMessageHandler handler = new(
             JsonResponse(HttpStatusCode.Created, """{"id":42}"""));
-        ForgejoHttpApiClient client = CreateClient(handler);
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(Target(expectedCanonicalRepositoryId: "not-numeric")),
@@ -801,8 +856,13 @@ public sealed class ForgejoHttpApiClientTests
         unavailable.MutationDispatched.ShouldBeTrue();
     }
 
-    private static ForgejoHttpApiClient CreateClient(HttpMessageHandler handler)
+    private static ForgejoHttpApiClient CreateClient(HttpMessageHandler handler, bool synthesizeVersionPreflight = false)
     {
+        if (synthesizeVersionPreflight && handler is RecordingHttpMessageHandler recording)
+        {
+            recording.SynthesizedVersion = "16.0.3";
+        }
+
         HttpClient httpClient = new(handler)
         {
             BaseAddress = new Uri("https://forgejo.example.test/"),
@@ -968,6 +1028,8 @@ public sealed class ForgejoHttpApiClientTests
 
         public List<RecordedHttpRequest> Requests { get; } = [];
 
+        public string? SynthesizedVersion { get; set; }
+
         protected override async Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
             CancellationToken cancellationToken)
@@ -975,6 +1037,12 @@ public sealed class ForgejoHttpApiClientTests
             string? body = request.Content is null
                 ? null
                 : await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (SynthesizedVersion is not null
+                && request.RequestUri?.AbsolutePath.EndsWith("/version", StringComparison.Ordinal) == true)
+            {
+                return JsonResponse(HttpStatusCode.OK, $"{{\"version\":\"{SynthesizedVersion}\"}}");
+            }
+
             Requests.Add(new RecordedHttpRequest(
                 request.Method,
                 request.RequestUri.ShouldNotBeNull(),

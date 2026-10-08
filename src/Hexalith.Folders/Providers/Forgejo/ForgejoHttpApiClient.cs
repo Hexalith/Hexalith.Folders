@@ -57,6 +57,12 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
             return ForgejoReadinessResult.Failure(ForgejoApiFailureCondition.NativeRuntimeUnavailable);
         }
 
+        ForgejoApiFailureCondition? userFailure = await ReadAuthenticatedUserAsync(cancellationToken).ConfigureAwait(false);
+        if (userFailure is not null)
+        {
+            return ForgejoReadinessResult.Failure(userFailure.Value);
+        }
+
         HttpResponseMessage response;
         try
         {
@@ -161,9 +167,18 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
             return ForgejoRepositoryCreationResult.Failure(ForgejoApiFailureCondition.ValidationFailure);
         }
 
+        ForgejoApiFailureCondition? versionFailure = await PreflightLiveVersionAsync(
+            request.SupportedSnapshotVersion,
+            cancellationToken).ConfigureAwait(false);
+        if (versionFailure is not null)
+        {
+            return ForgejoRepositoryCreationResult.Failure(versionFailure.Value);
+        }
+
         Dictionary<string, object?> body = new(StringComparer.Ordinal)
         {
             ["auto_init"] = false,
+            ["default_branch"] = request.Target.DefaultBranch,
             ["name"] = request.Target.RepositoryName,
             ["private"] = isPrivate,
         };
@@ -186,6 +201,14 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
                 or HttpStatusCode.Conflict
                 or HttpStatusCode.UnprocessableEntity)
             {
+                if (!request.Target.EquivalentExistingAuthorized
+                    || string.IsNullOrWhiteSpace(request.Target.ExpectedCanonicalRepositoryId))
+                {
+                    return ForgejoRepositoryCreationResult.Failure(
+                        ForgejoApiFailureCondition.RepositoryConflict,
+                        suppressMutationRetry: true);
+                }
+
                 return await ReconcileExistingRepositoryAsync(request, cancellationToken).ConfigureAwait(false);
             }
 
@@ -197,9 +220,18 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
             }
 
             using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
-            return TryReadRepositoryIdentity(document, request.Target, requirePolicyEvidence: false, out string? canonicalRepositoryId, out _)
+            if (!TryReadRepositoryIdentity(document, request.Target, requirePolicyEvidence: false, out string? canonicalRepositoryId, out _))
+            {
+                return ForgejoRepositoryCreationResult.Failure(
+                    ForgejoApiFailureCondition.AmbiguousMutationResponse,
+                    suppressMutationRetry: true);
+            }
+
+            return TryReadExactString(document, "default_branch", request.Target.DefaultBranch)
                 ? ForgejoRepositoryCreationResult.Success(canonicalRepositoryId: canonicalRepositoryId)
-                : ForgejoRepositoryCreationResult.Failure(ForgejoApiFailureCondition.AmbiguousMutationResponse);
+                : ForgejoRepositoryCreationResult.Failure(
+                    ForgejoApiFailureCondition.DefaultBranchConflict,
+                    suppressMutationRetry: true);
         }
         catch (OperationCanceledException) when (!mutationDispatched)
         {
@@ -248,6 +280,14 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
         if (request.Target.SelectedRefKind != ProviderRepositoryRefKind.Branch)
         {
             return ForgejoRepositoryBindingResult.Failure(ForgejoApiFailureCondition.UnsupportedRefOperation);
+        }
+
+        ForgejoApiFailureCondition? versionFailure = await PreflightLiveVersionAsync(
+            request.SupportedSnapshotVersion,
+            cancellationToken).ConfigureAwait(false);
+        if (versionFailure is not null)
+        {
+            return ForgejoRepositoryBindingResult.Failure(versionFailure.Value);
         }
 
         try
@@ -355,33 +395,186 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
             using HttpResponseMessage response = await SendObservationAsync(
                 ApiUri($"repos/{Escape(request.Target.Owner)}/{Escape(request.Target.RepositoryName)}"),
                 cancellationToken).ConfigureAwait(false);
-            if (response.StatusCode != HttpStatusCode.OK)
+            ForgejoApiFailureCondition? observationFailure = MapObservationResponse(
+                response,
+                ForgejoApiFailureCondition.NotFoundOrHidden);
+            if (observationFailure is not null)
             {
-                return ForgejoRepositoryCreationResult.Failure(ForgejoApiFailureCondition.RepositoryConflict);
+                return ForgejoRepositoryCreationResult.Failure(observationFailure.Value, suppressMutationRetry: true);
             }
 
             using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
-            if (!request.Target.EquivalentExistingAuthorized
-                || string.IsNullOrWhiteSpace(request.Target.ExpectedCanonicalRepositoryId)
-                || !TryReadRepositoryIdentity(document, request.Target, requirePolicyEvidence: false, out string? canonicalRepositoryId, out _)
+            if (!TryReadRepositoryIdentity(document, request.Target, requirePolicyEvidence: false, out string? canonicalRepositoryId, out _)
                 || !string.Equals(
                     request.Target.ExpectedCanonicalRepositoryId,
                     canonicalRepositoryId,
                     StringComparison.Ordinal))
             {
-                return ForgejoRepositoryCreationResult.Failure(ForgejoApiFailureCondition.RepositoryConflict);
+                return ForgejoRepositoryCreationResult.Failure(
+                    ForgejoApiFailureCondition.RepositoryConflict,
+                    suppressMutationRetry: true);
             }
 
             return ForgejoRepositoryCreationResult.Success(equivalentExisting: true, canonicalRepositoryId);
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return ForgejoRepositoryCreationResult.Failure(
+                ForgejoApiFailureCondition.ObservationCancelled,
+                suppressMutationRetry: true);
+        }
         catch (OperationCanceledException)
         {
-            return ForgejoRepositoryCreationResult.Failure(ForgejoApiFailureCondition.RepositoryConflict);
+            return ForgejoRepositoryCreationResult.Failure(
+                ForgejoApiFailureCondition.ServerUnavailable,
+                suppressMutationRetry: true);
         }
-        catch (Exception) when (!cancellationToken.IsCancellationRequested)
+        catch (HttpRequestException)
         {
-            return ForgejoRepositoryCreationResult.Failure(ForgejoApiFailureCondition.RepositoryConflict);
+            return ForgejoRepositoryCreationResult.Failure(
+                ForgejoApiFailureCondition.UnexpectedTransportFailure,
+                suppressMutationRetry: true);
         }
+        catch (JsonException)
+        {
+            return ForgejoRepositoryCreationResult.Failure(
+                ForgejoApiFailureCondition.MalformedResponse,
+                suppressMutationRetry: true);
+        }
+        catch (IOException)
+        {
+            return ForgejoRepositoryCreationResult.Failure(
+                ForgejoApiFailureCondition.UnexpectedTransportFailure,
+                suppressMutationRetry: true);
+        }
+    }
+
+    private async Task<ForgejoApiFailureCondition?> ReadAuthenticatedUserAsync(CancellationToken cancellationToken)
+    {
+        HttpResponseMessage response;
+        try
+        {
+            response = await _client.GetAsync(
+                ApiUri("user"),
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return ForgejoApiFailureCondition.ServerUnavailable;
+        }
+        catch (HttpRequestException)
+        {
+            return ForgejoApiFailureCondition.UnexpectedTransportFailure;
+        }
+
+        using (response)
+        {
+            ForgejoApiFailureCondition? responseFailure = MapObservationResponse(
+                response,
+                ForgejoApiFailureCondition.AuthenticationRequired);
+            if (responseFailure is not null)
+            {
+                return responseFailure;
+            }
+
+            try
+            {
+                using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
+                return IsAuthenticatedUser(document)
+                    ? null
+                    : ForgejoApiFailureCondition.MalformedResponse;
+            }
+            catch (JsonException)
+            {
+                return ForgejoApiFailureCondition.MalformedResponse;
+            }
+            catch (IOException)
+            {
+                return ForgejoApiFailureCondition.UnexpectedTransportFailure;
+            }
+        }
+    }
+
+    private async Task<ForgejoApiFailureCondition?> PreflightLiveVersionAsync(
+        string expectedSnapshotVersion,
+        CancellationToken cancellationToken)
+    {
+        HttpResponseMessage response;
+        try
+        {
+            response = await SendObservationAsync(ApiUri("version"), cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return ForgejoApiFailureCondition.CancellationBeforeDispatch;
+        }
+        catch (OperationCanceledException)
+        {
+            return ForgejoApiFailureCondition.ServerUnavailable;
+        }
+        catch (HttpRequestException)
+        {
+            return ForgejoApiFailureCondition.UnexpectedTransportFailure;
+        }
+
+        using (response)
+        {
+            ForgejoApiFailureCondition? responseFailure = MapObservationResponse(
+                response,
+                ForgejoApiFailureCondition.VersionIncompatible);
+            if (responseFailure is not null)
+            {
+                return responseFailure == ForgejoApiFailureCondition.NotFoundOrHidden
+                    ? ForgejoApiFailureCondition.VersionIncompatible
+                    : responseFailure;
+            }
+
+            try
+            {
+                using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
+                string? productVersion = document is not null
+                    && document.RootElement.ValueKind == JsonValueKind.Object
+                    && document.RootElement.TryGetProperty("version", out JsonElement version)
+                    && version.ValueKind == JsonValueKind.String
+                        ? version.GetString()
+                        : null;
+                return string.Equals(productVersion, expectedSnapshotVersion, StringComparison.Ordinal)
+                    ? null
+                    : ForgejoApiFailureCondition.VersionIncompatible;
+            }
+            catch (JsonException)
+            {
+                return ForgejoApiFailureCondition.MalformedResponse;
+            }
+            catch (IOException)
+            {
+                return ForgejoApiFailureCondition.UnexpectedTransportFailure;
+            }
+        }
+    }
+
+    private static bool IsAuthenticatedUser(JsonDocument? document)
+    {
+        if (document is null || document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            return false;
+        }
+
+        if (!document.RootElement.TryGetProperty("id", out JsonElement id)
+            || id.ValueKind != JsonValueKind.Number
+            || !id.TryGetInt64(out long numericId)
+            || numericId <= 0
+            || !document.RootElement.TryGetProperty("login", out JsonElement login)
+            || login.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        string? name = login.GetString();
+        return name is { Length: > 0 and <= 100 }
+            && !name.Contains("://", StringComparison.Ordinal)
+            && !name.Any(char.IsControl);
     }
 
     private async Task<HttpResponseMessage> SendObservationAsync(Uri uri, CancellationToken cancellationToken)

@@ -168,6 +168,26 @@ public sealed partial class ProviderReadinessValidationService(
             return mismatched;
         }
 
+        if (!Enum.IsDefined(request.RequestedCapability))
+        {
+            ProviderReadinessValidationResult undefinedCapability = Result(
+                ProviderReadinessResultCode.Allowed,
+                Failed,
+                ProviderFailureCategory.ProviderValidationFailed,
+                "requested_capability_malformed",
+                retryable: false,
+                retryAfter: null,
+                remediationCategory: "fix_provider_configuration",
+                correlationId,
+                providerReference: providerBindingRef,
+                providerBindingRef,
+                capabilityProfileRef: null,
+                evidence: null,
+                Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: false));
+            await StoreAsync(undefinedCapability, managedTenantId, binding.OrganizationId, null, null, cancellationToken).ConfigureAwait(false);
+            return undefinedCapability;
+        }
+
         ProviderCapabilityDiscoveryRequest discoveryRequest = BuildDiscoveryRequest(
             binding,
             tenantAccess,
@@ -280,6 +300,28 @@ public sealed partial class ProviderReadinessValidationService(
         string correlationId,
         string? projectionWatermark)
     {
+        if (!Enum.IsDefined(requestedCapability))
+        {
+            return Result(
+                ProviderReadinessResultCode.Allowed,
+                Failed,
+                ProviderFailureCategory.ProviderValidationFailed,
+                "requested_capability_malformed",
+                retryable: false,
+                retryAfter: null,
+                remediationCategory: "fix_provider_configuration",
+                correlationId,
+                providerReference: profile.ProviderBindingRef,
+                providerBindingRef: profile.ProviderBindingRef,
+                capabilityProfileRef: null,
+                evidence: null,
+                new ProviderReadinessFreshness(
+                    SnapshotPerTask,
+                    profile.TargetEvidence.ObservedAt ?? DateTimeOffset.UtcNow,
+                    projectionWatermark ?? profile.AuthorizationEvidenceFingerprint,
+                    Stale: false));
+        }
+
         IReadOnlyList<string> required = RequiredOperations(requestedCapability);
         IReadOnlyDictionary<string, ProviderOperationCapability> operations = profile.Operations
             .GroupBy(static operation => operation.OperationId, StringComparer.Ordinal)
@@ -299,6 +341,8 @@ public sealed partial class ProviderReadinessValidationService(
             {
                 case ProviderOperationSupport.Supported:
                     break;
+                case ProviderOperationSupport.Partial when IsAdmittedTargetPermissionPartial(requestedCapability, operation):
+                    break;
                 case ProviderOperationSupport.Partial:
                 case ProviderOperationSupport.Emulated:
                     degraded = true;
@@ -307,6 +351,11 @@ public sealed partial class ProviderReadinessValidationService(
                     failed = true;
                     break;
             }
+        }
+
+        if (failed && IsDirectUnsupportedStoryRequest(requestedCapability, operations))
+        {
+            degraded = false;
         }
 
         string status = failed ? Failed : degraded ? Degraded : Ready;
@@ -458,41 +507,92 @@ public sealed partial class ProviderReadinessValidationService(
     }
 
     private static IReadOnlyList<string> RequiredOperations(ProviderReadinessRequestedCapability requestedCapability)
-    {
-        List<string> required =
-        [
-            ProviderOperationCatalog.ReadinessValidation,
-            ProviderOperationCatalog.BranchRefInspection,
-            ProviderOperationCatalog.FileMutationSupport,
-            ProviderOperationCatalog.CommitSupport,
-            ProviderOperationCatalog.StatusQuery,
-            ProviderOperationCatalog.ProviderSupportEvidence,
-        ];
-
-        switch (requestedCapability)
+        => requestedCapability switch
         {
-            case ProviderReadinessRequestedCapability.ExistingRepositoryBinding:
-                required.Add(ProviderOperationCatalog.RepositoryBinding);
-                break;
-            case ProviderReadinessRequestedCapability.RepositoryCreation:
-                required.Add(ProviderOperationCatalog.RepositoryCreation);
-                break;
-            case ProviderReadinessRequestedCapability.BranchRefPolicy:
-                break;
-            case ProviderReadinessRequestedCapability.WorkspacePreparation:
-                required.Add(ProviderOperationCatalog.WorkspacePreparation);
-                break;
-            case ProviderReadinessRequestedCapability.FileOperations:
-            case ProviderReadinessRequestedCapability.CommitStatus:
-            case ProviderReadinessRequestedCapability.ProviderErrors:
-            case ProviderReadinessRequestedCapability.FailureBehavior:
-                break;
-            default:
-                required.Add(ProviderOperationCatalog.RepositoryCreation);
-                break;
+            ProviderReadinessRequestedCapability.RepositoryCreation =>
+            [
+                ProviderOperationCatalog.ReadinessValidation,
+                ProviderOperationCatalog.ProviderSupportEvidence,
+                ProviderOperationCatalog.RepositoryCreation,
+            ],
+            ProviderReadinessRequestedCapability.ExistingRepositoryBinding =>
+            [
+                ProviderOperationCatalog.ReadinessValidation,
+                ProviderOperationCatalog.ProviderSupportEvidence,
+                ProviderOperationCatalog.RepositoryBinding,
+            ],
+            ProviderReadinessRequestedCapability.BranchRefPolicy =>
+            [
+                ProviderOperationCatalog.ReadinessValidation,
+                ProviderOperationCatalog.ProviderSupportEvidence,
+                ProviderOperationCatalog.BranchRefInspection,
+            ],
+            ProviderReadinessRequestedCapability.WorkspacePreparation =>
+            [
+                ProviderOperationCatalog.ReadinessValidation,
+                ProviderOperationCatalog.ProviderSupportEvidence,
+                ProviderOperationCatalog.WorkspacePreparation,
+            ],
+            ProviderReadinessRequestedCapability.FileOperations =>
+            [
+                ProviderOperationCatalog.FileMutationSupport,
+            ],
+            ProviderReadinessRequestedCapability.CommitStatus =>
+            [
+                ProviderOperationCatalog.CommitSupport,
+                ProviderOperationCatalog.StatusQuery,
+            ],
+            ProviderReadinessRequestedCapability.ProviderErrors
+                or ProviderReadinessRequestedCapability.FailureBehavior =>
+            [
+                ProviderOperationCatalog.ReadinessValidation,
+                ProviderOperationCatalog.ProviderSupportEvidence,
+            ],
+            _ =>
+            [
+                ProviderOperationCatalog.ReadinessValidation,
+            ],
+        };
+
+    private static bool IsAdmittedTargetPermissionPartial(
+        ProviderReadinessRequestedCapability requestedCapability,
+        ProviderOperationCapability operation)
+    {
+        string? matchingOperation = requestedCapability switch
+        {
+            ProviderReadinessRequestedCapability.RepositoryCreation => ProviderOperationCatalog.RepositoryCreation,
+            ProviderReadinessRequestedCapability.ExistingRepositoryBinding => ProviderOperationCatalog.RepositoryBinding,
+            ProviderReadinessRequestedCapability.BranchRefPolicy => ProviderOperationCatalog.BranchRefInspection,
+            _ => null,
+        };
+
+        return matchingOperation is not null
+            && string.Equals(operation.OperationId, matchingOperation, StringComparison.Ordinal)
+            && operation.Constraints.TryGetValue("permission_posture", out string? posture)
+            && string.Equals(posture, "authenticated_target_permission_dependent", StringComparison.Ordinal);
+    }
+
+    private static bool IsDirectUnsupportedStoryRequest(
+        ProviderReadinessRequestedCapability requestedCapability,
+        IReadOnlyDictionary<string, ProviderOperationCapability> operations)
+    {
+        if (requestedCapability is not (
+            ProviderReadinessRequestedCapability.FileOperations
+            or ProviderReadinessRequestedCapability.CommitStatus))
+        {
+            return false;
         }
 
-        return required;
+        foreach (string operationId in RequiredOperations(requestedCapability))
+        {
+            if (!operations.TryGetValue(operationId, out ProviderOperationCapability? operation)
+                || operation.Support is ProviderOperationSupport.Unavailable or ProviderOperationSupport.Unsupported)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static ProviderReadinessCapabilityEvidence ToEvidence(ProviderCapabilityProfile profile)

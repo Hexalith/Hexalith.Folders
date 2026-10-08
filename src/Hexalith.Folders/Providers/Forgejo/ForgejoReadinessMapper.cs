@@ -12,17 +12,32 @@ internal static class ForgejoReadinessMapper
         [
             Operation(ProviderOperationCatalog.ReadinessValidation, true),
             Operation(ProviderOperationCatalog.ProviderSupportEvidence, permissions.SupportsMetadata),
-            Operation(ProviderOperationCatalog.RepositoryCreation, permissions.SupportsRepositoryCreation),
-            Operation(ProviderOperationCatalog.RepositoryBinding, permissions.SupportsRepositoryBinding),
+            TargetPermissionOperation(
+                ProviderOperationCatalog.RepositoryCreation,
+                permissions.SupportsRepositoryCreation,
+                new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["allowed_visibility"] = "public,private",
+                    ["implicit_initialization"] = "disabled",
+                }),
+            TargetPermissionOperation(
+                ProviderOperationCatalog.RepositoryBinding,
+                permissions.SupportsRepositoryBinding,
+                null),
             ProviderCapabilityOperationRow.WithDetails(
                 ProviderOperationCatalog.BranchRefInspection,
-                permissions.SupportsBranchRefInspection ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                permissions.SupportsBranchRefInspection
+                    ? ProviderOperationSupport.Partial
+                    : ProviderOperationSupport.Unavailable,
                 limits: new Dictionary<string, string>(StringComparer.Ordinal)
                 {
                     ["maximum_branch_name_characters"] = "100",
                     ["ref_model"] = "git_refs",
                     ["pagination"] = permissions.SupportsPagination ? "link_header" : "unknown",
                 },
+                constraints: permissions.SupportsBranchRefInspection
+                    ? TargetPermissionConstraints()
+                    : null,
                 failureCategory: permissions.SupportsBranchRefInspection ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
             ProviderCapabilityOperationRow.WithDetails(
                 ProviderOperationCatalog.FileMutationSupport,
@@ -118,4 +133,27 @@ internal static class ForgejoReadinessMapper
                 operationId,
                 ProviderOperationSupport.Unavailable,
                 failureCategory: ProviderFailureCategory.ProviderPermissionInsufficient);
+
+    private static ProviderCapabilityOperationRow TargetPermissionOperation(
+        string operationId,
+        bool authenticated,
+        IReadOnlyDictionary<string, string>? limits)
+        => authenticated
+            ? ProviderCapabilityOperationRow.WithDetails(
+                operationId,
+                ProviderOperationSupport.Partial,
+                limits,
+                TargetPermissionConstraints(),
+                retryable: false)
+            : ProviderCapabilityOperationRow.WithDetails(
+                operationId,
+                ProviderOperationSupport.Unavailable,
+                limits,
+                failureCategory: ProviderFailureCategory.ProviderPermissionInsufficient);
+
+    private static Dictionary<string, string> TargetPermissionConstraints()
+        => new(StringComparer.Ordinal)
+        {
+            ["permission_posture"] = "authenticated_target_permission_dependent",
+        };
 }

@@ -164,45 +164,101 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 request.CorrelationId),
             cancellationToken).ConfigureAwait(false);
 
+        if (credentialResult is null || !IsCoherentCredential(credentialResult))
+        {
+            await DisposeCredentialQuietlyAsync(credentialResult?.Credential).ConfigureAwait(false);
+            return Failure(
+                ProviderFailureCategory.ProviderValidationFailed,
+                "forgejo_operation_evidence_malformed",
+                request);
+        }
+
         if (!credentialResult.IsSuccess)
         {
+            await DisposeCredentialQuietlyAsync(credentialResult.Credential).ConfigureAwait(false);
             return Failure(
                 credentialResult.FailureCategory,
                 credentialResult.ReasonCode,
                 request,
-                credentialResult.RetryAfter);
+                credentialResult.FailureCategory.IsRetryableByDefault()
+                    ? SafeRetryAfter(credentialResult.RetryAfter)
+                    : null);
         }
 
-        ForgejoCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
+        ForgejoCredentialLease credential = credentialResult.Credential!;
+        IForgejoApiClient? client = null;
         ForgejoReadinessResult readiness;
         try
         {
-            IForgejoApiClient client = await _apiClientFactory.CreateAsync(
-                new ForgejoApiClientRequest(
-                    ForgejoProviderConstants.ProductHeader,
-                    canonicalBaseUri,
-                    ForgejoProviderConstants.ApiSurfaceVersion,
-                    credentialMode,
-                    request.ProviderBindingRef,
-                    request.CorrelationId),
-                credential,
-                cancellationToken).ConfigureAwait(false);
+            try
+            {
+                client = await _apiClientFactory.CreateAsync(
+                    new ForgejoApiClientRequest(
+                        ForgejoProviderConstants.ProductHeader,
+                        canonicalBaseUri,
+                        ForgejoProviderConstants.ApiSurfaceVersion,
+                        credentialMode,
+                        request.ProviderBindingRef,
+                        request.CorrelationId),
+                    credential,
+                    cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return Failure(
+                    ProviderFailureCategory.ProviderFailureKnown,
+                    "forgejo_cancellation_before_dispatch",
+                    request);
+            }
+            catch (Exception)
+            {
+                return Failure(
+                    ProviderFailureCategory.ProviderUnavailable,
+                    "forgejo_server_unavailable",
+                    request);
+            }
 
-            readiness = await client.GetReadinessAsync(
-                new ForgejoReadinessRequest(
-                    request.ManagedTenantId,
-                    request.OrganizationId,
-                    request.ProviderBindingRef,
-                    credentialMode,
-                    ForgejoProviderConstants.ApiSurfaceVersion,
-                    supportedVersion.Version,
-                    safeTargetEvidence.Metadata["safe_target_fingerprint"],
-                    request.CorrelationId),
-                cancellationToken).ConfigureAwait(false);
+            try
+            {
+                readiness = await client.GetReadinessAsync(
+                    new ForgejoReadinessRequest(
+                        request.ManagedTenantId,
+                        request.OrganizationId,
+                        request.ProviderBindingRef,
+                        credentialMode,
+                        ForgejoProviderConstants.ApiSurfaceVersion,
+                        supportedVersion.Version,
+                        safeTargetEvidence.Metadata["safe_target_fingerprint"],
+                        request.CorrelationId),
+                    cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return Failure(
+                    ProviderFailureCategory.ProviderFailureKnown,
+                    "forgejo_observation_cancelled",
+                    request);
+            }
+            catch (Exception)
+            {
+                return Failure(
+                    ProviderFailureCategory.ProviderUnavailable,
+                    "forgejo_server_unavailable",
+                    request);
+            }
         }
         finally
         {
-            await credential.DisposeAsync().ConfigureAwait(false);
+            await DisposeClientQuietlyAsync(client).ConfigureAwait(false);
+            await DisposeCredentialQuietlyAsync(credential).ConfigureAwait(false);
+        }
+
+        if (readiness is null || !IsCoherentReadiness(readiness))
+        {
+            return Failure(
+                ProviderFailureCategory.ProviderFailureKnown,
+                "forgejo_malformed_response",
+                request);
         }
 
         if (!readiness.IsSuccess)
@@ -210,7 +266,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
             return ForgejoFailureMapper.ToProviderFailure(readiness, request);
         }
 
-        ForgejoVersionEvidence version = readiness.Version.ShouldNotBeNullForProvider();
+        ForgejoVersionEvidence version = readiness.Version!;
         if (!ForgejoSupportedVersionCatalog.TryFind(
             version.SnapshotVersion,
             out ForgejoSupportedVersionEntry observedVersion))
@@ -242,8 +298,8 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
             effectiveRequest,
             ProviderFamily,
             ProviderKey,
-            ForgejoReadinessMapper.ToOperationRows(readiness.Permissions.ShouldNotBeNullForProvider()),
-            ForgejoReadinessMapper.ToRateLimit(readiness.RateLimit.ShouldNotBeNullForProvider()),
+            ForgejoReadinessMapper.ToOperationRows(readiness.Permissions!),
+            ForgejoReadinessMapper.ToRateLimit(readiness.RateLimit!),
             ForgejoFailureMapper.KnownFailureMappings,
             ForgejoReadinessMapper.ToEvidence(
                 request,
@@ -396,8 +452,18 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 request.CorrelationId),
             cancellationToken).ConfigureAwait(false);
 
+        if (credentialResult is null || !IsCoherentCredential(credentialResult))
+        {
+            await DisposeCredentialQuietlyAsync(credentialResult?.Credential).ConfigureAwait(false);
+            return RepositoryFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                "forgejo_operation_evidence_malformed");
+        }
+
         if (!credentialResult.IsSuccess)
         {
+            await DisposeCredentialQuietlyAsync(credentialResult.Credential).ConfigureAwait(false);
             return RepositoryFailure(
                 request,
                 credentialResult.FailureCategory,
@@ -405,11 +471,11 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 credentialResult.RetryAfter);
         }
 
-        ForgejoCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
+        ForgejoCredentialLease credential = credentialResult.Credential!;
+        IForgejoApiClient? client = null;
         ForgejoRepositoryCreationResult result;
         try
         {
-            IForgejoApiClient client;
             try
             {
                 client = await _apiClientFactory.CreateAsync(
@@ -440,7 +506,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
 
             try
             {
-                result = await client.CreateRepositoryAsync(
+                result = await client!.CreateRepositoryAsync(
                     new ForgejoRepositoryCreationRequest(
                         request.ManagedTenantId,
                         request.OrganizationId,
@@ -472,7 +538,17 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         }
         finally
         {
-            await credential.DisposeAsync().ConfigureAwait(false);
+            await DisposeClientQuietlyAsync(client).ConfigureAwait(false);
+            await DisposeCredentialQuietlyAsync(credential).ConfigureAwait(false);
+        }
+
+        if (result is null || !IsCoherentCreation(result))
+        {
+            return ProviderRepositoryCreationResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderFailureKnown,
+                "forgejo_malformed_response",
+                safeTargetFingerprint: safeTargetEvidence.Metadata["safe_target_fingerprint"]);
         }
 
         if (result.IsSuccess)
@@ -638,8 +714,18 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 request.CorrelationId),
             cancellationToken).ConfigureAwait(false);
 
+        if (credentialResult is null || !IsCoherentCredential(credentialResult))
+        {
+            await DisposeCredentialQuietlyAsync(credentialResult?.Credential).ConfigureAwait(false);
+            return RepositoryBindingFailure(
+                request,
+                ProviderFailureCategory.ProviderValidationFailed,
+                "forgejo_operation_evidence_malformed");
+        }
+
         if (!credentialResult.IsSuccess)
         {
+            await DisposeCredentialQuietlyAsync(credentialResult.Credential).ConfigureAwait(false);
             return RepositoryBindingFailure(
                 request,
                 credentialResult.FailureCategory,
@@ -647,11 +733,11 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 credentialResult.RetryAfter);
         }
 
-        ForgejoCredentialLease credential = credentialResult.Credential.ShouldNotBeNullForProvider();
+        ForgejoCredentialLease credential = credentialResult.Credential!;
+        IForgejoApiClient? client = null;
         ForgejoRepositoryBindingResult result;
         try
         {
-            IForgejoApiClient client;
             try
             {
                 client = await _apiClientFactory.CreateAsync(
@@ -682,7 +768,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
 
             try
             {
-                result = await client.ValidateRepositoryBindingAsync(
+                result = await client!.ValidateRepositoryBindingAsync(
                     new ForgejoRepositoryBindingRequest(
                         request.ManagedTenantId,
                         request.OrganizationId,
@@ -714,7 +800,17 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         }
         finally
         {
-            await credential.DisposeAsync().ConfigureAwait(false);
+            await DisposeClientQuietlyAsync(client).ConfigureAwait(false);
+            await DisposeCredentialQuietlyAsync(credential).ConfigureAwait(false);
+        }
+
+        if (result is null || !IsCoherentBinding(result))
+        {
+            return ProviderRepositoryBindingResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderFailureKnown,
+                "forgejo_malformed_response",
+                safeTargetFingerprint: safeTargetEvidence.Metadata["safe_target_fingerprint"]);
         }
 
         if (result.IsSuccess)
@@ -1022,6 +1118,88 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
             && (target.ExpectedCanonicalRepositoryId is null
                 || SafeCanonicalRepositoryId(target.ExpectedCanonicalRepositoryId) is not null);
 
+    private static bool IsCoherentCredential(ForgejoCredentialResolutionResult result)
+        => result.IsSuccess
+            ? result.Credential is not null
+                && result.FailureCategory == ProviderFailureCategory.None
+                && string.Equals(result.ReasonCode, "success", StringComparison.Ordinal)
+                && result.RetryAfter is null
+            : result.FailureCategory != ProviderFailureCategory.None
+                && Enum.IsDefined(result.FailureCategory)
+                && IsSafeOpaqueValue(result.ReasonCode)
+                && (result.FailureCategory.IsRetryableByDefault() || result.RetryAfter is null);
+
+    private static bool IsCoherentReadiness(ForgejoReadinessResult result)
+        => result.IsSuccess
+            ? result.FailureCondition is null
+                && result.RetryAfter is null
+                && result.Version is not null
+                && result.Permissions is not null
+                && result.RateLimit is not null
+            : result.FailureCondition is { } condition
+                && Enum.IsDefined(condition)
+                && condition != ForgejoApiFailureCondition.None
+                && result.Version is null
+                && result.Permissions is null
+                && result.RateLimit is null;
+
+    private static bool IsCoherentCreation(ForgejoRepositoryCreationResult result)
+        => result.IsSuccess
+            ? result.FailureCondition is null
+                && result.RetryAfter is null
+                && !result.SuppressMutationRetry
+                && SafeCanonicalRepositoryId(result.CanonicalRepositoryId) is not null
+            : result.FailureCondition is { } condition
+                && Enum.IsDefined(condition)
+                && condition != ForgejoApiFailureCondition.None
+                && result.CanonicalRepositoryId is null
+                && !result.EquivalentExisting;
+
+    private static bool IsCoherentBinding(ForgejoRepositoryBindingResult result)
+        => result.IsSuccess
+            ? result.FailureCondition is null
+                && result.RetryAfter is null
+                && SafeCanonicalRepositoryId(result.CanonicalRepositoryId) is not null
+            : result.FailureCondition is { } condition
+                && Enum.IsDefined(condition)
+                && condition != ForgejoApiFailureCondition.None
+                && result.CanonicalRepositoryId is null
+                && !result.EquivalentExisting;
+
+    private static async Task DisposeClientQuietlyAsync(IForgejoApiClient? client)
+    {
+        if (client is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await client.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            // Disposal must not replace a classified provider result.
+        }
+    }
+
+    private static async Task DisposeCredentialQuietlyAsync(ForgejoCredentialLease? credential)
+    {
+        if (credential is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await credential.DisposeAsync().ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            // Disposal must not replace a classified provider result.
+        }
+    }
+
     private ProviderCapabilityDiscoveryResult? ValidateBoundary(ProviderCapabilityDiscoveryRequest request)
     {
         try
@@ -1230,26 +1408,34 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         ProviderFailureCategory category,
         string reasonCode,
         TimeSpan? retryAfter = null)
-        => ProviderRepositoryCreationResult.Failure(
+    {
+        bool retryable = category.IsRetryableByDefault();
+        return ProviderRepositoryCreationResult.Failure(
             request,
             category,
             reasonCode,
-            retryAfter,
+            retryable ? SafeRetryAfter(retryAfter) : null,
             safeRemediationCode: category == ProviderFailureCategory.UnknownProviderOutcome
                 ? "reconciliation_required_metadata_only"
-                : $"{category.ToCategoryCode()}_remediation");
+                : $"{category.ToCategoryCode()}_remediation",
+            retryable);
+    }
 
     private static ProviderRepositoryBindingResult RepositoryBindingFailure(
         ProviderRepositoryBindingRequest request,
         ProviderFailureCategory category,
         string reasonCode,
         TimeSpan? retryAfter = null)
-        => ProviderRepositoryBindingResult.Failure(
+    {
+        bool retryable = category.IsRetryableByDefault();
+        return ProviderRepositoryBindingResult.Failure(
             request,
             category,
             reasonCode,
-            retryAfter,
+            retryable ? SafeRetryAfter(retryAfter) : null,
             safeRemediationCode: category == ProviderFailureCategory.UnknownProviderOutcome
                 ? "reconciliation_required_metadata_only"
-                : $"{category.ToCategoryCode()}_remediation");
+                : $"{category.ToCategoryCode()}_remediation",
+            retryable);
+    }
 }

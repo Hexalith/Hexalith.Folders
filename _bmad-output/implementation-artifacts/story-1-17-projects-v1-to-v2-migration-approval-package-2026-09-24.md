@@ -85,3 +85,9 @@ The prior statements that no released v2 pair exists and Projects preparation is
 | 5: clock and ownership | T0 and relative deadlines remain defined by the accepted plan. | Record actual UTC slots, accountable operations/on-call owners, calculated deadline, retirement slot, and schedule-fit proof before T0. |
 
 **Entry decision: hold.** The missing durable `IFolderRepository` in the ordinary Folders production host is an additional activation blocker owned by Story 12.1; this story does not substitute an in-memory store. Keep `V1Only`. No activation, deployment, T0, ordinary-traffic observation, v1 retirement, closure decision, or authorized tracker transition was performed. Story 1.17 remains open.
+
+## 2026-10-08 final-byte recheck
+
+The [final-byte readiness addendum](story-1-17-current-candidate-technical-readiness-2026-09-24.md#addendum-2026-10-08-final-byte-recheck-and-hold) supersedes the golden-creation and stable-Dapr failures named in the table above. On Folders `f0e7154461ff21226851046494b3f2b2fd8a772e` plus the resealed 224-artifact inventory, parity passes 12/12 and the package/NFR/A6b class set passes 41/41. Projects `caf3721427f0b4834415369c2b4a5f981725474f` still builds and passes its focused adapters, 39/39, against the cached released `1.1.1` pair. That pair is still not this candidate. The four current provenance mismatches for the PRD, architecture, epics, and NFR traceability remain. No production deployment, baseline, census, rehearsal, UTC slot, owner, T0, observation, or retirement evidence was added.
+
+**Entry decision: hold.** Keep `V1Only`. T0 has not started. Story 1.17 remains `backlog` in the tracker, and no closure delta was authorized.

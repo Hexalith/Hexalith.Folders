@@ -100,7 +100,7 @@ public sealed class RepositoryProvisioningProcessManager
             providerResult = ProviderRepositoryCreationResult.Failure(
                 providerRequest,
                 ProviderFailureCategory.ProviderTransientFailure,
-                "github_operation_cancelled_before_dispatch");
+                "operation_cancelled_before_dispatch");
         }
         catch (Exception)
         {

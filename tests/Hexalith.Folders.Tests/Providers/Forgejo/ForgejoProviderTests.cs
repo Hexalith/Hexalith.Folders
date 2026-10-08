@@ -615,9 +615,14 @@ public sealed class ForgejoProviderTests
     [Fact]
     public async Task UnsupportedSameFamilyLiveVersionCannotDowngradeToPinnedSnapshot()
     {
-        StubHttpMessageHandler handler = new(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        StubHttpMessageHandler handler = new(request => new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Content = new StringContent("""{"version":"16.0.4"}""", System.Text.Encoding.UTF8, "application/json"),
+            Content = new StringContent(
+                request.RequestUri?.AbsolutePath.EndsWith("/user", StringComparison.Ordinal) == true
+                    ? """{"id":7,"login":"forgejo-user"}"""
+                    : """{"version":"16.0.4"}""",
+                System.Text.Encoding.UTF8,
+                "application/json"),
         });
         HttpClient httpClient = new(handler)
         {
@@ -1122,9 +1127,14 @@ public sealed class ForgejoProviderTests
     [Fact]
     public async Task HttpApiClientMapsVersionEndpointToMetadataOnlyReadiness()
     {
-        StubHttpMessageHandler handler = new(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        StubHttpMessageHandler handler = new(request => new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Content = new StringContent("""{"version":"16.0.3"}""", System.Text.Encoding.UTF8, "application/json"),
+            Content = new StringContent(
+                request.RequestUri?.AbsolutePath.EndsWith("/user", StringComparison.Ordinal) == true
+                    ? """{"id":7,"login":"forgejo-user"}"""
+                    : """{"version":"16.0.3"}""",
+                System.Text.Encoding.UTF8,
+                "application/json"),
         });
         HttpClient httpClient = new(handler)
         {

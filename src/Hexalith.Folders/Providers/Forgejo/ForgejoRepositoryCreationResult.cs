@@ -5,15 +5,23 @@ internal sealed record ForgejoRepositoryCreationResult(
     bool EquivalentExisting,
     ForgejoApiFailureCondition? FailureCondition,
     TimeSpan? RetryAfter,
-    string? CanonicalRepositoryId)
+    string? CanonicalRepositoryId,
+    bool SuppressMutationRetry = false)
 {
     public static ForgejoRepositoryCreationResult Success(
         bool equivalentExisting = false,
         string? canonicalRepositoryId = null)
-        => new(true, equivalentExisting, null, null, canonicalRepositoryId);
+        => new(true, equivalentExisting, null, null, canonicalRepositoryId, false);
 
     public static ForgejoRepositoryCreationResult Failure(
         ForgejoApiFailureCondition condition,
-        TimeSpan? retryAfter = null)
-        => new(false, EquivalentExisting: false, condition, retryAfter, CanonicalRepositoryId: null);
+        TimeSpan? retryAfter = null,
+        bool suppressMutationRetry = false)
+        => new(
+            false,
+            EquivalentExisting: false,
+            condition,
+            suppressMutationRetry ? null : retryAfter,
+            CanonicalRepositoryId: null,
+            suppressMutationRetry);
 }

@@ -258,14 +258,19 @@ internal static class ForgejoFailureMapper
             _ => (ProviderFailureCategory.UnknownProviderOutcome, "forgejo_unmapped_outcome"),
         };
 
+        bool suppressMutationRetry = result.SuppressMutationRetry
+            || result.FailureCondition == ForgejoApiFailureCondition.RepositoryConflict
+            || mapped.Category == ProviderFailureCategory.UnknownProviderOutcome;
+        bool retryable = !suppressMutationRetry && mapped.Category.IsRetryableByDefault();
         return ProviderRepositoryCreationResult.Failure(
             request,
             mapped.Category,
             mapped.ReasonCode,
-            result.RetryAfter,
+            retryable ? result.RetryAfter : null,
             safeRemediationCode: mapped.Category == ProviderFailureCategory.UnknownProviderOutcome
                 ? "reconciliation_required_metadata_only"
                 : $"{mapped.Category.ToCategoryCode()}_remediation",
+            retryable: retryable,
             safeTargetFingerprint: safeTargetFingerprint);
     }
 

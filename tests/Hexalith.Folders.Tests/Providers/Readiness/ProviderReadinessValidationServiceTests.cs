@@ -140,7 +140,11 @@ public sealed class ProviderReadinessValidationServiceTests
         RecordingProviderReadinessBindingReader bindingReader = new(Binding());
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingProviderCapabilityAuthorizer capabilityAuthorizer = RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh");
-        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.GitHubLike());
+        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.WithOperationRows(
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ReadinessValidation),
+            ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence),
+            ProviderCapabilityOperationRow.Partial(ProviderOperationCatalog.RepositoryCreation),
+            ProviderCapabilityOperationRow.Partial(ProviderOperationCatalog.FileMutationSupport)));
         ProviderReadinessValidationService service = Service(
             bindingReader,
             readinessStore,
@@ -159,6 +163,87 @@ public sealed class ProviderReadinessValidationServiceTests
         result.RemediationCategory.ShouldBe("fix_provider_configuration");
         result.Evidence.ShouldNotBeNull().FileOperations.ShouldBe("temporarily_unavailable");
         readinessStore.Calls.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task ValidateAsync_ShouldAdmitMatchingTargetPermissionPartialForRepositoryCreation()
+    {
+        ProviderReadinessValidationService service = Service(
+            new RecordingProviderReadinessBindingReader(Binding()),
+            new RecordingProviderReadinessEvidenceStore(),
+            RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh"),
+            new RecordingProviderCapabilityResolver(FakeGitProvider.WithOperationRows(
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ReadinessValidation),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.RepositoryCreation,
+                    ProviderOperationSupport.Partial,
+                    constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["permission_posture"] = "authenticated_target_permission_dependent",
+                    }),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.FileMutationSupport,
+                    ProviderOperationSupport.Unavailable),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.CommitSupport,
+                    ProviderOperationSupport.Unavailable),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.StatusQuery,
+                    ProviderOperationSupport.Unavailable))),
+            new RecordingProviderCapabilityEvidenceStore());
+
+        ProviderReadinessValidationResult result = await service.ValidateAsync(
+            Request(requestedCapability: ProviderReadinessRequestedCapability.RepositoryCreation),
+            TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe("ready");
+        result.ReasonCode.ShouldBe("success");
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
+    }
+
+    [Fact]
+    public async Task ValidateAsync_ShouldRejectUndefinedRequestedCapability()
+    {
+        ProviderReadinessValidationService service = Service(
+            new RecordingProviderReadinessBindingReader(Binding()),
+            new RecordingProviderReadinessEvidenceStore(),
+            RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh"),
+            new RecordingProviderCapabilityResolver(FakeGitProvider.GitHubLike()),
+            new RecordingProviderCapabilityEvidenceStore());
+
+        ProviderReadinessValidationResult result = await service.ValidateAsync(
+            Request(requestedCapability: (ProviderReadinessRequestedCapability)99),
+            TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe("failed");
+        result.ReasonCode.ShouldBe("requested_capability_malformed");
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderValidationFailed);
+    }
+
+    [Fact]
+    public async Task ValidateAsync_ShouldReturnUnsupportedWhenCommitStatusIsUnavailable()
+    {
+        ProviderReadinessValidationService service = Service(
+            new RecordingProviderReadinessBindingReader(Binding()),
+            new RecordingProviderReadinessEvidenceStore(),
+            RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh"),
+            new RecordingProviderCapabilityResolver(FakeGitProvider.WithOperationRows(
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.CommitSupport,
+                    ProviderOperationSupport.Unavailable),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.StatusQuery,
+                    ProviderOperationSupport.Unavailable))),
+            new RecordingProviderCapabilityEvidenceStore());
+
+        ProviderReadinessValidationResult result = await service.ValidateAsync(
+            Request(requestedCapability: ProviderReadinessRequestedCapability.CommitStatus),
+            TestContext.Current.CancellationToken);
+
+        result.Status.ShouldBe("failed");
+        result.ReasonCode.ShouldBe("unsupported_provider_capability");
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.UnsupportedProviderCapability);
     }
 
     [Fact]

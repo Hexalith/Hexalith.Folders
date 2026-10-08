@@ -361,7 +361,9 @@ public sealed class FolderRepositoryBindingGateTests
         result.Code.ShouldBe(FolderResultCode.Accepted);
         ProviderRepositoryBindingRequest forwarded = resolver.LastBindingRequest.ShouldNotBeNull();
         forwarded.ProviderFamily.ShouldBe("forgejo");
-        forwarded.TargetEvidence.ProductVersion.ShouldBe("provider_binding_v1");
+        forwarded.TargetEvidence.ProductVersion.ShouldBe("forgejo_product_version_evidence_missing");
+        forwarded.TargetEvidence.Metadata["authorized_base_url"].ShouldBe("forgejo_authorized_base_url_evidence_missing");
+        forwarded.TargetEvidence.Metadata["operation_scope"].ShouldBe("existing_repository_binding");
         forwarded.TargetEvidence.ProductVersion.ShouldNotBe("15.0.7");
     }
 
