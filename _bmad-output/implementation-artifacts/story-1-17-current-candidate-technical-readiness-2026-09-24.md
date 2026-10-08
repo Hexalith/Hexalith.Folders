@@ -146,3 +146,107 @@ tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Serve
 The build reported zero warnings and errors; the xUnit v3 executable reported total 34, failed 0, skipped 0. `tests/Hexalith.Projects.Server.Tests/obj/project.assets.json` resolves both Folders IDs to `0.0.0-local.20260926.d4cc07f`. `git diff --check` exited 0 in both repositories. The exact Projects diff SHA-256 remains `9641e47ac7216cf211f0e550e6817edab6fc08e1fb941c53298d3a9ac3a41cd8`.
 
 **Tracked-pin blocker replay:** In the same Projects working directory, omitting the temporary central-package override selects tracked Folders `1.0.0` pins. `dotnet restore tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj -p:Configuration=Release -p:UseHexalithProjectReferences=false -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0 --configfile /tmp/story117-local-packages-7qBzWLeu/nuget.config -v:quiet` exited 0. `dotnet build tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj --configuration Release --no-restore -p:UseHexalithProjectReferences=false -p:NuGetAudit=false -p:MinVerVersionOverride=1.0.0 -warnaserror -m:1 -v:quiet` exited 1 with one error, `CS1501` at `FoldersProjectFolderDirectory.cs:66`: no five-argument `GetEffectivePermissionsAsync` overload. Restoring with the diagnostic override again exited 0. This mismatch predates the four Projects edits and cannot be made release-ready by retaining a scratch-feed override.
+
+## Addendum 2026-10-08: released pair and Projects consumer verification
+
+Evaluated at 2026-10-08T12:36:52Z. Folders source is `c8e3d99468e27329d9e3977ec2d0b1542c7e9e60` plus this migration evidence update. Projects is now committed at `caf3721427f0b4834415369c2b4a5f981725474f` with a clean working tree. Its four migration files were committed externally during this implementation; the agent performed no staging, commit, push, publication or deployment. A fresh non-incremental Release/package rebuild and focused rerun bind the current Projects commit. **Result: Projects consumes a released v2 read client successfully; current-input Section 9 and migration entry remain blocked.** `V1Only` remains required, T0 is unset, and no tracker transition occurred.
+
+### Released pair and build identity
+
+[Release operations evidence](../../docs/operations/release-packages.md) records release run `37001706122`, publication of the five-package `1.1.1` set on 2026-10-02, and exact Folders source `d5f49e96dfab10bf2839ec263a343a6a4c13b06f`. Ordinary NuGet restore obtained these archives from `https://api.nuget.org/v3/index.json`; both nuspecs embed that full repository commit, and Client depends on Contracts `1.1.1`. No scratch package source or temporary version override is used by the tracked Projects pin.
+
+| Artifact | Exact identity |
+| --- | --- |
+| `Hexalith.Folders.Client` `1.1.1` archive | SHA-256 `e778aad218dcaf670fe8fb40ff40a83d76f224b62d77d6a4d0612aed9eab5db4` |
+| `Hexalith.Folders.Contracts` `1.1.1` archive | SHA-256 `cb85fb7d0e6013ccbe3058061c9e6a57fbdd1a95367f97692dc187a73fe0cf0c` |
+| Released conformance manifest | Raw SHA-256 `264380b817fc19092f075052de66f97a71c72af849b53a8b6473840d8269e2e9`; declared candidate set `d36d35edd348e0893e313d408e2cc8f592429c0701643fb825972c0c10325031`; 223/223 artifact hashes match that release source. |
+| Final current conformance manifest | Raw SHA-256 `cae97c1f685cfa89cc3125243648ce462456670a3750aae66ea7b016037721d7`; 41899 bytes; declared candidate set `52fe4ab7ff3a980e26076179a3327d3a006aa3594ad0131ca0fc973c253777b6`; 224 artifacts. Two isolated final generations match each other and the checked-in bytes. |
+| Current planning manifest | SHA-256 `2da4289361708f5da319b1545cd747f9f79b5432a125504ccb670c3be0cac3e9`. Only the current top-level conformance provenance binding was refreshed; historical approval bindings were preserved. |
+| Projects committed delta from `f8649509d798435af4021cec4440c425b80f6fd6` | Unified binary-capable diff SHA-256 `57b568ec71139bbdf9cb0af570fd0c4df6b0bac2ddc789d3d4d688dcb1582edb`. |
+| Local Projects Server build output | `tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.dll`, SHA-256 `10b9f57aea20bdc126a46eb45042e2d1c76cfcc33a6b81cf0a2b5187face69d8`; matching `.deps.json` SHA-256 `f1cb8d209f47932aa9afd38c99f3051972da8583835f5ec504c8ff833563555b`. This is a local build identity, not an immutable production deployment artifact. |
+| Preserved authority evidence | Authorization matrix SHA-256 `d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420`; historical v1 SHA-256 `3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2`; approval register SHA-256 `2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff`. |
+| Tracker | SHA-256 `cc964658f61d7cc4bf7ca61478f2fb75720b60c6028708dc65d4cc1a0930e540`, unchanged by this work; Story 1.17 remains `backlog`. |
+
+The released generated transport client is byte-identical to current `HexalithFoldersClient.g.cs`. However, the full candidates differ in 19 shared paths and one newly inventoried converter. The v2 spine adds current idempotency behavior/read-key declarations; its hash and the generated helper verification constants differ from the release. Passing Projects read tests does not establish an exact current-candidate package or transfer historical approval.
+
+| Candidate path | Released source SHA-256 | Final current SHA-256 |
+| --- | --- | --- |
+| `docs/contract/idempotency-and-parity-rules.md` | `757fd323afd1b7c4fc9296486cb18d39bb4ae9cafe93740e0e926c22ef49b110` | `c2c8c95a7a32f95b81627ba70cbd6564a10f3fc371abfbbe18d5a8e6468987d2` |
+| `docs/contract/pd10-v2-consumer-discovery.md` | `692b7629f04fe6955b6fa42e85dacf3406d11490c62e09a7d2d2b1ed4738a111` | `99314150294fee42c0a4b91b09c9f12be1b39aa0771f0a51d442ca5be3ed96f3` |
+| `scripts/pd10-v2-story-owned-paths.txt` | `ef02e7ecea852194523d3d10f49cd1c079cce94170c0d46a39b18bcfe258ff37` | `a1ab5a8382284371e934c80510170fd71a273301884fb4612a8c2e0db39dd3d0` |
+| `src/Hexalith.Folders.Client/Generated/HexalithFoldersIdempotencyHelpers.g.cs` | `877c1af948440950c51ce6eb36e9bb3a99e2ba6ada36d5df9c19cbdd2c2171fa` | `68c7cfadcb46b2f684e9e60adcef0ff1d59f441d512f572adef456301b634e08` |
+| `src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml` | `586eb24b09d5dfec1d9946ef88e00cdb31684333c81b9d76f3862713ce4ab0c0` | `314681a3b1822b1d195c25d83e607014c4f4dc37d64ef8537a6f5144c2edae98` |
+| `src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationCatalog.cs` | `2f11e901e19f8f25d291c87b135dcb0099ef0699fce9527b7f86012d807d7c9b` | `57e66f40fb25b438f716253da0875c32cbee8009c1a3710fee1445411ed2f638` |
+| `src/Hexalith.Folders.Server/Authorization/Pd10ProtectedOperationExecutor.cs` | `1e65762f0500793d867e44f777a911062f3491e5b744d5e8d4eea81de8970e68` | `fd348859d87783450a9daa1e79536a4e7014a9a011bc9fc2dd75af47934333ff` |
+| `src/Hexalith.Folders.Server/FolderDomainProcessor.cs` | `e6f3d8b7cb746858a49b34f6b1a322055debd66ac12b93c7bf4086b3d303b017` | `0ae58ada591ec6e106fcaa36cbecf5e8fdfd339511a3173898d530cf15c06c27` |
+| `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` | `3c5375156ccfbc68edf7801a3fa3dc47bd8fa01fda3b76e5fcd4e94d31b9ffd3` | `0c9e10c02a82366e42ac5e28ef4b487647958483338706d5ed440a72c59ce665` |
+| `src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs` | `absent` | `d9aea2b77cbb1f885b54d05aac6f3e783c06ed2e818488c5ee054e633de47774` |
+| `src/Hexalith.Folders.Server/FoldersServerHostComposition.cs` | `b6457b0b50969f9089af4c313e64c1ed39016929941bc82132c970a6047b433b` | `0084b46d580a519b99c7252c3389a7896dc236ffd7dc186210d046bcc9bf3768` |
+| `src/Hexalith.Folders.Server/Pd10V2CandidateCompatibilitySeam.cs` | `da81f25eb441206b9293230868be489da342a9d65a66886d98807264d58a071c` | `0c9c16ad3626fb99bbc53a5906322bb90f8c23d03a54395ff1553363e2c4cf36` |
+| `tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs` | `c06bf9aeb68ee71d11634cf0529913b5eb098824be51f088a41d1b191b8551a9` | `2e19be46d46c84ea1ad0c757f902f58f768f4092262f6f55182fc82f78dcaeb2` |
+| `tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs` | `885c1e5b6df16652df516b5918cfb841882003eb3d75a218c43ad16a16cba504` | `ca05d6cef42b0d91a544abca6cba904ec0ded502ce1a07935c61f043b19667fc` |
+| `tests/Hexalith.Folders.Server.Tests/Pd10ProtectedOperationCatalogTests.cs` | `fb29e5d1ff38fdbd69622c2c0343a02a5772ba71dbe1e846658f989aef74be2d` | `37b02cfd9cebbc0a80e3fbffbb9f585beecad5892626b921eea192efe21c594f` |
+| `tests/fixtures/parity-contract.schema.json` | `dc20eb8d1083ffb6cf682ac607a1ff4446fce92eddc92a12e8b26261dc1b8916` | `6bbcbc6473d1387d5e814a3e2f5ca0f96ee9a8da5ba7e0c3e21a11760c88a36b` |
+| `tests/fixtures/parity-contract.yaml` | `7eb4a5a5f289dc017233c5266dc6934576ca7366c65f0eebb145d75e6488dd67` | `da43ffd266a851616824d0c84ab0394707c7c6225b1c3aa210d677974c54eae4` |
+| `tests/fixtures/previous-spine.yaml` | `f482503e7ec33d3a791d3b2f52da1e4a2f8e49a0a420b23d54088fe12ab26ab3` | `d998ca75faaa8b093a305d527ccce97d5f95817eebae5e3137a42cbfa8d7b10b` |
+| `tests/tools/parity-oracle-generator/Program.cs` | `f08f20410102155fb519e969f3b27981a763b5cbb8fcc0e2e176296fb5615973` | `a4e44cdbbbeb1d4eb60f5ec267db350dbae90e4fe6e973e6bcdd0407f5e0c851` |
+| `tests/tools/run-contract-parity-ci-gates.ps1` | `82aef1ede821fd6d903f6f629c7073a51d0f48c4ed43344b0fb27466f1587175` | `8c913159f905909ec2a187d7c8eed68f2173058fc94a8d4bc723ee03eae84149` |
+
+### Verification and current-input Section 9
+
+Commands ran individually in their owning repositories, with NuGet audit enabled. The initial `-p:HexalithFoldersVersion=1.1.1` discovery probe passed 34/34 before the tracked pin and added cases. Final commands below use the committed pin without that override.
+
+| Command or check | Result |
+| --- | --- |
+| Projects: `dotnet restore tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj -p:Configuration=Release -p:UseHexalithProjectReferences=false -m:1 -v:quiet` | Exit 0; assets resolve Client and Contracts to `1.1.1`. |
+| Projects: `dotnet build tests/Hexalith.Projects.Server.Tests/Hexalith.Projects.Server.Tests.csproj --configuration Release --no-restore --no-incremental -p:UseHexalithProjectReferences=false -warnaserror -m:1 -v:quiet` | Exit 0; zero warnings/errors on commit `caf3721427f0b4834415369c2b4a5f981725474f`. |
+| Projects test executable: `-class Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests -class Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests` | Exit 0; 39/39, zero skips. V2 lifecycle/permissions/metadata routes, required task header, canonical typed `401`/`404`/`503`, malformed lifecycle/permissions responses, and missing v2 metadata limits are exercised. |
+| Projects full Server test executable, without a filter | Exit 0; 832/832, zero skips, on the identical four-file working-tree bytes before their external commit. |
+| Folders: `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1 -v:quiet` | Exit 0; zero warnings/errors. |
+| Folders Integration executable: `-class Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests` | Exit 0; 18/18, zero skips. Hold, coexistence, retirement, authenticated attribution, and invalid modes are covered. |
+| `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` | **Exit 1; 11/12 categories pass.** `rest-sdk-golden-parity` fails four repository-creation cases described below. Report SHA-256 `f8965cd8608311490d30a4ee2e9db0e6125465686a2ea1d9d8d231566faae9ef`. |
+| `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` | Exit 0 after final reseal: governance 22/22, authorization matrix 7/7, conformance 3/3. Report SHA-256 `4a5630580f3aec35925bef605bfa2616dc16452024abc592ca2be21d074997a7`. This automated suite does not prove every Section 9 current provenance binding. |
+| Contracts executable: A6b conformance, v2 candidate, matrix, Release package, and NFR classes | **Exit 1; 40/41 pass.** The sole failure is `ReleasePackageConformanceTests.StableReleaseShouldUseStableDaprIntegration` at line 230, `Sequence contains no matching element`. The test expects a root `PackageVersion Update="CommunityToolkit.Aspire.Hosting.Dapr"` override which the current root file does not contain. A6b/matrix checks and all 17 NFR cases pass. |
+| Two final `python3 scripts/generate-pd10-v2-conformance-set.py --repository-root . --output <scratch>/a.yaml` and `b.yaml` generations | Exit 0; byte-identical to each other and the checked-in manifest. |
+
+Parity failure detail: `GoldenLifecycleParityTests.CandidateAuthorizesRepositoryBackedCreationOfAMissingFolder` expects `202`, and the three `CandidateRepositoryCreateAndBindPreserveDeclaredProviderOutcome` cases with `bindRepository=false` expect `422`, `409`, and `503`; all receive canonical `404` before downstream dispatch. The current protected catalog classifies repository-backed creation as folder administration with request-folder `manage_folder_access` authority, while those fixtures supply no existing folder or permission evidence. These failures predate the migration edits. No authorization condition, fixture expectation, or upstream dependency was weakened to make a gate pass.
+
+The direct Section 9 replay verifies eleven historical decision-payload records and the register binding, FR1–FR58/NFR1–NFR84 identities, and 159 consistent story/tracker rows (111 done, 45 backlog, two in progress, one review). The ranked graph has 73 nodes, 262 unique edges and 24 accepted-prefixed edges, with no duplicate ranks/edges, unresolved prerequisites or forward-rank violations. **S9-02 fails: 16/20 current provenance bindings match.** The four pre-existing mismatches below are retained for the owning planning reconciliation, without changing signed authority or historical approvals. **S9-09 fails** on the parity and package checks above, so **S9-11 does not establish a passing current A8 technical condition**. The earlier passing September replays remain historical.
+
+| Current provenance path | Bound SHA-256 | Observed SHA-256 |
+| --- | --- | --- |
+| `_bmad-output/planning-artifacts/prd.md` | `743e8f7a001f67a136d817154af0f25773fab21ef6e6bc5adf08c1e3694d731c` | `b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608` |
+| `_bmad-output/planning-artifacts/architecture.md` | `74ef242f6bfb77458818ab08a8acc25f547d6c891d29d36ab4954f7ca879973e` | `da13b2bd481b0c72355ad41ecf52b63f303711f4f5293ea89673cd05f916fce1` |
+| `_bmad-output/planning-artifacts/epics.md` | `a863dc5a6f1b44986fa2dadb9c21f1657c02700b8506368b167d651274e9dbcc` | `d1ac3564c5f50b48f4d2978546703dab82c1b8288d70c203317bf45d23c70492` |
+| `docs/exit-criteria/nfr-traceability.md` | `d490ef1178d74198982035b3b3adbaa4cc5a479f32b79711fc04b9789d7cd588` | `7e3065a226339a78875f0687f39711f31ac8d21a0160f6e8af5ffb061f97423c` |
+
+### Entry decision and matrix audit
+
+Keep the hold. The released pair differs from the current full candidate, no production Projects artifact/deployment or exact Folders production artifact is verified, and the ordinary Folders host still lacks the durable EventStore-backed `IFolderRepository` owned by Story 12.1. Production consumer discovery, periodic schedules, attributed baseline/thresholds, exact-artifact reversal, UTC slots/owners, T0, ordinary-traffic observation, and v1 retirement remain absent. No remote release, deployment, route change, retirement or closure was attempted.
+
+The hold, coexistence, and retired-route matrix rows have executed local host coverage (18/18). The Projects migration row has released-client adapter coverage (39/39), not a production end-to-end execution. The expiry/incident row has a documented reversal procedure, not an exact-artifact operational rehearsal. Missing operational evidence therefore remains a gate; Story 1.17 stays open.
+
+### Final dependency-bound verification on 2026-10-08
+
+The initial Folders checks above did not capture submodule identities at each run. Builds and Tenants subsequently changed externally, so those initial results cannot establish the final dependency state. A fresh verification captured the following revisions at 2026-10-08T12:40:25Z and confirmed that every captured revision remained unchanged through the build, parity, routing, and focused contract checks. These results supersede the initial Folders checks for the final dependency state; no submodule was staged, committed, updated, or reverted by this verification.
+
+| Repository | Exact revision |
+| --- | --- |
+| Folders | `c8e3d99468e27329d9e3977ec2d0b1542c7e9e60` plus the recorded migration evidence edits |
+| Builds | `f717a87c26a8266bdde95d18f998ef2ab366d43a` |
+| Tenants | `fcdcb4205a3f6e46f736cdd3e6f2b20ca2f241df` |
+| EventStore | `9542d3c9f48bf9ce1c57f2ef68904703eaba56cc` |
+| FrontComposer | `0e114214007c22f5cdbac21a6853cff4208340ee` |
+| Memories | `3e18d0dcdceb387eff89862c382637da89ad7e47` |
+| Commons | `116d26815eb81e35b3c161e1799e5ee12805fc0a` |
+| PolymorphicSerializations | `98de6e013840ece9f0fa7c68ab7dcdf2bba3b375` |
+| Projects | `caf3721427f0b4834415369c2b4a5f981725474f` |
+
+The loaded Builds central package catalog has SHA-256 `1e2621765f2632077f906e945bf4d74916fef5dec04ec34d630dfce545dfbc78`. The repeated Release solution build exited 0 with zero warnings/errors. `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` exited 1 with the same four creation failures and 11/12 passing categories. The final Integration executable routing command exited 0, 18/18. The final Contracts executable command exited 1, 40/41, solely on `StableReleaseShouldUseStableDaprIntegration` at line 230. Exact focused commands were:
+
+```bash
+tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests -class Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests
+tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests -class Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests -class Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests -class Hexalith.Folders.Contracts.Tests.OpenApi.AuthorizationMatrixContractTests -class Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests -class Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests
+```
+
+Independent acceptance inspection again confirmed all 224 candidate artifact hashes, the manifest digest, and unchanged historical v1, authorization matrix, approval register, and tracker bytes. Current provenance still matches 16/20 bindings; the same four mismatches remain. The concurrently created `spec-fix-ci-and-verify-nuget-publication.md` covers the golden creation and stable-Dapr failures and was preserved. Passing local consumer checks, truthful failed-gate evidence, and the refreshed manifest do not authorize production exposure or Story 1.17 closure.

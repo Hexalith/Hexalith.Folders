@@ -56,3 +56,18 @@ For an ordinary rollback during coexistence, retain the Folders v1 route, restor
 ## Forbidden evidence
 
 Rollback evidence is metadata-only. It must not include credentials, tokens, registry pull secrets, raw file contents, raw diffs, provider payload bodies, production endpoints, environment dumps, stack traces, host-absolute paths, or tenant data beyond synthetic ordinal identifiers.
+
+## Story 1.17 execution record required before T0
+
+The [2026-10-08 migration entry decision](../../_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md#2026-10-08-readiness-correction-and-entry-decision) remains hold. Published package availability and a local Projects build do not complete this record. Delivery must supply measured values and named owners; none are inferred from source or historical deployment status.
+
+| Record | Required evidence |
+| --- | --- |
+| Exact artifacts | Folders source/configuration and immutable deployment digest; matching Client/Contracts version, source and archive hashes; final Projects commit and deployment digest; verified prior v1 artifacts/configuration. |
+| Baseline and thresholds | UTC baseline interval; counts, error rates and latency by `api.version`, `consumer` and status; evidence that Projects requests resolve to `projects`; agreed numeric alert thresholds, evaluation intervals and trace availability. |
+| Schedule and owners | Operations and on-call owners; proposed route activation and retirement slots in UTC; expected T0 + 24-hour deployment limit and T0 + 168-hour exception deadline; every periodic call and next execution. Recalculate from actual T0 without resetting the clock. |
+| Rehearsal | Exact-artifact preproduction v1/v2 lifecycle, permissions and metadata results; timed restart/redeploy and restoration of the prior Projects v1 artifact; verified `V1Only` configuration and recovered v1 reads. |
+| Caller scope and effects | Verified Projects read-only operation inventory. No mutating v2 caller is admitted until completed-write reconciliation and ownership are explicitly resolved. Deployment reversal does not reverse writes. |
+| Observation and exit | Actual Projects deployment/smoke UTC times; at least 24 hours of ordinary attributed v2 traffic and every periodic call; no unexplained errors or Projects v1 calls; complete deployed-consumer census; retirement and post-retirement smoke before expiry. |
+
+If any entry field is absent, keep `V1Only` and leave T0 unset. During coexistence, use the measured thresholds above and record the UTC time of every decision. At expiry with any missing exit evidence, restore the verified prior Projects artifact and `V1Only` through the ordinary reversal sequence, verify the three v1 read families, record the outcome, and seek a new decision. An authorization or disclosure incident uses the immediate-disable sequence already specified above. The scheduled expiry action and owner must exist before activation; a blank record never authorizes extension.
