@@ -1126,8 +1126,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 && result.RetryAfter is null
             : result.FailureCategory != ProviderFailureCategory.None
                 && Enum.IsDefined(result.FailureCategory)
-                && IsSafeOpaqueValue(result.ReasonCode)
-                && (result.FailureCategory.IsRetryableByDefault() || result.RetryAfter is null);
+                && IsSafeOpaqueValue(result.ReasonCode);
 
     private static bool IsCoherentReadiness(ForgejoReadinessResult result)
         => result.IsSuccess
@@ -1148,7 +1147,6 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
             ? result.FailureCondition is null
                 && result.RetryAfter is null
                 && !result.SuppressMutationRetry
-                && SafeCanonicalRepositoryId(result.CanonicalRepositoryId) is not null
             : result.FailureCondition is { } condition
                 && Enum.IsDefined(condition)
                 && condition != ForgejoApiFailureCondition.None
@@ -1159,7 +1157,6 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
         => result.IsSuccess
             ? result.FailureCondition is null
                 && result.RetryAfter is null
-                && SafeCanonicalRepositoryId(result.CanonicalRepositoryId) is not null
             : result.FailureCondition is { } condition
                 && Enum.IsDefined(condition)
                 && condition != ForgejoApiFailureCondition.None

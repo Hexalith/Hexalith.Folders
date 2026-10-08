@@ -367,6 +367,103 @@ public sealed class FolderRepositoryBindingGateTests
         forwarded.TargetEvidence.ProductVersion.ShouldNotBe("15.0.7");
     }
 
+    [Fact]
+    public async Task ForgejoBindingForwardsOneSharedAliasUnchanged()
+    {
+        ProviderRepositoryBindingRequest forwarded = await BindForgejoAsync(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["provider_product_version"] = "16.0.3",
+                ["authorized_base_url"] = "https://forgejo.example.test/",
+            },
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["snapshot_version"] = "16.0.3",
+                ["authorized_base_url"] = "https://forgejo.example.test/",
+            });
+
+        forwarded.TargetEvidence.ProductVersion.ShouldBe("16.0.3");
+        forwarded.TargetEvidence.Metadata["authorized_base_url"].ShouldBe("https://forgejo.example.test/");
+    }
+
+    [Fact]
+    public async Task ForgejoBindingForwardsDistinctAliasesAsConflicting()
+    {
+        ProviderRepositoryBindingRequest forwarded = await BindForgejoAsync(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["product_version"] = "16.0.3",
+                ["authorized_base_url"] = "https://forgejo.example.test/",
+            },
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["forgejo_snapshot_version"] = "15.0.7",
+                ["authorized_base_url"] = "https://other.example.test/",
+            });
+
+        forwarded.TargetEvidence.ProductVersion.ShouldBe("forgejo_product_version_evidence_conflicting");
+        forwarded.TargetEvidence.Metadata["authorized_base_url"].ShouldBe("forgejo_authorized_base_url_evidence_conflicting");
+    }
+
+    [Fact]
+    public async Task ForgejoBindingForwardsUnsafeAliasesAsMalformed()
+    {
+        ProviderRepositoryBindingRequest forwarded = await BindForgejoAsync(
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["provider_product_version"] = "16.0.3-token",
+                ["authorized_base_url"] = "http://forgejo.example.test/",
+            },
+            new Dictionary<string, string>(StringComparer.Ordinal));
+
+        forwarded.TargetEvidence.ProductVersion.ShouldBe("forgejo_product_version_evidence_malformed");
+        forwarded.TargetEvidence.Metadata["authorized_base_url"].ShouldBe("forgejo_authorized_base_url_evidence_malformed");
+    }
+
+    [Theory]
+    [InlineData("idempotency_conflict", nameof(FolderResultCode.IdempotencyConflict))]
+    [InlineData("idempotency_key_expired", nameof(FolderResultCode.IdempotencyKeyExpired))]
+    public async Task ProviderConflictIdempotencyReasonsShouldMapToIdempotencyResults(
+        string reasonCode,
+        string expectedResultName)
+    {
+        FolderResultCode expectedResult = Enum.Parse<FolderResultCode>(expectedResultName);
+        RecordingFolderRepository repository = SeededRepository();
+        RecordingRepositoryBindingReadinessValidator readiness = new(ReadinessReady());
+        RecordingProviderBindingReader bindingReader = new(Binding());
+        RecordingProviderCapabilityResolver resolver = new(new ConflictReasonGitProvider(reasonCode));
+        RepositoryBindingService service = Service(repository, readiness, bindingReader, resolver);
+
+        FolderResult result = await service.BindAsync(
+            Request(),
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(expectedResult);
+        resolver.ProviderCalls.ShouldBe(1);
+    }
+
+    private static async Task<ProviderRepositoryBindingRequest> BindForgejoAsync(
+        IReadOnlyDictionary<string, string> namingMetadata,
+        IReadOnlyDictionary<string, string> branchMetadata)
+    {
+        OrganizationProviderBinding binding = Binding() with
+        {
+            ProviderKind = "forgejo",
+            NamingPolicy = new OrganizationProviderBindingPolicy("naming-policy-a", namingMetadata),
+            BranchPolicy = new OrganizationProviderBindingPolicy("branch-policy-a", branchMetadata),
+        };
+        RecordingProviderCapabilityResolver resolver = new(FakeGitProvider.ForgejoLike());
+        RepositoryBindingService service = Service(
+            SeededRepository(),
+            new RecordingRepositoryBindingReadinessValidator(ReadinessReady()),
+            new RecordingProviderBindingReader(binding),
+            resolver);
+
+        FolderResult result = await service.BindAsync(Request(), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        return resolver.LastBindingRequest.ShouldNotBeNull();
+    }
+
     private static RepositoryBindingService Service(
         IFolderRepository repository,
         IRepositoryBindingReadinessValidator readiness,
@@ -638,5 +735,35 @@ public sealed class FolderRepositoryBindingGateTests
     private sealed class FixedTimeProvider(DateTimeOffset now) : TimeProvider
     {
         public override DateTimeOffset GetUtcNow() => now;
+    }
+
+    private sealed class ConflictReasonGitProvider(string reasonCode) : IGitProvider
+    {
+        public string ProviderFamily => "github";
+
+        public string ProviderKey => "github";
+
+        public Task<ProviderCapabilityDiscoveryResult> DiscoverCapabilitiesAsync(
+            ProviderCapabilityDiscoveryRequest request,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<ProviderRepositoryCreationResult> CreateRepositoryAsync(
+            ProviderRepositoryCreationRequest request,
+            CancellationToken cancellationToken = default)
+            => throw new NotSupportedException();
+
+        public Task<ProviderRepositoryBindingResult> ValidateRepositoryBindingAsync(
+            ProviderRepositoryBindingRequest request,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult(ProviderRepositoryBindingResult.Failure(
+                request,
+                ProviderFailureCategory.ProviderConflict,
+                reasonCode));
+
+        public ProviderCapabilityComparisonResult CompareCapabilityProfiles(
+            ProviderCapabilityProfile current,
+            ProviderCapabilityProfile candidate)
+            => throw new NotSupportedException();
     }
 }

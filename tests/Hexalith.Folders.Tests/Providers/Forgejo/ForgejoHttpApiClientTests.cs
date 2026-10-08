@@ -18,7 +18,7 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.Created,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main"}"""));
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main"}"""));
         ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
@@ -98,7 +98,7 @@ public sealed class ForgejoHttpApiClientTests
             new HttpResponseMessage(HttpStatusCode.Conflict),
             JsonResponse(
                 HttpStatusCode.OK,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false}"""));
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""));
         ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
@@ -115,35 +115,53 @@ public sealed class ForgejoHttpApiClientTests
             "https://forgejo.example.test/api/v1/repos/forgejo-owner/forgejo-repository");
     }
 
-    [Fact]
-    public async Task DocumentedBadRequestCanReconcileAnAuthorizedExistingIdentity()
+    [Theory]
+    [InlineData(HttpStatusCode.BadRequest)]
+    [InlineData(HttpStatusCode.UnprocessableEntity)]
+    public async Task ValidationStatusesDoNotReconcileAnAuthorizedExistingIdentity(HttpStatusCode statusCode)
     {
-        RecordingHttpMessageHandler handler = new(
-            new HttpResponseMessage(HttpStatusCode.BadRequest),
-            JsonResponse(
-                HttpStatusCode.OK,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false}"""));
+        RecordingHttpMessageHandler handler = new(new HttpResponseMessage(statusCode));
         ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
             CreationRequest(Target(expectedCanonicalRepositoryId: "42", equivalentExistingAuthorized: true)),
             TestContext.Current.CancellationToken);
 
-        result.IsSuccess.ShouldBeTrue(result.FailureCondition.ToString());
-        result.EquivalentExisting.ShouldBeTrue();
-        result.CanonicalRepositoryId.ShouldBe("42");
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.ValidationFailure);
+        result.SuppressMutationRetry.ShouldBeTrue();
+        handler.Requests.ShouldHaveSingleItem().Method.ShouldBe(HttpMethod.Post);
+    }
+
+    [Fact]
+    public async Task CreateConflictWithDifferentDefaultBranchDoesNotClaimEquivalence()
+    {
+        RecordingHttpMessageHandler handler = new(
+            new HttpResponseMessage(HttpStatusCode.Conflict),
+            JsonResponse(
+                HttpStatusCode.OK,
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"trunk","permissions":{"pull":true,"admin":true}}"""));
+        ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
+
+        ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
+            CreationRequest(Target(expectedCanonicalRepositoryId: "42", equivalentExistingAuthorized: true)),
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.ShouldBeFalse();
+        result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.DefaultBranchConflict);
+        result.SuppressMutationRetry.ShouldBeTrue();
         handler.Requests.Count(static request => request.Method == HttpMethod.Post).ShouldBe(1);
         handler.Requests.Count(static request => request.Method == HttpMethod.Get).ShouldBe(1);
     }
 
     [Fact]
-    public async Task CreateConflictWithoutExactAuthorizedIdentityRemainsConflict()
+    public async Task CreateConflictWithDifferentOwnerLoginRemainsConflict()
     {
         RecordingHttpMessageHandler handler = new(
-            new HttpResponseMessage(HttpStatusCode.UnprocessableEntity),
+            new HttpResponseMessage(HttpStatusCode.Conflict),
             JsonResponse(
                 HttpStatusCode.OK,
-                """{"id":43,"name":"forgejo-repository","private":true,"internal":false}"""));
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"other-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""));
         ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryCreationResult result = await client.CreateRepositoryAsync(
@@ -152,7 +170,7 @@ public sealed class ForgejoHttpApiClientTests
 
         result.IsSuccess.ShouldBeFalse();
         result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.RepositoryConflict);
-        handler.Requests.Count(static request => request.Method == HttpMethod.Post).ShouldBe(1);
+        result.SuppressMutationRetry.ShouldBeTrue();
         handler.Requests.Count(static request => request.Method == HttpMethod.Get).ShouldBe(1);
     }
 
@@ -231,7 +249,7 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.OK,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"name":"release/1.0","protected":true,"effective_branch_protection_name":"release/*"}"""),
@@ -268,10 +286,10 @@ public sealed class ForgejoHttpApiClientTests
     {
         string response = mismatch switch
         {
-            "default" => """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"trunk","permissions":{"pull":true,"admin":true}}""",
-            "contents" => """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":false,"admin":true}}""",
-            "administration" => """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":false}}""",
-            _ => """{"id":42,"name":"forgejo-repository","private":false,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}""",
+            "default" => """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"trunk","permissions":{"pull":true,"admin":true}}""",
+            "contents" => """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":false,"admin":true}}""",
+            "administration" => """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":false}}""",
+            _ => """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":false,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}""",
         };
         RecordingHttpMessageHandler handler = new(JsonResponse(HttpStatusCode.OK, response));
         ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
@@ -403,7 +421,9 @@ public sealed class ForgejoHttpApiClientTests
 
         result.IsSuccess.ShouldBeFalse();
         result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.MalformedResponse);
-        handler.Requests.Count.ShouldBe(1);
+        handler.Requests.Count.ShouldBe(2);
+        handler.Requests[0].Uri.AbsolutePath.ShouldBe("/api/v1/user");
+        handler.Requests[1].Uri.AbsolutePath.ShouldBe("/api/v1/version");
     }
 
     [Fact]
@@ -412,7 +432,7 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.Accepted,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""));
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""));
         ForgejoHttpApiClient client = CreateClient(handler, synthesizeVersionPreflight: true);
 
         ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
@@ -430,7 +450,7 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.OK,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"name":"other","protected":true,"effective_branch_protection_name":"main"}"""));
@@ -451,7 +471,7 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.OK,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
             JsonResponse(
                 HttpStatusCode.OK,
                 """{"name":"main","protected":true,"effective_branch_protection_name":"main"}"""),
@@ -474,7 +494,7 @@ public sealed class ForgejoHttpApiClientTests
         RecordingHttpMessageHandler handler = new(
             JsonResponse(
                 HttpStatusCode.OK,
-                """{"id":42,"name":"forgejo-repository","private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
             JsonResponse(
                 HttpStatusCode.OK,
                 JsonSerializer.Serialize(new

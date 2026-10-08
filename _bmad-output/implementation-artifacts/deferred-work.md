@@ -2816,3 +2816,15 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-fix-ci-and-verify-nuget-publication.md`
   summary: Enable the existing AppHost topology boot test in the DCP-capable lane assigned to Story 11.15.
   evidence: Verification review V1: FullFoldersTopologyBootsRunningAcrossProcesses is skipped without HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION; normal CI does not enable it and this repair's Aspire startup probe did not reach a running AppHost. SDK/catalog and Release build checks pass but do not prove runtime resource startup.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md`
+  summary: Native Forgejo stage and commit can classify a cancellation after advertisement bytes are read as cancellation-before-dispatch and map it to a retryable transient failure.
+  evidence: Story 3.13 owns file and commit transport. `ForgejoSmartHttpGitTransport` returns `CancellationBeforeDispatch` from the advertisement read catch, and `ForgejoFailureMapper.ToProviderOperationFailure` maps that condition to `ProviderTransientFailure`.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md`
+  summary: Forgejo file and commit operations share one process-wide native gate, and a commit can record transport invocation before receive-pack returns.
+  evidence: Story 3.13 owns this transport. `ForgejoHttpApiClient.Operations` holds `SemaphoreSlim NativeOperationGate` and sets `transportInvoked` before the native commit call returns.
+
+- source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md`
+  summary: Forgejo commit confirmation compares object ids case-insensitively and does not rewrite them to one canonical hex form.
+  evidence: Story 3.13 owns commit confirmation. `ForgejoSmartHttpGitTransport` uses `StringComparison.OrdinalIgnoreCase` for `ObjectSha` and `ExpectedHeadSha`.

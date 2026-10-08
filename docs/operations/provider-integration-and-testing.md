@@ -146,7 +146,7 @@ Story 3.11 does not require a credential-gated live GitHub mutation, commit, or 
 closure. On 2026-09-06 the operator chose closure path C (waive/close without live archive): hermetic adapter
 and transport proof plus the catalog GitHub profile complete Story 3.11. No in-repository GitHub live evidence
 runner exists today; if one is added later, mirror the Forgejo opt-in pattern in
-`tests/tools/run-forgejo-provider-evidence-gates.ps1` (env gate, hermetic prelude, metadata-only JSON under
+`tests/tools/run-forgejo-provider-evidence-gates.ps1` (env gate, production `IGitProvider` live lane, metadata-only JSON under
 `_bmad-output/gates/`, absent from PR and scheduled CI). Until then, a live mutation archive remains residual
 full provider-ready debt — not a completed live run — separate from Story 3.11 `done`.
 
@@ -237,8 +237,8 @@ shell history, repository file, or archived report:
 | `HEXALITH_FORGEJO_EVIDENCE_APPROVAL=approved-isolated` | Confirms the target is disposable and approved for mutation |
 | `HEXALITH_FORGEJO_EVIDENCE_BASE_URL` | HTTPS installation root without user info, query, or fragment |
 | `HEXALITH_FORGEJO_EVIDENCE_TOKEN` | Positive least-privilege credential material |
-| `HEXALITH_FORGEJO_EVIDENCE_DENIED_TOKEN` | Credential expected to receive 401, 403, or concealed 404 |
-| `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_TOKEN` | Distinct different-tenant credential that can observe only its positive-control repository |
+| `HEXALITH_FORGEJO_EVIDENCE_DENIED_TOKEN` | Distinct credential that authenticates, then is denied on the protected repository |
+| `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_TOKEN` | Distinct different-tenant credential that authenticates, then is denied on the protected repository |
 | `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_OWNER` | Owner of the isolation credential's positive-control repository |
 | `HEXALITH_FORGEJO_EVIDENCE_ISOLATION_REPOSITORY` | Repository visible to the isolation credential but separate from the binding target |
 | `HEXALITH_FORGEJO_EVIDENCE_OWNER` | Approved organization for the controlled create |
@@ -254,15 +254,17 @@ Run from the repository root:
 pwsh ./tests/tools/run-forgejo-provider-evidence-gates.ps1
 ```
 
-The runner first executes the hermetic durable-admission, concrete transport, version-drift, and composition
-suites, then uses a separate deployment-contract probe for the controlled live
-version/create/identity/conflict/bind/ref/denial/isolation observations. The isolation lane first proves its
-credential can read a separate positive-control repository. It
-rejects redirects, responses larger than 256 KiB, malformed JSON, an unsupported version, and any mismatch in
-canonical identity or exact branch policy. It writes only scenario names, pass/fail dispositions, evidence
-classes, supported versions, and elapsed time to
-`_bmad-output/gates/forgejo-provider-evidence/latest.json`; credentials, hosts, owner/repository/ref labels,
-provider bodies, URLs, and exception details are never retained.
+The runner deletes any previous `_bmad-output/gates/forgejo-provider-evidence/latest.json`, then builds and
+runs only `ForgejoLiveEvidenceTests`. That test resolves the production `IGitProvider` Forgejo registration
+and uses the real Forgejo transport. It does not run the hermetic suites and it does not speak to Forgejo
+through a private HTTP client. A skipped test, a zero-test run, or a missing fresh report fails the lane.
+Readiness on the positive, denied, and isolation credentials proves authentication through `/user` before
+`/version`. The denied and isolation credentials must then fail the protected binding as authentication or
+permission denial. Replay, known-failure, timeout/unknown, cancellation, durable-boundary, and
+unknown-credential rows are production admission results and are labeled `production-provider-admission`.
+The successful HTTPS create is the `live-provider-https-same-origin-bounded-json` boundary. The report keeps
+scenario names, pass/fail dispositions, evidence classes, supported versions, and elapsed time; credentials,
+hosts, owner/repository/ref labels, provider bodies, URLs, and exception details are never retained.
 
 ## GitHub versus Forgejo capability differences
 

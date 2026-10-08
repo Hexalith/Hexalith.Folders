@@ -202,6 +202,48 @@ public sealed class ProviderReadinessValidationServiceTests
         result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
     }
 
+    [Theory]
+    [InlineData(nameof(ProviderReadinessRequestedCapability.ExistingRepositoryBinding), ProviderOperationCatalog.RepositoryBinding)]
+    [InlineData(nameof(ProviderReadinessRequestedCapability.BranchRefPolicy), ProviderOperationCatalog.BranchRefInspection)]
+    public async Task ValidateAsync_ShouldAdmitMatchingTargetPermissionPartialForBindingAndBranchRef(
+        string capabilityName,
+        string operationId)
+    {
+        ProviderReadinessRequestedCapability capability = Enum.Parse<ProviderReadinessRequestedCapability>(capabilityName);
+        ProviderReadinessValidationService service = Service(
+            new RecordingProviderReadinessBindingReader(Binding()),
+            new RecordingProviderReadinessEvidenceStore(),
+            RecordingProviderCapabilityAuthorizer.Allowed("authz-capability-fresh"),
+            new RecordingProviderCapabilityResolver(FakeGitProvider.WithOperationRows(
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ReadinessValidation),
+                ProviderCapabilityOperationRow.Supported(ProviderOperationCatalog.ProviderSupportEvidence),
+                ProviderCapabilityOperationRow.WithDetails(
+                    operationId,
+                    ProviderOperationSupport.Partial,
+                    constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                    {
+                        ["permission_posture"] = "authenticated_target_permission_dependent",
+                    }),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.FileMutationSupport,
+                    ProviderOperationSupport.Unavailable),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.CommitSupport,
+                    ProviderOperationSupport.Unavailable),
+                ProviderCapabilityOperationRow.WithDetails(
+                    ProviderOperationCatalog.StatusQuery,
+                    ProviderOperationSupport.Unavailable))),
+            new RecordingProviderCapabilityEvidenceStore());
+
+        ProviderReadinessValidationResult result = await service.ValidateAsync(
+            Request(requestedCapability: capability),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.Status.ShouldBe("ready");
+        result.ReasonCode.ShouldBe("success");
+        result.FailureCategory.ShouldBe(ProviderFailureCategory.None);
+    }
+
     [Fact]
     public async Task ValidateAsync_ShouldRejectUndefinedRequestedCapability()
     {

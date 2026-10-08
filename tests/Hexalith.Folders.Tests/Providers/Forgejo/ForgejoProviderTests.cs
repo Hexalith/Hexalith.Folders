@@ -452,7 +452,7 @@ public sealed class ForgejoProviderTests
         result.IsSuccess.ShouldBeFalse();
         result.FailureCategory.ShouldBe(ProviderFailureCategory.ProviderAuthenticationRequired);
         result.ReasonCode.ShouldBe("forgejo_credential_unavailable");
-        result.RetryAfter.ShouldBe(TimeSpan.FromSeconds(30));
+        result.RetryAfter.ShouldBeNull();
         credentialResolver.Calls.ShouldBe(1);
         apiClientFactory.Calls.ShouldBe(0);
         apiClient.ReadinessCalls.ShouldBe(0);

@@ -52,11 +52,7 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (!ForgejoSmartHttpGitTransport.IsPinnedNativeProfileAvailable())
-        {
-            return ForgejoReadinessResult.Failure(ForgejoApiFailureCondition.NativeRuntimeUnavailable);
-        }
-
+        bool nativeProfileAvailable = ForgejoSmartHttpGitTransport.IsPinnedNativeProfileAvailable();
         ForgejoApiFailureCondition? userFailure = await ReadAuthenticatedUserAsync(cancellationToken).ConfigureAwait(false);
         if (userFailure is not null)
         {
@@ -120,9 +116,9 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
                         SupportsRepositoryCreation: true,
                         SupportsRepositoryBinding: true,
                         SupportsBranchRefInspection: true,
-                        SupportsFileMutation: true,
-                        SupportsCommit: true,
-                        SupportsStatus: true,
+                        SupportsFileMutation: nativeProfileAvailable,
+                        SupportsCommit: nativeProfileAvailable,
+                        SupportsStatus: nativeProfileAvailable,
                         SupportsMetadata: true,
                         SupportsPagination: true,
                         SupportsContentsApi: true,
@@ -197,9 +193,14 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken).ConfigureAwait(false);
 
-            if (response.StatusCode is HttpStatusCode.BadRequest
-                or HttpStatusCode.Conflict
-                or HttpStatusCode.UnprocessableEntity)
+            if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.UnprocessableEntity)
+            {
+                return ForgejoRepositoryCreationResult.Failure(
+                    ForgejoApiFailureCondition.ValidationFailure,
+                    suppressMutationRetry: true);
+            }
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
             {
                 if (!request.Target.EquivalentExistingAuthorized
                     || string.IsNullOrWhiteSpace(request.Target.ExpectedCanonicalRepositoryId))
@@ -404,11 +405,20 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
             }
 
             using JsonDocument? document = await ReadJsonDocumentAsync(response, cancellationToken).ConfigureAwait(false);
-            if (!TryReadRepositoryIdentity(document, request.Target, requirePolicyEvidence: false, out string? canonicalRepositoryId, out _)
-                || !string.Equals(
-                    request.Target.ExpectedCanonicalRepositoryId,
-                    canonicalRepositoryId,
-                    StringComparison.Ordinal))
+            if (!TryReadRepositoryIdentity(
+                document,
+                request.Target,
+                requirePolicyEvidence: true,
+                out string? canonicalRepositoryId,
+                out ForgejoApiFailureCondition policyFailure))
+            {
+                return ForgejoRepositoryCreationResult.Failure(policyFailure, suppressMutationRetry: true);
+            }
+
+            if (!string.Equals(
+                request.Target.ExpectedCanonicalRepositoryId,
+                canonicalRepositoryId,
+                StringComparison.Ordinal))
             {
                 return ForgejoRepositoryCreationResult.Failure(
                     ForgejoApiFailureCondition.RepositoryConflict,
@@ -675,6 +685,21 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
 
         canonicalRepositoryId = numericId.ToString(CultureInfo.InvariantCulture);
         if (!TryReadExactString(document, "name", target.RepositoryName))
+        {
+            failure = ForgejoApiFailureCondition.RepositoryConflict;
+            return false;
+        }
+
+        if (!document.RootElement.TryGetProperty("owner", out JsonElement owner)
+            || owner.ValueKind != JsonValueKind.Object
+            || !owner.TryGetProperty("login", out JsonElement login)
+            || login.ValueKind != JsonValueKind.String)
+        {
+            failure = ForgejoApiFailureCondition.MalformedResponse;
+            return false;
+        }
+
+        if (!string.Equals(login.GetString(), target.Owner, StringComparison.Ordinal))
         {
             failure = ForgejoApiFailureCondition.RepositoryConflict;
             return false;
