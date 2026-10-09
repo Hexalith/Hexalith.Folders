@@ -64,7 +64,7 @@ jobs:
         run: git -c submodule.recurse=false submodule update --init --checkout
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v6.0.0
+        uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
           cache: true
@@ -139,7 +139,7 @@ jobs:
         run: git -c submodule.recurse=false submodule update --init --checkout
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v6.0.0
+        uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
 
@@ -169,7 +169,7 @@ jobs:
         run: git -c submodule.recurse=false submodule update --init --checkout
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v6.0.0
+        uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
 
