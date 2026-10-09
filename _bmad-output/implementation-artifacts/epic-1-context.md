@@ -4,7 +4,7 @@
 
 ## Goal
 
-Give consumers one versioned OpenAPI contract driving REST, SDK, CLI/MCP consumption, and parity. Shared rules and generation gates prevent drift. The v2 authorization correction is the downstream target; generation does not authorize production exposure or closure.
+Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Spine driving REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Shared rules and generation gates prevent drift. Candidate generation alone does not authorize production exposure or story closure.
 
 ## Stories
 

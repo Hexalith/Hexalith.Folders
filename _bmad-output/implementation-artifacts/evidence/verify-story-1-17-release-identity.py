@@ -75,11 +75,30 @@ def main():
             require(names == set(asset.namelist()), f'Released payload inventory differs: {row["id"]}')
             require(all(feed.read(name) == asset.read(name) for name in names), f'Released payload differs: {row["id"]}')
 
+    # A later dry run replaces nupkgs/*.nupkg. Verify the archived preparation
+    # when the active output no longer contains the recorded source revision.
+    retained_preparation = (
+        root / 'nupkgs/artifacts/history' /
+        f'story117-{record["folders_revision"][:7]}-before-current-build'
+    )
     for row in record['prepared_packages']:
-        require(sha(read(row['path'])) == row['sha256'], f'Prepared archive differs: {row["path"]}')
+        active = root / row['path']
+        archive = (
+            active if active.is_file() and sha(active.read_bytes()) == row['sha256']
+            else retained_preparation / active.name
+        )
+        require(archive.is_file() and sha(archive.read_bytes()) == row['sha256'],
+                f'Prepared archive differs or is missing: {row["path"]}')
         require(row['repository']['commit'] == record['folders_revision'], 'Prepared source metadata differs')
-    for report in record['gate_reports'].values():
-        require(sha(read(report['path'])) == report['sha256'], f'Gate report differs: {report["path"]}')
+    for name, report in record['gate_reports'].items():
+        active = root / report['path']
+        retained = retained_preparation / 'release-gate.json' if name == 'release-packages' else active
+        gate_report = (
+            active if active.is_file() and sha(active.read_bytes()) == report['sha256']
+            else retained
+        )
+        require(gate_report.is_file() and sha(gate_report.read_bytes()) == report['sha256'],
+                f'Gate report differs or is missing: {report["path"]}')
     for test in record['tests'].values():
         require(sha(read(test['retained_log_path'])) == test['log_sha256'], 'Retained test log differs')
     for original, row in record['projects_candidate_build']['build_files'].items():
