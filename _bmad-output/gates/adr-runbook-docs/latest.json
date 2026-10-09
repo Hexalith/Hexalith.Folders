@@ -4,7 +4,7 @@
   "exit_code": 0,
   "diagnostic_policy": "metadata-only",
   "report_path": "_bmad-output/gates/adr-runbook-docs/latest.json",
-  "source_commit": "e6120525dd783eac730eca5b58196290ec690ef0",
+  "source_commit": "503540aef1ebe42af2131cc3910aa52f96255acb",
   "test_project": "tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj",
   "adr_total": 6,
   "runbook_total": 7,

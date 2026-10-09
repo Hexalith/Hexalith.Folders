@@ -21,7 +21,7 @@
   ],
   "package_version": "1.2.0",
   "release_tag": "",
-  "source_revision_id": "02152bace0c782b2b65bf9ccd31e4738a94eac17",
+  "source_revision_id": "503540aef1ebe42af2131cc3910aa52f96255acb",
   "package_manifest_path": "tools/release-packages.json",
   "package_policy_path": "deploy/nuget/release-packages.yaml",
   "package_output_path": "nupkgs",
@@ -39,7 +39,7 @@
       "package_path": "nupkgs/Hexalith.Folders.Contracts.1.2.0.nupkg",
       "symbol_package_path": "nupkgs/Hexalith.Folders.Contracts.1.2.0.snupkg",
       "version": "1.2.0",
-      "source_revision_id": "02152bace0c782b2b65bf9ccd31e4738a94eac17"
+      "source_revision_id": "503540aef1ebe42af2131cc3910aa52f96255acb"
     },
     {
       "package_id": "Hexalith.Folders",
@@ -47,7 +47,7 @@
       "package_path": "nupkgs/Hexalith.Folders.1.2.0.nupkg",
       "symbol_package_path": "nupkgs/Hexalith.Folders.1.2.0.snupkg",
       "version": "1.2.0",
-      "source_revision_id": "02152bace0c782b2b65bf9ccd31e4738a94eac17"
+      "source_revision_id": "503540aef1ebe42af2131cc3910aa52f96255acb"
     },
     {
       "package_id": "Hexalith.Folders.Client",
@@ -55,7 +55,7 @@
       "package_path": "nupkgs/Hexalith.Folders.Client.1.2.0.nupkg",
       "symbol_package_path": "nupkgs/Hexalith.Folders.Client.1.2.0.snupkg",
       "version": "1.2.0",
-      "source_revision_id": "02152bace0c782b2b65bf9ccd31e4738a94eac17"
+      "source_revision_id": "503540aef1ebe42af2131cc3910aa52f96255acb"
     },
     {
       "package_id": "Hexalith.Folders.Aspire",
@@ -63,7 +63,7 @@
       "package_path": "nupkgs/Hexalith.Folders.Aspire.1.2.0.nupkg",
       "symbol_package_path": "nupkgs/Hexalith.Folders.Aspire.1.2.0.snupkg",
       "version": "1.2.0",
-      "source_revision_id": "02152bace0c782b2b65bf9ccd31e4738a94eac17"
+      "source_revision_id": "503540aef1ebe42af2131cc3910aa52f96255acb"
     },
     {
       "package_id": "Hexalith.Folders.Testing",
@@ -71,7 +71,7 @@
       "package_path": "nupkgs/Hexalith.Folders.Testing.1.2.0.nupkg",
       "symbol_package_path": "nupkgs/Hexalith.Folders.Testing.1.2.0.snupkg",
       "version": "1.2.0",
-      "source_revision_id": "02152bace0c782b2b65bf9ccd31e4738a94eac17"
+      "source_revision_id": "503540aef1ebe42af2131cc3910aa52f96255acb"
     }
   ],
   "results": [
@@ -92,7 +92,7 @@
     },
     {
       "category": "restore-build",
-      "status": "skipped-same-run-prerequisite",
+      "status": "passed",
       "exit_code": 0
     },
     {
@@ -136,5 +136,5 @@
       "exit_code": 0
     }
   ],
-  "elapsed_ms": 17807
+  "elapsed_ms": 46662
 }
