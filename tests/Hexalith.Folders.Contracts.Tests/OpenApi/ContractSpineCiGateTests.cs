@@ -19,9 +19,9 @@ public sealed class ContractSpineCiGateTests
         string workflow = File.ReadAllText(WorkflowPath);
         string script = File.ReadAllText(GateScriptPath);
 
-        workflow.ShouldContain("actions/checkout@v6");
+        workflow.ShouldContain("actions/checkout@v7");
         workflow.ShouldContain("submodules: false");
-        workflow.ShouldContain("actions/setup-dotnet@v5");
+        workflow.ShouldContain("actions/setup-dotnet@v6");
         workflow.ShouldContain("global-json-file: global.json");
         workflow.ShouldContain("dotnet restore Hexalith.Folders.CI.slnx -p:Configuration=Release -p:UseNuGetDeps=true -m:1");
         workflow.ShouldContain("dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true --no-restore -warnaserror -m:1");

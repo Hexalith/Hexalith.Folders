@@ -13,17 +13,17 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: b0961226f98d3e4c5941bbb8db33abde36f8a243b907614fa09f24ff8b656679
+candidate_set_sha256: 626deac7b3da63e0f12534492b924824e9f60ac3a78099f1c3eb21a30c64fad0
 artifact_count: 224
 artifacts:
   - path: ".github/workflows/ci.yml"
     kind: file
-    bytes: 5572
-    sha256: 6e722ec58b4f955f1b1e77fc4e5408a78612f565be345589dcb7199c4005b628
+    bytes: 5548
+    sha256: ab5942869b3b6670d289e4c111ebca319bd6beb769eb60565151ab065ab1185f
   - path: ".github/workflows/contract-spine.yml"
     kind: file
     bytes: 3103
-    sha256: a2bb2e51b31e367da632c46e7ea0191dd0f4745f216e08136d0c907e07b187b1
+    sha256: 069b99905b6e31d95c041665e98395894167827b1c1762cbc04667dddcdbdd16
   - path: "docs/contract/authorization-matrix.md"
     kind: file
     bytes: 49645
@@ -50,8 +50,8 @@ artifacts:
     sha256: 62cc54742272e147c49a98f38b94d7acb1cf21abeff8eee0a2aabb1969f9e4a8
   - path: "docs/contract/pd10-v2-consumer-discovery.md"
     kind: file
-    bytes: 15633
-    sha256: 07c998ae0f6b0cbe5b3c8c950388054766a058c2bbcaac297d913a484abafae9
+    bytes: 17199
+    sha256: f0dd786dc08017ff382649a51883135aa675efe7c79bca2dc1a1557563a456f9
   - path: "docs/contract/sdk-generation-and-idempotency-helpers.md"
     kind: file
     bytes: 6928
@@ -586,8 +586,8 @@ artifacts:
     sha256: 051bb66c2d49410f65243b43f075acb16f0bf83073108482b880ab3954440588
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ContractParityCiWorkflowConformanceTests.cs"
     kind: file
-    bytes: 21405
-    sha256: 91584e8801f9ba1469af034210fb992237d20f3b13b63b7a3d1f5e029971607c
+    bytes: 21397
+    sha256: 2ceaf78b2d3a450c65baf7bca53574084ceca5e4a2078182ad342bf753df9f09
   - path: "tests/Hexalith.Folders.Contracts.Tests/Deployment/ProviderErrorDocsConformanceTests.cs"
     kind: file
     bytes: 32447
@@ -599,11 +599,11 @@ artifacts:
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ContractSpineCiGateTests.cs"
     kind: file
     bytes: 16739
-    sha256: 32cfff42c47a7347ebdcfc07f9e7fc90e861dd33e3f4a06ee21ccc21313ffae1
+    sha256: 49c125f18091ebecf244f84aa5b3dbff3bdb6e581c2e7c57d326c63a8b907c57
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs"
     kind: file
     bytes: 179675
-    sha256: 8b879a5932491056574775a5be3ec37dad7fe1c56ab62d9c298e260c556fa222
+    sha256: 0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8
   - path: "tests/Hexalith.Folders.Contracts.Tests/OpenApi/ParityOracleGeneratorTests.cs"
     kind: file
     bytes: 38824

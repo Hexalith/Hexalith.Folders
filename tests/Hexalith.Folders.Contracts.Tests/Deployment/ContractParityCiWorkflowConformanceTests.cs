@@ -83,7 +83,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         GetScalar(contractJob, "name").ShouldBe("folders-specialized-gates");
         GetScalar(contractJob, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(contractJob, "actions/checkout@v7.0.1");
+        YamlMappingNode checkout = FindStep(contractJob, "actions/checkout@v7");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
@@ -94,7 +94,7 @@ public sealed partial class ContractParityCiWorkflowConformanceTests
         submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
-        YamlMappingNode setupDotnet = FindStep(contractJob, "actions/setup-dotnet@v6.0.0");
+        YamlMappingNode setupDotnet = FindStep(contractJob, "actions/setup-dotnet@v6");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");

@@ -73,9 +73,9 @@ provenance:
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml
   sha256: b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
-  sha256: 8b879a5932491056574775a5be3ec37dad7fe1c56ab62d9c298e260c556fa222
+  sha256: 0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: 157c3025375c91ac65b800bcc1b3ba5285cb847bfd99ef8dedee2d1d14c19346
+  sha256: c9857fa816429c0d71df79495bbb7756cd82e7e6c8509ef859810bc898c5cc28
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
   sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml

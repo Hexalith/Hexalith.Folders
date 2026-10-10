@@ -190,9 +190,9 @@ public sealed class GovernanceCompletenessGateTests
         const string c7DecisionPath = "docs/exit-criteria/c7-lock-authorization-timing.md";
 
         workflow.ShouldContain("./tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild");
-        workflow.ShouldContain("actions/checkout@v6");
+        workflow.ShouldContain("actions/checkout@v7");
         workflow.ShouldContain("submodules: false");
-        workflow.ShouldContain("actions/setup-dotnet@v5");
+        workflow.ShouldContain("actions/setup-dotnet@v6");
         workflow.ShouldContain("global-json-file: global.json");
         workflow.ShouldNotContain("git submodule update --init --recursive", Case.Insensitive);
 

@@ -48,7 +48,7 @@ public sealed partial class AccessibilityCiWorkflowConformanceTests
         GetScalar(job, "name").ShouldBe(JobName);
         GetScalar(job, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7.0.1");
+        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
         YamlMappingNode submodules = GetSequence(job, "steps").Children.Cast<YamlMappingNode>()
@@ -58,7 +58,7 @@ public sealed partial class AccessibilityCiWorkflowConformanceTests
         submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
-        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6.0.0");
+        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6");
         GetScalar(GetMapping(setupDotnet, "with"), "global-json-file").ShouldBe("global.json");
 
         // The job must provision the browser and then run the gate with -SkipBrowserInstall — both via pwsh.

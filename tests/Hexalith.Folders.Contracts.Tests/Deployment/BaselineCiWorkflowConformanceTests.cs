@@ -96,7 +96,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         YamlMappingNode job = GetMapping(jobs, "folders-specialized-gates");
         GetScalar(job, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7.0.1");
+        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
@@ -107,7 +107,7 @@ public sealed partial class BaselineCiWorkflowConformanceTests
         submoduleCommand.ShouldBe("git -c submodule.recurse=false submodule update --init --checkout");
         submoduleCommand.ShouldNotContain(string.Concat("--", "recursive"), Case.Insensitive);
 
-        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6.0.0");
+        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");

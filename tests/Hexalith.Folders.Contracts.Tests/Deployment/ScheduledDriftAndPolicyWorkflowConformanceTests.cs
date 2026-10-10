@@ -385,7 +385,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
         GetScalar(job, "name").ShouldBe(jobName);
         GetScalar(job, "runs-on").ShouldBe("ubuntu-latest");
 
-        YamlMappingNode checkout = FindStep(job, "actions/checkout@v6");
+        YamlMappingNode checkout = FindStep(job, "actions/checkout@v7");
         GetScalar(GetMapping(checkout, "with"), "fetch-depth").ShouldBe("1");
         GetScalar(GetMapping(checkout, "with"), "submodules").ShouldBe("false");
 
@@ -400,7 +400,7 @@ public sealed partial class ScheduledDriftAndPolicyWorkflowConformanceTests
             submoduleCommand.ShouldContain(module, Case.Sensitive);
         }
 
-        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v5");
+        YamlMappingNode setupDotnet = FindStep(job, "actions/setup-dotnet@v6");
         YamlMappingNode setupWith = GetMapping(setupDotnet, "with");
         GetScalar(setupWith, "global-json-file").ShouldBe("global.json");
         GetScalar(setupWith, "cache").ShouldBe("true");
