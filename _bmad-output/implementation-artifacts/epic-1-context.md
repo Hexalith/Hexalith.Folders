@@ -36,9 +36,7 @@ Errors require category, code, safe message, correlation, retryability, client a
 
 Every operation is mutation or read. Equivalence excludes transport/retry metadata. Replay rechecks authorization; different intent conflicts without prior-intent disclosure; expired keys never execute. Reads reject keys before source execution. Commit replay has longer retention.
 
-Content, credentials, secrets, raw provider payloads/paths, and unauthorized existence stay out of persisted metadata, telemetry, errors, and evidence. Bounded context responses require authorization/path policy. Mutations do not auto-commit. Use .NET 10, `.slnx`, platform capabilities, and root-declared submodules.
-
-Provider compatibility is capability-based. Approved profiles and client/native pins are governed inputs; changed behavior or support scope requires a decision. Catalog approval is design evidence, distinct from credentialed live-provider delivery.
+Content, credentials, secrets, raw provider payloads/paths, and unauthorized existence stay out of persisted metadata, telemetry, errors, and evidence. Bounded context responses require authorization/path policy. Mutations do not auto-commit.
 
 ## Technical Decisions
 
@@ -56,7 +54,7 @@ Keep `V1Only` active and `T0` unset until every migration entry gate passes. Pre
 
 ## UX & Interaction Patterns
 
-The console is read-only and metadata-only. Denial never invites retry; authority unavailability does. Both show safe correlation without confirming existence. Visible/redacted/withheld/unknown/missing disclosure stays separate from availability. `unknown_provider_outcome` is auto-recovering during bounded checks, then may escalate to `reconciliation_required`/awaiting-human.
+The console is read-only and metadata-only. Denial never invites retry; authority unavailability does. Both show safe correlation without confirming existence. Visible/redacted/withheld/unknown/missing disclosure stays separate from availability.
 
 ## Cross-Story Dependencies
 
