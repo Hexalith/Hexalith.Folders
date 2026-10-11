@@ -2,7 +2,7 @@
 title: 'Story 12.1: EventStore-backed folder repository and projection replay'
 type: 'feature'
 created: '2026-09-26'
-status: 'draft'
+status: 'ready-for-dev'
 route: 'dispatch'
 review_loop_iteration: 0
 context:
@@ -40,22 +40,21 @@ context:
 
 ## Code Map
 
-- `_bmad-output/planning-artifacts/planning-story-manifest.yaml` — A6b/A8 approved; 12.1 held by the absent `EXT-ES-EVENT-EVOLUTION` acceptance record.
-- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs`, `FolderDomainProcessor.cs` — authorization precedes processing; processor ignores actor state and discards accepted result events into NoOp.
-- `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `FolderStateApply.cs`; `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs`, `OrganizationState.cs` — memory append contracts and reusable event folds.
-- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `FoldersServerHostComposition.cs`, `FolderRepositoryStartupAssertion.cs` — memory organization default; Production lacks durable folder registration.
-- `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`; `references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/IDomainProjectionHandler.cs` — replace `/project` 501 using SDK replay after the accepted version API arrives; actor already owns transactional append.
+- `_bmad-output/planning-artifacts/planning-story-manifest.yaml:1340,5807`, `_bmad-output/planning-artifacts/architecture.md:706` — release held; EventStore's `sprint-change-proposal-2026-10-09.md:88` drops D-12 URI identity/aliases; acceptance record absent.
+- `src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:27`, `FolderDomainProcessor.cs:84,1305` — retain authorization and scoped result access; consume actor state and replace accepted NoOp results with events.
+- `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `FolderState.cs:67`, `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs`, `OrganizationState.cs:11` — reuse folds; stop Production independent append. Memory repositories serve development/tests.
+- `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:26`, `FoldersServerHostComposition.cs:30`, `FolderRepositoryStartupAssertion.cs:18`, `FoldersDomainServiceEndpoints.cs:94` — wire Production durability and SDK `IDomainProjectionHandler`; current `/project` is 501.
 
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-event-evolution-v1.yaml` — verify accepted release digest/API and 12.1 admission before Folders edits.
-- [ ] `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs` — remove Production independent append; read actor-folded state.
-- [ ] `src/Hexalith.Folders/Aggregates/Folder/` (`FolderCreationService.cs`, `FolderAccessMutationService.cs`, `RepositoryBackedFolderCreationService.cs`, `RepositoryBindingService.cs`, `BranchRefPolicyConfigurationService.cs`, `WorkspacePreparationService.cs`, `WorkspaceLockAcquisitionService.cs`, `WorkspaceLockReleaseService.cs`, `WorkspaceFileMutationService.cs`, `WorkspaceCommitService.cs`); `src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs` — return event decisions; preserve authorization and avoid repeating provider effects.
-- [ ] `src/Hexalith.Folders.Server/FolderDomainProcessor.cs`, `FoldersDomainServiceRequestHandler.cs` — emit result events after authorization and bound full conflict re-evaluation to one attempt.
-- [ ] `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `FoldersServerHostComposition.cs`, `FolderRepositoryStartupAssertion.cs` — register durable folder/organization state and reject Production memory.
-- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs` — use stateless versioned SDK projection replay.
-- [ ] `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`, `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderLifecycleReplayDeterminismTests.cs`, `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs`, `tests/fixtures/event-evolution/` — prove the matrix, retained bytes, persisted end state, restart, conflict, and safe failures.
+- [ ] `references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-event-evolution-v1.yaml` — verify accepted D-12 API/digest and `DEC-EXEC-12.1`; stop on mismatch before Folders edits.
+- [ ] `src/Hexalith.Folders/Aggregates/Folder/IFolderRepository.cs`, `src/Hexalith.Folders/Aggregates/Organization/IOrganizationProviderBindingRepository.cs` — replace Production append with actor-folded reads.
+- [ ] `src/Hexalith.Folders/Aggregates/Folder/*Service.cs`, `src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs` — return metadata-only event decisions without repeating provider effects.
+- [ ] `src/Hexalith.Folders.Server/FolderDomainProcessor.cs`, `FoldersDomainServiceRequestHandler.cs` — emit events after authorization; allow one full conflict re-evaluation.
+- [ ] `src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs`, `FoldersServerHostComposition.cs`, `FolderRepositoryStartupAssertion.cs` — bind durable Production state; reject memory fallback.
+- [ ] `src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs`, new `FolderDomainProjectionHandler.cs` — replace 501 with stateless SDK replay.
+- [ ] `tests/Hexalith.Folders.Server.Tests/ServerEndpointRegistrationTests.cs`, `tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderLifecycleReplayDeterminismTests.cs`, `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs`, `tests/fixtures/event-evolution/` — prove retained bytes, persisted end state, restart, conflict, denials, and failure safety.
 
 **Acceptance Criteria:**
 - Given accepted EventStore evolution and 12.1 admission, when Production accepts a folder or organization command, then one versioned metadata-only stream persists and survives restart.
@@ -64,6 +63,8 @@ context:
 - Given denial, wrong tenant, corrupt or unavailable store, or timeout, when command/replay runs, then no protected state or confidential value leaks.
 
 ## Implementation Notes
+
+Gate: EventStore's 2026-10-09 rescope conflicts with D-12; acceptance record and `DEC-EXEC-12.1` remain absent.
 
 ## Spec Change Log
 
