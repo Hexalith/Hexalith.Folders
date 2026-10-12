@@ -1346,28 +1346,27 @@ external_nodes:
     accountable_role: EventStore Platform Architect
     delivery_role: EventStore Epic 6 owner
     source_work_references:
-    - EventStore Story 6.5 — Event Versioning And Upcasting Spec
-    - EventStore Story 6.6 — Event Versioning And Upcasting Implementation
-    release_identifier: hexalith-eventstore-event-evolution-v1
-    observed_repository_commit: b5541259058320a0a7f1db19038709cbd02dad85
-    release_version_or_commit: pending-platform-publication
+    - EventStore Story 6.5 — Event Versioning And Upcasting Spec (historical design)
+    - EventStore Story 6.6 — Event Versioning And Upcasting Implementation (completed, governing contract)
+    release_identifier: hexalith-eventstore-6.6-folders-compatibility
+    observed_repository_commit: ead4949d30b37d3a976f5c9197789a91701f1a72
+    release_version_or_commit: ead4949d30b37d3a976f5c9197789a91701f1a72
     evidence_paths:
-      specification: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-event-versioning-upcasting.md
-      acceptance_record: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/ext-es-event-evolution-v1.yaml
+      specification: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-6-6-event-versioning-and-upcasting-implementation-3.md
+      acceptance_record: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml
       source_story_authority: references/Hexalith.EventStore/_bmad-output/planning-artifacts/epics.md
     required_evidence:
-    - Stable URI logical event type independent of CLR and assembly names.
-    - Positive eventPayloadSchemaVersion distinct from EventStore MetadataVersion.
-    - Deterministic complete upcaster registry and fail-closed chain validation.
-    - Closed legacy EventTypeName alias inventory with retained historical byte fixtures.
-    - Replay and projection proof that preserves historical bytes.
-    acceptance_status: pending
-    acceptance_reason: EventStore Stories 6.5 and 6.6 are backlog at the observed commit, the required specification is absent, and the repository
-      documents that no formal upcaster pipeline exists.
+    - Full CLR EventTypeName and PayloadVersion under metadata V1, with an absent stamp meaning version 1.
+    - Registered deterministic upcaster chain for known events without rewriting retained payload bytes.
+    - Versioned wire, replay, and projection compatibility at the pinned EventStore revision.
+    - Folders keeps a closed persisted event-name inventory and fails unknown stream events before state or projection advancement.
+    acceptance_status: accepted
+    acceptance_reason: EventStore Story 6.6 is complete at the pinned revision; focused client, projection, and server wire tests pass,
+      and Folders builds against that source. The acceptance record limits its claim to source and SDK compatibility.
     placeholder_acceptance_forbidden: true
-    decision_status: pending
+    decision_status: accepted
     execution_authorization_status: external-owner-controlled
-    delivery_evidence_status: pending
+    delivery_evidence_status: accepted
   EXT-ES-RECOVERY:
     node_type: external-platform-release
     execution_rank: 2
@@ -2221,6 +2220,21 @@ validation_results:
   nfr_traceability_conformance: pass-17-of-17
   final_post_a8_section9: fail-50-of-53-focused-tests-and-101-full-build-errors
 planning_amendments:
+- amended_on: '2026-10-11'
+  decision_maker: Jerome
+  decision_policy: docs/governance/approval-policy.md
+  decision_note: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-decision-2026-10-11.md
+  accepted_scope: Adopt pinned EventStore 6.6 evolution semantics and authorize Story 12.1 only; preserve historical approval records and v2 exposure hold.
+  source_commit: ead4949d30b37d3a976f5c9197789a91701f1a72
+  compatibility_record: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml
+  changed_authority:
+  - path: _bmad-output/planning-artifacts/architecture.md
+    sha256_before: da13b2bd481b0c72355ad41ecf52b63f303711f4f5293ea89673cd05f916fce1
+    sha256_after: 7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa
+  - path: _bmad-output/planning-artifacts/epics.md
+    sha256_before: d1ac3564c5f50b48f4d2978546703dab82c1b8288d70c203317bf45d23c70492
+    sha256_after: da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de
+  unchanged: historical approval/provenance digests, general_execution_hold, v2_exposure_authorized, sprint_status_regeneration_authorized, and other story authorizations.
 - amended_on: '2026-10-07'
   decision_maker: Jerome
   decision_policy: docs/governance/approval-policy.md
@@ -5832,7 +5846,9 @@ stories:
   story_lifecycle_status: backlog
   execution_rank: 20
   decision_status: not-applicable
-  execution_authorization_status: held
+  execution_authorization_status: authorized-scoped
+  execution_authorization_record_path: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-decision-2026-10-11.md
+  execution_authorization_record_sha256: 3816bb7f8d38c1e8ae1bfa7b983fd6b33e381f721b03334cc84f978c8c313728
   delivery_evidence_status: open
 - id: '12.2'
   title: Durable projections and task-completion pipeline

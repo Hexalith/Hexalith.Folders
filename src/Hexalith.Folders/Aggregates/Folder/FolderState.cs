@@ -132,8 +132,16 @@ public sealed record FolderState(
         ArgumentNullException.ThrowIfNull(expectedStreamName);
 
         FolderState state = this;
+        HashSet<IFolderEvent> seenInReplay = [];
         foreach (IFolderEvent folderEvent in events)
         {
+            // One accepted command may legitimately emit several events with the same
+            // idempotency key. Suppress only an exact duplicate delivery in this replay.
+            if (!seenInReplay.Add(folderEvent))
+            {
+                continue;
+            }
+
             state = FolderStateApply.Apply(state, folderEvent, expectedStreamName);
         }
 

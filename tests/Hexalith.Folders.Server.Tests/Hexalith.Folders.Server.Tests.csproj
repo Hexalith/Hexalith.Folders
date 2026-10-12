@@ -6,6 +6,9 @@
     <ProjectReference Include="..\..\src\Hexalith.Folders.Server\Hexalith.Folders.Server.csproj" />
     <ProjectReference Include="..\..\src\Hexalith.Folders.Testing\Hexalith.Folders.Testing.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\fixtures\event-evolution\*" Link="event-evolution\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
   <!-- Story 5.5: shared, test-only parity oracle (transport columns) + golden-lifecycle step list linked
        (not copied). Same file set Story 5.4 introduced for CLI/MCP; consumed here for REST transport-parity
        conformance against the in-process server host. -->

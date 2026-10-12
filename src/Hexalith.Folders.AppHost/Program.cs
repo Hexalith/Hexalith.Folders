@@ -90,6 +90,29 @@ _ = memories.Server.WithFoldersMemoriesSourceRouting();
 
 if (security is not null)
 {
+    // The local realm's confidential EventStore workload client signs short-lived
+    // domain-service assertions. Keycloak and EventStore share one generated secret.
+    bool persistWorkloadSecret = bool.TryParse(
+        builder.Configuration[HexalithEventStoreSecurityOptions.DefaultPersistentConfigurationKey]?.Trim(),
+        out bool keycloakPersistent) && keycloakPersistent;
+    IResourceBuilder<ParameterResource> workloadClientSecret = builder.AddParameter(
+        "eventstore-workload-client-secret",
+        new GenerateParameterDefault
+        {
+            MinLength = 32,
+            Lower = true,
+            MinLower = 1,
+            Numeric = true,
+            MinNumeric = 1,
+            Upper = true,
+            MinUpper = 1,
+            Special = false,
+        },
+        secret: true,
+        persist: persistWorkloadSecret);
+    _ = security.Keycloak.WithEnvironment("HEXALITH_EVENTSTORE_WORKLOAD_CLIENT_SECRET", workloadClientSecret);
+    _ = eventStore.WithEventStoreWorkloadClientCredentials("eventstore", workloadClientSecret);
+
     _ = eventStore.WithJwtBearerSecurity(security);
     _ = tenants.WithJwtBearerSecurity(security);
     _ = folders.WithJwtBearerSecurity(security);

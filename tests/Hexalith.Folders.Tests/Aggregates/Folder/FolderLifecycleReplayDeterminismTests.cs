@@ -73,6 +73,27 @@ public sealed class FolderLifecycleReplayDeterminismTests
     }
 
     [Fact]
+    public void MultiEventCommandShouldApplyEveryDistinctEventWithOneIdempotencyKey()
+    {
+        FolderAccessGranted first = new(
+            FolderLifecycleReplayFixture.ManagedTenantId,
+            FolderLifecycleReplayFixture.OrganizationId,
+            FolderLifecycleReplayFixture.FolderId,
+            FolderAccessPrincipalKind.User,
+            "principal-a", "read", FolderLifecycleReplayFixture.ActorPrincipalId,
+            FolderLifecycleReplayFixture.CorrelationId, FolderLifecycleReplayFixture.TaskId,
+            "batch-key", "batch-fingerprint", 1, FolderLifecycleReplayFixture.OccurredAt);
+        FolderAccessGranted second = first with { PrincipalId = "principal-b", AccessSequence = 2 };
+
+        FolderState state = FolderState.Empty.Apply(
+            [.. FolderLifecycleReplayFixture.CreatedEvents(), first, second],
+            FolderLifecycleReplayFixture.StreamName);
+
+        state.AccessOverrides.Count.ShouldBe(2);
+        state.AccessSequence.ShouldBe(2);
+    }
+
+    [Fact]
     public void ConcreteProductionFolderEventsShouldHaveExplicitReplayExpectation()
     {
         Type[] expected =

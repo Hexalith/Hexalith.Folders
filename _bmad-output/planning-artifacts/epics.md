@@ -3461,7 +3461,7 @@ Authorized developers and AI agents can persist folder lifecycle and file conten
 
 **Boundary:** Epic 12 owns durable source events, authoritative content/state, restart replay, task completion, real Git persistence, durable mutation idempotency, and recoverable egress. Product transition, diagnostic, and search projections remain owned by Epics 4, 6, and 10.
 
-**Prerequisite posture:** OQ2 file policy and OQ4 provider compatibility retain approved authority; OQ3 `1.0.0` is historical and superseded by the Story 1.17/A6b v2 matrix. EventStore event-evolution capability is an external prerequisite for Story 12.1, and production recovery capability is an external prerequisite for the dependent hardening work.
+**Prerequisite posture:** OQ2 file policy and OQ4 provider compatibility retain approved authority; OQ3 `1.0.0` is historical and superseded by the Story 1.17/A6b v2 matrix. The completed EventStore 6.6 payload-version and upcaster capability needs a pinned Folders compatibility acceptance record before Story 12.1; production recovery capability remains an external prerequisite for the dependent hardening work.
 
 ### Story 12.1: EventStore-backed folder repository, retire NoOp, and implement projection replay
 
@@ -3473,7 +3473,7 @@ So that accepted lifecycle operations survive process restart and Production can
 
 **Acceptance Criteria:**
 
-**Given** `EXT-ES-EVENT-EVOLUTION` publishes its versioned, digest-bound envelope/registry capability, A6b approves the v2 authorization matrix, and A8 releases the execution hold
+**Given** `EXT-ES-EVENT-EVOLUTION` accepts a pinned EventStore 6.6 revision with passing Folders compatibility checks, A6b approves the v2 authorization matrix, and A8 releases the execution hold
 **When** the real REST → EventStore gateway → processor → authorization gate → repository path accepts folder or organization behavior
 **Then** versioned metadata-only events append durably, `IFolderRepository` and required organization state rebuild from ordered/upcast streams, `/project` consumes events rather than returning 501, the ADR-0001 `DomainResult.NoOp()` path is retired, and Production boots with a real registration
 **And** empty-checkpoint replay, host restart, append conflict/reread, equivalent/conflicting idempotency, wrong-tenant/authorization denial, corrupt/unavailable store, timeout, supported event-version evolution, and sensitive-data exclusion are proven
@@ -3484,10 +3484,10 @@ So that accepted lifecycle operations survive process restart and Production can
 **Then** EventStore is the sole writer and command-state plus event append is transactional; one conflict permits at most one bounded full authorization-and-domain re-evaluation before append
 **And** blind append, provider-effect replay, or unbounded retry is forbidden, while exhausted conflict maps to HTTP `409`, CLI exit `77`, and MCP `concurrency_conflict` with multi-replica evidence.
 
-**Given** retained historical events and the external event-evolution release
+**Given** retained historical events and the accepted EventStore 6.6 capability
 **When** event type and payload versions are validated
-**Then** logical event types are stable URI identifiers independent of CLR/assembly names and every payload uses a positive schema version distinct from EventStore `MetadataVersion`
-**And** the closed legacy `EventTypeName` alias registry retains one historical byte fixture per alias and no unregistered missing-version alias defaults to version 1.
+**Then** each persisted full CLR `EventTypeName` is inventoried as an immutable Folders storage identifier, and `PayloadVersion` is separate from EventStore `MetadataVersion`; an absent stamp means version 1 only under EventStore 6.6's declared-version rules
+**And** registered upcasters cover supported changes without rewriting retained bytes, historical aliases have byte fixtures when they exist, and unknown Folders stream events or unsupported known versions fail closed before state or projection advancement.
 
 ### Story 12.2: Durable projections and task-completion pipeline
 

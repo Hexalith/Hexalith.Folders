@@ -22,16 +22,6 @@ public static class FolderStateApply
                 $"Foreign folder event in Apply: result code {FolderResultCode.TenantMismatch}.");
         }
 
-        // Dedupe identical replays: if the same idempotency key and fingerprint are already
-        // recorded in state, the event has already been applied and any state changes have
-        // already taken effect. Skipping prevents silent reapplication of state mutations.
-        if (!string.IsNullOrWhiteSpace(folderEvent.IdempotencyKey)
-            && state.IdempotencyFingerprints.TryGetValue(folderEvent.IdempotencyKey, out string? existingFingerprint)
-            && string.Equals(existingFingerprint, folderEvent.IdempotencyFingerprint, StringComparison.Ordinal))
-        {
-            return state;
-        }
-
         return folderEvent switch
         {
             FolderCreated created => state with

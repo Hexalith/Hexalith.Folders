@@ -5,6 +5,7 @@ using Hexalith.Commons.UniqueIds;
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Queries.ContextSearch;
@@ -91,16 +92,32 @@ public static class FoldersDomainServiceEndpoints
         .WithName("ProcessFolderDomainCommand")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 
-        endpoints.MapPost(FoldersServerModule.ProjectRoute, (ProjectionRequest _) =>
-            Results.Problem(
-                type: "https://hexalith.dev/errors/folders/projection-not-implemented",
-                title: "Folders projection endpoint is not implemented yet.",
-                statusCode: StatusCodes.Status501NotImplemented,
-                extensions: new Dictionary<string, object?>
-                {
-                    ["category"] = "not_implemented",
-                    ["code"] = "projection_not_implemented",
-                }))
+        endpoints.MapPost(FoldersServerModule.ProjectRoute, (
+            ProjectionRequest request,
+            IServiceProvider services,
+            CancellationToken cancellationToken) =>
+        {
+            try
+            {
+                ProjectionResponse? projection = DomainProjectionDispatcher.Project(
+                    services, request, cancellationToken);
+                return projection is null ? Results.NotFound() : Results.Ok(projection);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                return Results.Problem(
+                    statusCode: StatusCodes.Status422UnprocessableEntity,
+                    extensions: new Dictionary<string, object?>
+                    {
+                        ["category"] = "projection_unreadable",
+                        ["code"] = "projection_unreadable",
+                    });
+            }
+        })
         .WithName("ProjectFolderDomainReadModel")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
 

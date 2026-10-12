@@ -1,10 +1,14 @@
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.ServiceDefaults;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Hexalith.Folders.Server;
 
@@ -26,18 +30,26 @@ public static class FoldersServerHostComposition
         builder.Services.AddFoldersServer();
         builder.Services.AddAuthorization();
         builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
+        // EventStore marks its Dapr subscription callback with this policy. Register the
+        // SDK channel scheme so tenant events reach the projection without weakening JWT routes.
+        builder.Services.AddAuthentication().AddEventStoreSidecarChannelScheme();
+        builder.Services.Configure<AuthorizationOptions>(static options =>
+            options.AddPolicy(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy,
+                policy => policy
+                    .AddAuthenticationSchemes(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireClaim(EventStoreWorkloadAuthenticationDefaults.ChannelClaimType)));
 
-        // Production safety gate: AddInMemoryFolderRepository registers a dictionary-backed
-        // repository that loses every event on process restart. It is safe for dev/staging hosts
-        // and integration tests; it is not safe for production. Gate the call on environment so a
-        // production build that forgets to register an EventStore-backed repository fails at
-        // startup (via FolderRepositoryStartupAssertion) rather than silently running on a
-        // dictionary. Remove this gate and the assertion together when Epic 7 wires the
-        // EventStore-backed repository as the production default.
-        if (builder.Environment.IsDevelopment() || builder.Environment.IsStaging())
+        if (builder.Environment.IsProduction())
         {
-            // TODO Epic 7: replace AddInMemoryFolderRepository with an EventStore-backed
-            // repository for all environments.
+            builder.Services.RemoveAll<IFolderRepository>();
+            builder.Services.RemoveAll<IOrganizationProviderBindingRepository>();
+            builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
+            builder.Services.AddScoped<IOrganizationProviderBindingRepository,
+                ActorFoldedOrganizationProviderBindingRepository>();
+        }
+        else
+        {
             builder.Services.AddInMemoryFolderRepository();
         }
 

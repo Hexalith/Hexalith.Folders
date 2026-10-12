@@ -1,0 +1,242 @@
+using System.Text.Json;
+
+using Hexalith.EventStore.Client.Events;
+using Hexalith.EventStore.Client.Handlers;
+using Hexalith.EventStore.Contracts.Commands;
+using Hexalith.EventStore.Contracts.Events;
+using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.EventStore.Contracts.Serialization;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
+
+namespace Hexalith.Folders.Server;
+
+/// <summary>Reads actor-owned Folders streams through the EventStore event-evolution registry.</summary>
+public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
+{
+    private static readonly IReadOnlyDictionary<string, Type> KnownEvents = typeof(IFolderEvent).Assembly
+        .GetTypes()
+        .Where(static type => type.IsClass && !type.IsAbstract
+            && (typeof(IFolderEvent).IsAssignableFrom(type)
+                || typeof(IOrganizationEvent).IsAssignableFrom(type)))
+        .ToDictionary(static type => type.FullName!, StringComparer.Ordinal);
+
+    private readonly EventPayloadEvolutionRegistry _evolution = evolution;
+
+    /// <summary>Identifies the frozen rejection names which EventStore records in the same stream.</summary>
+    internal static bool IsKnownRejection(string eventTypeName)
+        => eventTypeName == typeof(FolderCommandRejected).FullName
+            || eventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
+            || eventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName;
+
+    /// <summary>Folds the command's actor-owned folder stream without querying another store.</summary>
+    internal FolderState FoldFolder(object? currentState, string tenantId, string aggregateId)
+    {
+        DomainServiceCurrentState? source = ReadCurrentState(currentState);
+        FolderState state = ReadFolderSnapshot(source?.SnapshotState);
+        long sequence = source?.LastSnapshotSequence ?? 0;
+        List<IFolderEvent> events = [];
+        foreach (EventEnvelope item in source?.Events ?? [])
+        {
+            RequireSequence(++sequence, item.Metadata.SequenceNumber);
+            RequireIdentity(item.Metadata.TenantId, item.Metadata.AggregateId, item.Metadata.Domain, tenantId, aggregateId);
+            if (IsKnownRejection(item.Metadata.EventTypeName))
+            {
+                ValidateRejection(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
+                    item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload);
+                continue;
+            }
+            events.Add(Read<IFolderEvent>(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
+                item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload, sequence));
+        }
+
+        RequireSequence(source?.CurrentSequence ?? 0, sequence);
+        return state.Apply(events, FolderStreamName.Create(tenantId, aggregateId));
+    }
+
+    /// <summary>Folds the command's actor-owned organization binding stream.</summary>
+    internal OrganizationState FoldOrganization(object? currentState, string tenantId, string aggregateId)
+    {
+        DomainServiceCurrentState? source = ReadCurrentState(currentState);
+        OrganizationState state = ReadOrganizationSnapshot(source?.SnapshotState);
+        long sequence = source?.LastSnapshotSequence ?? 0;
+        string? organizationId = state.ProviderBindings.Values.FirstOrDefault()?.OrganizationId;
+        foreach (EventEnvelope item in source?.Events ?? [])
+        {
+            RequireSequence(++sequence, item.Metadata.SequenceNumber);
+            RequireIdentity(item.Metadata.TenantId, item.Metadata.AggregateId, item.Metadata.Domain, tenantId, aggregateId);
+            if (IsKnownRejection(item.Metadata.EventTypeName))
+            {
+                ValidateRejection(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
+                    item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload);
+                continue;
+            }
+            IOrganizationEvent value = Read<IOrganizationEvent>(item.Metadata.EventTypeName,
+                item.Metadata.PayloadVersion, item.Metadata.MetadataVersion, item.Metadata.SerializationFormat,
+                item.Payload, sequence);
+            organizationId ??= value.OrganizationId;
+            if (!string.Equals(value.ManagedTenantId, tenantId, StringComparison.Ordinal)
+                || !string.Equals(value.OrganizationId, organizationId, StringComparison.Ordinal)
+                || value is ProviderBindingConfigured binding
+                    && !string.Equals(binding.ProviderBindingRef, aggregateId, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("Foreign organization event in actor stream.");
+            }
+
+            state = state.Apply([value]);
+        }
+
+        RequireSequence(source?.CurrentSequence ?? 0, sequence);
+        return state;
+    }
+
+    /// <summary>Folds a complete projection prefix into current folder state.</summary>
+    internal static FolderState FoldFolder(ProjectionRequest request)
+    {
+        FolderState state = FolderState.Empty;
+        long sequence = 0;
+        FolderStreamName stream = FolderStreamName.Create(request.TenantId, request.AggregateId);
+        List<IFolderEvent> events = [];
+        foreach (ProjectionEventDto item in request.Events)
+        {
+            RequireSequence(++sequence, item.SequenceNumber);
+            if (IsKnownRejection(item.EventTypeName))
+            {
+                ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
+                    item.MetadataVersion, item.SerializationFormat, item.Payload);
+                continue;
+            }
+            IFolderEvent value = ReadEffective<IFolderEvent>(item.EventTypeName,
+                item.MetadataVersion, item.SerializationFormat, item.Payload);
+            events.Add(value);
+        }
+
+        return state.Apply(events, stream);
+    }
+
+    /// <summary>Folds a complete projection prefix into current organization state.</summary>
+    internal static OrganizationState FoldOrganization(ProjectionRequest request)
+    {
+        OrganizationState state = OrganizationState.Empty;
+        long sequence = 0;
+        string? organizationId = null;
+        foreach (ProjectionEventDto item in request.Events)
+        {
+            RequireSequence(++sequence, item.SequenceNumber);
+            if (IsKnownRejection(item.EventTypeName))
+            {
+                ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
+                    item.MetadataVersion, item.SerializationFormat, item.Payload);
+                continue;
+            }
+            IOrganizationEvent value = ReadEffective<IOrganizationEvent>(item.EventTypeName,
+                item.MetadataVersion, item.SerializationFormat, item.Payload);
+            organizationId ??= value.OrganizationId;
+            if (!string.Equals(value.ManagedTenantId, request.TenantId, StringComparison.Ordinal)
+                || !string.Equals(value.OrganizationId, organizationId, StringComparison.Ordinal)
+                || value is ProviderBindingConfigured binding
+                    && !string.Equals(binding.ProviderBindingRef, request.AggregateId, StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException("Foreign organization event in projection stream.");
+            }
+
+            state = state.Apply([value]);
+        }
+
+        return state;
+    }
+
+    private static DomainServiceCurrentState? ReadCurrentState(object? source)
+    {
+        if (source is null)
+        {
+            return null;
+        }
+
+        DomainServiceCurrentState state = DomainStateReplay.SnapshotAware(source)
+            ?? throw new InvalidOperationException("Unsupported actor state shape.");
+        return state.Events is null
+            ? throw new InvalidOperationException("Missing actor event stream.")
+            : state;
+    }
+
+    private static FolderState ReadFolderSnapshot(object? snapshot)
+        => snapshot is null ? FolderState.Empty
+            : snapshot is FolderState typed ? typed
+            : throw new InvalidOperationException("Unsupported folder snapshot shape.");
+
+    private static OrganizationState ReadOrganizationSnapshot(object? snapshot)
+        => snapshot is null ? OrganizationState.Empty
+            : snapshot is OrganizationState typed ? typed
+            : throw new InvalidOperationException("Unsupported organization snapshot shape.");
+
+    private T Read<T>(string typeName, int? payloadVersion, int? metadataVersion,
+        string serializationFormat, byte[] payload, long sequence) where T : class, IEventPayload
+    {
+        if (metadataVersion is not null and not 1 || !string.Equals(serializationFormat, "json", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Unsupported Folders event metadata.");
+        }
+
+        ResolvedEventPayload effective = _evolution.Read(typeName, payloadVersion, payload, sequence);
+        if (effective.EventType is null || !typeof(T).IsAssignableFrom(effective.EventType))
+        {
+            throw new InvalidOperationException("Unknown Folders stream event.");
+        }
+
+        return (T)(JsonSerializer.Deserialize(effective.Payload, effective.EventType,
+            EventStorePayloadSerialization.Options)
+            ?? throw new InvalidOperationException("Unreadable Folders stream event."));
+    }
+
+    private static void ValidateRejection(string typeName, int? payloadVersion, int? metadataVersion,
+        string serializationFormat, byte[] payload)
+    {
+        if (!IsKnownRejection(typeName) || payloadVersion is not null and not 1
+            || metadataVersion is not null and not 1
+            || !string.Equals(serializationFormat, "json", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Unsupported Folders rejection event.");
+        }
+
+        using JsonDocument document = JsonDocument.Parse(payload);
+        if (document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new InvalidOperationException("Unreadable Folders rejection event.");
+        }
+    }
+
+    private static T ReadEffective<T>(string typeName, int? metadataVersion,
+        string serializationFormat, byte[] payload) where T : class, IEventPayload
+    {
+        if (metadataVersion is not null and not 1
+            || !string.Equals(serializationFormat, "json", StringComparison.OrdinalIgnoreCase)
+            || !KnownEvents.TryGetValue(typeName, out Type? type)
+            || !typeof(T).IsAssignableFrom(type))
+        {
+            throw new InvalidOperationException("Unknown or unsupported Folders projection event.");
+        }
+
+        return (T)(JsonSerializer.Deserialize(payload, type, EventStorePayloadSerialization.Options)
+            ?? throw new InvalidOperationException("Unreadable Folders projection event."));
+    }
+
+    private static void RequireSequence(long expected, long actual)
+    {
+        if (expected != actual)
+        {
+            throw new InvalidOperationException("Incomplete or unordered Folders event stream.");
+        }
+    }
+
+    private static void RequireIdentity(string eventTenantId, string eventAggregateId, string eventDomain,
+        string tenantId, string aggregateId)
+    {
+        if (!string.Equals(eventTenantId, tenantId, StringComparison.Ordinal)
+            || !string.Equals(eventAggregateId, aggregateId, StringComparison.Ordinal)
+            || !string.Equals(eventDomain, FoldersServerModule.DomainName, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Foreign Folders event in actor stream.");
+        }
+    }
+}

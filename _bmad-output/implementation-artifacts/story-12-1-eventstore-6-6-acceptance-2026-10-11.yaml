@@ -1,0 +1,36 @@
+record_id: FOLDERS-ES-6.6-2026-10-11
+capability_node: EXT-ES-EVENT-EVOLUTION
+accepted_on: '2026-10-11'
+consumer: Hexalith.Folders Story 12.1
+decision_maker: Jerome
+decision_source: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-decision-2026-10-11.md
+source_repository: references/Hexalith.EventStore
+source_commit: ead4949d30b37d3a976f5c9197789a91701f1a72
+source_story: references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-6-6-event-versioning-and-upcasting-implementation-3.md
+source_story_sha256: da618fa6e3fafcfd42fd77026c3be0d735f515076840efbe51c938890e951461
+accepted_contract:
+  envelope_metadata_version: 1
+  persisted_identity: full CLR EventTypeName
+  payload_version: absent or 1 means version 1; versions 2 through 1024 carry PayloadVersion
+  event_contract_type: unused
+  evolution: registered EventStore IEventPayloadUpcaster steps; retained bytes stay unchanged
+verification:
+  - command: dotnet build tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj -c Debug -m:1
+    result: pass; zero warnings and errors
+  - command: dotnet tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll -class Hexalith.EventStore.Client.Tests.Events.EventPayloadEvolutionRegistryTests
+    result: pass; 35 tests, zero failures or skips
+  - command: dotnet build tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj -c Debug -m:1
+    result: pass; zero warnings and errors
+  - command: dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.VersionedProjectionDispatchTests
+    result: pass; 5 tests, zero failures or skips
+  - command: dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug -m:1
+    result: pass; zero warnings and errors
+  - command: dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.DomainServices.VersionedWireRoundTripTests
+    result: pass; 3 tests, zero failures or skips
+  - command: dotnet build Hexalith.Folders.slnx -c Debug -m:1
+    working_directory: project-root
+    result: pass; zero warnings and errors with the source revision above
+acceptance:
+  status: accepted
+  scope: source and SDK compatibility for Folders Story 12.1 development at the source_commit
+  excluded_claims: deployed durability, production rollout, Story 12.1 behavior or completion

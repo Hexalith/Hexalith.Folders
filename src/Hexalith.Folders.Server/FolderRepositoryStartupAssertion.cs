@@ -1,4 +1,5 @@
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,17 +18,26 @@ internal sealed class FolderRepositoryStartupAssertion(IServiceProvider services
     /// <inheritdoc/>
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        IFolderRepository? repository = services.GetService<IFolderRepository>();
+        using IServiceScope scope = services.CreateScope();
+        IFolderRepository? repository = scope.ServiceProvider.GetService<IFolderRepository>();
         if (repository is null)
         {
             throw new InvalidOperationException(
                 $"No IFolderRepository is registered. Production hosts must register an EventStore-backed implementation; dev/staging hosts must call AddInMemoryFolderRepository(). Environment: '{environment.EnvironmentName}'.");
         }
 
-        if (environment.IsProduction() && repository is InMemoryFolderRepository)
+        if (environment.IsProduction() && repository is not ActorFoldedFolderRepository)
         {
             throw new InvalidOperationException(
-                "InMemoryFolderRepository is registered in a Production environment. The in-memory implementation loses all events on process restart and is not safe for production. Register an EventStore-backed IFolderRepository instead.");
+                "Production requires the actor-folded EventStore folder repository.");
+        }
+
+        if (environment.IsProduction()
+            && scope.ServiceProvider.GetService<IOrganizationProviderBindingRepository>()
+                is not ActorFoldedOrganizationProviderBindingRepository)
+        {
+            throw new InvalidOperationException(
+                "Production requires the actor-folded EventStore organization repository.");
         }
 
         return Task.CompletedTask;

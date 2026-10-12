@@ -1,6 +1,8 @@
+using Hexalith.EventStore.Contracts.Events;
+
 namespace Hexalith.Folders.Aggregates.Folder;
 
-public interface IFolderEvent
+public interface IFolderEvent : IEventPayload
 {
     string ManagedTenantId { get; }
 

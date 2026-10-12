@@ -33,7 +33,9 @@ public sealed partial class FolderDomainProcessor(
     ILayeredFolderAuthorizationResultAccessor authorizationAccessor,
     IFolderArchiveAclEvidenceProvider archiveAclEvidenceProvider,
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider,
-    IFolderTelemetryEmitter telemetryEmitter) : IDomainProcessor
+    IFolderTelemetryEmitter telemetryEmitter,
+    IFolderRepository? actorFolderRepository = null,
+    IOrganizationProviderBindingRepository? actorOrganizationRepository = null) : IDomainProcessor
 {
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -80,6 +82,8 @@ public sealed partial class FolderDomainProcessor(
         archivePolicyEvidenceProvider ?? throw new ArgumentNullException(nameof(archivePolicyEvidenceProvider));
     private readonly IFolderTelemetryEmitter _telemetryEmitter =
         telemetryEmitter ?? throw new ArgumentNullException(nameof(telemetryEmitter));
+    private readonly IFolderRepository? _actorFolderRepository = actorFolderRepository;
+    private readonly IOrganizationProviderBindingRepository? _actorOrganizationRepository = actorOrganizationRepository;
 
     public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
     {
@@ -104,6 +108,21 @@ public sealed partial class FolderDomainProcessor(
         if (!IsValidProcessEnvelope(command))
         {
             return Rejection(command, FolderResultCode.ValidationFailed, null);
+        }
+
+        // The request handler has completed the A6b authorization gate before the actor
+        // event sequence is inspected. Production repositories only read this supplied state;
+        // the EventStore aggregate actor performs the transactional append after /process.
+        if (string.Equals(command.CommandType, FoldersServerModule.ConfigureProviderBindingCommandType, StringComparison.Ordinal))
+        {
+            if (_actorOrganizationRepository is ActorFoldedOrganizationProviderBindingRepository organization)
+            {
+                organization.Begin(command.TenantId, command.AggregateId, currentState);
+            }
+        }
+        else if (_actorFolderRepository is ActorFoldedFolderRepository folder)
+        {
+            folder.Begin(command.TenantId, command.AggregateId, currentState);
         }
 
         if (string.Equals(command.CommandType, FoldersServerModule.CreateFolderCommandType, StringComparison.Ordinal))
@@ -396,11 +415,11 @@ public sealed partial class FolderDomainProcessor(
         => result.Code switch
         {
             OrganizationProviderBindingResultCode.Accepted
-                or OrganizationProviderBindingResultCode.AlreadyApplied => OrganizationAcceptedNoOp(result),
+                or OrganizationProviderBindingResultCode.AlreadyApplied => OrganizationAcceptedResult(result),
             _ => Rejection(envelope, MapOrganizationResultCode(result.Code), null),
         };
 
-    private static DomainResult OrganizationAcceptedNoOp(OrganizationProviderBindingResult result)
+    private static DomainResult OrganizationAcceptedResult(OrganizationProviderBindingResult result)
     {
         FolderProcessResultPayload payload = new(
             Status: "accepted",
@@ -409,7 +428,8 @@ public sealed partial class FolderDomainProcessor(
             TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
             IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null);
 
-        return new PayloadNoOpDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions));
+        return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
+            [.. result.Events.Cast<IEventPayload>()]);
     }
 
     // Maps organization provider-binding result codes onto folder result codes so the shared rejection
@@ -1308,11 +1328,11 @@ public sealed partial class FolderDomainProcessor(
             FolderResultCode.Accepted
                 or FolderResultCode.Created
                 or FolderResultCode.IdempotentReplay
-                or FolderResultCode.AlreadyApplied => AcceptedNoOp(result),
+                or FolderResultCode.AlreadyApplied => AcceptedResult(result),
             _ => Rejection(envelope, result.Code, result),
         };
 
-    private static DomainResult AcceptedNoOp(FolderResult result)
+    private static DomainResult AcceptedResult(FolderResult result)
     {
         FolderProcessResultPayload payload = new(
             Status: "accepted",
@@ -1321,7 +1341,8 @@ public sealed partial class FolderDomainProcessor(
             TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
             IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null);
 
-        return new PayloadNoOpDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions));
+        return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
+            [.. result.Events.Cast<IEventPayload>()]);
     }
 
     private static DomainResult Rejection(CommandEnvelope envelope, FolderResultCode code, FolderResult? result)
@@ -1385,7 +1406,8 @@ public sealed partial class FolderDomainProcessor(
             idempotencyKey: idempotencyKey);
     }
 
-    private sealed record PayloadNoOpDomainResult(string Payload) : DomainResult([])
+    private sealed record PayloadDomainResult(string Payload, IReadOnlyList<IEventPayload> ProducedEvents)
+        : DomainResult(ProducedEvents)
     {
         public override string? ResultPayload => Payload;
     }

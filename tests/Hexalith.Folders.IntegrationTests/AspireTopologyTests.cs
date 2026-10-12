@@ -1,5 +1,6 @@
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
+using System.Text.Json;
 
 using CommunityToolkit.Aspire.Hosting.Dapr;
 
@@ -15,6 +16,44 @@ namespace Hexalith.Folders.IntegrationTests;
 public sealed class AspireTopologyTests
 {
     private const string DaprConfigPath = "DaprComponents/accesscontrol.yaml";
+
+    [Fact]
+    public void LocalRealmShouldGrantEventStoreOnlyScopedDomainServiceAssertions()
+    {
+        string realmPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+            "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
+        using JsonDocument document = JsonDocument.Parse(File.ReadAllBytes(realmPath));
+        JsonElement root = document.RootElement;
+        JsonElement client = root.GetProperty("clients").EnumerateArray().Single(static item =>
+            item.GetProperty("clientId").GetString() == "eventstore");
+
+        client.GetProperty("publicClient").GetBoolean().ShouldBeFalse();
+        client.GetProperty("serviceAccountsEnabled").GetBoolean().ShouldBeTrue();
+        client.GetProperty("secret").GetString().ShouldBe("${HEXALITH_EVENTSTORE_WORKLOAD_CLIENT_SECRET}");
+        client.GetProperty("defaultClientScopes").GetArrayLength().ShouldBe(0);
+        string[] optional = client.GetProperty("optionalClientScopes").EnumerateArray()
+            .Select(static item => item.GetString()!).ToArray();
+        optional.ShouldContain("eventstore-audience.folders");
+        optional.ShouldContain("eventstore-audience.tenants");
+        optional.ShouldContain("eventstore-operation.domain-service.process");
+        optional.ShouldContain("eventstore-operation.domain-service.project");
+        string[] available = root.GetProperty("clientScopes").EnumerateArray()
+            .Select(static item => item.GetProperty("name").GetString()!).ToArray();
+        foreach (string scope in optional)
+        {
+            available.ShouldContain(scope);
+        }
+
+        foreach (string clientId in new[] { "hexalith-eventstore", "hexalith-folders" })
+        {
+            JsonElement publicClient = root.GetProperty("clients").EnumerateArray().Single(item =>
+                item.GetProperty("clientId").GetString() == clientId);
+            JsonElement subject = publicClient.GetProperty("protocolMappers").EnumerateArray().Single(static item =>
+                item.GetProperty("name").GetString() == "subject-mapper");
+            subject.GetProperty("config").GetProperty("claim.name").GetString().ShouldBe("sub");
+            subject.GetProperty("config").GetProperty("access.token.claim").GetString().ShouldBe("true");
+        }
+    }
 
     [Fact]
     public void FoldersAspireModuleShouldExposeStableDaprAppIdsAndComponentNames()

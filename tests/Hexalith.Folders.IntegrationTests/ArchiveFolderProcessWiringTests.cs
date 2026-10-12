@@ -69,7 +69,7 @@ public sealed class ArchiveFolderProcessWiringTests
 
             response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
             host.Gateway.ProcessCalls.ShouldBe(1);
-            host.Gateway.LastWireEventCount.ShouldBe(0, "Option B keeps folder event persistence inside the gate and returns no framework events.");
+            host.Gateway.LastWireEventCount.ShouldBe(1, "The process response carries the accepted folder event to EventStore.");
             host.Repository.EventsAppended.ShouldBe(1);
 
             // AC2: the persisted FolderArchived event must carry the correct evidence fields
@@ -120,7 +120,7 @@ public sealed class ArchiveFolderProcessWiringTests
 
             response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
             host.Gateway.ProcessCalls.ShouldBe(1);
-            host.Gateway.LastWireEventCount.ShouldBe(0, "Folder event persistence stays inside the repository-backed gate.");
+            host.Gateway.LastWireEventCount.ShouldBe(1, "The process response carries the repository request event to EventStore.");
             host.Repository.EventsAppended.ShouldBe(1);
 
             FolderState state = host.Repository.Load(FolderStreamName.Create("tenant-a", "folder-a"));

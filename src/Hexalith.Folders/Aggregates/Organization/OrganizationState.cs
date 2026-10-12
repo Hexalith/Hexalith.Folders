@@ -73,6 +73,8 @@ public sealed record OrganizationState(
                         configured.OccurredAt);
                     initialized = true;
                     break;
+                default:
+                    throw new InvalidOperationException("Unknown organization event in replay.");
             }
         }
 

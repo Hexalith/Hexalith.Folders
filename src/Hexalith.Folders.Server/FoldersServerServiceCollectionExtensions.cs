@@ -1,5 +1,6 @@
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Handlers;
+using Hexalith.EventStore.DomainService;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -28,7 +29,32 @@ public static class FoldersServerServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddEventStore(typeof(FoldersModule).Assembly);
+        // These full CLR names are the persisted EventStore 6.6 storage identifiers.
+        services.AddKnownEventPayload<FolderCreated>();
+        services.AddKnownEventPayload<FolderAccessGranted>();
+        services.AddKnownEventPayload<FolderAccessRevoked>();
+        services.AddKnownEventPayload<FolderArchived>();
+        services.AddKnownEventPayload<RepositoryBindingRequested>();
+        services.AddKnownEventPayload<ExistingRepositoryBindingRequested>();
+        services.AddKnownEventPayload<RepositoryBound>();
+        services.AddKnownEventPayload<RepositoryBindingFailed>();
+        services.AddKnownEventPayload<ProviderOutcomeUnknown>();
+        services.AddKnownEventPayload<BranchRefPolicyConfigured>();
+        services.AddKnownEventPayload<WorkspacePreparationRequested>();
+        services.AddKnownEventPayload<FolderWorkspaceLifecycleEventRecorded>();
+        services.AddKnownEventPayload<WorkspaceLockAcquired>();
+        services.AddKnownEventPayload<WorkspaceLockReleased>();
+        services.AddKnownEventPayload<WorkspaceFileMutationAccepted>();
+        services.AddKnownEventPayload<WorkspaceCommitSucceeded>();
+        services.AddKnownEventPayload<WorkspaceCommitFailed>();
+        services.AddKnownEventPayload<WorkspaceCommitOutcomeUnknown>();
+        services.AddKnownEventPayload<OrganizationAclBaselineInitialized>();
+        services.AddKnownEventPayload<OrganizationAclPrincipalGranted>();
+        services.AddKnownEventPayload<OrganizationAclPrincipalRevoked>();
+        services.AddKnownEventPayload<ProviderBindingConfigured>();
         services.AddEventStoreGatewayClient();
+        services.TryAddSingleton<FolderEventReplay>();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainProjectionHandler, FolderDomainProjectionHandler>());
         services.AddFoldersObservability();
         services.AddHttpContextAccessor();
         services.AddOptions<TenantContextOptions>().BindConfiguration(TenantContextOptions.SectionName);

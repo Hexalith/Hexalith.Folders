@@ -3,11 +3,16 @@ using Dapr;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Testing;
+using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Shouldly;
 using Xunit;
@@ -27,6 +32,23 @@ public sealed class ServerEndpointRegistrationTests
             .Single(static descriptor => descriptor.ServiceType == typeof(ILayeredFolderAuthorizationResultAccessor));
         descriptor.ImplementationType.ShouldBe(typeof(ScopedLayeredFolderAuthorizationResultAccessor));
         descriptor.Lifetime.ShouldBe(ServiceLifetime.Scoped);
+    }
+
+    [Fact]
+    public void HostShouldRegisterSdkSidecarChannelPolicyForDomainCallbacks()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
+        });
+        builder.Services.AddFoldersServerTestDefaults();
+        builder.AddFoldersServerHost();
+        using WebApplication app = builder.Build();
+
+        AuthorizationPolicy? policy = app.Services.GetRequiredService<IOptions<AuthorizationOptions>>()
+            .Value.GetPolicy(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
+        policy.ShouldNotBeNull();
+        policy.AuthenticationSchemes.ShouldContain(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme);
     }
 
     [Fact]
@@ -97,7 +119,7 @@ public sealed class ServerEndpointRegistrationTests
     }
 
     [Fact]
-    public async Task ProjectRouteShouldReturn501NotImplemented()
+    public async Task ProjectRouteShouldReplayEmptyFolderState()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -116,9 +138,34 @@ public sealed class ServerEndpointRegistrationTests
         try
         {
             using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
-            using StringContent body = new("{}", System.Text.Encoding.UTF8, "application/json");
+            using StringContent body = new(
+                System.Text.Json.JsonSerializer.Serialize(new ProjectionRequest("tenant-a", "folders", "folder-a", [])),
+                System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(FoldersServerModule.ProjectRoute, body, TestContext.Current.CancellationToken);
-            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.NotImplemented);
+            response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            string content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            content.ShouldContain("\"projectionType\":\"folder-state\"");
+            content.ShouldContain("\"isCreated\":false");
+
+            // An unreadable retained event must fail closed at the actual HTTP seam.
+            ProjectionEventDto corrupt = new(typeof(FolderCreated).FullName!,
+                System.Text.Encoding.UTF8.GetBytes("{\"confidential\":\"secret-sentinel\"}"),
+                "json", 1, DateTimeOffset.UtcNow, "correlation-a")
+            {
+                StoredPayloadVersion = 2,
+                MetadataVersion = 1,
+            };
+            using StringContent unreadableBody = new(
+                System.Text.Json.JsonSerializer.Serialize(
+                    new ProjectionRequest("tenant-a", "folders", "folder-a", [corrupt])),
+                System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage unreadable = await client.PostAsync(FoldersServerModule.ProjectRoute,
+                unreadableBody, TestContext.Current.CancellationToken);
+            unreadable.StatusCode.ShouldBe(System.Net.HttpStatusCode.UnprocessableEntity);
+            string failure = await unreadable.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            failure.ShouldContain("projection_unreadable");
+            failure.ShouldNotContain("secret-sentinel");
+            failure.ShouldNotContain(typeof(FolderCreated).FullName!);
         }
         finally
         {
