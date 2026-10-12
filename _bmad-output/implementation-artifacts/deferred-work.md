@@ -2860,3 +2860,7 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Measure whether the persisted tenant-access projection's unbounded processed-message map can exceed deployed state-store limits.
   evidence: The pre-existing projection retains every message and the new store serializes the full row per update; backend value limits and realistic tenant-event volume have not been established.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-2.md`
+  summary: Record copyable Worker build and direct xUnit verification commands in the Story 12.1 completion-reconciliation spec.
+  evidence: Independent review found that the notes report the 59 Server and 3 Worker passes and name their selected classes, but omit the full Worker build and direct assembly invocation commands; the one-shot workflow routes spec-only improvements to deferred work.
