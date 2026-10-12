@@ -80,6 +80,19 @@ public sealed class FolderCommandActionTokenMapperTests
     }
 
     [Theory]
+    [InlineData(FoldersServerModule.InitializeOrganizationAclBaselineCommandType)]
+    [InlineData(FoldersServerModule.GrantOrganizationAclPrincipalCommandType)]
+    [InlineData(FoldersServerModule.RevokeOrganizationAclPrincipalCommandType)]
+    public void OrganizationAclCommandsShouldMapToOrganizationAdministration(string commandType)
+    {
+        FolderCommandActionMapping? mapping = new FolderCommandActionTokenMapper().Map(Command(commandType));
+
+        mapping.ShouldNotBeNull();
+        mapping.ActionToken.ShouldBe("manage_organization_acl");
+        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.OrganizationBaseline);
+    }
+
+    [Theory]
     [InlineData("Hexalith.Folders.Commands.GrantFolderAccess")]
     [InlineData("Hexalith.Folders.Commands.RevokeFolderAccess")]
     public void FolderAclMutationCommandsShouldMapToAdministerAccessAction(string commandType)

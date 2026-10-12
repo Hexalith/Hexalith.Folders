@@ -42,7 +42,7 @@ public static class FoldersServiceCollectionExtensions
     }
 
     // Opt-in in-memory IFolderRepository registration. Production AppHosts MUST register
-    // a real EventStore-backed repository instead; integration tests and dev hosts call
+    // a real EventStore-backed repository instead; isolated tests and explicit in-memory hosts call
     // this method explicitly so a production composition that forgets to register a
     // repository fails loud at startup rather than silently running on a dictionary.
     // Also ensures TimeProvider.System is available — the in-memory repository needs one
@@ -87,7 +87,8 @@ public static class FoldersServiceCollectionExtensions
         services.TryAddSingleton<WorkspaceCleanupStatusQueryHandler>();
         services.TryAddSingleton<ITaskStatusReadModel, InMemoryTaskStatusReadModel>();
         services.TryAddSingleton<TaskStatusQueryHandler>();
-        services.TryAddSingleton<ListFolderAclEntriesQueryHandler>();
+        // This query reads IFolderRepository, which is request-scoped in the EventStore host.
+        services.TryAddScoped<ListFolderAclEntriesQueryHandler>();
 
         return services;
     }

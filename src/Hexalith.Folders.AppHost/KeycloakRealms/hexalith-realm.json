@@ -429,7 +429,7 @@
       ],
       "attributes": {
         "tenants": ["tenant-a"],
-        "permissions": ["command:submit", "command:query"]
+        "permissions": ["command:submit", "command:query", "create_folder", "manage_organization_acl"]
       }
     }
   ]

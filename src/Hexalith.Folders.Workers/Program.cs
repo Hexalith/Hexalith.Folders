@@ -1,6 +1,8 @@
 using Hexalith.Folders;
 using Hexalith.Folders.ServiceDefaults;
 using Hexalith.Folders.Workers;
+using Hexalith.Folders.Projections.TenantAccess;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // (OpenTelemetry traces/metrics/logs export plus liveness/readiness probes) like the server host.
 builder.AddServiceDefaults();
 builder.Services.AddFoldersTenantEventWorkers();
+builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
+builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFolderTenantAccessProjectionStore>();
 
 WebApplication app = builder.Build();
 

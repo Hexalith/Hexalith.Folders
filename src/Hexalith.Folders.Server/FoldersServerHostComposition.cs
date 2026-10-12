@@ -3,9 +3,10 @@ using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.ServiceDefaults;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -28,30 +29,48 @@ public static class FoldersServerHostComposition
 
         builder.AddServiceDefaults();
         builder.Services.AddFoldersServer();
+        builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
+        builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFolderTenantAccessProjectionStore>();
+        builder.Services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+        builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
+        builder.Services.AddSingleton<IEffectivePermissionsReadModel, EventStoreOrganizationEffectivePermissionsReadModel>();
         builder.Services.AddAuthorization();
         builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
-        // EventStore marks its Dapr subscription callback with this policy. Register the
-        // SDK channel scheme so tenant events reach the projection without weakening JWT routes.
+        // The process and projection callbacks are Dapr service invocations. The
+        // workload scheme proves the EventStore caller independently of the
+        // command-bound human receipt consumed by /process.
+        builder.Services.AddAuthentication().AddEventStoreWorkloadScheme(
+            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
+            "Authentication:Workload",
+            static (options, _) =>
+            {
+                options.Audience ??= "folders";
+                if (options.AllowedCallers.Count == 0)
+                {
+                    options.AllowedCallers.Add("eventstore");
+                }
+            });
+        builder.Services.AddEventStoreWorkloadPolicies(
+            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
+            [EventStoreWorkloadOperations.DomainServiceProcess, EventStoreWorkloadOperations.DomainServiceProject]);
+        builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
+        builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
+        builder.Services.AddSingleton<IEventStoreAuthorizationValidator, VerifiedReceiptEventStoreAuthorizationValidator>();
+        // EventStore marks its Dapr subscription callback with this policy.
         builder.Services.AddAuthentication().AddEventStoreSidecarChannelScheme();
-        builder.Services.Configure<AuthorizationOptions>(static options =>
-            options.AddPolicy(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy,
-                policy => policy
-                    .AddAuthenticationSchemes(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme)
-                    .RequireAuthenticatedUser()
-                    .RequireClaim(EventStoreWorkloadAuthenticationDefaults.ChannelClaimType)));
 
-        if (builder.Environment.IsProduction())
-        {
-            builder.Services.RemoveAll<IFolderRepository>();
-            builder.Services.RemoveAll<IOrganizationProviderBindingRepository>();
-            builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
-            builder.Services.AddScoped<IOrganizationProviderBindingRepository,
-                ActorFoldedOrganizationProviderBindingRepository>();
-        }
-        else
-        {
-            builder.Services.AddInMemoryFolderRepository();
-        }
+        // This host is the EventStore domain-service target in every environment. It must
+        // fold actor-supplied state and return events; an in-memory writer would acknowledge
+        // commands without creating a durable EventStore stream during local development.
+        builder.Services.RemoveAll<IFolderRepository>();
+        builder.Services.RemoveAll<IOrganizationProviderBindingRepository>();
+        builder.Services.RemoveAll<IOrganizationAclRepository>();
+        builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
+        builder.Services.AddScoped<ActorFoldedOrganizationProviderBindingRepository>();
+        builder.Services.AddScoped<IOrganizationProviderBindingRepository>(static sp =>
+            sp.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());
+        builder.Services.AddScoped<IOrganizationAclRepository>(static sp =>
+            sp.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());
 
         builder.Services.AddHostedService<FolderRepositoryStartupAssertion>();
 

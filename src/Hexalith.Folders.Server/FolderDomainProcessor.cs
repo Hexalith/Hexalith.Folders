@@ -35,7 +35,8 @@ public sealed partial class FolderDomainProcessor(
     IFolderArchivePolicyEvidenceProvider archivePolicyEvidenceProvider,
     IFolderTelemetryEmitter telemetryEmitter,
     IFolderRepository? actorFolderRepository = null,
-    IOrganizationProviderBindingRepository? actorOrganizationRepository = null) : IDomainProcessor
+    IOrganizationProviderBindingRepository? actorOrganizationRepository = null,
+    IOrganizationAclRepository? actorOrganizationAclRepository = null) : IDomainProcessor
 {
     private static readonly JsonSerializerOptions PayloadJsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -84,6 +85,7 @@ public sealed partial class FolderDomainProcessor(
         telemetryEmitter ?? throw new ArgumentNullException(nameof(telemetryEmitter));
     private readonly IFolderRepository? _actorFolderRepository = actorFolderRepository;
     private readonly IOrganizationProviderBindingRepository? _actorOrganizationRepository = actorOrganizationRepository;
+    private readonly IOrganizationAclRepository? _actorOrganizationAclRepository = actorOrganizationAclRepository;
 
     public async Task<DomainResult> ProcessAsync(CommandEnvelope command, object? currentState)
     {
@@ -113,9 +115,11 @@ public sealed partial class FolderDomainProcessor(
         // The request handler has completed the A6b authorization gate before the actor
         // event sequence is inspected. Production repositories only read this supplied state;
         // the EventStore aggregate actor performs the transactional append after /process.
-        if (string.Equals(command.CommandType, FoldersServerModule.ConfigureProviderBindingCommandType, StringComparison.Ordinal))
+        if (string.Equals(command.CommandType, FoldersServerModule.ConfigureProviderBindingCommandType, StringComparison.Ordinal)
+            || IsOrganizationAclCommand(command.CommandType))
         {
-            if (_actorOrganizationRepository is ActorFoldedOrganizationProviderBindingRepository organization)
+            if (((object?)_actorOrganizationAclRepository ?? _actorOrganizationRepository)
+                is ActorFoldedOrganizationProviderBindingRepository organization)
             {
                 organization.Begin(command.TenantId, command.AggregateId, currentState);
             }
@@ -143,6 +147,11 @@ public sealed partial class FolderDomainProcessor(
         if (string.Equals(command.CommandType, FoldersServerModule.ConfigureProviderBindingCommandType, StringComparison.Ordinal))
         {
             return await ProcessConfigureProviderBindingAsync(command).ConfigureAwait(false);
+        }
+
+        if (IsOrganizationAclCommand(command.CommandType))
+        {
+            return ProcessOrganizationAcl(command);
         }
 
         if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
@@ -193,6 +202,137 @@ public sealed partial class FolderDomainProcessor(
         return Rejection(command, FolderResultCode.UnsupportedCommandType, null);
     }
 
+    private static bool IsOrganizationAclCommand(string commandType)
+        => commandType is FoldersServerModule.InitializeOrganizationAclBaselineCommandType
+            or FoldersServerModule.GrantOrganizationAclPrincipalCommandType
+            or FoldersServerModule.RevokeOrganizationAclPrincipalCommandType;
+
+    private DomainResult ProcessOrganizationAcl(CommandEnvelope envelope)
+    {
+        if (_actorOrganizationAclRepository is null)
+        {
+            return Rejection(envelope, FolderResultCode.UnavailableProjection, null);
+        }
+
+        LayeredFolderAuthorizationAllowedContext? allowed = _authorizationAccessor.Current?.AllowedContext;
+        if (allowed is null
+            || !string.Equals(allowed.AuthoritativeTenantId, envelope.TenantId, StringComparison.Ordinal)
+            || !string.Equals(envelope.AggregateId, envelope.TenantId, StringComparison.Ordinal))
+        {
+            return Rejection(envelope, FolderResultCode.TenantMismatch, null);
+        }
+
+        OrganizationAclMutationPayload? payload;
+        try
+        {
+            payload = JsonSerializer.Deserialize<OrganizationAclMutationPayload>(envelope.Payload, PayloadJsonOptions);
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+            return Rejection(envelope, FolderResultCode.MalformedJsonPayload, null);
+        }
+
+        if (payload is null || payload.Operations is null || payload.Operations.Count == 0)
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        bool initializing = envelope.CommandType == FoldersServerModule.InitializeOrganizationAclBaselineCommandType;
+        if (!initializing && payload.Operations.Count != 1)
+        {
+            return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+        }
+
+        List<OrganizationAclOperation> operations = [];
+        foreach (OrganizationAclOperationPayload operation in payload.Operations)
+        {
+            if (operation is null
+                || !Enum.TryParse(operation.PrincipalKind, ignoreCase: true, out OrganizationAclPrincipalKind kind)
+                || !Enum.IsDefined(kind)
+                || string.IsNullOrWhiteSpace(operation.PrincipalId)
+                || string.IsNullOrWhiteSpace(operation.Action))
+            {
+                return Rejection(envelope, FolderResultCode.ValidationFailed, null);
+            }
+
+            OrganizationAclOperationIntent intent = envelope.CommandType
+                == FoldersServerModule.RevokeOrganizationAclPrincipalCommandType
+                    ? OrganizationAclOperationIntent.Revoke : OrganizationAclOperationIntent.Grant;
+            operations.Add(new OrganizationAclOperation(intent, kind, operation.PrincipalId, operation.Action));
+        }
+
+        string taskId = ReadRequiredTaskId(envelope);
+        IOrganizationAclCommand command = initializing
+            ? new InitializeOrganizationAclBaseline(allowed.AuthoritativeTenantId, envelope.AggregateId,
+                operations, envelope.CorrelationId, taskId, envelope.MessageId, null)
+            : envelope.CommandType == FoldersServerModule.GrantOrganizationAclPrincipalCommandType
+                ? new GrantOrganizationAclPrincipal(allowed.AuthoritativeTenantId, envelope.AggregateId,
+                    operations[0].PrincipalKind, operations[0].PrincipalId, operations[0].Action,
+                    envelope.CorrelationId, taskId, envelope.MessageId, null)
+                : new RevokeOrganizationAclPrincipal(allowed.AuthoritativeTenantId, envelope.AggregateId,
+                    operations[0].PrincipalKind, operations[0].PrincipalId, operations[0].Action,
+                    envelope.CorrelationId, taskId, envelope.MessageId, null);
+
+        OrganizationAclCommandValidationResult validation = OrganizationAclCommandValidator.Validate(command);
+        if (!validation.IsAccepted)
+        {
+            return Rejection(envelope, MapOrganizationAclResultCode(validation.Code), null);
+        }
+
+        OrganizationStreamName stream = _actorOrganizationAclRepository.CreateStreamName(
+            allowed.AuthoritativeTenantId, envelope.AggregateId);
+        OrganizationState state = _actorOrganizationAclRepository.Load(stream);
+        if (initializing && state.IsInitialized)
+        {
+            return Rejection(envelope, FolderResultCode.DuplicateEntry, null);
+        }
+
+        if (!initializing && !state.IsInitialized)
+        {
+            return Rejection(envelope, FolderResultCode.FolderAclDenied, null);
+        }
+
+        OrganizationAclResult result = OrganizationAggregate.Handle(state, command);
+        if (result.Code is OrganizationAclResultCode.AlreadyApplied)
+        {
+            return new PayloadDomainResult(JsonSerializer.Serialize(new FolderProcessResultPayload(
+                "accepted", true, envelope.CorrelationId, taskId, envelope.MessageId), PayloadJsonOptions), []);
+        }
+
+        if (result.Code != OrganizationAclResultCode.Accepted)
+        {
+            return Rejection(envelope, MapOrganizationAclResultCode(result.Code), null);
+        }
+
+        OrganizationAclAppendOutcome outcome = _actorOrganizationAclRepository.AppendIfFingerprintAbsent(
+            stream, envelope.MessageId, validation.IdempotencyFingerprint, result.Events);
+        if (outcome == OrganizationAclAppendOutcome.FingerprintConflict)
+        {
+            return Rejection(envelope, FolderResultCode.IdempotencyConflict, null);
+        }
+
+        return new PayloadDomainResult(JsonSerializer.Serialize(new FolderProcessResultPayload(
+            "accepted", outcome == OrganizationAclAppendOutcome.FingerprintMatched,
+            envelope.CorrelationId, taskId, envelope.MessageId), PayloadJsonOptions),
+            outcome == OrganizationAclAppendOutcome.Appended ? [.. result.Events.Cast<IEventPayload>()] : []);
+    }
+
+    private static FolderResultCode MapOrganizationAclResultCode(OrganizationAclResultCode code)
+        => code switch
+        {
+            OrganizationAclResultCode.IdempotencyConflict or OrganizationAclResultCode.ReplayConflict => FolderResultCode.IdempotencyConflict,
+            OrganizationAclResultCode.MissingEntry => FolderResultCode.MissingEntry,
+            OrganizationAclResultCode.DuplicateEntry => FolderResultCode.DuplicateEntry,
+            OrganizationAclResultCode.UnsupportedAction => FolderResultCode.UnsupportedAction,
+            OrganizationAclResultCode.InvalidPrincipal => FolderResultCode.InvalidPrincipal,
+            OrganizationAclResultCode.StaleProjection => FolderResultCode.StaleProjection,
+            OrganizationAclResultCode.UnavailableProjection => FolderResultCode.UnavailableProjection,
+            OrganizationAclResultCode.TenantAccessDenied or OrganizationAclResultCode.DisabledTenant => FolderResultCode.TenantAccessDenied,
+            OrganizationAclResultCode.TenantMismatch => FolderResultCode.TenantMismatch,
+            OrganizationAclResultCode.MalformedEvidence => FolderResultCode.MalformedEvidence,
+            _ => FolderResultCode.ValidationFailed,
+        };
+
     private async Task<DomainResult> ProcessCreateFolderAsync(CommandEnvelope envelope)
     {
         CreateFolderPayload? payload;
@@ -208,6 +348,7 @@ public sealed partial class FolderDomainProcessor(
         if (payload is null
             || payload.FolderMetadata is null
             || string.IsNullOrWhiteSpace(payload.FolderId)
+            || string.Equals(payload.FolderId, envelope.TenantId, StringComparison.Ordinal)
             || string.IsNullOrWhiteSpace(payload.FolderMetadata.DisplayName)
             || !string.Equals(payload.FolderId, envelope.AggregateId, StringComparison.Ordinal))
         {
@@ -1443,6 +1584,15 @@ public sealed partial class FolderDomainProcessor(
         IReadOnlyList<FolderAccessOperationPayload>? Operations);
 
     private sealed record FolderAccessOperationPayload(
+        string? PrincipalKind,
+        string? PrincipalId,
+        string? Action);
+
+    private sealed record OrganizationAclMutationPayload(
+        string? RequestSchemaVersion,
+        IReadOnlyList<OrganizationAclOperationPayload>? Operations);
+
+    private sealed record OrganizationAclOperationPayload(
         string? PrincipalKind,
         string? PrincipalId,
         string? Action);

@@ -40,7 +40,7 @@ public sealed class WorkersTenantEventTests
         FoldersWorkersModule.AppId.ShouldBe("folders-workers");
         FoldersWorkersModule.TenantEventsRoute.ShouldBe("/tenants/events");
         FoldersWorkersModule.TenantEventsPubSubName.ShouldBe("pubsub");
-        FoldersWorkersModule.TenantEventsTopicName.ShouldBe("system.tenants.events");
+        FoldersWorkersModule.TenantEventsTopicName.ShouldBe("tenants.events");
     }
 
     [Fact]

@@ -5,6 +5,7 @@ using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Testing;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
@@ -44,11 +45,32 @@ public sealed class ServerEndpointRegistrationTests
         builder.Services.AddFoldersServerTestDefaults();
         builder.AddFoldersServerHost();
         using WebApplication app = builder.Build();
+        using IServiceScope scope = app.Services.CreateScope();
+        scope.ServiceProvider.GetRequiredService<IFolderRepository>()
+            .ShouldBeOfType<ActorFoldedFolderRepository>();
+        scope.ServiceProvider.GetRequiredService<IOrganizationAclRepository>()
+            .ShouldBeOfType<ActorFoldedOrganizationProviderBindingRepository>();
 
         AuthorizationPolicy? policy = app.Services.GetRequiredService<IOptions<AuthorizationOptions>>()
             .Value.GetPolicy(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
         policy.ShouldNotBeNull();
         policy.AuthenticationSchemes.ShouldContain(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme);
+
+        string processPolicyName = EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
+            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
+            EventStoreWorkloadOperations.DomainServiceProcess);
+        AuthorizationPolicy? processPolicy = app.Services.GetRequiredService<IOptions<AuthorizationOptions>>()
+            .Value.GetPolicy(processPolicyName);
+        processPolicy.ShouldNotBeNull();
+        processPolicy.AuthenticationSchemes.ShouldContain(EventStoreWorkloadAuthenticationDefaults.WorkloadScheme);
+
+        app.UseFoldersServerPipeline();
+        RouteEndpoint processRoute = ((IEndpointRouteBuilder)app).DataSources
+            .SelectMany(static source => source.Endpoints)
+            .OfType<RouteEndpoint>()
+            .Single(endpoint => endpoint.RoutePattern.RawText == FoldersServerModule.ProcessRoute);
+        processRoute.Metadata.OfType<IAuthorizeData>()
+            .Any(authorize => authorize.Policy == processPolicyName).ShouldBeTrue();
     }
 
     [Fact]
@@ -58,7 +80,7 @@ public sealed class ServerEndpointRegistrationTests
         FoldersServerModule.ProjectRoute.ShouldBe("/project");
         FoldersServerModule.TenantEventsRoute.ShouldBe("/tenants/events");
         FoldersServerModule.TenantEventsPubSubName.ShouldBe("pubsub");
-        FoldersServerModule.TenantEventsTopicName.ShouldBe("system.tenants.events");
+        FoldersServerModule.TenantEventsTopicName.ShouldBe("tenants.events");
         FoldersServerModule.Description.ShouldContain("server scaffold");
     }
 

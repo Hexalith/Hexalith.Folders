@@ -4,7 +4,7 @@ namespace Hexalith.Folders.Server;
 
 /// <summary>Reads the authorized provider-binding actor stream without a separate write store.</summary>
 internal sealed class ActorFoldedOrganizationProviderBindingRepository(FolderEventReplay replay)
-    : IOrganizationProviderBindingRepository
+    : IOrganizationProviderBindingRepository, IOrganizationAclRepository
 {
     private string? _tenantId;
     private string? _aggregateId;
@@ -67,6 +67,41 @@ internal sealed class ActorFoldedOrganizationProviderBindingRepository(FolderEve
         return OrganizationAclAppendOutcome.Appended;
     }
 
+    public OrganizationAclAppendOutcome AppendIfFingerprintAbsent(OrganizationStreamName streamName,
+        string idempotencyKey, string fingerprint, IReadOnlyList<IOrganizationAclEvent> events)
+    {
+        RequireAclStream(streamName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(idempotencyKey);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fingerprint);
+        ArgumentNullException.ThrowIfNull(events);
+        if (events.Count == 0)
+        {
+            throw new ArgumentException("An accepted decision needs events.", nameof(events));
+        }
+
+        if (_state!.IdempotencyFingerprints.TryGetValue(idempotencyKey, out string? existing))
+        {
+            return string.Equals(existing, fingerprint, StringComparison.Ordinal)
+                ? OrganizationAclAppendOutcome.FingerprintMatched : OrganizationAclAppendOutcome.FingerprintConflict;
+        }
+
+        if (events.Any(item => !string.Equals(item.ManagedTenantId, _tenantId, StringComparison.Ordinal)
+            || !string.Equals(item.OrganizationId, _aggregateId, StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException("Organization ACL event targets another actor stream.");
+        }
+
+        _ = _state.Apply(events);
+        return OrganizationAclAppendOutcome.Appended;
+    }
+
+    public bool TryGetIdempotencyFingerprint(string managedTenantId, string organizationId,
+        string idempotencyKey, out string? fingerprint)
+    {
+        RequireAclStream(CreateStreamName(managedTenantId, organizationId));
+        return _state!.IdempotencyFingerprints.TryGetValue(idempotencyKey, out fingerprint);
+    }
+
     /// <inheritdoc/>
     public bool TryGetIdempotencyFingerprint(OrganizationStreamName streamName,
         string idempotencyKey, out string? fingerprint)
@@ -91,6 +126,16 @@ internal sealed class ActorFoldedOrganizationProviderBindingRepository(FolderEve
                 StringComparison.Ordinal))
         {
             throw new InvalidOperationException("Organization read targets another actor stream.");
+        }
+    }
+
+    private void RequireAclStream(OrganizationStreamName streamName)
+    {
+        RequireStream(streamName);
+        if (!string.Equals(streamName.Value, CreateStreamName(_tenantId!, _aggregateId!).Value,
+            StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Organization ACL read targets another actor stream.");
         }
     }
 }

@@ -19,6 +19,12 @@ public static class FoldersIdempotencyIntentAdapterServiceCollectionExtensions
         _ = services.AddIdempotencyIntentAdapter<ArchiveFolderIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<GrantFolderAccessIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<RevokeFolderAccessIdempotencyIntentAdapter>();
+        _ = services.AddSingleton<IIdempotencyIntentAdapter>(new OrganizationAclIdempotencyIntentAdapter(
+            "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline", "initialize-organization-acl-baseline"));
+        _ = services.AddSingleton<IIdempotencyIntentAdapter>(new OrganizationAclIdempotencyIntentAdapter(
+            "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal", "grant-organization-acl-principal"));
+        _ = services.AddSingleton<IIdempotencyIntentAdapter>(new OrganizationAclIdempotencyIntentAdapter(
+            "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal", "revoke-organization-acl-principal"));
         _ = services.AddIdempotencyIntentAdapter<ConfigureProviderBindingIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<CreateRepositoryBackedFolderIdempotencyIntentAdapter>();
         _ = services.AddIdempotencyIntentAdapter<BindRepositoryIdempotencyIntentAdapter>();

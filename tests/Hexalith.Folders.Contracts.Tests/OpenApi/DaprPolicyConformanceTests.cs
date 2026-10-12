@@ -18,7 +18,7 @@ public sealed class DaprPolicyConformanceTests
     private const string ExpectedTrustDomainTemplate = "DAPR_TRUST_DOMAIN";
     private const string ExpectedNamespace = "hexalith-production";
     private const string ExpectedDaprSystemNamespace = "dapr-system";
-    private const string ExpectedTenantEventsTopic = "system.tenants.events";
+    private const string ExpectedTenantEventsTopic = "tenants.events";
     private const string ExpectedMemoriesEventsTopic = "memories-events";
     private const string ExpectedFolderEventsTopic = "folders.events";
     private const string PolicyPath = "deploy/dapr/production/accesscontrol.yaml";
@@ -222,13 +222,15 @@ public sealed class DaprPolicyConformanceTests
         publishingScopes.Keys.Order(StringComparer.Ordinal).ShouldBe(StableAppIds.Order(StringComparer.Ordinal));
         subscriptionScopes.Keys.Order(StringComparer.Ordinal).ShouldBe(StableAppIds.Order(StringComparer.Ordinal));
 
-        publishingScopes[FoldersAspireModule.TenantsAppId].ShouldBe([ExpectedTenantEventsTopic]);
+        publishingScopes[FoldersAspireModule.TenantsAppId].ShouldBeEmpty();
         subscriptionScopes[FoldersAspireModule.FoldersAppId].ShouldBe([ExpectedTenantEventsTopic]);
+        subscriptionScopes[FoldersAspireModule.TenantsAppId].ShouldBe([ExpectedTenantEventsTopic]);
 
         // Story 10.3 (D1): the EventStore actor host publishes managed-tenant folder domain events to the single
         // folders.events topic; folders-workers subscribes both the Tenants events and folders.events. eventstore
         // is the only folders.events publisher and folders-workers the only folders.events subscriber.
-        publishingScopes[FoldersAspireModule.EventStoreAppId].ShouldBe([ExpectedFolderEventsTopic]);
+        publishingScopes[FoldersAspireModule.EventStoreAppId]
+            .ShouldBe([ExpectedTenantEventsTopic, ExpectedFolderEventsTopic], ignoreOrder: true);
         subscriptionScopes[FoldersAspireModule.FoldersWorkersAppId]
             .ShouldBe([ExpectedTenantEventsTopic, ExpectedFolderEventsTopic], ignoreOrder: true);
 
@@ -238,10 +240,9 @@ public sealed class DaprPolicyConformanceTests
         publishingScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
         subscriptionScopes[FoldersAspireModule.MemoriesAppId].ShouldBe([ExpectedMemoriesEventsTopic]);
 
-        // Only tenants (system.tenants.events), eventstore (folders.events), and folders-workers (memories-events)
+        // Only EventStore (Tenants and Folders events) and folders-workers (memories-events)
         // publish; every other app's publish scope stays empty.
         publishingScopes.Where(static scope =>
-                !string.Equals(scope.Key, FoldersAspireModule.TenantsAppId, StringComparison.Ordinal) &&
                 !string.Equals(scope.Key, FoldersAspireModule.EventStoreAppId, StringComparison.Ordinal) &&
                 !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal))
             .SelectMany(static scope => scope.Value)
@@ -249,7 +250,8 @@ public sealed class DaprPolicyConformanceTests
         subscriptionScopes.Where(static scope =>
                 !string.Equals(scope.Key, FoldersAspireModule.FoldersAppId, StringComparison.Ordinal) &&
                 !string.Equals(scope.Key, FoldersAspireModule.FoldersWorkersAppId, StringComparison.Ordinal) &&
-                !string.Equals(scope.Key, FoldersAspireModule.MemoriesAppId, StringComparison.Ordinal))
+                !string.Equals(scope.Key, FoldersAspireModule.MemoriesAppId, StringComparison.Ordinal) &&
+                !string.Equals(scope.Key, FoldersAspireModule.TenantsAppId, StringComparison.Ordinal))
             .SelectMany(static scope => scope.Value)
             .ShouldBeEmpty();
     }

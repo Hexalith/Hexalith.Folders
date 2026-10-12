@@ -6,6 +6,7 @@ using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Queries.ContextSearch;
@@ -15,6 +16,8 @@ using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
 
 namespace Hexalith.Folders.Server;
@@ -84,15 +87,21 @@ public static class FoldersDomainServiceEndpoints
     {
         ArgumentNullException.ThrowIfNull(endpoints);
 
-        endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
+        RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,
             FoldersDomainServiceRequestHandler handler,
             CancellationToken cancellationToken)
             => await handler.ProcessAsync(request, cancellationToken).ConfigureAwait(false))
         .WithName("ProcessFolderDomainCommand")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
+        if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
+        {
+            processEndpoint.RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
+                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
+                EventStoreWorkloadOperations.DomainServiceProcess));
+        }
 
-        endpoints.MapPost(FoldersServerModule.ProjectRoute, (
+        RouteHandlerBuilder projectEndpoint = endpoints.MapPost(FoldersServerModule.ProjectRoute, (
             ProjectionRequest request,
             IServiceProvider services,
             CancellationToken cancellationToken) =>
@@ -120,6 +129,12 @@ public static class FoldersDomainServiceEndpoints
         })
         .WithName("ProjectFolderDomainReadModel")
         .AddEndpointFilter<FolderAuditEndpointFilter>();
+        if (endpoints.ServiceProvider.GetService<HumanAuthorityReceiptVerifier>() is not null)
+        {
+            projectEndpoint.RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
+                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
+                EventStoreWorkloadOperations.DomainServiceProject));
+        }
 
         endpoints.MapGet("/api/v1/folders/{folderId}/effective-permissions", async (
             string folderId,

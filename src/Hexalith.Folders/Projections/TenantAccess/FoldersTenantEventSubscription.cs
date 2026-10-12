@@ -8,5 +8,5 @@ public static class FoldersTenantEventSubscription
 
     public const string PubSubName = "pubsub";
 
-    public const string TopicName = "system.tenants.events";
+    public const string TopicName = "tenants.events";
 }

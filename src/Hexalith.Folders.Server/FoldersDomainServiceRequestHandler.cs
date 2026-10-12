@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
 
 using Microsoft.AspNetCore.Http;
 
@@ -17,7 +18,9 @@ public sealed class FoldersDomainServiceRequestHandler(
     ITenantContextAccessor tenantContext,
     IEventStoreClaimTransformEvidenceAccessor claimTransformEvidenceAccessor,
     IFolderCommandActionTokenMapper actionTokenMapper,
-    ILayeredFolderAuthorizationResultAccessor authorizationResultAccessor)
+    ILayeredFolderAuthorizationResultAccessor authorizationResultAccessor,
+    HumanAuthorityReceiptVerifier? humanReceiptVerifier = null,
+    IFolderTenantAccessProjectionStore? tenantAccessStore = null)
 {
     private const string OrganizationBaselineScope = "organization_baseline";
 
@@ -28,6 +31,26 @@ public sealed class FoldersDomainServiceRequestHandler(
     {
         ArgumentNullException.ThrowIfNull(request);
 
+        IDisposable? humanAuthorityScope = null;
+        if (humanReceiptVerifier is not null
+            && !humanReceiptVerifier.TryEnter(request, out humanAuthorityScope))
+        {
+            return new AuthorizationDenialTransportResult(Results.Problem(
+                statusCode: StatusCodes.Status401Unauthorized,
+                extensions: new Dictionary<string, object?>
+                {
+                    ["category"] = "authentication_failure",
+                    ["code"] = "authentication_failure",
+                    ["retryable"] = false,
+                    ["clientAction"] = "authenticate",
+                    ["details"] = new Dictionary<string, object?>
+                    {
+                        ["visibility"] = "metadata_only",
+                    },
+                }));
+        }
+
+        using IDisposable? verifiedHumanScope = humanAuthorityScope;
         if (!TryValidateProcessEnvelope(request.Command, out string? taskId))
         {
             return Results.Problem(
@@ -61,8 +84,7 @@ public sealed class FoldersDomainServiceRequestHandler(
 
         EventStoreClaimTransformEvidence claimTransform = claimTransformEvidenceAccessor.GetEvidence(mapping.ActionToken);
 
-        LayeredFolderAuthorizationResult authorization = await authorizer.AuthorizeAsync(
-            new LayeredFolderAuthorizationContext(
+        LayeredFolderAuthorizationContext authorizationContext = new(
                 AuthoritativeTenantId: tenantContext.AuthoritativeTenantId,
                 PrincipalId: tenantContext.PrincipalId ?? string.Empty,
                 ActorSafeIdentifier: tenantContext.PrincipalId,
@@ -79,12 +101,75 @@ public sealed class FoldersDomainServiceRequestHandler(
                 ClientControlledPrincipalValues: new Dictionary<string, string?>(StringComparer.Ordinal)
                 {
                     ["eventstore_envelope_user"] = request.Command.UserId,
-                }),
-            cancellationToken).ConfigureAwait(false);
+                });
+
+        bool initializingAcl = string.Equals(request.Command.CommandType,
+            FoldersServerModule.InitializeOrganizationAclBaselineCommandType, StringComparison.Ordinal);
+        bool mutatingAcl = string.Equals(request.Command.CommandType,
+            FoldersServerModule.GrantOrganizationAclPrincipalCommandType, StringComparison.Ordinal)
+            || string.Equals(request.Command.CommandType,
+                FoldersServerModule.RevokeOrganizationAclPrincipalCommandType, StringComparison.Ordinal);
+        IDisposable? actorSequenceScope = null;
+        if (mutatingAcl)
+        {
+            DomainServiceCurrentState? actorState;
+            try
+            {
+                actorState = DomainStateReplay.SnapshotAware(request.CurrentState);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
+            }
+
+            if (actorState is null || actorState.CurrentSequence < 1
+                || !string.Equals(request.Command.AggregateId, request.Command.TenantId, StringComparison.Ordinal))
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
+            }
+
+            actorSequenceScope = OrganizationActorSequenceScope.Enter(request.Command.TenantId,
+                request.Command.AggregateId, actorState.CurrentSequence);
+        }
+
+        using IDisposable? verifiedActorSequenceScope = actorSequenceScope;
+        LayeredFolderAuthorizationResult authorization = initializingAcl
+            ? await authorizer.AuthorizeTenantScopedAsync(authorizationContext, cancellationToken).ConfigureAwait(false)
+            : await authorizer.AuthorizeAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed)
         {
             return FolderAuthorizationDenialMapper.ToHttpResult(authorization);
+        }
+
+        if (initializingAcl)
+        {
+            string? tenantId = authorization.AllowedContext?.AuthoritativeTenantId;
+            string? principalId = tenantContext.PrincipalId;
+            FolderTenantAccessProjection? projection;
+            try
+            {
+                projection = tenantId is null || tenantAccessStore is null
+                    ? null
+                    : await tenantAccessStore.GetAsync(tenantId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
+            }
+
+            if (projection is null || tenantId is null || principalId is null)
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
+            }
+
+            if (!string.Equals(request.Command.AggregateId, tenantId, StringComparison.Ordinal)
+                || !projection.Enabled
+                || !projection.Principals.TryGetValue(principalId, out FolderTenantPrincipalEvidence? principal)
+                || !string.Equals(principal.Role, "TenantOwner", StringComparison.Ordinal))
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status403Forbidden, "permission_denied");
+            }
         }
 
         List<IDomainProcessor> processorList = [.. processors];
@@ -116,6 +201,16 @@ public sealed class FoldersDomainServiceRequestHandler(
             authorizationResultAccessor.EndScope();
         }
     }
+
+    private static IResult SafeAclBootstrapDenial(int status, string code)
+        => new AuthorizationDenialTransportResult(Results.Problem(statusCode: status, extensions: new Dictionary<string, object?>
+        {
+            ["category"] = status == StatusCodes.Status503ServiceUnavailable ? "authorization_unavailable" : "authorization_denied",
+            ["code"] = code,
+            ["retryable"] = status == StatusCodes.Status503ServiceUnavailable,
+            ["clientAction"] = status == StatusCodes.Status503ServiceUnavailable ? "retry" : "request_access",
+            ["details"] = new Dictionary<string, object?> { ["visibility"] = "metadata_only" },
+        }));
 
     private static string? ResolveOperationScope(FolderCommandOperationScopeKind kind, CommandEnvelope command)
         => kind switch

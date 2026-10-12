@@ -31,6 +31,50 @@ HexalithEventStoreResources eventStoreResources = builder.AddHexalithEventStore(
     pubSubComponentPath: pubSubComponentPath);
 IResourceBuilder<ProjectResource> eventStore = eventStoreResources.EventStore;
 
+// Keep local admission identities stable across AppHost restarts. The generated
+// secret uses only base64 alphabet characters and decodes to at least 32 bytes;
+// Aspire persists it outside source control. Production uses its own secret map.
+IResourceBuilder<ParameterResource> idempotencyDigestKey = builder.AddParameter(
+    "folders-idempotency-digest-key",
+    new GenerateParameterDefault
+    {
+        MinLength = 44,
+        Lower = true,
+        MinLower = 1,
+        Numeric = true,
+        MinNumeric = 1,
+        Upper = true,
+        MinUpper = 1,
+        Special = false,
+    },
+    secret: true,
+    persist: true);
+_ = eventStore
+    .WithEnvironment("EventStore__IdempotencyAdmission__Enabled", "true")
+    .WithEnvironment("EventStore__IdempotencyAdmission__DigestKeySource", "Configuration")
+    .WithEnvironment("EventStore__IdempotencyAdmission__ActiveDigestKeyVersion", "local1")
+    .WithEnvironment("EventStore__IdempotencyAdmission__DigestKeys__local1", idempotencyDigestKey);
+
+// The receipt is issued by EventStore after authenticating the human caller and
+// verified by Folders alongside EventStore's workload assertion. Both services
+// receive one persistent local key; production supplies its own secret.
+IResourceBuilder<ParameterResource> humanReceiptSigningKey = builder.AddParameter(
+    "folders-human-authority-receipt-key",
+    new GenerateParameterDefault
+    {
+        MinLength = 44,
+        Lower = true,
+        MinLower = 1,
+        Numeric = true,
+        MinNumeric = 1,
+        Upper = true,
+        MinUpper = 1,
+        Special = false,
+    },
+    secret: true,
+    persist: true);
+_ = eventStore.WithEnvironment("Authentication__HumanAuthorityReceipt__SigningKey", humanReceiptSigningKey);
+
 // Story 10.3 (D1): the EventStore actor host publishes folder domain events to `{tenantId}.folders.events` by the
 // D6 convention, but the folders-workers semantic-indexing subscriber listens on the single, tenant-agnostic
 // `folders.events` topic (FoldersSemanticIndexingDefaults.DomainEventsTopicName). Redirect the `folders` domain's
@@ -47,6 +91,7 @@ IResourceBuilder<ProjectResource> tenants = builder.AddHexalithTenantsServer(
     FoldersAspireModule.TenantsAppId);
 
 IResourceBuilder<ProjectResource> folders = builder.AddProject<Projects.Hexalith_Folders_Server>(FoldersAspireModule.FoldersAppId);
+_ = folders.WithEnvironment("Authentication__HumanAuthorityReceipt__SigningKey", humanReceiptSigningKey);
 IResourceBuilder<ProjectResource> foldersWorkers = builder.AddProject<Projects.Hexalith_Folders_Workers>(FoldersAspireModule.FoldersWorkersAppId);
 IResourceBuilder<ProjectResource> foldersUi = builder.AddProject<Projects.Hexalith_Folders_UI>(FoldersAspireModule.FoldersUiAppId);
 

@@ -1,5 +1,6 @@
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Projections.SemanticIndexing;
@@ -69,6 +70,12 @@ public static class FoldersWorkersModule
         // authorization projections must be resolvable even when this registration is used standalone.
         services.AddFoldersLayeredAuthorization();
         services.AddEventStoreReadModelStore();
+        services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+        services.RemoveAll<IEffectivePermissionsReadModel>();
+        services.TryAddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();
+        services.TryAddSingleton<IEffectivePermissionsReadModel>(static sp =>
+            sp.GetRequiredService<EventStoreOrganizationEffectivePermissionsReadModel>());
+        services.TryAddTransient<FoldersOrganizationAclEventProcessor>();
         services.RemoveAll<ISemanticIndexingBridgeReadModel>();
         services.RemoveAll<ISemanticIndexingBridgeWriter>();
         services.TryAddSingleton<EventStoreSemanticIndexingBridgeStore>();
@@ -146,8 +153,10 @@ public static class FoldersWorkersModule
         _ = endpoints.MapPost(FoldersSemanticIndexingDefaults.DomainEventsRoute, async (
             Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventEnvelope envelope,
             FoldersSemanticIndexingEventProcessor processor,
+            FoldersOrganizationAclEventProcessor organizationProcessor,
             CancellationToken cancellationToken) =>
         {
+            await organizationProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
             FoldersSemanticIndexingEventProcessingResult result = await processor
                 .ProcessAsync(envelope, cancellationToken)
                 .ConfigureAwait(false);

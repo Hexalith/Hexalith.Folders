@@ -41,6 +41,30 @@ public sealed class FolderEventReplayTests
     }
 
     [Fact]
+    public void JsonFolderSnapshotShouldRebuildStateAndRejectForeignIdentity()
+    {
+        FolderState snapshot = FolderState.Empty.Apply([Created()],
+            FolderStreamName.Create("tenant-a", "folder-a"));
+        DomainServiceCurrentState persisted = new(
+            JsonSerializer.SerializeToElement(snapshot), [], 1, 1);
+        FolderEventReplay replay = Replay();
+
+        FolderState recovered = replay.FoldFolder(
+            JsonSerializer.SerializeToElement(persisted, new JsonSerializerOptions(JsonSerializerDefaults.Web)),
+            "tenant-a", "folder-a");
+        recovered.DisplayName.ShouldBe("Folder A");
+        recovered.IdempotencyFingerprints["idempotency-a"].ShouldBe("fingerprint-a");
+
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            persisted, "tenant-b", "folder-a"));
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            persisted, "tenant-a", "folder-b"));
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            new DomainServiceCurrentState(JsonSerializer.SerializeToElement(new { isCreated = true }), [], 1, 1),
+            "tenant-a", "folder-a"));
+    }
+
+    [Fact]
     public void ProductionDecisionShouldNotWriteOutsideActor()
     {
         FolderEventReplay replay = Replay();
@@ -195,6 +219,33 @@ public sealed class FolderEventReplayTests
         OrganizationState state = restarted.Load(OrganizationStreamName.Create("tenant-a", "org-a"));
         state.ProviderBindings["binding-a"].CredentialReferenceId.ShouldBe("credential-reference-a");
         state.IdempotencyFingerprints["idempotency-a"].ShouldBe("fingerprint-a");
+    }
+
+    [Fact]
+    public void JsonOrganizationSnapshotShouldRebuildBindingAndRejectForeignIdentity()
+    {
+        ProviderBindingConfigured configured = new("tenant-a", "org-a", "binding-a", "forgejo",
+            "credential-reference-a", OrganizationProviderBindingPolicy.Empty,
+            OrganizationProviderBindingPolicy.Empty, "correlation-a", "task-a",
+            "idempotency-a", "fingerprint-a", "configured", OccurredAt);
+        OrganizationState snapshot = OrganizationState.Empty.Apply([configured]);
+        DomainServiceCurrentState persisted = new(
+            JsonSerializer.SerializeToElement(snapshot), [], 1, 1);
+        FolderEventReplay replay = new(new EventPayloadEvolutionRegistry([typeof(ProviderBindingConfigured)], []));
+
+        OrganizationState recovered = replay.FoldOrganization(
+            JsonSerializer.SerializeToElement(persisted, new JsonSerializerOptions(JsonSerializerDefaults.Web)),
+            "tenant-a", "binding-a");
+        recovered.ProviderBindings["binding-a"].CredentialReferenceId.ShouldBe("credential-reference-a");
+        recovered.IdempotencyFingerprints["idempotency-a"].ShouldBe("fingerprint-a");
+
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            persisted, "tenant-b", "binding-a"));
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            persisted, "tenant-a", "binding-b"));
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            new DomainServiceCurrentState(JsonSerializer.SerializeToElement(new { isInitialized = true }), [], 1, 1),
+            "tenant-a", "binding-a"));
     }
 
     [Fact]

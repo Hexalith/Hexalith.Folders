@@ -17,6 +17,7 @@ builder.AddServiceDefaults();
 builder.Services.AddDaprClient();
 builder.Services.AddHealthChecks()
     .AddEventStoreDaprHealthChecks();
+builder.Services.AddExceptionHandler<FoldersDomainServiceSafeDenialExceptionHandler>();
 builder.Services.AddEventStore();
 builder.Services.AddEventStoreServer(builder.Configuration);
 builder.Services.AddFoldersIdempotencyIntentAdapters();

@@ -7,37 +7,31 @@ using Microsoft.Extensions.Hosting;
 namespace Hexalith.Folders.Server;
 
 /// <summary>
-/// Asserts at startup that an <see cref="IFolderRepository"/> is registered. Without this, a misconfigured
-/// production composition would only fail on the first request with an opaque NRE. Throwing during
+/// Asserts at startup that EventStore actor-folded repositories are registered. Throwing during
 /// <see cref="StartAsync"/> prevents the host from accepting traffic.
 /// </summary>
 /// <param name="services">The root service provider.</param>
-/// <param name="environment">The host environment.</param>
-internal sealed class FolderRepositoryStartupAssertion(IServiceProvider services, IHostEnvironment environment) : IHostedService
+internal sealed class FolderRepositoryStartupAssertion(IServiceProvider services) : IHostedService
 {
     /// <inheritdoc/>
     public Task StartAsync(CancellationToken cancellationToken)
     {
         using IServiceScope scope = services.CreateScope();
-        IFolderRepository? repository = scope.ServiceProvider.GetService<IFolderRepository>();
-        if (repository is null)
+        if (scope.ServiceProvider.GetService<IFolderRepository>() is not ActorFoldedFolderRepository)
         {
-            throw new InvalidOperationException(
-                $"No IFolderRepository is registered. Production hosts must register an EventStore-backed implementation; dev/staging hosts must call AddInMemoryFolderRepository(). Environment: '{environment.EnvironmentName}'.");
+            throw new InvalidOperationException("The EventStore domain-service host requires the actor-folded folder repository.");
         }
 
-        if (environment.IsProduction() && repository is not ActorFoldedFolderRepository)
-        {
-            throw new InvalidOperationException(
-                "Production requires the actor-folded EventStore folder repository.");
-        }
-
-        if (environment.IsProduction()
-            && scope.ServiceProvider.GetService<IOrganizationProviderBindingRepository>()
+        if (scope.ServiceProvider.GetService<IOrganizationProviderBindingRepository>()
                 is not ActorFoldedOrganizationProviderBindingRepository)
         {
-            throw new InvalidOperationException(
-                "Production requires the actor-folded EventStore organization repository.");
+            throw new InvalidOperationException("The EventStore domain-service host requires the actor-folded organization repository.");
+        }
+
+        if (scope.ServiceProvider.GetService<IOrganizationAclRepository>()
+                is not ActorFoldedOrganizationProviderBindingRepository)
+        {
+            throw new InvalidOperationException("The EventStore domain-service host requires the actor-folded organization ACL repository.");
         }
 
         return Task.CompletedTask;

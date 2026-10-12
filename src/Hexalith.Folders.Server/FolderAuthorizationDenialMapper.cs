@@ -1,4 +1,5 @@
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Http;
 
@@ -18,7 +19,7 @@ public static class FolderAuthorizationDenialMapper
         LayeredFolderAuthorizationDecisionSnapshot decision = result.Decision;
         (int statusCode, string category) = StatusAndCategory(decision);
 
-        return Results.Problem(
+        return new AuthorizationDenialTransportResult(Results.Problem(
             type: $"https://hexalith.dev/errors/folders/{decision.OutcomeCode}",
             title: Title(statusCode),
             statusCode: statusCode,
@@ -42,7 +43,7 @@ public static class FolderAuthorizationDenialMapper
                     ["freshnessClass"] = decision.FreshnessClass,
                     ["timingBucket"] = decision.TimingBucket,
                 },
-            });
+            }));
     }
 
     private static (int StatusCode, string Category) StatusAndCategory(LayeredFolderAuthorizationDecisionSnapshot decision)

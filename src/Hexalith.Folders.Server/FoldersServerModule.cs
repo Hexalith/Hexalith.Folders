@@ -43,6 +43,12 @@ public static class FoldersServerModule
 
     public const string ConfigureProviderBindingCommandType = "Hexalith.Folders.Commands.ConfigureProviderBinding";
 
+    public const string InitializeOrganizationAclBaselineCommandType = "Hexalith.Folders.Commands.InitializeOrganizationAclBaseline";
+
+    public const string GrantOrganizationAclPrincipalCommandType = "Hexalith.Folders.Commands.GrantOrganizationAclPrincipal";
+
+    public const string RevokeOrganizationAclPrincipalCommandType = "Hexalith.Folders.Commands.RevokeOrganizationAclPrincipal";
+
     public const string ConfigureBranchRefPolicyCommandType = "Hexalith.Folders.Commands.ConfigureBranchRefPolicy";
 
     public const string PrepareWorkspaceCommandType = "Hexalith.Folders.Commands.PrepareWorkspace";

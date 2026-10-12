@@ -8,6 +8,7 @@ public static class OrganizationAclAction
         "configure_provider_binding",
         "provider_readiness_read",
         "manage_folder_access",
+        "manage_organization_acl",
         "prepare_workspace",
         "lock_workspace",
         "read_metadata",

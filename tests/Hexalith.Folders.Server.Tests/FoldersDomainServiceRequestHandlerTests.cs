@@ -10,6 +10,7 @@ using Hexalith.Folders.Server.Authorization;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.DependencyInjection;
 
 using Shouldly;
 using Xunit;
@@ -21,6 +22,20 @@ public sealed class FoldersDomainServiceRequestHandlerTests
     private static readonly DateTimeOffset Now = new(2026, 5, 18, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task SafeDenialTransportMarksOnlyTheInvocationResponse()
+    {
+        DefaultHttpContext context = new();
+        using ServiceProvider services = new ServiceCollection().AddLogging().BuildServiceProvider();
+        context.RequestServices = services;
+        AuthorizationDenialTransportResult result = new(Results.StatusCode(StatusCodes.Status404NotFound));
+
+        await result.ExecuteAsync(context);
+
+        context.Response.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        context.Response.Headers[AuthorizationDenialTransportResult.HeaderName].ToString().ShouldBe("v1");
+    }
+
+    [Fact]
     public async Task ProcessShouldDenyWhenAuthoritativeTenantIsNotPresentInProjection()
     {
         FakeTenantContextAccessor tenantContext = new("tenant-a", "user-a");
@@ -30,7 +45,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
-        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = SafeDenialProblem(result);
         problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
         problem.ProblemDetails.Extensions["code"].ShouldBe("safe_not_found");
         // Defense in depth: the deny response must not leak tenant or projection metadata.
@@ -51,7 +66,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
 
         IResult result = await handler.ProcessAsync(CreateRequest(commandTenantId: "tenant-b", userId: "user-a"), TestContext.Current.CancellationToken);
 
-        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = SafeDenialProblem(result);
         problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
         problem.ProblemDetails.Extensions["code"].ShouldBe("claim_transform_denied");
     }
@@ -66,7 +81,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
-        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = SafeDenialProblem(result);
         problem.StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
         problem.ProblemDetails.Extensions["code"].ShouldBe("authentication_denied");
     }
@@ -102,7 +117,7 @@ public sealed class FoldersDomainServiceRequestHandlerTests
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
-        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = SafeDenialProblem(result);
         problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
         problem.ProblemDetails.Extensions["code"].ShouldBe("folder_acl_denied");
         problem.ProblemDetails.Extensions["taskId"].ShouldBe("task-a");
@@ -235,10 +250,14 @@ public sealed class FoldersDomainServiceRequestHandlerTests
 
         IResult result = await handler.ProcessAsync(CreateRequest("tenant-a", "user-a"), TestContext.Current.CancellationToken);
 
-        ProblemHttpResult problem = result.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = SafeDenialProblem(result);
         problem.StatusCode.ShouldBe(StatusCodes.Status403Forbidden);
         problem.ProblemDetails.Extensions["code"].ShouldBe("authorization_evidence_malformed");
     }
+
+    private static ProblemHttpResult SafeDenialProblem(IResult result)
+        => result.ShouldBeOfType<AuthorizationDenialTransportResult>()
+            .InnerResult.ShouldBeOfType<ProblemHttpResult>();
 
     private static LayeredFolderAuthorizationService CreateAuthorizer(
         IFolderTenantAccessProjectionStore store,

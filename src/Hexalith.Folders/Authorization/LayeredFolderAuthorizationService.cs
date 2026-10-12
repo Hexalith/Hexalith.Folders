@@ -18,7 +18,7 @@ public sealed class LayeredFolderAuthorizationService(
         => AuthorizeCoreAsync(context, includeFolderAcl: true, cancellationToken);
 
     /// <summary>Runs the complete authorization stack for an operation that has no existing folder ACL scope.</summary>
-    internal Task<LayeredFolderAuthorizationResult> AuthorizeTenantScopedAsync(
+    public Task<LayeredFolderAuthorizationResult> AuthorizeTenantScopedAsync(
         LayeredFolderAuthorizationContext context,
         CancellationToken cancellationToken = default)
         => AuthorizeCoreAsync(context, includeFolderAcl: false, cancellationToken);

@@ -17,6 +17,7 @@ public sealed class EffectivePermissionsActionCatalogTests
             "create_repository_backed_folder",
             "provider_readiness_read",
             "manage_folder_access",
+            "manage_organization_acl",
             "prepare_workspace",
             "lock_workspace",
             "read_workspace_lock",

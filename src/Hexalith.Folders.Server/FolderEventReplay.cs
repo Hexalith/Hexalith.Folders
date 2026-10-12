@@ -33,7 +33,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
     internal FolderState FoldFolder(object? currentState, string tenantId, string aggregateId)
     {
         DomainServiceCurrentState? source = ReadCurrentState(currentState);
-        FolderState state = ReadFolderSnapshot(source?.SnapshotState);
+        FolderState state = ReadFolderSnapshot(source?.SnapshotState, tenantId, aggregateId);
         long sequence = source?.LastSnapshotSequence ?? 0;
         List<IFolderEvent> events = [];
         foreach (EventEnvelope item in source?.Events ?? [])
@@ -58,7 +58,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
     internal OrganizationState FoldOrganization(object? currentState, string tenantId, string aggregateId)
     {
         DomainServiceCurrentState? source = ReadCurrentState(currentState);
-        OrganizationState state = ReadOrganizationSnapshot(source?.SnapshotState);
+        OrganizationState state = ReadOrganizationSnapshot(source?.SnapshotState, tenantId, aggregateId);
         long sequence = source?.LastSnapshotSequence ?? 0;
         string? organizationId = state.ProviderBindings.Values.FirstOrDefault()?.OrganizationId;
         foreach (EventEnvelope item in source?.Events ?? [])
@@ -160,15 +160,104 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             : state;
     }
 
-    private static FolderState ReadFolderSnapshot(object? snapshot)
-        => snapshot is null ? FolderState.Empty
-            : snapshot is FolderState typed ? typed
-            : throw new InvalidOperationException("Unsupported folder snapshot shape.");
+    private static FolderState ReadFolderSnapshot(object? snapshot, string tenantId, string aggregateId)
+    {
+        FolderState state = snapshot switch
+        {
+            null => FolderState.Empty,
+            FolderState typed => typed,
+            JsonElement { ValueKind: JsonValueKind.Object } json =>
+                json.Deserialize<FolderState>(EventStorePayloadSerialization.Options)
+                    ?? throw new InvalidOperationException("Unreadable folder snapshot."),
+            _ => throw new InvalidOperationException("Unsupported folder snapshot shape."),
+        };
 
-    private static OrganizationState ReadOrganizationSnapshot(object? snapshot)
-        => snapshot is null ? OrganizationState.Empty
-            : snapshot is OrganizationState typed ? typed
-            : throw new InvalidOperationException("Unsupported organization snapshot shape.");
+        if (state.Tags is null
+            || state.AccessOverrides is null
+            || state.IdempotencyFingerprints is null
+            || state.IsCreated
+                && (state.ManagedTenantId is null || state.FolderId is null)
+            || state.ManagedTenantId is not null
+                && !string.Equals(state.ManagedTenantId, tenantId, StringComparison.Ordinal)
+            || state.FolderId is not null
+                && !string.Equals(state.FolderId, aggregateId, StringComparison.Ordinal)
+            || state.AccessOverrides.Keys.Any(key =>
+                !string.Equals(key.ManagedTenantId, tenantId, StringComparison.Ordinal)
+                || !string.Equals(key.FolderId, aggregateId, StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException("Foreign folder snapshot in actor stream.");
+        }
+
+        return state;
+    }
+
+    private static OrganizationState ReadOrganizationSnapshot(object? snapshot, string tenantId, string aggregateId)
+    {
+        OrganizationState state = snapshot switch
+        {
+            null => OrganizationState.Empty,
+            OrganizationState typed => typed,
+            JsonElement { ValueKind: JsonValueKind.Object } json =>
+                ReadOrganizationJsonSnapshot(json),
+            _ => throw new InvalidOperationException("Unsupported organization snapshot shape."),
+        };
+
+        if (state.Grants is null || state.IdempotencyFingerprints is null || state.ProviderBindings is null)
+        {
+            throw new InvalidOperationException("Incomplete organization snapshot.");
+        }
+
+        string[] organizationIds = state.Grants.Select(static grant => grant.OrganizationId)
+            .Concat(state.ProviderBindings.Values.Select(static binding => binding.OrganizationId))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (organizationIds.Length > 1
+            || state.Grants.Any(grant =>
+                !string.Equals(grant.ManagedTenantId, tenantId, StringComparison.Ordinal))
+            || state.ProviderBindings.Any(binding =>
+                !string.Equals(binding.Key, aggregateId, StringComparison.Ordinal)
+                || !string.Equals(binding.Value.ManagedTenantId, tenantId, StringComparison.Ordinal)
+                || !string.Equals(binding.Value.ProviderBindingRef, aggregateId, StringComparison.Ordinal)))
+        {
+            throw new InvalidOperationException("Foreign organization snapshot in actor stream.");
+        }
+
+        return state;
+    }
+
+    private static OrganizationState ReadOrganizationJsonSnapshot(JsonElement json)
+    {
+        JsonElement Property(string name)
+        {
+            JsonElement? value = null;
+            foreach (JsonProperty property in json.EnumerateObject())
+            {
+                if (string.Equals(property.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (value is not null)
+                    {
+                        throw new InvalidOperationException("Duplicate organization snapshot property.");
+                    }
+
+                    value = property.Value;
+                }
+            }
+
+            return value ?? throw new InvalidOperationException("Incomplete organization snapshot.");
+        }
+
+        return new OrganizationState(
+            Property(nameof(OrganizationState.IsInitialized)).GetBoolean(),
+            Property(nameof(OrganizationState.Grants))
+                .Deserialize<HashSet<OrganizationAclEntryKey>>(EventStorePayloadSerialization.Options)
+                ?? throw new InvalidOperationException("Unreadable organization snapshot grants."),
+            Property(nameof(OrganizationState.IdempotencyFingerprints))
+                .Deserialize<Dictionary<string, string>>(EventStorePayloadSerialization.Options)
+                ?? throw new InvalidOperationException("Unreadable organization snapshot fingerprints."),
+            Property(nameof(OrganizationState.ProviderBindings))
+                .Deserialize<Dictionary<string, OrganizationProviderBinding>>(EventStorePayloadSerialization.Options)
+                ?? throw new InvalidOperationException("Unreadable organization snapshot bindings."));
+    }
 
     private T Read<T>(string typeName, int? payloadVersion, int? metadataVersion,
         string serializationFormat, byte[] payload, long sequence) where T : class, IEventPayload
