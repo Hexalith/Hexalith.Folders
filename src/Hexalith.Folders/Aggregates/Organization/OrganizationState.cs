@@ -45,16 +45,14 @@ public sealed record OrganizationState(
 
             switch (organizationEvent)
             {
-                case OrganizationAclBaselineInitialized:
+                case OrganizationAclBaselineInitialized when !initialized:
                     initialized = true;
                     break;
-                case OrganizationAclPrincipalGranted granted:
+                case OrganizationAclPrincipalGranted granted when initialized:
                     grants.Add(Key(granted.ManagedTenantId, granted.OrganizationId, granted.PrincipalKind, granted.PrincipalId, granted.Action));
-                    initialized = true;
                     break;
-                case OrganizationAclPrincipalRevoked revoked:
+                case OrganizationAclPrincipalRevoked revoked when initialized:
                     grants.Remove(Key(revoked.ManagedTenantId, revoked.OrganizationId, revoked.PrincipalKind, revoked.PrincipalId, revoked.Action));
-                    initialized = true;
                     break;
                 case ProviderBindingConfigured configured:
                     providerBindings[configured.ProviderBindingRef] = new OrganizationProviderBinding(

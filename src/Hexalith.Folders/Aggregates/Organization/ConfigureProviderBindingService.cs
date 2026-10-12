@@ -44,7 +44,7 @@ public sealed class ConfigureProviderBindingService(
             ActionToken,
             LayeredFolderOperationPolicy.Mutation(),
             request.ClaimTransformEvidence,
-            OperationScope: request.ProviderBindingRef,
+            OperationScope: "organization_baseline",
             request.CorrelationId,
             request.TaskId,
             clientTenantValues,
@@ -98,7 +98,7 @@ public sealed class ConfigureProviderBindingService(
             return OrganizationProviderBindingResult.Rejected(command, validation.Code);
         }
 
-        OrganizationStreamName streamName = _repository.CreateStreamName(command.ManagedTenantId, command.OrganizationId);
+        OrganizationStreamName streamName = _repository.CreateStreamName(command.ManagedTenantId, command.ProviderBindingRef);
         OrganizationState state = _repository.Load(streamName);
 
         OrganizationProviderBindingResult result = OrganizationAggregate.Handle(state, command);

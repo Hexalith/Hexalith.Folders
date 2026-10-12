@@ -55,6 +55,33 @@ public sealed class FinalAclReauthorizationTests
     }
 
     [Fact]
+    public async Task GrantedProviderBindingUsesOrganizationScopeForBothPassesAndEmitsEvent()
+    {
+        RecordingOrganizationProviderBindingRepository repository = new();
+        FinalAclRevokingPermissions permissions = new(allowedCalls: 2);
+        ConfigureProviderBindingService service = new(AuthorizationService(permissions), repository,
+            new FinalAclFixedTimeProvider(Now));
+        ConfigureProviderBindingServiceRequest request = new(
+            "tenant-a", "principal-a",
+            EventStoreClaimTransformEvidence.Allowed("tenant-a", "principal-a",
+                [ConfigureProviderBindingService.ActionToken]),
+            "binding-a", "github", "credential-a", "correlation-a", "task-a",
+            "provider-binding-new-key", null, new Dictionary<string, string?>(),
+            new Dictionary<string, string?>());
+
+        OrganizationProviderBindingResult result = await service.ConfigureAsync(request,
+            TestContext.Current.CancellationToken);
+
+        result.Code.ShouldBe(OrganizationProviderBindingResultCode.Accepted);
+        result.Events.ShouldHaveSingleItem().ShouldBeOfType<ProviderBindingConfigured>()
+            .ProviderBindingRef.ShouldBe("binding-a");
+        repository.EventsAppended.ShouldBe(1);
+        permissions.Requests.Count.ShouldBe(2);
+        permissions.Requests.ShouldAllBe(item => item.OperationScope == "organization_baseline"
+            && item.ActionToken == ConfigureProviderBindingService.ActionToken);
+    }
+
+    [Fact]
     public async Task BindAsyncRejectsAclRevocationBeforeProviderCall()
     {
         FinalAclRevokingPermissions permissions = new();

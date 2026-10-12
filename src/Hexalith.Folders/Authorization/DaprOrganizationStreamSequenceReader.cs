@@ -19,6 +19,11 @@ public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient)
             return currentSequence;
         }
 
+        if (FolderActorSequenceScope.TryGet(tenantId, organizationId, out currentSequence))
+        {
+            return currentSequence;
+        }
+
         string endpoint = Environment.GetEnvironmentVariable("DAPR_HTTP_ENDPOINT")
             ?? $"http://localhost:{Environment.GetEnvironmentVariable("DAPR_HTTP_PORT") ?? "3500"}";
         if (!Uri.TryCreate(endpoint, UriKind.Absolute, out Uri? baseAddress)

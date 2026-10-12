@@ -1,4 +1,5 @@
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 
 using Shouldly;
@@ -15,6 +16,23 @@ public sealed class FolderStreamShapeTests
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
 
         streamName.Value.ShouldBe("tenant-a:folders:folder-a");
+    }
+
+    [Fact]
+    public void FolderAndTenantActorIdsCannotEnterTheBindingActorNamespace()
+    {
+        string bindingActor = ProviderBindingActorId.Create("tenant-a");
+        bindingActor.ShouldNotBe("tenant-a");
+        ProviderBindingActorId.Create("folder-a").ShouldNotBe("folder-a");
+        FolderStreamName.TryCreate("tenant-a", bindingActor, out _, out FolderResultCode folderCode)
+            .ShouldBeFalse();
+        folderCode.ShouldBe(FolderResultCode.InvalidFolderId);
+        FolderStreamName.TryCreate(bindingActor, "folder-a", out _, out FolderResultCode tenantCode)
+            .ShouldBeFalse();
+        tenantCode.ShouldBe(FolderResultCode.InvalidTenant);
+        FolderStreamName.TryCreate("tenant-a", "tenant-a", out _, out FolderResultCode collisionCode)
+            .ShouldBeFalse();
+        collisionCode.ShouldBe(FolderResultCode.InvalidFolderId);
     }
 
     [Theory]

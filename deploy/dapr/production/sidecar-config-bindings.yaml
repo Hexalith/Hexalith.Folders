@@ -23,6 +23,11 @@ spec:
           env:
             - name: EventStore__Publisher__TopicOverrides__folders
               value: folders.events
+            - name: Authentication__HumanAuthorityReceipt__SigningKey
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-human-authority-receipt-signing-key
+                  key: signing-key
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -49,6 +54,21 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: folders
         dapr.io/config: hexalith-folders-production-accesscontrol-folders
+        dapr.io/app-token-secret: hexalith-folders-server-app-token
+    spec:
+      containers:
+        - name: folders
+          env:
+            - name: APP_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-folders-server-app-token
+                  key: token
+            - name: Authentication__HumanAuthorityReceipt__SigningKey
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-human-authority-receipt-signing-key
+                  key: signing-key
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,6 +82,16 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: folders-workers
         dapr.io/config: hexalith-folders-production-accesscontrol-folders-workers
+        dapr.io/app-token-secret: hexalith-folders-workers-app-token
+    spec:
+      containers:
+        - name: workers
+          env:
+            - name: APP_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-folders-workers-app-token
+                  key: token
 ---
 apiVersion: apps/v1
 kind: Deployment

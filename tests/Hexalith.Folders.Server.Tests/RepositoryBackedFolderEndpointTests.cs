@@ -7,6 +7,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.Folders;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
@@ -1330,16 +1331,42 @@ public sealed class RepositoryBackedFolderEndpointTests
         return app;
     }
 
+    [Fact]
+    public async Task RepositoryBackedCreationShouldRejectOrganizationPermissionScopeAsFolderId()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = app.GetTestClient();
+            using HttpRequestMessage request = CreateValidRequest(folderId: FolderStreamName.ReservedOrganizationPermissionScope);
+            using HttpResponseMessage response = await client.SendAsync(request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            gateway.Requests.ShouldBeEmpty();
+            FolderStreamName.TryCreate("tenant-a", FolderStreamName.ReservedOrganizationPermissionScope,
+                out _, out FolderResultCode code).ShouldBeFalse();
+            code.ShouldBe(FolderResultCode.InvalidFolderId);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
     private static HttpRequestMessage CreateValidRequest(
         string requestSchemaVersion = "v1",
-        object? branchRefPolicy = null)
+        object? branchRefPolicy = null,
+        string folderId = "folder-a")
     {
         HttpRequestMessage request = new(HttpMethod.Post, "/api/v1/folders/repository-backed")
         {
             Content = JsonContent.Create(new
             {
                 requestSchemaVersion,
-                folderId = "folder-a",
+                folderId,
                 providerBindingRef = "provider-binding-a",
                 repositoryProfileRef = "profile-a",
                 folderMetadata = new

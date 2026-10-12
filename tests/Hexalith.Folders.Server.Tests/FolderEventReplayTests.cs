@@ -126,6 +126,53 @@ public sealed class FolderEventReplayTests
     }
 
     [Fact]
+    public void RejectionOnlyProviderBindingProjectionShouldRemainOrganizationScoped()
+    {
+        using ServiceProvider services = new ServiceCollection()
+            .AddSingleton(ReplayRegistry())
+            .AddSingleton<IDomainProjectionHandler, FolderDomainProjectionHandler>()
+            .BuildServiceProvider();
+        FolderCommandRejected rejection = FolderCommandRejected.Create(
+            FolderResultCode.ValidationFailed.ToString(),
+            FoldersServerModule.ConfigureProviderBindingCommandType,
+            "tenant-a", "org-a", null, "user-a", "correlation-a", "task-a", "idempotency-a");
+        ProjectionEventDto item = new(typeof(FolderCommandRejected).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(rejection), "json", 1, OccurredAt,
+            "correlation-a") { MetadataVersion = 1 };
+        ProjectionRequest request = new("tenant-a", "folders", ProviderBindingActorId.Create("binding-a"), [item]);
+
+        ProjectionResponse? projected = DomainProjectionDispatcher.Project(
+            services, request, TestContext.Current.CancellationToken);
+        projected.ShouldNotBeNull();
+        projected.ProjectionType.ShouldBe("organization-provider-binding");
+
+        FolderCommandRejected unknown = FolderCommandRejected.Create(
+            FolderResultCode.UnsupportedCommandType.ToString(), "unknown_command_type",
+            "tenant-a", "org-a", null, "user-a", "correlation-a", "task-a", "idempotency-a");
+        Should.Throw<InvalidOperationException>(() => DomainProjectionDispatcher.Project(
+            services, request with { Events = [item with { Payload = JsonSerializer.SerializeToUtf8Bytes(unknown) }] },
+            TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public void OrganizationAclFirstEventMustMatchItsActorIdentity()
+    {
+        OrganizationAclBaselineInitialized foreign = new("tenant-a", "org-b", "correlation-a",
+            "task-a", "idempotency-a", "fingerprint-a");
+        FolderEventReplay replay = new(new EventPayloadEvolutionRegistry(
+            [typeof(OrganizationAclBaselineInitialized)], []));
+        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(foreign);
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            new DomainServiceCurrentState(null,
+                [Envelope(typeof(OrganizationAclBaselineInitialized).FullName!, bytes, 1, null, "org-a")],
+                0, 1), "tenant-a", "org-a"));
+        Should.Throw<InvalidOperationException>(() => FolderEventReplay.FoldOrganization(
+            new ProjectionRequest("tenant-a", "folders", "org-a",
+                [new ProjectionEventDto(typeof(OrganizationAclBaselineInitialized).FullName!, bytes,
+                    "json", 1, OccurredAt, "correlation-a") { MetadataVersion = 1 }])));
+    }
+
+    [Fact]
     public void ForeignTenantEventShouldFailBeforeStateIsReturned()
     {
         FolderCreated foreign = Created() with { ManagedTenantId = "tenant-b" };
@@ -171,15 +218,13 @@ public sealed class FolderEventReplayTests
     }
 
     [Fact]
-    public void RetainedUnstampedVersionOneBytesShouldReplayWithoutRewrite()
+    public void RetainedWrongOrganizationBytesShouldFailClosedWithoutRewrite()
     {
         byte[] bytes = File.ReadAllBytes(Fixture("folder-created-unstamped-v1.json"));
         byte[] originalDigest = SHA256.HashData(bytes);
         EventEnvelope stored = Envelope(typeof(FolderCreated).FullName!, bytes, 1, null);
-        FolderState result = Replay().FoldFolder(new DomainServiceCurrentState(null, [stored], 0, 1),
-            "tenant-a", "folder-a");
-
-        result.DisplayName.ShouldBe("Folder A");
+        Should.Throw<InvalidOperationException>(() => Replay().FoldFolder(
+            new DomainServiceCurrentState(null, [stored], 0, 1), "tenant-a", "folder-a"));
         SHA256.HashData(bytes).ShouldBe(originalDigest);
         File.ReadAllBytes(Fixture("folder-created-unstamped-v1.json")).ShouldBe(bytes);
     }
@@ -188,7 +233,7 @@ public sealed class FolderEventReplayTests
     public void PersistedRejectionShouldBeSkippedButInvalidStampShouldFailClosed()
     {
         FolderCommandRejected rejection = FolderCommandRejected.Create(
-            FolderResultCode.FolderAclDenied.ToString(), "create-folder", "tenant-a", "org-a",
+            FolderResultCode.FolderAclDenied.ToString(), FoldersServerModule.CreateFolderCommandType, "tenant-a", "org-a",
             "folder-a", "user-a", "correlation-a", "task-a", "idempotency-b");
         EventEnvelope first = Envelope(Created());
         byte[] rejectionPayload = JsonSerializer.SerializeToUtf8Bytes(rejection);
@@ -204,7 +249,7 @@ public sealed class FolderEventReplayTests
     [Fact]
     public void OrganizationBindingShouldRebuildFromActorEventAfterRestart()
     {
-        ProviderBindingConfigured configured = new("tenant-a", "org-a", "binding-a", "forgejo",
+        ProviderBindingConfigured configured = new("tenant-a", "tenant-a", "binding-a", "forgejo",
             "credential-reference-a", OrganizationProviderBindingPolicy.Empty,
             OrganizationProviderBindingPolicy.Empty, "correlation-a", "task-a",
             "idempotency-a", "fingerprint-a", "configured", OccurredAt);
@@ -212,11 +257,11 @@ public sealed class FolderEventReplayTests
         FolderEventReplay replay = new(registry);
         DomainServiceCurrentState persisted = new(null,
             [Envelope(typeof(ProviderBindingConfigured).FullName!, JsonSerializer.SerializeToUtf8Bytes(configured),
-                1, null, "binding-a")], 0, 1);
+                1, null, ProviderBindingActorId.Create("binding-a"))], 0, 1);
 
         ActorFoldedOrganizationProviderBindingRepository restarted = new(replay);
-        restarted.Begin("tenant-a", "binding-a", persisted);
-        OrganizationState state = restarted.Load(OrganizationStreamName.Create("tenant-a", "org-a"));
+        restarted.Begin("tenant-a", ProviderBindingActorId.Create("binding-a"), persisted);
+        OrganizationState state = restarted.Load(OrganizationStreamName.Create("tenant-a", "binding-a"));
         state.ProviderBindings["binding-a"].CredentialReferenceId.ShouldBe("credential-reference-a");
         state.IdempotencyFingerprints["idempotency-a"].ShouldBe("fingerprint-a");
     }
@@ -224,7 +269,7 @@ public sealed class FolderEventReplayTests
     [Fact]
     public void JsonOrganizationSnapshotShouldRebuildBindingAndRejectForeignIdentity()
     {
-        ProviderBindingConfigured configured = new("tenant-a", "org-a", "binding-a", "forgejo",
+        ProviderBindingConfigured configured = new("tenant-a", "tenant-a", "binding-a", "forgejo",
             "credential-reference-a", OrganizationProviderBindingPolicy.Empty,
             OrganizationProviderBindingPolicy.Empty, "correlation-a", "task-a",
             "idempotency-a", "fingerprint-a", "configured", OccurredAt);
@@ -235,23 +280,23 @@ public sealed class FolderEventReplayTests
 
         OrganizationState recovered = replay.FoldOrganization(
             JsonSerializer.SerializeToElement(persisted, new JsonSerializerOptions(JsonSerializerDefaults.Web)),
-            "tenant-a", "binding-a");
+            "tenant-a", ProviderBindingActorId.Create("binding-a"));
         recovered.ProviderBindings["binding-a"].CredentialReferenceId.ShouldBe("credential-reference-a");
         recovered.IdempotencyFingerprints["idempotency-a"].ShouldBe("fingerprint-a");
 
         Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
-            persisted, "tenant-b", "binding-a"));
+            persisted, "tenant-b", ProviderBindingActorId.Create("binding-a")));
         Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
-            persisted, "tenant-a", "binding-b"));
+            persisted, "tenant-a", ProviderBindingActorId.Create("binding-b")));
         Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
             new DomainServiceCurrentState(JsonSerializer.SerializeToElement(new { isInitialized = true }), [], 1, 1),
-            "tenant-a", "binding-a"));
+            "tenant-a", ProviderBindingActorId.Create("binding-a")));
     }
 
     [Fact]
     public void OrganizationBindingShouldRejectAnotherOrganizationInTheSameActorStream()
     {
-        ProviderBindingConfigured first = new("tenant-a", "org-a", "binding-a", "forgejo",
+        ProviderBindingConfigured first = new("tenant-a", "tenant-a", "binding-a", "forgejo",
             "credential-reference-a", OrganizationProviderBindingPolicy.Empty,
             OrganizationProviderBindingPolicy.Empty, "correlation-a", "task-a",
             "idempotency-a", "fingerprint-a", "configured", OccurredAt);
@@ -262,19 +307,98 @@ public sealed class FolderEventReplayTests
         };
         FolderEventReplay replay = new(new EventPayloadEvolutionRegistry([typeof(ProviderBindingConfigured)], []));
         EventEnvelope firstEnvelope = Envelope(typeof(ProviderBindingConfigured).FullName!,
-            JsonSerializer.SerializeToUtf8Bytes(first), 1, null, "binding-a");
+            JsonSerializer.SerializeToUtf8Bytes(first), 1, null, ProviderBindingActorId.Create("binding-a"));
         EventEnvelope secondEnvelope = Envelope(typeof(ProviderBindingConfigured).FullName!,
-            JsonSerializer.SerializeToUtf8Bytes(second), 2, null, "binding-a");
+            JsonSerializer.SerializeToUtf8Bytes(second), 2, null, ProviderBindingActorId.Create("binding-a"));
 
         Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
             new DomainServiceCurrentState(null, [firstEnvelope, secondEnvelope], 0, 2),
-            "tenant-a", "binding-a"));
+            "tenant-a", ProviderBindingActorId.Create("binding-a")));
 
         ActorFoldedOrganizationProviderBindingRepository repository = new(replay);
-        repository.Begin("tenant-a", "binding-a",
+        repository.Begin("tenant-a", ProviderBindingActorId.Create("binding-a"),
             new DomainServiceCurrentState(null, [firstEnvelope], 0, 1));
         Should.Throw<InvalidOperationException>(() => repository.Load(
             OrganizationStreamName.Create("tenant-a", "org-b")));
+    }
+
+    [Fact]
+    public void ProviderBindingActorShouldRejectCollidingRetainedFolderStream()
+    {
+        DomainServiceCurrentState folderHistory = new(null, [Envelope(Created())], 0, 1);
+        Should.Throw<InvalidOperationException>(() => Replay().FoldOrganization(
+            folderHistory, "tenant-a", "folder-a"));
+
+        FolderCommandRejected folderRejection = FolderCommandRejected.Create(
+            FolderResultCode.ValidationFailed.ToString(), FoldersServerModule.CreateFolderCommandType,
+            "tenant-a", "org-a", "folder-a", "user-a", "correlation-a", "task-a", "idempotency-b");
+        DomainServiceCurrentState rejectionOnly = new(null,
+            [Envelope(typeof(FolderCommandRejected).FullName!,
+                JsonSerializer.SerializeToUtf8Bytes(folderRejection), 1)], 0, 1);
+        Should.Throw<InvalidOperationException>(() => Replay().FoldOrganization(
+            rejectionOnly, "tenant-a", "folder-a"));
+    }
+
+    [Fact]
+    public void SamePublicFolderAndBindingReferenceUseIndependentActorStreams()
+    {
+        FolderCreated folder = Created();
+        ProviderBindingConfigured binding = new("tenant-a", "tenant-a", "folder-a", "github",
+            "credential-a", OrganizationProviderBindingPolicy.Empty,
+            OrganizationProviderBindingPolicy.Empty, "correlation-a", "task-a", "idempotency-b",
+            "fingerprint-b", "configured", OccurredAt);
+        FolderEventReplay replay = new(new EventPayloadEvolutionRegistry(
+            [typeof(FolderCreated), typeof(ProviderBindingConfigured)], []));
+
+        FolderState folderState = replay.FoldFolder(new DomainServiceCurrentState(null,
+            [Envelope(folder)], 0, 1), "tenant-a", "folder-a");
+        OrganizationState bindingState = replay.FoldOrganization(new DomainServiceCurrentState(null,
+            [Envelope(typeof(ProviderBindingConfigured).FullName!, JsonSerializer.SerializeToUtf8Bytes(binding),
+                1, aggregateId: ProviderBindingActorId.Create("folder-a"))], 0, 1),
+            "tenant-a", ProviderBindingActorId.Create("folder-a"));
+
+        folderState.IsCreated.ShouldBeTrue();
+        bindingState.ProviderBindings["folder-a"].ProviderBindingRef.ShouldBe("folder-a");
+        ProviderBindingActorId.Create("folder-a").ShouldNotBe("folder-a");
+    }
+
+    [Fact]
+    public void RetainedFolderReplayRejectsSecondCreateWrongOrganizationAndInvalidWorkspaceTransition()
+    {
+        FolderCreated created = Created();
+        FolderEventReplay replay = new(new EventPayloadEvolutionRegistry(
+            [typeof(FolderCreated), typeof(FolderWorkspaceLifecycleEventRecorded)], []));
+        EventEnvelope first = Envelope(created);
+        EventEnvelope duplicate = Envelope(typeof(FolderCreated).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(created with { DisplayName = "Other" }), 2);
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            new DomainServiceCurrentState(null, [first, duplicate], 0, 2), "tenant-a", "folder-a"));
+
+        EventEnvelope foreignOrganization = Envelope(created with { OrganizationId = "other-organization" });
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            new DomainServiceCurrentState(null, [foreignOrganization], 0, 1), "tenant-a", "folder-a"));
+
+        FolderWorkspaceLifecycleEventRecorded invalid = new("tenant-a", "tenant-a", "folder-a",
+            "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared, null, "operation-a",
+            "correlation-a", "task-a", "idempotency-b", "fingerprint-b", OccurredAt);
+        EventEnvelope second = Envelope(typeof(FolderWorkspaceLifecycleEventRecorded).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(invalid), 2);
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            new DomainServiceCurrentState(null, [first, second], 0, 2), "tenant-a", "folder-a"));
+    }
+
+    [Fact]
+    public void RetainedOrganizationGrantBeforeBaselineFailsClosed()
+    {
+        OrganizationAclPrincipalGranted granted = new("tenant-a", "tenant-a",
+            OrganizationAclPrincipalKind.User, "user-a", "create_folder", "correlation-a",
+            "task-a", "idempotency-a", "fingerprint-a");
+        FolderEventReplay replay = new(new EventPayloadEvolutionRegistry(
+            [typeof(OrganizationAclPrincipalGranted)], []));
+        EventEnvelope first = Envelope(typeof(OrganizationAclPrincipalGranted).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(granted), 1, aggregateId: "tenant-a");
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            new DomainServiceCurrentState(null, [first], 0, 1), "tenant-a", "tenant-a"));
     }
 
     private static string Fixture(string fileName)
@@ -286,7 +410,7 @@ public sealed class FolderEventReplayTests
     private static FolderEventReplay Replay() => new(ReplayRegistry());
 
     private static FolderCreated Created()
-        => new("tenant-a", "org-a", "folder-a", "Folder A", null, null, [],
+        => new("tenant-a", "tenant-a", "folder-a", "Folder A", null, null, [],
             FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a",
             "correlation-a", "task-a", "idempotency-a", "fingerprint-a", OccurredAt);
 

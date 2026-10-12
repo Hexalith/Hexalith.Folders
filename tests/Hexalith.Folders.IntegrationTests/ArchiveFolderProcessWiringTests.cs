@@ -751,7 +751,7 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "org-a", "binding-a", "user-a");
+            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "tenant-a", "user-a");
 
             using HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/provider-bindings/binding-a")
             {
@@ -773,7 +773,7 @@ public sealed class ArchiveFolderProcessWiringTests
             host.Gateway.ProcessCalls.ShouldBe(1);
             host.OrganizationRepository.EventsAppended.ShouldBe(1);
 
-            OrganizationState state = host.OrganizationRepository.Load(OrganizationStreamName.Create("tenant-a", "org-a"));
+            OrganizationState state = host.OrganizationRepository.Load(OrganizationStreamName.Create("tenant-a", "binding-a"));
             state.ProviderBindings.ContainsKey("binding-a").ShouldBeTrue();
             OrganizationProviderBinding binding = state.ProviderBindings["binding-a"];
             binding.ProviderKind.ShouldBe("github");
@@ -792,7 +792,7 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "org-a", "binding-a", "user-a");
+            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "tenant-a", "user-a");
 
             HttpResponseMessage first = await host.Client.SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-a"), TestContext.Current.CancellationToken).ConfigureAwait(true);
             HttpResponseMessage replay = await host.Client.SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-a"), TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -827,7 +827,7 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "org-a", "binding-a", "user-a");
+            SeedConfigureProviderBindingPermissions(host.Permissions, "tenant-a", "tenant-a", "user-a");
 
             HttpResponseMessage first = await host.Client
                 .SendAsync(CreateConfigureProviderBindingRequest("binding-key-a", "credential-ref-a"), TestContext.Current.CancellationToken)
@@ -888,14 +888,12 @@ public sealed class ArchiveFolderProcessWiringTests
         InMemoryEffectivePermissionsReadModel readModel,
         string tenantId,
         string organizationId,
-        string providerBindingRef,
         string principalId)
         => readModel.Save(new EffectivePermissionsReadModelSnapshot(
             tenantId,
             organizationId,
-            // configure_provider_binding authorizes against the provider-binding-ref scope; the owning
-            // organization is carried by the snapshot and resolved into the command (story 8.1 DD4).
-            providerBindingRef,
+            // Binding actors use the current organization baseline for both authorization passes.
+            "organization_baseline",
             EffectivePermissionsFolderLifecycleState.Active,
             [
                 new(

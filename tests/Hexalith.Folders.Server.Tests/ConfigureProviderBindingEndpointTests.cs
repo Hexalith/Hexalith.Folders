@@ -6,6 +6,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Testing;
 
@@ -38,7 +39,7 @@ public sealed class ConfigureProviderBindingEndpointTests
     }
 
     [Fact]
-    public async Task ConfigureProviderBindingShouldSubmitCommandWithBindingRefAggregateId()
+    public async Task ConfigureProviderBindingShouldSubmitCommandWithReservedActorId()
     {
         RecordingEventStoreGatewayClient gateway = new();
         await using WebApplication app = BuildApp(gateway);
@@ -52,12 +53,30 @@ public sealed class ConfigureProviderBindingEndpointTests
         response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
         submitted.CommandType.ShouldBe(FoldersServerModule.ConfigureProviderBindingCommandType);
-        submitted.AggregateId.ShouldBe("binding-a");
+        submitted.AggregateId.ShouldBe(ProviderBindingActorId.Create("binding-a"));
         submitted.ShouldBeKeyedUlidEnvelope("idempotency-a");
         submitted.Payload.GetProperty("providerBindingRef").GetString().ShouldBe("binding-a");
         submitted.Payload.GetProperty("providerFamilyRef").GetString().ShouldBe("github");
         submitted.Payload.GetProperty("capabilityProfileRef").GetString().ShouldBe("profile-a");
         submitted.Payload.GetProperty("nonSecretCredentialReference").GetString().ShouldBe("credential-ref-a");
+    }
+
+    [Fact]
+    public async Task PublicBindingReferenceEqualToTenantUsesDisjointActor()
+    {
+        RecordingEventStoreGatewayClient gateway = new();
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidRequest(providerBindingRef: "tenant-a");
+
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        SubmitCommandRequest submitted = gateway.Requests.ShouldHaveSingleItem();
+        submitted.AggregateId.ShouldBe(ProviderBindingActorId.Create("tenant-a"));
+        submitted.AggregateId.ShouldNotBe("tenant-a");
+        submitted.Payload.GetProperty("providerBindingRef").GetString().ShouldBe("tenant-a");
     }
 
     [Theory]
@@ -162,9 +181,10 @@ public sealed class ConfigureProviderBindingEndpointTests
         json.ShouldNotContain("credential-ref-a", Case.Sensitive);
     }
 
-    private static HttpRequestMessage CreateValidRequest(string requestSchemaVersion = "v1")
+    private static HttpRequestMessage CreateValidRequest(string requestSchemaVersion = "v1",
+        string providerBindingRef = "binding-a")
     {
-        HttpRequestMessage request = new(HttpMethod.Put, "/api/v1/provider-bindings/binding-a")
+        HttpRequestMessage request = new(HttpMethod.Put, $"/api/v1/provider-bindings/{providerBindingRef}")
         {
             Content = JsonContent.Create(new
             {

@@ -122,12 +122,12 @@ public sealed class FolderWorkspacePreparationAggregateTests
     }
 
     [Fact]
-    public void InvalidWorkspacePreparedOutcomeShouldLeaveStateUnchanged()
+    public void InvalidWorkspacePreparedOutcomeShouldFailClosed()
     {
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderState state = ReadyState(streamName);
 
-        FolderState applied = state.Apply(
+        Should.Throw<InvalidOperationException>(() => state.Apply(
             [
                 new FolderWorkspaceLifecycleEventRecorded(
                     "tenant-a",
@@ -143,9 +143,7 @@ public sealed class FolderWorkspacePreparationAggregateTests
                     "fingerprint-workspace-outcome-b",
                     Now.AddMinutes(1)),
             ],
-            streamName);
-
-        applied.ShouldBe(state);
+            streamName));
     }
 
     public static IEnumerable<object[]> InvalidStates()

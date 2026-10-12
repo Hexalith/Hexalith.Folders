@@ -105,6 +105,8 @@ _ = builder.AddHexalithFolders(
     foldersWorkers,
     foldersUi,
     accessControlConfigPath);
+_ = folders.WithGeneratedEventStoreAppChannelToken();
+_ = foldersWorkers.WithGeneratedEventStoreAppChannelToken();
 
 // Memories search-index server (Story 9.2): hosted standalone on the shared EventStore topology, reusing
 // the same statestore/pubsub Dapr components. The reusable Memories hosting recipe (memories-vectors Redis

@@ -115,6 +115,7 @@ public sealed partial class ContainerImageConformanceTests
         (string Name, string Value)[] environment = containers.Children
             .Cast<YamlMappingNode>()
             .SelectMany(container => container.GetSequence("env").Children.Cast<YamlMappingNode>())
+            .Where(entry => entry.GetScalar("name") == FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey)
             .Select(entry => (entry.GetScalar("name"), entry.GetScalar("value")))
             .ToArray();
 
@@ -126,6 +127,55 @@ public sealed partial class ContainerImageConformanceTests
         string operatorDoc = ReadText(OperatorDocPath);
         operatorDoc.ShouldContain(FoldersAspireModule.EventStorePublisherFolderTopicOverrideKey, Case.Sensitive);
         operatorDoc.ShouldContain(FoldersAspireModule.FolderDomainEventsTopic, Case.Sensitive);
+    }
+
+    [Fact]
+    public void ProductionCallbackHostsShouldBindOneAppTokenSecretToSidecarAndApplication()
+    {
+        YamlMappingNode[] documents = LoadYamlDocuments(SidecarBindingsPath);
+        foreach ((string deployment, string container, string secret) in new[]
+        {
+            ("hexalith-folders-server", "folders", "hexalith-folders-server-app-token"),
+            ("hexalith-folders-workers", "workers", "hexalith-folders-workers-app-token"),
+        })
+        {
+            YamlMappingNode document = documents.Single(item =>
+                item.GetMapping("metadata").GetScalar("name") == deployment);
+            YamlMappingNode template = document.GetMapping("spec").GetMapping("template");
+            template.GetMapping("metadata").GetMapping("annotations")
+                .GetScalar("dapr.io/app-token-secret").ShouldBe(secret);
+            YamlMappingNode application = template.GetMapping("spec").GetSequence("containers")
+                .Children.Cast<YamlMappingNode>().Single(item => item.GetScalar("name") == container);
+            YamlMappingNode token = application.GetSequence("env").Children.Cast<YamlMappingNode>()
+                .Single(item => item.GetScalar("name") == "APP_API_TOKEN");
+            YamlMappingNode reference = token.GetMapping("valueFrom").GetMapping("secretKeyRef");
+            reference.GetScalar("name").ShouldBe(secret);
+            reference.GetScalar("key").ShouldBe("token");
+        }
+    }
+
+    [Fact]
+    public void ProductionEventStoreAndFoldersShouldShareOneHumanReceiptSigningKeyReference()
+    {
+        YamlMappingNode[] documents = LoadYamlDocuments(SidecarBindingsPath);
+        foreach ((string deployment, string container) in new[]
+        {
+            ("hexalith-eventstore", "eventstore"),
+            ("hexalith-folders-server", "folders"),
+        })
+        {
+            YamlMappingNode document = documents.Single(item =>
+                item.GetMapping("metadata").GetScalar("name") == deployment);
+            YamlMappingNode application = document.GetMapping("spec").GetMapping("template")
+                .GetMapping("spec").GetSequence("containers").Children.Cast<YamlMappingNode>()
+                .Single(item => item.GetScalar("name") == container);
+            YamlMappingNode signingKey = application.GetSequence("env").Children
+                .Cast<YamlMappingNode>().Single(item => item.GetScalar("name")
+                    == "Authentication__HumanAuthorityReceipt__SigningKey");
+            YamlMappingNode reference = signingKey.GetMapping("valueFrom").GetMapping("secretKeyRef");
+            reference.GetScalar("name").ShouldBe("hexalith-human-authority-receipt-signing-key");
+            reference.GetScalar("key").ShouldBe("signing-key");
+        }
     }
 
     [Fact]

@@ -140,7 +140,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
     }
 
     [Fact]
-    public void InvalidWorkspaceLockReleasedReplayShouldLeaveStateUnchanged()
+    public void InvalidWorkspaceLockReleasedReplayShouldFailClosed()
     {
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderState ready = ReadyState(streamName);
@@ -150,9 +150,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
             .ShouldHaveSingleItem()
             .ShouldBeOfType<WorkspaceLockReleased>();
 
-        FolderState applied = ready.Apply([released], streamName);
-
-        applied.ShouldBe(ready);
+        Should.Throw<InvalidOperationException>(() => ready.Apply([released], streamName));
     }
 
     public static IEnumerable<object[]> NonReleaseableStates()

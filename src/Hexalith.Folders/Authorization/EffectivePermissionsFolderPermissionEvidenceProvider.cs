@@ -1,4 +1,5 @@
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Aggregates.Folder;
 
 namespace Hexalith.Folders.Authorization;
 
@@ -18,6 +19,12 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
             || string.IsNullOrWhiteSpace(request.OperationScope))
         {
             return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Malformed, null);
+        }
+
+        if (request.OperationScope == FolderStreamName.ReservedOrganizationPermissionScope
+            && request.ActionToken is not ("create_folder" or "manage_organization_acl" or "configure_provider_binding"))
+        {
+            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.NotFoundSafe, null);
         }
 
         EffectivePermissionsReadModelResult result;

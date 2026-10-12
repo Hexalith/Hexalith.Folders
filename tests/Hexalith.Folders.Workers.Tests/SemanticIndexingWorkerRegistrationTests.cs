@@ -9,6 +9,7 @@ using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Workers;
 using Hexalith.Folders.Workers.SemanticIndexing;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -122,17 +123,12 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     [Fact]
     public void AddFoldersTenantEventWorkersShouldIncludeSemanticIndexingRegistration()
     {
-        ServiceCollection services = CreateServiceCollection();
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Services.AddFoldersTenantEventWorkers();
 
-        services.AddFoldersTenantEventWorkers();
-
-        using ServiceProvider provider = services.BuildServiceProvider(new ServiceProviderOptions
-        {
-            ValidateOnBuild = true,
-            ValidateScopes = true,
-        });
-        provider.GetRequiredService<ISemanticIndexingPort>().ShouldNotBeNull();
-        provider.GetRequiredService<DaprClient>().ShouldNotBeNull();
+        using WebApplication app = builder.Build();
+        app.Services.GetRequiredService<ISemanticIndexingPort>().ShouldNotBeNull();
+        app.Services.GetRequiredService<DaprClient>().ShouldNotBeNull();
     }
 
     [Fact]

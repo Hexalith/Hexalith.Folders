@@ -10,16 +10,15 @@ namespace Hexalith.Folders.Queries.FolderAccess;
 
 /// <summary>
 /// Lists the metadata-only folder ACL entries for a folder. Authorization-before-read, tenant-scoped,
-/// safe denial. ACL entries are sourced from the authoritative folder state (see story 8.1 DD2): there is
-/// no separate ACL projection store yet, so the in-memory MVP reads <see cref="FolderState.AccessOverrides"/>
-/// through <see cref="IFolderRepository"/>. Only overrides whose action maps to a REST permission level are
-/// surfaced.
+/// safe denial. Production reads the durable EventStore folder permission view after authorization.
+/// Only overrides whose action maps to a REST permission level are surfaced.
 /// </summary>
 public sealed class ListFolderAclEntriesQueryHandler(
     LayeredFolderAuthorizationService authorizationService,
     IFolderRepository repository,
     IUtcClock clock,
-    ILogger<ListFolderAclEntriesQueryHandler>? logger = null)
+    ILogger<ListFolderAclEntriesQueryHandler>? logger = null,
+    IFolderAclReadModel? folderAclReadModel = null)
 {
     /// <summary>Action token authorizing the ACL read (folder metadata read).</summary>
     public const string ActionToken = "read_metadata";
@@ -32,6 +31,7 @@ public sealed class ListFolderAclEntriesQueryHandler(
     private readonly IFolderRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     private readonly IUtcClock _clock = clock ?? throw new ArgumentNullException(nameof(clock));
     private readonly ILogger<ListFolderAclEntriesQueryHandler> _logger = logger ?? NullLogger<ListFolderAclEntriesQueryHandler>.Instance;
+    private readonly IFolderAclReadModel? _folderAclReadModel = folderAclReadModel;
 
     /// <summary>
     /// Handles the query.
@@ -53,7 +53,8 @@ public sealed class ListFolderAclEntriesQueryHandler(
             return Safe(ListFolderAclEntriesQueryResultCode.AuthenticationRequired, deniedFreshness, query, null);
         }
 
-        if (string.IsNullOrWhiteSpace(query.FolderId))
+        if (string.IsNullOrWhiteSpace(query.FolderId)
+            || query.FolderId == FolderStreamName.ReservedOrganizationPermissionScope)
         {
             return Safe(ListFolderAclEntriesQueryResultCode.NotFoundSafe, deniedFreshness, query, null);
         }
@@ -79,10 +80,19 @@ public sealed class ListFolderAclEntriesQueryHandler(
         }
 
         LayeredFolderAuthorizationAllowedContext allowed = authorization.AllowedContext;
-        FolderState state;
+        FolderState? state = null;
+        FolderPermissionProjection? projection = null;
         try
         {
-            state = _repository.Load(_repository.CreateStreamName(allowed.AuthoritativeTenantId, query.FolderId));
+            if (_folderAclReadModel is not null)
+            {
+                projection = await _folderAclReadModel.GetCurrentAsync(allowed.AuthoritativeTenantId,
+                    query.FolderId, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                state = _repository.Load(_repository.CreateStreamName(allowed.AuthoritativeTenantId, query.FolderId));
+            }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -97,25 +107,32 @@ public sealed class ListFolderAclEntriesQueryHandler(
                 null);
         }
 
-        if (!state.IsCreated)
+        if (projection is not null ? !projection.IsCreated : state is null || !state.IsCreated)
         {
             return Safe(ListFolderAclEntriesQueryResultCode.NotFoundSafe, deniedFreshness, query, null);
         }
 
         List<FolderAclEntryView> entries = [];
-        foreach (KeyValuePair<FolderAccessEntryKey, FolderAccessOverride> entry in state.AccessOverrides)
+        IEnumerable<(FolderAccessPrincipalKind Kind, string PrincipalId, string Action, bool IsGranted)> overrides =
+            projection is not null
+                ? projection.Overrides.Select(static item => (item.PrincipalKind, item.PrincipalId,
+                    item.Action, item.IsGranted))
+                : state!.AccessOverrides.Select(static item => (item.Key.PrincipalKind,
+                    item.Key.PrincipalId, item.Key.Action, item.Value.IsGranted));
+        foreach ((FolderAccessPrincipalKind kind, string principalId, string action, bool isGranted) in overrides)
         {
-            string? permissionLevel = FolderAclContract.ActionToPermissionLevel(entry.Key.Action);
+            string? permissionLevel = FolderAclContract.ActionToPermissionLevel(action);
             if (permissionLevel is null)
             {
                 continue;
             }
 
             entries.Add(new FolderAclEntryView(
-                FolderAclContract.DeriveAclEntryId(entry.Key.PrincipalKindToken, entry.Key.PrincipalId, permissionLevel),
-                FolderAclContract.FormatSubjectRef(entry.Key.PrincipalKind, entry.Key.PrincipalId),
+                FolderAclContract.DeriveAclEntryId(new FolderAccessEntryKey(allowed.AuthoritativeTenantId,
+                    query.FolderId, kind, principalId, action).PrincipalKindToken, principalId, permissionLevel),
+                FolderAclContract.FormatSubjectRef(kind, principalId),
                 permissionLevel,
-                entry.Value.IsGranted ? "grant" : "revoke"));
+                isGranted ? "grant" : "revoke"));
         }
 
         IReadOnlyList<FolderAclEntryView> ordered = [.. entries.OrderBy(static e => e.AclEntryId, StringComparer.Ordinal)];

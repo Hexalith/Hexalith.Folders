@@ -131,6 +131,26 @@ public sealed class FoldersDomainServiceRequestHandler(
             actorSequenceScope = OrganizationActorSequenceScope.Enter(request.Command.TenantId,
                 request.Command.AggregateId, actorState.CurrentSequence);
         }
+        else if (mapping.ScopeKind == FolderCommandOperationScopeKind.FolderAggregate)
+        {
+            DomainServiceCurrentState? actorState;
+            try
+            {
+                actorState = DomainStateReplay.SnapshotAware(request.CurrentState);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
+            }
+
+            if (actorState is not null && actorState.CurrentSequence < 0)
+            {
+                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
+            }
+
+            actorSequenceScope = FolderActorSequenceScope.Enter(request.Command.TenantId,
+                request.Command.AggregateId, actorState?.CurrentSequence ?? 0);
+        }
 
         using IDisposable? verifiedActorSequenceScope = actorSequenceScope;
         LayeredFolderAuthorizationResult authorization = initializingAcl

@@ -12,6 +12,8 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
     private const string StoreName = "statestore";
     private const string Scope = "organization_baseline";
     private const string KeyPrefix = "projection:folders:organization-permissions:";
+    private const int ReplayWindow = 256;
+    private static readonly TimeSpan ProjectedClockSkew = TimeSpan.FromMinutes(2);
 
     public async Task<EffectivePermissionsReadModelResult> GetAsync(
         EffectivePermissionsReadModelRequest request, CancellationToken cancellationToken = default)
@@ -38,6 +40,27 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
         OrganizationPermissionProjection? projection = entry.Value;
         if (projection is null)
         {
+            long emptyHead;
+            try
+            {
+                emptyHead = await sequenceReader.GetCurrentSequenceAsync(request.ManagedTenantId,
+                    request.ManagedTenantId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                return EffectivePermissionsReadModelResult.Unavailable("organization_stream_unavailable", now);
+            }
+
+            if (emptyHead > 0)
+            {
+                EffectivePermissionsFreshness missingFreshness = new(request.ReadConsistency, now,
+                    "0", Stale: true, ReasonCode: "organization_projection_lagging");
+                return EffectivePermissionsReadModelResult.Stale(new EffectivePermissionsReadModelSnapshot(
+                    request.ManagedTenantId, request.ManagedTenantId, Scope,
+                    EffectivePermissionsFolderLifecycleState.Stale, [], missingFreshness,
+                    RevocationFreshnessEstablished: false, TaskScope: null));
+            }
+
             return EffectivePermissionsReadModelResult.NotFound(
                 EffectivePermissionsFreshness.SafeUnavailable(now, "organization_projection_missing"));
         }
@@ -50,14 +73,9 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             || projection.LastSequence < 1
             || projection.Grants is null
             || projection.ProcessedMessages is null
-            || projection.ProjectedAt > now)
+            || projection.ProjectedAt > now + ProjectedClockSkew)
         {
             return EffectivePermissionsReadModelResult.Malformed(freshness);
-        }
-
-        if (!projection.IsInitialized)
-        {
-            return EffectivePermissionsReadModelResult.NotFound(freshness);
         }
 
         long authoritativeSequence;
@@ -76,6 +94,17 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             return EffectivePermissionsReadModelResult.Malformed(freshness);
         }
 
+        freshness = freshness with { Stale = authoritativeSequence != projection.LastSequence };
+        if (!projection.IsInitialized)
+        {
+            return freshness.Stale
+                ? EffectivePermissionsReadModelResult.Stale(new EffectivePermissionsReadModelSnapshot(
+                    request.ManagedTenantId, projection.OrganizationId, Scope,
+                    EffectivePermissionsFolderLifecycleState.Stale, [], freshness,
+                    RevocationFreshnessEstablished: false, TaskScope: null))
+                : EffectivePermissionsReadModelResult.NotFound(freshness);
+        }
+
         EffectivePermissionEvidenceRow[] rows = projection.Grants.Select(grant =>
             new EffectivePermissionEvidenceRow(EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
                 ToPrincipal(grant.PrincipalKind, grant.PrincipalId), grant.Action,
@@ -89,17 +118,20 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
     }
 
     public async Task ApplyAsync(string tenantId, string organizationId, string messageId,
-        long sequence, IOrganizationAclEvent @event, CancellationToken cancellationToken = default)
+        long sequence, IOrganizationAclEvent @event, CancellationToken cancellationToken = default,
+        string? payloadDigest = null)
         => await ApplyCoreAsync(tenantId, organizationId, messageId, sequence, @event,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken, payloadDigest).ConfigureAwait(false);
 
     public async Task ApplyNonPermissionEventAsync(string tenantId, string organizationId,
-        string messageId, long sequence, CancellationToken cancellationToken = default)
+        string messageId, long sequence, CancellationToken cancellationToken = default,
+        string? payloadDigest = null)
         => await ApplyCoreAsync(tenantId, organizationId, messageId, sequence, null,
-            cancellationToken).ConfigureAwait(false);
+            cancellationToken, payloadDigest).ConfigureAwait(false);
 
     private async Task ApplyCoreAsync(string tenantId, string organizationId, string messageId,
-        long sequence, IOrganizationAclEvent? @event, CancellationToken cancellationToken)
+        long sequence, IOrganizationAclEvent? @event, CancellationToken cancellationToken,
+        string? payloadDigest)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(organizationId);
@@ -124,13 +156,22 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             throw new InvalidOperationException("Organization ACL projection has conflicting identity.");
         }
 
-        if (prior?.ProcessedMessages.ContainsKey(messageId) == true)
+        string digest = payloadDigest ?? (@event is null ? "non-permission" :
+            Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType()))));
+        FolderProjectionMessage? replay = prior?.RecentMessages?.FirstOrDefault(item => item.Sequence == sequence);
+        if (replay is not null)
         {
-            if (prior.ProcessedMessages[messageId] != sequence)
+            if (replay.MessageId != messageId || replay.PayloadDigest != digest)
             {
                 throw new InvalidOperationException("Organization ACL projection has conflicting replay.");
             }
 
+            return;
+        }
+
+        if (prior is not null && sequence <= prior.LastSequence - ReplayWindow)
+        {
             return;
         }
 
@@ -161,12 +202,29 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
                 throw new InvalidOperationException("Organization ACL projection event order is invalid.");
         }
 
-        Dictionary<string, long> messages = prior is null
-            ? new(StringComparer.Ordinal)
+        if (prior?.ProcessedMessages.ContainsKey(messageId) == true)
+        {
+            throw new InvalidOperationException("Organization ACL projection has conflicting message identity.");
+        }
+
+        Dictionary<string, long> messages = prior is null ? new(StringComparer.Ordinal)
             : new(prior.ProcessedMessages, StringComparer.Ordinal);
         messages.Add(messageId, sequence);
+        foreach (string old in messages.Where(pair => pair.Value <= sequence - ReplayWindow)
+            .Select(static pair => pair.Key).ToArray())
+        {
+            messages.Remove(old);
+        }
+
+        List<FolderProjectionMessage> recent = [.. prior?.RecentMessages ?? []];
+        recent.Add(new FolderProjectionMessage(sequence, messageId, digest));
+        if (recent.Count > ReplayWindow)
+        {
+            recent.RemoveRange(0, recent.Count - ReplayWindow);
+        }
+
         OrganizationPermissionProjection next = new(tenantId, organizationId, sequence, initialized,
-            clock.UtcNow, grants, messages);
+            clock.UtcNow, grants, messages, recent);
         if (!await store.TrySaveAsync(StoreName, key, next, current.ETag ?? string.Empty,
             cancellationToken).ConfigureAwait(false))
         {
@@ -187,7 +245,8 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
 
 public sealed record OrganizationPermissionProjection(string TenantId, string OrganizationId,
     long LastSequence, bool IsInitialized, DateTimeOffset ProjectedAt, IReadOnlyList<OrganizationPermissionGrant> Grants,
-    IReadOnlyDictionary<string, long> ProcessedMessages);
+    IReadOnlyDictionary<string, long> ProcessedMessages,
+    IReadOnlyList<FolderProjectionMessage>? RecentMessages = null);
 
 public sealed record OrganizationPermissionGrant(OrganizationAclPrincipalKind PrincipalKind,
     string PrincipalId, string Action);

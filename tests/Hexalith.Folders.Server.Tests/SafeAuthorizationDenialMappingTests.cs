@@ -1,5 +1,6 @@
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Server;
+using Hexalith.Folders.Server.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Shouldly;
@@ -45,7 +46,8 @@ public sealed class SafeAuthorizationDenialMappingTests
 
         IResult mapped = FolderAuthorizationDenialMapper.ToHttpResult(result);
 
-        ProblemHttpResult problem = mapped.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = mapped.ShouldBeOfType<AuthorizationDenialTransportResult>()
+            .InnerResult.ShouldBeOfType<ProblemHttpResult>();
         problem.StatusCode.ShouldBe(expectedStatusCode);
         problem.ProblemDetails.Extensions["category"].ShouldBe(expectedCategory);
         problem.ProblemDetails.Extensions["code"].ShouldBe(outcomeCode);
@@ -74,7 +76,8 @@ public sealed class SafeAuthorizationDenialMappingTests
             TimingBucket: "not_recorded",
             DecidedAt: Now));
 
-        ProblemHttpResult problem = FolderAuthorizationDenialMapper.ToHttpResult(result).ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = FolderAuthorizationDenialMapper.ToHttpResult(result)
+            .ShouldBeOfType<AuthorizationDenialTransportResult>().InnerResult.ShouldBeOfType<ProblemHttpResult>();
         string body = string.Join("|", problem.ProblemDetails.Extensions.Select(static pair => $"{pair.Key}:{pair.Value}"));
 
         body.ShouldNotContain("folder-secret-watermark", Case.Sensitive);

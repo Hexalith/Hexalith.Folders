@@ -207,9 +207,6 @@ internal sealed class RoutingModeTestHost : IAsyncDisposable
         builder.Services.RemoveAll<IFolderLifecycleStatusReadModel>();
         builder.Services.AddSingleton<IFolderLifecycleStatusReadModel>(lifecycle);
 
-        // The in-memory repository projects into the concrete in-memory lifecycle read model, not the counter.
-        builder.Services.RemoveAll<IFolderRepository>();
-        builder.Services.AddSingleton<IFolderRepository>(new InMemoryFolderRepository(lifecycleReadModel, timeProvider: timeProvider));
         builder.Services.RemoveAll<IPd10AuthorizationAuditSink>();
         builder.Services.AddSingleton<IPd10AuthorizationAuditSink>(auditSink);
         builder.Services.RemoveAll<IUtcClock>();

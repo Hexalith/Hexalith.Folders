@@ -3,6 +3,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
@@ -20,6 +21,36 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class FoldersDomainServiceRequestHandlerTests
 {
     private static readonly DateTimeOffset Now = new(2026, 5, 18, 12, 0, 0, TimeSpan.Zero);
+
+    [Fact]
+    public async Task NewProviderBindingUsesOrganizationGrantDespiteItsDedicatedActorId()
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true,
+            principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CapturingFolderPermissionEvidenceProvider permission = new();
+        CountingDomainProcessor processor = new();
+        FakeTenantContextAccessor tenant = new("tenant-a", "user-a");
+        FoldersDomainServiceRequestHandler handler = new([processor], CreateAuthorizer(store, permission),
+            tenant, new StubClaimTransformEvidenceAccessor("tenant-a", "user-a"),
+            new FolderCommandActionTokenMapper(), new ScopedLayeredFolderAuthorizationResultAccessor());
+        DomainServiceRequest original = CreateRequest("tenant-a", "user-a");
+        DomainServiceRequest binding = original with
+        {
+            Command = original.Command with
+            {
+                AggregateId = ProviderBindingActorId.Create("binding-a"),
+                CommandType = FoldersServerModule.ConfigureProviderBindingCommandType,
+            },
+        };
+
+        (await handler.ProcessAsync(binding, TestContext.Current.CancellationToken))
+            .ShouldBeOfType<Ok<DomainServiceWireResult>>();
+        processor.ProcessCalls.ShouldBe(1);
+        permission.LastRequest.ShouldNotBeNull();
+        permission.LastRequest.OperationScope.ShouldBe("organization_baseline");
+        permission.LastRequest.ActionToken.ShouldBe("configure_provider_binding");
+    }
 
     [Fact]
     public async Task SafeDenialTransportMarksOnlyTheInvocationResponse()
@@ -407,5 +438,17 @@ public sealed class FoldersDomainServiceRequestHandlerTests
             FolderPermissionEvidenceRequest request,
             CancellationToken cancellationToken = default)
             => Task.FromResult(result);
+    }
+
+    private sealed class CapturingFolderPermissionEvidenceProvider : IFolderPermissionEvidenceProvider
+    {
+        public FolderPermissionEvidenceRequest? LastRequest { get; private set; }
+
+        public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
+            FolderPermissionEvidenceRequest request, CancellationToken cancellationToken = default)
+        {
+            LastRequest = request;
+            return Task.FromResult(FolderPermissionEvidenceResult.Allowed("organization_watermark_v1"));
+        }
     }
 }

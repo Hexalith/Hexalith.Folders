@@ -4,6 +4,7 @@ using System.Text.Json;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.Server;
 
@@ -29,11 +30,22 @@ public sealed class FolderDomainProjectionHandler : IDomainProjectionHandler
             throw new InvalidOperationException("Invalid Folders projection request.");
         }
 
-        ProjectionEventDto? firstDomainEvent = request.Events.FirstOrDefault(static item =>
-            !FolderEventReplay.IsKnownRejection(item.EventTypeName));
-        if (firstDomainEvent is not null
-            && firstDomainEvent.EventTypeName.StartsWith(
-                "Hexalith.Folders.Aggregates.Organization.", StringComparison.Ordinal))
+        ProjectionEventDto[] events = [.. request.Events];
+        bool organization = events.Length == 0
+            ? string.Equals(request.AggregateId, request.TenantId, StringComparison.Ordinal)
+                || ProviderBindingActorId.IsReserved(request.AggregateId)
+            : FolderEventReplay.IsOrganizationProjectionEvent(events[0]);
+        if (events.Any(item =>
+                FolderEventReplay.IsOrganizationProjectionEvent(item) != organization)
+            || !organization && (string.Equals(request.AggregateId, request.TenantId, StringComparison.Ordinal)
+                || ProviderBindingActorId.IsReserved(request.AggregateId))
+            || organization && !string.Equals(request.AggregateId, request.TenantId, StringComparison.Ordinal)
+                && !ProviderBindingActorId.IsReserved(request.AggregateId))
+        {
+            throw new InvalidOperationException("Mixed or reserved Folders projection stream.");
+        }
+
+        if (organization)
         {
             return new ProjectionResponse("organization-provider-binding",
                 JsonSerializer.SerializeToElement(FolderEventReplay.FoldOrganization(request)));

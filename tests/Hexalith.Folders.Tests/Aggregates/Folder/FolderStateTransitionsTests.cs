@@ -245,7 +245,7 @@ public sealed class FolderStateTransitionsTests
     }
 
     [Fact]
-    public void ReplayShouldNotMutateStateForInvalidWorkspaceLifecycleEvents()
+    public void ReplayShouldFailClosedForInvalidWorkspaceLifecycleEvents()
     {
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderState ready = CreatedState()
@@ -253,11 +253,9 @@ public sealed class FolderStateTransitionsTests
             .Apply([RepositoryBound()], streamName)
             .Apply([LifecycleEvent(FolderWorkspaceLifecycleEvent.WorkspacePrepared, "idempotency-workspace-prepared")], streamName);
 
-        FolderState rejected = ready.Apply(
+        Should.Throw<InvalidOperationException>(() => ready.Apply(
             [LifecycleEvent(FolderWorkspaceLifecycleEvent.CommitSucceeded, "idempotency-invalid-commit")],
-            streamName);
-
-        rejected.ShouldBe(ready);
+            streamName));
     }
 
     [Fact]

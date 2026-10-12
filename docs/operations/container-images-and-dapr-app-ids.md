@@ -68,4 +68,8 @@ Without it, folder events publish to a per-tenant topic the worker never subscri
 
 `deploy/containers/production/service-images.yaml` binds each service deployment to its stable image repository and Dapr app ID. `deploy/dapr/production/sidecar-config-bindings.yaml` proves sidecar injection with exact `dapr.io/app-id` and `dapr.io/config` annotations, and records the `eventstore` folder-events publish-topic override (`EventStore__Publisher__TopicOverrides__folders`).
 
+The same sanitized sidecar bindings require one Kubernetes app-channel secret per callback host. The `folders` deployment uses `hexalith-folders-server-app-token`; `folders-workers` uses `hexalith-folders-workers-app-token`. Each sidecar reads its secret through `dapr.io/app-token-secret`, and the matching application container reads the `token` key as `APP_API_TOKEN`. Provision both secrets through the deployment secret manager before rollout; the manifest contains references only.
+
+EventStore and Folders Server also read the same `signing-key` value from the `hexalith-human-authority-receipt-signing-key` secret as `Authentication__HumanAuthorityReceipt__SigningKey`. Provision this shared secret through the deployment secret manager; keep its material outside source.
+
 Do not add registry credentials, pull secrets, tenant data, provider payloads, endpoint inventories, file contents, or generated diffs to image labels, reports, manifests, logs, or docs examples.

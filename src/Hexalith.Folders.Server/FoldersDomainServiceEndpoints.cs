@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
@@ -2082,7 +2083,7 @@ public static class FoldersDomainServiceEndpoints
                     MessageId: GenerateCanonicalMessageId(),
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
-                    AggregateId: providerBindingRef,
+                    AggregateId: ProviderBindingActorId.Create(providerBindingRef),
                     CommandType: FoldersServerModule.ConfigureProviderBindingCommandType,
                     Payload: JsonSerializer.SerializeToElement(gatewayPayload, GatewayPayloadJsonOptions),
                     CorrelationId: correlationId,
@@ -3397,6 +3398,8 @@ public static class FoldersDomainServiceEndpoints
     private static bool IsValidRepositoryBackedRequest(CreateRepositoryBackedFolderHttpRequest? body)
         => body is not null
         && FolderCanonicalSegmentIdentifier.IsValid(body.FolderId)
+        && !string.Equals(body.FolderId, FolderStreamName.ReservedOrganizationPermissionScope, StringComparison.Ordinal)
+        && !ProviderBindingActorId.IsReserved(body.FolderId)
         && FolderCanonicalSegmentIdentifier.IsValid(body.ProviderBindingRef)
         && FolderCanonicalSegmentIdentifier.IsValid(body.RepositoryProfileRef)
         && IsValidFolderMetadata(body.FolderMetadata)

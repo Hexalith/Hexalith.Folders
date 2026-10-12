@@ -57,7 +57,7 @@ internal sealed class ActorFoldedOrganizationProviderBindingRepository(FolderEve
         {
             if (!string.Equals(item.ManagedTenantId, _tenantId, StringComparison.Ordinal)
                 || item is not ProviderBindingConfigured binding
-                || !string.Equals(binding.ProviderBindingRef, _aggregateId, StringComparison.Ordinal))
+                || !string.Equals(ProviderBindingActorId.Create(binding.ProviderBindingRef), _aggregateId, StringComparison.Ordinal))
             {
                 throw new InvalidOperationException("Organization event targets another actor stream.");
             }
@@ -114,7 +114,10 @@ internal sealed class ActorFoldedOrganizationProviderBindingRepository(FolderEve
     {
         ArgumentNullException.ThrowIfNull(streamName);
         if (_state is null || _tenantId is null
-            || !streamName.Value.StartsWith($"{_tenantId}:organizations:", StringComparison.Ordinal))
+            || !streamName.Value.StartsWith($"{_tenantId}:organizations:", StringComparison.Ordinal)
+            || !string.Equals(streamName.Value, CreateStreamName(_tenantId,
+                _aggregateId == _tenantId ? _tenantId : GetBindingReference(streamName)).Value,
+                StringComparison.Ordinal))
         {
             throw new InvalidOperationException("Organization read is outside the authorized actor stream.");
         }
@@ -122,11 +125,22 @@ internal sealed class ActorFoldedOrganizationProviderBindingRepository(FolderEve
         OrganizationProviderBinding? existing = _state.ProviderBindings.Values.FirstOrDefault();
         if (existing is not null
             && !string.Equals(streamName.Value,
-                OrganizationStreamName.Create(_tenantId, existing.OrganizationId).Value,
+                OrganizationStreamName.Create(_tenantId, existing.ProviderBindingRef).Value,
                 StringComparison.Ordinal))
         {
             throw new InvalidOperationException("Organization read targets another actor stream.");
         }
+    }
+
+    private string GetBindingReference(OrganizationStreamName streamName)
+    {
+        string reference = streamName.Value[($"{_tenantId}:organizations:").Length..];
+        if (!string.Equals(ProviderBindingActorId.Create(reference), _aggregateId, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Organization read targets another actor stream.");
+        }
+
+        return reference;
     }
 
     private void RequireAclStream(OrganizationStreamName streamName)

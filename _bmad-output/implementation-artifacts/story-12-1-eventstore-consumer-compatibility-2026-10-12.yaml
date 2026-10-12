@@ -1,0 +1,44 @@
+record_id: FOLDERS-ES-CONSUMER-PIN-2026-10-12
+consumer: Hexalith.Folders Story 12.1
+observed_on: '2026-10-12'
+source_repository: references/Hexalith.EventStore
+source_commit: 851984f2362ba0b00972da4d03dab8be7e5ef4cb
+source_gitlink: 851984f2362ba0b00972da4d03dab8be7e5ef4cb
+supersedes_no_historical_acceptance: true
+historical_capability_acceptance:
+  path: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml
+  sha256: bf7b770cb0f04b26c6c572042618df8a804990b2cbb6e411f6947819bd3c78bd
+  accepted_source_commit: ead4949d30b37d3a976f5c9197789a91701f1a72
+compatibility_scope:
+  - Full CLR EventTypeName and absent-or-1 PayloadVersion replay remain consumable.
+  - Domain projection dispatch and stored wire round trip remain compatible.
+  - Receipt-enabled command processing retains the human authority receipt codec.
+  - The Dapr domain-service invocation serializes the human authority receipt with its command.
+  - Stream read preserves stored PayloadVersion and verifies the logical payload digest before returning bytes for permission-view recovery.
+verification:
+  - command: dotnet build tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; zero warnings and errors
+  - command: ./tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests -class Hexalith.EventStore.Client.Tests.Events.EventPayloadEvolutionRegistryTests
+    working_directory: references/Hexalith.EventStore
+    result: pass; 35 tests
+  - command: dotnet build tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; zero warnings and errors
+  - command: ./tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests -class Hexalith.EventStore.DomainService.Tests.VersionedProjectionDispatchTests
+    working_directory: references/Hexalith.EventStore
+    result: pass; 5 tests
+  - command: dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; zero warnings and errors
+  - command: ./tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests -class Hexalith.EventStore.Server.Tests.DomainServices.VersionedWireRoundTripTests -class Hexalith.EventStore.Server.Tests.Security.HumanAuthorityReceiptCodecTests -class Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests
+    working_directory: references/Hexalith.EventStore
+    result: pass; 36 tests, including versioned and tampered stream-read cases
+  - command: ./tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests -class Hexalith.EventStore.Server.Tests.DomainServices.DaprDomainServiceInvokerTests
+    working_directory: references/Hexalith.EventStore
+    result: pass; 45 tests, including receipt and command serialization
+  - command: dotnet build Hexalith.Folders.slnx -c Debug -m:1 -v:q
+    working_directory: project-root
+    result: pass; zero warnings and errors
+limitations:
+  - This supplement verifies source and SDK compatibility at the current gitlink; it does not claim deployed durability or rollout.

@@ -1,12 +1,14 @@
 using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.Aggregates.Folder;
 
 public sealed partial record FolderStreamName(string Value)
 {
     internal const int MaxSegmentLength = 256;
+    public const string ReservedOrganizationPermissionScope = "organization_baseline";
 
     public static FolderStreamName Create(string managedTenantId, string folderId)
     {
@@ -39,13 +41,16 @@ public sealed partial record FolderStreamName(string Value)
             return false;
         }
 
-        if (!IsValidSegment(managedTenantId))
+        if (!IsValidSegment(managedTenantId) || ProviderBindingActorId.IsReserved(managedTenantId))
         {
             code = FolderResultCode.InvalidTenant;
             return false;
         }
 
-        if (!IsValidSegment(folderId))
+        if (!IsValidSegment(folderId)
+            || string.Equals(folderId, managedTenantId, StringComparison.Ordinal)
+            || ProviderBindingActorId.IsReserved(folderId)
+            || string.Equals(folderId, ReservedOrganizationPermissionScope, StringComparison.Ordinal))
         {
             code = FolderResultCode.InvalidFolderId;
             return false;

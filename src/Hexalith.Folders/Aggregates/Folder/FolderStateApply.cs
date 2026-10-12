@@ -22,6 +22,13 @@ public static class FolderStateApply
                 $"Foreign folder event in Apply: result code {FolderResultCode.TenantMismatch}.");
         }
 
+        if (folderEvent is FolderCreated && state.IsCreated
+            || folderEvent is not FolderCreated && !state.IsCreated
+            || folderEvent is FolderArchived && state.LifecycleState == FolderLifecycleState.Archived)
+        {
+            throw new InvalidOperationException("Folder event order or organization identity is invalid.");
+        }
+
         return folderEvent switch
         {
             FolderCreated created => state with
@@ -145,7 +152,7 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEvent.RepositoryBindingRequested);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, requested, transition, null, requested.RepositoryBindingId) with
@@ -178,7 +185,7 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEvent.RepositoryBindingRequested);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, requested, transition, null, requested.RepositoryBindingId) with
@@ -209,7 +216,7 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEvent.RepositoryBound);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, bound, transition, state.WorkspaceId, bound.RepositoryBindingId) with
@@ -235,7 +242,7 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEvent.RepositoryBindingFailed);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, failed, transition, state.WorkspaceId, failed.RepositoryBindingId) with
@@ -261,7 +268,7 @@ public static class FolderStateApply
             FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, unknown, transition, state.WorkspaceId, unknown.RepositoryBindingId) with
@@ -292,7 +299,7 @@ public static class FolderStateApply
             recorded.DirtyResolution);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
@@ -309,7 +316,7 @@ public static class FolderStateApply
             acquired.WorkspaceLifecycleEvent);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, acquired, transition, acquired.WorkspaceId, acquired.LockId) with
@@ -333,7 +340,7 @@ public static class FolderStateApply
             released.WorkspaceLifecycleEvent);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, released, transition, released.WorkspaceId, released.LockId) with
@@ -357,7 +364,7 @@ public static class FolderStateApply
             accepted.WorkspaceLifecycleEvent);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, accepted, transition, accepted.WorkspaceId, accepted.OperationId) with
@@ -373,7 +380,7 @@ public static class FolderStateApply
             succeeded.WorkspaceLifecycleEvent);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, succeeded, transition, succeeded.WorkspaceId, succeeded.OperationId) with
@@ -398,7 +405,7 @@ public static class FolderStateApply
             failed.WorkspaceLifecycleEvent);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, failed, transition, failed.WorkspaceId, failed.OperationId) with
@@ -423,7 +430,7 @@ public static class FolderStateApply
             unknown.WorkspaceLifecycleEvent);
         if (!transition.IsAccepted)
         {
-            return state;
+            throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
         return WithWorkspaceTransition(state, unknown, transition, unknown.WorkspaceId, unknown.OperationId) with

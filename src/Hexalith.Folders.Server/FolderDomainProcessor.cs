@@ -282,7 +282,8 @@ public sealed partial class FolderDomainProcessor(
         OrganizationStreamName stream = _actorOrganizationAclRepository.CreateStreamName(
             allowed.AuthoritativeTenantId, envelope.AggregateId);
         OrganizationState state = _actorOrganizationAclRepository.Load(stream);
-        if (initializing && state.IsInitialized)
+        if (initializing && state.IsInitialized
+            && !state.IdempotencyFingerprints.ContainsKey(envelope.MessageId))
         {
             return Rejection(envelope, FolderResultCode.DuplicateEntry, null);
         }
@@ -349,6 +350,8 @@ public sealed partial class FolderDomainProcessor(
             || payload.FolderMetadata is null
             || string.IsNullOrWhiteSpace(payload.FolderId)
             || string.Equals(payload.FolderId, envelope.TenantId, StringComparison.Ordinal)
+            || ProviderBindingActorId.IsReserved(payload.FolderId)
+            || string.Equals(payload.FolderId, FolderStreamName.ReservedOrganizationPermissionScope, StringComparison.Ordinal)
             || string.IsNullOrWhiteSpace(payload.FolderMetadata.DisplayName)
             || !string.Equals(payload.FolderId, envelope.AggregateId, StringComparison.Ordinal))
         {
@@ -498,7 +501,7 @@ public sealed partial class FolderDomainProcessor(
             || string.IsNullOrWhiteSpace(payload.ProviderBindingRef)
             || string.IsNullOrWhiteSpace(payload.ProviderFamilyRef)
             || string.IsNullOrWhiteSpace(payload.NonSecretCredentialReference)
-            || !string.Equals(payload.ProviderBindingRef, envelope.AggregateId, StringComparison.Ordinal))
+            || !string.Equals(ProviderBindingActorId.Create(payload.ProviderBindingRef), envelope.AggregateId, StringComparison.Ordinal))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);
         }
@@ -760,6 +763,9 @@ public sealed partial class FolderDomainProcessor(
             || payload.FolderMetadata is null
             || payload.BranchRefPolicy is null
             || string.IsNullOrWhiteSpace(payload.FolderId)
+            || string.Equals(payload.FolderId, envelope.TenantId, StringComparison.Ordinal)
+            || ProviderBindingActorId.IsReserved(payload.FolderId)
+            || string.Equals(payload.FolderId, FolderStreamName.ReservedOrganizationPermissionScope, StringComparison.Ordinal)
             || !string.Equals(payload.FolderId, envelope.AggregateId, StringComparison.Ordinal))
         {
             return Rejection(envelope, FolderResultCode.ValidationFailed, null);

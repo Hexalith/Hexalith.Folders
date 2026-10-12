@@ -1,4 +1,5 @@
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Aggregates.Folder;
 
 namespace Hexalith.Folders.Authorization;
 
@@ -28,6 +29,11 @@ public sealed class EffectivePermissionsQueryHandler(
             || string.IsNullOrWhiteSpace(query.FolderId))
         {
             return SafeResult(EffectivePermissionsResultCode.AuthenticationRequired, null, query, deniedFreshness);
+        }
+
+        if (query.FolderId == FolderStreamName.ReservedOrganizationPermissionScope)
+        {
+            return SafeResult(EffectivePermissionsResultCode.NotFoundSafe, null, query, deniedFreshness);
         }
 
         if (HasClientTenantMismatch(query))

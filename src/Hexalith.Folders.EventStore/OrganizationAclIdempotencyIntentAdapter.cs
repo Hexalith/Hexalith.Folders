@@ -1,7 +1,9 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.DomainService;
+using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.EventStore;
 
@@ -31,13 +33,72 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
             throw new JsonException("Organization ACL canonical intent requires operations.");
         }
 
-        return FoldersCanonicalIntentBuilder.Create(command,
+        if (!string.Equals(command.AggregateId, command.Tenant, StringComparison.Ordinal))
+        {
+            throw new JsonException("Organization ACL intent targets another actor stream.");
+        }
+
+        OrganizationAclOperationIntent intent = operationId == "revoke-organization-acl-principal"
+            ? OrganizationAclOperationIntent.Revoke : OrganizationAclOperationIntent.Grant;
+        List<OrganizationAclOperation> parsed = [];
+        foreach (JsonElement operation in operations.EnumerateArray())
+        {
+            if (operation.ValueKind != JsonValueKind.Object
+                || !operation.TryGetProperty("principalKind", out JsonElement kindValue)
+                || kindValue.ValueKind != JsonValueKind.String
+                || !Enum.TryParse(kindValue.GetString(), ignoreCase: true, out OrganizationAclPrincipalKind kind)
+                || !Enum.IsDefined(kind)
+                || !operation.TryGetProperty("principalId", out JsonElement principalId)
+                || principalId.ValueKind != JsonValueKind.String
+                || !operation.TryGetProperty("action", out JsonElement action)
+                || action.ValueKind != JsonValueKind.String)
+            {
+                throw new JsonException("Organization ACL intent has an invalid operation.");
+            }
+
+            parsed.Add(new OrganizationAclOperation(intent, kind, principalId.GetString()!, action.GetString()!));
+        }
+
+        IOrganizationAclCommand domainCommand = operationId switch
+        {
+            "initialize-organization-acl-baseline" => new InitializeOrganizationAclBaseline(
+                command.Tenant, command.AggregateId, parsed, "correlation", "task", "key", null),
+            "grant-organization-acl-principal" => new GrantOrganizationAclPrincipal(
+                command.Tenant, command.AggregateId, parsed[0].PrincipalKind, parsed[0].PrincipalId,
+                parsed[0].Action, "correlation", "task", "key", null),
+            "revoke-organization-acl-principal" => new RevokeOrganizationAclPrincipal(
+                command.Tenant, command.AggregateId, parsed[0].PrincipalKind, parsed[0].PrincipalId,
+                parsed[0].Action, "correlation", "task", "key", null),
+            _ => throw new JsonException("Unknown organization ACL operation."),
+        };
+        OrganizationAclCommandValidationResult validation = OrganizationAclCommandValidator.Validate(domainCommand);
+        if (!validation.IsAccepted)
+        {
+            throw new JsonException("Organization ACL intent fails domain validation.");
+        }
+
+        JsonObject normalized = JsonNode.Parse(command.Payload)?.AsObject()
+            ?? throw new JsonException("Organization ACL intent must be an object.");
+        normalized["operations"] = new JsonArray(validation.Operations.Select(operation =>
+            (JsonNode?)new JsonObject
+            {
+                ["principalKind"] = operation.PrincipalKind.ToString(),
+                ["principalId"] = operation.PrincipalId,
+                ["action"] = operation.Action,
+            }).ToArray());
+        IdempotencyIntentCommand normalizedCommand = command with
+        {
+            Payload = JsonSerializer.SerializeToUtf8Bytes(normalized),
+        };
+        using JsonDocument normalizedDocument = FoldersCanonicalIntentBuilder.ParsePayload(normalizedCommand);
+
+        return FoldersCanonicalIntentBuilder.Create(normalizedCommand,
             new Dictionary<string, string?>(StringComparer.Ordinal)
             {
-                ["acl_entries"] = FoldersCanonicalIntentBuilder.ReadCanonicalArray(root, "operations"),
+                ["acl_entries"] = FoldersCanonicalIntentBuilder.ReadCanonicalArray(normalizedDocument.RootElement, "operations"),
                 ["effect"] = operationId,
                 ["organization_id"] = command.AggregateId,
-                ["request_schema_version"] = FoldersCanonicalIntentBuilder.ReadString(root, "requestSchemaVersion"),
+                ["request_schema_version"] = FoldersCanonicalIntentBuilder.ReadString(normalizedDocument.RootElement, "requestSchemaVersion"),
             });
     }
 }

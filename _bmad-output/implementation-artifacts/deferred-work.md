@@ -2828,3 +2828,35 @@ archived: 2026-09-18
 - source_spec: `/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/spec-3-12-forgejo-repository-provisioning-binding-and-branch-ref-behavior.md`
   summary: Forgejo commit confirmation compares object ids case-insensitively and does not rewrite them to one canonical hex form.
   evidence: Story 3.13 owns commit confirmation. `ForgejoSmartHttpGitTransport` uses `StringComparison.OrdinalIgnoreCase` for `ObjectSha` and `ExpectedHeadSha`.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: EventStore shared-source projection installation lacks a Production installation-coverage authority registration.
+  evidence: `SharedProjectionSourceRosterActor.InstallAsync` refuses a null `IInstallationCoverageAuthority`; the existing shared-source path is separate from Folders actor `/project`.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: EventStore shared-source writes can leave a zero-event owner when the first append fails.
+  evidence: `SharedProjectionSourceRosterActor.BeginWriteAsync` saves the owner before event append, while shared capture requires a nonempty owner stream; Folders 12.1 does not use that path.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: EventStore shared-source roster retains erased owners against its 10,000-owner cap.
+  evidence: The existing roster increments `OwnerCount` for new owners and has no removal on erasure; Folders actor `/project` does not use it.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: EventStore shared-source capture cannot rebuild an owner stream above sequence 10,000.
+  evidence: The existing capture path caps owner heads at 10,000 while append does not; this carried Loop 3 Blind 12 and does not affect Folders actor `/project`.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: EventStore named-projection activation can be cleared after route catalog refresh fails.
+  evidence: `ProjectionUpdateOrchestrator` ignores false `TryDispatchAsync` before marking activation durable; Folders registers no named projection.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: EventStore named-projection dispatch can clear activation for a blank head message ID without retry work.
+  evidence: `NamedProjectionDispatchCoordinator.TryDispatchCoreAsync` returns true in that branch before scheduling; Folders uses actor `/project`.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Tenant-access events delivered out of order can permanently omit an earlier grant or revoke.
+  evidence: The pre-existing `FolderTenantAccessHandler` discards a previously unseen event whose sequence is at or below its watermark; Story 12.1 changes the projection store, not this ordering rule.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Measure whether the persisted tenant-access projection's unbounded processed-message map can exceed deployed state-store limits.
+  evidence: The pre-existing projection retains every message and the new store serializes the full row per update; backend value limits and realistic tenant-event volume have not been established.

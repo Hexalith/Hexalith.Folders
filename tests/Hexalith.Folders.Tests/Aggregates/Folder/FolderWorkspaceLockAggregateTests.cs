@@ -126,7 +126,7 @@ public sealed class FolderWorkspaceLockAggregateTests
     }
 
     [Fact]
-    public void InvalidWorkspaceLockedReplayShouldLeaveStateUnchanged()
+    public void InvalidWorkspaceLockedReplayShouldFailClosed()
     {
         FolderStreamName streamName = FolderStreamName.Create("tenant-a", "folder-a");
         FolderState locked = LockedState(streamName);
@@ -136,9 +136,7 @@ public sealed class FolderWorkspaceLockAggregateTests
             .ShouldHaveSingleItem()
             .ShouldBeOfType<WorkspaceLockAcquired>();
 
-        FolderState applied = locked.Apply([secondLock], streamName);
-
-        applied.ShouldBe(locked);
+        Should.Throw<InvalidOperationException>(() => locked.Apply([secondLock], streamName));
     }
 
     public static IEnumerable<object[]> InvalidStates()

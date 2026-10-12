@@ -6,6 +6,7 @@ using Hexalith.Folders.Testing;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Authorization;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 
 using Microsoft.AspNetCore.Authorization;
@@ -50,6 +51,12 @@ public sealed class ServerEndpointRegistrationTests
             .ShouldBeOfType<ActorFoldedFolderRepository>();
         scope.ServiceProvider.GetRequiredService<IOrganizationAclRepository>()
             .ShouldBeOfType<ActorFoldedOrganizationProviderBindingRepository>();
+        EventStoreFolderEffectivePermissionsReadModel folderView = scope.ServiceProvider
+            .GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>();
+        scope.ServiceProvider.GetRequiredService<IEffectivePermissionsReadModel>()
+            .ShouldBeSameAs(folderView);
+        scope.ServiceProvider.GetRequiredService<IFolderAclReadModel>()
+            .ShouldBeSameAs(folderView);
 
         AuthorizationPolicy? policy = app.Services.GetRequiredService<IOptions<AuthorizationOptions>>()
             .Value.GetPolicy(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
@@ -141,7 +148,7 @@ public sealed class ServerEndpointRegistrationTests
     }
 
     [Fact]
-    public async Task ProjectRouteShouldReplayEmptyFolderState()
+    public async Task ProjectRouteShouldClassifyEmptyStreamsAndReplayOrganizationBaseline()
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -167,7 +174,25 @@ public sealed class ServerEndpointRegistrationTests
             response.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
             string content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
             content.ShouldContain("\"projectionType\":\"folder-state\"");
-            content.ShouldContain("\"isCreated\":false");
+
+            using StringContent bindingBody = new(
+                System.Text.Json.JsonSerializer.Serialize(new ProjectionRequest("tenant-a", "folders",
+                    ProviderBindingActorId.Create("binding-a"), [])),
+                System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage binding = await client.PostAsync(FoldersServerModule.ProjectRoute,
+                bindingBody, TestContext.Current.CancellationToken);
+            binding.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            (await binding.Content.ReadAsStringAsync(TestContext.Current.CancellationToken))
+                .ShouldContain("\"projectionType\":\"organization-provider-binding\"");
+
+            using StringContent baselineBody = new(
+                System.Text.Json.JsonSerializer.Serialize(new ProjectionRequest("tenant-a", "folders", "tenant-a", [])),
+                System.Text.Encoding.UTF8, "application/json");
+            HttpResponseMessage baseline = await client.PostAsync(FoldersServerModule.ProjectRoute,
+                baselineBody, TestContext.Current.CancellationToken);
+            baseline.StatusCode.ShouldBe(System.Net.HttpStatusCode.OK);
+            string baselineContent = await baseline.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            baselineContent.ShouldContain("\"projectionType\":\"organization-provider-binding\"");
 
             // An unreadable retained event must fail closed at the actual HTTP seam.
             ProjectionEventDto corrupt = new(typeof(FolderCreated).FullName!,

@@ -29,6 +29,69 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             || eventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
             || eventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName;
 
+    /// <summary>Classifies a retained projection event using its registered event or rejection contract.</summary>
+    internal static bool IsOrganizationProjectionEvent(ProjectionEventDto item)
+    {
+        ArgumentNullException.ThrowIfNull(item);
+        if (KnownEvents.TryGetValue(item.EventTypeName, out Type? type))
+        {
+            return typeof(IOrganizationEvent).IsAssignableFrom(type);
+        }
+
+        if (item.EventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
+            || item.EventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName)
+        {
+            return false;
+        }
+
+        if (item.EventTypeName != typeof(FolderCommandRejected).FullName)
+        {
+            throw new InvalidOperationException("Unknown Folders projection event.");
+        }
+
+        ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
+            item.MetadataVersion, item.SerializationFormat, item.Payload);
+        return IsOrganizationRejection(item.EventTypeName, item.Payload);
+    }
+
+    private static bool IsOrganizationRejection(string eventTypeName, byte[] bytes)
+    {
+        if (eventTypeName == typeof(DuplicateWorkspaceLockRejected).FullName
+            || eventTypeName == typeof(WorkspaceTransitionInvalidRejected).FullName)
+        {
+            return false;
+        }
+
+        using JsonDocument payload = JsonDocument.Parse(bytes);
+        if (!payload.RootElement.TryGetProperty(nameof(FolderCommandRejected.CommandType), out JsonElement commandType)
+            && !payload.RootElement.TryGetProperty("commandType", out commandType)
+            || commandType.ValueKind != JsonValueKind.String)
+        {
+            throw new InvalidOperationException("Unclassifiable Folders rejection event.");
+        }
+
+        return commandType.GetString() switch
+        {
+            FoldersServerModule.InitializeOrganizationAclBaselineCommandType
+                or FoldersServerModule.GrantOrganizationAclPrincipalCommandType
+                or FoldersServerModule.RevokeOrganizationAclPrincipalCommandType
+                or FoldersServerModule.ConfigureProviderBindingCommandType => true,
+            FoldersServerModule.CreateFolderCommandType
+                or FoldersServerModule.GrantFolderAccessCommandType
+                or FoldersServerModule.RevokeFolderAccessCommandType
+                or FoldersServerModule.ArchiveFolderCommandType
+                or FoldersServerModule.CreateRepositoryBackedFolderCommandType
+                or FoldersServerModule.BindRepositoryCommandType
+                or FoldersServerModule.ConfigureBranchRefPolicyCommandType
+                or FoldersServerModule.PrepareWorkspaceCommandType
+                or FoldersServerModule.LockWorkspaceCommandType
+                or FoldersServerModule.ReleaseWorkspaceLockCommandType
+                or FoldersServerModule.MutateFilesCommandType
+                or FoldersServerModule.CommitWorkspaceCommandType => false,
+            _ => throw new InvalidOperationException("Unclassifiable Folders rejection event."),
+        };
+    }
+
     /// <summary>Folds the command's actor-owned folder stream without querying another store.</summary>
     internal FolderState FoldFolder(object? currentState, string tenantId, string aggregateId)
     {
@@ -44,10 +107,17 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
                     item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload);
+                if (IsOrganizationRejection(item.Metadata.EventTypeName, item.Payload))
+                {
+                    throw new InvalidOperationException("Organization rejection in folder actor stream.");
+                }
+
                 continue;
             }
-            events.Add(Read<IFolderEvent>(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
-                item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload, sequence));
+            IFolderEvent value = Read<IFolderEvent>(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
+                item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload, sequence);
+            RequireFolderOrganization(value.OrganizationId, tenantId);
+            events.Add(value);
         }
 
         RequireSequence(source?.CurrentSequence ?? 0, sequence);
@@ -69,6 +139,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.Metadata.EventTypeName, item.Metadata.PayloadVersion,
                     item.Metadata.MetadataVersion, item.Metadata.SerializationFormat, item.Payload);
+                if (!IsOrganizationRejection(item.Metadata.EventTypeName, item.Payload))
+                {
+                    throw new InvalidOperationException("Folder rejection in organization actor stream.");
+                }
+
                 continue;
             }
             IOrganizationEvent value = Read<IOrganizationEvent>(item.Metadata.EventTypeName,
@@ -77,8 +152,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             organizationId ??= value.OrganizationId;
             if (!string.Equals(value.ManagedTenantId, tenantId, StringComparison.Ordinal)
                 || !string.Equals(value.OrganizationId, organizationId, StringComparison.Ordinal)
+                || value is IOrganizationAclEvent
+                    && !string.Equals(value.OrganizationId, aggregateId, StringComparison.Ordinal)
                 || value is ProviderBindingConfigured binding
-                    && !string.Equals(binding.ProviderBindingRef, aggregateId, StringComparison.Ordinal))
+                    && (!string.Equals(binding.OrganizationId, tenantId, StringComparison.Ordinal)
+                        || !string.Equals(ProviderBindingActorId.Create(binding.ProviderBindingRef), aggregateId, StringComparison.Ordinal)))
             {
                 throw new InvalidOperationException("Foreign organization event in actor stream.");
             }
@@ -108,6 +186,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             }
             IFolderEvent value = ReadEffective<IFolderEvent>(item.EventTypeName,
                 item.MetadataVersion, item.SerializationFormat, item.Payload);
+            RequireFolderOrganization(value.OrganizationId, request.TenantId);
             events.Add(value);
         }
 
@@ -134,8 +213,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             organizationId ??= value.OrganizationId;
             if (!string.Equals(value.ManagedTenantId, request.TenantId, StringComparison.Ordinal)
                 || !string.Equals(value.OrganizationId, organizationId, StringComparison.Ordinal)
+                || value is IOrganizationAclEvent
+                    && !string.Equals(value.OrganizationId, request.AggregateId, StringComparison.Ordinal)
                 || value is ProviderBindingConfigured binding
-                    && !string.Equals(binding.ProviderBindingRef, request.AggregateId, StringComparison.Ordinal))
+                    && (!string.Equals(binding.OrganizationId, request.TenantId, StringComparison.Ordinal)
+                        || !string.Equals(ProviderBindingActorId.Create(binding.ProviderBindingRef), request.AggregateId, StringComparison.Ordinal)))
             {
                 throw new InvalidOperationException("Foreign organization event in projection stream.");
             }
@@ -177,6 +259,8 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             || state.IdempotencyFingerprints is null
             || state.IsCreated
                 && (state.ManagedTenantId is null || state.FolderId is null)
+            || state.OrganizationId is not null
+                && !string.Equals(state.OrganizationId, tenantId, StringComparison.Ordinal)
             || state.ManagedTenantId is not null
                 && !string.Equals(state.ManagedTenantId, tenantId, StringComparison.Ordinal)
             || state.FolderId is not null
@@ -213,11 +297,13 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             .ToArray();
         if (organizationIds.Length > 1
             || state.Grants.Any(grant =>
-                !string.Equals(grant.ManagedTenantId, tenantId, StringComparison.Ordinal))
+                !string.Equals(grant.ManagedTenantId, tenantId, StringComparison.Ordinal)
+                || !string.Equals(grant.OrganizationId, aggregateId, StringComparison.Ordinal))
             || state.ProviderBindings.Any(binding =>
-                !string.Equals(binding.Key, aggregateId, StringComparison.Ordinal)
+                !string.Equals(binding.Key, binding.Value.ProviderBindingRef, StringComparison.Ordinal)
                 || !string.Equals(binding.Value.ManagedTenantId, tenantId, StringComparison.Ordinal)
-                || !string.Equals(binding.Value.ProviderBindingRef, aggregateId, StringComparison.Ordinal)))
+                || !string.Equals(ProviderBindingActorId.Create(binding.Value.ProviderBindingRef), aggregateId, StringComparison.Ordinal)
+                || !string.Equals(binding.Value.OrganizationId, tenantId, StringComparison.Ordinal)))
         {
             throw new InvalidOperationException("Foreign organization snapshot in actor stream.");
         }
@@ -315,6 +401,14 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
         if (expected != actual)
         {
             throw new InvalidOperationException("Incomplete or unordered Folders event stream.");
+        }
+    }
+
+    private static void RequireFolderOrganization(string organizationId, string tenantId)
+    {
+        if (!string.Equals(organizationId, tenantId, StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Foreign folder organization in actor stream.");
         }
     }
 

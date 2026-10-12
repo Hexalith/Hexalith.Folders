@@ -10,10 +10,12 @@ using Hexalith.Folders.Workers.SemanticIndexing;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Tenants.Client.Registration;
 using Hexalith.Tenants.Contracts.Events;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +43,13 @@ public static class FoldersWorkersModule
         ArgumentNullException.ThrowIfNull(services);
 
         services.AddDaprClient();
+        services.AddAuthentication().AddEventStoreSidecarChannelScheme();
+        services.AddAuthorization(options => options.AddPolicy(
+            EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy,
+            policy => policy
+                .AddAuthenticationSchemes(EventStoreWorkloadAuthenticationDefaults.SidecarChannelScheme)
+                .RequireAuthenticatedUser()
+                .RequireClaim(EventStoreWorkloadAuthenticationDefaults.ChannelClaimType)));
         services.AddFoldersSemanticIndexingWorkers();
 
         // AddFoldersTenantAccess already binds and validate-on-start's FoldersTenantEventOptions; do not rebind here.
@@ -73,9 +82,13 @@ public static class FoldersWorkersModule
         services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         services.RemoveAll<IEffectivePermissionsReadModel>();
         services.TryAddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();
+        services.TryAddSingleton<EventStoreFolderEffectivePermissionsReadModel>();
         services.TryAddSingleton<IEffectivePermissionsReadModel>(static sp =>
-            sp.GetRequiredService<EventStoreOrganizationEffectivePermissionsReadModel>());
+            sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
+        services.TryAddSingleton<IFolderAclReadModel>(static sp =>
+            sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
         services.TryAddTransient<FoldersOrganizationAclEventProcessor>();
+        services.TryAddTransient<FoldersFolderPermissionEventProcessor>();
         services.RemoveAll<ISemanticIndexingBridgeReadModel>();
         services.RemoveAll<ISemanticIndexingBridgeWriter>();
         services.TryAddSingleton<EventStoreSemanticIndexingBridgeStore>();
@@ -143,7 +156,8 @@ public static class FoldersWorkersModule
                 EventStoreDomainEventProcessingResult.FailedInvalidPayload => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
                 _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
             };
-        }).WithTopic(options.PubSubName, options.TopicName);
+        }).WithTopic(options.PubSubName, options.TopicName)
+            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
 
         return endpoints;
     }
@@ -154,9 +168,23 @@ public static class FoldersWorkersModule
             Hexalith.EventStore.Client.Subscriptions.EventStoreDomainEventEnvelope envelope,
             FoldersSemanticIndexingEventProcessor processor,
             FoldersOrganizationAclEventProcessor organizationProcessor,
+            FoldersFolderPermissionEventProcessor folderPermissionProcessor,
             CancellationToken cancellationToken) =>
         {
-            await organizationProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await organizationProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+                await folderPermissionProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                return Results.Problem(statusCode: StatusCodes.Status500InternalServerError);
+            }
+
             FoldersSemanticIndexingEventProcessingResult result = await processor
                 .ProcessAsync(envelope, cancellationToken)
                 .ConfigureAwait(false);
@@ -174,7 +202,8 @@ public static class FoldersWorkersModule
             };
         }).WithTopic(
             FoldersSemanticIndexingDefaults.PubSubName,
-            FoldersSemanticIndexingDefaults.DomainEventsTopicName);
+            FoldersSemanticIndexingDefaults.DomainEventsTopicName)
+            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
 
         return endpoints;
     }

@@ -18,7 +18,7 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
             [FoldersServerModule.ConfigureBranchRefPolicyCommandType] = new("configure_branch_ref_policy", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.GrantFolderAccess"] = new("manage_folder_access", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.RevokeFolderAccess"] = new("manage_folder_access", FolderCommandOperationScopeKind.FolderAggregate),
-            ["Hexalith.Folders.Commands.ConfigureProviderBinding"] = new("configure_provider_binding", FolderCommandOperationScopeKind.FolderAggregate),
+            ["Hexalith.Folders.Commands.ConfigureProviderBinding"] = new("configure_provider_binding", FolderCommandOperationScopeKind.OrganizationBaseline),
             ["Hexalith.Folders.Commands.PrepareWorkspace"] = new("prepare_workspace", FolderCommandOperationScopeKind.FolderAggregate),
             ["Hexalith.Folders.Commands.LockWorkspace"] = new("lock_workspace", FolderCommandOperationScopeKind.FolderAggregate),
             [FoldersServerModule.ReleaseWorkspaceLockCommandType] = new("lock_workspace", FolderCommandOperationScopeKind.FolderAggregate),

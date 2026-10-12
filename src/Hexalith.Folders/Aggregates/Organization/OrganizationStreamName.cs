@@ -32,7 +32,7 @@ public sealed partial record OrganizationStreamName(string Value)
             return false;
         }
 
-        if (!IsValidSegment(managedTenantId))
+        if (!IsValidSegment(managedTenantId) || ProviderBindingActorId.IsReserved(managedTenantId))
         {
             code = OrganizationAclResultCode.InvalidTenant;
             return false;

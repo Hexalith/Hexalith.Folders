@@ -7,6 +7,7 @@ using Hexalith.Folders.Server.Authentication;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 using Shouldly;
 using Xunit;
@@ -67,7 +68,11 @@ public sealed class HumanAuthorityReceiptVerifierTests
         IResult result = await handler.ProcessAsync(
             new DomainServiceRequest(Command(), null), TestContext.Current.CancellationToken);
 
-        ((IStatusCodeHttpResult)result).StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
+        context.RequestServices = new ServiceCollection()
+            .AddLogging()
+            .BuildServiceProvider();
+        await result.ExecuteAsync(context);
+        context.Response.StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
     }
 
     private static HumanAuthorityReceiptVerifier CreateVerifier(DefaultHttpContext context)

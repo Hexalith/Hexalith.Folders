@@ -8,6 +8,17 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class FolderCommandActionTokenMapperTests
 {
     [Fact]
+    public void ProviderBindingCommandShouldRequireOrganizationPermissionScope()
+    {
+        FolderCommandActionMapping? mapping = new FolderCommandActionTokenMapper().Map(
+            Command(FoldersServerModule.ConfigureProviderBindingCommandType));
+
+        mapping.ShouldNotBeNull();
+        mapping.ActionToken.ShouldBe("configure_provider_binding");
+        mapping.ScopeKind.ShouldBe(FolderCommandOperationScopeKind.OrganizationBaseline);
+    }
+
+    [Fact]
     public void ArchiveFolderCommandShouldMapToArchiveAdminAction()
     {
         FolderCommandActionTokenMapper mapper = new();

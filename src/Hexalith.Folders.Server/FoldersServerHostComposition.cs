@@ -33,7 +33,12 @@ public static class FoldersServerHostComposition
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFolderTenantAccessProjectionStore>();
         builder.Services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
-        builder.Services.AddSingleton<IEffectivePermissionsReadModel, EventStoreOrganizationEffectivePermissionsReadModel>();
+        builder.Services.AddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();
+        builder.Services.AddSingleton<EventStoreFolderEffectivePermissionsReadModel>();
+        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(static sp =>
+            sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
+        builder.Services.AddSingleton<IFolderAclReadModel>(static sp =>
+            sp.GetRequiredService<EventStoreFolderEffectivePermissionsReadModel>());
         builder.Services.AddAuthorization();
         builder.Services.AddFoldersProductionAuthentication(builder.Configuration, builder.Environment);
         // The process and projection callbacks are Dapr service invocations. The

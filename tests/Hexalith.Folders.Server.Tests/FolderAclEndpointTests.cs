@@ -262,6 +262,42 @@ public sealed class FolderAclEndpointTests
     }
 
     [Fact]
+    public async Task ListFolderAclEntriesShouldReadTheDurableProjectionWithoutActorRepositoryBegin()
+    {
+        FolderPermissionProjection projection = new("tenant-a", "organization-a", "folder-a", 2,
+            IsCreated: true, IsArchived: false, DateTimeOffset.UtcNow,
+            [new FolderPermissionOverrideEntry(FolderAccessPrincipalKind.User, "user-b",
+                "read_metadata", IsGranted: true, AccessSequence: 1, DateTimeOffset.UtcNow)], []);
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient(),
+            aclReadModel: new StaticFolderAclReadModel(projection));
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            "/api/v1/folders/folder-a/acl", TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
+        json.ShouldContain("user-b");
+        json.ShouldNotContain("read_model_unavailable");
+    }
+
+    [Fact]
+    public async Task ListFolderAclEntriesShouldNotTreatOrganizationScopeAsFolder()
+    {
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.GetAsync(
+            "/api/v1/folders/organization_baseline/acl", TestContext.Current.CancellationToken);
+        string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        json.ShouldNotContain("organization_baseline", Case.Sensitive);
+    }
+
+    [Fact]
     public async Task ListFolderAclEntriesShouldRejectUnknownInRangeCursorAsTampered()
     {
         await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
@@ -361,7 +397,8 @@ public sealed class FolderAclEndpointTests
     private static WebApplication BuildApp(
         RecordingEventStoreGatewayClient gateway,
         string? tenantId = "tenant-a",
-        string? principalId = "user-a")
+        string? principalId = "user-a",
+        IFolderAclReadModel? aclReadModel = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -375,6 +412,10 @@ public sealed class FolderAclEndpointTests
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore(tenantId, principalId));
         builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
         builder.Services.AddSingleton<IEffectivePermissionsReadModel>(PermissionReadModel());
+        if (aclReadModel is not null)
+        {
+            builder.Services.AddSingleton(aclReadModel);
+        }
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
@@ -444,6 +485,14 @@ public sealed class FolderAclEndpointTests
         public string? AuthoritativeTenantId => authoritativeTenantId;
 
         public string? PrincipalId => principalId;
+    }
+
+    private sealed class StaticFolderAclReadModel(FolderPermissionProjection projection) : IFolderAclReadModel
+    {
+        public Task<FolderPermissionProjection?> GetCurrentAsync(string tenantId, string folderId,
+            CancellationToken cancellationToken = default)
+            => Task.FromResult<FolderPermissionProjection?>(tenantId == projection.TenantId
+                && folderId == projection.FolderId ? projection : null);
     }
 
     private sealed class StaticClaimTransformEvidenceAccessor(string? tenantId, string? principalId)

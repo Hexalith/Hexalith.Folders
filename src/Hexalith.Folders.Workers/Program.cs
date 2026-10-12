@@ -16,6 +16,8 @@ builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFold
 WebApplication app = builder.Build();
 
 app.UseCloudEvents();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapSubscribeHandler();
 app.MapFoldersTenantEventWorkerEndpoints();
 app.MapDefaultEndpoints();
