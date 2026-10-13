@@ -2864,3 +2864,8 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-2.md`
   summary: Record copyable Worker build and direct xUnit verification commands in the Story 12.1 completion-reconciliation spec.
   evidence: Independent review found that the notes report the 59 Server and 3 Worker passes and name their selected classes, but omit the full Worker build and direct assembly invocation commands; the one-shot workflow routes spec-only improvements to deferred work.
+
+## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-13)
+
+- Group, role, and delegated-service grants are stored on the effective-permissions snapshot, but `EffectivePermissionsFolderPermissionEvidenceProvider.HasActionGrant` and `EffectivePermissionsQueryHandler` still match only `EffectivePermissionPrincipal.User`. This User-only match predates the Story 12.1 read-model change.
+- `DaprOrganizationStreamSequenceReader` posts `{}` to parameterless `GetCurrentSequenceAsync`. If the pinned Dapr actor API requires a JSON argument array, out-of-actor folder and organization head reads fail and permission checks become unavailable. In-actor commands skip this call through `FolderActorSequenceScope` and `OrganizationActorSequenceScope`. Unverified high: settle by invoking the sidecar with body `{}` and with body `[]`.

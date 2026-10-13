@@ -2,7 +2,7 @@
 title: 'Story 12.1: EventStore-backed folder repository and projection replay'
 type: 'feature'
 created: '2026-09-26'
-status: 'done'
+status: 'in-progress'
 baseline_commit: '09c964353c1d7c15244b3a1c5f4066c361ada994'
 route: 'dispatch'
 review_loop_iteration: 5
@@ -241,3 +241,36 @@ Gate: verify the EventStore 6.6 consumer acceptance record and conditional `DEC-
 **2026-10-12 review-loop-5 verification:** EventStore stream read now preserves stored payload version and checks logical digests before returning clear or decrypted bytes; the focused `StreamsControllerTests` passed 29/29 at local submodule commit `2e6a725ce647e12918146c9227ddb9b740e40ec7`. I independently reran EventStore evolution (35/35), projection dispatch (5/5), and combined versioned wire/receipt/stream-read classes (36/36), then rebuilt `Hexalith.Folders.slnx -c Debug -m:1 -v:q` with zero warnings/errors. The implementation pass reported full Server.Tests 838/838, Workers.Tests 94/94, and focused IntegrationTests 22/22. I independently reran the new Production actor-folded `/process` and replay/receipt classes (22/22), Worker route/processor classes (3/3), and deployment conformance (8/8). The process test asserts folder, baseline/grant, and binding wire events plus zero-event same-key replay; it exposed and fixed a baseline duplicate-initialization replay defect. The repair runbook now requires conditional ETag deletion of only a derived malformed/incomplete row while access is unavailable, followed by authenticated replay of digest-verified retained events and head equality before resuming. No fresh live ETag race, binding actor, or operator repair was induced; prior deployed two-replica serialization, timeout/outage, restart, revocation, denial, and positive ACL GET observations remain the live evidence. Both repositories pass `git diff --check`.
 
 **2026-10-12 final review closure:** The final three-lens pass found and patched the missing-row ACL GET race, a wrong-command rejection on a reserved provider-binding actor, the receipt serialization regression gap, and missing Worker-route revocation coverage. The implementation lane built EventStore Server.Tests, Folders Server.Tests, and Workers.Tests with zero warnings, then passed the affected test classes: EventStore Dapr invoker 45/45, Folders effective-permissions read model 13/13, Production process host 2/2, folder Worker processor 2/2, and Worker route 1/1. I independently ran the EventStore Dapr invoker class 45/45, `dotnet build Hexalith.Folders.slnx -c Debug -m:1 -v:q`, and `dotnet build tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj -c Debug -m:1 -v:q`; both builds passed with zero warnings/errors. The compatibility record now pins EventStore commit `851984f2362ba0b00972da4d03dab8be7e5ef4cb`, including its receipt wire test. Final review deferred existing shared/named projection defects and tenant-event ordering, plus an unverified tenant-row capacity concern, to `deferred-work.md`; the story's patched paths pass their focused checks. The previously recorded deployed probe remains the deployed evidence, with no claim of a live ETag race or operator repair exercise.
+
+### Review Findings
+
+Domain and EventStore slice only (`09c96435...HEAD`). Reviewed 2026-10-13.
+
+- [ ] [Review][Patch] A missing or caught-up uninitialized organization baseline becomes a folder authorization outage [`src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs:103`]
+- [ ] [Review][Patch] A stale organization baseline is returned as an empty folder snapshot and bounded-stale reads deny it [`src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs:98`]
+- [ ] [Review][Patch] Organization ACL intent parsing accepts numeric principal kinds and rejects the domain token `delegated_service_agent` [`src/Hexalith.Folders.EventStore/OrganizationAclIdempotencyIntentAdapter.cs:49`]
+- [ ] [Review][Patch] Value-equal duplicate folder events skip the fail-closed fold guards [`src/Hexalith.Folders/Aggregates/Folder/FolderState.cs:140`]
+- [ ] [Review][Patch] A stored organization projection with a null message map throws NullReferenceException [`src/Hexalith.Folders/Authorization/EventStoreOrganizationEffectivePermissionsReadModel.cs:205`]
+- [ ] [Review][Patch] Folder command validation accepts an organization id that is not the tenant [`src/Hexalith.Folders/Aggregates/Folder/FolderCommandValidator.cs:75`]
+- [ ] [Review][Patch] The 503 safe-denial title and category disagree [`src/Hexalith.Folders.EventStore/FoldersDomainServiceSafeDenialExceptionHandler.cs:28`]
+
+- [x] [Review][Defer] Group, role, and delegated-service grants never authorize the caller [`src/Hexalith.Folders/Authorization/EffectivePermissionsFolderPermissionEvidenceProvider.cs:118`] — deferred: pre-existing; this diff does not change the User-only evidence match
+- [x] [Review][Defer] Out-of-actor sequence reads post `{}` to parameterless `GetCurrentSequenceAsync` [`src/Hexalith.Folders/Authorization/DaprOrganizationStreamSequenceReader.cs:40`] — deferred: unverified high; settle by invoking the pinned Dapr sidecar with body `{}` and with body `[]`
+
+#### Rejected
+
+- false — Aged projection redelivery is acknowledged without a digest. Owner decision: keep acknowledge-and-drop. The last 256 events still fail closed. An older sequence was already folded, and throwing would stall at-least-once redelivery onto an existing row.
+- false — Organization ACL intent placeholders skip payload evidence ids. `IdempotencyIntentCommand` has no correlation, task, or idempotency key, and the adapter tests do not put those fields in the payload. The literals only let operation canonicalization run.
+- false — An initialize payload that revokes a principal collapses to a grant. Canonical `effect` is the operation id, and the payload has no revoke intent field.
+- false — A duplicate create should soft-replay. A second `FolderCreated` on an existing folder throws, and `FolderAggregate.Handle` returns idempotent replay before emitting another event.
+- false — Provider-binding writes and the tenant gate use different streams. `OrganizationProviderBindingTenantGate` has no production caller, and the actor repository rejects a binding event whose hash does not match the actor id.
+- false — `ProviderBindingConfigured` marks the ACL stream initialized. It sets `IsInitialized` only on the state being folded. The permission read model does not treat that event as an ACL baseline.
+- false — The actor fold applies a foreign organization id. `FolderEventReplay.RequireFolderOrganization` throws before `Apply`.
+- false — An organization actor scope supplies the folder head. Valid folder ids cannot equal the tenant id, and the organization scope is entered with the tenant id.
+- false — Uppercase opaque tenants miss the actor. This slice preserves the validated stream segment and does not lowercase actor ids.
+- false — Organization grants rewritten to sequence 0 let the wrong decision win. The snapshot's organization rows are current grants, and a folder override is ordered after them, so an explicit folder revoke still wins.
+- false — An aborted or started response swallows the problem document. `TryHandleAsync` cannot write a body after the response has started; returning handled stops a second writer.
+- low — An `https` `DAPR_HTTP_ENDPOINT` is rejected. The local sidecar is HTTP, and this host does not present an https endpoint in everyday use.
+- low — A sequence response without `Content-Length` is buffered before the 32-byte check. A normal head is a short integer; a streaming parser is more machinery than the case is worth.
+- low — Folder projection apply accepts the reserved id `organization_baseline`. `FolderStreamName` already rejects that id, and `GetAsync` does not read a folder row for it.
+- low — An undefined ACL principal kind escapes the list query's catch. Writers store only defined kinds, so an everyday ACL row does not hit the throw.
