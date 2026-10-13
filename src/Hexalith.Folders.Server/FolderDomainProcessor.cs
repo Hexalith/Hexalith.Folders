@@ -247,8 +247,7 @@ public sealed partial class FolderDomainProcessor(
         foreach (OrganizationAclOperationPayload operation in payload.Operations)
         {
             if (operation is null
-                || !Enum.TryParse(operation.PrincipalKind, ignoreCase: true, out OrganizationAclPrincipalKind kind)
-                || !Enum.IsDefined(kind)
+                || !OrganizationAclPrincipalKindParser.TryParse(operation.PrincipalKind, out OrganizationAclPrincipalKind kind)
                 || string.IsNullOrWhiteSpace(operation.PrincipalId)
                 || string.IsNullOrWhiteSpace(operation.Action))
             {

@@ -22,7 +22,7 @@ public sealed class FolderCreationAclGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Create(),
             TenantEvidence(),
-            new FolderCreateAclEvidence(aclOutcome, "tenant-a", "organization-a", "principal-a", "create_folder"));
+            new FolderCreateAclEvidence(aclOutcome, "tenant-a", "tenant-a", "principal-a", "create_folder"));
 
         result.Code.ShouldBe(expectedCode);
         repository.LastDurableKey.ShouldBeNull();
@@ -43,7 +43,7 @@ public sealed class FolderCreationAclGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Create(),
             TenantEvidence(),
-            FolderCreateAclEvidence.Allowed("tenant-b", "organization-a", "principal-a"));
+            FolderCreateAclEvidence.Allowed("tenant-b", "tenant-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.AclEvidenceMismatch);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -51,10 +51,10 @@ public sealed class FolderCreationAclGateTests
     }
 
     [Theory]
-    [InlineData("tenant-b", "organization-a", "principal-a", "create_folder")] // tenant mismatch
+    [InlineData("tenant-b", "tenant-a", "principal-a", "create_folder")] // tenant mismatch
     [InlineData("tenant-a", "organization-b", "principal-a", "create_folder")] // org mismatch
-    [InlineData("tenant-a", "organization-a", "principal-b", "create_folder")] // principal mismatch
-    [InlineData("tenant-a", "organization-a", "principal-a", "delete_folder")] // action mismatch
+    [InlineData("tenant-a", "tenant-a", "principal-b", "create_folder")] // principal mismatch
+    [InlineData("tenant-a", "tenant-a", "principal-a", "delete_folder")] // action mismatch
     public void AllowedAclWithAnyContextMismatchShouldReturnEvidenceMismatch(
         string aclTenant, string aclOrg, string aclPrincipal, string aclAction)
     {

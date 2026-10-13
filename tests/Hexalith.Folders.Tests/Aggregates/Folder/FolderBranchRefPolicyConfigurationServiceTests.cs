@@ -139,7 +139,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             Now);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -162,7 +162,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             Now);
         RepositoryBound boundEvent = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -176,7 +176,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             bound,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -276,7 +276,7 @@ public sealed class FolderBranchRefPolicyConfigurationServiceTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
                 "folder-a:7",
-                organizationId: "organization-a"));
+                organizationId: "tenant-a"));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

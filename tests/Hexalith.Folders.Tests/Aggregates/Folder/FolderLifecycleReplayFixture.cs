@@ -6,7 +6,7 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 internal static class FolderLifecycleReplayFixture
 {
     public const string ManagedTenantId = "tenant-a";
-    public const string OrganizationId = "organization-a";
+    public const string OrganizationId = "tenant-a";
     public const string FolderId = "folder-a";
     public const string WorkspaceId = "workspace-a";
     public const string RepositoryBindingId = "repository-binding-a";
@@ -198,7 +198,7 @@ internal static class FolderLifecycleReplayFixture
         [
             new FolderCreated(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 "Folder A",
                 "safe description",
@@ -214,7 +214,7 @@ internal static class FolderLifecycleReplayFixture
                 OccurredAt),
             new RepositoryBindingRequested(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 RepositoryBindingId,
                 ProviderBindingRef,
@@ -228,7 +228,7 @@ internal static class FolderLifecycleReplayFixture
                 OccurredAt.AddMinutes(1)),
             new RepositoryBound(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 RepositoryBindingId,
                 ProviderBindingRef,
@@ -239,7 +239,7 @@ internal static class FolderLifecycleReplayFixture
                 OccurredAt.AddMinutes(2)),
             new BranchRefPolicyConfigured(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 RepositoryBindingId,
                 BranchRefPolicyRef,
@@ -254,7 +254,7 @@ internal static class FolderLifecycleReplayFixture
                 OccurredAt.AddMinutes(3)),
             new WorkspacePreparationRequested(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 workspaceId,
                 RepositoryBindingId,
@@ -268,7 +268,7 @@ internal static class FolderLifecycleReplayFixture
                 OccurredAt.AddMinutes(4)),
             new FolderWorkspaceLifecycleEventRecorded(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 workspaceId,
                 FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -281,7 +281,7 @@ internal static class FolderLifecycleReplayFixture
                 OccurredAt.AddMinutes(5)),
             new WorkspaceLockAcquired(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 workspaceId,
                 FolderWorkspaceLifecycleEvent.WorkspaceLocked,
@@ -320,7 +320,7 @@ internal static class FolderLifecycleReplayFixture
             .. LockedLifecycleForTenant(managedTenantId, folderId, workspaceId, taskId),
             new WorkspaceFileMutationAccepted(
                 managedTenantId,
-                OrganizationId,
+                managedTenantId,
                 folderId,
                 workspaceId,
                 FolderWorkspaceLifecycleEvent.FileMutated,

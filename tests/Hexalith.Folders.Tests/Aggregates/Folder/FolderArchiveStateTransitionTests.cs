@@ -41,7 +41,7 @@ public sealed class FolderArchiveStateTransitionTests
         FolderState active = CreatedState();
         FolderArchived foreign = new(
             "tenant-b",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             FolderArchiveReasonCode.CallerRequested,
             "principal-a",

@@ -94,6 +94,18 @@ public sealed class FolderLifecycleReplayDeterminismTests
     }
 
     [Fact]
+    public void ValueEqualRetainedCreatesAndArchivesShouldFailTheFoldOrderGuards()
+    {
+        FolderCreated created = (FolderCreated)FolderLifecycleReplayFixture.CreatedEvents()[0];
+        FolderArchived archived = (FolderArchived)FolderLifecycleReplayFixture.ArchivedLifecycle().Last();
+
+        Should.Throw<InvalidOperationException>(() => FolderState.Empty.Apply(
+            [created, created with { }], FolderLifecycleReplayFixture.StreamName));
+        Should.Throw<InvalidOperationException>(() => FolderState.Empty.Apply(
+            [created, archived, archived with { }], FolderLifecycleReplayFixture.StreamName));
+    }
+
+    [Fact]
     public void ConcreteProductionFolderEventsShouldHaveExplicitReplayExpectation()
     {
         Type[] expected =

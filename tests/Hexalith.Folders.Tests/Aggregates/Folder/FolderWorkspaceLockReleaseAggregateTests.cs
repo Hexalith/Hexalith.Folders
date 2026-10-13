@@ -209,7 +209,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
             [
                 new FolderArchived(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     FolderArchiveReasonCode.OperatorReview,
                     "principal-a",
@@ -228,7 +228,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
             [
                 new FolderWorkspaceLifecycleEventRecorded(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "workspace-a",
                     FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -254,7 +254,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
             [
                 new RepositoryBound(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",
@@ -269,7 +269,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
             state,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -293,7 +293,7 @@ public sealed class FolderWorkspaceLockReleaseAggregateTests
         string idempotencyKey)
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "workspace-a",
             lifecycleEvent,

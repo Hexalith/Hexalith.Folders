@@ -132,16 +132,10 @@ public sealed record FolderState(
         ArgumentNullException.ThrowIfNull(expectedStreamName);
 
         FolderState state = this;
-        HashSet<IFolderEvent> seenInReplay = [];
         foreach (IFolderEvent folderEvent in events)
         {
-            // One accepted command may legitimately emit several events with the same
-            // idempotency key. Suppress only an exact duplicate delivery in this replay.
-            if (!seenInReplay.Add(folderEvent))
-            {
-                continue;
-            }
-
+            // Fold every retained position. Value equality cannot distinguish a repeated
+            // delivery from a second invalid transition in the authoritative stream.
             state = FolderStateApply.Apply(state, folderEvent, expectedStreamName);
         }
 

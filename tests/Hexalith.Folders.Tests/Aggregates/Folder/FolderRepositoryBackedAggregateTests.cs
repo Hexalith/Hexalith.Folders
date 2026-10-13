@@ -175,7 +175,7 @@ public sealed class FolderRepositoryBackedAggregateTests
     private static FolderCreated Created()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "Folder A",
             null,
@@ -193,7 +193,7 @@ public sealed class FolderRepositoryBackedAggregateTests
     private static RepositoryBindingRequested RequestedEvent(string idempotencyKey)
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -209,7 +209,7 @@ public sealed class FolderRepositoryBackedAggregateTests
     private static RepositoryBound RepositoryBound()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -222,7 +222,7 @@ public sealed class FolderRepositoryBackedAggregateTests
     private static RepositoryBindingFailed RepositoryBindingFailed()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -236,7 +236,7 @@ public sealed class FolderRepositoryBackedAggregateTests
     private static ProviderOutcomeUnknown ProviderOutcomeUnknown(bool reconciliationRequired)
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",

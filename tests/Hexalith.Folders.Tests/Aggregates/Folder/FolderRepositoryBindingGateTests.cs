@@ -580,7 +580,7 @@ public sealed class FolderRepositoryBindingGateTests
             Now);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             repositoryBindingId,
             "provider-binding-a",
@@ -629,7 +629,7 @@ public sealed class FolderRepositoryBindingGateTests
     private static OrganizationProviderBinding Binding()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "provider-binding-a",
             "github",
             "credential-reference-a",
@@ -713,7 +713,7 @@ public sealed class FolderRepositoryBindingGateTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
                 "folder-a:7",
-                organizationId: "organization-a"));
+                organizationId: "tenant-a"));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

@@ -18,7 +18,7 @@ public static class FolderCreationTestDataFactory
 {
     public static CreateFolder Create(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string displayName = "Folder A",
         string? description = "safe description",
@@ -32,7 +32,7 @@ public static class FolderCreationTestDataFactory
     {
         CreateFolder command = new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             displayName,
             description,

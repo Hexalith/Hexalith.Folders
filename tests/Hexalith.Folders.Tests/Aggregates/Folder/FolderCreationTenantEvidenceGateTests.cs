@@ -27,7 +27,7 @@ public sealed class FolderCreationTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Create(),
             Evidence(outcome),
-            FolderCreateAclEvidence.Allowed("tenant-a", "organization-a", "principal-a"));
+            FolderCreateAclEvidence.Allowed("tenant-a", "tenant-a", "principal-a"));
 
         result.Code.ShouldBe(expectedCode);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -46,9 +46,9 @@ public sealed class FolderCreationTenantEvidenceGateTests
         FolderCreateTenantGate gate = new(repository);
 
         FolderResult result = gate.Handle(
-            FolderCommandFactory.Create(managedTenantId: "payload-tenant", payloadTenantId: "tenant-a"),
+            FolderCommandFactory.Create(managedTenantId: "payload-tenant", organizationId: "tenant-a", payloadTenantId: "tenant-a"),
             Evidence(TenantAccessOutcome.Allowed, tenantId: "tenant-a"),
-            FolderCreateAclEvidence.Allowed("tenant-a", "organization-a", "principal-a"));
+            FolderCreateAclEvidence.Allowed("tenant-a", "tenant-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.Created);
         repository.LastStreamName.ShouldBe("tenant-a:folders:folder-a");
@@ -63,7 +63,7 @@ public sealed class FolderCreationTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Create(payloadTenantId: "tenant-from-payload"),
             Evidence(TenantAccessOutcome.Allowed, tenantId: "tenant-a"),
-            FolderCreateAclEvidence.Allowed("tenant-a", "organization-a", "principal-a"));
+            FolderCreateAclEvidence.Allowed("tenant-a", "tenant-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.TenantMismatch);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -80,7 +80,7 @@ public sealed class FolderCreationTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Create(displayName: "github_pat_credential_material"),
             Evidence(TenantAccessOutcome.Allowed),
-            FolderCreateAclEvidence.Allowed("tenant-a", "organization-a", "principal-a"));
+            FolderCreateAclEvidence.Allowed("tenant-a", "tenant-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.InvalidFolderMetadata);
         repository.LastDurableKey.ShouldBeNull();

@@ -352,7 +352,7 @@ public sealed class FolderLifecycleSecurityBoundaryTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
                 request.ManagedTenantId + ":folder:7",
-                organizationId: "organization-a"));
+                organizationId: request.ManagedTenantId));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

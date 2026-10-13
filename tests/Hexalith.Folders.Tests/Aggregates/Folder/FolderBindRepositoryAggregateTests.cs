@@ -108,7 +108,7 @@ public sealed class FolderBindRepositoryAggregateTests
             [
                 new RepositoryBound(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",

@@ -47,7 +47,6 @@ public sealed class ArchiveFolderProcessWiringTests
     [
         "tenant-a",
         "tenant-b",
-        "org-a",
         "folder-a",
         "user-a",
         "v1-test-denied",
@@ -60,8 +59,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
 
@@ -111,8 +110,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage request = CreateValidRepositoryBackedRequest();
 
@@ -175,8 +174,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             HttpResponseMessage allowed = await host.Client
                 .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested"), TestContext.Current.CancellationToken)
@@ -204,8 +203,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             HttpResponseMessage first = await host.Client
                 .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested"), TestContext.Current.CancellationToken)
@@ -237,8 +236,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             Task<HttpResponseMessage> responseTask = host.Client.SendAsync(request, requestCancellation.Token);
@@ -298,8 +297,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage firstRequest = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             using HttpResponseMessage first = await host.Client
@@ -352,8 +351,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -391,8 +390,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             using HttpResponseMessage response = await host.Client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -404,7 +403,7 @@ public sealed class ArchiveFolderProcessWiringTests
             host.Gateway.ProcessCalls.ShouldBe(1);
             policyProvider.Calls.ShouldBe(1);
             policyProvider.LastManagedTenantId.ShouldBe("tenant-a");
-            policyProvider.LastOrganizationId.ShouldBe("org-a");
+            policyProvider.LastOrganizationId.ShouldBe("tenant-a");
             policyProvider.LastFolderId.ShouldBe("folder-a");
             authorizationAccessor.Current.ShouldBeNull();
             host.Repository.EventsAppended.ShouldBe(0);
@@ -428,8 +427,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             using HttpRequestMessage request = CreateValidArchiveRequest("folder-a", "archive-key-a", "caller_requested");
             using HttpResponseMessage response = await host.Client
@@ -466,8 +465,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedArchivedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedArchivedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             HttpResponseMessage response = await host.Client
                 .SendAsync(CreateValidArchiveRequest("folder-a", "archive-key-b", "caller_requested"), TestContext.Current.CancellationToken)
@@ -555,7 +554,7 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "org-a", "user-a");
+            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "tenant-a", "user-a");
 
             using HttpRequestMessage request = CreateValidCreateFolderRequest("create-key-a", "My Folder");
 
@@ -569,7 +568,7 @@ public sealed class ArchiveFolderProcessWiringTests
                 FolderStreamName.Create("tenant-a", DeriveCreateFolderId("tenant-a", "create-key-a")));
             created.IsCreated.ShouldBeTrue();
             created.DisplayName.ShouldBe("My Folder");
-            created.OrganizationId.ShouldBe("org-a");
+            created.OrganizationId.ShouldBe("tenant-a");
             created.LifecycleState.ShouldBe(FolderLifecycleState.Active);
         }
         finally
@@ -585,7 +584,7 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "org-a", "user-a");
+            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "tenant-a", "user-a");
 
             HttpResponseMessage first = await host.Client
                 .SendAsync(CreateValidCreateFolderRequest("create-key-a", "My Folder"), TestContext.Current.CancellationToken)
@@ -611,7 +610,7 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "org-a", "user-a");
+            SeedCreateFolderPermissions(host.Permissions, "tenant-a", "tenant-a", "user-a");
 
             HttpResponseMessage first = await host.Client
                 .SendAsync(CreateValidCreateFolderRequest("create-key-a", "My Folder"), TestContext.Current.CancellationToken)
@@ -637,8 +636,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedAclPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedAclPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             string aclEntryId = FolderAclContract.DeriveAclEntryId("user", "user-a", "read");
             using HttpRequestMessage grant = new(HttpMethod.Put, $"/api/v1/folders/folder-a/acl/{aclEntryId}")
@@ -696,8 +695,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedAclPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedAclPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             HttpResponseMessage first = await host.Client
                 .SendAsync(CreateUpdateAclEntryRequest("acl-key-a", "grant"), TestContext.Current.CancellationToken)
@@ -723,8 +722,8 @@ public sealed class ArchiveFolderProcessWiringTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedAclPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedAclPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
 
             HttpResponseMessage grant = await host.Client
                 .SendAsync(CreateUpdateAclEntryRequest("acl-key-a", "grant"), TestContext.Current.CancellationToken)

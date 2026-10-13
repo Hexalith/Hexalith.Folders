@@ -78,6 +78,11 @@ public static partial class FolderCommandValidator
             return FolderCommandValidationResult.Rejected(FolderResultCode.InvalidFolderId);
         }
 
+        if (!string.Equals(command.OrganizationId, command.ManagedTenantId, StringComparison.Ordinal))
+        {
+            return FolderCommandValidationResult.Rejected(FolderResultCode.TenantMismatch);
+        }
+
         if (!FolderStreamName.TryCreate(command.ManagedTenantId, command.FolderId,
             out _, out FolderResultCode streamCode))
         {

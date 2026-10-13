@@ -170,7 +170,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         RecordingContentStore contentStore = new();
         RecordingDeleteOperationStore deleteStore = new();
         SequencedFolderPermissionEvidenceProvider permissions = new(
-            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
             FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
         WorkspaceFileMutationService service = Service(
             repository,
@@ -514,7 +514,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
                 .. requested.Events,
                 new RepositoryBound(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",
@@ -529,7 +529,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             boundState,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -552,7 +552,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             .. requested.Events,
             new RepositoryBound(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "repository-binding-a",
                 "provider-binding-a",
@@ -565,7 +565,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             .. prepare.Events,
             new FolderWorkspaceLifecycleEventRecorded(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "workspace-a",
                 FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -676,7 +676,7 @@ public sealed class FolderWorkspaceFileMutationServiceTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
                 "folder-a:7",
-                organizationId: "organization-a"));
+                organizationId: "tenant-a"));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

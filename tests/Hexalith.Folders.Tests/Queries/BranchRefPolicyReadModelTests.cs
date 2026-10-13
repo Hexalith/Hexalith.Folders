@@ -28,7 +28,7 @@ public sealed class BranchRefPolicyReadModelTests
             Now);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -42,7 +42,7 @@ public sealed class BranchRefPolicyReadModelTests
             repository.Load(streamName),
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -100,7 +100,7 @@ public sealed class BranchRefPolicyReadModelTests
             Now);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -116,7 +116,7 @@ public sealed class BranchRefPolicyReadModelTests
             repository.Load(streamName),
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",

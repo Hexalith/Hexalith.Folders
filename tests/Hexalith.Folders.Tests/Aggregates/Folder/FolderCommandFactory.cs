@@ -13,7 +13,7 @@ internal static class FolderCommandFactory
 {
     public static CreateFolder Create(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string displayName = "Folder A",
         string? description = "safe description",
@@ -26,7 +26,7 @@ internal static class FolderCommandFactory
         string? payloadTenantId = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             displayName,
             description,
@@ -40,7 +40,7 @@ internal static class FolderCommandFactory
 
     public static GrantFolderAccess GrantAccess(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         FolderAccessPrincipalKind principalKind = FolderAccessPrincipalKind.User,
         string principalId = "target-principal-a",
@@ -54,7 +54,7 @@ internal static class FolderCommandFactory
         IReadOnlyList<FolderAccessOperation>? operations = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             operations ?? [new FolderAccessOperation(FolderAccessOperationIntent.Grant, principalKind, principalId, action)],
             actorPrincipalId,
@@ -66,7 +66,7 @@ internal static class FolderCommandFactory
 
     public static RevokeFolderAccess RevokeAccess(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         FolderAccessPrincipalKind principalKind = FolderAccessPrincipalKind.User,
         string principalId = "target-principal-a",
@@ -80,7 +80,7 @@ internal static class FolderCommandFactory
         IReadOnlyList<FolderAccessOperation>? operations = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             operations ?? [new FolderAccessOperation(FolderAccessOperationIntent.Revoke, principalKind, principalId, action)],
             actorPrincipalId,
@@ -92,7 +92,7 @@ internal static class FolderCommandFactory
 
     public static ArchiveFolder Archive(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string requestSchemaVersion = "v1",
         string archiveReasonCode = "caller_requested",
@@ -104,7 +104,7 @@ internal static class FolderCommandFactory
         IReadOnlyDictionary<string, string?>? clientTenantIds = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             requestSchemaVersion,
             archiveReasonCode,
@@ -117,7 +117,7 @@ internal static class FolderCommandFactory
 
     public static CreateRepositoryBackedFolder CreateRepositoryBackedFolder(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string requestSchemaVersion = "v1",
         string repositoryBindingId = "repository-binding-a",
@@ -133,7 +133,7 @@ internal static class FolderCommandFactory
         string? payloadTenantId = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             requestSchemaVersion,
             repositoryBindingId,
@@ -150,7 +150,7 @@ internal static class FolderCommandFactory
 
     public static BindRepository BindRepository(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string requestSchemaVersion = "v1",
         string repositoryBindingId = "repository-binding-a",
@@ -165,7 +165,7 @@ internal static class FolderCommandFactory
         string? payloadTenantId = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             requestSchemaVersion,
             repositoryBindingId,
@@ -181,7 +181,7 @@ internal static class FolderCommandFactory
 
     public static PrepareWorkspace PrepareWorkspace(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string requestSchemaVersion = "v1",
         string workspaceId = "workspace-a",
@@ -195,7 +195,7 @@ internal static class FolderCommandFactory
         string? payloadTenantId = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             requestSchemaVersion,
             workspaceId,
@@ -210,7 +210,7 @@ internal static class FolderCommandFactory
 
     public static LockWorkspace LockWorkspace(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string requestSchemaVersion = "v1",
         string workspaceId = "workspace-a",
@@ -223,7 +223,7 @@ internal static class FolderCommandFactory
         string? payloadTenantId = null)
         => new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             requestSchemaVersion,
             workspaceId,
@@ -237,7 +237,7 @@ internal static class FolderCommandFactory
 
     public static ReleaseWorkspaceLock ReleaseWorkspaceLock(
         string managedTenantId = "tenant-a",
-        string organizationId = "organization-a",
+        string? organizationId = null,
         string folderId = "folder-a",
         string requestSchemaVersion = "v1",
         string workspaceId = "workspace-a",
@@ -261,7 +261,7 @@ internal static class FolderCommandFactory
 
         return new(
             managedTenantId,
-            organizationId,
+            organizationId ?? managedTenantId,
             folderId,
             requestSchemaVersion,
             workspaceId,

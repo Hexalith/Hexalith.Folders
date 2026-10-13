@@ -151,9 +151,11 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
         OrganizationPermissionProjection? prior = current.Value;
         if (prior is not null
             && (!string.Equals(prior.TenantId, tenantId, StringComparison.Ordinal)
-                || !string.Equals(prior.OrganizationId, organizationId, StringComparison.Ordinal)))
+                || !string.Equals(prior.OrganizationId, organizationId, StringComparison.Ordinal)
+                || prior.Grants is null
+                || prior.ProcessedMessages is null))
         {
-            throw new InvalidOperationException("Organization ACL projection has conflicting identity.");
+            throw new InvalidOperationException("Organization ACL projection state is invalid.");
         }
 
         string digest = payloadDigest ?? (@event is null ? "non-permission" :

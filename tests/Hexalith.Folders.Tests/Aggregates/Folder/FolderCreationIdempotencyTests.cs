@@ -56,7 +56,7 @@ public sealed class FolderCreationIdempotencyTests
         string? firstKey = repository.LastDurableKey;
 
         FolderResult second = gate.Handle(
-            FolderCommandFactory.Create(folderId: "folder-shared", idempotencyKey: "idempotency-a"),
+            FolderCommandFactory.Create(organizationId: "tenant-b", folderId: "folder-shared", idempotencyKey: "idempotency-a"),
             TenantEvidence("tenant-b"),
             AclEvidence("tenant-b"));
         string? secondKey = repository.LastDurableKey;
@@ -156,5 +156,5 @@ public sealed class FolderCreationIdempotencyTests
             "local-projection");
 
     private static FolderCreateAclEvidence AclEvidence(string tenantId = "tenant-a")
-        => FolderCreateAclEvidence.Allowed(tenantId, "organization-a", "principal-a");
+        => FolderCreateAclEvidence.Allowed(tenantId, tenantId, "principal-a");
 }

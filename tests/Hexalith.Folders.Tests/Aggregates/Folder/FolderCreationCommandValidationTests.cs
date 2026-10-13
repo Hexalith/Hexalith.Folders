@@ -71,6 +71,31 @@ public sealed class FolderCreationCommandValidationTests
     }
 
     [Fact]
+    public void ForeignOrganizationShouldFailSharedValidationBeforeFolderCreation()
+    {
+        IFolderCommand[] commands =
+        [
+            FolderCommandFactory.Create() with { OrganizationId = "tenant-b" },
+            FolderCommandFactory.GrantAccess() with { OrganizationId = "tenant-b" },
+            FolderCommandFactory.RevokeAccess() with { OrganizationId = "tenant-b" },
+            FolderCommandFactory.Archive() with { OrganizationId = "tenant-b" },
+            FolderCommandFactory.CreateRepositoryBackedFolder() with { OrganizationId = "tenant-b" },
+            FolderCommandFactory.LockWorkspace() with { OrganizationId = "tenant-b" },
+            FolderCommandFactory.ReleaseWorkspaceLock() with { OrganizationId = "tenant-b" },
+        ];
+        foreach (IFolderCommand command in commands)
+        {
+            FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
+            validation.IsAccepted.ShouldBeFalse();
+            validation.Code.ShouldBe(FolderResultCode.TenantMismatch);
+        }
+
+        FolderResult result = FolderAggregate.Handle(FolderState.Empty, (CreateFolder)commands[0]);
+        result.Code.ShouldBe(FolderResultCode.TenantMismatch);
+        result.Events.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void DuplicateCreateShouldReturnDuplicateEvidenceWithoutAppendingSecondEvent()
     {
         FolderResult first = FolderAggregate.Handle(FolderState.Empty, FolderCommandFactory.Create());

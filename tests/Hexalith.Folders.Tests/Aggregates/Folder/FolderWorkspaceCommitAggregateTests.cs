@@ -195,7 +195,7 @@ public sealed class FolderWorkspaceCommitAggregateTests
         string idempotencyKey = "idempotency-commit-a")
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "v1",
             workspaceId,
@@ -223,7 +223,7 @@ public sealed class FolderWorkspaceCommitAggregateTests
     private static MutateWorkspaceFile Mutation()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "v1",
             "workspace-a",
@@ -251,12 +251,12 @@ public sealed class FolderWorkspaceCommitAggregateTests
         FolderState boundState = createdState.Apply(
             [
                 .. requested.Events,
-                new RepositoryBound("tenant-a", "organization-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
+                new RepositoryBound("tenant-a", "tenant-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
             ],
             streamName);
         FolderResult configured = FolderAggregate.Handle(
             boundState,
-            new ConfigureBranchRefPolicy("tenant-a", "organization-a", "folder-a", "v1", "repository-binding-a", "branch-ref-policy-a", "branch_ref_primary", ["branch_ref_feature"], ["branch_ref_release"], "principal-a", "correlation-policy-a", "task-a", "idempotency-policy-a", PayloadTenantId: null),
+            new ConfigureBranchRefPolicy("tenant-a", "tenant-a", "folder-a", "v1", "repository-binding-a", "branch-ref-policy-a", "branch_ref_primary", ["branch_ref_feature"], ["branch_ref_release"], "principal-a", "correlation-policy-a", "task-a", "idempotency-policy-a", PayloadTenantId: null),
             Now);
         FolderState configuredState = boundState.Apply(configured.Events, streamName);
         FolderResult prepare = FolderAggregate.Handle(configuredState, FolderCommandFactory.PrepareWorkspace(), Now);
@@ -265,10 +265,10 @@ public sealed class FolderWorkspaceCommitAggregateTests
         [
             .. created.Events,
             .. requested.Events,
-            new RepositoryBound("tenant-a", "organization-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
+            new RepositoryBound("tenant-a", "tenant-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
             .. configured.Events,
             .. prepare.Events,
-            new FolderWorkspaceLifecycleEventRecorded("tenant-a", "organization-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared, DirtyResolution: null, OperationId: "workspace-a", "correlation-prepared-a", "task-a", "idempotency-workspace-outcome-a", "fingerprint-workspace-outcome-a", Now),
+            new FolderWorkspaceLifecycleEventRecorded("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared, DirtyResolution: null, OperationId: "workspace-a", "correlation-prepared-a", "task-a", "idempotency-workspace-outcome-a", "fingerprint-workspace-outcome-a", Now),
         ];
     }
 

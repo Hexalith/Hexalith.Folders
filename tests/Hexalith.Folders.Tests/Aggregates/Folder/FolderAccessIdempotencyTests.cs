@@ -105,7 +105,7 @@ public sealed class FolderAccessIdempotencyTests
         [
             new FolderAccessGranted(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 FolderAccessPrincipalKind.User,
                 "target-principal-a",
@@ -156,7 +156,7 @@ public sealed class FolderAccessIdempotencyTests
         [
             new FolderAccessRevoked(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 FolderAccessPrincipalKind.User,
                 "target-principal-y",
@@ -234,5 +234,5 @@ public sealed class FolderAccessIdempotencyTests
         => FolderAccessTenantEvidenceGateTests.Evidence(TenantAccessOutcome.Allowed, tenantId);
 
     internal static FolderAccessAclEvidence AclEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
-        => FolderAccessAclEvidence.Allowed(tenantId, "organization-a", folderId, "principal-a");
+        => FolderAccessAclEvidence.Allowed(tenantId, tenantId, folderId, "principal-a");
 }

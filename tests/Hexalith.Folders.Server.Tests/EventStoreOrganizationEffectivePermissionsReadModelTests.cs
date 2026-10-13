@@ -130,6 +130,115 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
             "projection:folders:folder-permissions:tenant-a:folder-a", ct)).Value!.LastSequence.ShouldBe(3);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CurrentFolderOverrideDoesNotRequireAnInitializedOrganizationBaseline(bool hasRejection)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new();
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        if (hasRejection)
+        {
+            await organization.ApplyNonPermissionEventAsync("tenant-a", "tenant-a", "rejection-1", 1, ct);
+            heads.CurrentSequence = 1;
+        }
+
+        await folder.ApplyAsync("tenant-a", "folder-a", "create-1", 1, "digest-1",
+            new FolderCreated("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+                FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a", "corr", "task",
+                "key", "fingerprint", clock.UtcNow), ct);
+        await folder.ApplyAsync("tenant-a", "folder-a", "grant-2", 2, "digest-2",
+            new FolderAccessGranted("tenant-a", "tenant-a", "folder-a", FolderAccessPrincipalKind.User,
+                "user-a", "read_metadata", "user-a", "corr", "task", "key", "fingerprint", 1, clock.UtcNow), ct);
+        heads.Heads["folder-a"] = 2;
+        EffectivePermissionsReadModelRequest request = new("tenant-a", "folder-a",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes");
+
+        EffectivePermissionsReadModelResult result = await folder.GetAsync(request, ct);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
+        result.Snapshot!.EvidenceRows.ShouldHaveSingleItem().Source
+            .ShouldBe(EffectivePermissionEvidenceSource.FolderOverrideGrant);
+        result.Snapshot.RevocationFreshnessEstablished.ShouldBeTrue();
+        EffectivePermissionsFolderPermissionEvidenceProvider evidence = new(folder, clock);
+        (await evidence.GetEvidenceAsync(new FolderPermissionEvidenceRequest("tenant-a", "user-a", "actor_present",
+            "read_metadata", "folder-a", "corr", "task", FolderOperationPolicyClass.StrictRead,
+            AllowBoundedStale: false), ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
+    }
+
+    [Fact]
+    public async Task LaggedBaselinePreservesFolderEvidenceForBoundedReadsAndStrictReadsRemainStale()
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new();
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        await organization.ApplyAsync("tenant-a", "tenant-a", "baseline-1", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+        await organization.ApplyAsync("tenant-a", "tenant-a", "grant-2", 2,
+            new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                "user-a", "read_metadata", "corr", "task", "key", "fingerprint"), ct);
+        heads.CurrentSequence = 3;
+        await folder.ApplyAsync("tenant-a", "folder-a", "create-1", 1, "digest-1",
+            new FolderCreated("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+                FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a", "corr", "task",
+                "key", "fingerprint", clock.UtcNow), ct);
+        heads.Heads["folder-a"] = 1;
+        EffectivePermissionsReadModelResult result = await folder.GetAsync(new("tenant-a", "folder-a",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes"), ct);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Stale);
+        result.Snapshot!.LifecycleState.ShouldBe(EffectivePermissionsFolderLifecycleState.Active);
+        result.Snapshot.EvidenceRows.ShouldHaveSingleItem().Action.ShouldBe("read_metadata");
+        result.Snapshot.Freshness.Stale.ShouldBeTrue();
+        result.Snapshot.Freshness.ReasonCode.ShouldBe("organization_projection_lagging");
+
+        EffectivePermissionsFolderPermissionEvidenceProvider evidence = new(folder, clock);
+        FolderPermissionEvidenceRequest request = new("tenant-a", "user-a", "actor_present", "read_metadata",
+            "folder-a", "corr", "task", FolderOperationPolicyClass.StrictRead, AllowBoundedStale: false);
+        (await evidence.GetEvidenceAsync(request, ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Stale);
+        (await evidence.GetEvidenceAsync(request with { AllowBoundedStale = true }, ct)).FreshnessClass
+            .ShouldBe("bounded_stale");
+
+        await folder.ApplyAsync("tenant-a", "folder-a", "revoke-2", 2, "digest-2",
+            new FolderAccessRevoked("tenant-a", "tenant-a", "folder-a", FolderAccessPrincipalKind.User,
+                "user-a", "read_metadata", "user-a", "corr", "task", "key", "fingerprint", 1, clock.UtcNow), ct);
+        heads.Heads["folder-a"] = 2;
+        (await evidence.GetEvidenceAsync(request with { AllowBoundedStale = true }, ct)).Status
+            .ShouldBe(FolderPermissionEvidenceStatus.Denied);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    public async Task NullOrganizationMessageMapFailsClosedWithoutAdvancingTheStoredProjection(long sequence)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new() { CurrentSequence = 1 };
+        OrganizationPermissionProjection corrupted = new("tenant-a", "tenant-a", 1, true, clock.UtcNow,
+            [], null!, [new FolderProjectionMessage(1, "event-1", "digest-1")]);
+        const string key = "projection:folders:organization-permissions:tenant-a";
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        (await store.TrySaveAsync("statestore", key, corrupted, string.Empty, ct)).ShouldBeTrue();
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+
+        (await organization.GetAsync(new("tenant-a", "organization_baseline",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes"), ct)).Status
+            .ShouldBe(EffectivePermissionsReadModelStatus.Malformed);
+        await Should.ThrowAsync<InvalidOperationException>(() => organization.ApplyNonPermissionEventAsync(
+            "tenant-a", "tenant-a", $"event-{sequence}", sequence, ct, $"digest-{sequence}"));
+        ReadModelEntry<OrganizationPermissionProjection> persisted = await store.GetAsync<OrganizationPermissionProjection>(
+            "statestore", key, ct);
+        persisted.ETag.ShouldBe("1");
+        persisted.Value!.LastSequence.ShouldBe(1);
+        persisted.Value.ProcessedMessages.ShouldBeNull();
+    }
+
     [Fact]
     public async Task OldRedeliveryBeyondBoundedIdentityWindowDoesNotChangeEitherProjection()
     {

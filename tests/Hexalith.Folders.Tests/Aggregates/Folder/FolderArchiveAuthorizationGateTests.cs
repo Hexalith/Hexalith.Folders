@@ -27,8 +27,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(outcome),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(expectedCode);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -51,8 +51,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(payloadTenantId: "tenant-from-payload"),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.TenantMismatch);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -69,8 +69,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Denied("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Denied("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -98,11 +98,11 @@ public sealed class FolderArchiveAuthorizationGateTests
             new FolderArchiveAclEvidence(
                 outcome,
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "principal-a",
                 FolderArchiveAclEvidence.ArchiveAction),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(expectedCode);
         result.Events.ShouldBeEmpty();
@@ -126,8 +126,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-b"),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-b"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.AclEvidenceUnavailable);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -144,8 +144,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Denied("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Denied("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.ArchivePolicyDenied);
         result.Events.ShouldBeEmpty();
@@ -170,8 +170,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            new FolderArchivePolicyEvidence(outcome, "tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            new FolderArchivePolicyEvidence(outcome, "tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(expectedCode);
         result.Events.ShouldBeEmpty();
@@ -195,8 +195,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Allowed("tenant-b", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-b", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.PolicyEvidenceMalformed);
         result.Events.ShouldBeEmpty();
@@ -241,8 +241,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.FolderNotFound);
         result.Events.ShouldBeEmpty();
@@ -265,8 +265,8 @@ public sealed class FolderArchiveAuthorizationGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.Archive(idempotencyKey: "idempotency-archive-b"),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"),
-            FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"));
+            FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"),
+            FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"));
 
         result.Code.ShouldBe(FolderResultCode.AlreadyArchived);
         result.Events.ShouldBeEmpty();
@@ -308,18 +308,18 @@ public sealed class FolderArchiveAuthorizationGateTests
             ? Evidence(TenantAccessOutcome.Denied, "tenant-a")
             : Evidence(TenantAccessOutcome.Allowed, "tenant-a");
         FolderArchiveAclEvidence aclEvidence = scenario == "acl_denied"
-            ? FolderArchiveAclEvidence.Denied("tenant-a", "organization-a", "folder-a", "principal-a")
-            : FolderArchiveAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a");
+            ? FolderArchiveAclEvidence.Denied("tenant-a", "tenant-a", "folder-a", "principal-a")
+            : FolderArchiveAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a");
         FolderArchivePolicyEvidence policyEvidence = scenario switch
         {
-            "policy_denied" => FolderArchivePolicyEvidence.Denied("tenant-a", "organization-a", "folder-a", "policy-v1"),
+            "policy_denied" => FolderArchivePolicyEvidence.Denied("tenant-a", "tenant-a", "folder-a", "policy-v1"),
             "policy_unavailable" => new FolderArchivePolicyEvidence(
                 FolderArchivePolicyOutcome.Unavailable,
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "policy-v1"),
-            _ => FolderArchivePolicyEvidence.Allowed("tenant-a", "organization-a", "folder-a", "policy-v1"),
+            _ => FolderArchivePolicyEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "policy-v1"),
         };
 
         FolderArchiveTenantGate gate = new(repository);

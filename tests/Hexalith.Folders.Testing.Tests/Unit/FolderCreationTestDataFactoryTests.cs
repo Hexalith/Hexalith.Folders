@@ -16,6 +16,17 @@ public sealed class FolderCreationTestDataFactoryTests
     }
 
     [Fact]
+    public void TenantOverrideShouldAlsoSupplyTheDefaultOrganizationIdentity()
+    {
+        CreateFolder command = FolderCreationTestDataFactory.Create(managedTenantId: "tenant-b");
+
+        command.OrganizationId.ShouldBe("tenant-b");
+        FolderCommandValidator.Validate(command).IsAccepted.ShouldBeTrue();
+        Should.Throw<ArgumentException>(() => FolderCreationTestDataFactory.Create(
+            managedTenantId: "tenant-b", organizationId: "tenant-a"));
+    }
+
+    [Fact]
     public void CreateShouldRejectUnsafeDefaultsOverrides()
     {
         Should.Throw<ArgumentException>(

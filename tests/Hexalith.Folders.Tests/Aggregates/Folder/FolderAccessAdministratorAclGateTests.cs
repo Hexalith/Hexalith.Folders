@@ -27,7 +27,7 @@ public sealed class FolderAccessAdministratorAclGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(),
             TenantEvidence(),
-            new FolderAccessAclEvidence(outcome, "tenant-a", "organization-a", "folder-a", "principal-a", "configure_provider_binding"));
+            new FolderAccessAclEvidence(outcome, "tenant-a", "tenant-a", "folder-a", "principal-a", "configure_provider_binding"));
 
         result.Code.ShouldBe(expectedCode);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -37,10 +37,10 @@ public sealed class FolderAccessAdministratorAclGateTests
     }
 
     [Theory]
-    [InlineData("tenant-b", "organization-a", "folder-a", "principal-a")]
+    [InlineData("tenant-b", "tenant-a", "folder-a", "principal-a")]
     [InlineData("tenant-a", "organization-b", "folder-a", "principal-a")]
-    [InlineData("tenant-a", "organization-a", "folder-b", "principal-a")]
-    [InlineData("tenant-a", "organization-a", "folder-a", "principal-b")]
+    [InlineData("tenant-a", "tenant-a", "folder-b", "principal-a")]
+    [InlineData("tenant-a", "tenant-a", "folder-a", "principal-b")]
     public void AllowedAclWithContextMismatchShouldReturnEvidenceUnavailable(
         string tenantId,
         string organizationId,
@@ -71,7 +71,7 @@ public sealed class FolderAccessAdministratorAclGateTests
             new FolderAccessAclEvidence(
                 FolderAccessAclOutcome.Allowed,
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "principal-a",
                 "create_folder"));
@@ -84,7 +84,7 @@ public sealed class FolderAccessAdministratorAclGateTests
             new FolderAccessAclEvidence(
                 FolderAccessAclOutcome.Allowed,
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "principal-a",
                 "   "));
@@ -99,7 +99,7 @@ public sealed class FolderAccessAdministratorAclGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(),
             FolderAccessTenantEvidenceGateTests.Evidence(TenantAccessOutcome.Denied),
-            new FolderAccessAclEvidence(FolderAccessAclOutcome.Denied, "tenant-a", "organization-a", "folder-a", "principal-a", "configure_provider_binding"));
+            new FolderAccessAclEvidence(FolderAccessAclOutcome.Denied, "tenant-a", "tenant-a", "folder-a", "principal-a", "configure_provider_binding"));
 
         result.Code.ShouldBe(FolderResultCode.TenantAccessDenied);
         repository.StreamNamesConstructed.ShouldBe(0);

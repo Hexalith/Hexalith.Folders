@@ -183,7 +183,7 @@ public sealed class FinalAclReauthorizationTests
             CancellationToken cancellationToken = default)
             => Task.FromResult<OrganizationProviderBinding?>(new OrganizationProviderBinding(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "provider-binding-a",
                 "github",
                 "credential-reference-a",

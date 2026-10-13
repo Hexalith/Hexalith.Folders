@@ -132,8 +132,8 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
         // Seed the lifecycle snapshot with the shared correlation so query steps (which require the
         // request correlation to match the snapshot's evidence-scope correlation) succeed end-to-end.
         SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder_handoff_0001", identity.CorrelationId);
@@ -294,8 +294,8 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
 
         // ----- REST -----
         using HttpRequestMessage restRequest = CreateArchiveRequest(
@@ -368,8 +368,8 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
 
         host.Repository.ResetAppendCounters();
         int eventsBeforeChain = host.Repository.EventsAppended;
@@ -440,8 +440,8 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
 
         host.Repository.ResetAppendCounters();
         int eventsBeforeChain = host.Repository.EventsAppended;
@@ -608,8 +608,8 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
         SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder_handoff_0001", sharedCorrelationId);
 
         // Drive REST + SDK mutations with the shared correlation (the last mutating step's correlation is
@@ -703,8 +703,8 @@ public sealed class MixedSurfaceHandoffTests
 
         await using MixedSurfaceHost host = await MixedSurfaceHost.StartAsync().ConfigureAwait(true);
         SeedTenant(host.TenantStore, "tenant-a", "user-a");
-        SeedArchiveDeniedPermissions(host.Permissions, "tenant-a", "org-a", "folder_handoff_0001", "user-a");
-        SeedFolder(host.Repository, "tenant-a", "org-a", "folder_handoff_0001");
+        SeedArchiveDeniedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder_handoff_0001", "user-a");
+        SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_handoff_0001");
 
         ParityRow archiveRow = ParityScenarios.Row("ArchiveFolder");
         archiveRow.Transport.ErrorCodeSet.ShouldNotContain("folder_acl_denied", "v2 collapses fresh ACL denial into the non-enumerating tenant_access_denied outcome.");

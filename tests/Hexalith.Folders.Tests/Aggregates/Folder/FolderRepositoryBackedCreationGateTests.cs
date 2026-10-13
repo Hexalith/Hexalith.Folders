@@ -363,7 +363,7 @@ public sealed class FolderRepositoryBackedCreationGateTests
             Calls++;
             return Task.FromResult(revokeAfterFirstRead && Calls > 1
                 ? FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8")
-                : FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"));
+                : FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"));
         }
     }
 

@@ -91,7 +91,7 @@ public sealed class FolderWorkspacePreparationServiceTests
         RecordingFolderRepository repository = ConfiguredPreparingRepository();
         RecordingWorkspaceReadinessValidator readiness = new(ReadinessReady());
         SequencedFolderPermissionEvidenceProvider permissions = new(
-            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
             FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
         WorkspacePreparationService service = Service(repository, readiness, permissions);
 
@@ -110,7 +110,7 @@ public sealed class FolderWorkspacePreparationServiceTests
         RecordingWorkspaceReadinessValidator readiness = new(
             ReadinessFailed(ProviderFailureCategory.UnknownProviderOutcome));
         SequencedFolderPermissionEvidenceProvider permissions = new(
-            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
             FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
         WorkspacePreparationService service = Service(repository, readiness, permissions);
 
@@ -233,7 +233,7 @@ public sealed class FolderWorkspacePreparationServiceTests
         FolderResult requested = FolderAggregate.Handle(createdState, FolderCommandFactory.CreateRepositoryBackedFolder(), Now);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -247,7 +247,7 @@ public sealed class FolderWorkspacePreparationServiceTests
             boundState,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -347,7 +347,7 @@ public sealed class FolderWorkspacePreparationServiceTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
                 "folder-a:7",
-                organizationId: "organization-a"));
+                organizationId: "tenant-a"));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

@@ -116,14 +116,14 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
             // Each surface archives a distinct active folder so both are genuine first-write mutations that
             // reach 'accepted' (202) over the wire — not the prior false-green where a second archive on the
             // already-archived folder was masked as 202 by the flattening gateway (it is really a 403 safe
             // denial; see ArchiveFolderProcessWiringTests.ArchiveRequestShouldSurfaceAlreadyArchived...).
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderB, "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", CandidateFolderB);
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderB, "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", CandidateFolderB);
 
             // REST run.
             const string restCorrelation = "correlation-rest-archive";
@@ -181,7 +181,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", CandidateFolderA, correlationId: "corr_shared_123456");
 
             // REST run — the lifecycle endpoint requires the request correlation to match the snapshot's
@@ -219,7 +219,7 @@ public sealed class GoldenLifecycleParityTests
         {
             const string correlationId = "correlation-task-status";
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             host.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderB));
             using HttpResponseMessage folderMismatch = await host.HttpClient.GetAsync(
@@ -322,7 +322,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             (string Header, string Value, string Code)[] cases =
             [
@@ -380,7 +380,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             using HttpRequestMessage request = new(
                 HttpMethod.Get,
                 $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
@@ -422,7 +422,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             string path = $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status";
             if (queryName.Length > 0)
             {
@@ -587,7 +587,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             using HttpRequestMessage request = new(
                 HttpMethod.Post,
                 $"/api/v2/folders/{CandidateFolderA}/archive")
@@ -625,7 +625,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             using HttpRequestMessage missingRoot = new(
                 HttpMethod.Post,
@@ -694,7 +694,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             using HttpRequestMessage repeatedHeader = new(
                 HttpMethod.Post,
@@ -811,7 +811,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", uppercaseFolder, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", uppercaseFolder, "user-a");
             SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", uppercaseFolder, "Correlation_Uppercase_0001");
             using HttpRequestMessage request = new(
                 HttpMethod.Get,
@@ -843,7 +843,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", folderId, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", folderId, "user-a");
             using HttpRequestMessage request = new(HttpMethod.Post, $"/api/v2/folders/{folderId}/archive")
             {
                 Content = JsonContent.Create(new
@@ -896,7 +896,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             HexalithFoldersApiException exception = await Should.ThrowAsync<HexalithFoldersApiException>(() =>
                 host.SdkClient.GetFolderLifecycleStatusAsync(
@@ -976,7 +976,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             using HttpRequestMessage request = new(
                 HttpMethod.Get,
                 $"/api/v2/folders/{CandidateFolderA}/lifecycle-status");
@@ -1026,7 +1026,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a", "mutate_files");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a", "mutate_files");
             using HttpRequestMessage request = new(
                 HttpMethod.Put,
                 $"/api/v2/folders/{CandidateFolderA}/workspaces/{CandidateWorkspace}/files/change")
@@ -1082,7 +1082,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a", "mutate_files");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a", "mutate_files");
             using HttpRequestMessage request = new(
                 HttpMethod.Put,
                 $"/api/v2/folders/{CandidateFolderA}/workspaces/{CandidateWorkspace}/files/change")
@@ -1126,7 +1126,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a", "read_branch_ref_policy");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a", "read_branch_ref_policy");
 
             BranchRefPolicy result = await host.SdkClient.GetBranchRefPolicyAsync(
                 CandidateFolderA,
@@ -1170,7 +1170,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             using HttpRequestMessage missingBody = new(
                 HttpMethod.Post,
@@ -1212,7 +1212,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             using HttpRequestMessage request = new(
                 HttpMethod.Get,
                 $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
@@ -1277,7 +1277,7 @@ public sealed class GoldenLifecycleParityTests
             try
             {
                 SeedTenant(host.TenantStore, "tenant-a", "user-a");
-                SeedTaskStatusPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+                SeedTaskStatusPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
                 using HttpResponseMessage response = await host.HttpClient.GetAsync(
                     $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status",
@@ -1302,7 +1302,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", CandidateFolderA, "correlation-audit-allow");
             SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", CandidateFolderB, "correlation-audit-deny");
 
@@ -1340,7 +1340,7 @@ public sealed class GoldenLifecycleParityTests
     {
         EffectivePermissionsReadModelSnapshot snapshot = new(
             "tenant-a",
-            "org-a",
+            "tenant-a",
             CandidateFolderA,
             EffectivePermissionsFolderLifecycleState.Active,
             [
@@ -1503,7 +1503,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(notBound.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(notBound.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(notBound.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             notBound.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderB));
             using HttpRequestMessage request = new(
                 HttpMethod.Get,
@@ -1528,7 +1528,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(unavailable.TenantStore, "tenant-a", "user-a");
-            SeedTaskStatusPermissions(unavailable.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedTaskStatusPermissions(unavailable.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             unavailable.TaskStatusReadModel.Save(TaskSnapshot(CandidateFolderA) with { FolderId = null! });
             using HttpRequestMessage request = new(
                 HttpMethod.Get,
@@ -1593,8 +1593,8 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder_create_0001");
-            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", "folder_create_0001", "user-a", "manage_folder_access");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder_create_0001");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", "folder_create_0001", "user-a", "manage_folder_access");
             byte[] payload = Encoding.UTF8.GetBytes(
                 "{\"requestSchemaVersion\":\"v2\",\"folderId\":\"folder_create_0001\",\"branchRefPolicy\":{\"requestSchemaVersion\":\"v2\"}}");
             using HttpContent content = unknownContentLength
@@ -1670,7 +1670,7 @@ public sealed class GoldenLifecycleParityTests
             string folderTenantId = authorityState == "cross-tenant" ? "tenant-b" : "tenant-a";
             if (authorityState != "missing")
             {
-                SeedFolder(host.Repository, folderTenantId, "org-a", folderId);
+                SeedFolder(host.Repository, folderTenantId, folderTenantId, folderId);
             }
 
             if (authorityState != "absent-authority")
@@ -1698,7 +1698,7 @@ public sealed class GoldenLifecycleParityTests
 
                 host.Permissions.Save(new EffectivePermissionsReadModelSnapshot(
                     folderTenantId,
-                    "org-a",
+                    folderTenantId,
                     folderId,
                     authorityState == "missing"
                         ? EffectivePermissionsFolderLifecycleState.Missing
@@ -1802,8 +1802,8 @@ public sealed class GoldenLifecycleParityTests
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
             string folderId = bindRepository ? CandidateFolderA : "folder_create_0001";
-            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", folderId, "user-a", "manage_folder_access");
-            SeedFolder(host.Repository, "tenant-a", "org-a", folderId);
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "tenant-a", folderId, "user-a", "manage_folder_access");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", folderId);
             using HttpRequestMessage request = new(HttpMethod.Post,
                 bindRepository ? $"/api/v2/folders/{CandidateFolderA}/repository-bindings" : "/api/v2/folders/repository-backed")
             {
@@ -1855,7 +1855,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
 
             using HttpRequestMessage required = new(HttpMethod.Post, $"/api/v2/folders/{CandidateFolderA}/archive")
             {
@@ -1898,7 +1898,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v2/folders/{CandidateFolderA}/lifecycle-status");
             request.Headers.Add("X-Correlation-Id", "correlation-audit-throw");
             request.Headers.Add("X-PD10-Test-Throw", "true");
@@ -1934,7 +1934,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderA, "user-a");
             using HttpRequestMessage request = new(
                 HttpMethod.Post,
                 $"/api/v2/folders/{CandidateFolderA}/archive")
@@ -2025,7 +2025,7 @@ public sealed class GoldenLifecycleParityTests
                 TestContext.Current.CancellationToken).ConfigureAwait(true);
             host.Permissions.Save(new EffectivePermissionsReadModelSnapshot(
                 "tenant-a",
-                "org-a",
+                "tenant-a",
                 CandidateFolderA,
                 EffectivePermissionsFolderLifecycleState.Active,
                 [
@@ -2302,11 +2302,11 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", "folder-a");
             // Each surface archives its own active folder so both are genuine first-write 202s over the wire.
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderB, "user-a");
-            SeedFolder(host.Repository, "tenant-a", "org-a", CandidateFolderB);
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", CandidateFolderB, "user-a");
+            SeedFolder(host.Repository, "tenant-a", "tenant-a", CandidateFolderB);
 
             const string restTaskId = "task-echo-rest-0001";
             using HttpRequestMessage restRequest = CreateArchiveRequest("folder-a", "archive-key-rest-echo", "correlation-rest-echo", restTaskId);
@@ -2362,7 +2362,7 @@ public sealed class GoldenLifecycleParityTests
         try
         {
             SeedTenant(host.TenantStore, "tenant-a", "user-a");
-            SeedPermissions(host.Permissions, "tenant-a", "org-a", "folder-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "tenant-a", "folder-a", "user-a");
             SeedLifecycleStatus(host.LifecycleReadModel, "tenant-a", "folder-a", correlationId: "corr-audit");
 
             using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/folders/folder-a/lifecycle-status");
@@ -2692,8 +2692,8 @@ public sealed class GoldenLifecycleParityTests
             // ---- Step 2: CreateRepositoryBackedFolder — mutating_command → 202 (REST + SDK equivalence) ----
             // Makes an existing Unbound folder repository-backed (the aggregate requires IsCreated && Unbound),
             // a genuine first-write over the wire: REST → gateway → /process → aggregate gate → 202.
-            host.SeedFolderCreationPermissions("tenant-a", "org-a", "folder-create-rest", "user-a");
-            host.SeedUnboundFolder("tenant-a", "org-a", "folder-create-rest");
+            host.SeedFolderCreationPermissions("tenant-a", "tenant-a", "folder-create-rest", "user-a");
+            host.SeedUnboundFolder("tenant-a", "tenant-a", "folder-create-rest");
             using (HttpRequestMessage createRequest = CreateRepositoryBackedRequest(
                 folderId: "folder-create-rest",
                 idempotencyKey: "idempotency-create-rest",
@@ -2708,8 +2708,8 @@ public sealed class GoldenLifecycleParityTests
             }
 
             // SDK equivalence for the canonical mutating step against the same host (own fresh folder).
-            host.SeedFolderCreationPermissions("tenant-a", "org-a", "folder-create-sdk", "user-a");
-            host.SeedUnboundFolder("tenant-a", "org-a", "folder-create-sdk");
+            host.SeedFolderCreationPermissions("tenant-a", "tenant-a", "folder-create-sdk", "user-a");
+            host.SeedUnboundFolder("tenant-a", "tenant-a", "folder-create-sdk");
             AcceptedCommand sdkCreate = await host.SdkClient.CreateRepositoryBackedFolderAsync(
                 idempotency_Key: "idempotency-create-sdk",
                 x_Correlation_Id: "correlation_create_sdk",
@@ -2740,8 +2740,8 @@ public sealed class GoldenLifecycleParityTests
             // ---- Step 3: PrepareWorkspace — mutating_command → 202 ----
             // Seed a folder bound + branch-policy-configured (workspace lifecycle = Preparing) and grant the
             // prepare_workspace action token; PrepareWorkspace's WorkspacePrepared transition is valid from Preparing.
-            host.SeedWorkspacePermissions("tenant-a", "org-a", "folder-prepare", "user-a", "prepare_workspace");
-            host.SeedBoundFolderReadyForPreparation("tenant-a", "org-a", "folder-prepare");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-prepare", "user-a", "prepare_workspace");
+            host.SeedBoundFolderReadyForPreparation("tenant-a", "tenant-a", "folder-prepare");
             using (HttpRequestMessage prepareRequest = new(HttpMethod.Post, "/api/v1/folders/folder-prepare/workspaces/workspace-a/preparation")
             {
                 Content = JsonContent.Create(new
@@ -2763,8 +2763,8 @@ public sealed class GoldenLifecycleParityTests
 
             // ---- Step 4: LockWorkspace — mutating_command → 202 ----
             // Lock requires workspace lifecycle = Ready; seed bound + prepared (Ready) state.
-            host.SeedWorkspacePermissions("tenant-a", "org-a", "folder-lock", "user-a", "lock_workspace");
-            host.SeedReadyWorkspace("tenant-a", "org-a", "folder-lock");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-lock", "user-a", "lock_workspace");
+            host.SeedReadyWorkspace("tenant-a", "tenant-a", "folder-lock");
             using (HttpRequestMessage lockRequest = new(HttpMethod.Post, "/api/v1/folders/folder-lock/workspaces/workspace-a/lock")
             {
                 Content = JsonContent.Create(new
@@ -2785,8 +2785,8 @@ public sealed class GoldenLifecycleParityTests
 
             // ---- Step 5: AddFile — mutating_command → 202 ----
             // AddFile requires workspace = Locked with the lock held by this task and unexpired; seed that state.
-            host.SeedWorkspacePermissions("tenant-a", "org-a", "folder-addfile", "user-a", "mutate_files");
-            host.SeedLockedWorkspace("tenant-a", "org-a", "folder-addfile", holderTaskId: "task-addfile");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-addfile", "user-a", "mutate_files");
+            host.SeedLockedWorkspace("tenant-a", "tenant-a", "folder-addfile", holderTaskId: "task-addfile");
             using (HttpRequestMessage addFileRequest = new(HttpMethod.Post, "/api/v1/folders/folder-addfile/workspaces/workspace-a/files/add")
             {
                 Content = JsonContent.Create(new
@@ -2823,8 +2823,8 @@ public sealed class GoldenLifecycleParityTests
             // ---- Step 6: CommitWorkspace — mutating_command → 202 ----
             // Commit requires workspace = ChangesStaged with the lock held by this task; seed that state.
             // The commit readiness validator and commit executor are wired to succeed (see host composition).
-            host.SeedWorkspacePermissions("tenant-a", "org-a", "folder-commit", "user-a", "commit");
-            host.SeedChangesStagedWorkspace("tenant-a", "org-a", "folder-commit", holderTaskId: "task-commit");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", "folder-commit", "user-a", "commit");
+            host.SeedChangesStagedWorkspace("tenant-a", "tenant-a", "folder-commit", holderTaskId: "task-commit");
             using (HttpRequestMessage commitRequest = new(HttpMethod.Post, "/api/v1/folders/folder-commit/workspaces/workspace-a/commits")
             {
                 Content = JsonContent.Create(new
@@ -2853,7 +2853,7 @@ public sealed class GoldenLifecycleParityTests
             // read_metadata. Grant only the candidate token: both the raw v2 surface and generated SDK must
             // still reach the handler through the single preauthorization decision, with no legacy re-check.
             const string contextFolder = "folder_context_001";
-            host.SeedCandidateOnlyWorkspacePermissions("tenant-a", "org-a", contextFolder, "user-a", "mutate_files");
+            host.SeedCandidateOnlyWorkspacePermissions("tenant-a", "tenant-a", contextFolder, "user-a", "mutate_files");
             using (HttpRequestMessage listRequest = new(HttpMethod.Get, $"/api/v2/folders/{contextFolder}/workspaces/{CandidateWorkspace}/context/tree?limit=10"))
             {
                 listRequest.Headers.Add("X-Correlation-Id", "correlation_context_001");
@@ -2884,7 +2884,7 @@ public sealed class GoldenLifecycleParityTests
             // (200/projected if reachable, else the canonical 503) — never an oracle-metadata-only claim. The
             // happy-path 200 is proven by Server.Tests.WorkspaceStatusEndpointTests.
             const string statusFolder = "folder_status_0001";
-            host.SeedWorkspacePermissions("tenant-a", "org-a", statusFolder, "user-a", "read_workspace_status");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", statusFolder, "user-a", "read_workspace_status");
             host.SeedWorkspaceStatus("tenant-a", statusFolder, CandidateWorkspace);
             using (HttpRequestMessage statusRequest = new(HttpMethod.Get, $"/api/v1/folders/{statusFolder}/workspaces/{CandidateWorkspace}/status"))
             {
@@ -2931,7 +2931,7 @@ public sealed class GoldenLifecycleParityTests
 
             // ---- Step 9: GetFolderLifecycleStatus (audit inspection surrogate) — query → 200 (REST + SDK) ----
             const string lifecycleFolder = "folder_lifecycle_1";
-            host.SeedWorkspacePermissions("tenant-a", "org-a", lifecycleFolder, "user-a", "read_metadata");
+            host.SeedWorkspacePermissions("tenant-a", "tenant-a", lifecycleFolder, "user-a", "read_metadata");
             host.SeedLifecycleStatus("tenant-a", lifecycleFolder, correlationId: "correlation_lifecycle");
             using (HttpRequestMessage lifecycleRequest = new(HttpMethod.Get, $"/api/v1/folders/{lifecycleFolder}/lifecycle-status"))
             {
@@ -3454,7 +3454,7 @@ public sealed class GoldenLifecycleParityTests
             // supported — the proven composition from ProviderReadinessEndpointTests (FakeGitProvider rows).
             SeedableProviderReadinessBindingReader bindingReader = new(new OrganizationProviderBinding(
                 ManagedTenantId: "tenant-a",
-                OrganizationId: "org-a",
+                OrganizationId: "tenant-a",
                 ProviderBindingRef: "binding-a",
                 ProviderKind: "github",
                 CredentialReferenceId: "credential-ref-a",

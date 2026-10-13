@@ -105,7 +105,7 @@ public sealed class FolderWorkspaceCommitServiceTests
         RecordingCommitExecutor executor = new();
         RecordingCommitReadinessValidator readiness = new();
         SequencedFolderPermissionEvidenceProvider permissions = new(
-            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
             FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
         WorkspaceCommitService service = Service(repository, executor, permissions, readiness);
 
@@ -332,7 +332,7 @@ public sealed class FolderWorkspaceCommitServiceTests
     private static CommitWorkspace CommitCommand()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "v1",
             "workspace-a",
@@ -368,7 +368,7 @@ public sealed class FolderWorkspaceCommitServiceTests
     private static MutateWorkspaceFile Mutation()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "v1",
             "workspace-a",
@@ -395,12 +395,12 @@ public sealed class FolderWorkspaceCommitServiceTests
         FolderState boundState = createdState.Apply(
             [
                 .. requested.Events,
-                new RepositoryBound("tenant-a", "organization-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
+                new RepositoryBound("tenant-a", "tenant-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
             ],
             streamName);
         FolderResult configured = FolderAggregate.Handle(
             boundState,
-            new ConfigureBranchRefPolicy("tenant-a", "organization-a", "folder-a", "v1", "repository-binding-a", "branch-ref-policy-a", "branch_ref_primary", ["branch_ref_feature"], ["branch_ref_release"], "principal-a", "correlation-policy-a", "task-a", "idempotency-policy-a", PayloadTenantId: null),
+            new ConfigureBranchRefPolicy("tenant-a", "tenant-a", "folder-a", "v1", "repository-binding-a", "branch-ref-policy-a", "branch_ref_primary", ["branch_ref_feature"], ["branch_ref_release"], "principal-a", "correlation-policy-a", "task-a", "idempotency-policy-a", PayloadTenantId: null),
             Now);
         FolderState configuredState = boundState.Apply(configured.Events, streamName);
         FolderResult prepare = FolderAggregate.Handle(configuredState, FolderCommandFactory.PrepareWorkspace(), Now);
@@ -409,10 +409,10 @@ public sealed class FolderWorkspaceCommitServiceTests
         [
             .. created.Events,
             .. requested.Events,
-            new RepositoryBound("tenant-a", "organization-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
+            new RepositoryBound("tenant-a", "tenant-a", "folder-a", "repository-binding-a", "provider-binding-a", "correlation-bound-a", "task-bound-a", "idempotency-bound-a", "fingerprint-bound-a", Now),
             .. configured.Events,
             .. prepare.Events,
-            new FolderWorkspaceLifecycleEventRecorded("tenant-a", "organization-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared, DirtyResolution: null, OperationId: "workspace-a", "correlation-prepared-a", "task-a", "idempotency-workspace-outcome-a", "fingerprint-workspace-outcome-a", Now),
+            new FolderWorkspaceLifecycleEventRecorded("tenant-a", "tenant-a", "folder-a", "workspace-a", FolderWorkspaceLifecycleEvent.WorkspacePrepared, DirtyResolution: null, OperationId: "workspace-a", "correlation-prepared-a", "task-a", "idempotency-workspace-outcome-a", "fingerprint-workspace-outcome-a", Now),
         ];
     }
 
@@ -487,7 +487,7 @@ public sealed class FolderWorkspaceCommitServiceTests
         public Task<FolderPermissionEvidenceResult> GetEvidenceAsync(
             FolderPermissionEvidenceRequest request,
             CancellationToken cancellationToken = default)
-            => Task.FromResult(result ?? FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"));
+            => Task.FromResult(result ?? FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator

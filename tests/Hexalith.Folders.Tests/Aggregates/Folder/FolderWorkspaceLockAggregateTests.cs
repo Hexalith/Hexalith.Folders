@@ -211,7 +211,7 @@ public sealed class FolderWorkspaceLockAggregateTests
         string idempotencyKey)
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "workspace-a",
             lifecycleEvent,
@@ -228,7 +228,7 @@ public sealed class FolderWorkspaceLockAggregateTests
             [
                 new FolderWorkspaceLifecycleEventRecorded(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "workspace-a",
                     FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -249,7 +249,7 @@ public sealed class FolderWorkspaceLockAggregateTests
             bound,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -275,7 +275,7 @@ public sealed class FolderWorkspaceLockAggregateTests
             [
                 new RepositoryBound(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",

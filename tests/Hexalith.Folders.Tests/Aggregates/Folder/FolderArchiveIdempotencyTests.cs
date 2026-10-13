@@ -122,7 +122,7 @@ public sealed class FolderArchiveIdempotencyTests
         [
             new FolderArchived(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 validation.ArchiveReasonCode!.Value,
                 "principal-a",
@@ -170,7 +170,7 @@ public sealed class FolderArchiveIdempotencyTests
         [
             new FolderArchived(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 validation.ArchiveReasonCode!.Value,
                 "principal-a",
@@ -269,13 +269,13 @@ public sealed class FolderArchiveIdempotencyTests
             "local-projection");
 
     private static FolderArchiveAclEvidence AclEvidence(string tenantId = "tenant-a", string folderId = "folder-a")
-        => FolderArchiveAclEvidence.Allowed(tenantId, "organization-a", folderId, "principal-a");
+        => FolderArchiveAclEvidence.Allowed(tenantId, tenantId, folderId, "principal-a");
 
     private static FolderArchivePolicyEvidence PolicyEvidence(
         string tenantId = "tenant-a",
         string folderId = "folder-a",
         string policyVersion = "policy-v1")
-        => FolderArchivePolicyEvidence.Allowed(tenantId, "organization-a", folderId, policyVersion);
+        => FolderArchivePolicyEvidence.Allowed(tenantId, tenantId, folderId, policyVersion);
 
     private static string ArchiveDecisionFingerprint(ArchiveFolder command, FolderCommandValidationResult validation)
         => FolderCommandValidator.BindArchiveDecisionFingerprint(

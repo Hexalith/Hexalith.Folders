@@ -15,7 +15,7 @@ public sealed class FolderCreationProjectionReplayTests
         // here too: a misrouted event is skipped, not silently filed under either tenant.
         FolderCreated eventWithMismatchedPayload = new(
             "payload-tenant",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "Folder A",
             null,
@@ -116,7 +116,7 @@ public sealed class FolderCreationProjectionReplayTests
         string idempotencyKey = "idempotency-a")
         => new(
             tenantId,
-            "organization-a",
+            "tenant-a",
             folderId,
             displayName,
             null,

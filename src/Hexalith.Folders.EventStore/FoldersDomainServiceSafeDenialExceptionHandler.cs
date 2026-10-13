@@ -34,7 +34,7 @@ internal sealed class FoldersDomainServiceSafeDenialExceptionHandler : IExceptio
             {
                 StatusCodes.Status401Unauthorized => "Authentication required",
                 StatusCodes.Status404NotFound => "Resource not available",
-                StatusCodes.Status503ServiceUnavailable => "Authorization evidence unavailable",
+                StatusCodes.Status503ServiceUnavailable => "Read model unavailable",
                 _ => "Authorization denied",
             },
             statusCode: denial.StatusCode,

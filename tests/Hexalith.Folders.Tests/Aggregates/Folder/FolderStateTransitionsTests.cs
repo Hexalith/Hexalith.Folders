@@ -285,7 +285,7 @@ public sealed class FolderStateTransitionsTests
     private static RepositoryBindingRequested RepositoryBindingRequested()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -301,7 +301,7 @@ public sealed class FolderStateTransitionsTests
     private static RepositoryBound RepositoryBound()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -316,7 +316,7 @@ public sealed class FolderStateTransitionsTests
         string idempotencyKey)
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "workspace-a",
             workspaceLifecycleEvent,

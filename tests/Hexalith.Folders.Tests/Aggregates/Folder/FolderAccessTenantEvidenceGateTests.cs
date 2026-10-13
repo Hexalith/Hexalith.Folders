@@ -27,7 +27,7 @@ public sealed class FolderAccessTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(),
             Evidence(outcome),
-            FolderAccessAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"));
+            FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"));
 
         result.Code.ShouldBe(expectedCode);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -53,7 +53,7 @@ public sealed class FolderAccessTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(),
             Evidence(TenantAccessOutcome.Denied, "tenant-private-victim"),
-            FolderAccessAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"));
+            FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.TenantAccessDenied);
         result.ManagedTenantId.ShouldBeNull();
@@ -86,7 +86,7 @@ public sealed class FolderAccessTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             command,
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderAccessAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"));
+            FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.TenantMismatch);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -107,7 +107,7 @@ public sealed class FolderAccessTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(managedTenantId: "tenant-victim"),
             Evidence(TenantAccessOutcome.Allowed, "tenant-attacker"),
-            FolderAccessAclEvidence.Allowed("tenant-attacker", "organization-a", "folder-a", "principal-a"));
+            FolderAccessAclEvidence.Allowed("tenant-attacker", "tenant-a", "folder-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.TenantMismatch);
         repository.StreamNamesConstructed.ShouldBe(0);
@@ -125,7 +125,7 @@ public sealed class FolderAccessTenantEvidenceGateTests
         FolderResult result = gate.Handle(
             FolderCommandFactory.GrantAccess(managedTenantId: "tenant-a"),
             Evidence(TenantAccessOutcome.Allowed, "tenant-a"),
-            FolderAccessAclEvidence.Allowed("tenant-a", "organization-a", "folder-a", "principal-a"));
+            FolderAccessAclEvidence.Allowed("tenant-a", "tenant-a", "folder-a", "principal-a"));
 
         result.Code.ShouldBe(FolderResultCode.Accepted);
         repository.LastStreamName.ShouldBe("tenant-a:folders:folder-a");

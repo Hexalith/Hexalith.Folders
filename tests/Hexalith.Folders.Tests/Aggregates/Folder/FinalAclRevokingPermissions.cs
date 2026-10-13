@@ -16,6 +16,6 @@ internal sealed class FinalAclRevokingPermissions(int allowedCalls = 1) : IFolde
         Requests.Add(request);
         return Task.FromResult(Calls > allowedCalls
             ? FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "organization-a:8")
-            : FolderPermissionEvidenceResult.Allowed("organization-a:7", organizationId: "organization-a"));
+            : FolderPermissionEvidenceResult.Allowed("organization-a:7", organizationId: "tenant-a"));
     }
 }

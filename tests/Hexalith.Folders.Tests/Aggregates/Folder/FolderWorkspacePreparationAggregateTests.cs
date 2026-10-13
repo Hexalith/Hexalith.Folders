@@ -102,7 +102,7 @@ public sealed class FolderWorkspacePreparationAggregateTests
             [
                 new FolderWorkspaceLifecycleEventRecorded(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "workspace-a",
                     FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -131,7 +131,7 @@ public sealed class FolderWorkspacePreparationAggregateTests
             [
                 new FolderWorkspaceLifecycleEventRecorded(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "workspace-a",
                     FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -169,7 +169,7 @@ public sealed class FolderWorkspacePreparationAggregateTests
             [
                 new FolderWorkspaceLifecycleEventRecorded(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "workspace-a",
                     FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -190,7 +190,7 @@ public sealed class FolderWorkspacePreparationAggregateTests
             bound,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -214,7 +214,7 @@ public sealed class FolderWorkspacePreparationAggregateTests
             [
                 new RepositoryBound(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",

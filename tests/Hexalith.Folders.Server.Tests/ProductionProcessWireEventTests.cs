@@ -239,6 +239,23 @@ public sealed class ProductionProcessWireEventTests
             AssertEvent(grant, typeof(OrganizationAclPrincipalGranted));
             AssertReplay(await ProcessAsync(client, grantCommand, Retain(grantCommand, grant, baselineState)));
 
+            CommandEnvelope delegated = Command("tenant-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType,
+                "message-delegated", new { operations = new[]
+                    { new { principalKind = "delegated_service_agent", principalId = "agent-a", action = "read_metadata" } } });
+            DomainServiceWireResult delegatedResult = await ProcessAsync(client, delegated, baselineState);
+            AssertEvent(delegatedResult, typeof(OrganizationAclPrincipalGranted));
+            JsonSerializer.Deserialize<OrganizationAclPrincipalGranted>(delegatedResult.Events[0].Payload,
+                new JsonSerializerOptions(JsonSerializerDefaults.Web))!
+                .PrincipalKind.ShouldBe(OrganizationAclPrincipalKind.DelegatedServiceAgent);
+            DomainServiceWireResult numeric = await ProcessAsync(client, delegated with
+            {
+                MessageId = "message-numeric",
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new { operations = new[]
+                    { new { principalKind = "3", principalId = "agent-a", action = "read_metadata" } } }),
+            }, baselineState);
+            numeric.IsRejection.ShouldBeTrue();
+            numeric.Events.ShouldHaveSingleItem().EventTypeName.ShouldBe(typeof(FolderCommandRejected).FullName);
+
             CommandEnvelope bindingCommand = Command(ProviderBindingActorId.Create("binding-a"),
                 FoldersServerModule.ConfigureProviderBindingCommandType, "message-binding",
                 new

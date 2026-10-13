@@ -46,8 +46,7 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
             if (operation.ValueKind != JsonValueKind.Object
                 || !operation.TryGetProperty("principalKind", out JsonElement kindValue)
                 || kindValue.ValueKind != JsonValueKind.String
-                || !Enum.TryParse(kindValue.GetString(), ignoreCase: true, out OrganizationAclPrincipalKind kind)
-                || !Enum.IsDefined(kind)
+                || !OrganizationAclPrincipalKindParser.TryParse(kindValue.GetString(), out OrganizationAclPrincipalKind kind)
                 || !operation.TryGetProperty("principalId", out JsonElement principalId)
                 || principalId.ValueKind != JsonValueKind.String
                 || !operation.TryGetProperty("action", out JsonElement action)

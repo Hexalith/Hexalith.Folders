@@ -108,7 +108,7 @@ public sealed class FolderBranchRefPolicyAggregateTests
         IReadOnlyList<string>? protectedRefPatterns = null)
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "v1",
             repositoryBindingId,
@@ -141,7 +141,7 @@ public sealed class FolderBranchRefPolicyAggregateTests
         FolderState requested = BindingRequestedState(streamName);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -185,7 +185,7 @@ public sealed class FolderBranchRefPolicyAggregateTests
             [
                 new RepositoryBindingFailed(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",
@@ -203,7 +203,7 @@ public sealed class FolderBranchRefPolicyAggregateTests
             [
                 new ProviderOutcomeUnknown(
                     "tenant-a",
-                    "organization-a",
+                    "tenant-a",
                     "folder-a",
                     "repository-binding-a",
                     "provider-binding-a",

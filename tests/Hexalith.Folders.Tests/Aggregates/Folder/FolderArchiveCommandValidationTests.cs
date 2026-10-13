@@ -18,7 +18,7 @@ public sealed class FolderArchiveCommandValidationTests
         result.Events.Count.ShouldBe(1);
         FolderArchived archived = result.Events.OfType<FolderArchived>().Single();
         archived.ManagedTenantId.ShouldBe("tenant-a");
-        archived.OrganizationId.ShouldBe("organization-a");
+        archived.OrganizationId.ShouldBe("tenant-a");
         archived.FolderId.ShouldBe("folder-a");
         archived.ArchiveReasonCode.ShouldBe(FolderArchiveReasonCode.CallerRequested);
         archived.ActorPrincipalId.ShouldBe("principal-a");

@@ -90,21 +90,18 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
 
         EffectivePermissionsReadModelResult baseline = await organizationReadModel.GetAsync(
             request with { FolderId = "organization_baseline" }, cancellationToken).ConfigureAwait(false);
-        if (baseline.Status != EffectivePermissionsReadModelStatus.Available || baseline.Snapshot is null)
+        if (baseline.Status is not (EffectivePermissionsReadModelStatus.Available
+            or EffectivePermissionsReadModelStatus.Stale or EffectivePermissionsReadModelStatus.NotFound)
+            || baseline.Status != EffectivePermissionsReadModelStatus.NotFound && baseline.Snapshot is null)
         {
             return baseline.Status switch
             {
                 EffectivePermissionsReadModelStatus.Malformed => EffectivePermissionsReadModelResult.Malformed(freshness),
-                EffectivePermissionsReadModelStatus.Stale => EffectivePermissionsReadModelResult.Stale(
-                    new EffectivePermissionsReadModelSnapshot(request.ManagedTenantId, request.ManagedTenantId,
-                        request.FolderId, EffectivePermissionsFolderLifecycleState.Stale, [],
-                        freshness with { Stale = true },
-                        false, null)),
                 _ => EffectivePermissionsReadModelResult.Unavailable("organization_projection_unavailable", now),
             };
         }
 
-        List<EffectivePermissionEvidenceRow> rows = [.. baseline.Snapshot.EvidenceRows.Select(
+        List<EffectivePermissionEvidenceRow> rows = [.. (baseline.Snapshot?.EvidenceRows ?? []).Select(
             row => row with { Sequence = 0 })];
         foreach (FolderPermissionOverrideEntry item in folder.Overrides)
         {
@@ -115,16 +112,26 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
                 folder.LastSequence, item.OccurredAt));
         }
 
-        freshness = freshness with { Stale = folderHead != folder.LastSequence };
+        bool folderStale = folderHead != folder.LastSequence;
+        bool baselineStale = baseline.Status == EffectivePermissionsReadModelStatus.Stale;
+        freshness = freshness with
+        {
+            Stale = folderStale || baselineStale,
+            ReasonCode = folderStale ? "folder_projection_lagging"
+                : baselineStale ? baseline.Freshness.ReasonCode ?? "organization_projection_lagging" : null,
+        };
         EffectivePermissionsReadModelSnapshot snapshot = new(request.ManagedTenantId,
             folder.OrganizationId, folder.FolderId,
             !folder.IsCreated ? EffectivePermissionsFolderLifecycleState.Missing
                 : folder.IsArchived ? EffectivePermissionsFolderLifecycleState.Archived
                 : EffectivePermissionsFolderLifecycleState.Active,
-            rows, freshness, RevocationFreshnessEstablished: true, TaskScope: null);
-        return folderHead == folder.LastSequence
-            ? EffectivePermissionsReadModelResult.Available(snapshot)
-            : EffectivePermissionsReadModelResult.Stale(snapshot);
+            rows, freshness,
+            RevocationFreshnessEstablished: baseline.Snapshot?.RevocationFreshnessEstablished
+                ?? baseline.Status == EffectivePermissionsReadModelStatus.NotFound,
+            TaskScope: null);
+        return freshness.Stale
+            ? EffectivePermissionsReadModelResult.Stale(snapshot)
+            : EffectivePermissionsReadModelResult.Available(snapshot);
     }
 
     public async Task<FolderPermissionProjection?> GetCurrentAsync(string tenantId, string folderId,

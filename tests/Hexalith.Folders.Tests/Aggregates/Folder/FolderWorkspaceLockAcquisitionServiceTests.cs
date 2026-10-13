@@ -70,7 +70,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
     {
         RecordingFolderRepository repository = ReadyRepository();
         SequencedFolderPermissionEvidenceProvider permissions = new(
-            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "organization-a"),
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
             FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
         WorkspaceLockAcquisitionService service = Service(repository, permissions);
 
@@ -217,7 +217,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         FolderResult requested = FolderAggregate.Handle(createdState, FolderCommandFactory.CreateRepositoryBackedFolder(), Now);
         RepositoryBound bound = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "repository-binding-a",
             "provider-binding-a",
@@ -231,7 +231,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
             boundState,
             new ConfigureBranchRefPolicy(
                 "tenant-a",
-                "organization-a",
+                "tenant-a",
                 "folder-a",
                 "v1",
                 "repository-binding-a",
@@ -249,7 +249,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
         FolderResult prepare = FolderAggregate.Handle(configuredState, FolderCommandFactory.PrepareWorkspace(), Now);
         FolderWorkspaceLifecycleEventRecorded prepared = new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "workspace-a",
             FolderWorkspaceLifecycleEvent.WorkspacePrepared,
@@ -305,7 +305,7 @@ public sealed class FolderWorkspaceLockAcquisitionServiceTests
             CancellationToken cancellationToken = default)
             => Task.FromResult(FolderPermissionEvidenceResult.Allowed(
                 "folder-a:7",
-                organizationId: "organization-a"));
+                organizationId: "tenant-a"));
     }
 
     private sealed class RecordingEventStoreAuthorizationValidator : IEventStoreAuthorizationValidator
