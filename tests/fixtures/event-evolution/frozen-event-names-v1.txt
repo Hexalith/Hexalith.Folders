@@ -20,3 +20,6 @@ Hexalith.Folders.Aggregates.Organization.OrganizationAclBaselineInitialized
 Hexalith.Folders.Aggregates.Organization.OrganizationAclPrincipalGranted
 Hexalith.Folders.Aggregates.Organization.OrganizationAclPrincipalRevoked
 Hexalith.Folders.Aggregates.Organization.ProviderBindingConfigured
+Hexalith.Folders.Server.DuplicateWorkspaceLockRejected
+Hexalith.Folders.Server.FolderCommandRejected
+Hexalith.Folders.Server.WorkspaceTransitionInvalidRejected

@@ -144,6 +144,23 @@ public sealed class TenantAccessAuthorizerTests
         }
     }
 
+    [Fact]
+    public async Task OwnerMutationNeverReusesPreauthorization()
+    {
+        TenantAccessAuthorizer authorizer = CreateAuthorizer(new ThrowingFolderTenantAccessProjectionStore());
+        PreauthorizedRequestContext.Begin(new("tenant-a", "user-a", null, "watermark", "tenant-a",
+            "manage_organization_acl", "manage_organization_acl", null));
+        try
+        {
+            (await authorizer.AuthorizeOwnerMutationAsync(new("tenant-a", "user-a", "tenant-a"),
+                TestContext.Current.CancellationToken)).Outcome.ShouldBe(TenantAccessOutcome.UnavailableProjection);
+        }
+        finally
+        {
+            PreauthorizedRequestContext.End();
+        }
+    }
+
     private static TenantAccessAuthorizer CreateAuthorizer(IFolderTenantAccessProjectionStore store)
         => new(store, new FixedUtcClock(Now), new TenantAccessOptions());
 

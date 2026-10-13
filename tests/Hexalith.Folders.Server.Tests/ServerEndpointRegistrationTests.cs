@@ -78,6 +78,11 @@ public sealed class ServerEndpointRegistrationTests
             .Single(endpoint => endpoint.RoutePattern.RawText == FoldersServerModule.ProcessRoute);
         processRoute.Metadata.OfType<IAuthorizeData>()
             .Any(authorize => authorize.Policy == processPolicyName).ShouldBeTrue();
+        string projectPolicyName = EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
+            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceProject);
+        RouteEndpoint projectRoute = ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints)
+            .OfType<RouteEndpoint>().Single(endpoint => endpoint.RoutePattern.RawText == FoldersServerModule.ProjectRoute);
+        projectRoute.Metadata.OfType<IAuthorizeData>().Any(authorize => authorize.Policy == projectPolicyName).ShouldBeTrue();
     }
 
     [Fact]

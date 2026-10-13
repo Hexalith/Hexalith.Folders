@@ -210,6 +210,8 @@ public sealed class FolderEventReplayTests
             .Where(static type => type.IsClass && !type.IsAbstract
                 && (typeof(IFolderEvent).IsAssignableFrom(type)
                     || typeof(IOrganizationEvent).IsAssignableFrom(type)))
+            .Concat([typeof(FolderCommandRejected), typeof(DuplicateWorkspaceLockRejected),
+                typeof(WorkspaceTransitionInvalidRejected)])
             .Select(static type => type.FullName!)
             .Order(StringComparer.Ordinal)
             .ToArray();
@@ -399,6 +401,55 @@ public sealed class FolderEventReplayTests
             JsonSerializer.SerializeToUtf8Bytes(granted), 1, aggregateId: "tenant-a");
         Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
             new DomainServiceCurrentState(null, [first], 0, 1), "tenant-a", "tenant-a"));
+    }
+
+    [Fact]
+    public void UnknownRawSuffixAndMissingSnapshotAnchorsFailClosed()
+    {
+        byte[] bytes = File.ReadAllBytes(Fixture("folder-created-valid-unstamped-v1.json"));
+        foreach (string name in new[] { "Unregistered.Namespace.FolderCreated", "FolderCreated" })
+        {
+            Should.Throw<InvalidOperationException>(() => Replay().FoldFolder(
+                new DomainServiceCurrentState(null, [Envelope(name, bytes, 1, null)], 0, 1),
+                "tenant-a", "folder-a"));
+        }
+
+        DomainServiceCurrentState missing = new(null, [], 1, 1);
+        Should.Throw<InvalidOperationException>(() => Replay().FoldFolder(missing, "tenant-a", "folder-a"));
+        Should.Throw<InvalidOperationException>(() => Replay().FoldOrganization(missing, "tenant-a", "tenant-a"));
+        Replay().FoldFolder(new DomainServiceCurrentState(null, [], 0, 0), "tenant-a", "folder-a")
+            .IsCreated.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ImmutableVersionOneBytesAndAllServerRejectionsRebuildActorAndProjectState()
+    {
+        byte[] created = File.ReadAllBytes(Fixture("folder-created-valid-unstamped-v1.json"));
+        string[] names = [typeof(FolderCommandRejected).FullName!,
+            typeof(DuplicateWorkspaceLockRejected).FullName!, typeof(WorkspaceTransitionInvalidRejected).FullName!];
+        string[] files = ["folder-command-rejected-unstamped-v1.json",
+            "duplicate-workspace-lock-rejected-unstamped-v1.json", "workspace-transition-invalid-rejected-unstamped-v1.json"];
+        List<EventEnvelope> events = [Envelope(typeof(FolderCreated).FullName!, created, 1, null)];
+        List<ProjectionEventDto> projection = [new(typeof(FolderCreated).FullName!, created,
+            "json", 1, OccurredAt, "correlation-a") { MetadataVersion = 1 }];
+        for (int i = 0; i < files.Length; i++)
+        {
+            byte[] bytes = File.ReadAllBytes(Fixture(files[i]));
+            events.Add(Envelope(names[i], bytes, i + 2, null));
+            projection.Add(new(names[i], bytes, "json", i + 2, OccurredAt, "correlation-a") { MetadataVersion = 1 });
+        }
+
+        Replay().FoldFolder(new DomainServiceCurrentState(null, events, 0, 4), "tenant-a", "folder-a")
+            .DisplayName.ShouldBe("Folder A");
+        using ServiceProvider services = new ServiceCollection().AddSingleton(ReplayRegistry())
+            .AddSingleton<IDomainProjectionHandler, FolderDomainProjectionHandler>().BuildServiceProvider();
+        DomainProjectionDispatcher.Project(services, new ProjectionRequest("tenant-a", "folders", "folder-a", projection),
+            TestContext.Current.CancellationToken)!.State.GetProperty("isCreated").GetBoolean().ShouldBeTrue();
+        foreach (string line in File.ReadAllLines(Fixture("retained-fixtures-sha256.txt")))
+        {
+            string[] entry = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Fixture(entry[1])))).ShouldBe(entry[0]);
+        }
     }
 
     private static string Fixture(string fileName)

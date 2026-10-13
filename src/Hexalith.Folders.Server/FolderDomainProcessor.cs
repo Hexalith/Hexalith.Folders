@@ -151,7 +151,7 @@ public sealed partial class FolderDomainProcessor(
 
         if (IsOrganizationAclCommand(command.CommandType))
         {
-            return ProcessOrganizationAcl(command);
+            return await ProcessOrganizationAclAsync(command).ConfigureAwait(false);
         }
 
         if (string.Equals(command.CommandType, FoldersServerModule.ArchiveFolderCommandType, StringComparison.Ordinal))
@@ -207,7 +207,7 @@ public sealed partial class FolderDomainProcessor(
             or FoldersServerModule.GrantOrganizationAclPrincipalCommandType
             or FoldersServerModule.RevokeOrganizationAclPrincipalCommandType;
 
-    private DomainResult ProcessOrganizationAcl(CommandEnvelope envelope)
+    private async Task<DomainResult> ProcessOrganizationAclAsync(CommandEnvelope envelope)
     {
         if (_actorOrganizationAclRepository is null)
         {
@@ -302,6 +302,19 @@ public sealed partial class FolderDomainProcessor(
         if (result.Code != OrganizationAclResultCode.Accepted)
         {
             return Rejection(envelope, MapOrganizationAclResultCode(result.Code), null);
+        }
+
+        LayeredFolderAuthorizationResult finalAuthorization = await _authorizationService
+            .ReauthorizeOrganizationAclMutationAsync(new LayeredFolderAuthorizationContext(
+                allowed.AuthoritativeTenantId, allowed.PrincipalId, allowed.ActorSafeIdentifier,
+                "manage_organization_acl", LayeredFolderOperationPolicy.Mutation(),
+                EventStoreClaimTransformEvidence.Allowed(allowed.AuthoritativeTenantId,
+                    allowed.PrincipalId, ["manage_organization_acl"]),
+                "organization_baseline", envelope.CorrelationId, taskId, null, null), initializing)
+            .ConfigureAwait(false);
+        if (!finalAuthorization.IsAllowed)
+        {
+            throw new OrganizationAclAuthorizationDeniedException(finalAuthorization);
         }
 
         OrganizationAclAppendOutcome outcome = _actorOrganizationAclRepository.AppendIfFingerprintAbsent(

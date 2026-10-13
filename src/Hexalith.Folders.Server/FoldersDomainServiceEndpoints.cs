@@ -109,6 +109,11 @@ public static class FoldersDomainServiceEndpoints
         {
             try
             {
+                foreach (ProjectionEventDto item in request.Events)
+                {
+                    FolderEventReplay.RequireStoredEventName(item.EventTypeName);
+                }
+
                 ProjectionResponse? projection = DomainProjectionDispatcher.Project(
                     services, request, cancellationToken);
                 return projection is null ? Results.NotFound() : Results.Ok(projection);

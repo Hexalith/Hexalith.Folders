@@ -7,6 +7,8 @@ using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 
+using Microsoft.Extensions.Configuration;
+
 using Shouldly;
 using Xunit;
 
@@ -14,6 +16,77 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 {
+    [Theory]
+    [InlineData("configured-sidecar-token")]
+    [InlineData("")]
+    public async Task IndependentSequenceReadUsesOnlyTheConfiguredDaprApiToken(string token)
+    {
+        CaptureSequenceHandler handler = new();
+        using HttpClient client = new(handler);
+        IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string, string?> { ["DAPR_API_TOKEN"] = token }).Build();
+        DaprOrganizationStreamSequenceReader reader = new(client, configuration);
+        (await reader.GetCurrentSequenceAsync("tenant-a", "folder-a", TestContext.Current.CancellationToken))
+            .ShouldBe(7);
+        handler.ApiToken.ShouldBe(string.IsNullOrEmpty(token) ? null : token);
+    }
+
+    [Theory]
+    [InlineData("create_repository_backed_folder", false)]
+    [InlineData("bind_repository", false)]
+    [InlineData("configure_branch_ref_policy", false)]
+    [InlineData("bind_repository", true)]
+    [InlineData("configure_branch_ref_policy", true)]
+    public async Task AcceptedPersistedAclEventsSupplyPublishedExactActionAtItsScope(string action, bool folderScope)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new() { CurrentSequence = 1 };
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        EffectivePermissionsFolderPermissionEvidenceProvider evidence = new(folder, clock);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+        FolderPermissionEvidenceRequest request = new("tenant-a", "user-a", "user-a", action,
+            folderScope ? "folder-a" : "organization_baseline", "corr", "task", FolderOperationPolicyClass.Mutation, false);
+        FolderCreated created = new("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+            FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a", "corr", "task", "key", "fingerprint", clock.UtcNow);
+        await folder.ApplyAsync("tenant-a", "folder-a", "created", 1, "digest-create", created, ct);
+        heads.Heads["folder-a"] = 1;
+        (await evidence.GetEvidenceAsync(request, ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Denied);
+        if (folderScope)
+        {
+            GrantFolderAccess command = new("tenant-a", "tenant-a", "folder-a",
+                [new(FolderAccessOperationIntent.Grant, FolderAccessPrincipalKind.User, "user-a", action)],
+                "user-a", "corr", "task", "key-grant", null);
+            FolderResult accepted = FolderAggregate.Handle(FolderState.Empty.Apply([created],
+                FolderStreamName.Create("tenant-a", "folder-a")), command);
+            accepted.Code.ShouldBe(FolderResultCode.Accepted);
+            FolderAccessGranted grant = accepted.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderAccessGranted>();
+            await folder.ApplyAsync("tenant-a", "folder-a", "grant", 2, "digest-grant", grant, ct);
+            heads.Heads["folder-a"] = 2;
+            (await store.GetAsync<FolderPermissionProjection>("statestore",
+                "projection:folders:folder-permissions:tenant-a:folder-a", ct)).Value!.Overrides
+                .ShouldHaveSingleItem().Action.ShouldBe(action);
+        }
+        else
+        {
+            GrantOrganizationAclPrincipal command = new("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                "user-a", action, "corr", "task", "key-grant", null);
+            OrganizationAclResult accepted = OrganizationAggregate.Handle(OrganizationState.Empty.Apply([
+                new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")]), command);
+            accepted.Code.ShouldBe(OrganizationAclResultCode.Accepted);
+            OrganizationAclPrincipalGranted grant = accepted.Events.ShouldHaveSingleItem().ShouldBeOfType<OrganizationAclPrincipalGranted>();
+            await organization.ApplyAsync("tenant-a", "tenant-a", "grant", 2, grant, ct);
+            heads.CurrentSequence = 2;
+            (await store.GetAsync<OrganizationPermissionProjection>("statestore",
+                "projection:folders:organization-permissions:tenant-a", ct)).Value!.Grants
+                .ShouldHaveSingleItem().Action.ShouldBe(action);
+        }
+        (await evidence.GetEvidenceAsync(request, ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
+    }
+
     [Fact]
     public async Task IndependentSequenceReadUsesTheAggregateActorMethodAndParsesItsNumericHead()
     {
@@ -486,11 +559,15 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 
         public string Path { get; private set; } = string.Empty;
 
+        public string? ApiToken { get; private set; }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
             Method = request.Method;
             Path = request.RequestUri?.AbsoluteUri ?? string.Empty;
+            ApiToken = request.Headers.TryGetValues("dapr-api-token", out IEnumerable<string>? values)
+                ? values.Single() : null;
             return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
             {
                 Content = new StringContent("7"),

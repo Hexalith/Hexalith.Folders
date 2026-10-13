@@ -1,10 +1,12 @@
 using System.Globalization;
 using System.Net.Http.Headers;
 
+using Microsoft.Extensions.Configuration;
+
 namespace Hexalith.Folders.Authorization;
 
 /// <summary>Reads only the actor's sequence metadata through the local Dapr sidecar.</summary>
-public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient)
+public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient, IConfiguration? configuration = null)
     : IOrganizationStreamSequenceReader
 {
     public async Task<long> GetCurrentSequenceAsync(string tenantId, string organizationId,
@@ -40,6 +42,12 @@ public sealed class DaprOrganizationStreamSequenceReader(HttpClient httpClient)
             Content = new StringContent("{}"),
         };
         request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+        string? apiToken = configuration?["DAPR_API_TOKEN"]
+            ?? Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
+        if (!string.IsNullOrWhiteSpace(apiToken))
+        {
+            request.Headers.Add("dapr-api-token", apiToken);
+        }
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(3));
         try

@@ -23,6 +23,15 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
 
     private readonly EventPayloadEvolutionRegistry _evolution = evolution;
 
+    /// <summary>Rejects unregistered raw storage identifiers before SDK name canonicalization.</summary>
+    internal static void RequireStoredEventName(string eventTypeName)
+    {
+        if (!KnownEvents.ContainsKey(eventTypeName) && !IsKnownRejection(eventTypeName))
+        {
+            throw new InvalidOperationException("Unknown Folders stored event identifier.");
+        }
+    }
+
     /// <summary>Identifies the frozen rejection names which EventStore records in the same stream.</summary>
     internal static bool IsKnownRejection(string eventTypeName)
         => eventTypeName == typeof(FolderCommandRejected).FullName
@@ -237,6 +246,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
 
         DomainServiceCurrentState state = DomainStateReplay.SnapshotAware(source)
             ?? throw new InvalidOperationException("Unsupported actor state shape.");
+        if (state.LastSnapshotSequence < 0 || state.CurrentSequence < state.LastSnapshotSequence
+            || state.LastSnapshotSequence > 0 && state.SnapshotState is null)
+        {
+            throw new InvalidOperationException("Missing or invalid actor snapshot anchor.");
+        }
         return state.Events is null
             ? throw new InvalidOperationException("Missing actor event stream.")
             : state;
@@ -348,6 +362,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
     private T Read<T>(string typeName, int? payloadVersion, int? metadataVersion,
         string serializationFormat, byte[] payload, long sequence) where T : class, IEventPayload
     {
+        RequireStoredEventName(typeName);
         if (metadataVersion is not null and not 1 || !string.Equals(serializationFormat, "json", StringComparison.OrdinalIgnoreCase))
         {
             throw new InvalidOperationException("Unsupported Folders event metadata.");

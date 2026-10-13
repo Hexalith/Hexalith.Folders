@@ -1,0 +1,5 @@
+3b1d87cc246a684fb89a844ea176d9ab8ef997fa9d65fba51316e12ee69e1036  duplicate-workspace-lock-rejected-unstamped-v1.json
+3b9c03eeb46f4472ba6b28c44cd0f61fab91af8fc4979259bf3b98f8bd2e3368  folder-command-rejected-unstamped-v1.json
+0316b85c356d607dede2c1ea1aae2cbda10af7f446410f96e905fa9355c29fd9  folder-created-unstamped-v1.json
+bfae0923066062c664ba7f63041d250d9151624ba7cb93c2b31c899db6e22b34  folder-created-valid-unstamped-v1.json
+6e94aa19fb1ddf66ceff58c5fe76ed0ff3d0b892519a8d0a7b710e18a4bfad9b  workspace-transition-invalid-rejected-unstamped-v1.json

@@ -17,10 +17,21 @@ public sealed class TenantAccessAuthorizer(
         CancellationToken cancellationToken = default)
         => await AuthorizeAsync(context, allowBoundedStale: true, cancellationToken).ConfigureAwait(false);
 
+    /// <summary>Validates current tenant-owner evidence without reusing an earlier authorization.</summary>
+    public async Task<TenantAccessAuthorizationResult> AuthorizeOwnerMutationAsync(
+        TenantAccessAuthorizationContext context,
+        CancellationToken cancellationToken = default)
+    {
+        using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
+        return await AuthorizeAsync(context, allowBoundedStale: false, cancellationToken,
+            requiredRole: "TenantOwner").ConfigureAwait(false);
+    }
+
     private async Task<TenantAccessAuthorizationResult> AuthorizeAsync(
         TenantAccessAuthorizationContext context,
         bool allowBoundedStale,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? requiredRole = null)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -68,7 +79,12 @@ public sealed class TenantAccessAuthorizer(
             return Result(TenantAccessOutcome.ReplayConflict, projection);
         }
 
-        if (projection.MalformedEvidence || projection.LastEventTimestamp is null)
+        if (projection.MalformedEvidence || projection.LastEventTimestamp is null
+            || !string.Equals(projection.TenantId, context.AuthoritativeTenantId, StringComparison.Ordinal)
+            || projection.Principals is null
+            || projection.Principals.Any(entry => entry.Value is null
+                || !string.Equals(entry.Key, entry.Value.PrincipalId, StringComparison.Ordinal)
+                || string.IsNullOrWhiteSpace(entry.Value.Role)))
         {
             return Result(TenantAccessOutcome.MalformedEvidence, projection);
         }
@@ -98,7 +114,9 @@ public sealed class TenantAccessAuthorizer(
             return Result(TenantAccessOutcome.StaleProjection, projection, age, freshness);
         }
 
-        if (string.IsNullOrWhiteSpace(context.PrincipalId) || !projection.Principals.ContainsKey(context.PrincipalId))
+        if (string.IsNullOrWhiteSpace(context.PrincipalId)
+            || !projection.Principals.TryGetValue(context.PrincipalId, out FolderTenantPrincipalEvidence? principal)
+            || requiredRole is not null && !string.Equals(principal.Role, requiredRole, StringComparison.Ordinal))
         {
             return Result(TenantAccessOutcome.Denied, projection, age, freshness);
         }

@@ -5,6 +5,9 @@ public static class OrganizationAclAction
     private static readonly HashSet<string> SupportedValues = new(StringComparer.Ordinal)
     {
         "create_folder",
+        "create_repository_backed_folder",
+        "bind_repository",
+        "configure_branch_ref_policy",
         "configure_provider_binding",
         "provider_readiness_read",
         "manage_folder_access",

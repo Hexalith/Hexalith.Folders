@@ -6,7 +6,6 @@ using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
-using Hexalith.Folders.Projections.TenantAccess;
 
 using Microsoft.AspNetCore.Http;
 
@@ -19,8 +18,7 @@ public sealed class FoldersDomainServiceRequestHandler(
     IEventStoreClaimTransformEvidenceAccessor claimTransformEvidenceAccessor,
     IFolderCommandActionTokenMapper actionTokenMapper,
     ILayeredFolderAuthorizationResultAccessor authorizationResultAccessor,
-    HumanAuthorityReceiptVerifier? humanReceiptVerifier = null,
-    IFolderTenantAccessProjectionStore? tenantAccessStore = null)
+    HumanAuthorityReceiptVerifier? humanReceiptVerifier = null)
 {
     private const string OrganizationBaselineScope = "organization_baseline";
 
@@ -105,6 +103,11 @@ public sealed class FoldersDomainServiceRequestHandler(
 
         bool initializingAcl = string.Equals(request.Command.CommandType,
             FoldersServerModule.InitializeOrganizationAclBaselineCommandType, StringComparison.Ordinal);
+        if (initializingAcl
+            && !string.Equals(request.Command.AggregateId, tenantContext.AuthoritativeTenantId, StringComparison.Ordinal))
+        {
+            return SafeAclBootstrapDenial(StatusCodes.Status403Forbidden, "permission_denied");
+        }
         bool mutatingAcl = string.Equals(request.Command.CommandType,
             FoldersServerModule.GrantOrganizationAclPrincipalCommandType, StringComparison.Ordinal)
             || string.Equals(request.Command.CommandType,
@@ -154,42 +157,12 @@ public sealed class FoldersDomainServiceRequestHandler(
 
         using IDisposable? verifiedActorSequenceScope = actorSequenceScope;
         LayeredFolderAuthorizationResult authorization = initializingAcl
-            ? await authorizer.AuthorizeTenantScopedAsync(authorizationContext, cancellationToken).ConfigureAwait(false)
+            ? await authorizer.ReauthorizeOrganizationAclMutationAsync(authorizationContext, initializing: true, cancellationToken).ConfigureAwait(false)
             : await authorizer.AuthorizeAsync(authorizationContext, cancellationToken).ConfigureAwait(false);
 
         if (!authorization.IsAllowed)
         {
             return FolderAuthorizationDenialMapper.ToHttpResult(authorization);
-        }
-
-        if (initializingAcl)
-        {
-            string? tenantId = authorization.AllowedContext?.AuthoritativeTenantId;
-            string? principalId = tenantContext.PrincipalId;
-            FolderTenantAccessProjection? projection;
-            try
-            {
-                projection = tenantId is null || tenantAccessStore is null
-                    ? null
-                    : await tenantAccessStore.GetAsync(tenantId, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex) when (ex is not OperationCanceledException)
-            {
-                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
-            }
-
-            if (projection is null || tenantId is null || principalId is null)
-            {
-                return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
-            }
-
-            if (!string.Equals(request.Command.AggregateId, tenantId, StringComparison.Ordinal)
-                || !projection.Enabled
-                || !projection.Principals.TryGetValue(principalId, out FolderTenantPrincipalEvidence? principal)
-                || !string.Equals(principal.Role, "TenantOwner", StringComparison.Ordinal))
-            {
-                return SafeAclBootstrapDenial(StatusCodes.Status403Forbidden, "permission_denied");
-            }
         }
 
         List<IDomainProcessor> processorList = [.. processors];
@@ -215,6 +188,10 @@ public sealed class FoldersDomainServiceRequestHandler(
         {
             DomainResult result = await processorList[0].ProcessAsync(request.Command, request.CurrentState).ConfigureAwait(false);
             return Results.Ok(DomainServiceWireResult.FromDomainResult(result));
+        }
+        catch (OrganizationAclAuthorizationDeniedException denial)
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(denial.Authorization);
         }
         finally
         {

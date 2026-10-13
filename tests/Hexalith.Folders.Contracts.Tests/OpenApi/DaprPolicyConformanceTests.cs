@@ -342,6 +342,33 @@ public sealed class DaprPolicyConformanceTests
         script.ShouldNotContain("--recursive", Case.Insensitive);
     }
 
+    [Fact]
+    public void PermissionRecoveryUsesAuthorizedApplicationConnectionAndKeepsDaprCallersDenied()
+    {
+        TargetPolicy workers = LoadProductionPolicy().Targets.Single(target => target.TargetAppId == "folders-workers");
+        workers.DefaultAction.ShouldBe("deny");
+        workers.CallerPolicies.ShouldBeEmpty();
+        YamlMappingNode binding = LoadYamlDocuments(SidecarBindingsPath).Single(document =>
+            document.GetMapping("spec").GetMapping("template").GetMapping("metadata")
+                .GetMapping("annotations").GetScalar("dapr.io/app-id") == "folders-workers");
+        YamlMappingNode template = binding.GetMapping("spec").GetMapping("template");
+        string secret = template.GetMapping("metadata").GetMapping("annotations").GetScalar("dapr.io/app-token-secret");
+        YamlMappingNode env = template.GetMapping("spec").GetSequence("containers").Children
+            .Cast<YamlMappingNode>().Single().GetSequence("env").Children.Cast<YamlMappingNode>()
+            .Single(item => item.GetScalar("name") == "APP_API_TOKEN");
+        YamlMappingNode secretReference = env.GetMapping("valueFrom").GetMapping("secretKeyRef");
+        secretReference.GetScalar("name").ShouldBe(secret);
+        string runbook = File.ReadAllText(RepositoryPath("docs/operations/folder-permission-projection-recovery.md"));
+        runbook.ShouldContain("`" + secret + "` secret's `" + secretReference.GetScalar("key") + "` key");
+        runbook.ShouldContain("pods/portforward");
+        runbook.ShouldContain("--address 127.0.0.1");
+        runbook.ShouldContain("18080:8080");
+        runbook.ShouldContain("dapr-app-token");
+        runbook.ShouldContain("Missing or wrong tokens must return 401");
+        runbook.ShouldContain("never print it");
+        runbook.ShouldContain("not a live Kubernetes repair exercise");
+    }
+
     private static ProductionPolicy LoadProductionPolicy()
     {
         string path = RepositoryPath(PolicyPath);

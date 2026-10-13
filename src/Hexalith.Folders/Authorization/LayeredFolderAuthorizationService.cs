@@ -23,6 +23,28 @@ public sealed class LayeredFolderAuthorizationService(
         CancellationToken cancellationToken = default)
         => AuthorizeCoreAsync(context, includeFolderAcl: false, cancellationToken);
 
+    /// <summary>Revalidates current tenant and ACL authority before an organization ACL decision.</summary>
+    public async Task<LayeredFolderAuthorizationResult> ReauthorizeOrganizationAclMutationAsync(
+        LayeredFolderAuthorizationContext context,
+        bool initializing,
+        CancellationToken cancellationToken = default)
+    {
+        LayeredFolderAuthorizationResult authorization = await ReauthorizeMutationAsync(
+            context, includeFolderAcl: !initializing, cancellationToken).ConfigureAwait(false);
+        if (!authorization.IsAllowed || !initializing)
+        {
+            return authorization;
+        }
+
+        TenantAccessAuthorizationResult owner = await tenantAccessAuthorizer.AuthorizeOwnerMutationAsync(
+            new TenantAccessAuthorizationContext(context.AuthoritativeTenantId, context.PrincipalId ?? string.Empty,
+                context.AuthoritativeTenantId), cancellationToken).ConfigureAwait(false);
+        return owner.IsAllowed ? authorization : Deny(AuthorizationLayer.TenantAccessFreshness,
+            MapTenantAccessOutcome(owner.Outcome), context, SafeActorIdentifier(context),
+            authorization.EvaluatedLayers, MapFreshness(owner.FreshnessStatus), owner.ProjectionWatermark,
+            owner.Outcome is TenantAccessOutcome.StaleProjection or TenantAccessOutcome.UnavailableProjection);
+    }
+
     private async Task<LayeredFolderAuthorizationResult> AuthorizeCoreAsync(
         LayeredFolderAuthorizationContext context,
         bool includeFolderAcl,

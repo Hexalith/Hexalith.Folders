@@ -6,6 +6,7 @@ using System.Text.Json;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
+using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -77,7 +78,7 @@ public sealed class ProductionProcessWireEventTests
             });
         builder.Services.AddEventStoreWorkloadPolicies(
             EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-            [EventStoreWorkloadOperations.DomainServiceProcess]);
+            [EventStoreWorkloadOperations.DomainServiceProcess, EventStoreWorkloadOperations.DomainServiceProject]);
         builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, VerifiedReceiptEventStoreAuthorizationValidator>();
@@ -127,6 +128,46 @@ public sealed class ProductionProcessWireEventTests
                 ["create_folder"], receiptKey, now);
 
             AssertEvent(await ProcessAsync(client, command, null, receipt), typeof(FolderCreated));
+
+            ProjectionEventDto retained = new(typeof(FolderCreated).FullName!,
+                File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "event-evolution",
+                    "folder-created-valid-unstamped-v1.json")), "json", 1, now, "correlation-a") { MetadataVersion = 1 };
+            ProjectionRequest project = new("tenant-a", "folders", "folder-a", [retained]);
+            client.DefaultRequestHeaders.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
+            (await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute, project,
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, assertion);
+            (await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute, project,
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+            string projectAssertion = new JsonWebTokenHandler { SetDefaultTimesOnTokenCreation = false }.CreateToken(
+                new SecurityTokenDescriptor
+                {
+                    Issuer = "hexalith-dev", Audience = "folders", IssuedAt = issued, NotBefore = issued,
+                    Expires = issued.AddMinutes(2),
+                    Claims = new Dictionary<string, object>
+                    {
+                        [EventStoreWorkloadAuthenticationDefaults.CallerClaimType] = "eventstore",
+                        [EventStoreWorkloadAuthenticationDefaults.OperationClaimType] = EventStoreWorkloadOperations.DomainServiceProject,
+                    },
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(workloadKey)), SecurityAlgorithms.HmacSha256),
+                });
+            client.DefaultRequestHeaders.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
+            client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, projectAssertion);
+            using HttpResponseMessage projected = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
+                project, TestContext.Current.CancellationToken);
+            projected.StatusCode.ShouldBe(HttpStatusCode.OK);
+            ProjectionResponse rebuilt = (await projected.Content.ReadFromJsonAsync<ProjectionResponse>(
+                TestContext.Current.CancellationToken))!;
+            rebuilt.State.GetProperty("isCreated").GetBoolean().ShouldBeTrue();
+            rebuilt.State.GetProperty("displayName").GetString().ShouldBe("Folder A");
+            foreach (string unknown in new[] { "Unregistered.Namespace.FolderCreated", "FolderCreated" })
+            {
+                using HttpResponseMessage rejected = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
+                    project with { Events = [retained with { EventTypeName = unknown }] }, TestContext.Current.CancellationToken);
+                rejected.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+                (await rejected.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).ShouldNotContain(unknown);
+            }
         }
         finally
         {
@@ -237,6 +278,16 @@ public sealed class ProductionProcessWireEventTests
                     { new { principalKind = "User", principalId = "user-a", action = "configure_provider_binding" } } });
             DomainServiceWireResult grant = await ProcessAsync(client, grantCommand, baselineState);
             AssertEvent(grant, typeof(OrganizationAclPrincipalGranted));
+            foreach (string action in new[] { "create_repository_backed_folder", "bind_repository", "configure_branch_ref_policy" })
+            {
+                CommandEnvelope publishedAction = Command("tenant-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType,
+                    "message-" + action, new { operations = new[]
+                        { new { principalKind = "User", principalId = "user-a", action } } });
+                DomainServiceWireResult acceptedAction = await ProcessAsync(client, publishedAction, baselineState);
+                AssertEvent(acceptedAction, typeof(OrganizationAclPrincipalGranted));
+                JsonSerializer.Deserialize<OrganizationAclPrincipalGranted>(acceptedAction.Events[0].Payload,
+                    new JsonSerializerOptions(JsonSerializerDefaults.Web))!.Action.ShouldBe(action);
+            }
             AssertReplay(await ProcessAsync(client, grantCommand, Retain(grantCommand, grant, baselineState)));
 
             CommandEnvelope delegated = Command("tenant-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType,

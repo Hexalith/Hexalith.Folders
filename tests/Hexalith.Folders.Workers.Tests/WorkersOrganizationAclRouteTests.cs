@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Security.Cryptography;
 
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Subscriptions;
@@ -51,6 +52,12 @@ public sealed class WorkersOrganizationAclRouteTests
             (await client.PostAsJsonAsync("/folders/events", first,
                 TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
 
+            client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "wrong-sidecar-token");
+            (await client.PostAsJsonAsync("/folders/events", first,
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            (await store.GetAsync<OrganizationPermissionProjection>("statestore",
+                "projection:folders:organization-permissions:tenant-a", TestContext.Current.CancellationToken)).Value.ShouldBeNull();
+            client.DefaultRequestHeaders.Remove(DaprAppChannelToken.HeaderName);
             client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
             (await client.PostAsJsonAsync("/folders/events", first,
                 TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -68,12 +75,14 @@ public sealed class WorkersOrganizationAclRouteTests
             persisted.Value.LastSequence.ShouldBe(2);
             persisted.Value.Grants.ShouldHaveSingleItem().Action.ShouldBe("create_folder");
 
-            FolderCreated created = new("tenant-a", "tenant-a", "folder-a", "Folder A", null, null,
-                [], FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a",
-                "correlation-a", "task-a", "key-c", "fingerprint-c", DateTimeOffset.UtcNow);
+            byte[] retainedCreate = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
+                "event-evolution", "folder-created-valid-unstamped-v1.json"));
+            byte[] retainedDigest = SHA256.HashData(retainedCreate);
+            FolderCreated created = JsonSerializer.Deserialize<FolderCreated>(retainedCreate,
+                EventStorePayloadSerialization.Options)!;
             EventStoreDomainEventEnvelope folderEnvelope = new("message-folder-a", "folder-a", "tenant-a",
                 typeof(FolderCreated).FullName!, 1, DateTimeOffset.UtcNow, "correlation-a", "json",
-                JsonSerializer.SerializeToUtf8Bytes(created, EventStorePayloadSerialization.Options))
+                retainedCreate)
             {
                 Domain = "folders",
                 MetadataVersion = 1,
@@ -124,6 +133,14 @@ public sealed class WorkersOrganizationAclRouteTests
                 .GetAsync<FolderPermissionProjection>("statestore", folderProjectionKey,
                     TestContext.Current.CancellationToken);
             store.TryRemove(folderProjectionKey, broken.ETag!).ShouldBeTrue();
+            client.DefaultRequestHeaders.Remove(DaprAppChannelToken.HeaderName);
+            client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "wrong-sidecar-token");
+            (await client.PostAsJsonAsync("/folders/events", folderEnvelope,
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            (await store.GetAsync<FolderPermissionProjection>("statestore", folderProjectionKey,
+                TestContext.Current.CancellationToken)).Value.ShouldBeNull();
+            client.DefaultRequestHeaders.Remove(DaprAppChannelToken.HeaderName);
+            client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
             (await client.PostAsJsonAsync("/folders/events", folderEnvelope,
                 TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
             FolderPermissionProjection repaired = (await store.GetAsync<FolderPermissionProjection>("statestore",
@@ -238,6 +255,33 @@ public sealed class WorkersOrganizationAclRouteTests
                 "statestore", folderProjectionKey, TestContext.Current.CancellationToken)).Value!;
             revokedFolder.LastSequence.ShouldBe(3);
             revokedFolder.Overrides.ShouldHaveSingleItem().IsGranted.ShouldBeFalse();
+
+            string[] retainedRejections = ["folder-command-rejected", "duplicate-workspace-lock-rejected",
+                "workspace-transition-invalid-rejected"];
+            string[] rejectionNames = ["Hexalith.Folders.Server.FolderCommandRejected",
+                "Hexalith.Folders.Server.DuplicateWorkspaceLockRejected",
+                "Hexalith.Folders.Server.WorkspaceTransitionInvalidRejected"];
+            for (int i = 0; i < retainedRejections.Length; i++)
+            {
+                string path = Path.Combine(AppContext.BaseDirectory, "event-evolution",
+                    retainedRejections[i] + "-unstamped-v1.json");
+                byte[] bytes = File.ReadAllBytes(path);
+                (await client.PostAsJsonAsync("/folders/events", folderEnvelope with
+                {
+                    MessageId = "message-rejection-" + i,
+                    EventTypeName = rejectionNames[i],
+                    SequenceNumber = i + 4,
+                    Payload = bytes,
+                }, TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+                File.ReadAllBytes(path).ShouldBe(bytes);
+            }
+            FolderPermissionProjection final = (await store.GetAsync<FolderPermissionProjection>(
+                "statestore", folderProjectionKey, TestContext.Current.CancellationToken)).Value!;
+            final.LastSequence.ShouldBe(6);
+            final.Overrides.ShouldHaveSingleItem().IsGranted.ShouldBeFalse();
+            SHA256.HashData(retainedCreate).ShouldBe(retainedDigest);
+            File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "event-evolution",
+                "folder-created-valid-unstamped-v1.json")).ShouldBe(retainedCreate);
         }
         finally
         {
