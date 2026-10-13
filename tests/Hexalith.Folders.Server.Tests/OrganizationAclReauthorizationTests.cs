@@ -158,6 +158,8 @@ public sealed class OrganizationAclReauthorizationTests
         }
         builder.Services.RemoveAll<IOrganizationAclRepository>();
         builder.Services.RemoveAll<IOrganizationProviderBindingRepository>();
+        builder.Services.RemoveAll<IFolderRepository>();
+        builder.Services.AddScoped<IFolderRepository, ActorFoldedFolderRepository>();
         builder.Services.AddScoped<ActorFoldedOrganizationProviderBindingRepository>();
         builder.Services.AddScoped<IOrganizationAclRepository>(sp => sp.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());
         builder.Services.AddScoped<IOrganizationProviderBindingRepository>(sp => sp.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());

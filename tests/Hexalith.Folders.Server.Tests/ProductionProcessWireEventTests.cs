@@ -255,6 +255,92 @@ public sealed class ProductionProcessWireEventTests
             DomainServiceCurrentState folderState = Retain(folderCommand, folder);
             AssertReplay(await ProcessAsync(client, folderCommand, folderState));
 
+            permissions.Save(new EffectivePermissionsReadModelSnapshot("tenant-a", "tenant-a", "folder-a",
+                EffectivePermissionsFolderLifecycleState.Active,
+                [new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
+                    EffectivePermissionPrincipal.User("user-a"), "manage_folder_access", 1, now)],
+                new("read_your_writes", now, "1", false, null), true, null));
+            object[] aclOperations =
+            [
+                new { principalKind = "user", principalId = "user-b", action = "read_metadata" },
+                new { principalKind = "group", principalId = "group-a", action = "mutate_files" },
+                new { principalKind = "user", principalId = "user-c", action = "configure_branch_ref_policy" },
+            ];
+            (FolderAccessPrincipalKind Kind, string PrincipalId, string Action)[] expectedTuples =
+            [
+                (FolderAccessPrincipalKind.User, "user-b", "read_metadata"),
+                (FolderAccessPrincipalKind.Group, "group-a", "mutate_files"),
+                (FolderAccessPrincipalKind.User, "user-c", "configure_branch_ref_policy"),
+            ];
+            CommandEnvelope folderGrantCommand = Command("folder-a", FoldersServerModule.GrantFolderAccessCommandType,
+                "message-folder-grant", new { operations = aclOperations });
+            DomainServiceWireResult folderGrant = await ProcessAsync(client, folderGrantCommand, folderState);
+            folderGrant.IsRejection.ShouldBeFalse(string.Join("; ", folderGrant.Events.Select(item => Encoding.UTF8.GetString(item.Payload))));
+            folderGrant.Events.Count.ShouldBe(3);
+            FolderAccessGranted[] grants = folderGrant.Events.Select(item =>
+            {
+                item.EventTypeName.ShouldBe(typeof(FolderAccessGranted).FullName);
+                item.PayloadVersion.ShouldBeNull();
+                return JsonSerializer.Deserialize<FolderAccessGranted>(item.Payload,
+                    new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+            }).ToArray();
+            grants.Select(item => (item.PrincipalKind, item.PrincipalId, item.Action))
+                .ShouldBe(expectedTuples, ignoreOrder: true);
+            grants.Select(item => item.AccessSequence).ShouldBe([1L, 2L, 3L]);
+            foreach (FolderAccessGranted item in grants)
+            {
+                AssertFolderAclPayload(item, folderGrantCommand);
+                item.ActorPrincipalId.ShouldBe("user-a");
+            }
+            DomainServiceCurrentState grantedState = Retain(folderGrantCommand, folderGrant, folderState);
+            FolderEventReplay actorReplay = app.Services.GetRequiredService<FolderEventReplay>();
+            FolderState granted = actorReplay.FoldFolder(grantedState, "tenant-a", "folder-a");
+            granted.AccessOverrides.Count.ShouldBe(3);
+            granted.AccessOverrides.Values.ShouldAllBe(item => item.IsGranted);
+            granted.AccessOverrides.Keys.Select(key => (key.PrincipalKind, key.PrincipalId, key.Action))
+                .ShouldBe(expectedTuples, ignoreOrder: true);
+            DomainServiceWireResult grantReplay = await ProcessAsync(client, folderGrantCommand with
+            {
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new { operations = aclOperations.Reverse().ToArray() }),
+            }, grantedState);
+            AssertFolderAclBatchReplay(grantReplay, folderGrantCommand.MessageId);
+            AssertFoldedAclUnchanged(granted,
+                actorReplay.FoldFolder(Retain(folderGrantCommand, grantReplay, grantedState), "tenant-a", "folder-a"));
+
+            CommandEnvelope folderRevokeCommand = Command("folder-a", FoldersServerModule.RevokeFolderAccessCommandType,
+                "message-folder-revoke", new { operations = aclOperations });
+            DomainServiceWireResult folderRevoke = await ProcessAsync(client, folderRevokeCommand, grantedState);
+            folderRevoke.IsRejection.ShouldBeFalse();
+            folderRevoke.Events.Count.ShouldBe(3);
+            FolderAccessRevoked[] revokes = folderRevoke.Events.Select(item =>
+            {
+                item.EventTypeName.ShouldBe(typeof(FolderAccessRevoked).FullName);
+                item.PayloadVersion.ShouldBeNull();
+                return JsonSerializer.Deserialize<FolderAccessRevoked>(item.Payload,
+                    new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+            }).ToArray();
+            revokes.Select(item => (item.PrincipalKind, item.PrincipalId, item.Action))
+                .ShouldBe(expectedTuples, ignoreOrder: true);
+            revokes.Select(item => item.AccessSequence).ShouldBe([4L, 5L, 6L]);
+            foreach (FolderAccessRevoked item in revokes)
+            {
+                AssertFolderAclPayload(item, folderRevokeCommand);
+                item.ActorPrincipalId.ShouldBe("user-a");
+            }
+            DomainServiceCurrentState revokedState = Retain(folderRevokeCommand, folderRevoke, grantedState);
+            FolderState revoked = actorReplay.FoldFolder(revokedState, "tenant-a", "folder-a");
+            revoked.AccessOverrides.Count.ShouldBe(3);
+            revoked.AccessOverrides.Values.ShouldAllBe(item => !item.IsGranted);
+            revoked.AccessOverrides.Keys.Select(key => (key.PrincipalKind, key.PrincipalId, key.Action))
+                .ShouldBe(expectedTuples, ignoreOrder: true);
+            DomainServiceWireResult revokeReplay = await ProcessAsync(client, folderRevokeCommand with
+            {
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new { operations = aclOperations.Reverse().ToArray() }),
+            }, revokedState);
+            AssertFolderAclBatchReplay(revokeReplay, folderRevokeCommand.MessageId);
+            AssertFoldedAclUnchanged(revoked,
+                actorReplay.FoldFolder(Retain(folderRevokeCommand, revokeReplay, revokedState), "tenant-a", "folder-a"));
+
             CommandEnvelope baselineCommand = Command("tenant-a",
                 FoldersServerModule.InitializeOrganizationAclBaselineCommandType, "message-baseline",
                 new { requestSchemaVersion = "v1", operations = new[]
@@ -350,12 +436,42 @@ public sealed class ProductionProcessWireEventTests
         result.Events[0].PayloadVersion.ShouldBeNull();
     }
 
+    private static void AssertFolderAclPayload(IFolderEvent item, CommandEnvelope command)
+    {
+        item.ManagedTenantId.ShouldBe(command.TenantId);
+        item.OrganizationId.ShouldBe(command.TenantId);
+        item.FolderId.ShouldBe(command.AggregateId);
+        item.CorrelationId.ShouldBe(command.CorrelationId);
+        item.TaskId.ShouldBe(command.Extensions!["taskId"]);
+        item.IdempotencyKey.ShouldBe(command.MessageId);
+        item.IdempotencyFingerprint.ShouldNotBeNullOrWhiteSpace();
+        item.OccurredAt.ShouldNotBe(default);
+    }
+
     private static void AssertReplay(DomainServiceWireResult result)
     {
         result.IsRejection.ShouldBeFalse();
         result.Events.ShouldBeEmpty();
         using JsonDocument payload = JsonDocument.Parse(result.ResultPayload.ShouldNotBeNull());
         payload.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
+    }
+
+    private static void AssertFolderAclBatchReplay(DomainServiceWireResult result, string idempotencyKey)
+    {
+        result.IsRejection.ShouldBeFalse();
+        result.Events.ShouldBeEmpty();
+        using JsonDocument payload = JsonDocument.Parse(result.ResultPayload.ShouldNotBeNull());
+        payload.RootElement.GetProperty("status").GetString().ShouldBe("accepted");
+        payload.RootElement.GetProperty("idempotencyKey").GetString().ShouldBe(idempotencyKey);
+    }
+
+    private static void AssertFoldedAclUnchanged(FolderState expected, FolderState actual)
+    {
+        actual.AccessSequence.ShouldBe(expected.AccessSequence);
+        actual.IdempotencyFingerprints.ShouldBe(expected.IdempotencyFingerprints);
+        // Compare retained values structurally, including each revocation history list.
+        JsonSerializer.SerializeToUtf8Bytes(actual.AccessOverrides.OrderBy(item => item.Key.CanonicalValue))
+            .ShouldBe(JsonSerializer.SerializeToUtf8Bytes(expected.AccessOverrides.OrderBy(item => item.Key.CanonicalValue)));
     }
 
     private static DomainServiceCurrentState Retain(CommandEnvelope command, DomainServiceWireResult result,

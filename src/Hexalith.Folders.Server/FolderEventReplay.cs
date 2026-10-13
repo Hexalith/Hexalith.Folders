@@ -305,6 +305,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             throw new InvalidOperationException("Incomplete organization snapshot.");
         }
 
+        if (!state.IsInitialized && state.Grants.Count > 0)
+        {
+            throw new InvalidOperationException("Uninitialized organization snapshot contains grants.");
+        }
+
         string[] organizationIds = state.Grants.Select(static grant => grant.OrganizationId)
             .Concat(state.ProviderBindings.Values.Select(static binding => binding.OrganizationId))
             .Distinct(StringComparer.Ordinal)

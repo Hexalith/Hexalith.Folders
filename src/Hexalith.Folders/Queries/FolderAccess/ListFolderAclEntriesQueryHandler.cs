@@ -107,7 +107,8 @@ public sealed class ListFolderAclEntriesQueryHandler(
                 null);
         }
 
-        if (projection is not null ? !projection.IsCreated : state is null || !state.IsCreated)
+        if (projection is not null ? !projection.IsCreated || projection.IsArchived
+            : state is null || !state.IsCreated || state.LifecycleState == FolderLifecycleState.Archived)
         {
             return Safe(ListFolderAclEntriesQueryResultCode.NotFoundSafe, deniedFreshness, query, null);
         }

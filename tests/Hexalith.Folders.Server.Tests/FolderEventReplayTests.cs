@@ -403,6 +403,28 @@ public sealed class FolderEventReplayTests
             new DomainServiceCurrentState(null, [first], 0, 1), "tenant-a", "tenant-a"));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void UninitializedOrganizationSnapshotWithGrantsFailsBeforeBaselineReplay(bool jsonSnapshot)
+    {
+        OrganizationAclEntryKey grant = new("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+            "user-a", "create_folder");
+        OrganizationState snapshot = OrganizationState.Empty with { Grants = new HashSet<OrganizationAclEntryKey> { grant } };
+        OrganizationAclBaselineInitialized initialized = new("tenant-a", "tenant-a", "correlation-a",
+            "task-a", "idempotency-a", "fingerprint-a");
+        EventEnvelope envelope = Envelope(typeof(OrganizationAclBaselineInitialized).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(initialized), 2, aggregateId: "tenant-a");
+        object storedSnapshot = jsonSnapshot ? JsonSerializer.SerializeToElement(snapshot) : snapshot;
+        FolderEventReplay replay = new(new EventPayloadEvolutionRegistry([typeof(OrganizationAclBaselineInitialized)], []));
+
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            new DomainServiceCurrentState(storedSnapshot, [envelope], 1, 2), "tenant-a", "tenant-a"))
+            .Message.ShouldBe("Uninitialized organization snapshot contains grants.");
+        snapshot.IsInitialized.ShouldBeFalse();
+        snapshot.Grants.ShouldHaveSingleItem().ShouldBe(grant);
+    }
+
     [Fact]
     public void UnknownRawSuffixAndMissingSnapshotAnchorsFailClosed()
     {
@@ -443,7 +465,7 @@ public sealed class FolderEventReplayTests
             .DisplayName.ShouldBe("Folder A");
         using ServiceProvider services = new ServiceCollection().AddSingleton(ReplayRegistry())
             .AddSingleton<IDomainProjectionHandler, FolderDomainProjectionHandler>().BuildServiceProvider();
-        DomainProjectionDispatcher.Project(services, new ProjectionRequest("tenant-a", "folders", "folder-a", projection),
+        DomainProjectionDispatcher.Project(services, new ProjectionRequest("tenant-a", "folders", "folder-a", [.. projection]),
             TestContext.Current.CancellationToken)!.State.GetProperty("isCreated").GetBoolean().ShouldBeTrue();
         foreach (string line in File.ReadAllLines(Fixture("retained-fixtures-sha256.txt")))
         {

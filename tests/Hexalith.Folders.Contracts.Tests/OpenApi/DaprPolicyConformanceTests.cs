@@ -119,7 +119,39 @@ public sealed class DaprPolicyConformanceTests
     {
         string yaml = File.ReadAllText(RepositoryPath(relativePath), Encoding.UTF8);
         yaml.ShouldNotContain("BEGIN CERTIFICATE", Case.Insensitive);
-        yaml.ShouldNotContain("token", Case.Insensitive);
+        if (relativePath == SidecarBindingsPath)
+        {
+            // Token and signing-key names are references, so inspect credential environment
+            // bindings instead of rejecting the names of their Kubernetes secret keys.
+            foreach (YamlMappingNode document in LoadYamlDocuments(relativePath))
+            {
+                document.GetScalar("kind").ShouldBe("Deployment");
+                if (!document.GetMapping("spec").GetMapping("template").TryGetMapping("spec", out YamlMappingNode? pod))
+                {
+                    continue;
+                }
+
+                foreach (YamlMappingNode container in pod!.GetSequence("containers").Children.Cast<YamlMappingNode>())
+                {
+                    foreach (YamlMappingNode env in container.GetSequence("env").Children.Cast<YamlMappingNode>())
+                    {
+                        string name = env.GetScalar("name");
+                        if (new[] { "token", "password", "key", "credential" }
+                            .Any(word => name.Contains(word, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            env.Children.ContainsKey(new YamlScalarNode("value")).ShouldBeFalse();
+                            YamlMappingNode reference = env.GetMapping("valueFrom").GetMapping("secretKeyRef");
+                            reference.GetScalar("name").ShouldNotBeNullOrWhiteSpace();
+                            reference.GetScalar("key").ShouldNotBeNullOrWhiteSpace();
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            yaml.ShouldNotContain("token", Case.Insensitive);
+        }
         yaml.ShouldNotContain("password", Case.Insensitive);
         yaml.ShouldNotContain("private key", Case.Insensitive);
     }

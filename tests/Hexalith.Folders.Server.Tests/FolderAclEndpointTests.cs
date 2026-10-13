@@ -298,6 +298,31 @@ public sealed class FolderAclEndpointTests
     }
 
     [Fact]
+    public async Task ArchiveAfterAuthorizationShouldReturnSafeDenialWithoutAclEntries()
+    {
+        ArchivingFolderAclReadModel changing = new(new("tenant-a", "tenant-a", "folder-a", 1,
+            true, false, DateTimeOffset.UtcNow.AddSeconds(-1),
+            [new(FolderAccessPrincipalKind.User, "sensitive-acl-principal", "read_metadata", true, 1,
+                DateTimeOffset.UtcNow.AddSeconds(-1))], []));
+        await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient(),
+            aclReadModel: changing, permissionReadModel: changing);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using HttpClient client = app.GetTestClient();
+
+        using HttpResponseMessage response = await client.GetAsync("/api/v1/folders/folder-a/acl",
+            TestContext.Current.CancellationToken);
+        string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        body.ShouldContain("metadata_only");
+        body.ShouldNotContain("items");
+        body.ShouldNotContain("sensitive-acl-principal");
+        body.ShouldNotContain("folder-a");
+        changing.AuthorizationReads.ShouldBe(1);
+        changing.AclReads.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task ListFolderAclEntriesShouldRejectUnknownInRangeCursorAsTampered()
     {
         await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
@@ -398,7 +423,8 @@ public sealed class FolderAclEndpointTests
         RecordingEventStoreGatewayClient gateway,
         string? tenantId = "tenant-a",
         string? principalId = "user-a",
-        IFolderAclReadModel? aclReadModel = null)
+        IFolderAclReadModel? aclReadModel = null,
+        IEffectivePermissionsReadModel? permissionReadModel = null)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -411,7 +437,7 @@ public sealed class FolderAclEndpointTests
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(TenantStore(tenantId, principalId));
         builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
-        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(PermissionReadModel());
+        builder.Services.AddSingleton<IEffectivePermissionsReadModel>(permissionReadModel ?? PermissionReadModel());
         if (aclReadModel is not null)
         {
             builder.Services.AddSingleton(aclReadModel);

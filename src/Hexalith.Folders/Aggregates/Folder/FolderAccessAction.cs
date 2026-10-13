@@ -5,6 +5,7 @@ public static class FolderAccessAction
     private static readonly HashSet<string> SupportedValues = new(StringComparer.Ordinal)
     {
         "configure_provider_binding",
+        "create_repository_backed_folder",
         "bind_repository",
         "configure_branch_ref_policy",
         "manage_folder_access",

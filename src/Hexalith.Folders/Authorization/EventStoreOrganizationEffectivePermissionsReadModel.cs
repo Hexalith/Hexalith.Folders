@@ -244,11 +244,3 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             _ => throw new InvalidOperationException("Unknown ACL principal kind."),
         };
 }
-
-public sealed record OrganizationPermissionProjection(string TenantId, string OrganizationId,
-    long LastSequence, bool IsInitialized, DateTimeOffset ProjectedAt, IReadOnlyList<OrganizationPermissionGrant> Grants,
-    IReadOnlyDictionary<string, long> ProcessedMessages,
-    IReadOnlyList<FolderProjectionMessage>? RecentMessages = null);
-
-public sealed record OrganizationPermissionGrant(OrganizationAclPrincipalKind PrincipalKind,
-    string PrincipalId, string Action);

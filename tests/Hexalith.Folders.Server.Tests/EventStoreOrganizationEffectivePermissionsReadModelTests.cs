@@ -17,6 +17,42 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 {
     [Theory]
+    [InlineData(nameof(FolderPermissionProjection.IsCreated))]
+    [InlineData(nameof(FolderPermissionProjection.IsArchived))]
+    public async Task SerializedFolderRowWithoutLifecycleEvidenceCannotAuthorize(string missingProperty)
+    {
+        TestClock clock = new();
+        FolderPermissionProjection archived = new("tenant-a", "tenant-a", "folder-a", 3,
+            true, true, clock.UtcNow,
+            [new(FolderAccessPrincipalKind.User, "user-a", "read_metadata", true, 1, clock.UtcNow)], []);
+        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(archived);
+        FolderPermissionProjection valid = JsonSerializer.Deserialize<FolderPermissionProjection>(bytes)!;
+        valid.IsArchived.ShouldBeTrue();
+        JsonSerializer.SerializeToUtf8Bytes(valid).ShouldBe(bytes);
+
+        Dictionary<string, JsonElement> incomplete = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(bytes)!;
+        incomplete.Remove(missingProperty).ShouldBeTrue();
+        byte[] incompleteBytes = JsonSerializer.SerializeToUtf8Bytes(incomplete);
+        Should.Throw<JsonException>(() => JsonSerializer.Deserialize<FolderPermissionProjection>(incompleteBytes));
+
+        MemoryReadModels store = new();
+        await store.TrySaveAsync("statestore", "projection:folders:folder-permissions:tenant-a:folder-a",
+            incomplete, string.Empty, TestContext.Current.CancellationToken);
+        TestSequenceReader heads = new() { CurrentSequence = 3 };
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads,
+            new EventStoreOrganizationEffectivePermissionsReadModel(store, clock, heads));
+        EffectivePermissionsReadModelResult result = await folder.GetAsync(new("tenant-a", "folder-a",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes"),
+            TestContext.Current.CancellationToken);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+        result.Snapshot.ShouldBeNull();
+        (await new EffectivePermissionsFolderPermissionEvidenceProvider(folder, clock).GetEvidenceAsync(
+            new("tenant-a", "user-a", "user-a", "read_metadata", "folder-a", "corr", null,
+                FolderOperationPolicyClass.StrictRead, false), TestContext.Current.CancellationToken))
+            .Status.ShouldBe(FolderPermissionEvidenceStatus.Unavailable);
+    }
+
+    [Theory]
     [InlineData("configured-sidecar-token")]
     [InlineData("")]
     public async Task IndependentSequenceReadUsesOnlyTheConfiguredDaprApiToken(string token)
@@ -35,6 +71,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     [InlineData("create_repository_backed_folder", false)]
     [InlineData("bind_repository", false)]
     [InlineData("configure_branch_ref_policy", false)]
+    [InlineData("create_repository_backed_folder", true)]
     [InlineData("bind_repository", true)]
     [InlineData("configure_branch_ref_policy", true)]
     public async Task AcceptedPersistedAclEventsSupplyPublishedExactActionAtItsScope(string action, bool folderScope)
@@ -49,7 +86,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
             new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
         FolderPermissionEvidenceRequest request = new("tenant-a", "user-a", "user-a", action,
-            folderScope ? "folder-a" : "organization_baseline", "corr", "task", FolderOperationPolicyClass.Mutation, false);
+            "folder-a", "corr", "task", FolderOperationPolicyClass.Mutation, false);
         FolderCreated created = new("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
             FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "user-a", "corr", "task", "key", "fingerprint", clock.UtcNow);
         await folder.ApplyAsync("tenant-a", "folder-a", "created", 1, "digest-create", created, ct);
@@ -85,6 +122,42 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
                 .ShouldHaveSingleItem().Action.ShouldBe(action);
         }
         (await evidence.GetEvidenceAsync(request, ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
+        (await evidence.GetEvidenceAsync(request with { OperationScope = "organization_baseline" }, ct))
+            .Status.ShouldBe(FolderPermissionEvidenceStatus.NotFoundSafe);
+        heads.Heads["folder-missing"] = 0;
+        (await evidence.GetEvidenceAsync(request with { OperationScope = "folder-missing" }, ct))
+            .Status.ShouldBe(FolderPermissionEvidenceStatus.NotFoundSafe);
+        heads.Heads["folder-missing"] = 1;
+        (await evidence.GetEvidenceAsync(request with { OperationScope = "folder-missing" }, ct))
+            .Status.ShouldBe(FolderPermissionEvidenceStatus.Stale);
+        heads.Heads["folder-a"] = 3;
+        (await evidence.GetEvidenceAsync(request, ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Stale);
+        heads.Heads["folder-a"] = folderScope ? 2 : 1;
+        heads.Heads["tenant-b"] = 0;
+        heads.Heads["folder-b"] = 0;
+        (await evidence.GetEvidenceAsync(request with { ManagedTenantId = "tenant-b", OperationScope = "folder-b" }, ct))
+            .Status.ShouldBe(FolderPermissionEvidenceStatus.NotFoundSafe);
+
+        if (folderScope)
+        {
+            await folder.ApplyAsync("tenant-a", "folder-a", "revoke", 3, "digest-revoke",
+                new FolderAccessRevoked("tenant-a", "tenant-a", "folder-a", FolderAccessPrincipalKind.User,
+                    "user-a", action, "user-a", "corr", "task", "key-revoke", "fingerprint-revoke", 2, clock.UtcNow), ct);
+            heads.Heads["folder-a"] = 3;
+            (await store.GetAsync<FolderPermissionProjection>("statestore",
+                "projection:folders:folder-permissions:tenant-a:folder-a", ct)).Value!.Overrides
+                .ShouldHaveSingleItem().IsGranted.ShouldBeFalse();
+        }
+        else
+        {
+            await organization.ApplyAsync("tenant-a", "tenant-a", "revoke", 3,
+                new OrganizationAclPrincipalRevoked("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                    "user-a", action, "corr", "task", "key-revoke", "fingerprint-revoke"), ct);
+            heads.CurrentSequence = 3;
+            (await store.GetAsync<OrganizationPermissionProjection>("statestore",
+                "projection:folders:organization-permissions:tenant-a", ct)).Value!.Grants.ShouldBeEmpty();
+        }
+        (await evidence.GetEvidenceAsync(request, ct)).Status.ShouldBe(FolderPermissionEvidenceStatus.Denied);
     }
 
     [Fact]

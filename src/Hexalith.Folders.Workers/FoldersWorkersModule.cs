@@ -20,11 +20,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Hexalith.Folders.Workers;
 
-public static class FoldersWorkersModule
+public static partial class FoldersWorkersModule
 {
     public const string AppId = FoldersTenantEventSubscription.AppId;
 
@@ -169,6 +170,7 @@ public static class FoldersWorkersModule
             FoldersSemanticIndexingEventProcessor processor,
             FoldersOrganizationAclEventProcessor organizationProcessor,
             FoldersFolderPermissionEventProcessor folderPermissionProcessor,
+            ILoggerFactory loggerFactory,
             CancellationToken cancellationToken) =>
         {
             try
@@ -180,8 +182,11 @@ public static class FoldersWorkersModule
             {
                 throw;
             }
-            catch (Exception)
+            catch (Exception failure)
             {
+                PermissionProjectionFailure(loggerFactory.CreateLogger(typeof(FoldersWorkersModule)),
+                    "permission_projection_failed", "permission_projection",
+                    failure.GetType().FullName ?? failure.GetType().Name);
                 return Results.Problem(statusCode: StatusCodes.Status500InternalServerError);
             }
 
@@ -207,6 +212,12 @@ public static class FoldersWorkersModule
 
         return endpoints;
     }
+
+    [LoggerMessage(
+        EventId = 1201,
+        Level = LogLevel.Warning,
+        Message = "Folder permission projection failed category={Category} stage={Stage} failure_type={FailureType}")]
+    private static partial void PermissionProjectionFailure(ILogger logger, string category, string stage, string failureType);
 
     private static IServiceCollection AddFoldersTenantEventProjection(this IServiceCollection services)
     {

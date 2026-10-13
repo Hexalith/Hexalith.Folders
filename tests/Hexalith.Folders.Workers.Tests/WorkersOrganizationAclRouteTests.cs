@@ -15,6 +15,9 @@ using Hexalith.Folders.Workers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+
+using NSubstitute;
 
 using Shouldly;
 using Xunit;
@@ -23,6 +26,74 @@ namespace Hexalith.Folders.Workers.Tests;
 
 public sealed class WorkersOrganizationAclRouteTests
 {
+    [Fact]
+    public async Task ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse()
+    {
+        const string protectedTenant = "protected-tenant-identifier";
+        const string protectedMessage = "protected-message-identifier";
+        const string protectedPayload = "protected-payload-correlation";
+        const string protectedFailure = "protected-exception-message-and-credential";
+        IReadModelStore store = Substitute.For<IReadModelStore>();
+        store.GetAsync<OrganizationPermissionProjection>(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .Returns(_ => Task.FromException<ReadModelEntry<OrganizationPermissionProjection>>(
+                new InvalidOperationException(protectedFailure)));
+        PermissionProjectionFailureLoggerProvider logs = new();
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        {
+            EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
+        });
+        builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
+        builder.Logging.AddProvider(logs);
+        builder.Services.AddFoldersTenantEventWorkers();
+        builder.Services.RemoveAll<IReadModelStore>();
+        builder.Services.AddSingleton(store);
+        await using WebApplication app = builder.Build();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapFoldersTenantEventWorkerEndpoints();
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+            OrganizationAclBaselineInitialized baseline = new(protectedTenant, protectedTenant,
+                protectedPayload, "protected-task", "protected-key", "protected-fingerprint");
+            EventStoreDomainEventEnvelope envelope = Envelope(protectedMessage, 1, baseline) with
+            {
+                TenantId = protectedTenant,
+                AggregateId = protectedTenant,
+            };
+            using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", envelope,
+                TestContext.Current.CancellationToken);
+            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+
+            var entry = logs.Entries.ShouldHaveSingleItem();
+            entry.Level.ShouldBe(LogLevel.Warning);
+            entry.EventId.Id.ShouldBe(1201);
+            entry.Exception.ShouldBeNull();
+            entry.Fields.Keys.Order(StringComparer.Ordinal).ShouldBe(new[]
+                { "Category", "Stage", "FailureType", "{OriginalFormat}" }.Order(StringComparer.Ordinal));
+            entry.Fields["Category"].ShouldBe("permission_projection_failed");
+            entry.Fields["Stage"].ShouldBe("permission_projection");
+            entry.Fields["FailureType"].ShouldBe(typeof(InvalidOperationException).FullName);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+            foreach (string protectedValue in new[] { protectedTenant, protectedMessage, protectedPayload,
+                protectedFailure, "protected-task", "protected-key", "protected-fingerprint",
+                Convert.ToBase64String(envelope.Payload) })
+            {
+                entry.Message.ShouldNotContain(protectedValue);
+                entry.Fields.Values.Select(value => value?.ToString() ?? string.Empty)
+                    .ShouldNotContain(value => value.Contains(protectedValue, StringComparison.Ordinal));
+                body.ShouldNotContain(protectedValue);
+            }
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken);
+        }
+    }
+
     [Fact]
     public async Task AuthenticatedBaselineAndGrantShouldReachSharedPermissionState()
     {
