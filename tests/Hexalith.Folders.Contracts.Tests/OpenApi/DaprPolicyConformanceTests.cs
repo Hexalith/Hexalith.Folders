@@ -395,7 +395,7 @@ public sealed class DaprPolicyConformanceTests
         runbook.ShouldContain("pods/portforward");
         runbook.ShouldContain("--address 127.0.0.1");
         runbook.ShouldContain("18080:8080");
-        runbook.ShouldContain("dapr-app-token");
+        runbook.ShouldContain("`dapr-api-token` header");
         runbook.ShouldContain("Missing or wrong tokens must return 401");
         runbook.ShouldContain("never print it");
         runbook.ShouldContain("not a live Kubernetes repair exercise");
