@@ -47,11 +47,11 @@ provenance:
 - path: _bmad-output/planning-artifacts/prd.md
   sha256: b08c5bb51a8d07b0a452837304486b69a1ce5c1f63ca4e7b2a360393b0c45608
 - path: _bmad-output/planning-artifacts/architecture.md
-  sha256: da13b2bd481b0c72355ad41ecf52b63f303711f4f5293ea89673cd05f916fce1
+  sha256: 7ee56ec9d991ee91ef0557c8f7d99b7c5bb98e5f1476adb865fb9a8781ac5eaa
 - path: _bmad-output/planning-artifacts/ux-design-specification.md
   sha256: d6a72eb0eb60dc60086d57725188cca35da910eb7cdde3333f17253d8014a17b
 - path: _bmad-output/planning-artifacts/epics.md
-  sha256: d1ac3564c5f50b48f4d2978546703dab82c1b8288d70c203317bf45d23c70492
+  sha256: da39584ed822f30bfd618eec6f00d6b17d420a1d407ce65464ea804dc8e780de
 - path: _bmad-output/planning-artifacts/sprint-change-proposal-2026-09-17.md
   sha256: dafeb5ea8757a1a02ce156017e99a7f6fb7d6f52837fb038e5914a14ebefee37
 - path: _bmad-output/planning-artifacts/planning-story-manifest-v2-relock-input.yaml
@@ -75,7 +75,7 @@ provenance:
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
   sha256: 0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: ad6a39706de3cb66fcf6fe23d836cc5a6a24b89bcedd5d20f75706c8db28dc0a
+  sha256: 9324d95a0f8e496c3e3fec4acd48c61dbcedf7979662c43583294571fb1d951c
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
   sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
