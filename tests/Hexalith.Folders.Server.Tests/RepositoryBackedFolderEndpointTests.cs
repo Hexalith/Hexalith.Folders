@@ -1307,6 +1307,39 @@ public sealed class RepositoryBackedFolderEndpointTests
         }
     }
 
+    [Theory]
+    [InlineData("ProviderUnavailable", 503, "provider_unavailable", true)]
+    [InlineData("ProviderRateLimited", 429, "provider_rate_limited", true)]
+    [InlineData("UnknownProviderOutcome", 503, "unknown_provider_outcome", false)]
+    [InlineData("ReconciliationRequired", 409, "reconciliation_required", false)]
+    [InlineData("RepositoryConflict", 409, "repository_conflict", false)]
+    public async Task PersistedProviderOutcomePayloadMapsToCanonicalProblem(string failureCode,
+        int status, string category, bool retryable)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Response = new SubmitCommandResponse("correlation-a", JsonSerializer.SerializeToElement(new
+            {
+                status = "accepted", failureCode, idempotentReplay = false,
+            })),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        using HttpClient client = app.GetTestClient();
+        using HttpRequestMessage request = CreateValidBindRequest();
+        using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
+        ((int)response.StatusCode).ShouldBe(status);
+        using JsonDocument problem = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        problem.RootElement.GetProperty("code").GetString().ShouldBe(category);
+        problem.RootElement.GetProperty("retryable").GetBoolean().ShouldBe(retryable);
+        if (!retryable && category is "unknown_provider_outcome" or "reconciliation_required")
+        {
+            problem.RootElement.GetProperty("clientAction").GetString().ShouldBe("wait_for_reconciliation");
+        }
+        gateway.Requests.ShouldHaveSingleItem();
+        await app.StopAsync(TestContext.Current.CancellationToken);
+        await app.DisposeAsync();
+    }
+
     private static async Task<WebApplication> StartAppAsync(
         RecordingEventStoreGatewayClient gateway,
         string? tenantId,
@@ -1331,21 +1364,24 @@ public sealed class RepositoryBackedFolderEndpointTests
         return app;
     }
 
-    [Fact]
-    public async Task RepositoryBackedCreationShouldRejectOrganizationPermissionScopeAsFolderId()
+    [Theory]
+    [InlineData("organization_baseline")]
+    [InlineData("tenant-a")]
+    [InlineData("provider-binding-reserved")]
+    public async Task RepositoryBackedCreationShouldRejectReservedActorIds(string folderId)
     {
         RecordingEventStoreGatewayClient gateway = new();
         WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
         try
         {
             using HttpClient client = app.GetTestClient();
-            using HttpRequestMessage request = CreateValidRequest(folderId: FolderStreamName.ReservedOrganizationPermissionScope);
+            using HttpRequestMessage request = CreateValidRequest(folderId: folderId);
             using HttpResponseMessage response = await client.SendAsync(request,
                 TestContext.Current.CancellationToken).ConfigureAwait(true);
 
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
             gateway.Requests.ShouldBeEmpty();
-            FolderStreamName.TryCreate("tenant-a", FolderStreamName.ReservedOrganizationPermissionScope,
+            FolderStreamName.TryCreate("tenant-a", folderId,
                 out _, out FolderResultCode code).ShouldBeFalse();
             code.ShouldBe(FolderResultCode.InvalidFolderId);
         }

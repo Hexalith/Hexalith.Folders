@@ -286,6 +286,34 @@ public sealed class FoldersDomainServiceRequestHandlerTests
         problem.ProblemDetails.Extensions["code"].ShouldBe("authorization_evidence_malformed");
     }
 
+    [Theory]
+    [InlineData(FoldersServerModule.GrantOrganizationAclPrincipalCommandType)]
+    [InlineData(FoldersServerModule.RevokeOrganizationAclPrincipalCommandType)]
+    public async Task EmptyBaselineUsesSafeCurrentAuthorizationDenialInsteadOfRetryableOutage(string commandType)
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        await store.SaveAsync(Projection("tenant-a", Now.AddMinutes(-1), enabled: true,
+            principals: ["user-a"]), TestContext.Current.CancellationToken);
+        CountingDomainProcessor processor = new();
+        LayeredFolderAuthorizationService authorizer = CreateAuthorizer(store,
+            new FixedFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.FromStatus(
+                FolderPermissionEvidenceStatus.NotFoundSafe, null)));
+        FoldersDomainServiceRequestHandler handler = new([processor], authorizer,
+            new FakeTenantContextAccessor("tenant-a", "user-a"), new StubClaimTransformEvidenceAccessor("tenant-a", "user-a"),
+            new FolderCommandActionTokenMapper(), new ScopedLayeredFolderAuthorizationResultAccessor());
+        DomainServiceRequest source = CreateRequest("tenant-a", "user-a");
+        DomainServiceRequest request = source with
+        {
+            Command = source.Command with { AggregateId = "tenant-a", CommandType = commandType },
+            CurrentState = new DomainServiceCurrentState(null, [], 0, 0),
+        };
+        ProblemHttpResult problem = SafeDenialProblem(await handler.ProcessAsync(request, TestContext.Current.CancellationToken));
+        problem.StatusCode.ShouldBe(StatusCodes.Status404NotFound);
+        problem.ProblemDetails.Extensions["code"].ShouldBe("safe_not_found");
+        problem.ProblemDetails.Extensions["retryable"].ShouldBe(false);
+        processor.ProcessCalls.ShouldBe(0);
+    }
+
     private static ProblemHttpResult SafeDenialProblem(IResult result)
         => result.ShouldBeOfType<AuthorizationDenialTransportResult>()
             .InnerResult.ShouldBeOfType<ProblemHttpResult>();

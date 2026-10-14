@@ -8,6 +8,7 @@ using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Server.Authorization;
 
 namespace Hexalith.Folders.Server;
 
@@ -79,26 +80,8 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             throw new InvalidOperationException("Unclassifiable Folders rejection event.");
         }
 
-        return commandType.GetString() switch
-        {
-            FoldersServerModule.InitializeOrganizationAclBaselineCommandType
-                or FoldersServerModule.GrantOrganizationAclPrincipalCommandType
-                or FoldersServerModule.RevokeOrganizationAclPrincipalCommandType
-                or FoldersServerModule.ConfigureProviderBindingCommandType => true,
-            FoldersServerModule.CreateFolderCommandType
-                or FoldersServerModule.GrantFolderAccessCommandType
-                or FoldersServerModule.RevokeFolderAccessCommandType
-                or FoldersServerModule.ArchiveFolderCommandType
-                or FoldersServerModule.CreateRepositoryBackedFolderCommandType
-                or FoldersServerModule.BindRepositoryCommandType
-                or FoldersServerModule.ConfigureBranchRefPolicyCommandType
-                or FoldersServerModule.PrepareWorkspaceCommandType
-                or FoldersServerModule.LockWorkspaceCommandType
-                or FoldersServerModule.ReleaseWorkspaceLockCommandType
-                or FoldersServerModule.MutateFilesCommandType
-                or FoldersServerModule.CommitWorkspaceCommandType => false,
-            _ => throw new InvalidOperationException("Unclassifiable Folders rejection event."),
-        };
+        return FolderCommandActionTokenMapper.IsOrganizationStreamCommand(commandType.GetString()!)
+            ?? throw new InvalidOperationException("Unclassifiable Folders rejection event.");
     }
 
     /// <summary>Folds the command's actor-owned folder stream without querying another store.</summary>

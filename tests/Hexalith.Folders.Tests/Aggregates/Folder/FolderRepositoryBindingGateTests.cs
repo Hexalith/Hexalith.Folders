@@ -299,6 +299,7 @@ public sealed class FolderRepositoryBindingGateTests
         result.Code.ShouldBe(expectedResult);
         repository.AppendsAttempted.ShouldBe(1);
         repository.LastAppendedEvents.Count.ShouldBe(2);
+        result.Events.ShouldBe(repository.LastAppendedEvents);
         repository.LastAppendedEvents[0].ShouldBeOfType<ExistingRepositoryBindingRequested>();
         if (failureCategory is ProviderFailureCategory.UnknownProviderOutcome or ProviderFailureCategory.ReconciliationRequired)
         {

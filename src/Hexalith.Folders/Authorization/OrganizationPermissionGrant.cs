@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using Hexalith.Folders.Aggregates.Organization;
 
 namespace Hexalith.Folders.Authorization;
@@ -6,5 +8,5 @@ namespace Hexalith.Folders.Authorization;
 /// <param name="PrincipalKind">The kind of principal receiving the grant.</param>
 /// <param name="PrincipalId">The principal identifier.</param>
 /// <param name="Action">The granted action token.</param>
-public sealed record OrganizationPermissionGrant(OrganizationAclPrincipalKind PrincipalKind,
+public sealed record OrganizationPermissionGrant([property: JsonRequired] OrganizationAclPrincipalKind PrincipalKind,
     string PrincipalId, string Action);

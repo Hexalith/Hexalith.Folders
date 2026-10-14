@@ -11,7 +11,7 @@ namespace Hexalith.Folders.Server;
 /// <summary>Rebuilds a Folders projection solely from the complete EventStore event prefix.</summary>
 public sealed class FolderDomainProjectionHandler : IDomainProjectionHandler
 {
-    private static readonly PropertyInfo[] FolderStateProperties = typeof(FolderState).GetProperties()
+    private static readonly PropertyInfo[] FolderStateProperties = typeof(FolderState).GetProperties(BindingFlags.Instance | BindingFlags.Public)
         .Where(static property => property.Name != nameof(FolderState.AccessOverrides))
         .ToArray();
 

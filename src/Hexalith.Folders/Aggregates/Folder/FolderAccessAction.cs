@@ -16,6 +16,8 @@ public static class FolderAccessAction
         "read_workspace_status",
         "read_workspace_cleanup_status",
         "read_metadata",
+        "read_branch_ref_policy",
+        "read_context_search",
         "read_file_content",
         "mutate_files",
         "commit",

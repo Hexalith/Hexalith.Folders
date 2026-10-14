@@ -68,12 +68,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
         EffectivePermissionsFreshness freshness = new(request.ReadConsistency, now,
             projection.LastSequence.ToString(System.Globalization.CultureInfo.InvariantCulture),
             Stale: false, ReasonCode: null);
-        if (!string.Equals(projection.TenantId, request.ManagedTenantId, StringComparison.Ordinal)
-            || !string.Equals(projection.OrganizationId, request.ManagedTenantId, StringComparison.Ordinal)
-            || projection.LastSequence < 1
-            || projection.Grants is null
-            || projection.ProcessedMessages is null
-            || projection.ProjectedAt > now + ProjectedClockSkew)
+        if (!HasValidState(projection, request.ManagedTenantId, request.ManagedTenantId, now))
         {
             return EffectivePermissionsReadModelResult.Malformed(freshness);
         }
@@ -150,10 +145,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             .GetAsync<OrganizationPermissionProjection>(StoreName, key, cancellationToken).ConfigureAwait(false);
         OrganizationPermissionProjection? prior = current.Value;
         if (prior is not null
-            && (!string.Equals(prior.TenantId, tenantId, StringComparison.Ordinal)
-                || !string.Equals(prior.OrganizationId, organizationId, StringComparison.Ordinal)
-                || prior.Grants is null
-                || prior.ProcessedMessages is null))
+            && !HasValidState(prior, tenantId, organizationId, clock.UtcNow))
         {
             throw new InvalidOperationException("Organization ACL projection state is invalid.");
         }
@@ -243,4 +235,14 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             OrganizationAclPrincipalKind.DelegatedServiceAgent => EffectivePermissionPrincipal.DelegatedServiceAgent(principalId),
             _ => throw new InvalidOperationException("Unknown ACL principal kind."),
         };
+
+    private static bool HasValidState(OrganizationPermissionProjection projection, string tenantId,
+        string organizationId, DateTimeOffset now)
+        => string.Equals(projection.TenantId, tenantId, StringComparison.Ordinal)
+            && string.Equals(projection.OrganizationId, organizationId, StringComparison.Ordinal)
+            && projection.LastSequence >= 1
+            && projection.Grants is not null
+            && projection.ProcessedMessages is not null
+            && projection.ProjectedAt <= now + ProjectedClockSkew
+            && (projection.IsInitialized || projection.Grants.Count == 0);
 }

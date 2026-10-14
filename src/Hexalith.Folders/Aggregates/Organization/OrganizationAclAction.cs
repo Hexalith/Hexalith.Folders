@@ -15,6 +15,8 @@ public static class OrganizationAclAction
         "prepare_workspace",
         "lock_workspace",
         "read_metadata",
+        "read_branch_ref_policy",
+        "read_context_search",
         "read_file_content",
         "mutate_files",
         "commit",

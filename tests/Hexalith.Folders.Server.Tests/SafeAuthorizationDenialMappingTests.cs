@@ -46,8 +46,7 @@ public sealed class SafeAuthorizationDenialMappingTests
 
         IResult mapped = FolderAuthorizationDenialMapper.ToHttpResult(result);
 
-        ProblemHttpResult problem = mapped.ShouldBeOfType<AuthorizationDenialTransportResult>()
-            .InnerResult.ShouldBeOfType<ProblemHttpResult>();
+        ProblemHttpResult problem = mapped.ShouldBeOfType<ProblemHttpResult>();
         problem.StatusCode.ShouldBe(expectedStatusCode);
         problem.ProblemDetails.Extensions["category"].ShouldBe(expectedCategory);
         problem.ProblemDetails.Extensions["code"].ShouldBe(outcomeCode);
@@ -77,7 +76,7 @@ public sealed class SafeAuthorizationDenialMappingTests
             DecidedAt: Now));
 
         ProblemHttpResult problem = FolderAuthorizationDenialMapper.ToHttpResult(result)
-            .ShouldBeOfType<AuthorizationDenialTransportResult>().InnerResult.ShouldBeOfType<ProblemHttpResult>();
+            .ShouldBeOfType<ProblemHttpResult>();
         string body = string.Join("|", problem.ProblemDetails.Extensions.Select(static pair => $"{pair.Key}:{pair.Value}"));
 
         body.ShouldNotContain("folder-secret-watermark", Case.Sensitive);

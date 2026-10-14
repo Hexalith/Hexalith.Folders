@@ -2,6 +2,8 @@ using System.Collections.Concurrent;
 using System.Net;
 
 using Hexalith.Folders.Observability;
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Server.Authorization;
 using Hexalith.Folders.Parity.Testing;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
@@ -138,6 +140,29 @@ public sealed class FolderAuditEndpointFilterTests
         observation.OperationId.ShouldBe("operation-a");
         observation.CorrelationId.ShouldBe("correlation-a");
         observation.TaskId.ShouldBe("task-a");
+    }
+
+    [Theory]
+    [InlineData("/api/v1/folders/folder-a", false)]
+    [InlineData("/process", true)]
+    public async Task AuthorizationDenialsAreAuditedAndOnlyTrustedProcessCarriesInternalMarker(string path, bool trustedProcess)
+    {
+        RecordingTelemetryEmitter telemetry = new();
+        LayeredFolderAuthorizationResult denied = LayeredFolderAuthorizationResult.Denied(new(
+            AuthorizationLayer.FolderAcl, LayeredAuthorizationOutcomeCodes.FolderAclDenied, false,
+            "fresh", null, "correlation-a", "task-a", "actor_present", "mutation", "not_recorded", DateTimeOffset.UtcNow));
+        await using WebApplication app = BuildApp(telemetry, app =>
+        {
+            app.MapPost(path, () => FolderAuthorizationDenialMapper.ToHttpResult(denied, trustedProcess))
+                .AddEndpointFilter<FolderAuditEndpointFilter>();
+        });
+        using HttpResponseMessage response = await app.GetTestClient().PostAsync(path, null, TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        response.Headers.Contains(AuthorizationDenialTransportResult.HeaderName).ShouldBe(trustedProcess);
+        FolderAuditObservation observation = telemetry.Single();
+        observation.Result.ShouldBe(FolderAuditResult.Denied);
+        observation.SanitizedCategory.ShouldBe("authorization_denied");
+        observation.OperationKind.ShouldBe(trustedProcess ? FolderAuditOperationKind.ProcessCommand : FolderAuditOperationKind.RestMutation);
     }
 
     [Fact]

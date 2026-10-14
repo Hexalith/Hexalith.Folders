@@ -116,6 +116,7 @@ public sealed class FolderEventReplayTests
         result.ShouldNotBeNull();
         result.State.GetProperty("isCreated").GetBoolean().ShouldBeTrue();
         result.State.GetProperty("displayName").GetString().ShouldBe("Folder A");
+        result.State.TryGetProperty("empty", out _).ShouldBeFalse();
 
         Should.Throw<InvalidOperationException>(() => DomainProjectionDispatcher.Project(
             services, request with { Events = [stored with { EventTypeName = "Hexalith.Folders.Aggregates.Folder.UnknownEvent" }] },
@@ -471,6 +472,46 @@ public sealed class FolderEventReplayTests
         {
             string[] entry = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Fixture(entry[1])))).ShouldBe(entry[0]);
+        }
+    }
+
+    [Fact]
+    public void ProductionRegistryResolvesEveryFrozenDomainEventAndRejectsUnsupportedVersions()
+    {
+        using ServiceProvider services = new ServiceCollection().AddFoldersDomainServices().BuildServiceProvider();
+        EventPayloadEvolutionRegistry registry = services.GetRequiredService<EventPayloadEvolutionRegistry>();
+        string[] names = File.ReadAllLines(Fixture("frozen-event-names-v1.txt"))
+            .Where(name => !FolderEventReplay.IsKnownRejection(name)).ToArray();
+        names.Length.ShouldBe(22);
+        foreach (string name in names)
+        {
+            registry.Read(name, null, "{}"u8.ToArray(), validateDeserialization: false)
+                .EventType.ShouldNotBeNull().FullName.ShouldBe(name);
+            Should.Throw<EventPayloadEvolutionException>(() => registry.Read(name, 2,
+                "{}"u8.ToArray(), validateDeserialization: false));
+        }
+    }
+
+    [Fact]
+    public void EveryMappedCommandRejectionHasTheSameStreamClassificationAsAuthorization()
+    {
+        Hexalith.Folders.Server.Authorization.FolderCommandActionTokenMapper mapper = new();
+        string[] commandTypes = typeof(FoldersServerModule).GetFields()
+            .Where(field => field.IsLiteral && field.Name.EndsWith("CommandType", StringComparison.Ordinal))
+            .Select(field => (string)field.GetRawConstantValue()!).ToArray();
+        commandTypes.Length.ShouldBe(16);
+        foreach (string type in commandTypes)
+        {
+            CommandEnvelope command = new("message", "tenant-a", "folders", "folder-a", type,
+                [], "correlation-a", null, "user-a", null);
+            Hexalith.Folders.Server.Authorization.FolderCommandActionMapping mapping = mapper.Map(command).ShouldNotBeNull();
+            FolderCommandRejected rejection = FolderCommandRejected.Create(nameof(FolderResultCode.ValidationFailed),
+                type, null, null, null, null, "correlation-a", "task-a", "message");
+            ProjectionEventDto retained = new(typeof(FolderCommandRejected).FullName!,
+                JsonSerializer.SerializeToUtf8Bytes(rejection), "json", 1, OccurredAt, "correlation-a");
+            bool organization = mapping.ScopeKind == Hexalith.Folders.Server.Authorization.FolderCommandOperationScopeKind.OrganizationBaseline
+                && type != FoldersServerModule.CreateFolderCommandType;
+            FolderEventReplay.IsOrganizationProjectionEvent(retained).ShouldBe(organization);
         }
     }
 

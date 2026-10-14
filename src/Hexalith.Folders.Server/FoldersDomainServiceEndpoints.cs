@@ -1647,6 +1647,12 @@ public static class FoldersDomainServiceEndpoints
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
 
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
+
         return Results.Json(
             new AcceptedCommandResponse(
                 timeProvider.GetUtcNow(),
@@ -1794,6 +1800,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -1969,6 +1981,12 @@ public static class FoldersDomainServiceEndpoints
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
 
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
+
         return Results.Json(
             new AcceptedCommandResponse(
                 timeProvider.GetUtcNow(),
@@ -2125,6 +2143,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -2327,7 +2351,8 @@ public static class FoldersDomainServiceEndpoints
                 message: "requestSchemaVersion must be exactly v1.");
         }
 
-        if (!IsValidRepositoryBackedRequest(body))
+        if (!IsValidRepositoryBackedRequest(body)
+            || string.Equals(body.FolderId, envelope.TenantId, StringComparison.Ordinal))
         {
             return FolderProblemDetailsFactory.ForDomain(
                 StatusCodes.Status400BadRequest,
@@ -2393,6 +2418,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -2531,6 +2562,12 @@ public static class FoldersDomainServiceEndpoints
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
 
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
+
         return Results.Json(
             new AcceptedCommandResponse(
                 timeProvider.GetUtcNow(),
@@ -2667,6 +2704,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -2814,6 +2857,12 @@ public static class FoldersDomainServiceEndpoints
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
 
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
+
         return Results.Json(
             new AcceptedCommandResponse(
                 timeProvider.GetUtcNow(),
@@ -2958,6 +3007,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -3104,6 +3159,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -3263,6 +3324,12 @@ public static class FoldersDomainServiceEndpoints
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
 
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
+
         return Results.Json(
             new AcceptedCommandResponse(
                 timeProvider.GetUtcNow(),
@@ -3388,6 +3455,12 @@ public static class FoldersDomainServiceEndpoints
 
         httpContext.Response.Headers["X-Correlation-Id"] = acceptedCorrelationId;
         httpContext.Response.Headers["X-Hexalith-Task-Id"] = taskId;
+
+        IResult? outcomeProblem = ProviderOutcomeProblem(submitted.ResultPayload, acceptedCorrelationId, taskId);
+        if (outcomeProblem is not null)
+        {
+            return outcomeProblem;
+        }
 
         return Results.Json(
             new AcceptedCommandResponse(
@@ -3785,6 +3858,23 @@ public static class FoldersDomainServiceEndpoints
         }
 
         return false;
+    }
+
+    private static IResult? ProviderOutcomeProblem(JsonElement? payload, string correlationId, string taskId)
+    {
+        if (payload is not { ValueKind: JsonValueKind.Object } value
+            || !value.TryGetProperty("failureCode", out JsonElement failure)
+            || failure.ValueKind != JsonValueKind.String
+            || !Enum.TryParse(failure.GetString(), out FolderResultCode code)
+            || !Enum.IsDefined(code)
+            || code is FolderResultCode.Accepted or FolderResultCode.Created
+                or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied)
+        {
+            return null;
+        }
+
+        (int status, string category, bool retryable, _) = FolderCanonicalErrorMapper.ForDomain(code);
+        return FolderProblemDetailsFactory.ForDomain(status, category, category, retryable, correlationId, taskId);
     }
 
     private static IResult ToArchiveGatewayProblem(EventStoreGatewayException exception, string correlationId, string taskId)

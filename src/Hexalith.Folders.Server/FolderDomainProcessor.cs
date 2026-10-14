@@ -1397,13 +1397,15 @@ public sealed partial class FolderDomainProcessor(
     private async ValueTask EmitProcessObservationAsync(CommandEnvelope command, DomainResult result, TimeSpan duration)
     {
         bool replay = IsIdempotentReplay(result.ResultPayload);
+        FolderResultCode? failureCode = ReadFailureCode(result.ResultPayload);
         string? taskId = TryReadCanonicalExtension(command.Extensions, "taskId");
         FolderAuditObservation observation = new FolderAuditObservationBuilder
         {
             OperationKind = FolderAuditOperationKind.ProcessCommand,
             Result = result.IsRejection
                 ? FolderAuditResult.Rejected
-                : replay ? FolderAuditResult.Replayed : FolderAuditResult.Success,
+                : replay ? FolderAuditResult.Replayed
+                    : failureCode is not null ? FolderAuditResult.Failed : FolderAuditResult.Success,
             TenantId = command.TenantId,
             ActorReference = command.UserId,
             TaskId = taskId,
@@ -1415,7 +1417,8 @@ public sealed partial class FolderDomainProcessor(
             RedactionState = FolderAuditRedactionState.MetadataOnly,
             SanitizedCategory = result.IsRejection
                 ? "domain_rejection"
-                : replay ? "idempotent_replay" : "accepted",
+                : replay ? "idempotent_replay"
+                    : failureCode is { } failure ? FolderCanonicalErrorMapper.CategoryFor(failure) : "accepted",
             IsRetry = false,
             IsIdempotentReplay = replay,
             IsDuplicate = false,
@@ -1447,6 +1450,9 @@ public sealed partial class FolderDomainProcessor(
     private static string CommandTypeClassification(string? commandType)
         => commandType switch
         {
+            FoldersServerModule.InitializeOrganizationAclBaselineCommandType => "initialize_organization_acl_baseline",
+            FoldersServerModule.GrantOrganizationAclPrincipalCommandType => "grant_organization_acl_principal",
+            FoldersServerModule.RevokeOrganizationAclPrincipalCommandType => "revoke_organization_acl_principal",
             FoldersServerModule.ArchiveFolderCommandType => "archive_folder",
             FoldersServerModule.CreateRepositoryBackedFolderCommandType => "create_repository_backed_folder",
             FoldersServerModule.BindRepositoryCommandType => "bind_repository",
@@ -1458,6 +1464,34 @@ public sealed partial class FolderDomainProcessor(
             FoldersServerModule.CommitWorkspaceCommandType => "commit_workspace",
             _ => "unsupported_command",
         };
+
+    private static FolderResultCode? ReadFailureCode(string? resultPayload)
+    {
+        if (string.IsNullOrWhiteSpace(resultPayload))
+        {
+            return null;
+        }
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(resultPayload);
+            if (document.RootElement.TryGetProperty("failureCode", out JsonElement failure)
+                && failure.ValueKind == JsonValueKind.String
+                && Enum.TryParse(failure.GetString(), out FolderResultCode code)
+                && Enum.IsDefined(code)
+                && string.Equals(code.ToString(), failure.GetString(), StringComparison.Ordinal)
+                && code is not (FolderResultCode.Accepted or FolderResultCode.Created
+                    or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied))
+            {
+                return code;
+            }
+        }
+        catch (JsonException)
+        {
+        }
+
+        return null;
+    }
 
     // Caller (ProcessArchiveAsync) already guards against null `allowed` before calling this
     // method, so the parameter is non-nullable. The dead null arm was removed to avoid
@@ -1482,7 +1516,7 @@ public sealed partial class FolderDomainProcessor(
             : TenantProjectionFreshnessStatus.Fresh;
 
     private static DomainResult ToDomainResult(CommandEnvelope envelope, FolderResult result)
-        => result.Code switch
+        => result.Events.Count > 0 ? AcceptedResult(result) : result.Code switch
         {
             FolderResultCode.Accepted
                 or FolderResultCode.Created
@@ -1498,7 +1532,9 @@ public sealed partial class FolderDomainProcessor(
             IdempotentReplay: result.Code == FolderResultCode.IdempotentReplay,
             CorrelationId: IsCanonicalIdentifier(result.CorrelationId) ? result.CorrelationId : null,
             TaskId: IsCanonicalIdentifier(result.TaskId) ? result.TaskId : null,
-            IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null);
+            IdempotencyKey: IsCanonicalIdentifier(result.IdempotencyKey) ? result.IdempotencyKey : null,
+            FailureCode: result.Code is FolderResultCode.Accepted or FolderResultCode.Created
+                or FolderResultCode.IdempotentReplay or FolderResultCode.AlreadyApplied ? null : result.Code.ToString());
 
         return new PayloadDomainResult(JsonSerializer.Serialize(payload, PayloadJsonOptions),
             [.. result.Events.Cast<IEventPayload>()]);
@@ -1576,7 +1612,8 @@ public sealed partial class FolderDomainProcessor(
         bool IdempotentReplay,
         string? CorrelationId,
         string? TaskId,
-        string? IdempotencyKey);
+        string? IdempotencyKey,
+        string? FailureCode = null);
 
     private sealed record ArchiveFolderPayload(
         [property: JsonRequired] string? RequestSchemaVersion,

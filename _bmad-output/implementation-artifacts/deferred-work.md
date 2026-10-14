@@ -2873,3 +2873,7 @@ archived: 2026-09-18
 ## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-14)
 
 - Human-authority receipt verification has no clock-skew tolerance. `HumanAuthorityReceiptCodec.TryVerify` (EventStore `src/Hexalith.EventStore.ServiceDefaults/Authentication/HumanAuthorityReceiptCodec.cs:94`) rejects `IssuedAtUnixSeconds > now` at second granularity, and `HumanAuthorityReceiptVerifier` passes the Folders host clock unchanged. When the EventStore clock runs ahead of the Folders clock by more than the invocation latency across a second boundary, a legitimate mutation gets a non-retryable 401. Owner: EventStore platform codec (bounded issued-at skew window); pre-existing to Story 12.1's Folders change.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Expose a trusted cached-replay disposition from the EventStore gateway so Folders can suppress repeat REST mutation audit observations for cached successes and failures.
+  evidence: `SubmitCommandHandler.CreateReplayResult` returns the original result payload and `SubmitCommandResponse` has no separate replay flag; an initially false `idempotentReplay` remains false on cached replay. Folders cannot safely infer replay from that unchanged payload. This also affects the pre-existing cached-success and deterministic-failure paths; fix the platform response contract and its consumer together rather than inventing replay authority in Folders.

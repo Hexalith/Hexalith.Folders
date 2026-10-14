@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Net;
 
 using Hexalith.EventStore.Client.Projections;
@@ -68,6 +69,10 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     }
 
     [Theory]
+    [InlineData("read_branch_ref_policy", false)]
+    [InlineData("read_context_search", false)]
+    [InlineData("read_branch_ref_policy", true)]
+    [InlineData("read_context_search", true)]
     [InlineData("create_repository_backed_folder", false)]
     [InlineData("bind_repository", false)]
     [InlineData("configure_branch_ref_policy", false)]
@@ -612,6 +617,144 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
         (await server.GetAsync(request, TestContext.Current.CancellationToken)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
         sequenceReader.Unavailable = true;
         (await server.GetAsync(request, TestContext.Current.CancellationToken)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+    }
+
+    [Theory]
+    [InlineData("uninitialized-grants")]
+    [InlineData("zero-sequence")]
+    [InlineData("negative-sequence")]
+    [InlineData("future-timestamp")]
+    [InlineData("null-grants")]
+    [InlineData("null-messages")]
+    public async Task InvalidOrganizationRowsCannotBeRefreshedIntoCurrentAuthority(string invalidState)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        OrganizationPermissionProjection prior = new("tenant-a", "tenant-a", 1, true, clock.UtcNow,
+            [new(OrganizationAclPrincipalKind.User, "user-a", "create_folder")], new Dictionary<string, long>());
+        prior = invalidState switch
+        {
+            "uninitialized-grants" => prior with { IsInitialized = false },
+            "zero-sequence" => prior with { LastSequence = 0 },
+            "negative-sequence" => prior with { LastSequence = -1 },
+            "future-timestamp" => prior with { ProjectedAt = clock.UtcNow.AddMinutes(3) },
+            "null-grants" => prior with { Grants = null! },
+            "null-messages" => prior with { ProcessedMessages = null! },
+            _ => throw new InvalidOperationException(),
+        };
+        const string key = "projection:folders:organization-permissions:tenant-a";
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        (await store.TrySaveAsync("statestore", key, prior, string.Empty, ct)).ShouldBeTrue();
+        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock,
+            new TestSequenceReader { CurrentSequence = Math.Max(1, prior.LastSequence) });
+        EffectivePermissionsReadModelRequest request = new("tenant-a", "organization_baseline",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes");
+        EffectivePermissionsReadModelResult result = await model.GetAsync(request, ct);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Malformed);
+        result.Snapshot.ShouldBeNull();
+        foreach (IOrganizationAclEvent? next in new IOrganizationAclEvent?[]
+        {
+            null,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "next-key", "next-fingerprint"),
+            new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                "user-b", "create_folder", "corr", "task", "next-key", "next-fingerprint"),
+        })
+        {
+            long sequence = Math.Max(1, prior.LastSequence + 1);
+            await Should.ThrowAsync<InvalidOperationException>(() => next is null
+                ? model.ApplyNonPermissionEventAsync("tenant-a", "tenant-a", "next-message", sequence, ct)
+                : model.ApplyAsync("tenant-a", "tenant-a", "next-message", sequence, next, ct));
+            ReadModelEntry<OrganizationPermissionProjection> retained = await store.GetAsync<OrganizationPermissionProjection>(
+                "statestore", key, ct);
+            retained.ETag.ShouldBe("1");
+            JsonSerializer.SerializeToUtf8Bytes(retained.Value).ShouldBe(JsonSerializer.SerializeToUtf8Bytes(prior));
+            (await model.GetAsync(request, ct)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Malformed);
+        }
+    }
+
+    [Fact]
+    public async Task EmptyAndUninitializedOrganizationRowsRemainSafeAndCanInitialize()
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new();
+        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock, heads);
+        EffectivePermissionsReadModelRequest request = new("tenant-a", "organization_baseline",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes");
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        (await model.GetAsync(request, ct)).Status.ShouldBe(EffectivePermissionsReadModelStatus.NotFound);
+        await model.ApplyNonPermissionEventAsync("tenant-a", "tenant-a", "rejection", 1, ct);
+        heads.CurrentSequence = 1;
+        (await model.GetAsync(request, ct)).Status.ShouldBe(EffectivePermissionsReadModelStatus.NotFound);
+        await model.ApplyAsync("tenant-a", "tenant-a", "baseline", 2,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+        heads.CurrentSequence = 2;
+        EffectivePermissionsReadModelResult initialized = await model.GetAsync(request, ct);
+        initialized.Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
+        initialized.Snapshot!.EvidenceRows.ShouldBeEmpty();
+        await model.ApplyAsync("tenant-a", "tenant-a", "grant", 3,
+            new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                "user-a", "create_folder", "corr", "task", "grant-key", "grant-fingerprint"), ct);
+        heads.CurrentSequence = 3;
+        (await model.GetAsync(request, ct)).Snapshot!.EvidenceRows.ShouldHaveSingleItem().Action.ShouldBe("create_folder");
+    }
+
+    [Theory]
+    [InlineData(false, 0)]
+    [InlineData(false, 1)]
+    [InlineData(false, 2)]
+    [InlineData(true, 0)]
+    [InlineData(true, 1)]
+    [InlineData(true, 2)]
+    public async Task PersistedGrantRequiresAnExplicitPrincipalKindIncludingUser(bool folderScope, int principalKind)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new() { CurrentSequence = 1 };
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        OrganizationPermissionProjection baseline = new("tenant-a", "tenant-a", 1, true, clock.UtcNow,
+            folderScope ? [] : [new((OrganizationAclPrincipalKind)principalKind, "user-a", "read_metadata")],
+            new Dictionary<string, long>());
+        await store.TrySaveAsync("statestore", "projection:folders:organization-permissions:tenant-a", baseline, string.Empty, ct);
+        string key = folderScope ? "projection:folders:folder-permissions:tenant-a:folder-a"
+            : "projection:folders:organization-permissions:tenant-a";
+        FolderPermissionProjection persistedFolder = new("tenant-a", "tenant-a", "folder-a", 1, true, false, clock.UtcNow,
+            folderScope ? [new((FolderAccessPrincipalKind)principalKind, "user-a", "read_metadata", true, 1, clock.UtcNow)] : [], []);
+        await store.TrySaveAsync("statestore", "projection:folders:folder-permissions:tenant-a:folder-a", persistedFolder, string.Empty, ct);
+        object projection = folderScope ? persistedFolder : baseline;
+        byte[] valid = JsonSerializer.SerializeToUtf8Bytes(projection, projection.GetType());
+        JsonObject raw = JsonNode.Parse(valid)!.AsObject();
+        JsonObject grant = raw[folderScope ? "Overrides" : "Grants"]![0]!.AsObject();
+        grant["PrincipalKind"]!.GetValue<int>().ShouldBe(principalKind);
+        IEffectivePermissionsReadModel model = folderScope ? folder : organization;
+        EffectivePermissionsReadModelRequest request = new("tenant-a", folderScope ? "folder-a" : "organization_baseline",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes");
+        (await model.GetAsync(request, ct)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
+        EffectivePermissionsFolderPermissionEvidenceProvider evidence = new(folder, clock);
+        FolderPermissionEvidenceRequest operation = new("tenant-a", "user-a", "user-a", "read_metadata", "folder-a",
+            "corr", null, FolderOperationPolicyClass.StrictRead, false);
+        (await evidence.GetEvidenceAsync(operation, ct)).Status.ShouldBe(principalKind == 0
+            ? FolderPermissionEvidenceStatus.Allowed : FolderPermissionEvidenceStatus.Denied);
+        (await model.GetAsync(request, ct)).Snapshot!.EvidenceRows.ShouldHaveSingleItem().Principal.Kind
+            .ShouldBe((EffectivePermissionPrincipalKind)principalKind);
+        grant.Remove("PrincipalKind").ShouldBeTrue();
+        byte[] incomplete = JsonSerializer.SerializeToUtf8Bytes(raw);
+        if (folderScope)
+        {
+            Should.Throw<JsonException>(() => JsonSerializer.Deserialize<FolderPermissionProjection>(incomplete));
+        }
+        else
+        {
+            Should.Throw<JsonException>(() => JsonSerializer.Deserialize<OrganizationPermissionProjection>(incomplete));
+        }
+        ReadModelEntry<JsonObject> entry = await store.GetAsync<JsonObject>("statestore", key, ct);
+        (await store.TrySaveAsync("statestore", key, raw, entry.ETag!, ct)).ShouldBeTrue();
+        EffectivePermissionsReadModelResult result = await model.GetAsync(request, ct);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+        result.Snapshot.ShouldBeNull();
+        (await evidence.GetEvidenceAsync(operation, ct)).Status.ShouldNotBe(FolderPermissionEvidenceStatus.Allowed);
     }
 
     private sealed class TestClock : IUtcClock

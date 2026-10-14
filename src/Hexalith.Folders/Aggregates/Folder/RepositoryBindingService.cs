@@ -233,7 +233,9 @@ public sealed class RepositoryBindingService(
                 events);
         }
 
-        return FolderResult.Rejected(command, MapProvider(providerResult));
+        // A completed provider outcome is a domain fact. Retain the request and outcome
+        // events even when the caller-facing result describes failure or uncertainty.
+        return FolderResult.Rejected(command, MapProvider(providerResult)) with { Events = events };
     }
 
     private FolderResult ResolveAppendConflict(FolderStreamName streamName, BindRepository command)

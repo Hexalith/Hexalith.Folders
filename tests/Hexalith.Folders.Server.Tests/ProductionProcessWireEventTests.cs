@@ -12,6 +12,10 @@ using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Observability;
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Queries.ProviderReadiness;
+using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Testing;
@@ -175,8 +179,13 @@ public sealed class ProductionProcessWireEventTests
         }
     }
 
-    [Fact]
-    public async Task ProcessRouteEmitsActorFoldedFolderOrganizationAndBindingEventsWithZeroEventReplay()
+    [Theory]
+    [InlineData(ProviderFailureCategory.ProviderUnavailable, FolderResultCode.ProviderUnavailable, "provider_unavailable")]
+    [InlineData(ProviderFailureCategory.ProviderRateLimited, FolderResultCode.ProviderRateLimited, "provider_rate_limited")]
+    [InlineData(ProviderFailureCategory.UnknownProviderOutcome, FolderResultCode.UnknownProviderOutcome, "unknown_provider_outcome")]
+    [InlineData(ProviderFailureCategory.ReconciliationRequired, FolderResultCode.ReconciliationRequired, "reconciliation_required")]
+    public async Task ProcessRouteEmitsActorFoldedFolderOrganizationAndBindingEventsWithZeroEventReplay(
+        ProviderFailureCategory failureCategory, FolderResultCode expectedFailure, string expectedAuditCategory)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         InMemoryFolderTenantAccessProjectionStore tenants = new();
@@ -236,6 +245,20 @@ public sealed class ProductionProcessWireEventTests
             service.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());
         builder.Services.AddScoped<IOrganizationAclRepository>(service =>
             service.GetRequiredService<ActorFoldedOrganizationProviderBindingRepository>());
+        builder.Services.RemoveAll<IFolderPermissionEvidenceProvider>();
+        builder.Services.AddSingleton<ScopeCheckingFolderPermissionEvidenceProvider>(service => new(
+            new EffectivePermissionsFolderPermissionEvidenceProvider(permissions, service.GetRequiredService<IUtcClock>())));
+        builder.Services.AddSingleton<IFolderPermissionEvidenceProvider>(service =>
+            service.GetRequiredService<ScopeCheckingFolderPermissionEvidenceProvider>());
+        builder.Services.RemoveAll<IRepositoryBindingReadinessValidator>();
+        builder.Services.AddSingleton<IRepositoryBindingReadinessValidator, ProcessBindingReadinessValidator>();
+        builder.Services.RemoveAll<IProviderReadinessBindingReader>();
+        builder.Services.AddSingleton<IProviderReadinessBindingReader, ProcessProviderBindingReader>();
+        InMemoryFolderAuditObserver audit = new();
+        builder.Services.AddSingleton<IFolderAuditObserver>(audit);
+        RecordingProviderCapabilityResolver provider = new(FakeGitProvider.Failing(failureCategory));
+        builder.Services.RemoveAll<IProviderCapabilityResolver>();
+        builder.Services.AddSingleton<IProviderCapabilityResolver>(provider);
 
         await using WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
@@ -250,6 +273,25 @@ public sealed class ProductionProcessWireEventTests
                     folderId = "folder-a",
                     folderMetadata = new { displayName = "Folder A" },
                 });
+            foreach ((string Actor, string Type) invalid in new[]
+            {
+                ("folder-a", FoldersServerModule.ConfigureProviderBindingCommandType),
+                ("tenant-a", FoldersServerModule.CreateFolderCommandType),
+                ("organization_baseline", FoldersServerModule.CreateFolderCommandType),
+                (ProviderBindingActorId.Create("binding-a"), FoldersServerModule.CreateFolderCommandType),
+                ("folder-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType),
+                ("folder-a", FoldersServerModule.RevokeOrganizationAclPrincipalCommandType),
+            })
+            {
+                CommandEnvelope misrouted = Command(invalid.Actor, invalid.Type, "misrouted-message", new { });
+                using HttpResponseMessage denied = await client.PostAsJsonAsync(FoldersServerModule.ProcessRoute,
+                    new DomainServiceRequest(misrouted, null), TestContext.Current.CancellationToken);
+                denied.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+                using JsonDocument problem = JsonDocument.Parse(await denied.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+                problem.RootElement.GetProperty("retryable").GetBoolean().ShouldBeFalse();
+                problem.RootElement.TryGetProperty("events", out _).ShouldBeFalse();
+                denied.Headers.Contains("X-Hexalith-Authorization-Denial").ShouldBeTrue();
+            }
             DomainServiceWireResult folder = await ProcessAsync(client, folderCommand, null);
             AssertEvent(folder, typeof(FolderCreated));
             DomainServiceCurrentState folderState = Retain(folderCommand, folder);
@@ -357,6 +399,18 @@ public sealed class ProductionProcessWireEventTests
             }
             DomainServiceCurrentState baselineState = Retain(baselineCommand, baseline);
             AssertReplay(await ProcessAsync(client, baselineCommand, baselineState));
+            DomainServiceWireResult duplicateBaseline = await ProcessAsync(client, baselineCommand with
+            {
+                MessageId = "message-baseline-new-key",
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new { operations = new[]
+                    { new { principalKind = "User", principalId = "attacker-a", action = "manage_organization_acl" } } }),
+            }, baselineState);
+            duplicateBaseline.IsRejection.ShouldBeTrue();
+            JsonSerializer.Deserialize<JsonElement>(duplicateBaseline.Events.ShouldHaveSingleItem().Payload)
+                .GetProperty("Code").GetString().ShouldBe(nameof(FolderResultCode.DuplicateEntry));
+            app.Services.GetRequiredService<FolderEventReplay>()
+                .FoldOrganization(Retain(baselineCommand, duplicateBaseline, baselineState), "tenant-a", "tenant-a")
+                .Grants.ShouldNotContain(grant => grant.PrincipalId == "attacker-a");
 
             CommandEnvelope grantCommand = Command("tenant-a",
                 FoldersServerModule.GrantOrganizationAclPrincipalCommandType, "message-grant",
@@ -374,7 +428,27 @@ public sealed class ProductionProcessWireEventTests
                 JsonSerializer.Deserialize<OrganizationAclPrincipalGranted>(acceptedAction.Events[0].Payload,
                     new JsonSerializerOptions(JsonSerializerDefaults.Web))!.Action.ShouldBe(action);
             }
-            AssertReplay(await ProcessAsync(client, grantCommand, Retain(grantCommand, grant, baselineState)));
+            DomainServiceCurrentState organizationGrantState = Retain(grantCommand, grant, baselineState);
+            AssertReplay(await ProcessAsync(client, grantCommand, organizationGrantState));
+            CommandEnvelope organizationRevoke = grantCommand with
+            {
+                CommandType = FoldersServerModule.RevokeOrganizationAclPrincipalCommandType,
+                MessageId = "message-organization-revoke",
+            };
+            AssertEvent(await ProcessAsync(client, organizationRevoke, organizationGrantState),
+                typeof(OrganizationAclPrincipalRevoked));
+            foreach ((string Message, string Classification) expected in new[]
+            {
+                ("message-baseline", "initialize_organization_acl_baseline"),
+                ("message-grant", "grant_organization_acl_principal"),
+                ("message-organization-revoke", "revoke_organization_acl_principal"),
+            })
+            {
+                FolderAuditObservation observed = audit.Observations.Single(item => item.OperationId == expected.Message);
+                observed.Classifications["command.type"].ShouldBe(expected.Classification);
+                observed.Result.ShouldBe(FolderAuditResult.Success);
+                observed.SanitizedCategory.ShouldBe("accepted");
+            }
 
             CommandEnvelope delegated = Command("tenant-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType,
                 "message-delegated", new { operations = new[]
@@ -405,6 +479,48 @@ public sealed class ProductionProcessWireEventTests
             DomainServiceWireResult binding = await ProcessAsync(client, bindingCommand, null);
             AssertEvent(binding, typeof(ProviderBindingConfigured));
             AssertReplay(await ProcessAsync(client, bindingCommand, Retain(bindingCommand, binding)));
+
+            permissions.Save(new EffectivePermissionsReadModelSnapshot("tenant-a", "tenant-a", "folder-a",
+                EffectivePermissionsFolderLifecycleState.Active,
+                [new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant,
+                    EffectivePermissionPrincipal.User("user-a"), "bind_repository", 1, now)],
+                new("read_your_writes", now, "1", false, null), true, null));
+            CommandEnvelope bindCommand = Command("folder-a", FoldersServerModule.BindRepositoryCommandType,
+                "message-bind", new
+                {
+                    requestSchemaVersion = "v1", providerBindingRef = "binding-a",
+                    externalRepositoryRef = "repository-a",
+                    branchRefPolicy = new { requestSchemaVersion = "v1", repositoryBindingId = "repository-binding-a", policyRef = "policy-a" },
+                });
+            DomainServiceWireResult failedBinding = await ProcessAsync(client, bindCommand, folderState);
+            failedBinding.IsRejection.ShouldBeFalse(string.Join("; ", failedBinding.Events.Select(item => Encoding.UTF8.GetString(item.Payload))));
+            failedBinding.Events.Select(item => item.EventTypeName).ShouldBe([
+                typeof(ExistingRepositoryBindingRequested).FullName,
+                failureCategory is ProviderFailureCategory.UnknownProviderOutcome or ProviderFailureCategory.ReconciliationRequired
+                    ? typeof(ProviderOutcomeUnknown).FullName : typeof(RepositoryBindingFailed).FullName,
+            ]);
+            using JsonDocument failedPayload = JsonDocument.Parse(failedBinding.ResultPayload!);
+            failedPayload.RootElement.GetProperty("failureCode").GetString().ShouldBe(expectedFailure.ToString());
+            FolderAuditObservation outcomeAudit = audit.Observations.Single(item => item.OperationId == bindCommand.MessageId);
+            outcomeAudit.Result.ShouldBe(FolderAuditResult.Failed);
+            outcomeAudit.SanitizedCategory.ShouldBe(expectedAuditCategory);
+            outcomeAudit.Classifications["command.type"].ShouldBe("bind_repository");
+            outcomeAudit.RedactionState.ShouldBe(FolderAuditRedactionState.MetadataOnly);
+            DomainServiceCurrentState failedRetained = Retain(bindCommand, failedBinding, folderState);
+            FolderState failedState = actorReplay.FoldFolder(failedRetained, "tenant-a", "folder-a");
+            failedState.RepositoryBindingState.ShouldBe(
+                failureCategory == ProviderFailureCategory.ReconciliationRequired ? FolderRepositoryBindingState.ReconciliationRequired
+                    : failureCategory == ProviderFailureCategory.UnknownProviderOutcome ? FolderRepositoryBindingState.UnknownProviderOutcome
+                    : FolderRepositoryBindingState.Failed);
+            AssertReplay(await ProcessAsync(client, bindCommand, failedRetained));
+            provider.ProviderCalls.ShouldBe(1);
+            ScopeCheckingFolderPermissionEvidenceProvider sequenceEvidence = app.Services
+                .GetRequiredService<ScopeCheckingFolderPermissionEvidenceProvider>();
+            sequenceEvidence.ObservedHeads.ShouldContain(1L);
+            sequenceEvidence.ObservedHeads.ShouldContain(2L);
+            sequenceEvidence.ObservedHeads.ShouldContain(4L);
+            FolderActorSequenceScope.TryGet("tenant-a", "folder-a", out _).ShouldBeFalse();
+            OrganizationActorSequenceScope.TryGet("tenant-a", "tenant-a", out _).ShouldBeFalse();
         }
         finally
         {

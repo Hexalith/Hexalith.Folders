@@ -7,7 +7,11 @@ namespace Hexalith.Folders.Server;
 
 public static class FolderAuthorizationDenialMapper
 {
-    public static IResult ToHttpResult(LayeredFolderAuthorizationResult result)
+    /// <summary>Maps a closed authorization decision into a metadata-only HTTP problem.</summary>
+    /// <param name="result">The denied authorization decision.</param>
+    /// <param name="trustedEventStoreInvocation">Whether the result is returned on the internal EventStore callback.</param>
+    /// <returns>The safe problem, carrying the internal transport marker only for a trusted invocation.</returns>
+    public static IResult ToHttpResult(LayeredFolderAuthorizationResult result, bool trustedEventStoreInvocation = false)
     {
         ArgumentNullException.ThrowIfNull(result);
 
@@ -19,7 +23,7 @@ public static class FolderAuthorizationDenialMapper
         LayeredFolderAuthorizationDecisionSnapshot decision = result.Decision;
         (int statusCode, string category) = StatusAndCategory(decision);
 
-        return new AuthorizationDenialTransportResult(Results.Problem(
+        IResult problem = Results.Problem(
             type: $"https://hexalith.dev/errors/folders/{decision.OutcomeCode}",
             title: Title(statusCode),
             statusCode: statusCode,
@@ -43,7 +47,8 @@ public static class FolderAuthorizationDenialMapper
                     ["freshnessClass"] = decision.FreshnessClass,
                     ["timingBucket"] = decision.TimingBucket,
                 },
-            }));
+            });
+        return trustedEventStoreInvocation ? new AuthorizationDenialTransportResult(problem) : problem;
     }
 
     private static (int StatusCode, string Category) StatusAndCategory(LayeredFolderAuthorizationDecisionSnapshot decision)

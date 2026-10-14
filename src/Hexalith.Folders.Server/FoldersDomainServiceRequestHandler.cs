@@ -4,6 +4,8 @@ using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
 
@@ -70,14 +72,20 @@ public sealed class FoldersDomainServiceRequestHandler(
         if (mapping is null)
         {
             return FolderAuthorizationDenialMapper.ToHttpResult(
-                BuildUnsupportedCommandDenial(request.Command));
+                BuildUnsupportedCommandDenial(request.Command), trustedEventStoreInvocation: true);
         }
 
         string? operationScope = ResolveOperationScope(mapping.ScopeKind, request.Command);
         if (mapping.ScopeKind == FolderCommandOperationScopeKind.FolderAggregate && operationScope is null)
         {
             return FolderAuthorizationDenialMapper.ToHttpResult(
-                BuildMalformedScopeDenial(request.Command));
+                BuildMalformedScopeDenial(request.Command), trustedEventStoreInvocation: true);
+        }
+
+        if (!IsAdmittedActor(request.Command))
+        {
+            return FolderAuthorizationDenialMapper.ToHttpResult(
+                BuildMalformedScopeDenial(request.Command), trustedEventStoreInvocation: true);
         }
 
         EventStoreClaimTransformEvidence claimTransform = claimTransformEvidenceAccessor.GetEvidence(mapping.ActionToken);
@@ -125,14 +133,13 @@ public sealed class FoldersDomainServiceRequestHandler(
                 return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
             }
 
-            if (actorState is null || actorState.CurrentSequence < 1
-                || !string.Equals(request.Command.AggregateId, request.Command.TenantId, StringComparison.Ordinal))
+            if (actorState is not null && actorState.CurrentSequence < 0)
             {
                 return SafeAclBootstrapDenial(StatusCodes.Status503ServiceUnavailable, "authorization_unavailable");
             }
 
             actorSequenceScope = OrganizationActorSequenceScope.Enter(request.Command.TenantId,
-                request.Command.AggregateId, actorState.CurrentSequence);
+                request.Command.AggregateId, actorState?.CurrentSequence ?? 0);
         }
         else if (mapping.ScopeKind == FolderCommandOperationScopeKind.FolderAggregate)
         {
@@ -162,7 +169,7 @@ public sealed class FoldersDomainServiceRequestHandler(
 
         if (!authorization.IsAllowed)
         {
-            return FolderAuthorizationDenialMapper.ToHttpResult(authorization);
+            return FolderAuthorizationDenialMapper.ToHttpResult(authorization, trustedEventStoreInvocation: true);
         }
 
         List<IDomainProcessor> processorList = [.. processors];
@@ -191,7 +198,7 @@ public sealed class FoldersDomainServiceRequestHandler(
         }
         catch (OrganizationAclAuthorizationDeniedException denial)
         {
-            return FolderAuthorizationDenialMapper.ToHttpResult(denial.Authorization);
+            return FolderAuthorizationDenialMapper.ToHttpResult(denial.Authorization, trustedEventStoreInvocation: true);
         }
         finally
         {
@@ -215,6 +222,21 @@ public sealed class FoldersDomainServiceRequestHandler(
             FolderCommandOperationScopeKind.OrganizationBaseline => OrganizationBaselineScope,
             FolderCommandOperationScopeKind.FolderAggregate => ValidateFolderAggregateId(command.AggregateId),
             _ => null,
+        };
+
+    /// <summary>Admits commands only to their disjoint EventStore actor namespace before state lookup.</summary>
+    internal static bool IsAdmittedActor(CommandEnvelope command)
+        => command.CommandType switch
+        {
+            FoldersServerModule.ConfigureProviderBindingCommandType => ProviderBindingActorId.IsReserved(command.AggregateId)
+                && !string.Equals(command.AggregateId, command.TenantId, StringComparison.Ordinal),
+            FoldersServerModule.InitializeOrganizationAclBaselineCommandType
+                or FoldersServerModule.GrantOrganizationAclPrincipalCommandType
+                or FoldersServerModule.RevokeOrganizationAclPrincipalCommandType =>
+                    string.Equals(command.AggregateId, command.TenantId, StringComparison.Ordinal)
+                    && !ProviderBindingActorId.IsReserved(command.TenantId)
+                    && !string.Equals(command.TenantId, OrganizationBaselineScope, StringComparison.Ordinal),
+            _ => FolderStreamName.TryCreate(command.TenantId, command.AggregateId, out _, out _),
         };
 
     private static string? ValidateFolderAggregateId(string? aggregateId)

@@ -28,6 +28,13 @@ public sealed class FolderCommandActionTokenMapper(IReadOnlyDictionary<string, F
 
     private readonly IReadOnlyDictionary<string, FolderCommandActionMapping> _mappings = mappings ?? DefaultMappings;
 
+    /// <summary>Classifies every published command using the same inventory as authorization admission.</summary>
+    internal static bool? IsOrganizationStreamCommand(string commandType)
+        => DefaultMappings.TryGetValue(commandType, out FolderCommandActionMapping? mapping)
+            ? mapping.ScopeKind == FolderCommandOperationScopeKind.OrganizationBaseline
+                && commandType != FoldersServerModule.CreateFolderCommandType
+            : null;
+
     public FolderCommandActionMapping? Map(CommandEnvelope command)
     {
         ArgumentNullException.ThrowIfNull(command);
