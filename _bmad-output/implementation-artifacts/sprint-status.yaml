@@ -257,7 +257,7 @@ development_status:
   epic-11-retrospective: optional
 
   epic-12: in-progress
-  12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: review
+  12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: in-progress
   # needs eventstore 
   12-2-durable-projections-and-task-completion-pipeline: backlog
   12-3-durable-workspace-file-content-store-and-content-read-source: backlog
