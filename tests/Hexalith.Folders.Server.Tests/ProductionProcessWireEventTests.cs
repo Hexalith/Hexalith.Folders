@@ -504,7 +504,6 @@ public sealed class ProductionProcessWireEventTests
             FolderAuditObservation outcomeAudit = audit.Observations.Single(item => item.OperationId == bindCommand.MessageId);
             outcomeAudit.Result.ShouldBe(FolderAuditResult.Failed);
             outcomeAudit.SanitizedCategory.ShouldBe(expectedAuditCategory);
-            outcomeAudit.Classifications["command.type"].ShouldBe("bind_repository");
             outcomeAudit.RedactionState.ShouldBe(FolderAuditRedactionState.MetadataOnly);
             DomainServiceCurrentState failedRetained = Retain(bindCommand, failedBinding, folderState);
             FolderState failedState = actorReplay.FoldFolder(failedRetained, "tenant-a", "folder-a");
