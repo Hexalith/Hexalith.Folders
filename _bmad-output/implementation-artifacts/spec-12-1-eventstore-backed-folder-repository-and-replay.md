@@ -2,7 +2,7 @@
 title: 'Story 12.1: EventStore-backed folder repository and projection replay'
 type: 'feature'
 created: '2026-09-26'
-status: 'done'
+status: 'in-progress'
 baseline_commit: '09c964353c1d7c15244b3a1c5f4066c361ada994'
 route: 'dispatch'
 review_loop_iteration: 6
@@ -381,3 +381,50 @@ The implementation agent passed the new focused checks: Server replay/projection
 The archived ACL regression changed one file in the current candidate inventory. Deterministic regeneration preserved the same 224 paths, controls, and historical bindings; the final generated manifest SHA-256 is `f0e62ea352bf3ac10bcfc8bc3d5a2f559ce65c9bf42d237bc335f3cb550110a4`, with only its current top-level planning provenance refreshed. The parent reran complete Contracts.Tests 350/350 after that refresh. EventStore adapter tests 45/45, Testing.Tests 69/69, and the 211 pinned platform compatibility/conflict checks passed earlier in this same continuation and their implementation was unchanged by the review patches. Frozen intent bytes, the authorization matrix, both historical acceptance records, and EventStore source/pin were independently checked against their unchanged inputs. `git diff --check` passes.
 
 The build artifact is complete and Story 12.1 is handed to `review` in the sprint tracker. This is implementation/review completion within the authorized source-validation lane, not release, v2 exposure, or fresh deployed acceptance. The recorded Aspire startup timeout and prior live-proof limitations remain; no additional durability rollout, live ETag race, or Kubernetes operator repair is claimed.
+
+### Review Findings (2026-10-14, group 1 of 3)
+
+Full-story review `09c96435..236a5b02`, chunked by subsystem. This pass covers group 1: `src/Hexalith.Folders.Server`, `src/Hexalith.Folders.EventStore`, their tests, and `tests/fixtures` (53 files, 5,172 diff lines). Groups 2 (domain/authorization) and 3 (Workers, deploy/AppHost, integration/contracts tests) need follow-up runs. Layers: Blind Hunter, Edge Case Hunter, Verification Gap, Acceptance Auditor; none failed.
+
+- [x] [Review][Decision] Replica-conflict proof on the deployed path — resolved 2026-10-14: owner accepts the pinned EventStore `AggregateActorInfrastructureFailureTests` as the AC3 conflict proof for Story 12.1; the live ETag-race limitation stays documented.
+
+- [ ] [Review][Patch] Provider-failure and unknown-outcome evidence events are discarded on the actor path — owner decision 2026-10-14: store them as success (the outcome events are domain facts), carry the failure code in the `/process` result payload, and make REST/CLI/MCP status mapping read that payload instead of a rejection [`src/Hexalith.Folders/Aggregates/Folder/RepositoryBindingService.cs:236`]
+- [ ] [Review][Patch] Denial wrapper hides the HTTP status from the audit filter, so REST authorization denials are audited as `Success` and `/process` transport denials are not audited at all [`src/Hexalith.Folders.Server/Authorization/AuthorizationDenialTransportResult.cs:6`]
+- [ ] [Review][Patch] No command-to-actor-kind admission before the processor: a misrouted `ConfigureProviderBinding` persists an organization rejection that permanently bricks an unused folder ID; folder commands on tenant/reserved/binding IDs throw in `ActorFoldedFolderRepository.Begin` (unhandled 500, dead reserved-ID checks at `FolderDomainProcessor.cs:364-366,778-780`); repository-backed REST create accepts `folderId == tenant` [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:104`]
+- [ ] [Review][Patch] Grant/revoke on an uninitialized baseline or a non-tenant actor returns retryable 503 `authorization_unavailable` before authorization — a permanent condition that clients retry forever and that discloses baseline existence [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:128`]
+- [ ] [Review][Patch] Request-handler actor-sequence scopes are never exercised through `/process`; dropping either `Enter` call passes every test while production authorization would call the locked actor and time out [`src/Hexalith.Folders.Server/FoldersDomainServiceRequestHandler.cs:134`]
+- [ ] [Review][Patch] The `DuplicateEntry` guard against re-initializing an initialized organization baseline with a new key is unpinned; removing it lets an owner with the JWT permission grant ACL entries without an ACL grant [`src/Hexalith.Folders.Server/FolderDomainProcessor.cs:284`]
+- [ ] [Review][Patch] Event-registry completeness is unpinned: 16 of 22 `AddKnownEventPayload` registrations are never resolved through the DI-built registry, and `/project` accepts reflection-known types the actor path would reject [`src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs:33`]
+- [ ] [Review][Patch] Production composition is not asserted: tests hand-build the workload scheme, validator and tenant store, so removing `VerifiedReceiptEventStoreAuthorizationValidator`, the tenant store, the Project policy or the audience default passes every test [`src/Hexalith.Folders.Server/FoldersServerHostComposition.cs:31`]
+- [ ] [Review][Patch] Production-environment host boot and `FolderRepositoryStartupAssertion` (positive and negative) are untested [`src/Hexalith.Folders.Server/FolderRepositoryStartupAssertion.cs:17`]
+- [ ] [Review][Patch] EventStore host registration and ordering of `FoldersDomainServiceSafeDenialExceptionHandler` are untested; moving it after `AddEventStore()` turns closed denials into 500 [`src/Hexalith.Folders.EventStore/Program.cs:20`]
+- [ ] [Review][Patch] The internal `X-Hexalith-Authorization-Denial` marker is emitted on public REST denials because the shared mapper always wraps [`src/Hexalith.Folders.Server/FolderAuthorizationDenialMapper.cs:22`]
+- [ ] [Review][Patch] The rejection classifier's command list is not tied to `FolderCommandActionTokenMapper`; a new mapped command whose rejection is unclassified makes its stream unreplayable [`src/Hexalith.Folders.Server/FolderEventReplay.cs:82`]
+- [ ] [Review][Patch] Folder projection reflection includes the static `FolderState.Empty` property, adding a spurious nested `empty` member to every folder projection [`src/Hexalith.Folders.Server/FolderDomainProjectionHandler.cs:14`]
+
+- [x] [Review][Defer] Human-authority receipt verification has no clock-skew tolerance [`references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/HumanAuthorityReceiptCodec.cs:94`] — deferred: pre-existing platform codec rejects `issuedAt > now` at second granularity; an EventStore clock ahead of Folders by more than invocation latency at a second boundary yields a non-retryable 401. Owner: EventStore.
+
+#### Rejected (2026-10-14, group 1)
+
+- false — Write path accepts events replay rejects (organization ID). `FolderCommandValidator.cs:81` requires `OrganizationId == tenant`, and `EventStoreOrganizationEffectivePermissionsReadModel.cs:72` requires it for the binding's `allowed.OrganizationId`; no accepted event can carry a foreign organization.
+- false — `SnapshotState` non-null with `LastSnapshotSequence == 0` double-applies events. `EventStreamReader.cs:65-68` discards snapshots with `SequenceNumber <= 0`.
+- false — Separate ACL and binding repository instances leave the binding unadmitted. `FoldersServerHostComposition` forwards both interfaces to one scoped instance.
+- false — Organization ACL processor persists denial-coded rejections. The handler denies tenant mismatch, wrong actor, empty stream and missing allowed context first; `FolderAclDenied` needs an allowed `manage_organization_acl`, which an uninitialized baseline cannot supply.
+- false — ACL stream projected under the `organization-provider-binding` type confuses consumers. No code outside the handler reads projection type names.
+- low — Folder snapshot JSON deserializes leniently. Snapshots are EventStore-written from validated folds; defaulting absent members also serves forward evolution.
+- low — Replay failures return a bare 500. Corrupt/foreign streams fail closed with no mutation; the reachable invalid-ID cases are covered by the actor-kind patch.
+- low — `/project` catch-all returns 422 for unexpected faults. The projection path performs no I/O, so transient faults are not plausible.
+- low — `/process` and `/project` workload authorization is conditional on verifier registration. The only production composition always registers it; the composition-assertion patch covers drift.
+- low — Receipt signing key is not validated at startup and receipt failures are not logged. Only reachable on misconfiguration; adding startup validation and diagnostics is new machinery.
+- low — Unrecognized actor-state shape authorizes against head 0. EventStore always sends the recognized shape, and the processor then throws before any event.
+- low — Safe-denial exception handler inconsistencies (problem-type base, fallback title, swallowed started response). The fallback and started-response branches are not everyday paths.
+- low — Projection payload casing/ordering and idempotency-fingerprint exposure. No Folders consumer reads these projections; fingerprints are hashes.
+- low — ACL idempotency adapter misconfiguration and double registration. A single internal call site registers fixed pairs once.
+- low — ACL `RequestSchemaVersion` is ignored. Only one schema version exists.
+- low — Other untested fail-closed guards (`Begin` twice, mixed projection streams, foreign ACL event, shared scoped instance). The guards fail closed; composition and startup patches cover the wiring.
+- low — Hard-coded claim types and `using` order. Cosmetic.
+- low — Stored-name gate has no historical-alias path. No aliases exist, so there is no current impact.
+- low — Weak or misnamed tests (stamped "unstamped" test, empty-only `/project` baseline test, no init-without-permission case). True unstamped bytes are covered by the immutable-bytes test, and `VerifiedReceiptEventStoreAuthorizationValidatorTests` covers the mismatched action.
+- low — Invalid event metadata in `CurrentState` throws outside the `JsonException` catch. Envelopes are EventStore-produced; the failure is closed.
+- low — Binding-actor snapshot with `IsInitialized=true` and no grants is accepted. Binding actors never receive ACL commands, so the flag is unused.
+- rejected — Code Map still says memory repositories serve development/tests. The fix edits the spec under review.

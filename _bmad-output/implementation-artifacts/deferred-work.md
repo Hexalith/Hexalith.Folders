@@ -2869,3 +2869,7 @@ archived: 2026-09-18
 
 - Group, role, and delegated-service grants are stored on the effective-permissions snapshot, but `EffectivePermissionsFolderPermissionEvidenceProvider.HasActionGrant` and `EffectivePermissionsQueryHandler` still match only `EffectivePermissionPrincipal.User`. This User-only match predates the Story 12.1 read-model change.
 - `DaprOrganizationStreamSequenceReader` posts `{}` to parameterless `GetCurrentSequenceAsync`. If the pinned Dapr actor API requires a JSON argument array, out-of-actor folder and organization head reads fail and permission checks become unavailable. In-actor commands skip this call through `FolderActorSequenceScope` and `OrganizationActorSequenceScope`. Unverified high: settle by invoking the sidecar with body `{}` and with body `[]`.
+
+## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-14)
+
+- Human-authority receipt verification has no clock-skew tolerance. `HumanAuthorityReceiptCodec.TryVerify` (EventStore `src/Hexalith.EventStore.ServiceDefaults/Authentication/HumanAuthorityReceiptCodec.cs:94`) rejects `IssuedAtUnixSeconds > now` at second granularity, and `HumanAuthorityReceiptVerifier` passes the Folders host clock unchanged. When the EventStore clock runs ahead of the Folders clock by more than the invocation latency across a second boundary, a legitimate mutation gets a non-retryable 401. Owner: EventStore platform codec (bounded issued-at skew window); pre-existing to Story 12.1's Folders change.
