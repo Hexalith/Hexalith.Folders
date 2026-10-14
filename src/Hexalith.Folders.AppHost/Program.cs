@@ -33,7 +33,7 @@ IResourceBuilder<ProjectResource> eventStore = eventStoreResources.EventStore;
 
 // Keep local admission identities stable across AppHost restarts. The generated
 // secret uses only base64 alphabet characters and decodes to at least 32 bytes;
-// Aspire persists it outside source control. Production uses its own secret map.
+// Aspire persists it outside source control. Production uses the DaprSecret key-ring references in deploy/dapr/production/sidecar-config-bindings.yaml.
 IResourceBuilder<ParameterResource> idempotencyDigestKey = builder.AddParameter(
     "folders-idempotency-digest-key",
     new GenerateParameterDefault

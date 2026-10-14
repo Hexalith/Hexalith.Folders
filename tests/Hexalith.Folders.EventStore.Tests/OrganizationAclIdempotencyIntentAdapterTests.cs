@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using Hexalith.EventStore.DomainService;
 
@@ -11,6 +12,29 @@ namespace Hexalith.Folders.EventStore.Tests;
 
 public sealed class OrganizationAclIdempotencyIntentAdapterTests
 {
+    [Theory]
+    [InlineData("initialize-organization-acl-baseline", "operation")]
+    [InlineData("grant-organization-acl-principal", "operation")]
+    [InlineData("revoke-organization-acl-principal", "operation")]
+    [InlineData("initialize-organization-acl-baseline", "payload")]
+    [InlineData("grant-organization-acl-principal", "payload")]
+    [InlineData("revoke-organization-acl-principal", "payload")]
+    [InlineData("initialize-organization-acl-baseline", "schema")]
+    [InlineData("grant-organization-acl-principal", "schema")]
+    [InlineData("revoke-organization-acl-principal", "schema")]
+    public void InvalidOriginalMembersCannotNormalizeIntoTheCorrectedIntent(string operationId, string location)
+    {
+        OrganizationAclIdempotencyIntentAdapter adapter = new("acl-command", operationId);
+        const string valid = """{"requestSchemaVersion":"v1","operations":[{"principalKind":"User","principalId":"user-a","action":"create_folder"}]}""";
+        JsonObject payload = JsonNode.Parse(valid)!.AsObject();
+        if (location == "operation") payload["operations"]![0]!["effect"] = "revoke";
+        if (location == "payload") payload["taskId"] = "unexpected-task";
+        if (location == "schema") payload["requestSchemaVersion"] = new JsonObject();
+
+        Should.Throw<JsonException>(() => adapter.CreateIntent(Command(payload.ToJsonString())));
+        adapter.CreateIntent(Command(valid)).SemanticPayload.ShouldNotBeEmpty();
+    }
+
     [Fact]
     public void ReorderedAndDuplicatedBaselineOperationsShouldHaveOneCanonicalIntent()
     {

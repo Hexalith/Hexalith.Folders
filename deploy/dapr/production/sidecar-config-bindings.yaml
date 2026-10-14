@@ -1,5 +1,5 @@
 # Sanitized production sidecar binding conformance artifact.
-# These are Kustomize-style patch fragments; deployment tooling owns images, ports, and secret references.
+# These are Kustomize-style patch fragments; deployment tooling owns images, ports, and secret material; this file owns required references.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,6 +23,34 @@ spec:
           env:
             - name: EventStore__Publisher__TopicOverrides__folders
               value: folders.events
+            - name: Authentication__WorkloadIssuer__ClientId
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-eventstore-workload-client
+                  key: client-id
+            - name: Authentication__WorkloadIssuer__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-eventstore-workload-client
+                  key: client-secret
+            - name: EventStore__IdempotencyAdmission__Enabled
+              value: "true"
+            - name: EventStore__IdempotencyAdmission__DigestKeySource
+              value: DaprSecret
+            - name: EventStore__IdempotencyAdmission__ActiveDigestKeyVersion
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-eventstore-idempotency-keys
+                  key: active-version
+            - name: EventStore__IdempotencyAdmission__DigestKeySecretStoreName
+              value: kubernetes
+            - name: EventStore__IdempotencyAdmission__DigestKeySecretName
+              value: hexalith-eventstore-idempotency-keys
+            - name: EventStore__IdempotencyAdmission__DigestKeySecretGeneration
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-eventstore-idempotency-keys
+                  key: generation
             - name: Authentication__HumanAuthorityReceipt__SigningKey
               valueFrom:
                 secretKeyRef:
@@ -41,6 +69,16 @@ spec:
         dapr.io/enabled: "true"
         dapr.io/app-id: tenants
         dapr.io/config: hexalith-folders-production-accesscontrol-tenants
+        dapr.io/app-token-secret: hexalith-tenants-app-token
+    spec:
+      containers:
+        - name: tenants
+          env:
+            - name: APP_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hexalith-tenants-app-token
+                  key: token
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -87,6 +125,8 @@ spec:
       containers:
         - name: workers
           env:
+            - name: Folders__Workers__PubSubName
+              value: folders-workers-pubsub
             - name: APP_API_TOKEN
               valueFrom:
                 secretKeyRef:

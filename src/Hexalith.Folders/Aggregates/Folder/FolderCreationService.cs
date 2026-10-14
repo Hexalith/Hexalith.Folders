@@ -19,7 +19,7 @@ public sealed class FolderCreationService(
     // CreateFolder is scoped to the organization baseline, not an existing folder, so the
     // operation scope is the synthetic organization-baseline scope used by the domain-service
     // request handler for organization-scoped commands.
-    private const string OrganizationBaselineScope = "organization_baseline";
+    private const string OrganizationBaselineScope = FolderStreamName.ReservedOrganizationPermissionScope;
 
     private readonly LayeredFolderAuthorizationService _authorizationService =
         authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));

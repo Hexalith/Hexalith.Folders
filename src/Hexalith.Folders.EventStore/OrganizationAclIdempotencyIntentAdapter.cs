@@ -25,6 +25,13 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
     {
         using JsonDocument document = FoldersCanonicalIntentBuilder.ParsePayload(command);
         JsonElement root = document.RootElement;
+        RequireMembers(root, ["requestSchemaVersion", "operations"]);
+        if (root.EnumerateObject().Any(property =>
+            property.Name.Equals("requestSchemaVersion", StringComparison.OrdinalIgnoreCase)
+            && property.Value.ValueKind is not (JsonValueKind.String or JsonValueKind.Null)))
+        {
+            throw new JsonException("Organization ACL schema version must be a string or null.");
+        }
         if (!root.TryGetProperty("operations", out JsonElement operations)
             || operations.ValueKind != JsonValueKind.Array
             || operations.GetArrayLength() == 0
@@ -43,6 +50,7 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
         List<OrganizationAclOperation> parsed = [];
         foreach (JsonElement operation in operations.EnumerateArray())
         {
+            RequireMembers(operation, ["principalKind", "principalId", "action"]);
             if (operation.ValueKind != JsonValueKind.Object
                 || !operation.TryGetProperty("principalKind", out JsonElement kindValue)
                 || kindValue.ValueKind != JsonValueKind.String
@@ -100,4 +108,22 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
                 ["request_schema_version"] = FoldersCanonicalIntentBuilder.ReadString(normalizedDocument.RootElement, "requestSchemaVersion"),
             });
     }
+
+    private static void RequireMembers(JsonElement value, string[] members)
+    {
+        if (value.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException("Organization ACL payload members require an object.");
+        }
+
+        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+        foreach (JsonProperty property in value.EnumerateObject())
+        {
+            if (!members.Contains(property.Name, StringComparer.OrdinalIgnoreCase) || !seen.Add(property.Name))
+            {
+                throw new JsonException("Organization ACL payload contains an unknown or ambiguous member.");
+            }
+        }
+    }
+
 }

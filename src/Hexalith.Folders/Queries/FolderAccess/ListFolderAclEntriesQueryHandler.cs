@@ -53,8 +53,7 @@ public sealed class ListFolderAclEntriesQueryHandler(
             return Safe(ListFolderAclEntriesQueryResultCode.AuthenticationRequired, deniedFreshness, query, null);
         }
 
-        if (string.IsNullOrWhiteSpace(query.FolderId)
-            || query.FolderId == FolderStreamName.ReservedOrganizationPermissionScope)
+        if (!FolderStreamName.TryCreate(query.AuthoritativeTenantId, query.FolderId, out _, out _))
         {
             return Safe(ListFolderAclEntriesQueryResultCode.NotFoundSafe, deniedFreshness, query, null);
         }

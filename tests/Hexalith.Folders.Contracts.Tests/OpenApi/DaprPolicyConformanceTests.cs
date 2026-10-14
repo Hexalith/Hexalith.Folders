@@ -121,31 +121,10 @@ public sealed class DaprPolicyConformanceTests
         yaml.ShouldNotContain("BEGIN CERTIFICATE", Case.Insensitive);
         if (relativePath == SidecarBindingsPath)
         {
-            // Token and signing-key names are references, so inspect credential environment
-            // bindings instead of rejecting the names of their Kubernetes secret keys.
             foreach (YamlMappingNode document in LoadYamlDocuments(relativePath))
             {
                 document.GetScalar("kind").ShouldBe("Deployment");
-                if (!document.GetMapping("spec").GetMapping("template").TryGetMapping("spec", out YamlMappingNode? pod))
-                {
-                    continue;
-                }
-
-                foreach (YamlMappingNode container in pod!.GetSequence("containers").Children.Cast<YamlMappingNode>())
-                {
-                    foreach (YamlMappingNode env in container.GetSequence("env").Children.Cast<YamlMappingNode>())
-                    {
-                        string name = env.GetScalar("name");
-                        if (new[] { "token", "password", "key", "credential" }
-                            .Any(word => name.Contains(word, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            env.Children.ContainsKey(new YamlScalarNode("value")).ShouldBeFalse();
-                            YamlMappingNode reference = env.GetMapping("valueFrom").GetMapping("secretKeyRef");
-                            reference.GetScalar("name").ShouldNotBeNullOrWhiteSpace();
-                            reference.GetScalar("key").ShouldNotBeNullOrWhiteSpace();
-                        }
-                    }
-                }
+                AssertReferenceOnlyBindings(document.GetMapping("spec").GetMapping("template"));
             }
         }
         else
@@ -154,6 +133,136 @@ public sealed class DaprPolicyConformanceTests
         }
         yaml.ShouldNotContain("password", Case.Insensitive);
         yaml.ShouldNotContain("private key", Case.Insensitive);
+    }
+
+    private static void AssertReferenceOnlyBindings(YamlMappingNode template)
+    {
+        string[] credentialWords = ["token", "password", "key", "credential", "secret"];
+        foreach (var annotation in template.GetMapping("metadata").GetMapping("annotations").Children)
+        {
+            string name = ((YamlScalarNode)annotation.Key).Value!;
+            if (!credentialWords.Any(word => name.Contains(word, StringComparison.OrdinalIgnoreCase))) continue;
+            name.ShouldBe("dapr.io/app-token-secret");
+            ((YamlScalarNode)annotation.Value).Value.ShouldBeOneOf("hexalith-folders-server-app-token",
+                "hexalith-folders-workers-app-token", "hexalith-tenants-app-token");
+        }
+        if (!template.TryGetMapping("spec", out YamlMappingNode? pod)) return;
+        foreach (YamlMappingNode container in pod!.GetSequence("containers").Children.Cast<YamlMappingNode>())
+        {
+            if (container.Children.TryGetValue(new YamlScalarNode("args"), out YamlNode? arguments))
+            {
+                foreach (YamlScalarNode argument in ((YamlSequenceNode)arguments).Children.Cast<YamlScalarNode>())
+                    credentialWords.Any(word => (argument.Value ?? "").Contains(word, StringComparison.OrdinalIgnoreCase))
+                        .ShouldBeFalse("Credential-bearing container arguments are forbidden.");
+            }
+            if (!container.Children.TryGetValue(new YamlScalarNode("env"), out YamlNode? envs)) continue;
+            foreach (YamlMappingNode env in ((YamlSequenceNode)envs).Children.Cast<YamlMappingNode>())
+            {
+                string name = env.GetScalar("name");
+                if (!credentialWords.Any(word => name.Contains(word, StringComparison.OrdinalIgnoreCase))) continue;
+                if (name == "EventStore__IdempotencyAdmission__DigestKeySource")
+                { env.GetScalar("value").ShouldBe("DaprSecret"); continue; }
+                if (name == "EventStore__IdempotencyAdmission__DigestKeySecretStoreName")
+                { env.GetScalar("value").ShouldBe("kubernetes"); continue; }
+                if (name == "EventStore__IdempotencyAdmission__DigestKeySecretName")
+                { env.GetScalar("value").ShouldBe("hexalith-eventstore-idempotency-keys"); continue; }
+                env.Children.ContainsKey(new YamlScalarNode("value")).ShouldBeFalse();
+                YamlMappingNode reference = env.GetMapping("valueFrom").GetMapping("secretKeyRef");
+                reference.GetScalar("name").ShouldNotBeNullOrWhiteSpace();
+                reference.GetScalar("key").ShouldNotBeNullOrWhiteSpace();
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("env")]
+    [InlineData("annotation")]
+    [InlineData("args")]
+    public void SecretScanRejectsLiteralSecretsAcrossPodBindings(string location)
+    {
+        string yaml = "metadata:\n  annotations: {}\nspec:\n  containers:\n    - name: workers\n      env: []\n";
+        if (location == "env") yaml = yaml.Replace("env: []", "env:\n        - name: CLIENT_SECRET\n          value: sensitive-material");
+        if (location == "annotation") yaml = yaml.Replace("annotations: {}", "annotations:\n    example/secret: sensitive-material");
+        if (location == "args") yaml += "      args: [--secret, sensitive-material]\n";
+        YamlStream stream = new();
+        stream.Load(new StringReader(yaml));
+        Should.Throw<ShouldAssertException>(() => AssertReferenceOnlyBindings((YamlMappingNode)stream.Documents[0].RootNode));
+    }
+
+    [Fact]
+    public void ExternalProductionStateStoreContractRequiresSharedUnprefixedProjectionKeys()
+    {
+        var local = LoadSingleYamlDocument("src/Hexalith.Folders.AppHost/DaprComponents/statestore.yaml");
+        local.GetMapping("metadata").GetScalar("name").ShouldBe("statestore");
+        ParseComponentMetadata(local.GetMapping("spec").GetSequence("metadata"))["keyPrefix"].ShouldBe("none");
+        string documentation = File.ReadAllText(RepositoryPath("docs/operations/container-images-and-dapr-app-ids.md"));
+        documentation.ShouldContain("same physical backend for Workers and Server");
+        documentation.ShouldContain("`keyPrefix: none`");
+        documentation.ShouldContain("not a deployed backend result");
+        documentation.ShouldContain("per component instance");
+        documentation.ShouldContain("multiple replicas");
+        documentation.ShouldContain("restart and reclaimed deliveries");
+        string repair = File.ReadAllText(RepositoryPath("docs/operations/folder-permission-projection-recovery.md"));
+        repair.ShouldContain("per component instance");
+        repair.ShouldContain("guarantees global ordering");
+        repair.ShouldContain("rejected sequence gap leaves the projection unchanged");
+        repair.ShouldContain("retained order");
+    }
+
+    [Fact]
+    public void ProductionWorkersDeliveryUsesSerializedScopedComponentRetriesAndDeadLetters()
+    {
+        YamlMappingNode component = LoadSingleYamlDocument("deploy/dapr/production/pubsub.workers.yaml");
+        component.GetMapping("metadata").GetScalar("name").ShouldBe("folders-workers-pubsub");
+        component.GetSequence("scopes").Children.Cast<YamlScalarNode>().Select(item => item.Value)
+            .ShouldBe(["folders-workers"]);
+        var metadata = ParseComponentMetadata(component.GetMapping("spec").GetSequence("metadata"));
+        metadata["concurrency"].ShouldBe("1");
+        ParseTopicScopes(metadata["subscriptionScopes"])["folders-workers"]
+            .ShouldBe(["tenants.events", "folders.events"]);
+        ParseTopicScopes(metadata["publishingScopes"])["folders-workers"]
+            .ShouldBe(["deadletter.folders.events", "deadletter.tenants.events"]);
+        YamlMappingNode resilience = LoadSingleYamlDocument("deploy/dapr/production/resiliency.yaml");
+        resilience.GetSequence("scopes").Children.Cast<YamlScalarNode>().Select(item => item.Value)
+            .ShouldBe(["folders-workers"]);
+        var spec = resilience.GetMapping("spec");
+        spec.GetMapping("policies").GetMapping("retries").GetMapping("permissionDelivery")
+            .GetScalar("maxRetries").ShouldBe("10");
+        spec.GetMapping("targets").GetMapping("components").GetMapping("folders-workers-pubsub")
+            .GetMapping("inbound").GetScalar("retry").ShouldBe("permissionDelivery");
+        YamlMappingNode workers = LoadYamlDocuments(SidecarBindingsPath).Single(item => item.GetMapping("metadata").GetScalar("name") == "hexalith-folders-workers");
+        workers.GetMapping("spec").GetMapping("template").GetMapping("spec").GetSequence("containers")
+            .Children.Cast<YamlMappingNode>().Single().GetSequence("env").Children.Cast<YamlMappingNode>()
+            .Single(item => item.GetScalar("name") == "Folders__Workers__PubSubName")
+            .GetScalar("value").ShouldBe("folders-workers-pubsub");
+    }
+
+    [Fact]
+    public void ProductionWorkloadAndAdmissionCredentialsAreBoundByReferences()
+    {
+        var documents = LoadYamlDocuments(SidecarBindingsPath);
+        var eventstore = documents.Single(item => item.GetMapping("metadata").GetScalar("name") == "hexalith-eventstore");
+        var env = eventstore.GetMapping("spec").GetMapping("template").GetMapping("spec")
+            .GetSequence("containers").Children.Cast<YamlMappingNode>().Single().GetSequence("env")
+            .Children.Cast<YamlMappingNode>().ToDictionary(item => item.GetScalar("name"));
+        foreach (string name in new[] { "ClientId", "ClientSecret" })
+            env["Authentication__WorkloadIssuer__" + name].GetMapping("valueFrom").GetMapping("secretKeyRef")
+                .GetScalar("name").ShouldBe("hexalith-eventstore-workload-client");
+        env["EventStore__IdempotencyAdmission__Enabled"].GetScalar("value").ShouldBe("true");
+        env["EventStore__IdempotencyAdmission__DigestKeySource"].GetScalar("value").ShouldBe("DaprSecret");
+        foreach (string name in new[] { "ActiveDigestKeyVersion", "DigestKeySecretGeneration" })
+            env["EventStore__IdempotencyAdmission__" + name].GetMapping("valueFrom").GetMapping("secretKeyRef")
+                .GetScalar("name").ShouldBe("hexalith-eventstore-idempotency-keys");
+        foreach (string app in new[] { "folders", "folders-workers", "tenants" })
+        {
+            var template = documents.Single(item => item.GetMapping("spec").GetMapping("template")
+                .GetMapping("metadata").GetMapping("annotations").GetScalar("dapr.io/app-id") == app)
+                .GetMapping("spec").GetMapping("template");
+            string secret = template.GetMapping("metadata").GetMapping("annotations").GetScalar("dapr.io/app-token-secret");
+            template.GetMapping("spec").GetSequence("containers").Children.Cast<YamlMappingNode>().Single()
+                .GetSequence("env").Children.Cast<YamlMappingNode>().Single(item => item.GetScalar("name") == "APP_API_TOKEN")
+                .GetMapping("valueFrom").GetMapping("secretKeyRef").GetScalar("name").ShouldBe(secret);
+        }
     }
 
     [Fact]
@@ -263,8 +372,7 @@ public sealed class DaprPolicyConformanceTests
         // is the only folders.events publisher and folders-workers the only folders.events subscriber.
         publishingScopes[FoldersAspireModule.EventStoreAppId]
             .ShouldBe([ExpectedTenantEventsTopic, ExpectedFolderEventsTopic], ignoreOrder: true);
-        subscriptionScopes[FoldersAspireModule.FoldersWorkersAppId]
-            .ShouldBe([ExpectedTenantEventsTopic, ExpectedFolderEventsTopic], ignoreOrder: true);
+        subscriptionScopes[FoldersAspireModule.FoldersWorkersAppId].ShouldBeEmpty();
 
         // Story 10.3 (AC9): the worker-side producer publishes SearchIndexEntryChanged to memories-events, so
         // folders-workers is scoped to publish it and memories is scoped to subscribe — the only memories-events
@@ -351,7 +459,8 @@ public sealed class DaprPolicyConformanceTests
         }
 
         scopes.Where(static scope => string.Equals(scope.StoreName, "kubernetes", StringComparison.Ordinal))
-            .ShouldAllBe(static scope => string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal) && scope.AllowedSecrets.Length == 0);
+            .ShouldAllBe(static scope => string.Equals(scope.DefaultAccess, "deny", StringComparison.Ordinal) && scope.AllowedSecrets.SequenceEqual(scope.TargetAppId == FoldersAspireModule.EventStoreAppId
+                ? new[] { "hexalith-eventstore-idempotency-keys" } : Array.Empty<string>()));
     }
 
     [Fact]

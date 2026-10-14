@@ -107,6 +107,8 @@ public sealed class WorkersOrganizationAclRouteTests
         builder.Services.AddFoldersTenantEventWorkers();
         builder.Services.RemoveAll<IReadModelStore>();
         builder.Services.AddSingleton<IReadModelStore>(store);
+        builder.Services.RemoveAll<IReadModelConditionalEraser>();
+        builder.Services.AddSingleton<IReadModelConditionalEraser>(store);
         await using WebApplication app = builder.Build();
         app.UseCloudEvents();
         app.UseAuthentication();
@@ -199,11 +201,39 @@ public sealed class WorkersOrganizationAclRouteTests
                 currentFolder.ETag!, TestContext.Current.CancellationToken)).ShouldBeTrue();
             (await client.PostAsJsonAsync("/folders/events", folderEnvelope,
                 TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            store.TryRemove(folderProjectionKey, currentFolder.ETag!).ShouldBeFalse();
+            const string resetRoute = "/maintenance/folder-permissions/reset";
+            FolderPermissionResetRequest reset = new("tenant-a", "folder-a", currentFolder.ETag);
+            (await client.PostAsJsonAsync(resetRoute, reset, TestContext.Current.CancellationToken))
+                .StatusCode.ShouldBe(HttpStatusCode.Conflict);
             ReadModelEntry<FolderPermissionProjection> broken = await store
                 .GetAsync<FolderPermissionProjection>("statestore", folderProjectionKey,
                     TestContext.Current.CancellationToken);
-            store.TryRemove(folderProjectionKey, broken.ETag!).ShouldBeTrue();
+            reset = reset with { ExpectedEtag = broken.ETag };
+            client.DefaultRequestHeaders.Remove(DaprAppChannelToken.HeaderName);
+            (await client.PostAsJsonAsync(resetRoute, reset, TestContext.Current.CancellationToken))
+                .StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "wrong-sidecar-token");
+            (await client.PostAsJsonAsync(resetRoute, reset, TestContext.Current.CancellationToken))
+                .StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            (await store.GetAsync<FolderPermissionProjection>("statestore", folderProjectionKey,
+                TestContext.Current.CancellationToken)).Value!.Overrides.ShouldHaveSingleItem().IsGranted.ShouldBeTrue();
+            client.DefaultRequestHeaders.Remove(DaprAppChannelToken.HeaderName);
+            client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+            using (HttpResponseMessage etagResponse = await client.PostAsJsonAsync(resetRoute,
+                reset with { ExpectedEtag = null }, TestContext.Current.CancellationToken))
+            {
+                etagResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+                using JsonDocument etagBody = JsonDocument.Parse(await etagResponse.Content
+                    .ReadAsStringAsync(TestContext.Current.CancellationToken));
+                etagBody.RootElement.GetProperty("etag").GetString().ShouldBe(broken.ETag);
+            }
+            (await client.PostAsJsonAsync(resetRoute, reset, TestContext.Current.CancellationToken))
+                .StatusCode.ShouldBe(HttpStatusCode.NoContent);
+            foreach (string invalidActor in new[] { "organization_baseline", ProviderBindingActorId.Create("binding-a") })
+            {
+                (await client.PostAsJsonAsync(resetRoute, reset with { AggregateId = invalidActor },
+                    TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            }
             client.DefaultRequestHeaders.Remove(DaprAppChannelToken.HeaderName);
             client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "wrong-sidecar-token");
             (await client.PostAsJsonAsync("/folders/events", folderEnvelope,

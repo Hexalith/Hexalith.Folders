@@ -4,7 +4,7 @@ using Hexalith.EventStore.Client.Projections;
 
 namespace Hexalith.Folders.Workers.Tests;
 
-internal sealed class WorkerRouteReadModelStore : IReadModelStore
+internal sealed class WorkerRouteReadModelStore : IReadModelStore, IReadModelConditionalEraser
 {
     private readonly Lock _lock = new();
     private readonly Dictionary<string, (byte[] Json, int Version)> _values = new(StringComparer.Ordinal);
@@ -27,6 +27,21 @@ internal sealed class WorkerRouteReadModelStore : IReadModelStore
             }
 
             return entry.Version.ToString() == expectedEtag && _values.Remove(key);
+        }
+    }
+
+    public Task<bool> TryEraseAsync(string storeName, string key, string etag,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(TryRemove(key, etag));
+
+    public Task<(bool Present, string Etag)> TryReadEtagAsync(string storeName, string key,
+        CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        lock (_lock)
+        {
+            return Task.FromResult(_values.TryGetValue(key, out var entry)
+                ? (true, entry.Version.ToString()) : (false, string.Empty));
         }
     }
 

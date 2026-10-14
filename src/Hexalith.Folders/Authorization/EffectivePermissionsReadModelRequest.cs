@@ -6,4 +6,5 @@ public sealed record EffectivePermissionsReadModelRequest(
     IReadOnlyList<EffectivePermissionPrincipal> PrincipalScopes,
     string? TaskContextId,
     string? WorkspaceContextId,
-    string ReadConsistency);
+    string ReadConsistency,
+    bool WaitForCatchUp = false);

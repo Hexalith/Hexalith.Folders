@@ -1,3 +1,4 @@
+using Dapr;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
@@ -19,6 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -62,7 +64,10 @@ public static partial class FoldersWorkersModule
             options.TopicName = TenantEventsTopicName;
             options.SubscriptionRoute = TenantEventsRoute;
         });
-        services.AddOptions<EventStoreDomainEventsOptions>().ValidateOnStart();
+        services.AddOptions<EventStoreDomainEventsOptions>()
+            .Configure<IConfiguration>((options, configuration) =>
+                options.PubSubName = SubscriptionPubSubName(configuration))
+            .ValidateOnStart();
         services.AddFoldersTenantEventProjection();
         services.AddFoldersRepositoryProvisioningWorkers();
 
@@ -126,6 +131,7 @@ public static partial class FoldersWorkersModule
         endpoints.MapGet("/", () => Description);
         endpoints.MapFoldersTenantEvents();
         endpoints.MapFoldersSemanticIndexingEvents();
+        endpoints.MapFolderPermissionMaintenance();
 
         return endpoints;
     }
@@ -157,7 +163,12 @@ public static partial class FoldersWorkersModule
                 EventStoreDomainEventProcessingResult.FailedInvalidPayload => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
                 _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
             };
-        }).WithTopic(options.PubSubName, options.TopicName)
+        }).WithTopic(new TopicOptions
+        {
+            PubsubName = options.PubSubName,
+            Name = options.TopicName,
+            DeadLetterTopic = "deadletter.tenants.events",
+        })
             .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
 
         return endpoints;
@@ -198,16 +209,17 @@ public static partial class FoldersWorkersModule
                 FoldersSemanticIndexingEventProcessingResult.Processed => Results.Ok(),
                 FoldersSemanticIndexingEventProcessingResult.SkippedUnknownEventType => Results.Ok(),
 
-                // A payload that cannot be deserialized or is not an IFolderEvent is a deterministic, permanent
-                // failure of this message. Return a success status so Dapr drops it instead of redelivering the same
-                // poison message forever; the drop is recorded as a metadata-only warning by the processor. Genuinely
-                // transient failures still surface as unhandled exceptions -> 500 -> Dapr retry / dead-letter routing.
+                // Permission projection rejects malformed retained folder payloads above with a retryable
+                // 500. Only a semantic-only payload failure that passed that gate is acknowledged here.
                 FoldersSemanticIndexingEventProcessingResult.FailedInvalidPayload => Results.Ok(),
                 _ => Results.Problem(statusCode: StatusCodes.Status500InternalServerError),
             };
-        }).WithTopic(
-            FoldersSemanticIndexingDefaults.PubSubName,
-            FoldersSemanticIndexingDefaults.DomainEventsTopicName)
+        }).WithTopic(new TopicOptions
+        {
+            PubsubName = SubscriptionPubSubName(endpoints.ServiceProvider.GetRequiredService<IConfiguration>()),
+            Name = FoldersSemanticIndexingDefaults.DomainEventsTopicName,
+            DeadLetterTopic = "deadletter.folders.events",
+        })
             .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.SidecarChannelPolicy);
 
         return endpoints;
@@ -234,15 +246,19 @@ public static partial class FoldersWorkersModule
         return services;
     }
 
-    private sealed class FoldersTenantEventSubscriptionOptionsValidator : IValidateOptions<EventStoreDomainEventsOptions>
+    private static string SubscriptionPubSubName(IConfiguration configuration)
+        => configuration["Folders:Workers:PubSubName"] ?? TenantEventsPubSubName;
+
+    private sealed class FoldersTenantEventSubscriptionOptionsValidator(IConfiguration configuration)
+        : IValidateOptions<EventStoreDomainEventsOptions>
     {
         public ValidateOptionsResult Validate(string? name, EventStoreDomainEventsOptions options)
         {
             ArgumentNullException.ThrowIfNull(options);
 
-            if (!string.Equals(options.PubSubName, TenantEventsPubSubName, StringComparison.Ordinal))
+            if (!string.Equals(options.PubSubName, SubscriptionPubSubName(configuration), StringComparison.Ordinal))
             {
-                return ValidateOptionsResult.Fail($"Tenants PubSubName must be '{TenantEventsPubSubName}' for {Name}.");
+                return ValidateOptionsResult.Fail($"Tenants PubSubName must match the configured Workers subscription component for {Name}.");
             }
 
             if (!string.Equals(options.TopicName, TenantEventsTopicName, StringComparison.Ordinal))

@@ -7,7 +7,8 @@ public static class OrganizationActorSequenceScope
 {
     private static readonly AsyncLocal<SequenceObservation?> Current = new();
 
-    public static IDisposable Enter(string tenantId, string organizationId, long sequence)
+    /// <summary>Enters the verified organization actor head for the current asynchronous flow.</summary>
+    internal static IDisposable Enter(string tenantId, string organizationId, long sequence)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(organizationId);
@@ -17,6 +18,7 @@ public static class OrganizationActorSequenceScope
         return new Scope(previous);
     }
 
+    /// <summary>Gets the current head only when both organization actor identity segments match.</summary>
     public static bool TryGet(string tenantId, string organizationId, out long sequence)
     {
         SequenceObservation? current = Current.Value;

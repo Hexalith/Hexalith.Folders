@@ -9,6 +9,20 @@ public sealed class FolderPermissionEvidenceProviderTests
 {
     private static readonly DateTimeOffset Now = new(2026, 5, 19, 12, 0, 0, TimeSpan.Zero);
 
+    [Theory]
+    [InlineData("tenant-a")]
+    [InlineData("provider-binding-a")]
+    public async Task ReservedNonFolderScopesNeverReadOrDiscloseProjectionEvidence(string scope)
+    {
+        RecordingEffectivePermissionsReadModel model = new(EffectivePermissionsReadModelResult.Available(
+            EffectivePermissionsTestSupport.Snapshot()));
+        var result = await new EffectivePermissionsFolderPermissionEvidenceProvider(model, new FixedUtcClock(Now))
+            .GetEvidenceAsync(Request(operationScope: scope), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.NotFoundSafe);
+        result.FreshnessWatermark.ShouldBeNull();
+        model.Requests.ShouldBe(0);
+    }
+
     [Fact]
     public async Task ProviderShouldAllowSupportedActionFromEffectivePermissionEvidence()
     {

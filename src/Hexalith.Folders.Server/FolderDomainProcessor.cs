@@ -310,7 +310,7 @@ public sealed partial class FolderDomainProcessor(
                 "manage_organization_acl", LayeredFolderOperationPolicy.Mutation(),
                 EventStoreClaimTransformEvidence.Allowed(allowed.AuthoritativeTenantId,
                     allowed.PrincipalId, ["manage_organization_acl"]),
-                "organization_baseline", envelope.CorrelationId, taskId, null, null), initializing)
+                FolderStreamName.ReservedOrganizationPermissionScope, envelope.CorrelationId, taskId, null, null), initializing)
             .ConfigureAwait(false);
         if (!finalAuthorization.IsAllowed)
         {

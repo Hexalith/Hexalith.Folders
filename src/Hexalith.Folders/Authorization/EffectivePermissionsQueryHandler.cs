@@ -31,7 +31,7 @@ public sealed class EffectivePermissionsQueryHandler(
             return SafeResult(EffectivePermissionsResultCode.AuthenticationRequired, null, query, deniedFreshness);
         }
 
-        if (query.FolderId == FolderStreamName.ReservedOrganizationPermissionScope)
+        if (!FolderStreamName.TryCreate(query.AuthoritativeTenantId, query.FolderId, out _, out _))
         {
             return SafeResult(EffectivePermissionsResultCode.NotFoundSafe, null, query, deniedFreshness);
         }

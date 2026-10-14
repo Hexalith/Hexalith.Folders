@@ -195,7 +195,7 @@ public sealed class WorkspacePreparationService(
 
         return outcome switch
         {
-            FolderAppendOutcome.Appended => FolderResult.Rejected(command, resultCode),
+            FolderAppendOutcome.Appended => FolderResult.Rejected(command, resultCode) with { Events = [unknownOutcome] },
             FolderAppendOutcome.FingerprintMatched => FolderResult.Rejected(command, FolderResultCode.IdempotentReplay),
             FolderAppendOutcome.FingerprintConflict => FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict => ResolveAppendConflict(streamName, command),

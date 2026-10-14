@@ -22,7 +22,7 @@ public sealed class FoldersDomainServiceRequestHandler(
     ILayeredFolderAuthorizationResultAccessor authorizationResultAccessor,
     HumanAuthorityReceiptVerifier? humanReceiptVerifier = null)
 {
-    private const string OrganizationBaselineScope = "organization_baseline";
+    private const string OrganizationBaselineScope = FolderStreamName.ReservedOrganizationPermissionScope;
 
     private static readonly Regex CanonicalIdentifierRegex =
         new("^[a-z0-9._-]+$", RegexOptions.Compiled);

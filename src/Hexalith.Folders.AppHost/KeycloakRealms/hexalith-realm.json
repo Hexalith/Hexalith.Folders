@@ -185,6 +185,70 @@
           }
         }
       ]
+    },
+    {
+      "name": "profile",
+      "description": "Standard OIDC profile claims requested by the local UI.",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "username",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "given name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "firstName",
+            "claim.name": "given_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "family name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "lastName",
+            "claim.name": "family_name",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "full name",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-full-name-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "clients": [
@@ -271,6 +335,9 @@
             "userinfo.token.claim": "true"
           }
         }
+      ],
+      "defaultClientScopes": [
+        "profile"
       ]
     },
     {
@@ -283,8 +350,12 @@
       "standardFlowEnabled": true,
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
-      "redirectUris": ["http://localhost:*"],
-      "webOrigins": ["*"],
+      "redirectUris": [
+        "http://localhost:*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
       "protocolMappers": [
         {
           "name": "subject-mapper",
@@ -358,6 +429,9 @@
             "userinfo.token.claim": "true"
           }
         }
+      ],
+      "defaultClientScopes": [
+        "profile"
       ]
     },
     {
@@ -406,9 +480,19 @@
         }
       ],
       "attributes": {
-        "tenants": ["tenant-a", "tenant-b", "system"],
-        "permissions": ["command:submit", "command:replay", "command:query"],
-        "global_admin": ["true"]
+        "tenants": [
+          "tenant-a",
+          "tenant-b",
+          "system"
+        ],
+        "permissions": [
+          "command:submit",
+          "command:replay",
+          "command:query"
+        ],
+        "global_admin": [
+          "true"
+        ]
       }
     },
     {
@@ -428,8 +512,17 @@
         }
       ],
       "attributes": {
-        "tenants": ["tenant-a"],
-        "permissions": ["command:submit", "command:query", "create_folder", "manage_organization_acl", "read_metadata", "manage_folder_access"]
+        "tenants": [
+          "tenant-a"
+        ],
+        "permissions": [
+          "command:submit",
+          "command:query",
+          "create_folder",
+          "manage_organization_acl",
+          "read_metadata",
+          "manage_folder_access"
+        ]
       }
     }
   ]

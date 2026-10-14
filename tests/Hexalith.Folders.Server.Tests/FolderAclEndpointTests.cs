@@ -282,19 +282,22 @@ public sealed class FolderAclEndpointTests
         json.ShouldNotContain("read_model_unavailable");
     }
 
-    [Fact]
-    public async Task ListFolderAclEntriesShouldNotTreatOrganizationScopeAsFolder()
+    [Theory]
+    [InlineData("organization_baseline")]
+    [InlineData("tenant-a")]
+    [InlineData("provider-binding-a")]
+    public async Task ListFolderAclEntriesShouldNotTreatReservedScopeAsFolder(string folderId)
     {
         await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient());
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         using HttpClient client = app.GetTestClient();
         using HttpResponseMessage response = await client.GetAsync(
-            "/api/v1/folders/organization_baseline/acl", TestContext.Current.CancellationToken);
+            $"/api/v1/folders/{folderId}/acl", TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
-        json.ShouldNotContain("organization_baseline", Case.Sensitive);
+        json.ShouldNotContain(folderId, Case.Sensitive);
     }
 
     [Fact]

@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: a762eafdc011ba389192083b4b631b96266f2986642e453d6c2e2512b12528cf
+candidate_set_sha256: 0500d78fd5be39014f8ad3437d741bef1faae02f30753fcdda20560b00782e19
 artifact_count: 224
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -62,8 +62,8 @@ artifacts:
     sha256: c2b8a54a88538041a67ebe905be0868f50290e52ec08a56e3ba4461fc2a86183
   - path: "docs/operations/dapr-policy-conformance.md"
     kind: file
-    bytes: 5262
-    sha256: 4c43930f6c88578aa97d80f6315ea1ea28b18c8457a74dd6d3692cbcf1be5aa8
+    bytes: 5482
+    sha256: bd63daa0b78a5107a539b161733ba20fc2495e1301b48bf59114e517d957b1b5
   - path: "docs/sdk/api-reference.md"
     kind: file
     bytes: 18910
@@ -342,8 +342,8 @@ artifacts:
     sha256: dd7fbcd3e4001650976a6f4f410e547b87fa3edf3be64703b68341ac01973bc2
   - path: "src/Hexalith.Folders.Server/FolderDomainProcessor.cs"
     kind: file
-    bytes: 82396
-    sha256: 4329f430d9d7135bbcd65c7982b05dcf4fbdd4b9bb2ff9760100f7fb549364ef
+    bytes: 82425
+    sha256: 030b657e3e7d2669fed29421d1d9dfb77f29404b1c3622ec30843a69c762dac3
   - path: "src/Hexalith.Folders.Server/FolderRepositoryStartupAssertion.cs"
     kind: file
     bytes: 1761
@@ -450,16 +450,16 @@ artifacts:
     sha256: 4f01e60d125b697f58de0b5948f698c6883e832f740934b0c2ad9a44d22686a0
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderCreationService.cs"
     kind: file
-    bytes: 8211
-    sha256: c533ae5cd4be0d2bac4895117b28fbd99012886d72085977e07383cb5dd70ff7
+    bytes: 8240
+    sha256: 313f87e9a65e899ca8af4183987143841757ba51834d834dc87c9480b09ce152
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderState.cs"
     kind: file
     bytes: 5826
     sha256: c9a24c0d98ea565721983f30cc23f367cd5deb4e9d104efe610194258b45fa99
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderStateApply.cs"
     kind: file
-    bytes: 30987
-    sha256: 3467ea33322712f887f09c8565ec00d9bff1e7f08b457baa64356cfd02ffc378
+    bytes: 30962
+    sha256: cd37d6662ebaa3759e4e49bab244168bc5b2c3e021d5a2ba09ebe94af4aaddcf
   - path: "src/Hexalith.Folders/Aggregates/Folder/FolderStreamName.cs"
     kind: file
     bytes: 3132
@@ -498,12 +498,12 @@ artifacts:
     sha256: 1eb720e70dcf276ba76d103490bafa569dbf5c259b166f01f10f9ec814e6eb2d
   - path: "src/Hexalith.Folders/Aggregates/Folder/WorkspacePreparationService.cs"
     kind: file
-    bytes: 12640
-    sha256: c166e074f9fe27b499887f729af5d8c802c02e49292318cf99b25a7380959b64
+    bytes: 12675
+    sha256: 9e50775120b93419321671791615cb421e0bad5dc24fb28d593dc944aadea5ab
   - path: "src/Hexalith.Folders/Aggregates/Organization/ConfigureProviderBindingService.cs"
     kind: file
-    bytes: 7945
-    sha256: 4b5e95e26fca09cc99e1942a9f98087fabd8052cf4cc0d0e9196c2657bd19bf1
+    bytes: 8016
+    sha256: df3ec61ff24b26bcbfa2ec006bcdc427bd354a4d6949be09a2c70504b2b0107f
   - path: "src/Hexalith.Folders/Aggregates/Organization/OrganizationAclCommandValidator.cs"
     kind: file
     bytes: 4654
@@ -518,8 +518,8 @@ artifacts:
     sha256: b6acaf520e035e8ec0c9d18d795f17e6e18edd07693a69b596d485f432925704
   - path: "src/Hexalith.Folders/Authorization/LayeredFolderAuthorizationService.cs"
     kind: file
-    bytes: 22907
-    sha256: a3855dc4f6cff985cc24235d08711522a498aa85212afeb51f92cbba02116724
+    bytes: 22909
+    sha256: d438164eb72d42451419ec36739468c81564586865205246feaabe63080b24f1
   - path: "src/Hexalith.Folders/Authorization/PreauthorizedRequestContext.cs"
     kind: file
     bytes: 3515
@@ -714,8 +714,8 @@ artifacts:
     sha256: c1e62dfdfa243dffbd0bb147e2a2ee9b1bbf8d474f75cff72ca86b92159a9bee
   - path: "tests/Hexalith.Folders.Server.Tests/FolderAclEndpointTests.cs"
     kind: file
-    bytes: 27481
-    sha256: 6da5b0499ee6b92bdaff17e1cf45a7a60b2799626969c7d3aba066c82e752a45
+    bytes: 27579
+    sha256: 0afcbccffcfd42de958f2a6fe77f12ab0e48990260381485d7ecc1e706c28d04
   - path: "tests/Hexalith.Folders.Server.Tests/HttpContextEventStoreClaimTransformEvidenceAccessorTests.cs"
     kind: file
     bytes: 1523

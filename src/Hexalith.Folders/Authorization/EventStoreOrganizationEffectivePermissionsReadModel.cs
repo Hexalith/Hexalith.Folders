@@ -1,3 +1,4 @@
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -10,13 +11,22 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
     : IEffectivePermissionsReadModel
 {
     private const string StoreName = "statestore";
-    private const string Scope = "organization_baseline";
+    private const string Scope = FolderStreamName.ReservedOrganizationPermissionScope;
     private const string KeyPrefix = "projection:folders:organization-permissions:";
     private const int ReplayWindow = 256;
     private static readonly TimeSpan ProjectedClockSkew = TimeSpan.FromMinutes(2);
 
-    public async Task<EffectivePermissionsReadModelResult> GetAsync(
+    public Task<EffectivePermissionsReadModelResult> GetAsync(
         EffectivePermissionsReadModelRequest request, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        return PermissionProjectionCatchUp.ReadAsync(
+            token => GetOnceAsync(request with { WaitForCatchUp = false }, token),
+            request.WaitForCatchUp, clock.UtcNow, cancellationToken);
+    }
+
+    private async Task<EffectivePermissionsReadModelResult> GetOnceAsync(
+        EffectivePermissionsReadModelRequest request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
         DateTimeOffset now = clock.UtcNow;

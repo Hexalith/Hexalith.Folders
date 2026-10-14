@@ -20,8 +20,7 @@ public sealed class AspireTopologyTests
     [Fact]
     public void LocalRealmShouldGrantEventStoreOnlyScopedDomainServiceAssertions()
     {
-        string realmPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "../../../../../src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json"));
+        string realmPath = RepositoryPath("src/Hexalith.Folders.AppHost/KeycloakRealms/hexalith-realm.json");
         using JsonDocument document = JsonDocument.Parse(File.ReadAllBytes(realmPath));
         JsonElement root = document.RootElement;
         JsonElement client = root.GetProperty("clients").EnumerateArray().Single(static item =>
@@ -44,10 +43,39 @@ public sealed class AspireTopologyTests
             available.ShouldContain(scope);
         }
 
+        foreach (JsonElement scope in root.GetProperty("clientScopes").EnumerateArray()
+            .Where(item => item.GetProperty("name").GetString()!.StartsWith("eventstore-", StringComparison.Ordinal)))
+        {
+            string name = scope.GetProperty("name").GetString()!;
+            JsonElement mapper = scope.GetProperty("protocolMappers").EnumerateArray().Single();
+            JsonElement config = mapper.GetProperty("config");
+            mapper.GetProperty("protocol").GetString().ShouldBe("openid-connect");
+            config.GetProperty("access.token.claim").GetString().ShouldBe("true");
+            config.GetProperty("id.token.claim").GetString().ShouldBe("false");
+            if (name.StartsWith("eventstore-audience.", StringComparison.Ordinal))
+            {
+                mapper.GetProperty("protocolMapper").GetString().ShouldBe("oidc-audience-mapper");
+                config.GetProperty("included.custom.audience").GetString().ShouldBe(name["eventstore-audience.".Length..]);
+            }
+            else
+            {
+                mapper.GetProperty("protocolMapper").GetString().ShouldBe("oidc-hardcoded-claim-mapper");
+                config.GetProperty("claim.name").GetString().ShouldBe("eventstore:operation");
+                config.GetProperty("claim.value").GetString().ShouldBe("domain-service:" + name["eventstore-operation.domain-service.".Length..]);
+            }
+        }
+        JsonElement profile = root.GetProperty("clientScopes").EnumerateArray()
+            .Single(item => item.GetProperty("name").GetString() == "profile");
+        profile.GetProperty("protocol").GetString().ShouldBe("openid-connect");
+        profile.GetProperty("protocolMappers").EnumerateArray().ShouldContain(item =>
+            item.GetProperty("protocolMapper").GetString() == "oidc-full-name-mapper");
+
         foreach (string clientId in new[] { "hexalith-eventstore", "hexalith-folders" })
         {
             JsonElement publicClient = root.GetProperty("clients").EnumerateArray().Single(item =>
                 item.GetProperty("clientId").GetString() == clientId);
+            publicClient.GetProperty("defaultClientScopes").EnumerateArray()
+                .Select(item => item.GetString()).ShouldContain("profile");
             JsonElement subject = publicClient.GetProperty("protocolMappers").EnumerateArray().Single(static item =>
                 item.GetProperty("name").GetString() == "subject-mapper");
             subject.GetProperty("config").GetProperty("claim.name").GetString().ShouldBe("sub");

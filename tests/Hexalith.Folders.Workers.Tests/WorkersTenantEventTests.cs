@@ -34,6 +34,20 @@ public sealed class WorkersTenantEventTests
     private static readonly DateTimeOffset Now = new(2026, 5, 20, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task DomainOwnerAuthorizationUsesTheTenantsOwnerRoleToken()
+    {
+        InMemoryFolderTenantAccessProjectionStore store = new();
+        var handler = CreateWorkerHandler(store);
+        await handler.HandleAsync(new TenantCreated("tenant-a", "Tenant A", null, Now), Context(1),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        await handler.HandleAsync(new UserAddedToTenant("tenant-a", "user-a", TenantRole.TenantOwner), Context(2),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        var authorizer = new TenantAccessAuthorizer(store, new FixedUtcClock(Now.AddMinutes(1)), new TenantAccessOptions());
+        (await authorizer.AuthorizeOwnerMutationAsync(new("tenant-a", "user-a", "tenant-a"),
+            TestContext.Current.CancellationToken).ConfigureAwait(true)).IsAllowed.ShouldBeTrue();
+    }
+
+    [Fact]
     public void WorkersModuleShouldExposeStableTenantSubscriptionMetadata()
     {
         FoldersWorkersModule.Name.ShouldBe("Hexalith.Folders.Workers");
@@ -77,6 +91,8 @@ public sealed class WorkersTenantEventTests
         builder.Services.AddFoldersTenantEventWorkers();
         WebApplication app = builder.Build();
 
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCloudEvents();
         app.MapSubscribeHandler();
         app.MapFoldersTenantEventWorkerEndpoints();
@@ -214,6 +230,30 @@ public sealed class WorkersTenantEventTests
 
         result.Failed.ShouldBeTrue();
         result.Failures.Single().ShouldContain("ProjectionWriter");
+    }
+
+    [Fact]
+    public async Task TenantCallbackRequiresConfiguredSidecarTokenBeforeProjectionWrites()
+    {
+        WorkerTestHost worker = await StartWorkerHostAsync().ConfigureAwait(true);
+        await using var lifetime = worker.ConfigureAwait(true);
+        WorkerTestHost host = worker;
+        string header = Hexalith.EventStore.ServiceDefaults.Authentication.DaprAppChannelToken.HeaderName;
+        var envelope = Envelope("01J00000000000000000001001", 1,
+            new TenantCreated("tenant-a", "Tenant A", null, Now));
+        host.Client.DefaultRequestHeaders.Remove(header);
+        foreach (string? token in new string?[] { null, "wrong-sidecar-token" })
+        {
+            if (token is not null) host.Client.DefaultRequestHeaders.Add(header, token);
+            (await host.Client.PostAsJsonAsync(FoldersWorkersModule.TenantEventsRoute, envelope,
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
+            (await host.Store.GetAsync("tenant-a", TestContext.Current.CancellationToken)).ShouldBeNull();
+            host.Client.DefaultRequestHeaders.Remove(header);
+        }
+        host.Client.DefaultRequestHeaders.Add(header, "test-sidecar-token");
+        (await host.Client.PostAsJsonAsync(FoldersWorkersModule.TenantEventsRoute, envelope,
+            TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await host.Store.GetAsync("tenant-a", TestContext.Current.CancellationToken))!.Enabled.ShouldBeTrue();
     }
 
     [Fact]
@@ -391,6 +431,8 @@ public sealed class WorkersTenantEventTests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Configuration[Hexalith.EventStore.ServiceDefaults.Authentication.DaprAppChannelToken.ConfigurationKey]
+            = "test-sidecar-token";
         builder.Services.AddFoldersTenantEventWorkers();
         builder.Services.RemoveAll<IUtcClock>();
         builder.Services.AddSingleton<IUtcClock>(new FixedUtcClock(Now.AddMinutes(1)));
@@ -398,14 +440,19 @@ public sealed class WorkersTenantEventTests
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore>(store);
 
         WebApplication app = builder.Build();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCloudEvents();
         app.MapSubscribeHandler();
         app.MapFoldersTenantEventWorkerEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
+        HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        client.DefaultRequestHeaders.Add(Hexalith.EventStore.ServiceDefaults.Authentication.DaprAppChannelToken.HeaderName,
+            "test-sidecar-token");
         return new WorkerTestHost(
             app,
-            new HttpClient { BaseAddress = new Uri(app.Urls.First()) },
+            client,
             store);
     }
 

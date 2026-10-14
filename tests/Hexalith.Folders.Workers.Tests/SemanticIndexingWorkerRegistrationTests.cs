@@ -6,12 +6,15 @@ using Dapr.Client;
 
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Workers;
 using Hexalith.Folders.Workers.SemanticIndexing;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 using NSubstitute;
 
@@ -27,6 +30,23 @@ namespace Hexalith.Folders.Workers.Tests;
 
 public sealed class SemanticIndexingWorkerRegistrationTests
 {
+    [Fact]
+    public void ActualWorkersHostUsesDurableTenantAndPermissionStores()
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        { EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development });
+        builder.Host.UseDefaultServiceProvider(options =>
+        { options.ValidateOnBuild = true; options.ValidateScopes = true; });
+        builder.AddFoldersWorkersHost();
+        using WebApplication app = builder.Build();
+        app.Services.GetRequiredService<IFolderTenantAccessProjectionStore>()
+            .ShouldBeOfType<EventStoreFolderTenantAccessProjectionStore>();
+        app.Services.GetRequiredService<IEffectivePermissionsReadModel>()
+            .ShouldBeOfType<EventStoreFolderEffectivePermissionsReadModel>();
+        app.Services.GetRequiredService<IFolderAclReadModel>()
+            .ShouldBeSameAs(app.Services.GetRequiredService<IEffectivePermissionsReadModel>());
+    }
+
     [Fact]
     public void AddFoldersSemanticIndexingWorkersShouldRegisterPortAndDaprClient()
     {
@@ -116,6 +136,10 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             ValidateScopes = true,
         });
         provider.GetRequiredService<IReadModelStore>().ShouldNotBeNull();
+        provider.GetRequiredService<IEffectivePermissionsReadModel>()
+            .ShouldBeOfType<EventStoreFolderEffectivePermissionsReadModel>();
+        provider.GetRequiredService<IFolderAclReadModel>()
+            .ShouldBeSameAs(provider.GetRequiredService<IEffectivePermissionsReadModel>());
         provider.GetRequiredService<ISemanticIndexingBridgeReadModel>().ShouldBeOfType<EventStoreSemanticIndexingBridgeStore>();
         provider.GetRequiredService<ISemanticIndexingBridgeWriter>().ShouldBeOfType<EventStoreSemanticIndexingBridgeStore>();
     }
@@ -123,7 +147,10 @@ public sealed class SemanticIndexingWorkerRegistrationTests
     [Fact]
     public void AddFoldersTenantEventWorkersShouldIncludeSemanticIndexingRegistration()
     {
-        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        { EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development });
+        builder.Host.UseDefaultServiceProvider(options =>
+        { options.ValidateOnBuild = true; options.ValidateScopes = true; });
         builder.Services.AddFoldersTenantEventWorkers();
 
         using WebApplication app = builder.Build();

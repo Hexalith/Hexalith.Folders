@@ -27,6 +27,12 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
             return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.NotFoundSafe, null);
         }
 
+        if (request.OperationScope != FolderStreamName.ReservedOrganizationPermissionScope
+            && !FolderStreamName.TryCreate(request.ManagedTenantId, request.OperationScope, out _, out _))
+        {
+            return FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.NotFoundSafe, null);
+        }
+
         EffectivePermissionsReadModelResult result;
         try
         {
@@ -37,7 +43,8 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
                     [EffectivePermissionPrincipal.User(request.PrincipalId)],
                     request.TaskId,
                     WorkspaceContextId: null,
-                    ReadConsistency: "read_your_writes"),
+                    ReadConsistency: "read_your_writes",
+                    WaitForCatchUp: request.OperationPolicyClass == FolderOperationPolicyClass.Mutation),
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

@@ -5,6 +5,8 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
 using Hexalith.Folders.Projections.SemanticIndexing;
@@ -26,13 +28,18 @@ public sealed class SemanticIndexingEndpointE2ETests
 {
     private static readonly DateTimeOffset OccurredAt = new(2026, 6, 23, 12, 0, 0, TimeSpan.Zero);
 
-    [Fact]
-    public void MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription()
+    [Theory]
+    [InlineData("pubsub")]
+    [InlineData("folders-workers-pubsub")]
+    public void MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription(string pubsub)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        builder.Configuration["Folders:Workers:PubSubName"] = pubsub;
         builder.Services.AddFoldersTenantEventWorkers();
         WebApplication app = builder.Build();
 
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCloudEvents();
         app.MapSubscribeHandler();
         app.MapFoldersTenantEventWorkerEndpoints();
@@ -47,15 +54,19 @@ public sealed class SemanticIndexingEndpointE2ETests
             string.Equals(endpoint.RoutePattern.RawText, FoldersSemanticIndexingDefaults.DomainEventsRoute, StringComparison.Ordinal));
         Dapr.ITopicMetadata? topicMetadata = semanticEndpoint.Metadata.GetMetadata<Dapr.ITopicMetadata>();
         topicMetadata.ShouldNotBeNull();
-        topicMetadata.PubsubName.ShouldBe(FoldersSemanticIndexingDefaults.PubSubName);
+        topicMetadata.PubsubName.ShouldBe(pubsub);
         topicMetadata.Name.ShouldBe(FoldersSemanticIndexingDefaults.DomainEventsTopicName);
+        semanticEndpoint.Metadata.GetMetadata<Dapr.IDeadLetterTopicMetadata>()!
+            .DeadLetterTopic.ShouldBe("deadletter.folders.events");
 
         RouteEndpoint tenantEndpoint = endpoints.Single(static endpoint =>
             string.Equals(endpoint.RoutePattern.RawText, FoldersWorkersModule.TenantEventsRoute, StringComparison.Ordinal));
         Dapr.ITopicMetadata? tenantMetadata = tenantEndpoint.Metadata.GetMetadata<Dapr.ITopicMetadata>();
         tenantMetadata.ShouldNotBeNull();
-        tenantMetadata.PubsubName.ShouldBe(FoldersWorkersModule.TenantEventsPubSubName);
+        tenantMetadata.PubsubName.ShouldBe(pubsub);
         tenantMetadata.Name.ShouldBe(FoldersWorkersModule.TenantEventsTopicName);
+        tenantEndpoint.Metadata.GetMetadata<Dapr.IDeadLetterTopicMetadata>()!
+            .DeadLetterTopic.ShouldBe("deadletter.tenants.events");
     }
 
     [Fact]
@@ -69,15 +80,18 @@ public sealed class SemanticIndexingEndpointE2ETests
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
                     FoldersSemanticIndexingDefaults.DomainEventsRoute,
-                    Envelope("message-index-a", 1, mutation),
+                    Envelope("message-index-a", 2, mutation),
                     TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await host.Store.GetAsync<FolderPermissionProjection>("statestore",
+                "projection:folders:folder-permissions:tenant-a:folder-a", TestContext.Current.CancellationToken))
+                .Value!.LastSequence.ShouldBe(2);
             host.Policy.Evaluated.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Stale);
             host.Materializer.Requests.ShouldHaveSingleItem().Identity.ManagedTenantId.ShouldBe("tenant-a");
             SemanticIndexingRequest request = host.Port.Requests.ShouldHaveSingleItem();
-            request.Source.ToUriString().ShouldStartWith("folders://tenant-a/organizations/organization-a/folders/folder-a/");
+            request.Source.ToUriString().ShouldStartWith("folders://tenant-a/organizations/tenant-a/folders/folder-a/");
             request.Source.ToUriString().ShouldNotContain("C:/", Case.Sensitive);
 
             SemanticIndexingBridgeEntry indexed = (await host.Bridge.GetFileVersionAsync(
@@ -106,11 +120,14 @@ public sealed class SemanticIndexingEndpointE2ETests
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
                     FoldersSemanticIndexingDefaults.DomainEventsRoute,
-                    Envelope("message-denied-a", 1, mutation),
+                    Envelope("message-denied-a", 2, mutation),
                     TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await host.Store.GetAsync<FolderPermissionProjection>("statestore",
+                "projection:folders:folder-permissions:tenant-a:folder-a", TestContext.Current.CancellationToken))
+                .Value!.LastSequence.ShouldBe(2);
             host.Policy.Evaluated.ShouldHaveSingleItem();
             host.Materializer.Requests.ShouldBeEmpty();
             host.Port.Requests.ShouldBeEmpty();
@@ -128,7 +145,7 @@ public sealed class SemanticIndexingEndpointE2ETests
     }
 
     [Fact]
-    public async Task SemanticIndexingSubscriptionEndpointShouldDropInvalidPayloadWithoutEchoingContentOrRedelivering()
+    public async Task SemanticIndexingSubscriptionEndpointShouldRetryInvalidPayloadWithoutEchoingContent()
     {
         WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);
         try
@@ -142,7 +159,8 @@ public sealed class SemanticIndexingEndpointE2ETests
                 OccurredAt,
                 "correlation-invalid-a",
                 "json",
-                Encoding.UTF8.GetBytes("{\"managedTenantId\":\"tenant-a\",\"pathMetadataDigest\":\"sentinel-secret-value\""));
+                Encoding.UTF8.GetBytes("{\"managedTenantId\":\"tenant-a\",\"pathMetadataDigest\":\"sentinel-secret-value\""))
+            { Domain = "folders", MetadataVersion = 1 };
 
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
@@ -152,9 +170,9 @@ public sealed class SemanticIndexingEndpointE2ETests
                 .ConfigureAwait(true);
             string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
-            // A permanently-unprocessable payload is dropped with a success status so Dapr does not redeliver the same
-            // poison message forever; the drop is recorded as a metadata-only warning, never echoing payload content.
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            // The permission projection gate fails closed before semantic processing; production retries
+            // and dead-letters the retained poison event without echoing its bytes.
+            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             body.ShouldNotContain("sentinel-secret-value", Case.Sensitive);
             host.Policy.Evaluated.ShouldBeEmpty();
             host.Materializer.Requests.ShouldBeEmpty();
@@ -167,7 +185,7 @@ public sealed class SemanticIndexingEndpointE2ETests
     }
 
     [Fact]
-    public async Task SemanticIndexingSubscriptionEndpointShouldDropEnvelopeMissingTypeOrPayload()
+    public async Task SemanticIndexingSubscriptionEndpointShouldRetryEnvelopeMissingTypeOrPayload()
     {
         WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);
         try
@@ -181,7 +199,8 @@ public sealed class SemanticIndexingEndpointE2ETests
                 OccurredAt,
                 "correlation-malformed-a",
                 "json",
-                null!);
+                null!)
+            { Domain = "folders", MetadataVersion = 1 };
 
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
@@ -190,7 +209,7 @@ public sealed class SemanticIndexingEndpointE2ETests
                     TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
 
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             host.Policy.Evaluated.ShouldBeEmpty();
             host.Materializer.Requests.ShouldBeEmpty();
             host.Port.Requests.ShouldBeEmpty();
@@ -202,7 +221,7 @@ public sealed class SemanticIndexingEndpointE2ETests
     }
 
     [Fact]
-    public async Task SemanticIndexingSubscriptionEndpointShouldAcknowledgeUnknownEventTypesWithoutSideEffects()
+    public async Task SemanticIndexingSubscriptionEndpointShouldRetryUnknownEventTypesWithoutSideEffects()
     {
         WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);
         try
@@ -219,11 +238,12 @@ public sealed class SemanticIndexingEndpointE2ETests
                         OccurredAt,
                         "correlation-unknown-a",
                         "json",
-                        "{}"u8.ToArray()),
+                        "{}"u8.ToArray())
+                    { Domain = "folders", MetadataVersion = 1 },
                     TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
 
-            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             host.Policy.Evaluated.ShouldBeEmpty();
             host.Materializer.Requests.ShouldBeEmpty();
             host.Port.Requests.ShouldBeEmpty();
@@ -260,6 +280,7 @@ public sealed class SemanticIndexingEndpointE2ETests
             EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development,
         });
         builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
         builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
         builder.Services.AddFoldersTenantEventWorkers();
         builder.Services.RemoveAll<IReadModelStore>();
@@ -278,14 +299,25 @@ public sealed class SemanticIndexingEndpointE2ETests
         builder.Services.AddSingleton<ISemanticIndexingPort>(port);
 
         WebApplication app = builder.Build();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.UseCloudEvents();
         app.MapSubscribeHandler();
         app.MapFoldersTenantEventWorkerEndpoints();
         await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
 
+        HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+        FolderCreated created = new("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+            FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "principal-a", "corr", "task",
+            "create-key", "create-fingerprint", DateTimeOffset.UtcNow);
+        (await client.PostAsJsonAsync(FoldersSemanticIndexingDefaults.DomainEventsRoute,
+            Envelope("created", 1, created), TestContext.Current.CancellationToken).ConfigureAwait(true)).StatusCode.ShouldBe(HttpStatusCode.OK);
+
         return new WorkerSemanticIndexingHost(
             app,
-            new HttpClient { BaseAddress = new Uri(app.Urls.First()) },
+            client,
+            readModelStore,
             bridge,
             policy,
             materializer,
@@ -302,12 +334,13 @@ public sealed class SemanticIndexingEndpointE2ETests
             OccurredAt,
             $"correlation-{sequenceNumber}",
             "json",
-            JsonSerializer.SerializeToUtf8Bytes(@event));
+            JsonSerializer.SerializeToUtf8Bytes(@event))
+        { Domain = "folders", MetadataVersion = 1 };
 
     private static WorkspaceFileMutationAccepted Mutation()
         => new(
             "tenant-a",
-            "organization-a",
+            "tenant-a",
             "folder-a",
             "workspace-a",
             FolderWorkspaceLifecycleEvent.FileMutated,
@@ -331,6 +364,7 @@ public sealed class SemanticIndexingEndpointE2ETests
     private sealed record WorkerSemanticIndexingHost(
         WebApplication App,
         HttpClient Client,
+        InMemoryReadModelStoreDouble Store,
         EventStoreSemanticIndexingBridgeStore Bridge,
         RecordingPolicyEvaluator Policy,
         RecordingContentMaterializer Materializer,

@@ -61,7 +61,46 @@ public sealed class FolderLifecycleReplayDeterminismTests
     }
 
     [Fact]
-    public void DuplicateDomainEventDeliveryShouldNotApplyStateMutationTwice()
+    public void NonCreateFirstRetainedEventCannotInitializeFolder()
+    {
+        IFolderEvent grant = FolderLifecycleReplayFixture.DuplicateAccessDeliveryLifecycle()[1];
+        Should.Throw<InvalidOperationException>(() => FolderState.Empty.Apply([grant],
+            FolderLifecycleReplayFixture.StreamName)).Message.ShouldBe("Folder event order is invalid.");
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidTransitionEvents))]
+    public void InvalidRetainedTransitionsFailBeforeChangingFoldedState(IFolderEvent item)
+    {
+        FolderState created = FolderState.Empty.Apply(FolderLifecycleReplayFixture.CreatedEvents(),
+            FolderLifecycleReplayFixture.StreamName);
+        // Requested events are invalid after a workspace already exists; outcomes are invalid before request.
+        FolderState invalid = item is RepositoryBindingRequested or ExistingRepositoryBindingRequested
+            ? created with { WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Ready } : created;
+        var before = Snapshot(invalid);
+        Should.Throw<InvalidOperationException>(() => invalid.Apply([item], FolderLifecycleReplayFixture.StreamName))
+            .Message.ShouldBe("Invalid retained folder workspace transition.");
+        Snapshot(invalid).ShouldBe(before);
+    }
+
+    public static IEnumerable<object[]> InvalidTransitionEvents()
+    {
+        var events = FolderLifecycleReplayFixture.SuccessfulLifecycle()
+            .Concat(FolderLifecycleReplayFixture.ExistingRepositoryBindingLifecycle())
+            .Concat(FolderLifecycleReplayFixture.RepositoryFailureLifecycle())
+            .Concat(FolderLifecycleReplayFixture.RepositoryUnknownOutcomeLifecycle(false))
+            .Concat(FolderLifecycleReplayFixture.CommitFailureLifecycle())
+            .Concat(FolderLifecycleReplayFixture.CommitUnknownOutcomeLifecycle(false));
+        Type[] types = [typeof(RepositoryBindingRequested), typeof(ExistingRepositoryBindingRequested),
+            typeof(RepositoryBound), typeof(RepositoryBindingFailed), typeof(ProviderOutcomeUnknown),
+            typeof(FolderWorkspaceLifecycleEventRecorded), typeof(WorkspaceLockAcquired), typeof(WorkspaceLockReleased),
+            typeof(WorkspaceFileMutationAccepted), typeof(WorkspaceCommitSucceeded), typeof(WorkspaceCommitFailed),
+            typeof(WorkspaceCommitOutcomeUnknown)];
+        foreach (Type type in types) yield return [events.First(item => item.GetType() == type)];
+    }
+
+    [Fact]
+    public void RepeatedAccessGrantPositionsProduceEquivalentOverrideState()
     {
         IReadOnlyList<IFolderEvent> events = FolderLifecycleReplayFixture.DuplicateAccessDeliveryLifecycle();
         FolderState withDuplicate = FolderState.Empty.Apply(events, FolderLifecycleReplayFixture.StreamName);

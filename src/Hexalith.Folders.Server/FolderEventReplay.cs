@@ -123,6 +123,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
         OrganizationState state = ReadOrganizationSnapshot(source?.SnapshotState, tenantId, aggregateId);
         long sequence = source?.LastSnapshotSequence ?? 0;
         string? organizationId = state.ProviderBindings.Values.FirstOrDefault()?.OrganizationId;
+        List<IOrganizationEvent> events = [];
         foreach (EventEnvelope item in source?.Events ?? [])
         {
             RequireSequence(++sequence, item.Metadata.SequenceNumber);
@@ -153,11 +154,11 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
                 throw new InvalidOperationException("Foreign organization event in actor stream.");
             }
 
-            state = state.Apply([value]);
+            events.Add(value);
         }
 
         RequireSequence(source?.CurrentSequence ?? 0, sequence);
-        return state;
+        return state.Apply(events);
     }
 
     /// <summary>Folds a complete projection prefix into current folder state.</summary>
@@ -191,6 +192,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
         OrganizationState state = OrganizationState.Empty;
         long sequence = 0;
         string? organizationId = null;
+        List<IOrganizationEvent> events = [];
         foreach (ProjectionEventDto item in request.Events)
         {
             RequireSequence(++sequence, item.SequenceNumber);
@@ -214,10 +216,10 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
                 throw new InvalidOperationException("Foreign organization event in projection stream.");
             }
 
-            state = state.Apply([value]);
+            events.Add(value);
         }
 
-        return state;
+        return state.Apply(events);
     }
 
     private static DomainServiceCurrentState? ReadCurrentState(object? source)

@@ -7,6 +7,7 @@ using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -135,7 +136,8 @@ public sealed class ProductionProcessWireEventTests
 
             ProjectionEventDto retained = new(typeof(FolderCreated).FullName!,
                 File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "event-evolution",
-                    "folder-created-valid-unstamped-v1.json")), "json", 1, now, "correlation-a") { MetadataVersion = 1 };
+                    "folder-created-valid-unstamped-v1.json")), "json", 1, now, "correlation-a")
+            { MetadataVersion = 1 };
             ProjectionRequest project = new("tenant-a", "folders", "folder-a", [retained]);
             client.DefaultRequestHeaders.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
             (await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute, project,
@@ -146,7 +148,10 @@ public sealed class ProductionProcessWireEventTests
             string projectAssertion = new JsonWebTokenHandler { SetDefaultTimesOnTokenCreation = false }.CreateToken(
                 new SecurityTokenDescriptor
                 {
-                    Issuer = "hexalith-dev", Audience = "folders", IssuedAt = issued, NotBefore = issued,
+                    Issuer = "hexalith-dev",
+                    Audience = "folders",
+                    IssuedAt = issued,
+                    NotBefore = issued,
                     Expires = issued.AddMinutes(2),
                     Claims = new Dictionary<string, object>
                     {
@@ -252,6 +257,10 @@ public sealed class ProductionProcessWireEventTests
             service.GetRequiredService<ScopeCheckingFolderPermissionEvidenceProvider>());
         builder.Services.RemoveAll<IRepositoryBindingReadinessValidator>();
         builder.Services.AddSingleton<IRepositoryBindingReadinessValidator, ProcessBindingReadinessValidator>();
+        builder.Services.RemoveAll<IWorkspacePreparationReadinessValidator>();
+        builder.Services.AddSingleton<IWorkspacePreparationReadinessValidator>(new ProcessWorkspaceReadinessValidator(
+            failureCategory == ProviderFailureCategory.ReconciliationRequired
+                ? failureCategory : ProviderFailureCategory.UnknownProviderOutcome));
         builder.Services.RemoveAll<IProviderReadinessBindingReader>();
         builder.Services.AddSingleton<IProviderReadinessBindingReader, ProcessProviderBindingReader>();
         InMemoryFolderAuditObserver audit = new();
@@ -385,8 +394,12 @@ public sealed class ProductionProcessWireEventTests
 
             CommandEnvelope baselineCommand = Command("tenant-a",
                 FoldersServerModule.InitializeOrganizationAclBaselineCommandType, "message-baseline",
-                new { requestSchemaVersion = "v1", operations = new[]
-                    { new { principalKind = "User", principalId = "user-a", action = "create_folder" } } });
+                new
+                {
+                    requestSchemaVersion = "v1",
+                    operations = new[]
+                    { new { principalKind = "User", principalId = "user-a", action = "create_folder" } }
+                });
             DomainServiceWireResult baseline = await ProcessAsync(client, baselineCommand, null);
             baseline.IsRejection.ShouldBeFalse();
             baseline.Events.Select(item => item.EventTypeName).ShouldBe([
@@ -402,8 +415,11 @@ public sealed class ProductionProcessWireEventTests
             DomainServiceWireResult duplicateBaseline = await ProcessAsync(client, baselineCommand with
             {
                 MessageId = "message-baseline-new-key",
-                Payload = JsonSerializer.SerializeToUtf8Bytes(new { operations = new[]
-                    { new { principalKind = "User", principalId = "attacker-a", action = "manage_organization_acl" } } }),
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new
+                {
+                    operations = new[]
+                    { new { principalKind = "User", principalId = "attacker-a", action = "manage_organization_acl" } }
+                }),
             }, baselineState);
             duplicateBaseline.IsRejection.ShouldBeTrue();
             JsonSerializer.Deserialize<JsonElement>(duplicateBaseline.Events.ShouldHaveSingleItem().Payload)
@@ -414,15 +430,22 @@ public sealed class ProductionProcessWireEventTests
 
             CommandEnvelope grantCommand = Command("tenant-a",
                 FoldersServerModule.GrantOrganizationAclPrincipalCommandType, "message-grant",
-                new { requestSchemaVersion = "v1", operations = new[]
-                    { new { principalKind = "User", principalId = "user-a", action = "configure_provider_binding" } } });
+                new
+                {
+                    requestSchemaVersion = "v1",
+                    operations = new[]
+                    { new { principalKind = "User", principalId = "user-a", action = "configure_provider_binding" } }
+                });
             DomainServiceWireResult grant = await ProcessAsync(client, grantCommand, baselineState);
             AssertEvent(grant, typeof(OrganizationAclPrincipalGranted));
             foreach (string action in new[] { "create_repository_backed_folder", "bind_repository", "configure_branch_ref_policy" })
             {
                 CommandEnvelope publishedAction = Command("tenant-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType,
-                    "message-" + action, new { operations = new[]
-                        { new { principalKind = "User", principalId = "user-a", action } } });
+                    "message-" + action, new
+                    {
+                        operations = new[]
+                        { new { principalKind = "User", principalId = "user-a", action } }
+                    });
                 DomainServiceWireResult acceptedAction = await ProcessAsync(client, publishedAction, baselineState);
                 AssertEvent(acceptedAction, typeof(OrganizationAclPrincipalGranted));
                 JsonSerializer.Deserialize<OrganizationAclPrincipalGranted>(acceptedAction.Events[0].Payload,
@@ -451,8 +474,11 @@ public sealed class ProductionProcessWireEventTests
             }
 
             CommandEnvelope delegated = Command("tenant-a", FoldersServerModule.GrantOrganizationAclPrincipalCommandType,
-                "message-delegated", new { operations = new[]
-                    { new { principalKind = "delegated_service_agent", principalId = "agent-a", action = "read_metadata" } } });
+                "message-delegated", new
+                {
+                    operations = new[]
+                    { new { principalKind = "delegated_service_agent", principalId = "agent-a", action = "read_metadata" } }
+                });
             DomainServiceWireResult delegatedResult = await ProcessAsync(client, delegated, baselineState);
             AssertEvent(delegatedResult, typeof(OrganizationAclPrincipalGranted));
             JsonSerializer.Deserialize<OrganizationAclPrincipalGranted>(delegatedResult.Events[0].Payload,
@@ -461,8 +487,11 @@ public sealed class ProductionProcessWireEventTests
             DomainServiceWireResult numeric = await ProcessAsync(client, delegated with
             {
                 MessageId = "message-numeric",
-                Payload = JsonSerializer.SerializeToUtf8Bytes(new { operations = new[]
-                    { new { principalKind = "3", principalId = "agent-a", action = "read_metadata" } } }),
+                Payload = JsonSerializer.SerializeToUtf8Bytes(new
+                {
+                    operations = new[]
+                    { new { principalKind = "3", principalId = "agent-a", action = "read_metadata" } }
+                }),
             }, baselineState);
             numeric.IsRejection.ShouldBeTrue();
             numeric.Events.ShouldHaveSingleItem().EventTypeName.ShouldBe(typeof(FolderCommandRejected).FullName);
@@ -488,7 +517,8 @@ public sealed class ProductionProcessWireEventTests
             CommandEnvelope bindCommand = Command("folder-a", FoldersServerModule.BindRepositoryCommandType,
                 "message-bind", new
                 {
-                    requestSchemaVersion = "v1", providerBindingRef = "binding-a",
+                    requestSchemaVersion = "v1",
+                    providerBindingRef = "binding-a",
                     externalRepositoryRef = "repository-a",
                     branchRefPolicy = new { requestSchemaVersion = "v1", repositoryBindingId = "repository-binding-a", policyRef = "policy-a" },
                 });
@@ -513,6 +543,51 @@ public sealed class ProductionProcessWireEventTests
                     : FolderRepositoryBindingState.Failed);
             AssertReplay(await ProcessAsync(client, bindCommand, failedRetained));
             provider.ProviderCalls.ShouldBe(1);
+            // PrepareWorkspace must persist its outcome fact even though the business result is a failure.
+            FolderState preparationState = FolderState.Empty with
+            {
+                IsCreated = true,
+                ManagedTenantId = "tenant-a",
+                OrganizationId = "tenant-a",
+                FolderId = "folder-a",
+                LifecycleState = FolderLifecycleState.Active,
+                RepositoryBindingState = FolderRepositoryBindingState.Bound,
+                WorkspaceLifecycleState = FolderWorkspaceLifecycleState.Preparing,
+                RepositoryBindingId = "repository-binding-a",
+                ProviderBindingRef = "binding-a",
+                BranchRefPolicyRef = "policy-a",
+                BranchRefPolicy = new("repository-binding-a", "policy-a", "main", [], [], "user-a", "corr", "task-a",
+                    "policy-key", "policy-fingerprint", now),
+            };
+            DomainServiceCurrentState preparationSnapshot = new(JsonSerializer.SerializeToElement(preparationState), [], 1, 1);
+            permissions.Save(new("tenant-a", "tenant-a", "folder-a", EffectivePermissionsFolderLifecycleState.Active,
+                [new(EffectivePermissionEvidenceSource.FolderOverrideGrant, EffectivePermissionPrincipal.User("user-a"),
+                    "prepare_workspace", 1, now)], new("read_your_writes", now, "1", false, null), true, null));
+            CommandEnvelope prepareCommand = Command("folder-a", FoldersServerModule.PrepareWorkspaceCommandType,
+                "message-prepare", new
+                {
+                    requestSchemaVersion = "v1",
+                    workspaceId = "workspace-a",
+                    repositoryBindingId = "repository-binding-a",
+                    branchRefPolicyRef = "policy-a",
+                    workspacePolicyRef = "workspace-policy-a"
+                });
+            DomainServiceWireResult preparation = await ProcessAsync(client, prepareCommand, preparationSnapshot);
+            preparation.IsRejection.ShouldBeFalse(string.Join("; ", preparation.Events.Select(item => Encoding.UTF8.GetString(item.Payload))));
+            AssertEvent(preparation, typeof(FolderWorkspaceLifecycleEventRecorded));
+            using JsonDocument preparationPayload = JsonDocument.Parse(preparation.ResultPayload!);
+            preparationPayload.RootElement.GetProperty("failureCode").GetString().ShouldBe(
+                (failureCategory == ProviderFailureCategory.ReconciliationRequired ? FolderResultCode.ReconciliationRequired
+                    : FolderResultCode.UnknownProviderOutcome).ToString());
+            FolderWorkspaceLifecycleEventRecorded unknown = JsonSerializer.Deserialize<FolderWorkspaceLifecycleEventRecorded>(
+                preparation.Events[0].Payload, EventStorePayloadSerialization.Options)!;
+            unknown.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
+            FolderState retainedPreparation = preparationState.Apply([unknown], FolderStreamName.Create("tenant-a", "folder-a"));
+            retainedPreparation.WorkspaceLifecycleState.ShouldBe(FolderWorkspaceLifecycleState.UnknownProviderOutcome);
+            DomainServiceCurrentState preparationReplayState = new(JsonSerializer.SerializeToElement(retainedPreparation), [], 2, 2);
+            AssertReplay(await ProcessAsync(client, prepareCommand, preparationReplayState));
+            provider.ProviderCalls.ShouldBe(1);
+
             ScopeCheckingFolderPermissionEvidenceProvider sequenceEvidence = app.Services
                 .GetRequiredService<ScopeCheckingFolderPermissionEvidenceProvider>();
             sequenceEvidence.ObservedHeads.ShouldContain(1L);

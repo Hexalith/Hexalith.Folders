@@ -1,0 +1,20 @@
+# Workers-only bounded retry before the callback's declared dead-letter topic.
+apiVersion: dapr.io/v1alpha1
+kind: Resiliency
+metadata:
+  name: folders-workers-delivery
+  namespace: hexalith-production
+scopes:
+  - folders-workers
+spec:
+  policies:
+    retries:
+      permissionDelivery:
+        policy: exponential
+        maxInterval: 30s
+        maxRetries: 10
+  targets:
+    components:
+      folders-workers-pubsub:
+        inbound:
+          retry: permissionDelivery

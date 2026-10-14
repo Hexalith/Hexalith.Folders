@@ -6,6 +6,25 @@ namespace Hexalith.Folders.Tests.Authorization;
 
 public sealed class EffectivePermissionsAuthorizationGateTests
 {
+    [Theory]
+    [InlineData("tenant-a")]
+    [InlineData("organization_baseline")]
+    [InlineData("provider-binding-a")]
+    public async Task ReservedActorIdsReturnSafeAbsenceBeforeTenantOrProjectionLookup(string folderId)
+    {
+        CountingTenantAccessProjectionStore tenants = new();
+        RecordingEffectivePermissionsReadModel readModel = new(EffectivePermissionsReadModelResult.Available(
+            EffectivePermissionsTestSupport.Snapshot()));
+        var result = await EffectivePermissionsTestSupport.Handler(tenants, readModel).HandleAsync(
+            new EffectivePermissionsQuery(folderId, "tenant-a", "user-a", "corr"),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        result.Code.ShouldBe(EffectivePermissionsResultCode.NotFoundSafe);
+        result.FolderId.ShouldBeNull();
+        result.Permissions.ShouldBeEmpty();
+        tenants.Gets.ShouldBe(0);
+        readModel.Requests.ShouldBe(0);
+    }
+
     [Fact]
     public async Task RejectsBeforeFolderProjectionWhenTenantMissing()
     {

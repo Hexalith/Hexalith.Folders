@@ -1,0 +1,21 @@
+# Inbound Workers component; use the same broker endpoints/credentials as pubsub.yaml.
+# Deployment tooling supplies connection values outside this sanitized artifact.
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: folders-workers-pubsub
+  namespace: hexalith-production
+scopes:
+  - folders-workers
+spec:
+  type: pubsub.redis
+  version: v1
+  metadata:
+    - name: concurrency
+      value: "1"
+    - name: protectedTopics
+      value: tenants.events,folders.events,deadletter.folders.events,deadletter.tenants.events
+    - name: publishingScopes
+      value: folders-workers=deadletter.folders.events,deadletter.tenants.events
+    - name: subscriptionScopes
+      value: folders-workers=tenants.events,folders.events

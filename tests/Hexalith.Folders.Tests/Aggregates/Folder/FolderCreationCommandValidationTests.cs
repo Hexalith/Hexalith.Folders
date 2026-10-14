@@ -6,6 +6,17 @@ namespace Hexalith.Folders.Tests.Aggregates.Folder;
 
 public sealed class FolderCreationCommandValidationTests
 {
+    [Theory]
+    [InlineData("tenant-a")]
+    [InlineData("organization_baseline")]
+    [InlineData("provider-binding-a")]
+    public void SharedValidatorRejectsReservedActorIds(string folderId)
+    {
+        var validation = FolderCommandValidator.Validate(FolderCommandFactory.Create(folderId: folderId));
+        validation.IsAccepted.ShouldBeFalse();
+        validation.Code.ShouldBe(FolderResultCode.InvalidFolderId);
+    }
+
     [Fact]
     public void CreateFolderShouldEmitMetadataOnlyCreatedEventForEmptyState()
     {

@@ -1,3 +1,4 @@
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 
 namespace Hexalith.Folders.Aggregates.Organization;
@@ -44,7 +45,7 @@ public sealed class ConfigureProviderBindingService(
             ActionToken,
             LayeredFolderOperationPolicy.Mutation(),
             request.ClaimTransformEvidence,
-            OperationScope: "organization_baseline",
+            OperationScope: FolderStreamName.ReservedOrganizationPermissionScope,
             request.CorrelationId,
             request.TaskId,
             clientTenantValues,

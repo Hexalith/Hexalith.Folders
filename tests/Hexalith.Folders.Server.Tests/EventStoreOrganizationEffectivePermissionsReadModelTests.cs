@@ -18,6 +18,195 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task MutationEvidenceProviderWaitsForDurableAuthorityAndReturnsCaughtUpWatermark(bool organizationScope)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new();
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+        heads.Heads["tenant-a"] = organizationScope ? 2 : 1;
+        if (!organizationScope)
+        {
+            await folder.ApplyAsync("tenant-a", "folder-a", "created", 1, "created-digest",
+                new FolderCreated("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+                    FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound,
+                    "user-a", "corr", "task", "key", "fingerprint", clock.UtcNow), ct);
+            heads.Heads["folder-a"] = 2;
+        }
+        bool projected = false;
+        heads.OnReadAsync = async actor =>
+        {
+            if (projected || actor != (organizationScope ? "tenant-a" : "folder-a")) return;
+            projected = true;
+            if (organizationScope)
+            {
+                await organization.ApplyAsync("tenant-a", "tenant-a", "granted", 2,
+                    new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                        "user-a", "create_folder", "corr", "task", "grant-key", "grant-fingerprint"), ct).ConfigureAwait(false);
+            }
+            else
+            {
+                await folder.ApplyAsync("tenant-a", "folder-a", "granted", 2, "grant-digest",
+                    new FolderAccessGranted("tenant-a", "tenant-a", "folder-a", FolderAccessPrincipalKind.User,
+                        "user-a", "read_metadata", "user-a", "corr", "task", "grant-key", "grant-fingerprint", 1, clock.UtcNow), ct)
+                    .ConfigureAwait(false);
+            }
+        };
+        // Exercise policy propagation through the actual evidence provider: no model wait flag is supplied here.
+        IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
+        FolderPermissionEvidenceResult result = await new EffectivePermissionsFolderPermissionEvidenceProvider(model, clock)
+            .GetEvidenceAsync(new("tenant-a", "user-a", "user-a", organizationScope ? "create_folder" : "read_metadata",
+                organizationScope ? "organization_baseline" : "folder-a", "corr", null,
+                FolderOperationPolicyClass.Mutation, false), ct);
+        result.Status.ShouldBe(FolderPermissionEvidenceStatus.Allowed);
+        result.FreshnessWatermark.ShouldBe("2");
+        result.FreshnessClass.ShouldBe("fresh");
+    }
+
+    [Fact]
+    public async Task SlowReadCannotOutliveEnabledCatchUpBudgetAndImmediateReadRetainsItsBehavior()
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new() { CurrentSequence = 1 };
+        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock, heads);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        await model.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+        EffectivePermissionsReadModelRequest request = new("tenant-a", "organization_baseline", [], null, null,
+            "read_your_writes", WaitForCatchUp: true);
+        TaskCompletionSource release = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        heads.OnReadAsync = _ => release.Task; // Deliberately ignores the supplied cancellation token.
+        try
+        {
+            var elapsed = System.Diagnostics.Stopwatch.StartNew();
+            var result = await model.GetAsync(request, ct).WaitAsync(TimeSpan.FromSeconds(2), ct);
+            elapsed.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(1));
+            result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Unavailable);
+            result.Snapshot.ShouldBeNull();
+            result.Freshness.ReasonCode.ShouldBe("permission_projection_catch_up_timeout");
+            Task<EffectivePermissionsReadModelResult> immediate = model.GetAsync(request with { WaitForCatchUp = false }, ct);
+            await Task.Delay(600, ct);
+            immediate.IsCompleted.ShouldBeFalse();
+            release.SetResult();
+            (await immediate.ConfigureAwait(true)).Status.ShouldBe(EffectivePermissionsReadModelStatus.Available);
+        }
+        finally
+        {
+            release.TrySetResult();
+        }
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task MutationWaitsForFolderOrOrganizationCatchUpAndReadsRemainImmediate(bool organizationScope, bool wait)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new();
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        if (organizationScope)
+        {
+            await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+                new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+            heads.Heads["tenant-a"] = 2;
+        }
+        else
+        {
+            await folder.ApplyAsync("tenant-a", "folder-a", "create", 1, "digest-create",
+                new FolderCreated("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+                    FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound,
+                    "user-a", "corr", "task", "key", "fingerprint", clock.UtcNow), ct);
+            heads.Heads["folder-a"] = 2;
+        }
+        bool projected = false;
+        heads.OnReadAsync = async actor =>
+        {
+            if (projected || actor != (organizationScope ? "tenant-a" : "folder-a")) return;
+            projected = true;
+            if (organizationScope)
+                await organization.ApplyNonPermissionEventAsync("tenant-a", "tenant-a", "rejected", 2, ct).ConfigureAwait(false);
+            else
+                await folder.ApplyAsync("tenant-a", "folder-a", "rejected", 2, "digest-rejected", null, ct).ConfigureAwait(false);
+        };
+        IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
+        var result = await model.GetAsync(new("tenant-a", organizationScope ? "organization_baseline" : "folder-a",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes", WaitForCatchUp: wait), ct);
+        result.Status.ShouldBe(wait ? EffectivePermissionsReadModelStatus.Available : EffectivePermissionsReadModelStatus.Stale);
+        result.Snapshot!.Freshness.ProjectionWatermark.ShouldBe(wait ? "2" : "1");
+    }
+
+    [Fact]
+    public async Task CatchUpTimeoutAndCancellationNeverExposeStaleAuthority()
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new() { CurrentSequence = 1 };
+        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock, heads);
+        EffectivePermissionsReadModelRequest request = new("tenant-a", "organization_baseline",
+            [EffectivePermissionPrincipal.User("user-a")], null, null, "read_your_writes", WaitForCatchUp: true);
+        var started = System.Diagnostics.Stopwatch.StartNew();
+        var result = await model.GetAsync(request, TestContext.Current.CancellationToken);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Stale);
+        result.Snapshot!.EvidenceRows.ShouldBeEmpty();
+        started.Elapsed.ShouldBeLessThan(TimeSpan.FromSeconds(2));
+        using CancellationTokenSource cancellation = new(TimeSpan.FromMilliseconds(50));
+        (await Should.ThrowAsync<OperationCanceledException>(() => model.GetAsync(request, cancellation.Token)))
+            .CancellationToken.ShouldBe(cancellation.Token);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ProjectionAheadOfAuthoritativeHeadIsMalformedEvenForBoundedReads(bool organizationScope)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        TestSequenceReader heads = new() { CurrentSequence = 1 };
+        EventStoreOrganizationEffectivePermissionsReadModel organization = new(store, clock, heads);
+        EventStoreFolderEffectivePermissionsReadModel folder = new(store, clock, heads, organization);
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        if (organizationScope)
+        {
+            await organization.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+                new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+            await organization.ApplyAsync("tenant-a", "tenant-a", "grant", 2,
+                new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                    "user-a", "create_folder", "corr", "task", "grant-key", "grant-fingerprint"), ct);
+        }
+        else
+        {
+            await folder.ApplyAsync("tenant-a", "folder-a", "create", 1, "digest-create",
+                new FolderCreated("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
+                    FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound,
+                    "user-a", "corr", "task", "key", "fingerprint", clock.UtcNow), ct);
+            await folder.ApplyAsync("tenant-a", "folder-a", "grant", 2, "digest-grant",
+                new FolderAccessGranted("tenant-a", "tenant-a", "folder-a", FolderAccessPrincipalKind.User,
+                    "user-a", "read_metadata", "user-a", "corr", "task", "grant-key", "grant-fingerprint", 1, clock.UtcNow), ct);
+        }
+        string scope = organizationScope ? "organization_baseline" : "folder-a";
+        IEffectivePermissionsReadModel model = organizationScope ? organization : folder;
+        var result = await model.GetAsync(new("tenant-a", scope, [], null, null, "read_your_writes"), ct);
+        result.Status.ShouldBe(EffectivePermissionsReadModelStatus.Malformed);
+        result.Snapshot.ShouldBeNull();
+        (await new EffectivePermissionsFolderPermissionEvidenceProvider(model, clock).GetEvidenceAsync(
+            new("tenant-a", "user-a", "user-a", organizationScope ? "create_folder" : "read_metadata",
+                scope, "corr", null, FolderOperationPolicyClass.BoundedDiagnosticRead, true), ct))
+            .Status.ShouldBe(FolderPermissionEvidenceStatus.Malformed);
+    }
+
+    [Theory]
     [InlineData(nameof(FolderPermissionProjection.IsCreated))]
     [InlineData(nameof(FolderPermissionProjection.IsArchived))]
     public async Task SerializedFolderRowWithoutLifecycleEvidenceCannotAuthorize(string missingProperty)
@@ -806,16 +995,19 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
 
         public bool Unavailable { get; set; }
 
-        public Task<long> GetCurrentSequenceAsync(string tenantId, string organizationId,
+        public Func<string, Task>? OnReadAsync { get; set; }
+
+        public async Task<long> GetCurrentSequenceAsync(string tenantId, string organizationId,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            if (OnReadAsync is not null) await OnReadAsync(organizationId).ConfigureAwait(false);
             if (Unavailable)
             {
                 throw new InvalidOperationException("Actor unavailable.");
             }
 
-            return Task.FromResult(Heads.TryGetValue(organizationId, out long head) ? head : CurrentSequence);
+            return Heads.TryGetValue(organizationId, out long head) ? head : CurrentSequence;
         }
     }
 

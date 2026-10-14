@@ -22,6 +22,49 @@ public sealed class FolderEventReplayTests
     private static readonly DateTimeOffset OccurredAt = new(2026, 10, 11, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public void LargeOrganizationHistoryFoldsOnceForActorAndProjectionWithoutQuadraticCopies()
+    {
+        const int grants = 10_000;
+        List<IOrganizationEvent> history = [new OrganizationAclBaselineInitialized("tenant-a", "tenant-a",
+            "corr", "task", "baseline-key", "baseline-fingerprint")];
+        for (int index = 0; index < grants; index++)
+        {
+            history.Add(new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                "user-" + index, "read_metadata", "corr", "task", "key-" + index, "fingerprint-" + index));
+        }
+        history.Add(new OrganizationAclPrincipalRevoked("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+            "user-0", "read_metadata", "corr", "task", "revoke-key", "revoke-fingerprint"));
+        List<EventEnvelope> retained = history.Select((item, index) => Envelope(item.GetType().FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(item, item.GetType()), index + 1, aggregateId: "tenant-a")).ToList();
+        FolderCommandRejected rejection = FolderCommandRejected.Create(nameof(FolderResultCode.ValidationFailed),
+            FoldersServerModule.GrantOrganizationAclPrincipalCommandType, null, null, null, null, "corr", "task", "rejected");
+        retained.Insert(5000, Envelope(typeof(FolderCommandRejected).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(rejection), 5001, aggregateId: "tenant-a"));
+        retained = retained.Select((item, index) => Envelope(item.Metadata.EventTypeName, item.Payload,
+            index + 1, item.Metadata.PayloadVersion, item.Metadata.AggregateId)).ToList();
+        ProjectionRequest request = new("tenant-a", "folders", "tenant-a", retained.Select(item =>
+            new ProjectionEventDto(item.Metadata.EventTypeName, item.Payload, "json", item.Metadata.SequenceNumber,
+                OccurredAt, "corr")
+            { MetadataVersion = 1 }).ToArray());
+        FolderEventReplay replay = new(new([typeof(OrganizationAclBaselineInitialized),
+            typeof(OrganizationAclPrincipalGranted), typeof(OrganizationAclPrincipalRevoked)], []));
+
+        long allocated = GC.GetAllocatedBytesForCurrentThread();
+        OrganizationState actor = replay.FoldOrganization(new DomainServiceCurrentState(null, retained, 0, retained.Count),
+            "tenant-a", "tenant-a");
+        OrganizationState projection = FolderEventReplay.FoldOrganization(request);
+        long foldedBytes = GC.GetAllocatedBytesForCurrentThread() - allocated;
+        actor.Grants.Count.ShouldBe(grants - 1);
+        projection.Grants.ShouldBe(actor.Grants, ignoreOrder: true);
+        actor.HasPermission("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User, "user-0", "read_metadata").ShouldBeFalse();
+        actor.IdempotencyFingerprints.Count.ShouldBe(history.Count);
+        projection.IdempotencyFingerprints.Count.ShouldBe(history.Count);
+        // A linear fold stays well below this generous allocation ceiling. Per-event freezing
+        // repeatedly copies all earlier keys and allocates gigabytes for the same retained history.
+        foldedBytes.ShouldBeLessThan(128L * 1024 * 1024);
+    }
+
+    [Fact]
     public void UnstampedVersionOneEventShouldRebuildStateAfterRepositoryRestart()
     {
         FolderCreated created = Created();
@@ -108,7 +151,8 @@ public sealed class FolderEventReplayTests
         FolderCreated created = Created();
         ProjectionEventDto stored = new(typeof(FolderCreated).FullName!,
             JsonSerializer.SerializeToUtf8Bytes(created), "json", 1, OccurredAt,
-            "correlation-a") { MetadataVersion = 1 };
+            "correlation-a")
+        { MetadataVersion = 1 };
         ProjectionRequest request = new("tenant-a", "folders", "folder-a", [stored]);
 
         ProjectionResponse? result = DomainProjectionDispatcher.Project(
@@ -139,7 +183,8 @@ public sealed class FolderEventReplayTests
             "tenant-a", "org-a", null, "user-a", "correlation-a", "task-a", "idempotency-a");
         ProjectionEventDto item = new(typeof(FolderCommandRejected).FullName!,
             JsonSerializer.SerializeToUtf8Bytes(rejection), "json", 1, OccurredAt,
-            "correlation-a") { MetadataVersion = 1 };
+            "correlation-a")
+        { MetadataVersion = 1 };
         ProjectionRequest request = new("tenant-a", "folders", ProviderBindingActorId.Create("binding-a"), [item]);
 
         ProjectionResponse? projected = DomainProjectionDispatcher.Project(
@@ -535,5 +580,6 @@ public sealed class FolderEventReplayTests
         int? payloadVersion = 1, string aggregateId = "folder-a")
         => new(new EventMetadata("message-a", aggregateId, "folder", "tenant-a", "folders", sequence,
                 1, OccurredAt, "correlation-a", "causation-a", "user-a", "v1",
-                name, 1, "json") { PayloadVersion = payloadVersion }, payload, null);
+                name, 1, "json")
+        { PayloadVersion = payloadVersion }, payload, null);
 }

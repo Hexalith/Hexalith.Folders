@@ -54,6 +54,10 @@ public sealed record OrganizationState(
                 case OrganizationAclPrincipalRevoked revoked when initialized:
                     grants.Remove(Key(revoked.ManagedTenantId, revoked.OrganizationId, revoked.PrincipalKind, revoked.PrincipalId, revoked.Action));
                     break;
+                case OrganizationAclBaselineInitialized:
+                    throw new InvalidOperationException("Organization baseline is already initialized.");
+                case OrganizationAclPrincipalGranted or OrganizationAclPrincipalRevoked:
+                    throw new InvalidOperationException("Organization ACL event requires an initialized baseline.");
                 case ProviderBindingConfigured configured:
                     providerBindings[configured.ProviderBindingRef] = new OrganizationProviderBinding(
                         configured.ManagedTenantId,

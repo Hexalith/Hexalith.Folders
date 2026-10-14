@@ -8,7 +8,7 @@ public static class FolderActorSequenceScope
     private static readonly AsyncLocal<SequenceObservation?> Current = new();
 
     /// <summary>Enters a folder actor scope for the current asynchronous flow.</summary>
-    public static IDisposable Enter(string tenantId, string folderId, long sequence)
+    internal static IDisposable Enter(string tenantId, string folderId, long sequence)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(folderId);

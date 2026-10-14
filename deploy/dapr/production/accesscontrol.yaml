@@ -52,7 +52,8 @@ spec:
     scopes:
       - storeName: kubernetes
         defaultAccess: deny
-        allowedSecrets: []
+        allowedSecrets:
+          - hexalith-eventstore-idempotency-keys
 ---
 apiVersion: dapr.io/v1alpha1
 kind: Configuration

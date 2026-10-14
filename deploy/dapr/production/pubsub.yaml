@@ -18,9 +18,9 @@ spec:
     - name: publishingScopes
       value: tenants=;eventstore=tenants.events,folders.events;folders=;folders-workers=memories-events;folders-ui=;memories=
     - name: subscriptionScopes
-      value: folders=tenants.events;folders-workers=tenants.events,folders.events;eventstore=;tenants=tenants.events;folders-ui=;memories=memories-events
+      value: folders=tenants.events;folders-workers=;eventstore=;tenants=tenants.events;folders-ui=;memories=memories-events
     # Dead-letter topics per domain (deadletter.{domain}.events). Story 7.12 declares the dead-letter-depth
-    # monitored-snapshot + alert-rule intent here; runtime per-subscription dead-letter routing and broker
-    # endpoints are supplied by deployment tooling outside this repository.
+    # monitored-snapshot + alert-rule intent here; Workers callback dead-letter routing is declared in code and its isolated component;
+    # deployment tooling supplies broker endpoints.
     - name: deadLetterTopics
       value: deadletter.folders.events,deadletter.organizations.events

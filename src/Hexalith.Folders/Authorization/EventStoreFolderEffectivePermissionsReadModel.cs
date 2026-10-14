@@ -17,11 +17,20 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
     private const int ReplayWindow = 256;
     private static readonly TimeSpan ProjectedClockSkew = TimeSpan.FromMinutes(2);
 
-    public async Task<EffectivePermissionsReadModelResult> GetAsync(
+    public Task<EffectivePermissionsReadModelResult> GetAsync(
         EffectivePermissionsReadModelRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
-        if (request.FolderId == "organization_baseline")
+        return PermissionProjectionCatchUp.ReadAsync(
+            token => GetOnceAsync(request with { WaitForCatchUp = false }, token),
+            request.WaitForCatchUp, clock.UtcNow, cancellationToken);
+    }
+
+    private async Task<EffectivePermissionsReadModelResult> GetOnceAsync(
+        EffectivePermissionsReadModelRequest request, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (request.FolderId == FolderStreamName.ReservedOrganizationPermissionScope)
         {
             return await organizationReadModel.GetAsync(request, cancellationToken).ConfigureAwait(false);
         }
@@ -89,7 +98,7 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
         }
 
         EffectivePermissionsReadModelResult baseline = await organizationReadModel.GetAsync(
-            request with { FolderId = "organization_baseline" }, cancellationToken).ConfigureAwait(false);
+            request with { FolderId = FolderStreamName.ReservedOrganizationPermissionScope }, cancellationToken).ConfigureAwait(false);
         if (baseline.Status is not (EffectivePermissionsReadModelStatus.Available
             or EffectivePermissionsReadModelStatus.Stale or EffectivePermissionsReadModelStatus.NotFound)
             || baseline.Status != EffectivePermissionsReadModelStatus.NotFound && baseline.Snapshot is null)

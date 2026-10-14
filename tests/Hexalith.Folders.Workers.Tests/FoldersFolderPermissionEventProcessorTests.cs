@@ -30,11 +30,12 @@ public sealed class FoldersFolderPermissionEventProcessorTests
             JsonSerializer.SerializeToUtf8Bytes(new
             {
                 CommandType = "Hexalith.Folders.Commands.ConfigureProviderBinding",
-            })) { Domain = "folders", MetadataVersion = 1 };
+            }))
+        { Domain = "folders", MetadataVersion = 1 };
 
         await processor.ProcessAsync(rejected, TestContext.Current.CancellationToken);
         (await store.GetAsync<FolderPermissionProjection>("statestore",
-            "projection:folders:folder-permissions:tenant-a:binding-a",
+            $"projection:folders:folder-permissions:tenant-a:{rejected.AggregateId}",
             TestContext.Current.CancellationToken)).Value.ShouldBeNull();
         await Should.ThrowAsync<InvalidOperationException>(() => processor.ProcessAsync(rejected with
         {
@@ -84,6 +85,24 @@ public sealed class FoldersFolderPermissionEventProcessorTests
         projection.ShouldNotBeNull();
         projection.LastSequence.ShouldBe(2);
         projection.Overrides.ShouldHaveSingleItem().IsGranted.ShouldBeTrue();
+
+        var beforeGap = await store.GetAsync<FolderPermissionProjection>("statestore",
+            "projection:folders:folder-permissions:tenant-a:folder-a", ct);
+        EventStoreDomainEventEnvelope gap = Envelope("message-gap", 4, grant);
+        await Should.ThrowAsync<InvalidOperationException>(() => processor.ProcessAsync(gap, ct));
+        var rejected = await store.GetAsync<FolderPermissionProjection>("statestore",
+            "projection:folders:folder-permissions:tenant-a:folder-a", ct);
+        rejected.ETag.ShouldBe(beforeGap.ETag);
+        rejected.Value!.LastSequence.ShouldBe(2);
+        rejected.Value.Overrides.ShouldHaveSingleItem().IsGranted.ShouldBeTrue();
+        FolderAccessRevoked revoke = new("tenant-a", "tenant-a", "folder-a", FolderAccessPrincipalKind.User,
+            "user-a", "read_metadata", "user-a", "corr", "task", "revoke-key", "revoke-fingerprint", 2, clock.UtcNow);
+        await processor.ProcessAsync(Envelope("message-3", 3, revoke), ct);
+        await processor.ProcessAsync(gap, ct); // Retry the identical rejected envelope after the missing range.
+        var recovered = await store.GetAsync<FolderPermissionProjection>("statestore",
+            "projection:folders:folder-permissions:tenant-a:folder-a", ct);
+        recovered.Value!.LastSequence.ShouldBe(4);
+        recovered.Value.Overrides.ShouldHaveSingleItem().IsGranted.ShouldBeFalse();
 
         EventStoreDomainEventEnvelope conflict = first with
         {

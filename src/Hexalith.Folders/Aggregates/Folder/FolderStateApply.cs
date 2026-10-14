@@ -26,7 +26,7 @@ public static class FolderStateApply
             || folderEvent is not FolderCreated && !state.IsCreated
             || folderEvent is FolderArchived && state.LifecycleState == FolderLifecycleState.Archived)
         {
-            throw new InvalidOperationException("Folder event order or organization identity is invalid.");
+            throw new InvalidOperationException("Folder event order is invalid.");
         }
 
         return folderEvent switch
