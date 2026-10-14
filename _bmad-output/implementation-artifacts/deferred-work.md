@@ -2877,3 +2877,11 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: Expose a trusted cached-replay disposition from the EventStore gateway so Folders can suppress repeat REST mutation audit observations for cached successes and failures.
   evidence: `SubmitCommandHandler.CreateReplayResult` returns the original result payload and `SubmitCommandResponse` has no separate replay flag; an initially false `idempotentReplay` remains false on cached replay. Folders cannot safely infer replay from that unchanged payload. This also affects the pre-existing cached-success and deterministic-failure paths; fix the platform response contract and its consumer together rather than inventing replay authority in Folders.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-3.md`
+  summary: Document the fresh-checkout restore prerequisite for the completed Story 12.1 Server/Workers verification commands.
+  evidence: Review found that the recorded successful Debug/source-reference builds use --no-restore and therefore assume existing restored assets. Adding an explicit prerequisite would improve reproduction; the one-shot workflow routes spec-only improvements to deferred work.
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-3.md`
+  summary: Add explicit dependency comparison commands to the Story 12.1 current-head verification record.
+  evidence: The record identifies baseline 27d5446960a08f4c8669de20d85ab9a9ba68507d and current pins but omits comparison commands against previous Platform pin 2594b89cb2efed226e6f24e5e3a7cdf4d993b5a8 and Tenants pin 7ad54431996f9f1f0d277005eb2a73b67b55fea6. The baseline commit preserves these ranges; explicit commands would make the chosen scope easier to audit. This spec-only improvement is deferred by the one-shot workflow.
