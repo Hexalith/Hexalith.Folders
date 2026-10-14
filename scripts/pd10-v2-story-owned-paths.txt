@@ -156,6 +156,7 @@ tests/Hexalith.Folders.IntegrationTests/EndToEnd/GoldenLifecycleParityTests.cs
 tests/Hexalith.Folders.IntegrationTests/EndToEnd/RecordingPd10LoggerProvider.cs
 tests/Hexalith.Folders.IntegrationTests/MismatchedArchiveIdentityAccessor.cs
 tests/Hexalith.Folders.IntegrationTests/MixedSurfaceHandoff/MixedSurfaceHandoffTests.cs
+tests/Hexalith.Folders.IntegrationTests/RecordingArchivePrincipalEvidenceProvider.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/CountingFolderLifecycleStatusReadModel.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/CountingFolderTenantAccessProjectionStore.cs
 tests/Hexalith.Folders.IntegrationTests/Routing/FoldersApiRoutingModeTests.cs
@@ -194,7 +195,10 @@ tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspaceLockReleaseService
 tests/Hexalith.Folders.Tests/Aggregates/Folder/FolderWorkspacePreparationServiceTests.cs
 tests/Hexalith.Folders.Tests/Aggregates/Folder/SequencedFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Aggregates/Organization/OrganizationAclStreamShapeTests.cs
+tests/Hexalith.Folders.Tests/Authorization/GatewayMutationFinalReauthorizationTests.cs
 tests/Hexalith.Folders.Tests/Authorization/LayeredFolderAuthorizationServiceTests.cs
+tests/Hexalith.Folders.Tests/Authorization/ReadyRepositoryCreationReadinessValidator.cs
+tests/Hexalith.Folders.Tests/Authorization/RevokingFolderPermissionEvidenceProvider.cs
 tests/Hexalith.Folders.Tests/Authorization/TenantAccessAuthorizerTests.cs
 tests/Hexalith.Folders.Tests/Queries/Folders/WorkspaceLifecycleProjectionDeterminismTests.cs
 tests/Hexalith.Folders.UI.Tests/AuditTrailPageTests.cs
@@ -207,6 +211,7 @@ tests/Hexalith.Folders.UI.Tests/OperationTimelinePageTests.cs
 tests/Hexalith.Folders.UI.Tests/PageReadFreshnessContractTests.cs
 tests/Hexalith.Folders.UI.Tests/ProviderPageTests.cs
 tests/Hexalith.Folders.UI.Tests/ProviderSupportPageTests.cs
+tests/Hexalith.Folders.UI.Tests/UiOperationFreshnessConformanceTests.cs
 tests/Hexalith.Folders.UI.Tests/WorkspacePageTests.cs
 tests/fixtures/parity-contract.schema.json
 tests/fixtures/parity-contract.yaml

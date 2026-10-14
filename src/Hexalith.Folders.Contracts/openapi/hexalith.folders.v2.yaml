@@ -2934,12 +2934,12 @@ paths:
                       visibility: metadata_only
                 candidateRuntime409_1:
                   value:
-                    type: about:blank
-                    title: Candidate request or downstream outcome
+                    type: https://hexalith.dev/errors/folders/reconciliation_required
+                    title: Idempotency conflict.
                     status: 409
                     category: reconciliation_required
                     code: reconciliation_required
-                    message: The request could not be completed.
+                    message: Reconciliation is required before this operation can continue.
                     correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
                     retryable: false
                     clientAction: wait_for_reconciliation
@@ -3017,12 +3017,12 @@ paths:
                       visibility: metadata_only
                 candidateRuntime503_3:
                   value:
-                    type: about:blank
-                    title: Candidate request or downstream outcome
+                    type: https://hexalith.dev/errors/folders/unknown_provider_outcome
+                    title: Read model unavailable.
                     status: 503
                     category: unknown_provider_outcome
                     code: unknown_provider_outcome
-                    message: The request could not be completed.
+                    message: Provider outcome is unknown and requires safe reconciliation.
                     correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
                     retryable: false
                     clientAction: wait_for_reconciliation
@@ -3354,12 +3354,12 @@ paths:
                       visibility: metadata_only
                 candidateRuntime409_1:
                   value:
-                    type: about:blank
-                    title: Candidate request or downstream outcome
+                    type: https://hexalith.dev/errors/folders/reconciliation_required
+                    title: Idempotency conflict.
                     status: 409
                     category: reconciliation_required
                     code: reconciliation_required
-                    message: The request could not be completed.
+                    message: Reconciliation is required before this operation can continue.
                     correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
                     retryable: false
                     clientAction: wait_for_reconciliation
@@ -3457,12 +3457,12 @@ paths:
                       visibility: metadata_only
                 candidateRuntime503_3:
                   value:
-                    type: about:blank
-                    title: Candidate request or downstream outcome
+                    type: https://hexalith.dev/errors/folders/unknown_provider_outcome
+                    title: Read model unavailable.
                     status: 503
                     category: unknown_provider_outcome
                     code: unknown_provider_outcome
-                    message: The request could not be completed.
+                    message: Provider outcome is unknown and requires safe reconciliation.
                     correlationId: opaque_01HZY7Z6N7J4Q2X8Y9V0A1B2C3
                     retryable: false
                     clientAction: wait_for_reconciliation
@@ -24672,11 +24672,13 @@ components:
           type: string
           enum:
           - about:blank
+          - https://hexalith.dev/errors/folders/unknown_provider_outcome
         title:
           type: string
           enum:
           - Provider unavailable
           - Candidate request or downstream outcome
+          - Read model unavailable.
           - Authorization evidence unavailable
         status:
           type: integer
@@ -24701,6 +24703,7 @@ components:
           enum:
           - Provider dependency is temporarily unavailable.
           - The request could not be completed.
+          - Provider outcome is unknown and requires safe reconciliation.
           - Authorization evidence is temporarily unavailable.
         correlationId:
           $ref: '#/components/schemas/OpaqueIdentifier'
@@ -24921,11 +24924,11 @@ components:
           type:
             type: string
             enum:
-            - about:blank
+            - https://hexalith.dev/errors/folders/unknown_provider_outcome
           title:
             type: string
             enum:
-            - Candidate request or downstream outcome
+            - Read model unavailable.
           status:
             type: integer
             enum:
@@ -24941,7 +24944,7 @@ components:
           message:
             type: string
             enum:
-            - The request could not be completed.
+            - Provider outcome is unknown and requires safe reconciliation.
           correlationId:
             $ref: '#/components/schemas/OpaqueIdentifier'
           retryable:
@@ -24988,11 +24991,13 @@ components:
           type: string
           enum:
           - about:blank
+          - https://hexalith.dev/errors/folders/unknown_provider_outcome
         title:
           type: string
           enum:
           - Provider unavailable
           - Candidate request or downstream outcome
+          - Read model unavailable.
           - Authorization evidence unavailable
         status:
           type: integer
@@ -25017,6 +25022,7 @@ components:
           enum:
           - Provider dependency is temporarily unavailable.
           - The request could not be completed.
+          - Provider outcome is unknown and requires safe reconciliation.
           - Authorization evidence is temporarily unavailable.
         correlationId:
           $ref: '#/components/schemas/OpaqueIdentifier'
@@ -25237,11 +25243,11 @@ components:
           type:
             type: string
             enum:
-            - about:blank
+            - https://hexalith.dev/errors/folders/unknown_provider_outcome
           title:
             type: string
             enum:
-            - Candidate request or downstream outcome
+            - Read model unavailable.
           status:
             type: integer
             enum:
@@ -25257,7 +25263,7 @@ components:
           message:
             type: string
             enum:
-            - The request could not be completed.
+            - Provider outcome is unknown and requires safe reconciliation.
           correlationId:
             $ref: '#/components/schemas/OpaqueIdentifier'
           retryable:

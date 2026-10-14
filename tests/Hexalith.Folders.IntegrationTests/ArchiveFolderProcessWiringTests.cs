@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 
 using Hexalith.EventStore.Client.Gateway;
+using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Queries;
 using Hexalith.EventStore.Contracts.Results;
@@ -51,6 +52,88 @@ public sealed class ArchiveFolderProcessWiringTests
         "user-a",
         "v1-test-denied",
     ];
+
+    [Theory]
+    [InlineData("user-a", false)]
+    [InlineData("actor-alias", false)]
+    [InlineData(null, false)]
+    [InlineData("actor-alias", true)]
+    public async Task ArchiveFinalReauthorizationEvaluatesTheAuthenticatedPrincipal(
+        string? actorSafeIdentifier,
+        bool removePrincipal)
+    {
+        RecordingArchivePrincipalEvidenceProvider evidence = new();
+        TestHost host = await StartHostAsync(folderPermissionEvidenceProvider: evidence).ConfigureAwait(true);
+        try
+        {
+            string actorIdentifier = actorSafeIdentifier ?? "actor_present";
+            await host.TenantStore.SaveAsync(new FolderTenantAccessProjection
+            {
+                TenantId = "tenant-a",
+                Enabled = true,
+                Principals = new Dictionary<string, FolderTenantPrincipalEvidence>(StringComparer.Ordinal)
+                {
+                    ["user-a"] = new("user-a", "Owner"),
+                    [actorIdentifier] = new(actorIdentifier, "Member"),
+                },
+                Watermark = 1,
+                LastEventTimestamp = Now.AddMinutes(-1),
+                ProjectionWatermark = "tenant-a:1",
+            }, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            SeedFolder(host.Repository, "tenant-a", "org-a", "folder-a");
+
+            using IServiceScope scope = host.App.Services.CreateScope();
+            LayeredFolderAuthorizationService authorizer = scope.ServiceProvider.GetRequiredService<LayeredFolderAuthorizationService>();
+            ILayeredFolderAuthorizationResultAccessor accessor = scope.ServiceProvider.GetRequiredService<ILayeredFolderAuthorizationResultAccessor>();
+            LayeredFolderAuthorizationResult upstream = await authorizer.AuthorizeAsync(new LayeredFolderAuthorizationContext(
+                "tenant-a", "user-a", actorSafeIdentifier, "archive_folder",
+                LayeredFolderOperationPolicy.Mutation(),
+                EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", ["archive_folder"]),
+                "folder-a", "correlation-archive-a", "task-archive-a", null, null),
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            upstream.IsAllowed.ShouldBeTrue();
+            LayeredFolderAuthorizationAllowedContext allowed = upstream.AllowedContext.ShouldNotBeNull();
+            accessor.BeginScope(upstream with
+            {
+                AllowedContext = allowed with { PrincipalId = removePrincipal ? null : allowed.PrincipalId },
+            });
+            DomainResult result;
+            try
+            {
+                CommandEnvelope command = new(
+                    "archive-key-a", "tenant-a", FoldersServerModule.DomainName, "folder-a",
+                    FoldersServerModule.ArchiveFolderCommandType,
+                    JsonSerializer.SerializeToUtf8Bytes(new { requestSchemaVersion = "v1", archiveReasonCode = "caller_requested" }),
+                    "correlation-archive-a", null, "user-a",
+                    new Dictionary<string, string>(StringComparer.Ordinal) { ["taskId"] = "task-archive-a" });
+                result = await scope.ServiceProvider.GetRequiredService<IDomainProcessor>()
+                    .ProcessAsync(command, null).ConfigureAwait(true);
+            }
+            finally
+            {
+                accessor.EndScope();
+            }
+
+            if (removePrincipal || !string.Equals(actorIdentifier, "user-a", StringComparison.Ordinal))
+            {
+                result.IsRejection.ShouldBeTrue();
+                result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderCommandRejected>()
+                    .Code.ShouldBe(nameof(FolderResultCode.MalformedEvidence));
+                host.Repository.EventsAppended.ShouldBe(0);
+                evidence.Requests.Count.ShouldBe(1);
+            }
+            else
+            {
+                evidence.Requests.Count.ShouldBe(2);
+                evidence.Requests[0].PrincipalId.ShouldBe("user-a");
+                evidence.Requests[1].PrincipalId.ShouldBe("user-a");
+            }
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
 
     [Fact]
     public async Task ArchiveRequestShouldRoundTripThroughProcessAndPersistOneArchiveEvent()
@@ -1083,7 +1166,8 @@ public sealed class ArchiveFolderProcessWiringTests
     private static async Task<TestHost> StartHostAsync(
         IFolderArchivePolicyEvidenceProvider? archivePolicyEvidenceProvider = null,
         Func<string, string>? envelopeTenantTransform = null,
-        ILayeredFolderAuthorizationResultAccessor? authorizationAccessor = null)
+        ILayeredFolderAuthorizationResultAccessor? authorizationAccessor = null,
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
     {
         MutableTenantAndClaimContext context = new("tenant-a", "user-a");
         InMemoryFolderTenantAccessProjectionStore tenantStore = new();
@@ -1123,6 +1207,11 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Services.AddSingleton<IEffectivePermissionsReadModel>(permissions);
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, AllowingEventStoreAuthorizationValidator>();
+        if (folderPermissionEvidenceProvider is not null)
+        {
+            builder.Services.RemoveAll<IFolderPermissionEvidenceProvider>();
+            builder.Services.AddSingleton(folderPermissionEvidenceProvider);
+        }
         if (authorizationAccessor is not null)
         {
             // Production registers this accessor TryAddScoped. The test override is deliberately a

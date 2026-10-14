@@ -18445,6 +18445,9 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
         AboutBlank = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"https://hexalith.dev/errors/folders/unknown_provider_outcome")]
+        Https___hexalith_dev_errors_folders_unknown_provider_outcome = 1,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -18457,8 +18460,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
         Candidate_request_or_downstream_outcome = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable.")]
+        Read_model_unavailable_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18516,8 +18522,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
         The_request_could_not_be_completed_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider outcome is unknown and requires safe reconciliation.")]
+        Provider_outcome_is_unknown_and_requires_safe_reconciliation_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 
@@ -18550,6 +18559,9 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"about:blank")]
         AboutBlank = 0,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"https://hexalith.dev/errors/folders/unknown_provider_outcome")]
+        Https___hexalith_dev_errors_folders_unknown_provider_outcome = 1,
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
@@ -18562,8 +18574,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"Candidate request or downstream outcome")]
         Candidate_request_or_downstream_outcome = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Read model unavailable.")]
+        Read_model_unavailable_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence unavailable")]
-        Authorization_evidence_unavailable = 2,
+        Authorization_evidence_unavailable = 3,
 
     }
 
@@ -18621,8 +18636,11 @@ namespace Hexalith.Folders.Client.Generated
         [System.Runtime.Serialization.EnumMember(Value = @"The request could not be completed.")]
         The_request_could_not_be_completed_ = 1,
 
+        [System.Runtime.Serialization.EnumMember(Value = @"Provider outcome is unknown and requires safe reconciliation.")]
+        Provider_outcome_is_unknown_and_requires_safe_reconciliation_ = 2,
+
         [System.Runtime.Serialization.EnumMember(Value = @"Authorization evidence is temporarily unavailable.")]
-        Authorization_evidence_is_temporarily_unavailable_ = 2,
+        Authorization_evidence_is_temporarily_unavailable_ = 3,
 
     }
 

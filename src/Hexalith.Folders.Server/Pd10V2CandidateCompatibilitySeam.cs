@@ -176,7 +176,10 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 ILoggerFactory? loggerFactory = context.RequestServices.GetService<ILoggerFactory>();
                 if (loggerFactory is not null)
                 {
-                    LogAuthorizationEvaluationFailed(loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)));
+                    LogAuthorizationEvaluationFailed(
+                        loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)),
+                        descriptor.OperationId,
+                        ex.GetType().Name);
                 }
 
                 await AuditAsync(context, descriptor.OperationId, ToKebabCase(descriptor.OperationFamily.ToString()), "deny").ConfigureAwait(false);
@@ -228,7 +231,9 @@ public static partial class Pd10V2CandidateCompatibilitySeam
                 if (loggerFactory is not null)
                 {
                     LogAuthorizationEvaluationFailed(
-                        loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)));
+                        loggerFactory.CreateLogger(nameof(Pd10V2CandidateCompatibilitySeam)),
+                        descriptor.OperationId,
+                        ex.GetType().Name);
                 }
 
                 authorization = Unusable(descriptor);
@@ -1638,13 +1643,15 @@ public static partial class Pd10V2CandidateCompatibilitySeam
             return (V2AccessState)(-1);
         }
 
+        if (states.Contains(V2AccessState.Stale))
+        {
+            return V2AccessState.Stale;
+        }
+
         V2AccessState[] negativeStates = states.Where(IsNegativeAccessState).Distinct().ToArray();
         if (negativeStates.Length > 0)
         {
-            // Unusable evidence must win over a fresh negative fact regardless of claim order.
-            return negativeStates.Contains(V2AccessState.Stale)
-                ? V2AccessState.Stale
-                : negativeStates.Min();
+            return negativeStates.Order().First();
         }
 
         V2AccessState claimedState = states.FirstOrDefault(V2AccessState.TenantMember);
@@ -1707,8 +1714,8 @@ public static partial class Pd10V2CandidateCompatibilitySeam
     [LoggerMessage(
         EventId = 1018,
         Level = LogLevel.Error,
-        Message = "PD10 candidate authorization evaluation failed.")]
-    private static partial void LogAuthorizationEvaluationFailed(ILogger logger);
+        Message = "PD10 candidate authorization evaluation failed for {OperationId}: {ExceptionType}.")]
+    private static partial void LogAuthorizationEvaluationFailed(ILogger logger, string operationId, string exceptionType);
 
     private static string ToKebabCase(string value)
     {

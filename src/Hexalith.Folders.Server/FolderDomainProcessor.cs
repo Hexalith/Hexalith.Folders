@@ -708,7 +708,7 @@ public sealed partial class FolderDomainProcessor(
                     LayeredFolderOperationPolicy.Mutation(),
                     EventStoreClaimTransformEvidence.Allowed(
                         allowed.AuthoritativeTenantId,
-                        allowed.ActorSafeIdentifier,
+                        allowed.PrincipalId,
                         [FolderArchiveAclEvidence.ArchiveAction]),
                     command.FolderId,
                     command.CorrelationId,

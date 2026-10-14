@@ -64,6 +64,10 @@ public sealed class FailureKindProjectionTests
         FailureKindProjection.Project(CanonicalErrorCategory.Internal_error).ShouldBe("internal_error");
     }
 
+    [Fact]
+    public void LockConflictProjectsToClosedMcpFailureKind()
+        => FailureKindProjection.Project(CanonicalErrorCategory.Lock_conflict).ShouldBe("lock_conflict");
+
     [Theory]
     [MemberData(nameof(AllClientActions))]
     public void ProjectsEveryClientActionToItsCanonicalToken(ProblemDetailsClientAction action)

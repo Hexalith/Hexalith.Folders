@@ -26,6 +26,65 @@ public sealed class ClientGenerationTests
         ?? throw new InvalidOperationException("The test assembly does not declare its build configuration.");
 
     [Fact]
+    public void CanonicalErrorCodeNumberingIsPinned()
+    {
+        string actual = string.Join('\n', Enum.GetValues<CanonicalErrorCode>().Select(code => $"{code}={(int)code}"));
+        actual.ShouldBe("""
+Acl_entry_id_mismatch=0
+Archive_state_unsupported=1
+Authentication_required=2
+Authorization_revocation_detected=3
+C4_input_limit_exceeded=4
+C4_query_timeout=5
+C4_range_limit_exceeded=6
+C4_response_budget_exceeded=7
+Commit_failed=8
+Concurrency_conflict=9
+Content_evidence_invalid=10
+Cursor_tampered=11
+D9_inline_limit_exceeded=12
+Dirty_workspace=13
+Duplicate_binding=14
+Evidence_unavailable=15
+File_content_limit_exceeded=16
+File_policy_unavailable=17
+Filter_not_yet_supported=18
+Idempotency_admission_unavailable=19
+Idempotency_conflict=20
+Idempotency_key_expired=21
+Idempotency_key_not_allowed=22
+Input_limit_exceeded=23
+Invalid_pagination=24
+Invalid_sort=25
+Lock_expired=26
+Projection_stale=27
+Projection_unavailable=28
+Provider_failure_known=29
+Provider_rate_limited=30
+Provider_readiness_failed=31
+Provider_unavailable=32
+Query_timeout=33
+Range_reversed=34
+Range_unsatisfiable=35
+Read_model_unavailable=36
+Reconciliation_required=37
+Repository_conflict=38
+Resource_unavailable=39
+Response_limit_exceeded=40
+State_transition_invalid=41
+Tampered_cursor_or_changed_filter=42
+Unknown_provider_outcome=43
+Unsupported_archive_reason_code=44
+Unsupported_provider_capability=45
+Unsupported_read_consistency=46
+Unsupported_request_schema_version=47
+Validation_error=48
+Workspace_locked=49
+Workspace_preparation_failed=50
+""");
+    }
+
+    [Fact]
     public void NswagConfigurationUsesContractSpineAsOnlyInput()
     {
         string configurationPath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Client", "nswag.json");
@@ -1178,9 +1237,9 @@ public sealed class ClientGenerationTests
     public void RepositoryUnknownOutcomeRequiresExactFinalStateInGeneratedProblem(string resultTypeName)
     {
         JObject valid = JObject.Parse("""
-            {"type":"about:blank","title":"Candidate request or downstream outcome","status":503,
+            {"type":"https://hexalith.dev/errors/folders/unknown_provider_outcome","title":"Read model unavailable.","status":503,
              "category":"unknown_provider_outcome","code":"unknown_provider_outcome",
-             "message":"The request could not be completed.","correlationId":"correlation_repo_0001",
+             "message":"Provider outcome is unknown and requires safe reconciliation.","correlationId":"correlation_repo_0001",
              "retryable":false,"clientAction":"wait_for_reconciliation",
              "details":{"visibility":"metadata_only","finalState":"unknown_provider_outcome"}}
             """);

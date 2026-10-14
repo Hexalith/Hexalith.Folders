@@ -31,4 +31,8 @@ public sealed class CommandOptionsFreshnessTests
     [InlineData("GetFolderLifecycleStatus", "read_your_writes")]
     public void ParseFreshnessShouldRejectKnownClassForWrongOperation(string operationId, string freshness)
         => Should.Throw<CliUsageException>(() => CommandOptions.ParseFreshness(freshness, operationId));
+
+    [Fact]
+    public void KnownFreshnessNotAcceptedByOperationIsUsageFailureBeforeDispatch()
+        => Should.Throw<CliUsageException>(() => CommandOptions.ParseFreshness("eventually_consistent", "GetEffectivePermissions"));
 }

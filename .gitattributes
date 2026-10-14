@@ -35,5 +35,6 @@ docs/governance/approval-policy.md text eol=lf
 tests/contracts/github/pinned-profile.json text eol=lf
 
 # Unified-diff context lines intentionally contain one leading space. Disable
-# whitespace diagnostics for the preserved intent-gap review artifact only.
+# whitespace diagnostics for the preserved review and renegotiation artifacts.
 _bmad-output/implementation-artifacts/review-3-11-intent-gap.patch -whitespace
+_bmad-output/implementation-artifacts/renegotiation-1-17-2026-09-23/spec-1-17-publish-renegotiation.diff -whitespace

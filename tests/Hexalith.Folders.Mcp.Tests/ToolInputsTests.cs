@@ -29,6 +29,10 @@ public sealed class ToolInputsTests
     public void OmittedFreshnessMapsToNull()
         => ToolInputs.ParseFreshness(null, "GetFolderLifecycleStatus").ShouldBeNull();
 
+    [Fact]
+    public void KnownFreshnessNotAcceptedByOperationIsRejectedBeforeDispatch()
+        => Should.Throw<McpUsageException>(() => ToolInputs.ParseFreshness("eventually_consistent", "GetEffectivePermissions"));
+
     [Theory]
     [InlineData("")]
     [InlineData(" ")]

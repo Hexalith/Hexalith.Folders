@@ -79,6 +79,79 @@ public sealed class GoldenLifecycleParityTests
     private static readonly DateTimeOffset Now = new(2026, 5, 28, 12, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task CandidateAuthorizationEvaluationFailureLogsMetadataOnly()
+    {
+        const string tenantSentinel = "tenant-secret-sentinel-1-17";
+        const string principalSentinel = "principal-secret-sentinel-1-17";
+        RecordingCandidateLogProvider logs = new();
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            tenantContextOverride: new ThrowingTenantContextAccessor(tenantSentinel, principalSentinel),
+            logProvider: logs).ConfigureAwait(true);
+        try
+        {
+            using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v2/folders/{CandidateFolderA}/tasks/{CandidateTaskStatus}/status");
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            CandidateLogEntry failure = logs.Entries.Single(entry => entry.EventId.Id == 1018);
+            failure.Exception.ShouldBeNull();
+            foreach (string field in failure.Fields.Values.Select(value => value?.ToString() ?? string.Empty))
+            {
+                field.ShouldNotContain(tenantSentinel);
+                field.ShouldNotContain(principalSentinel);
+            }
+
+            failure.Message.ShouldNotContain(tenantSentinel);
+            failure.Message.ShouldNotContain(principalSentinel);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private sealed class ThrowingTenantContextAccessor(string tenantSentinel, string principalSentinel) : ITenantContextAccessor
+    {
+        private int _tenantReads;
+
+        public string? AuthoritativeTenantId => Interlocked.Increment(ref _tenantReads) == 2
+            ? throw new InvalidOperationException(tenantSentinel, new InvalidOperationException(principalSentinel))
+            : "tenant-a";
+
+        public string? PrincipalId => "user-a";
+    }
+
+    private sealed record CandidateLogEntry(EventId EventId, Exception? Exception, string Message, IReadOnlyDictionary<string, object?> Fields);
+
+    private sealed class RecordingCandidateLogProvider : ILoggerProvider
+    {
+        private readonly List<CandidateLogEntry> _entries = [];
+
+        public IReadOnlyList<CandidateLogEntry> Entries => _entries;
+
+        public ILogger CreateLogger(string categoryName) => new RecordingCandidateLogger(_entries);
+
+        public void Dispose() { }
+
+        private sealed class RecordingCandidateLogger(List<CandidateLogEntry> entries) : ILogger
+        {
+            public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+            public bool IsEnabled(LogLevel logLevel) => true;
+
+            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+            {
+                IReadOnlyDictionary<string, object?> fields = state is IEnumerable<KeyValuePair<string, object?>> pairs
+                    ? pairs.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal)
+                    : new Dictionary<string, object?>();
+                entries.Add(new CandidateLogEntry(eventId, exception, formatter(state, exception), fields));
+            }
+        }
+    }
+
+    [Fact]
     public void GoldenLifecycleStepListPinsToOracleRowsForEverySurface()
     {
         GoldenLifecycle.Steps.ShouldNotBeEmpty();
@@ -804,6 +877,51 @@ public sealed class GoldenLifecycleParityTests
     }
 
     [Fact]
+    public async Task CandidateCaseVariantDuplicateSchemaPropertyIsCanonicalValidationFailure()
+    {
+        int downstreamCalls = 0;
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: async context =>
+            {
+                downstreamCalls++;
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(
+                    "{\"acceptedAt\":\"2026-05-28T12:00:00Z\",\"correlationId\":\"correlation_case_duplicate_0001\",\"taskId\":\"task_case_duplicate_0001\",\"status\":\"accepted\",\"idempotentReplay\":false}")
+                    .ConfigureAwait(false);
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+            using HttpRequestMessage request = new(HttpMethod.Post, $"/api/v2/folders/{CandidateFolderA}/archive")
+            {
+                Content = new StringContent(
+                    "{\"requestSchemaVersion\":\"v2\",\"RequestSchemaVersion\":\"v2\",\"archiveReasonCode\":\"caller_requested\"}",
+                    Encoding.UTF8,
+                    "application/json"),
+            };
+            AddMutationHeaders(request, "idempotency_case_duplicate_0001", "correlation_case_duplicate_0001", "task_case_duplicate_0001");
+
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest, body);
+            using JsonDocument document = JsonDocument.Parse(body);
+            document.RootElement.GetProperty("category").GetString().ShouldBe("validation_error");
+            document.RootElement.GetProperty("code").GetString().ShouldBe("unsupported_request_schema_version");
+            host.Gateway.ProcessCalls.ShouldBe(0);
+            downstreamCalls.ShouldBe(0);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
     public async Task CandidateAcceptsUppercaseOpaqueRouteIdentifiersThroughHistoricalDispatch()
     {
         const string uppercaseFolder = "Folder_0000000001";
@@ -959,6 +1077,153 @@ public sealed class GoldenLifecycleParityTests
         }
     }
 
+    [Theory]
+    [InlineData("CreateRepositoryBackedFolder")]
+    [InlineData("BindRepository")]
+    public async Task CandidateRepositoryBackedProviderReadinessFailureKeepsDeclared422(string operationId)
+    {
+        const string correlation = "correlation-f16-readiness";
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: context => FolderProblemDetailsFactory.ForDomain(
+                StatusCodes.Status422UnprocessableEntity,
+                "provider_readiness_failed",
+                "provider_readiness_failed",
+                false,
+                correlation,
+                null).ExecuteAsync(context)).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+
+            HexalithFoldersApiException exception = await CallRepositoryMutationForF16Async(host, operationId, correlation).ConfigureAwait(true);
+            exception.StatusCode.ShouldBe(StatusCodes.Status422UnprocessableEntity, exception.Response);
+            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(exception.ProblemDetailsParseDiagnostic);
+            problem.Category.ShouldBe(CanonicalErrorCategory.Provider_readiness_failed);
+            problem.Code.ShouldBe(CanonicalErrorCode.Provider_readiness_failed);
+            problem.Details.Visibility.ShouldBe(DetailsVisibility.Metadata_only);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Theory]
+    [InlineData("reconciliation_required", StatusCodes.Status409Conflict)]
+    [InlineData("unknown_provider_outcome", StatusCodes.Status503ServiceUnavailable)]
+    public async Task CandidateUnknownProviderOutcomeKeepsFinalStateDetail(string category, int expectedStatus)
+    {
+        const string correlation = "correlation-f16-final-state";
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: context => FolderProblemDetailsFactory.ForDomain(
+                expectedStatus,
+                category,
+                category,
+                false,
+                correlation,
+                null).ExecuteAsync(context)).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissions(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a");
+
+            HexalithFoldersApiException exception = await CallRepositoryMutationForF16Async(
+                host, "CreateRepositoryBackedFolder", correlation).ConfigureAwait(true);
+            exception.StatusCode.ShouldBe(expectedStatus, exception.Response);
+            ProblemDetails problem = exception.ProblemDetails.ShouldNotBeNull(
+                exception.ProblemDetailsParseDiagnostic + " " + exception.GetType().Name + " " + exception.InnerException + " " + exception.Response);
+            problem.Category.ShouldBe(category == "reconciliation_required"
+                ? CanonicalErrorCategory.Reconciliation_required
+                : CanonicalErrorCategory.Unknown_provider_outcome);
+            problem.Details.FinalState.ShouldBe(category);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    private static async Task<HexalithFoldersApiException> CallRepositoryMutationForF16Async(TestHost host, string operationId, string correlation)
+    {
+        Func<Task> call = operationId switch
+        {
+            "CreateRepositoryBackedFolder" => () => host.SdkClient.CreateRepositoryBackedFolderAsync(
+                "idempotency-f16-create", correlation, "task-f16-create-0001",
+                new CreateRepositoryBackedFolderRequest
+                {
+                    RequestSchemaVersion = CreateRepositoryBackedFolderRequestRequestSchemaVersion.V2,
+                    FolderId = CandidateFolderA,
+                    ProviderBindingRef = "provider-binding-a",
+                    RepositoryProfileRef = "repository-profile-a",
+                    FolderMetadata = new FolderMetadata { DisplayName = "Folder", MetadataClass = SensitiveMetadataTier.Tenant_sensitive },
+                    BranchRefPolicy = new BranchRefPolicyRequest
+                    {
+                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
+                        RepositoryBindingId = "repository-binding-a",
+                        PolicyRef = "branch-ref-policy-a",
+                        DefaultRef = "branch-ref-primary",
+                        AllowedRefPatterns = ["branch-ref-feature"],
+                    },
+                }, TestContext.Current.CancellationToken),
+            "BindRepository" => () => host.SdkClient.BindRepositoryAsync(
+                CandidateFolderA, "idempotency-f16-bind", correlation, "task-f16-bind-0001",
+                new Hexalith.Folders.Client.Generated.BindRepositoryRequest
+                {
+                    RequestSchemaVersion = BindRepositoryRequestRequestSchemaVersion.V2,
+                    ProviderBindingRef = "provider-binding-a",
+                    ExternalRepositoryRef = "repository-f16-0001",
+                    BranchRefPolicy = new BranchRefPolicyRequest
+                    {
+                        RequestSchemaVersion = BranchRefPolicyRequestRequestSchemaVersion.V2,
+                        RepositoryBindingId = "repository-binding-a",
+                        PolicyRef = "branch-ref-policy-a",
+                        DefaultRef = "branch-ref-primary",
+                        AllowedRefPatterns = ["branch-ref-feature"],
+                    },
+                }, TestContext.Current.CancellationToken),
+            _ => throw new ArgumentOutOfRangeException(nameof(operationId)),
+        };
+        return await Should.ThrowAsync<HexalithFoldersApiException>(call).ConfigureAwait(true);
+    }
+
+    [Fact]
+    public async Task SdkValidateProviderReadinessBindsAuthorizedOperatorAudience()
+    {
+        GoldenLifecycleHost host = await GoldenLifecycleHost.StartAsync().ConfigureAwait(true);
+        try
+        {
+            host.SeedTenant("tenant-a", "user-a");
+            object? result = null;
+            await Should.NotThrowAsync(async () =>
+            {
+                result = await host.SdkClient.ValidateProviderReadinessAsync(
+                    x_Correlation_Id: "correlation_readiness_operator_001",
+                    x_Hexalith_Freshness: ReadConsistencyClass.Snapshot_per_task,
+                    body: new ValidateProviderReadinessRequest
+                    {
+                        ProviderBindingRef = "provider_binding_0001",
+                        RequestedCapability = ProviderCapabilityName.Repository_creation,
+                    },
+                    cancellationToken: TestContext.Current.CancellationToken).ConfigureAwait(true);
+            }).ConfigureAwait(true);
+
+            result.ShouldBeOfType<ProviderReadinessOperator>();
+            Newtonsoft.Json.Linq.JObject readiness = Newtonsoft.Json.Linq.JObject.FromObject(result.ShouldNotBeNull());
+            readiness.Value<string>("audience").ShouldBe("authorized_operator");
+            readiness.Value<string>("providerBindingRef").ShouldBe("provider_binding_0001");
+            readiness["safeReasonCode"].ShouldNotBeNull();
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
     [Fact]
     public async Task CandidateStripsForbiddenHistoricalProblemDetailAndInstanceFields()
     {
@@ -1101,6 +1366,71 @@ public sealed class GoldenLifecycleParityTests
             body.RootElement.GetProperty("category").GetString().ShouldBe(category);
             body.RootElement.GetProperty("code").GetString().ShouldBe(expectedCode);
             body.RootElement.GetProperty("details").GetProperty(detailKey).GetString().ShouldBe(detailValue);
+        }
+        finally
+        {
+            await host.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public Task CandidateFileMutationLockConflictRemapsToDeclared423()
+        => AssertFileMutationRemapAsync("lock_conflict", "workspace_locked", HttpStatusCode.Locked);
+
+    [Fact]
+    public Task CandidateFileMutationPreconditionFailureRemapsToDeclared428()
+        => AssertFileMutationRemapAsync("authorization_revocation_detected", "authorization_revocation_detected", HttpStatusCode.PreconditionRequired);
+
+    private static async Task AssertFileMutationRemapAsync(string category, string code, HttpStatusCode expectedStatus)
+    {
+        TestHost host = await TestHost.StartAsync(
+            tenantId: "tenant-a",
+            principalId: "user-a",
+            downstreamOverride: async context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                context.Response.ContentType = "application/problem+json";
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                {
+                    type = "about:blank",
+                    title = "Workspace state changed",
+                    status = 409,
+                    category,
+                    code,
+                    message = "The workspace state changed.",
+                    correlationId = "correlation-file-remap",
+                    retryable = category == "lock_conflict",
+                    clientAction = category == "lock_conflict" ? "retry" : "contact_operator",
+                    details = category == "lock_conflict"
+                        ? new Dictionary<string, string> { ["visibility"] = "metadata_only" }
+                        : new Dictionary<string, string> { ["visibility"] = "metadata_only", ["currentState"] = "inaccessible" },
+                })).ConfigureAwait(false);
+            }).ConfigureAwait(true);
+        try
+        {
+            SeedTenant(host.TenantStore, "tenant-a", "user-a");
+            SeedPermissionsForAction(host.Permissions, "tenant-a", "org-a", CandidateFolderA, "user-a", "mutate_files");
+            using HttpRequestMessage request = new(
+                HttpMethod.Put,
+                $"/api/v2/folders/{CandidateFolderA}/workspaces/{CandidateWorkspace}/files/change")
+            {
+                Content = new StringContent(
+                    "{\"requestSchemaVersion\":\"v2\",\"fileOperationKind\":\"change\",\"transportOperation\":\"PutFileInline\",\"operationId\":\"Operation_ChangeFile_0001\",\"pathMetadata\":{\"normalizedPath\":\"docs/readme.md\",\"displayName\":\"readme.md\",\"pathPolicyClass\":\"content_allowed\",\"unicodeNormalization\":\"NFC\"},\"contentHashReference\":\"hashref_0123456789abcdef0123456789abcdef\",\"byteLength\":1,\"inlineContent\":{\"mediaType\":\"text/plain\",\"contentBytes\":\"YQ==\"}}",
+                    Encoding.UTF8,
+                    "application/json"),
+            };
+            AddMutationHeaders(request, "Idempotency_FileRemap_0001", "correlation-file-remap", "Task_FileRemap_0000001");
+
+            using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                request,
+                TestContext.Current.CancellationToken).ConfigureAwait(true);
+            string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            response.StatusCode.ShouldBe(expectedStatus, body);
+            using JsonDocument document = JsonDocument.Parse(body);
+            document.RootElement.GetProperty("status").GetInt32().ShouldBe((int)expectedStatus);
+            document.RootElement.GetProperty("category").GetString().ShouldBe(category);
+            document.RootElement.GetProperty("code").GetString().ShouldBe(code);
+            host.Gateway.ProcessCalls.ShouldBe(0);
         }
         finally
         {
@@ -2104,6 +2434,44 @@ public sealed class GoldenLifecycleParityTests
         {
             await host.DisposeAsync().ConfigureAwait(true);
         }
+    }
+
+    [Theory]
+    [InlineData("revoked", "stale")]
+    [InlineData("stale", "revoked")]
+    [InlineData("disabled", "stale")]
+    [InlineData("stale", "wrong-tenant")]
+    public async Task CandidateMixedAccessStatesResolveIndependentlyOfClaimOrder(string first, string second)
+    {
+        List<string> bodies = [];
+        foreach ((string accessState, string additionalAccessState) in new[] { (first, second), (second, first) })
+        {
+            TestHost host = await TestHost.StartAsync(
+                "tenant-a",
+                "user-a",
+                accessState: accessState,
+                additionalAccessState: additionalAccessState).ConfigureAwait(true);
+            try
+            {
+                using HttpRequestMessage request = new(
+                    HttpMethod.Get,
+                    $"/api/v2/folders/{CandidateFolderA}/lifecycle-status");
+                request.Headers.Add("X-Correlation-Id", "correlation-mixed-access-state");
+                using HttpResponseMessage response = await host.HttpClient.SendAsync(
+                    request,
+                    TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+                response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+                bodies.Add(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+                host.Gateway.ProcessCalls.ShouldBe(0);
+            }
+            finally
+            {
+                await host.DisposeAsync().ConfigureAwait(true);
+            }
+        }
+
+        bodies[0].ShouldBe(bodies[1]);
     }
 
     [Fact]
