@@ -436,6 +436,28 @@ public sealed class FolderEventReplayTests
     }
 
     [Fact]
+    public void RepeatedOrganizationBaselineFailsClosedForActorAndProjectReplay()
+    {
+        OrganizationAclBaselineInitialized baseline = new("tenant-a", "tenant-a", "correlation-a",
+            "task-a", "baseline-key", "baseline-fingerprint");
+        EventPayloadEvolutionRegistry registry = new([typeof(OrganizationAclBaselineInitialized)], []);
+        EventEnvelope[] history = [Envelope(typeof(OrganizationAclBaselineInitialized).FullName!,
+            JsonSerializer.SerializeToUtf8Bytes(baseline), 1, aggregateId: "tenant-a"),
+            Envelope(typeof(OrganizationAclBaselineInitialized).FullName!,
+                JsonSerializer.SerializeToUtf8Bytes(baseline with { IdempotencyKey = "other-key" }), 2,
+                aggregateId: "tenant-a")];
+
+        Should.Throw<InvalidOperationException>(() => new FolderEventReplay(registry).FoldOrganization(
+            new DomainServiceCurrentState(null, history, 0, 2), "tenant-a", "tenant-a"))
+            .Message.ShouldBe("Organization baseline is already initialized.");
+        ProjectionRequest request = new("tenant-a", "folders", "tenant-a", history.Select(item =>
+            new ProjectionEventDto(item.Metadata.EventTypeName, item.Payload, "json", item.Metadata.SequenceNumber,
+                OccurredAt, "correlation-a")).ToArray());
+        Should.Throw<InvalidOperationException>(() => FolderEventReplay.FoldOrganization(request))
+            .Message.ShouldBe("Organization baseline is already initialized.");
+    }
+
+    [Fact]
     public void RetainedOrganizationGrantBeforeBaselineFailsClosed()
     {
         OrganizationAclPrincipalGranted granted = new("tenant-a", "tenant-a",
@@ -469,6 +491,34 @@ public sealed class FolderEventReplayTests
             .Message.ShouldBe("Uninitialized organization snapshot contains grants.");
         snapshot.IsInitialized.ShouldBeFalse();
         snapshot.Grants.ShouldHaveSingleItem().ShouldBe(grant);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void SuppliedSnapshotsRequirePositiveAnchorsAndNullSnapshotsPreserveEmptyStreams(bool jsonSnapshot)
+    {
+        FolderState folder = FolderState.Empty.Apply([Created()], FolderStreamName.Create("tenant-a", "folder-a"));
+        OrganizationState organization = OrganizationState.Empty.Apply([
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")]);
+        object storedFolder = jsonSnapshot ? JsonSerializer.SerializeToElement(folder) : folder;
+        object storedOrganization = jsonSnapshot ? JsonSerializer.SerializeToElement(organization) : organization;
+        FolderEventReplay replay = Replay();
+
+        Should.Throw<InvalidOperationException>(() => replay.FoldFolder(
+            new DomainServiceCurrentState(storedFolder, [], 0, 0), "tenant-a", "folder-a"))
+            .Message.ShouldBe("Missing or invalid actor snapshot anchor.");
+        Should.Throw<InvalidOperationException>(() => replay.FoldOrganization(
+            new DomainServiceCurrentState(storedOrganization, [], 0, 0), "tenant-a", "tenant-a"))
+            .Message.ShouldBe("Missing or invalid actor snapshot anchor.");
+        replay.FoldFolder(new DomainServiceCurrentState(storedFolder, [], 1, 1), "tenant-a", "folder-a")
+            .IsCreated.ShouldBeTrue();
+        replay.FoldOrganization(new DomainServiceCurrentState(storedOrganization, [], 1, 1), "tenant-a", "tenant-a")
+            .IsInitialized.ShouldBeTrue();
+        replay.FoldFolder(new DomainServiceCurrentState(null, [], 0, 0), "tenant-a", "folder-a")
+            .IsCreated.ShouldBeFalse();
+        replay.FoldOrganization(new DomainServiceCurrentState(null, [], 0, 0), "tenant-a", "tenant-a")
+            .IsInitialized.ShouldBeFalse();
     }
 
     [Fact]

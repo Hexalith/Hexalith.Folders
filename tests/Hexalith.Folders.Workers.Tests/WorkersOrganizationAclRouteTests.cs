@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text;
 using System.Security.Cryptography;
 
 using Hexalith.EventStore.Client.Projections;
@@ -26,6 +28,240 @@ namespace Hexalith.Folders.Workers.Tests;
 
 public sealed class WorkersOrganizationAclRouteTests
 {
+    [Theory]
+    [InlineData(false, "missing")]
+    [InlineData(true, "missing")]
+    [InlineData(false, "-1")]
+    [InlineData(true, "-1")]
+    [InlineData(false, "4")]
+    [InlineData(true, "4")]
+    public async Task MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(
+        bool revoke, string malformedKind)
+    {
+        const string retainedV1 = """{"ManagedTenantId":"tenant-a","OrganizationId":"tenant-a","PrincipalKind":0,"PrincipalId":"retained-user","Action":"create_folder","CorrelationId":"correlation-a","TaskId":"task-a","IdempotencyKey":"retained-key","IdempotencyFingerprint":"retained-fingerprint"}""";
+        byte[] retainedBytes = Encoding.UTF8.GetBytes(retainedV1);
+        byte[] retainedDigest = SHA256.HashData(retainedBytes);
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        (await client.PostAsJsonAsync("/folders/events", Envelope("baseline", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")),
+            TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await client.PostAsJsonAsync("/folders/events", Envelope("seed-grant", 2,
+            new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                revoke ? "retained-user" : "initial-user", "create_folder", "corr", "task", "seed-key", "seed-fingerprint")),
+            TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        const string key = "projection:folders:organization-permissions:tenant-a";
+        ReadModelEntry<OrganizationPermissionProjection> before = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", key, TestContext.Current.CancellationToken);
+        JsonObject malformed = JsonNode.Parse(retainedV1)!.AsObject();
+        if (malformedKind == "missing") malformed.Remove("PrincipalKind").ShouldBeTrue();
+        else malformed["PrincipalKind"] = int.Parse(malformedKind, System.Globalization.CultureInfo.InvariantCulture);
+        EventStoreDomainEventEnvelope envelope = new("retained-event", "tenant-a", "tenant-a",
+            (revoke ? typeof(OrganizationAclPrincipalRevoked) : typeof(OrganizationAclPrincipalGranted)).FullName!,
+            3, DateTimeOffset.UtcNow, "correlation-a", "json", Encoding.UTF8.GetBytes(malformed.ToJsonString()))
+        { Domain = "folders", MetadataVersion = 1 };
+
+        (await client.PostAsJsonAsync("/folders/events", envelope, TestContext.Current.CancellationToken))
+            .StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        ReadModelEntry<OrganizationPermissionProjection> unchanged = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", key, TestContext.Current.CancellationToken);
+        unchanged.ETag.ShouldBe(before.ETag);
+        JsonSerializer.Serialize(unchanged.Value).ShouldBe(JsonSerializer.Serialize(before.Value));
+
+        (await client.PostAsJsonAsync("/folders/events", envelope with { Payload = retainedBytes },
+            TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        OrganizationPermissionProjection recovered = (await store.GetAsync<OrganizationPermissionProjection>(
+            "statestore", key, TestContext.Current.CancellationToken)).Value!;
+        recovered.LastSequence.ShouldBe(3);
+        if (revoke) recovered.Grants.ShouldBeEmpty();
+        else
+        {
+            recovered.Grants.Count.ShouldBe(2);
+            recovered.Grants.Single(item => item.PrincipalId == "retained-user").PrincipalKind
+                .ShouldBe(OrganizationAclPrincipalKind.User);
+        }
+        Encoding.UTF8.GetString(retainedBytes).ShouldBe(retainedV1);
+        SHA256.HashData(retainedBytes).ShouldBe(retainedDigest);
+    }
+
+    [Theory]
+    [InlineData("grant")]
+    [InlineData("revoke")]
+    [InlineData("repeated-baseline")]
+    public async Task MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(string scenario)
+    {
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        const string key = "projection:folders:organization-permissions:tenant-a";
+        OrganizationAclBaselineInitialized baseline = new("tenant-a", "tenant-a", "correlation-a",
+            "task-a", "baseline-key", "baseline-fingerprint");
+        OrganizationAclPrincipalGranted grant = new("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+            "user-a", "read_metadata", "correlation-a", "task-a", "grant-key", "grant-fingerprint");
+        if (scenario == "repeated-baseline")
+        {
+            (await client.PostAsJsonAsync("/folders/events", Envelope("baseline", 1, baseline),
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await client.PostAsJsonAsync("/folders/events", Envelope("grant", 2, grant),
+                TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        }
+
+        ReadModelEntry<OrganizationPermissionProjection> before = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", key, TestContext.Current.CancellationToken);
+        EventStoreDomainEventEnvelope malformed = scenario switch
+        {
+            "grant" => Envelope("grant-without-baseline", 1, grant),
+            "revoke" => Envelope("revoke-without-baseline", 1, new OrganizationAclPrincipalRevoked(
+                "tenant-a", "tenant-a", OrganizationAclPrincipalKind.User, "user-a", "read_metadata",
+                "correlation-a", "task-a", "revoke-key", "revoke-fingerprint")),
+            _ => Envelope("second-baseline", 3, baseline with { IdempotencyKey = "other-baseline-key" }),
+        };
+        (await client.PostAsJsonAsync("/folders/events", malformed, TestContext.Current.CancellationToken))
+            .StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        ReadModelEntry<OrganizationPermissionProjection> after = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", key, TestContext.Current.CancellationToken);
+        after.ETag.ShouldBe(before.ETag);
+        JsonSerializer.Serialize(after.Value).ShouldBe(JsonSerializer.Serialize(before.Value));
+    }
+
+    [Fact]
+    public async Task OrganizationResetErasesOnlyOrganizationRowAndAuditsMetadata()
+    {
+        WorkerRouteReadModelStore store = new();
+        PermissionProjectionFailureLoggerProvider logs = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store, logs).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        const string organizationKey = "projection:folders:organization-permissions:tenant-a";
+        const string folderKey = "projection:folders:folder-permissions:tenant-a:folder-a";
+        OrganizationAclBaselineInitialized baseline = new("tenant-a", "tenant-a", "correlation-a",
+            "task-a", "baseline-key", "baseline-fingerprint");
+        (await client.PostAsJsonAsync("/folders/events", Envelope("baseline", 1, baseline),
+            TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await store.TrySaveAsync("statestore", folderKey, new { retained = true }, string.Empty,
+            TestContext.Current.CancellationToken)).ShouldBeTrue();
+        ReadModelEntry<OrganizationPermissionProjection> before = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", organizationKey, TestContext.Current.CancellationToken);
+        FolderPermissionResetRequest request = new("tenant-a", "tenant-a", before.ETag);
+        (await client.PostAsJsonAsync("/maintenance/folder-permissions/reset", request,
+            TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await store.GetAsync<OrganizationPermissionProjection>("statestore", organizationKey,
+            TestContext.Current.CancellationToken)).Value.ShouldBeNull();
+        (await store.GetAsync<object>("statestore", folderKey,
+            TestContext.Current.CancellationToken)).Value.ShouldNotBeNull();
+        var entry = logs.Entries.ShouldHaveSingleItem();
+        entry.EventId.Id.ShouldBe(1202);
+        entry.Fields["TenantId"].ShouldBe("tenant-a");
+        entry.Fields["AggregateId"].ShouldBe("tenant-a");
+        entry.Fields["Outcome"].ShouldBe("erased");
+        entry.Exception.ShouldBeNull();
+        entry.Fields.Keys.Order(StringComparer.Ordinal).ShouldBe(new[]
+            { "TenantId", "AggregateId", "Outcome", "{OriginalFormat}" }.Order(StringComparer.Ordinal));
+        entry.Message.ShouldNotContain(before.ETag!);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("tenant:invalid")]
+    [InlineData("system")]
+    [InlineData("provider-binding-0123456789abcdef")]
+    public async Task InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(string tenant)
+    {
+        IReadModelConditionalEraser eraser = Substitute.For<IReadModelConditionalEraser>();
+        WebApplication app = await StartMaintenanceHostAsync(new WorkerRouteReadModelStore(), eraser).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        (await client.PostAsJsonAsync("/maintenance/folder-permissions/reset",
+            new FolderPermissionResetRequest(tenant, tenant, "etag"), TestContext.Current.CancellationToken))
+            .StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        eraser.ReceivedCalls().ShouldBeEmpty();
+    }
+
+    [Theory]
+    [InlineData("row-remaining", HttpStatusCode.Conflict, "row_remaining")]
+    [InlineData("etag-conflict", HttpStatusCode.Conflict, "etag_conflict")]
+    [InlineData("inspect-failure", HttpStatusCode.ServiceUnavailable, "unavailable")]
+    [InlineData("erase-failure", HttpStatusCode.ServiceUnavailable, "unavailable")]
+    [InlineData("read-back-failure", HttpStatusCode.ServiceUnavailable, "unavailable")]
+    public async Task MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(
+        string scenario, HttpStatusCode expected, string outcome)
+    {
+        const string key = "projection:folders:folder-permissions:tenant-a:folder-a";
+        const string protectedEtag = "protected-etag-value";
+        const string protectedFailure = "protected-backend-credential-and-message";
+        IReadModelConditionalEraser eraser = Substitute.For<IReadModelConditionalEraser>();
+        eraser.TryReadEtagAsync("statestore", key, Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult((true, protectedEtag)));
+        eraser.TryEraseAsync("statestore", key, protectedEtag, Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult(scenario != "etag-conflict"));
+        if (scenario is "inspect-failure" or "read-back-failure")
+        {
+            eraser.TryReadEtagAsync("statestore", key, Arg.Any<CancellationToken>())
+                .Returns(Task.FromException<(bool, string)>(new InvalidOperationException(protectedFailure)));
+        }
+        if (scenario == "erase-failure")
+        {
+            eraser.TryEraseAsync("statestore", key, protectedEtag, Arg.Any<CancellationToken>())
+                .Returns(Task.FromException<bool>(new InvalidOperationException(protectedFailure)));
+        }
+
+        PermissionProjectionFailureLoggerProvider logs = new();
+        WebApplication app = await StartMaintenanceHostAsync(new WorkerRouteReadModelStore(), eraser, logs).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        using HttpResponseMessage response = await client.PostAsJsonAsync("/maintenance/folder-permissions/reset",
+            new FolderPermissionResetRequest("tenant-a", "folder-a", scenario == "inspect-failure" ? null : protectedEtag),
+            TestContext.Current.CancellationToken);
+        response.StatusCode.ShouldBe(expected);
+        var entry = logs.Entries.ShouldHaveSingleItem();
+        entry.EventId.Id.ShouldBe(expected == HttpStatusCode.ServiceUnavailable ? 1203 : 1202);
+        entry.Fields["TenantId"].ShouldBe("tenant-a");
+        entry.Fields["AggregateId"].ShouldBe("folder-a");
+        entry.Fields["Outcome"].ShouldBe(outcome);
+        entry.Exception.ShouldBeNull();
+        string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        foreach (string secret in new[] { protectedEtag, protectedFailure })
+        {
+            entry.Message.ShouldNotContain(secret);
+            body.ShouldNotContain(secret);
+        }
+        if (scenario != "inspect-failure")
+        {
+            await eraser.Received(1).TryEraseAsync("statestore", key, protectedEtag, Arg.Any<CancellationToken>());
+        }
+    }
+
+    private static async Task<WebApplication> StartMaintenanceHostAsync(IReadModelStore store,
+        IReadModelConditionalEraser eraser, ILoggerProvider? logs = null)
+    {
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        { EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development });
+        builder.Configuration["urls"] = "http://127.0.0.1:0";
+        builder.Configuration[DaprAppChannelToken.ConfigurationKey] = "test-sidecar-token";
+        if (logs is not null) builder.Logging.AddProvider(logs);
+        builder.Services.AddFoldersTenantEventWorkers();
+        builder.Services.RemoveAll<IReadModelStore>();
+        builder.Services.AddSingleton(store);
+        builder.Services.RemoveAll<IReadModelConditionalEraser>();
+        builder.Services.AddSingleton(eraser);
+        WebApplication app = builder.Build();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapFoldersTenantEventWorkerEndpoints();
+        await app.StartAsync(TestContext.Current.CancellationToken).ConfigureAwait(false);
+        return app;
+    }
+
+    private static HttpClient AuthenticatedClient(WebApplication app)
+    {
+        HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+        client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
+        return client;
+    }
+
     [Fact]
     public async Task ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse()
     {

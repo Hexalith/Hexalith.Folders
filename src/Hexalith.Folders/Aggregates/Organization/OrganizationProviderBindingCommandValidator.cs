@@ -22,7 +22,7 @@ public static partial class OrganizationProviderBindingCommandValidator
             return OrganizationProviderBindingCommandValidationResult.Rejected(OrganizationProviderBindingResultCode.ReservedTenant);
         }
 
-        if (!OrganizationStreamName.IsValidSegment(command.ManagedTenantId))
+        if (!OrganizationStreamName.IsValidManagedTenant(command.ManagedTenantId))
         {
             return OrganizationProviderBindingCommandValidationResult.Rejected(OrganizationProviderBindingResultCode.InvalidTenant);
         }

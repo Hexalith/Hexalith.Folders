@@ -172,9 +172,27 @@ public sealed partial class ProductionObservabilityConformanceTests
     [Fact]
     public void DeadLetterTopicsShouldBeDeclaredInProductionPubSub()
     {
-        string pubsub = ReadText(PubSubPath);
-        pubsub.ShouldContain("deadletter.folders.events", Case.Sensitive);
-        pubsub.ShouldContain("deadletter.organizations.events", Case.Sensitive);
+        string[] declared = Regex.Matches(ReadText("src/Hexalith.Folders.Workers/FoldersWorkersModule.cs"),
+            "DeadLetterTopic\\s*=\\s*\"([^\"]+)\"").Select(match => match.Groups[1].Value)
+            .Order(StringComparer.Ordinal).ToArray();
+        declared.ShouldBe(["deadletter.folders.events", "deadletter.tenants.events"]);
+        YamlMappingNode worker = Mapping(LoadSingleYamlDocument("deploy/dapr/production/pubsub.workers.yaml"), "spec");
+        string publishing = Scalar(Sequence(worker, "metadata").Children.Cast<YamlMappingNode>()
+            .Single(item => Scalar(item, "name") == "publishingScopes"), "value");
+        publishing.Split(';').Single(item => item.StartsWith("folders-workers=", StringComparison.Ordinal))
+            .Split('=')[1].Split(',').Order(StringComparer.Ordinal).ShouldBe(declared);
+        YamlMappingNode shared = Mapping(LoadSingleYamlDocument(PubSubPath), "spec");
+        Scalar(Sequence(shared, "metadata").Children.Cast<YamlMappingNode>()
+            .Single(item => Scalar(item, "name") == "deadLetterTopics"), "value")
+            .Split(',').Order(StringComparer.Ordinal).ShouldBe(declared);
+        YamlMappingNode signal = Sequence(LoadManifestSpec(), "signals").Children.Cast<YamlMappingNode>()
+            .Single(item => Scalar(item, "instrument") == "folders.deadletter.depth");
+        SequenceText(signal, "topics").Order(StringComparer.Ordinal).ShouldBe(declared);
+
+        string recovery = ReadText("docs/operations/folder-permission-projection-recovery.md");
+        foreach (string topic in declared) recovery.ShouldContain(topic);
+        foreach (string action in new[] { "Depth alert", "Inspect", "Replay", "Drain", "/tenants/events" })
+            recovery.ShouldContain(action);
     }
 
     [Fact]

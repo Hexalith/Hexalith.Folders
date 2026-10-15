@@ -5,6 +5,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Hexalith.Folders.Tests" />
     <InternalsVisibleTo Include="Hexalith.Folders.Server" />
+    <InternalsVisibleTo Include="Hexalith.Folders.Workers" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hexalith.Folders.Contracts\Hexalith.Folders.Contracts.csproj" />

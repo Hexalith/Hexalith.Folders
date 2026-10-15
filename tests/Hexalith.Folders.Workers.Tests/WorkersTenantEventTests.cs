@@ -20,6 +20,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
+
+using NSubstitute;
 
 using Shouldly;
 using Xunit;
@@ -87,7 +90,8 @@ public sealed class WorkersTenantEventTests
     [Fact]
     public void MapFoldersTenantEventWorkerEndpointsShouldRegisterOnlyTrustedSubscriptionRoute()
     {
-        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        { EnvironmentName = Environments.Development });
         builder.Services.AddFoldersTenantEventWorkers();
         WebApplication app = builder.Build();
 
@@ -407,6 +411,9 @@ public sealed class WorkersTenantEventTests
     {
         ServiceCollection services = new();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        IHostEnvironment environment = Substitute.For<IHostEnvironment>();
+        environment.EnvironmentName.Returns(Environments.Development);
+        services.AddSingleton(environment);
         services.AddLogging();
         return services;
     }

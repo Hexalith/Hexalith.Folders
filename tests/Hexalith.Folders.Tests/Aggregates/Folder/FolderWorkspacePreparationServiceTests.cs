@@ -136,6 +136,8 @@ public sealed class FolderWorkspacePreparationServiceTests
         FolderResult result = await service.PrepareAsync(Request(), TestContext.Current.CancellationToken);
 
         result.Code.ShouldBe(FolderResultCode.UnknownProviderOutcome);
+        result.Events.ShouldHaveSingleItem().ShouldBeOfType<FolderWorkspaceLifecycleEventRecorded>()
+            .WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.ProviderOutcomeUnknown);
         repository.AppendsAttempted.ShouldBe(1);
         FolderWorkspaceLifecycleEventRecorded recorded = repository.LastAppendedEvents
             .ShouldHaveSingleItem()

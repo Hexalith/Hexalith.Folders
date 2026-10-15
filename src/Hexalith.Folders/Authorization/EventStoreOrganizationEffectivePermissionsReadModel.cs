@@ -10,7 +10,8 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
     IReadModelStore store, IUtcClock clock, IOrganizationStreamSequenceReader sequenceReader)
     : IEffectivePermissionsReadModel
 {
-    private const string StoreName = "statestore";
+    /// <summary>The SDK state-store component shared by permission readers and maintenance.</summary>
+    internal const string StoreName = "statestore";
     private const string Scope = FolderStreamName.ReservedOrganizationPermissionScope;
     private const string KeyPrefix = "projection:folders:organization-permissions:";
     private const int ReplayWindow = 256;
@@ -40,7 +41,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
         try
         {
             entry = await store.GetAsync<OrganizationPermissionProjection>(StoreName,
-                KeyPrefix + request.ManagedTenantId, cancellationToken).ConfigureAwait(false);
+                Key(request.ManagedTenantId), cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -141,6 +142,11 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
         ArgumentException.ThrowIfNullOrWhiteSpace(organizationId);
         ArgumentException.ThrowIfNullOrWhiteSpace(messageId);
+        if (@event is OrganizationAclPrincipalGranted grant && !Enum.IsDefined(grant.PrincipalKind)
+            || @event is OrganizationAclPrincipalRevoked revoke && !Enum.IsDefined(revoke.PrincipalKind))
+        {
+            throw new InvalidOperationException("Organization ACL event principal kind is invalid.");
+        }
         if (!string.Equals(tenantId, organizationId, StringComparison.Ordinal)
             || @event is not null
                 && (!string.Equals(@event.ManagedTenantId, tenantId, StringComparison.Ordinal)
@@ -150,7 +156,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             throw new InvalidOperationException("Organization ACL projection identity is invalid.");
         }
 
-        string key = KeyPrefix + tenantId;
+        string key = Key(tenantId);
         ReadModelEntry<OrganizationPermissionProjection> current = await store
             .GetAsync<OrganizationPermissionProjection>(StoreName, key, cancellationToken).ConfigureAwait(false);
         OrganizationPermissionProjection? prior = current.Value;
@@ -246,12 +252,16 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
             _ => throw new InvalidOperationException("Unknown ACL principal kind."),
         };
 
+    /// <summary>Builds the derived organization permission row key shared with conditional maintenance.</summary>
+    internal static string Key(string tenantId) => KeyPrefix + tenantId;
+
     private static bool HasValidState(OrganizationPermissionProjection projection, string tenantId,
         string organizationId, DateTimeOffset now)
         => string.Equals(projection.TenantId, tenantId, StringComparison.Ordinal)
             && string.Equals(projection.OrganizationId, organizationId, StringComparison.Ordinal)
             && projection.LastSequence >= 1
             && projection.Grants is not null
+            && projection.Grants.All(static grant => Enum.IsDefined(grant.PrincipalKind))
             && projection.ProcessedMessages is not null
             && projection.ProjectedAt <= now + ProjectedClockSkew
             && (projection.IsInitialized || projection.Grants.Count == 0);

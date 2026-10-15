@@ -27,7 +27,7 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
         JsonElement root = document.RootElement;
         RequireMembers(root, ["requestSchemaVersion", "operations"]);
         if (root.EnumerateObject().Any(property =>
-            property.Name.Equals("requestSchemaVersion", StringComparison.OrdinalIgnoreCase)
+            property.Name.Equals("requestSchemaVersion", StringComparison.Ordinal)
             && property.Value.ValueKind is not (JsonValueKind.String or JsonValueKind.Null)))
         {
             throw new JsonException("Organization ACL schema version must be a string or null.");
@@ -116,10 +116,10 @@ internal sealed class OrganizationAclIdempotencyIntentAdapter(string commandType
             throw new JsonException("Organization ACL payload members require an object.");
         }
 
-        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+        HashSet<string> seen = new(StringComparer.Ordinal);
         foreach (JsonProperty property in value.EnumerateObject())
         {
-            if (!members.Contains(property.Name, StringComparer.OrdinalIgnoreCase) || !seen.Add(property.Name))
+            if (!members.Contains(property.Name, StringComparer.Ordinal) || !seen.Add(property.Name))
             {
                 throw new JsonException("Organization ACL payload contains an unknown or ambiguous member.");
             }

@@ -23,4 +23,4 @@ spec:
     # monitored-snapshot + alert-rule intent here; Workers callback dead-letter routing is declared in code and its isolated component;
     # deployment tooling supplies broker endpoints.
     - name: deadLetterTopics
-      value: deadletter.folders.events,deadletter.organizations.events
+      value: deadletter.folders.events,deadletter.tenants.events

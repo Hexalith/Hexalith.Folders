@@ -177,7 +177,7 @@ public sealed class ScaffoldContractTests
 
         AssertReferences(references, "Hexalith.Folders.Contracts", []);
         AssertReferences(references, "Hexalith.Folders", ["Hexalith.EventStore.Client", "Hexalith.Folders.Contracts"]);
-        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
+        AssertReferences(references, "Hexalith.Folders.Server", ["Hexalith.Commons.UniqueIds", "Hexalith.EventStore.Client", "Hexalith.EventStore.Contracts", "Hexalith.EventStore.DomainService", "Hexalith.Folders", "Hexalith.Folders.Contracts", "Hexalith.Folders.ServiceDefaults", "Hexalith.Memories.Client.Rest", "Hexalith.Memories.Contracts", "Hexalith.Tenants.Client", "Hexalith.Tenants.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Client", ["Hexalith.Folders.Contracts"]);
         AssertReferences(references, "Hexalith.Folders.Cli", ["Hexalith.Folders.Client"]);
         AssertReferences(references, "Hexalith.Folders.Mcp", ["Hexalith.Folders.Client"]);

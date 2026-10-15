@@ -41,6 +41,7 @@ public sealed class FolderStreamShapeTests
     [InlineData(" system ", "folder-a", FolderResultCode.InvalidTenant)] // whitespace fails canonical-segment regex; consistent rejection code with non-reserved-but-whitespaced inputs
     [InlineData("tenant:a", "folder-a", FolderResultCode.InvalidTenant)]
     [InlineData("Tenant-A", "folder-a", FolderResultCode.InvalidTenant)]
+    [InlineData("organization_baseline", "folder-a", FolderResultCode.InvalidTenant)]
     [InlineData("tenant-a", "folder:a", FolderResultCode.InvalidFolderId)]
     [InlineData("tenant-a", "Folder-A", FolderResultCode.InvalidFolderId)]
     public void InvalidSegmentsShouldRejectBeforeStreamNameIsCreated(
@@ -52,6 +53,15 @@ public sealed class FolderStreamShapeTests
 
         created.ShouldBeFalse();
         code.ShouldBe(expectedCode);
+    }
+
+    [Fact]
+    public void ReservedOrganizationScopeCannotBeAFolderCommandTenant()
+    {
+        FolderCommandValidator.Validate(FolderCommandFactory.Create(
+            managedTenantId: FolderStreamName.ReservedOrganizationPermissionScope,
+            organizationId: FolderStreamName.ReservedOrganizationPermissionScope))
+            .Code.ShouldBe(FolderResultCode.InvalidTenant);
     }
 
     [Fact]

@@ -27,6 +27,11 @@ public sealed record OrganizationState(
 
         foreach (IOrganizationEvent organizationEvent in events)
         {
+            if (organizationEvent is OrganizationAclPrincipalGranted grant && !Enum.IsDefined(grant.PrincipalKind)
+                || organizationEvent is OrganizationAclPrincipalRevoked revoke && !Enum.IsDefined(revoke.PrincipalKind))
+            {
+                throw new InvalidOperationException("Organization ACL event principal kind is invalid.");
+            }
             expectedTenantId ??= organizationEvent.ManagedTenantId;
             expectedOrganizationId ??= organizationEvent.OrganizationId;
 

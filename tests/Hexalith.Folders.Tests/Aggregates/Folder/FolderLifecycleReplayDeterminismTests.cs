@@ -132,16 +132,20 @@ public sealed class FolderLifecycleReplayDeterminismTests
         state.AccessSequence.ShouldBe(2);
     }
 
-    [Fact]
-    public void ValueEqualRetainedCreatesAndArchivesShouldFailTheFoldOrderGuards()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void RepeatedRetainedCreatesAndArchivesShouldFailTheFoldOrderGuards(bool valueEqual)
     {
         FolderCreated created = (FolderCreated)FolderLifecycleReplayFixture.CreatedEvents()[0];
         FolderArchived archived = (FolderArchived)FolderLifecycleReplayFixture.ArchivedLifecycle().Last();
 
         Should.Throw<InvalidOperationException>(() => FolderState.Empty.Apply(
-            [created, created with { }], FolderLifecycleReplayFixture.StreamName));
+            [created, created with { IdempotencyKey = valueEqual ? created.IdempotencyKey : "other-create-key" }],
+            FolderLifecycleReplayFixture.StreamName));
         Should.Throw<InvalidOperationException>(() => FolderState.Empty.Apply(
-            [created, archived, archived with { }], FolderLifecycleReplayFixture.StreamName));
+            [created, archived, archived with { IdempotencyKey = valueEqual ? archived.IdempotencyKey : "other-archive-key" }],
+            FolderLifecycleReplayFixture.StreamName));
     }
 
     [Fact]

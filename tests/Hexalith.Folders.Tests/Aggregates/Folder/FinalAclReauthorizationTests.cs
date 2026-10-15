@@ -76,6 +76,7 @@ public sealed class FinalAclReauthorizationTests
         result.Events.ShouldHaveSingleItem().ShouldBeOfType<ProviderBindingConfigured>()
             .ProviderBindingRef.ShouldBe("binding-a");
         repository.EventsAppended.ShouldBe(1);
+        repository.LastStreamName.ShouldBe($"{request.AuthoritativeTenantId}:organizations:{request.ProviderBindingRef}");
         permissions.Requests.Count.ShouldBe(2);
         permissions.Requests.ShouldAllBe(item => item.OperationScope == "organization_baseline"
             && item.ActionToken == ConfigureProviderBindingService.ActionToken);

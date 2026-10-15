@@ -22,6 +22,8 @@ public sealed class OrganizationAclStreamShapeTests
     [InlineData("tenant:a")]
     [InlineData("tenant\u0001a")]
     [InlineData("Tenant-A")]
+    [InlineData("provider-binding-0123456789abcdef")]
+    [InlineData("organization_baseline")]
     public void StreamNameShouldRejectInvalidManagedTenantSegments(string tenantId)
     {
         ArgumentNullException.ThrowIfNull(tenantId);
@@ -41,6 +43,16 @@ public sealed class OrganizationAclStreamShapeTests
         OrganizationStreamName.TryCreate(tenantId, "organization-a", out _, out OrganizationAclResultCode code).ShouldBeFalse();
 
         code.ShouldBe(OrganizationAclResultCode.ReservedTenant);
+    }
+
+    [Fact]
+    public void ReservedOrganizationScopeCannotBeAnAclOrBindingCommandTenant()
+    {
+        const string tenant = "organization_baseline";
+        OrganizationAclCommandValidator.Validate(AclCommandFactory.Initialize() with
+        { ManagedTenantId = tenant, OrganizationId = tenant }).Code.ShouldBe(OrganizationAclResultCode.InvalidTenant);
+        OrganizationProviderBindingCommandValidator.Validate(ProviderBindingCommandFactory.Configure(
+            managedTenantId: tenant, organizationId: tenant)).Code.ShouldBe(OrganizationProviderBindingResultCode.InvalidTenant);
     }
 
     [Fact]

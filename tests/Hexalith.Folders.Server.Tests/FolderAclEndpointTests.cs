@@ -264,10 +264,12 @@ public sealed class FolderAclEndpointTests
     [Fact]
     public async Task ListFolderAclEntriesShouldReadTheDurableProjectionWithoutActorRepositoryBegin()
     {
-        FolderPermissionProjection projection = new("tenant-a", "organization-a", "folder-a", 2,
+        FolderPermissionProjection projection = new("tenant-a", "organization-a", "folder-a", 3,
             IsCreated: true, IsArchived: false, DateTimeOffset.UtcNow,
             [new FolderPermissionOverrideEntry(FolderAccessPrincipalKind.User, "user-b",
-                "read_metadata", IsGranted: true, AccessSequence: 1, DateTimeOffset.UtcNow)], []);
+                "read_metadata", IsGranted: true, AccessSequence: 1, DateTimeOffset.UtcNow),
+                new FolderPermissionOverrideEntry(FolderAccessPrincipalKind.Group, "group-a",
+                    "mutate_files", IsGranted: false, AccessSequence: 2, DateTimeOffset.UtcNow)], []);
         await using WebApplication app = BuildApp(new RecordingEventStoreGatewayClient(),
             aclReadModel: new StaticFolderAclReadModel(projection));
         await app.StartAsync(TestContext.Current.CancellationToken);
@@ -278,8 +280,19 @@ public sealed class FolderAclEndpointTests
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK, json);
-        json.ShouldContain("user-b");
-        json.ShouldNotContain("read_model_unavailable");
+        using System.Text.Json.JsonDocument document = System.Text.Json.JsonDocument.Parse(json);
+        System.Text.Json.JsonElement items = document.RootElement.GetProperty("items");
+        items.GetArrayLength().ShouldBe(2);
+        System.Text.Json.JsonElement granted = items.EnumerateArray()
+            .Single(item => item.GetProperty("subjectRef").GetString() == "user:user-b");
+        granted.GetProperty("subjectRef").GetString().ShouldBe("user:user-b");
+        granted.GetProperty("permissionLevel").GetString().ShouldBe("read");
+        granted.GetProperty("effect").GetString().ShouldBe("grant");
+        System.Text.Json.JsonElement revoked = items.EnumerateArray()
+            .Single(item => item.GetProperty("subjectRef").GetString() == "group:group-a");
+        revoked.GetProperty("subjectRef").GetString().ShouldBe("group:group-a");
+        revoked.GetProperty("permissionLevel").GetString().ShouldBe("write");
+        revoked.GetProperty("effect").GetString().ShouldBe("revoke");
     }
 
     [Theory]

@@ -60,7 +60,7 @@ spec:
       anchor: architecture-i7
       topics:
         - deadletter.folders.events
-        - deadletter.organizations.events
+        - deadletter.tenants.events
     - name: provider_failure
       severity: error
       instrument: folders.provider.failures

@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Aggregates.Folder;
 
 namespace Hexalith.Folders.Aggregates.Organization;
 
@@ -32,7 +33,7 @@ public sealed partial record OrganizationStreamName(string Value)
             return false;
         }
 
-        if (!IsValidSegment(managedTenantId) || ProviderBindingActorId.IsReserved(managedTenantId))
+        if (!IsValidManagedTenant(managedTenantId))
         {
             code = OrganizationAclResultCode.InvalidTenant;
             return false;
@@ -52,6 +53,11 @@ public sealed partial record OrganizationStreamName(string Value)
     internal static bool IsReservedSystemTenant(string? managedTenantId)
         => !string.IsNullOrWhiteSpace(managedTenantId)
             && string.Equals(managedTenantId.Trim(), "system", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Validates the tenant namespace shared by organization stream and command validators.</summary>
+    internal static bool IsValidManagedTenant(string? value)
+        => IsValidSegment(value) && !ProviderBindingActorId.IsReserved(value)
+            && !string.Equals(value, FolderStreamName.ReservedOrganizationPermissionScope, StringComparison.Ordinal);
 
     internal static bool IsValidSegment(string? value)
         => !string.IsNullOrWhiteSpace(value)

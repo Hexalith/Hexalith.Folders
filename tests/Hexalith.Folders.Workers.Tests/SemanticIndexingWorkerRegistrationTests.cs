@@ -45,6 +45,8 @@ public sealed class SemanticIndexingWorkerRegistrationTests
             .ShouldBeOfType<EventStoreFolderEffectivePermissionsReadModel>();
         app.Services.GetRequiredService<IFolderAclReadModel>()
             .ShouldBeSameAs(app.Services.GetRequiredService<IEffectivePermissionsReadModel>());
+        app.Services.GetRequiredService<IReadModelConditionalEraser>()
+            .ShouldBeSameAs(app.Services.GetRequiredService<IReadModelStore>());
     }
 
     [Fact]

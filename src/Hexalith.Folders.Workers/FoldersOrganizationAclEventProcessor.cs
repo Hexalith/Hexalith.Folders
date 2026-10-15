@@ -112,6 +112,11 @@ public sealed class FoldersOrganizationAclEventProcessor(
         IOrganizationAclEvent @event = JsonSerializer.Deserialize(effective.Payload, eventType,
             EventStorePayloadSerialization.Options) as IOrganizationAclEvent
             ?? throw new InvalidOperationException("Organization ACL event payload is invalid.");
+        if (@event is OrganizationAclPrincipalGranted grant && !Enum.IsDefined(grant.PrincipalKind)
+            || @event is OrganizationAclPrincipalRevoked revoke && !Enum.IsDefined(revoke.PrincipalKind))
+        {
+            throw new InvalidOperationException("Organization ACL event principal kind is invalid.");
+        }
         await readModel.ApplyAsync(envelope.TenantId, envelope.AggregateId, envelope.MessageId,
             envelope.SequenceNumber, @event, cancellationToken, digest).ConfigureAwait(false);
     }

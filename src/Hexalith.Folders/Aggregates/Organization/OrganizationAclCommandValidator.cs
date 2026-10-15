@@ -17,7 +17,7 @@ public static partial class OrganizationAclCommandValidator
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.ReservedTenant);
         }
 
-        if (!OrganizationStreamName.IsValidSegment(command.ManagedTenantId))
+        if (!OrganizationStreamName.IsValidManagedTenant(command.ManagedTenantId))
         {
             return OrganizationAclCommandValidationResult.Rejected(OrganizationAclResultCode.InvalidTenant);
         }

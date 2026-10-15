@@ -809,12 +809,41 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UndefinedIncomingPrincipalKindCannotChangePersistedProjection(bool revoke)
+    {
+        MemoryReadModels store = new();
+        TestClock clock = new();
+        EventStoreOrganizationEffectivePermissionsReadModel model = new(store, clock, new TestSequenceReader());
+        CancellationToken ct = TestContext.Current.CancellationToken;
+        await model.ApplyAsync("tenant-a", "tenant-a", "baseline", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint"), ct);
+        const string key = "projection:folders:organization-permissions:tenant-a";
+        ReadModelEntry<OrganizationPermissionProjection> before = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", key, ct);
+        IOrganizationAclEvent invalid = revoke
+            ? new OrganizationAclPrincipalRevoked("tenant-a", "tenant-a", (OrganizationAclPrincipalKind)4,
+                "user-a", "create_folder", "corr", "task", "invalid-key", "invalid-fingerprint")
+            : new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", (OrganizationAclPrincipalKind)4,
+                "user-a", "create_folder", "corr", "task", "invalid-key", "invalid-fingerprint");
+
+        await Should.ThrowAsync<InvalidOperationException>(() => model.ApplyAsync(
+            "tenant-a", "tenant-a", "invalid-event", 2, invalid, ct));
+        ReadModelEntry<OrganizationPermissionProjection> after = await store
+            .GetAsync<OrganizationPermissionProjection>("statestore", key, ct);
+        after.ETag.ShouldBe(before.ETag);
+        JsonSerializer.Serialize(after.Value).ShouldBe(JsonSerializer.Serialize(before.Value));
+    }
+
+    [Theory]
     [InlineData("uninitialized-grants")]
     [InlineData("zero-sequence")]
     [InlineData("negative-sequence")]
     [InlineData("future-timestamp")]
     [InlineData("null-grants")]
     [InlineData("null-messages")]
+    [InlineData("undefined-kind")]
     public async Task InvalidOrganizationRowsCannotBeRefreshedIntoCurrentAuthority(string invalidState)
     {
         MemoryReadModels store = new();
@@ -829,6 +858,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModelTests
             "future-timestamp" => prior with { ProjectedAt = clock.UtcNow.AddMinutes(3) },
             "null-grants" => prior with { Grants = null! },
             "null-messages" => prior with { ProcessedMessages = null! },
+            "undefined-kind" => prior with { Grants = [new((OrganizationAclPrincipalKind)4, "user-a", "create_folder")] },
             _ => throw new InvalidOperationException(),
         };
         const string key = "projection:folders:organization-permissions:tenant-a";

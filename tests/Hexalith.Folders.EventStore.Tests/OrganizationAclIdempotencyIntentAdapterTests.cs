@@ -13,6 +13,31 @@ namespace Hexalith.Folders.EventStore.Tests;
 public sealed class OrganizationAclIdempotencyIntentAdapterTests
 {
     [Theory]
+    [InlineData("RequestSchemaVersion", true)]
+    [InlineData("Operations", true)]
+    [InlineData("PrincipalKind", false)]
+    [InlineData("PrincipalId", false)]
+    [InlineData("Action", false)]
+    public void DifferentlyCasedRootAndOperationMembersFailStrictAdmission(string member, bool atRoot)
+    {
+        ArgumentNullException.ThrowIfNull(member);
+        const string valid = """{"requestSchemaVersion":"v1","operations":[{"principalKind":"User","principalId":"user-a","action":"create_folder"}]}""";
+        foreach (string operationId in new[] { "initialize-organization-acl-baseline",
+            "grant-organization-acl-principal", "revoke-organization-acl-principal" })
+        {
+            OrganizationAclIdempotencyIntentAdapter adapter = new("acl-command", operationId);
+            JsonObject payload = JsonNode.Parse(valid)!.AsObject();
+            JsonObject target = atRoot ? payload : payload["operations"]![0]!.AsObject();
+            string canonical = char.ToLowerInvariant(member[0]) + member[1..];
+            target[member] = target[canonical]!.DeepClone();
+            target.Remove(canonical);
+
+            Should.Throw<JsonException>(() => adapter.CreateIntent(Command(payload.ToJsonString())));
+            adapter.CreateIntent(Command(valid)).SemanticPayload.ShouldNotBeEmpty();
+        }
+    }
+
+    [Theory]
     [InlineData("initialize-organization-acl-baseline", "operation")]
     [InlineData("grant-organization-acl-principal", "operation")]
     [InlineData("revoke-organization-acl-principal", "operation")]

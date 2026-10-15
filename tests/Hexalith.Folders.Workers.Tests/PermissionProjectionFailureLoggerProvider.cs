@@ -3,22 +3,24 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Hexalith.Folders.Workers.Tests;
 
-/// <summary>Captures only application permission-callback logs for metadata-only assertions.</summary>
+/// <summary>Captures only permission-callback and maintenance logs for metadata-only assertions.</summary>
 internal sealed class PermissionProjectionFailureLoggerProvider : ILoggerProvider, ILogger
 {
     /// <summary>Gets captured log metadata, structured fields, and formatted messages.</summary>
     internal List<(LogLevel Level, EventId EventId, IReadOnlyDictionary<string, object?> Fields,
-        Exception? Exception, string Message)> Entries { get; } = [];
+        Exception? Exception, string Message)> Entries
+    { get; } = [];
 
     /// <inheritdoc />
     public ILogger CreateLogger(string categoryName)
-        => categoryName == typeof(FoldersWorkersModule).FullName ? this : NullLogger.Instance;
+        => categoryName == typeof(FoldersWorkersModule).FullName
+            || categoryName == typeof(FolderPermissionMaintenanceEndpoints).FullName ? this : NullLogger.Instance;
 
     /// <inheritdoc />
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
 
     /// <inheritdoc />
-    public bool IsEnabled(LogLevel logLevel) => logLevel >= LogLevel.Warning;
+    public bool IsEnabled(LogLevel logLevel) => logLevel >= LogLevel.Information;
 
     /// <inheritdoc />
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state,

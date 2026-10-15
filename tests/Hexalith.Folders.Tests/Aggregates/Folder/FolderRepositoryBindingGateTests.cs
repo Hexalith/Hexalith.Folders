@@ -303,6 +303,8 @@ public sealed class FolderRepositoryBindingGateTests
         repository.LastAppendedEvents[0].ShouldBeOfType<ExistingRepositoryBindingRequested>();
         if (failureCategory is ProviderFailureCategory.UnknownProviderOutcome or ProviderFailureCategory.ReconciliationRequired)
         {
+            result.Events.OfType<ProviderOutcomeUnknown>().ShouldHaveSingleItem()
+                .ShouldBe(repository.LastAppendedEvents[1]);
             repository.LastAppendedEvents[1].ShouldBeOfType<ProviderOutcomeUnknown>();
         }
         else

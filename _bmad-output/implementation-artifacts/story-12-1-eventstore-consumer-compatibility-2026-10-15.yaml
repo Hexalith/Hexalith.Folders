@@ -1,0 +1,96 @@
+record_id: FOLDERS-ES-CONSUMER-PIN-2026-10-15
+consumer: Hexalith.Folders Story 12.1 review corrections
+observed_on: '2026-10-15'
+consumer_source_commit: ea1e9ac9745ad86aac7f2bf6ea84ee3741fea0ed
+consumer_working_tree: source review corrections and final source-reference checks verified; existing unrelated edits preserved
+source_repository: references/Hexalith.EventStore
+source_commit: 6394d0500e6e277b8975cb397c9f0389f9a16929
+source_gitlink: 6394d0500e6e277b8975cb397c9f0389f9a16929
+source_working_tree: clean
+supersedes_no_historical_acceptance: true
+historical_capability_acceptance:
+  path: _bmad-output/implementation-artifacts/story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml
+  sha256: bf7b770cb0f04b26c6c572042618df8a804990b2cbb6e411f6947819bd3c78bd
+  accepted_source_commit: ead4949d30b37d3a976f5c9197789a91701f1a72
+prior_compatibility_supplement:
+  path: _bmad-output/implementation-artifacts/story-12-1-eventstore-consumer-compatibility-2026-10-14.yaml
+  sha256: 7a9a276a2dd4b075b737be617a38695656199cec134823764900653c143a7ad8
+  source_commit: 173ad7f4e56a72f44621c7d3d7be86a5ec19dc03
+compatibility_scope:
+  - Full CLR event identities, payload evolution, receipt transport and retained stream reads remain consumable.
+  - Actor infrastructure-failure and command-recovery integrity checks pass at the current pin.
+  - Folders uses synchronous IDomainProjectionHandler and DomainProjectionDispatcher.Project; fresh consumer replay and authenticated process tests pass.
+  - Named asynchronous dispatch has a separate failing upstream mock-based test; this record does not claim that lane is green.
+verification:
+  - command: dotnet restore tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; source-reference restore with unchanged versions
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-server-source-restore.log
+  - command: dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; zero warnings and errors
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-server-source-build.log
+  - command: dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.DomainServices.VersionedWireRoundTripTests -class Hexalith.EventStore.Server.Tests.Security.HumanAuthorityReceiptCodecTests -class Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests -class Hexalith.EventStore.Server.Tests.DomainServices.DaprDomainServiceInvokerTests -class Hexalith.EventStore.Server.Tests.Actors.AggregateActorInfrastructureFailureTests -class Hexalith.EventStore.Server.Tests.Actors.CommandRecoveryIntegrityTests
+    working_directory: references/Hexalith.EventStore
+    result: pass; 246 tests, zero failures or skips
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-server-source-tests.log
+  - command: dotnet restore tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; source-reference restore with unchanged versions
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-client-source-restore.log
+  - command: dotnet build tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; zero warnings and errors
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-client-source-build.log
+  - command: dotnet tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll -class Hexalith.EventStore.Client.Tests.Events.EventPayloadEvolutionRegistryTests
+    working_directory: references/Hexalith.EventStore
+    result: pass; 35 tests, zero failures or skips
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-client-source-tests.log
+  - command: dotnet restore tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; source-reference restore with unchanged versions
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-domainservice-source-restore.log
+  - command: dotnet build tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+    working_directory: references/Hexalith.EventStore
+    result: pass; zero warnings and errors
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-domainservice-source-build.log
+  - command: dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.VersionedProjectionDispatchTests -class Hexalith.EventStore.DomainService.Tests.MixedProjectionCatalogTests
+    working_directory: references/Hexalith.EventStore
+    result: 11 passed; 1 failed; zero skips
+    log: /tmp/folders-12-1-resume-6tj2sj8r/eventstore-domainservice-source-tests.log
+    failing_test: Hexalith.EventStore.DomainService.Tests.VersionedProjectionDispatchTests.DispatchAsync_RenamedV1EventReachesNamedHandlerWithCurrentPayload
+    diagnosis: The NSubstitute async handler leaves the newly added OrdinaryDeliveryEnabled flag unset, returning false and triggering unsupported_dispatch_capability. The four synchronous versioned projection tests pass.
+  - command: dotnet restore tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -v:n
+    working_directory: project-root
+    result: pass; regenerated Debug source-reference assets after stale mixed package/source assets caused CS1704
+    log: /tmp/story12-resume-server-baseline-restore-serialized.log
+  - command: dotnet build tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj -c Debug --no-restore -m:1 -nr:false -p:UseSharedCompilation=false -p:UseHexalithProjectReferences=true -v:q
+    working_directory: project-root
+    result: pass; zero warnings and errors
+    log: /tmp/story12-resume-server-baseline-build-restored.log
+  - command: dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.FolderEventReplayTests -class Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests -class Hexalith.Folders.Server.Tests.ServerEndpointRegistrationTests
+    working_directory: project-root
+    result: pass; 37 tests, zero failures or skips
+    log: /tmp/story12-resume-server-baseline-consumer.log
+limitations:
+  - Historical acceptance and all prior compatibility supplements remain unchanged; no submodule revision or source was changed.
+  - The named asynchronous dispatch test failure remains an upstream verification blocker, separate from passing Folders consumer checks.
+  - Initial build-enabled Aspire startup timed out after 55 seconds with exit 124. After a clean Debug solution build, the no-build startup and explicit resource health waits passed; this establishes startup health only.
+  - These checks do not prove deployed durability, rollout, a live ETag race, restart, broker recovery or operator repair.
+
+runtime_verification:
+  start_command: timeout 45s aspire start --non-interactive --no-build --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --format Json
+  start_result: pass; exit 0
+  describe_command: aspire describe --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --format Json
+  describe_result: all 22 resources Running and Healthy
+  health_waits:
+    - command: aspire wait folders-guvmpxwe --status healthy --timeout 20 --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj
+      result: pass; exit 0
+    - command: aspire wait folders-workers-fzuqncfz --status healthy --timeout 20 --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj
+      result: pass; exit 0
+    - command: aspire wait eventstore-gycyurcd --status healthy --timeout 20 --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj
+      result: pass; exit 0
+  stop_command: aspire stop --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj
+  stop_result: pass; task-owned session stopped and no AppHost remains running
+  logs_directory: /tmp/folders-12-1-resume-6tj2sj8r
+  excluded_claims: fresh persisted mutations, restart recovery, broker delivery or drain, backend ETag races, operator repair and rollout acceptance

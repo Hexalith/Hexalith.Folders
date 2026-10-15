@@ -246,32 +246,8 @@ public static partial class FoldersWorkersModule
         return services;
     }
 
-    private static string SubscriptionPubSubName(IConfiguration configuration)
-        => configuration["Folders:Workers:PubSubName"] ?? TenantEventsPubSubName;
-
-    private sealed class FoldersTenantEventSubscriptionOptionsValidator(IConfiguration configuration)
-        : IValidateOptions<EventStoreDomainEventsOptions>
-    {
-        public ValidateOptionsResult Validate(string? name, EventStoreDomainEventsOptions options)
-        {
-            ArgumentNullException.ThrowIfNull(options);
-
-            if (!string.Equals(options.PubSubName, SubscriptionPubSubName(configuration), StringComparison.Ordinal))
-            {
-                return ValidateOptionsResult.Fail($"Tenants PubSubName must match the configured Workers subscription component for {Name}.");
-            }
-
-            if (!string.Equals(options.TopicName, TenantEventsTopicName, StringComparison.Ordinal))
-            {
-                return ValidateOptionsResult.Fail($"Tenants TopicName must be '{TenantEventsTopicName}' for {Name}.");
-            }
-
-            if (!string.Equals(options.SubscriptionRoute, TenantEventsRoute, StringComparison.Ordinal))
-            {
-                return ValidateOptionsResult.Fail($"Tenants SubscriptionRoute must be '{TenantEventsRoute}' for {Name}.");
-            }
-
-            return ValidateOptionsResult.Success;
-        }
-    }
+    /// <summary>Resolves the inbound component; validation limits the shared fallback to Development.</summary>
+    internal static string SubscriptionPubSubName(IConfiguration configuration)
+        => string.IsNullOrWhiteSpace(configuration["Folders:Workers:PubSubName"])
+            ? TenantEventsPubSubName : configuration["Folders:Workers:PubSubName"]!;
 }

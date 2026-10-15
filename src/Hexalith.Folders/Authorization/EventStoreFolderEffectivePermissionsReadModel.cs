@@ -12,7 +12,8 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
     EventStoreOrganizationEffectivePermissionsReadModel organizationReadModel)
     : IEffectivePermissionsReadModel, IFolderAclReadModel
 {
-    private const string StoreName = "statestore";
+    /// <summary>The SDK state-store component shared by permission readers and maintenance.</summary>
+    internal const string StoreName = "statestore";
     private const string KeyPrefix = "projection:folders:folder-permissions:";
     private const int ReplayWindow = 256;
     private static readonly TimeSpan ProjectedClockSkew = TimeSpan.FromMinutes(2);
@@ -286,7 +287,8 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
             && folder.ProjectedAt <= now + ProjectedClockSkew && folder.Overrides is not null
             && folder.RecentMessages is not null;
 
-    private static string Key(string tenantId, string folderId) => KeyPrefix + tenantId + ":" + folderId;
+    /// <summary>Builds the derived folder permission row key shared with conditional maintenance.</summary>
+    internal static string Key(string tenantId, string folderId) => KeyPrefix + tenantId + ":" + folderId;
 
     private static EffectivePermissionPrincipal ToPrincipal(FolderAccessPrincipalKind kind, string id)
         => kind switch

@@ -232,6 +232,7 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
         DomainServiceCurrentState state = DomainStateReplay.SnapshotAware(source)
             ?? throw new InvalidOperationException("Unsupported actor state shape.");
         if (state.LastSnapshotSequence < 0 || state.CurrentSequence < state.LastSnapshotSequence
+            || state.LastSnapshotSequence == 0 && state.SnapshotState is not null
             || state.LastSnapshotSequence > 0 && state.SnapshotState is null)
         {
             throw new InvalidOperationException("Missing or invalid actor snapshot anchor.");

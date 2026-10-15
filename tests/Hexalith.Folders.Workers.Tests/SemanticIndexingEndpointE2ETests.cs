@@ -33,7 +33,8 @@ public sealed class SemanticIndexingEndpointE2ETests
     [InlineData("folders-workers-pubsub")]
     public void MapFoldersTenantEventWorkerEndpointsShouldExposeSeparateSemanticIndexingSubscription(string pubsub)
     {
-        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder();
+        WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
+        { EnvironmentName = Microsoft.Extensions.Hosting.Environments.Development });
         builder.Configuration["Folders:Workers:PubSubName"] = pubsub;
         builder.Services.AddFoldersTenantEventWorkers();
         WebApplication app = builder.Build();

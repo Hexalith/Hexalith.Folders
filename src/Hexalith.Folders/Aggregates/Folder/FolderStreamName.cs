@@ -35,15 +35,8 @@ public sealed partial record FolderStreamName(string Value)
     {
         streamName = null;
 
-        if (IsReservedSystemTenant(managedTenantId))
+        if (!TryValidateTenant(managedTenantId, out code))
         {
-            code = FolderResultCode.ReservedTenant;
-            return false;
-        }
-
-        if (!IsValidSegment(managedTenantId) || ProviderBindingActorId.IsReserved(managedTenantId))
-        {
-            code = FolderResultCode.InvalidTenant;
             return false;
         }
 
@@ -59,6 +52,16 @@ public sealed partial record FolderStreamName(string Value)
         streamName = new FolderStreamName($"{managedTenantId}:folders:{folderId}");
         code = FolderResultCode.Created;
         return true;
+    }
+
+    /// <summary>Validates a managed tenant without constructing an unrelated aggregate identifier.</summary>
+    internal static bool TryValidateTenant(string? managedTenantId, out FolderResultCode code)
+    {
+        code = IsReservedSystemTenant(managedTenantId) ? FolderResultCode.ReservedTenant
+            : !IsValidSegment(managedTenantId) || ProviderBindingActorId.IsReserved(managedTenantId)
+                || string.Equals(managedTenantId, ReservedOrganizationPermissionScope, StringComparison.Ordinal)
+                ? FolderResultCode.InvalidTenant : FolderResultCode.Created;
+        return code == FolderResultCode.Created;
     }
 
     // Reserved-name check uses ordinal-equals on the raw input so whitespace and casing
