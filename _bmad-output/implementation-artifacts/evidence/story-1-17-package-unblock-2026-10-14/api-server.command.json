@@ -1,0 +1,22 @@
+{
+  "id": "api-server",
+  "command": [
+    "dnx",
+    "dotnet-inspect",
+    "-y",
+    "--",
+    "type",
+    "--package",
+    "Hexalith.EventStore.Server@3.121.0",
+    "-t",
+    "DomainServiceSafeDenialException"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "started_at_utc": "2026-10-14T14:40:30.012707+00:00",
+  "finished_at_utc": "2026-10-14T14:40:32.161268+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-server.log",
+  "log_sha256": "37972b8382d240c53079d205c6353628ef59f9e947e15425ac2ad855b32750bd",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

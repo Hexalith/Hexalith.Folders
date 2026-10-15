@@ -1,0 +1,19 @@
+{
+  "id": "folders-integration-routing-and-golden-tests",
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+    "-class",
+    "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+    "-class",
+    "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-10-14T14:43:49.941812+00:00",
+  "finished_at_utc": "2026-10-14T14:43:54.356978+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-integration-routing-and-golden-tests.log",
+  "log_sha256": "488ee53ea2c0044b3ab6b3447bcd21972f0a65ff6c58802121a59bbb1dac65df",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "readiness-verification",
+  "command": [
+    "python3",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/collect-evidence.py"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-10-14T14:55:51.232260+00:00",
+  "finished_at_utc": "2026-10-14T14:55:51.415198+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/readiness-verification.log",
+  "log_sha256": "6955acf03a05c15b334d0e7c00352f193f67caa0be67c6845477ee0a094835a9",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+  "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/collect-evidence.py",
+  "script_snapshot_sha256": "d6f9935a342aa3a185c4e8b71709ae187664086ec2729401eb04e9d6d68f68ab",
+  "script_snapshot_reconstructed_from_recorded_edits": false
+}

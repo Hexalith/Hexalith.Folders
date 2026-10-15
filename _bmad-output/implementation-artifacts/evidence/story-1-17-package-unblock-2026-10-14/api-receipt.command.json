@@ -1,0 +1,22 @@
+{
+  "id": "api-receipt",
+  "command": [
+    "dnx",
+    "dotnet-inspect",
+    "-y",
+    "--",
+    "type",
+    "--package",
+    "Hexalith.EventStore.ServiceDefaults@3.121.0",
+    "-t",
+    "*HumanAuthorityReceipt*"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "started_at_utc": "2026-10-14T14:40:30.013882+00:00",
+  "finished_at_utc": "2026-10-14T14:40:31.807402+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-receipt.log",
+  "log_sha256": "f93004a26d049871c0bea3bc84954ddec33f7674bc774a6aadb959cc6df4dfc6",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

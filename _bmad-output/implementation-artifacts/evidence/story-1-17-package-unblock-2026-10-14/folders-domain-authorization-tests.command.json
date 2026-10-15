@@ -1,0 +1,23 @@
+{
+  "id": "folders-domain-authorization-tests",
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests.dll",
+    "-class",
+    "Hexalith.Folders.Tests.Authorization.*",
+    "-class",
+    "Hexalith.Folders.Tests.Aggregates.Folder.FinalAclReauthorizationTests",
+    "-class",
+    "Hexalith.Folders.Tests.Aggregates.Folder.FolderArchiveAuthorizationGateTests",
+    "-class",
+    "Hexalith.Folders.Tests.Queries.Folders.FolderLifecycleStatusAuthorizationGateTests"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-10-14T14:43:32.781763+00:00",
+  "finished_at_utc": "2026-10-14T14:43:33.264048+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-domain-authorization-tests.log",
+  "log_sha256": "d2b2bd1784537b2cf5b8933f2eaaca4ddbaa6146624daff867128e2af1ce6dc5",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

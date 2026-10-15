@@ -1,0 +1,2053 @@
+{
+  "record_id": "STORY-1-17-RELEASE-PACKAGE-UNBLOCK-2026-10-14",
+  "observed_at_utc": "2026-10-14T14:57:06.929959+00:00",
+  "scope": "Published EventStore prerequisite, shared catalog selection, local Release/package builds and tests; no production entry.",
+  "source": {
+    "folders": "ea1e9ac9745ad86aac7f2bf6ea84ee3741fea0ed",
+    "eventstore": "6394d0500e6e277b8975cb397c9f0389f9a16929",
+    "builds": "9f0121c77e3f085c58f5c926057606db8e6511a7",
+    "projects": "8a9b739a30ee2b501db53756b508efb535d10c41"
+  },
+  "eventstore_publication": {
+    "version": "3.121.0",
+    "source_revision": "21b34c01ec919769cfba9cfe0d47e50886b57ded",
+    "release": "https://github.com/Hexalith/Hexalith.EventStore/releases/tag/v3.121.0",
+    "published_at_utc": "2026-10-14T06:51:12Z",
+    "release_workflow_run": {
+      "databaseId": 38523534652,
+      "headSha": "21b34c01ec919769cfba9cfe0d47e50886b57ded",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/38523534652"
+    },
+    "package_count": 14,
+    "packages": [
+      {
+        "id": "Hexalith.EventStore.Contracts",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.contracts/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.contracts/3.121.0/hexalith.eventstore.contracts.3.121.0.nupkg",
+        "nuget_archive_sha256": "4c3d1e91438ca17b45d1ba19f27192617f1d1a12c61f0d678821d662383dda47",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Contracts.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Contracts.3.121.0.nupkg",
+          "size": 313085,
+          "sha256": "471ba773f2e61e440b97fdd16e20f3d0c24756cadc51c9ea6b025d34c3808f2e",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "lib/net10.0/Hexalith.EventStore.Contracts.xml": "cb80b29606bcbdf68876feceaf907cb93cff89916ecf80c7b576e2e9ccb32641",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "ff09ede05b132f352960a39e3bf4fafa3d7487a7ffdd26fe4eb7e3e9a04ad0db",
+          "Hexalith.EventStore.Contracts.nuspec": "f8fb6a28bcd6fb08b16726fcbe35681448810a2a5a96dccea8e88df5e67ead7e",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "lib/net10.0/Hexalith.EventStore.Contracts.xml": "cb80b29606bcbdf68876feceaf907cb93cff89916ecf80c7b576e2e9ccb32641",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e",
+          "package/services/metadata/core-properties/nuget.psmdcp": "bdcdafe518f828c693109e0f7233cceb9cf2dd39f79f0c06f1eef95c2280a3c8"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": [
+          "BoundOwnerQueryRequest",
+          "DomainServiceRequest.HumanAuthorityReceipt"
+        ]
+      },
+      {
+        "id": "Hexalith.EventStore.Client",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.client/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.client/3.121.0/hexalith.eventstore.client.3.121.0.nupkg",
+        "nuget_archive_sha256": "a8d477173646c222dd12f36fffd9dbf94eef488c1b17b215447ce574dccc1cb5",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Client.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Client.3.121.0.nupkg",
+          "size": 367672,
+          "sha256": "db2010c654c1fb32dd293b5fec00ce8b1c812b012fea71575f13dc83387ccc03",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+          "lib/net10.0/Hexalith.EventStore.Client.xml": "6d91bcf8e6345341568c220a9cc95d83dedb6621508b520adbccf5697dabe8ce",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "9dd13fd44aefaac60aa28298c6029cde32ef819fa99246a418bc1edab8a169cd",
+          "Hexalith.EventStore.Client.nuspec": "75b506c53620937d2e56b06d04010a48c1bcc64b0d9bf7f1541210a05697fb68",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+          "lib/net10.0/Hexalith.EventStore.Client.xml": "6d91bcf8e6345341568c220a9cc95d83dedb6621508b520adbccf5697dabe8ce",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e",
+          "package/services/metadata/core-properties/nuget.psmdcp": "6e43a1a726f444ba0e1715e5821d88a8dec1003af07f265395aaa9dad9a67e93"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": [
+          "BoundOwnerQueryProof"
+        ]
+      },
+      {
+        "id": "Hexalith.EventStore.Server",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.server/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.server/3.121.0/hexalith.eventstore.server.3.121.0.nupkg",
+        "nuget_archive_sha256": "e5ca8d1bad4dfb330310391666ccbd239d9a47dd6f47abdefbebb07b14544f3e",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Server.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Server.3.121.0.nupkg",
+          "size": 760370,
+          "sha256": "14157436fd6b04da48f222809fb71d7a02e9fdfb606a7203517dee1be1abcf92",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Server.dll": "1cd35bbd08eb501fa9d64061e2f637715ae93bab7ee4c43c23b449dabe60d4ca",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "e1136b743fb8b6f8d8ef43a21a272d5a28a042d3dc3df01874ade744d7ef02c0",
+          "Hexalith.EventStore.Server.nuspec": "bcacb266a37909230f9ff73fbc0703ec456d10938b2b7ad55ee45f912429ef6f",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Server.dll": "1cd35bbd08eb501fa9d64061e2f637715ae93bab7ee4c43c23b449dabe60d4ca",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "7a4b234f9e0383762207832186a9fbf22990253ea2ba51b94f8c012bb54ba688"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": [
+          "DomainServiceSafeDenialException"
+        ]
+      },
+      {
+        "id": "Hexalith.EventStore.SignalR",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.signalr/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.signalr/3.121.0/hexalith.eventstore.signalr.3.121.0.nupkg",
+        "nuget_archive_sha256": "b6f8f2db15e77d4f7b44bb02fdffc7a70112c0379b1192df0bd40f74483ab22a",
+        "release_asset": {
+          "name": "Hexalith.EventStore.SignalR.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.SignalR.3.121.0.nupkg",
+          "size": 21154,
+          "sha256": "10bb77ce3c01fa94c269a14c7a518cc63306785015a3e95907fb4d833f490713",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.SignalR.dll": "b4ad8c78895c4b799e58a579af6e6f8124145afba400a648f39f29a18b85bf61",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "48231d99009f1616c67b2a1460adcfb9d77e9be703d084ce5d5dd51b5243f163",
+          "Hexalith.EventStore.SignalR.nuspec": "519a237d2775a4825fb202e096ee44709af48c2831feed0515ed0d4af8db8d6c",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.SignalR.dll": "b4ad8c78895c4b799e58a579af6e6f8124145afba400a648f39f29a18b85bf61",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "c67a2c8704958b9c3daea13c10a3f1942fd2e9df30ec8a17d8b2b8b8f444b16a"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Testing",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.testing/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.testing/3.121.0/hexalith.eventstore.testing.3.121.0.nupkg",
+        "nuget_archive_sha256": "4b08e87b0632220fd7be536ba0bd08ea90f3fbe5c501140ecbd7bb13ab0f96b4",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Testing.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Testing.3.121.0.nupkg",
+          "size": 55643,
+          "sha256": "d316ef965cfddc155ea848abdd5be97c1e53b363822e0792baa2acc25b2514d0",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Testing.dll": "884c27ab0d3339912435a6cf67e0f80572e1a248d8f4e83b2603215a9ea8fd45",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "10cc7c2a29f4d4f5f2ef2883988d70345abbf25021a8652e2df523328e7769c6",
+          "Hexalith.EventStore.Testing.nuspec": "61c8fa5cc4925a3bdcb84a7132f73bbb17a352476bc26a34f4ecb008699a1923",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Testing.dll": "884c27ab0d3339912435a6cf67e0f80572e1a248d8f4e83b2603215a9ea8fd45",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "ec00cf9183bdaaf0386495dd63a1d118eebe59e4efdcf765b5554695b358de99"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Testing.Integration",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.testing.integration/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.testing.integration/3.121.0/hexalith.eventstore.testing.integration.3.121.0.nupkg",
+        "nuget_archive_sha256": "2ef61b2e5c6859a27ea6caa65184aeabfef7f458f60bc66c8fdfc3f4e5b1fb27",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Testing.Integration.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Testing.Integration.3.121.0.nupkg",
+          "size": 64239,
+          "sha256": "47077df4fc2cbc2eca15c33840f8f3f91341faf4164cc9f5860a6226e77f6416",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Testing.Integration.dll": "2fe5a0f32348644d8f83a65efdc282023a5adef9b64d526b5a28da36bc1230e5",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "d7962b4942d1e5d9ec9bed2a534bb4bd5ae943fccf9c40028e1cd07be3efb2aa",
+          "Hexalith.EventStore.Testing.Integration.nuspec": "f29ed945ad009ba0da947d71c2fd91338b466c791aae407e25feccbfba324f4d",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Testing.Integration.dll": "2fe5a0f32348644d8f83a65efdc282023a5adef9b64d526b5a28da36bc1230e5",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "70467abfc5776f4a8a867095fffda3ada5f1ac547fb7baff47d4b7c3984cc87a"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Aspire",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.aspire/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.aspire/3.121.0/hexalith.eventstore.aspire.3.121.0.nupkg",
+        "nuget_archive_sha256": "549568c6fae2a2b71c3e4aa7a2dd01483870e32edb83eb68507385abd3fee1b9",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Aspire.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Aspire.3.121.0.nupkg",
+          "size": 31592,
+          "sha256": "417f0417a661c83814bd3796ccb67579160c9f933fa8d74937532bf39988363c",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Aspire.dll": "6f5bc7584dbadbad6b9bcc2abb09e42cde09684d308ca4605d3a339e6700f3d1",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "9dc45483c6a5bb2430b40ba0a560282949c679a18ed606505ed15d4471c83c67",
+          "Hexalith.EventStore.Aspire.nuspec": "3360bc7e349ab05ebd7ed0e04556e246fc916d1f5cf7159484024b62afe6ca59",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Aspire.dll": "6f5bc7584dbadbad6b9bcc2abb09e42cde09684d308ca4605d3a339e6700f3d1",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "e81ca6a4269fb2773613a8fae57fcbfda8969ea0285786a9293f1cae4b4dfeb2"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.ServiceDefaults",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.servicedefaults/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.servicedefaults/3.121.0/hexalith.eventstore.servicedefaults.3.121.0.nupkg",
+        "nuget_archive_sha256": "59c24d0c5c8f01795a5a171504980ee65d35d4b38f30d9bb61255589f2eb0802",
+        "release_asset": {
+          "name": "Hexalith.EventStore.ServiceDefaults.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.ServiceDefaults.3.121.0.nupkg",
+          "size": 53658,
+          "sha256": "fe7ace0f8f7e91c3853ff88b4aeb77e8c9c743fa81346d687d8f8af2f551eea0",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.ServiceDefaults.dll": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "88816f54bbff10139f1db42e56c04866e0fafdc5dfda7aa8cd2258bdf5eb0807",
+          "Hexalith.EventStore.ServiceDefaults.nuspec": "eb927080e0053e8c6edbf6d4d7bde6ecaa248fbf479d8fdb754daacf4417b33d",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.ServiceDefaults.dll": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "3bb5096138b6b1cc0d36e3a6a569d2b1b9b08603c93609ece0ca6f49360f307d"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": [
+          "HumanAuthorityReceiptClaims",
+          "HumanAuthorityReceiptCodec"
+        ]
+      },
+      {
+        "id": "Hexalith.EventStore.DomainService",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.domainservice/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.domainservice/3.121.0/hexalith.eventstore.domainservice.3.121.0.nupkg",
+        "nuget_archive_sha256": "5128cc72f4b27cd601f663c326de61af520fe9e8fb8b2f24cdafdb0a281a8c57",
+        "release_asset": {
+          "name": "Hexalith.EventStore.DomainService.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.DomainService.3.121.0.nupkg",
+          "size": 298681,
+          "sha256": "8a02de56b42684dd7bbf6e6f1c2e8ed0d79c2df813288272624bd33d036d943f",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.DomainService.dll": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "fe47415d80a0469d6e2ab24a6cc2ddca0903995bb08d87877c952b4802c34b9d",
+          "Hexalith.EventStore.DomainService.nuspec": "efcfc42731541489fb4e3b70a69caaf2fb4cb381132134be210e9c674d5af0bb",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.DomainService.dll": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "83ae95f09a3efbd6f19fea53f105d80f65ac45cbca69e2e3feb4e9df77feae43"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.RestApi.Generators",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.restapi.generators/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.restapi.generators/3.121.0/hexalith.eventstore.restapi.generators.3.121.0.nupkg",
+        "nuget_archive_sha256": "ccdf3eb247a78a66275228bb8aeeec684837fd901d3bb1698d57326e0f800344",
+        "release_asset": {
+          "name": "Hexalith.EventStore.RestApi.Generators.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.RestApi.Generators.3.121.0.nupkg",
+          "size": 36985,
+          "sha256": "cab11cc5f6904beed99d093c07a990725059fdf7f1d0a82087ff74277869b880",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "analyzers/dotnet/cs/Hexalith.EventStore.RestApi.Generators.dll": "51adf20461a724e1c9f8b9bd320c0102572dfced2b892b4a1ba1265b6178c2a0",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "5883d8774569b3283d837df564048abf40e64bf11cbe5e57537685633674cac4",
+          "Hexalith.EventStore.RestApi.Generators.nuspec": "b0df52a80a8d47a1589ba4161bdb8fcd131b05bd4744b57b96d2b3e6cdfdad9d",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "analyzers/dotnet/cs/Hexalith.EventStore.RestApi.Generators.dll": "51adf20461a724e1c9f8b9bd320c0102572dfced2b892b4a1ba1265b6178c2a0",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "a354ba46c771f7c936e3a2f0acb8f94b85e8ee3ca77abcd6abd3f585979e4739"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Gateway",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.gateway/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.gateway/3.121.0/hexalith.eventstore.gateway.3.121.0.nupkg",
+        "nuget_archive_sha256": "1b8c6f991d5cbe8e729a5db39789dc1fb3d1d58ab5a87b9393c05584951387cf",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Gateway.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Gateway.3.121.0.nupkg",
+          "size": 249970,
+          "sha256": "60d48796a8a4e038ce0cd56c76ca3a88fef654a518315dce402e15af7f8c6da0",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Gateway.dll": "422eeb67ce471e9a524520c9d90dba56bca118a7003d23e5bc37bda8b61bab33",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "4081ce34b6b5204f76a3c501fc520e9beb6075d594251efc79940a21a3a22915",
+          "Hexalith.EventStore.Gateway.nuspec": "9232588d9eb4b73f4314ac4f8fe822227d477507abf4bcb8669d33571f17f863",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Gateway.dll": "422eeb67ce471e9a524520c9d90dba56bca118a7003d23e5bc37bda8b61bab33",
+          "[Content_Types].xml": "1a6670ec6cb20a6520f5d6b9be859fcd7416bef2ba0e8e40bfbf0aaab5409e4f",
+          "package/services/metadata/core-properties/nuget.psmdcp": "77831284a9c555186e517ca513f3f8366b8022bb37cdb728baa65085127d6a09"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Admin.Abstractions",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.abstractions/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.abstractions/3.121.0/hexalith.eventstore.admin.abstractions.3.121.0.nupkg",
+        "nuget_archive_sha256": "f74f4e565b57149754e1e44e777edf98d5d44c2dc90e939987736f0fc6eaa233",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Admin.Abstractions.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Admin.Abstractions.3.121.0.nupkg",
+          "size": 117243,
+          "sha256": "7a3455fb0becdae2303d3293021795c5dc5fff5ec3eb9ea6aa8353343224d48b",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Admin.Abstractions.dll": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+          "lib/net10.0/Hexalith.EventStore.Admin.Abstractions.xml": "e7ff19b7229467396976b8540e55b213ab3d3bac09a75d1393a7f96284076474",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "d5c7aee5657cca0119240302b739253a45077d00c2681216f2830dd1927c712d",
+          "Hexalith.EventStore.Admin.Abstractions.nuspec": "851baea043ca1ba8c6fd9521e1eec72a022286849389b2593654b827927e7ff2",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Admin.Abstractions.dll": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+          "lib/net10.0/Hexalith.EventStore.Admin.Abstractions.xml": "e7ff19b7229467396976b8540e55b213ab3d3bac09a75d1393a7f96284076474",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e",
+          "package/services/metadata/core-properties/nuget.psmdcp": "f6027724574b42a146ac8510921e02ab17e4f220123fa4fa9a7569a6aa3bd9a7"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Admin.Cli",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.cli/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.cli/3.121.0/hexalith.eventstore.admin.cli.3.121.0.nupkg",
+        "nuget_archive_sha256": "e0608929d87f361b990531ab792600be97b7e6d9110c755cd3060d5bea7e6774",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Admin.Cli.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Admin.Cli.3.121.0.nupkg",
+          "size": 859162,
+          "sha256": "236a8c0dcbee5d64d6424f99f9ca7be68137cfd5284e3bb2b4d4a3ea1f1a8188",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "tools/net10.0/any/ByteAether.Ulid.dll": "6fcf380ea234091dd7c28b7f18898bee1446829d7665044cc87f7d948e66e950",
+          "tools/net10.0/any/DotnetToolSettings.xml": "f8bd685722f327cd22a721341f8fd976b939b1c0aae9f33de02c4f4253717d7e",
+          "tools/net10.0/any/Hexalith.Commons.UniqueIds.dll": "14f40a3801490d32cca54e56a1d1b020510e8fa2c7a02f3e566b47940a31d317",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Abstractions.dll": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Abstractions.xml": "e7ff19b7229467396976b8540e55b213ab3d3bac09a75d1393a7f96284076474",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Cli.dll": "be618d1640e6d86c350f129e6d0cac35b5790c68f6fb917da1c065bd0710f1ba",
+          "tools/net10.0/any/Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "tools/net10.0/any/Hexalith.EventStore.Contracts.xml": "cb80b29606bcbdf68876feceaf907cb93cff89916ecf80c7b576e2e9ccb32641",
+          "tools/net10.0/any/System.CommandLine.dll": "2b5ee7c20fdbd08af6c5dd7271c4e6b53fedab72864ee85abee94a647aba704e",
+          "tools/net10.0/any/cs/System.CommandLine.resources.dll": "9db74abed424f28057b2b946df78f892f14dd8683c74906c4e79a7b454303415",
+          "tools/net10.0/any/de/System.CommandLine.resources.dll": "017380f95f4c1057b701311342e5921ed5bdf5013d8553cb5ac4a8889d132081",
+          "tools/net10.0/any/es/System.CommandLine.resources.dll": "0277fb8bfbf2ec45923a20e34935356b6988f83cff9e3d5ffc985f9ab3c53b0d",
+          "tools/net10.0/any/fr/System.CommandLine.resources.dll": "511dbc4ce34e929433b206b32912db5562f8cb53b46b483468ae770bbd75f00e",
+          "tools/net10.0/any/it/System.CommandLine.resources.dll": "58c2f07c08d99a4823e441a0f9402a3a07e4f8902543ec97ea6bbc8961af5330",
+          "tools/net10.0/any/ja/System.CommandLine.resources.dll": "6f30fcd99bb1597f7b81f4bc26ed9582dc33d013aab211feaf96ab491a35a0b3",
+          "tools/net10.0/any/ko/System.CommandLine.resources.dll": "ab5c8b013a53f7a02fef7068434ffc46345f1f07963dd0ef6e26e3ff4b46b763",
+          "tools/net10.0/any/pl/System.CommandLine.resources.dll": "fa37fc6307053ace1003e6dcc72a33cc972dac719a0e1a40965936e1e8413bde",
+          "tools/net10.0/any/pt-BR/System.CommandLine.resources.dll": "f648dfab8b24d44177a4455ff9bcd4fefa06210ee5c06e4c6e447fd6f4963d51",
+          "tools/net10.0/any/ru/System.CommandLine.resources.dll": "e3984a1494df49ecccf720346fa3096f5ec546aff797e2e6d9b86df9686ed260",
+          "tools/net10.0/any/tr/System.CommandLine.resources.dll": "38361ec14998f14dbefb3f75e8793830a56e6e18d3a5737b238a6247cfcd72a2",
+          "tools/net10.0/any/zh-Hans/System.CommandLine.resources.dll": "425e40dd37692cc9c4fe2d75af4c39d884f7c982bb6ac80e2e34e341331437b6",
+          "tools/net10.0/any/zh-Hant/System.CommandLine.resources.dll": "b3a5d4992b4729d3f9bc1bde92f5bda23cbab6515af11f3cc317ae48a3cfed9c",
+          "[Content_Types].xml": "866fef857ac98250ef7f7f74c4a18a80d4b319b15d4247ef3641afc7dc7e4455"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "4e3d8bfb37006c487aedf8f66efae6136b87b722885eabf5f5a52afbbd1d4606",
+          "Hexalith.EventStore.Admin.Cli.nuspec": "fff2972028100170ee79f4faf6c2bf43eca4a33aa56003ae4f6ac97724795312",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "tools/net10.0/any/ByteAether.Ulid.dll": "6fcf380ea234091dd7c28b7f18898bee1446829d7665044cc87f7d948e66e950",
+          "tools/net10.0/any/DotnetToolSettings.xml": "f8bd685722f327cd22a721341f8fd976b939b1c0aae9f33de02c4f4253717d7e",
+          "tools/net10.0/any/Hexalith.Commons.UniqueIds.dll": "14f40a3801490d32cca54e56a1d1b020510e8fa2c7a02f3e566b47940a31d317",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Abstractions.dll": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Abstractions.pdb": "e3585a2cdd04e39f10575344de390b20ccca8be6a8d6a75c9c599a56f4f727cb",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Abstractions.xml": "e7ff19b7229467396976b8540e55b213ab3d3bac09a75d1393a7f96284076474",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Cli.deps.json": "8e9f93e2e5f0e85f253cbd86d08908fb09fbc68b4d89e6581a4a0e4b84799414",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Cli.dll": "be618d1640e6d86c350f129e6d0cac35b5790c68f6fb917da1c065bd0710f1ba",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Cli.pdb": "007ed25d67b9930f427c9d955f6088cdfe8c0620749cbb7e5a48a1e547095f06",
+          "tools/net10.0/any/Hexalith.EventStore.Admin.Cli.runtimeconfig.json": "9950d4583cfc9a106857c0d5b8a75b53e8774852b57b80bc3823a74d44a4d87f",
+          "tools/net10.0/any/Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "tools/net10.0/any/Hexalith.EventStore.Contracts.pdb": "ed6220953009a3b858d69e2dc990a615ed38208327f24c9a801e9fbc6dc89643",
+          "tools/net10.0/any/Hexalith.EventStore.Contracts.xml": "cb80b29606bcbdf68876feceaf907cb93cff89916ecf80c7b576e2e9ccb32641",
+          "tools/net10.0/any/System.CommandLine.dll": "2b5ee7c20fdbd08af6c5dd7271c4e6b53fedab72864ee85abee94a647aba704e",
+          "tools/net10.0/any/cs/System.CommandLine.resources.dll": "9db74abed424f28057b2b946df78f892f14dd8683c74906c4e79a7b454303415",
+          "tools/net10.0/any/de/System.CommandLine.resources.dll": "017380f95f4c1057b701311342e5921ed5bdf5013d8553cb5ac4a8889d132081",
+          "tools/net10.0/any/es/System.CommandLine.resources.dll": "0277fb8bfbf2ec45923a20e34935356b6988f83cff9e3d5ffc985f9ab3c53b0d",
+          "tools/net10.0/any/fr/System.CommandLine.resources.dll": "511dbc4ce34e929433b206b32912db5562f8cb53b46b483468ae770bbd75f00e",
+          "tools/net10.0/any/it/System.CommandLine.resources.dll": "58c2f07c08d99a4823e441a0f9402a3a07e4f8902543ec97ea6bbc8961af5330",
+          "tools/net10.0/any/ja/System.CommandLine.resources.dll": "6f30fcd99bb1597f7b81f4bc26ed9582dc33d013aab211feaf96ab491a35a0b3",
+          "tools/net10.0/any/ko/System.CommandLine.resources.dll": "ab5c8b013a53f7a02fef7068434ffc46345f1f07963dd0ef6e26e3ff4b46b763",
+          "tools/net10.0/any/pl/System.CommandLine.resources.dll": "fa37fc6307053ace1003e6dcc72a33cc972dac719a0e1a40965936e1e8413bde",
+          "tools/net10.0/any/pt-BR/System.CommandLine.resources.dll": "f648dfab8b24d44177a4455ff9bcd4fefa06210ee5c06e4c6e447fd6f4963d51",
+          "tools/net10.0/any/ru/System.CommandLine.resources.dll": "e3984a1494df49ecccf720346fa3096f5ec546aff797e2e6d9b86df9686ed260",
+          "tools/net10.0/any/tr/System.CommandLine.resources.dll": "38361ec14998f14dbefb3f75e8793830a56e6e18d3a5737b238a6247cfcd72a2",
+          "tools/net10.0/any/zh-Hans/System.CommandLine.resources.dll": "425e40dd37692cc9c4fe2d75af4c39d884f7c982bb6ac80e2e34e341331437b6",
+          "tools/net10.0/any/zh-Hant/System.CommandLine.resources.dll": "b3a5d4992b4729d3f9bc1bde92f5bda23cbab6515af11f3cc317ae48a3cfed9c",
+          "[Content_Types].xml": "866fef857ac98250ef7f7f74c4a18a80d4b319b15d4247ef3641afc7dc7e4455",
+          "package/services/metadata/core-properties/nuget.psmdcp": "74c584e8595d18599f0717d1fe1db29671ca3d57058dc9d61faff48977375bab"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      },
+      {
+        "id": "Hexalith.EventStore.Admin.Server",
+        "version": "3.121.0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore",
+          "commit": "21b34c01ec919769cfba9cfe0d47e50886b57ded"
+        },
+        "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.server/index.json",
+        "nuget_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.admin.server/3.121.0/hexalith.eventstore.admin.server.3.121.0.nupkg",
+        "nuget_archive_sha256": "5d784732931c2ea430701535945a614c19759e359899e8b8c9c09ca6b7e487bb",
+        "release_asset": {
+          "name": "Hexalith.EventStore.Admin.Server.3.121.0.nupkg",
+          "url": "https://github.com/Hexalith/Hexalith.EventStore/releases/download/v3.121.0/Hexalith.EventStore.Admin.Server.3.121.0.nupkg",
+          "size": 180266,
+          "sha256": "537f0297333a966242ad533e7f717d1fa33fdccedda43e1d277e24aa8cd64da7",
+          "runtime_and_docs_match_nuget": true
+        },
+        "assembly_and_documentation_sha256": {
+          "lib/net10.0/Hexalith.EventStore.Admin.Server.dll": "6bcc9e88cd9d0f2674e93227bc3b2bcbb60971b54e4decb9fd70831e53600f3d",
+          "lib/net10.0/Hexalith.EventStore.Admin.Server.xml": "99f893170b738961cf6f5681239107d3f7a5af85ea5250d1123e3e665f1b6cc1",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e"
+        },
+        "unsigned_package_entry_sha256": {
+          "_rels/.rels": "5e51be37a67122b411a68768a4860f109b0286267988649f6de4f7cc0fc88bd7",
+          "Hexalith.EventStore.Admin.Server.nuspec": "cf36043dab29a2ec4ebda2f266a719b0f7c0d0cd7f90c50b6972a5c001bb0e2f",
+          "README.md": "06f9232e685d6723af59fa7dcbcf28dfc482e7be3e451ae56aaf20f3f476fd40",
+          "lib/net10.0/Hexalith.EventStore.Admin.Server.dll": "6bcc9e88cd9d0f2674e93227bc3b2bcbb60971b54e4decb9fd70831e53600f3d",
+          "lib/net10.0/Hexalith.EventStore.Admin.Server.xml": "99f893170b738961cf6f5681239107d3f7a5af85ea5250d1123e3e665f1b6cc1",
+          "[Content_Types].xml": "70b483c5066b0f062f2102cd8f0c4b2fde9e919b5a9204689dd67e64b0cc518e",
+          "package/services/metadata/core-properties/nuget.psmdcp": "11fe435960de03b4873d90a898cd2bac55a3f8e73c33003ad3fca07e8a1dc276"
+        },
+        "all_unsigned_entries_match_release_asset": true,
+        "required_api_identifiers_verified": []
+      }
+    ],
+    "publication_required": false
+  },
+  "catalog": {
+    "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+    "owning_repository": "Hexalith/Hexalith.Builds",
+    "property": "HexalithEventStoreVersion",
+    "before": "3.120.0",
+    "after": "3.121.0",
+    "before_sha256": "cbdab4f8636299ad326580413f8f65cad1b7d3854d96775a33547fc616b07a2e",
+    "after_sha256": "47f38330465a4c19a2aaae3c2eed9a21b6cd671eb31b80ef0c189c34ab286b50",
+    "bom_preserved": true,
+    "crlf_preserved": true,
+    "only_changed_bytes_are_eventstore_version": true,
+    "change_state": "local uncommitted pin update; no catalog push"
+  },
+  "checks": [
+    {
+      "id": "api-contracts",
+      "command": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "member",
+        "DomainServiceRequest",
+        "--package",
+        "Hexalith.EventStore.Contracts@3.121.0",
+        "-n",
+        "55"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:41:55.824682+00:00",
+      "finished_at_utc": "2026-10-14T14:41:56.851247+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-contracts.log",
+      "log_sha256": "2cd4af979ff25fa64a547307af62811ab1bd2a6afc931d6183a507ba72ae3d55",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "api-owner-proof",
+      "command": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "type",
+        "--package",
+        "Hexalith.EventStore.Client@3.121.0",
+        "-t",
+        "BoundOwnerQueryProof"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:42:42.570409+00:00",
+      "finished_at_utc": "2026-10-14T14:42:43.737529+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-owner-proof.log",
+      "log_sha256": "968009ab0c7144ba9992b04e874394346ae4c8da0f8babdaf3b5d206302587c9",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "api-owner-request",
+      "command": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "type",
+        "--package",
+        "Hexalith.EventStore.Contracts@3.121.0",
+        "-t",
+        "BoundOwnerQueryRequest"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:42:23.244447+00:00",
+      "finished_at_utc": "2026-10-14T14:42:23.961494+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-owner-request.log",
+      "log_sha256": "14915d84f90726e47f46d58d6d08c0afedb8b93f445e0c27e06b8153e5b0a212",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "api-receipt",
+      "command": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "type",
+        "--package",
+        "Hexalith.EventStore.ServiceDefaults@3.121.0",
+        "-t",
+        "*HumanAuthorityReceipt*"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:40:30.013882+00:00",
+      "finished_at_utc": "2026-10-14T14:40:31.807402+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-receipt.log",
+      "log_sha256": "f93004a26d049871c0bea3bc84954ddec33f7674bc774a6aadb959cc6df4dfc6",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "api-server",
+      "command": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "type",
+        "--package",
+        "Hexalith.EventStore.Server@3.121.0",
+        "-t",
+        "DomainServiceSafeDenialException"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:40:30.012707+00:00",
+      "finished_at_utc": "2026-10-14T14:40:32.161268+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-server.log",
+      "log_sha256": "37972b8382d240c53079d205c6353628ef59f9e947e15425ac2ad855b32750bd",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "catalog-authority-tests",
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "Tools/test-authoritative-package-catalog.ps1"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "started_at_utc": "2026-10-14T14:42:42.567715+00:00",
+      "finished_at_utc": "2026-10-14T14:42:47.450040+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/catalog-authority-tests.log",
+      "log_sha256": "a43f6ca3c93e7087ae20e004c9e72f545e8c19f760f01ebacda2f66476defa07",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "catalog-validation",
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "Tools/validate-central-package-versions.ps1"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "started_at_utc": "2026-10-14T14:41:55.820952+00:00",
+      "finished_at_utc": "2026-10-14T14:41:58.081606+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/catalog-validation.log",
+      "log_sha256": "7e7c34f07168b773417ac598b81d6f51c5764d4f3bd4e5bd2d8f2f3cd64936a3",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "folders-contract-parity-gates",
+      "command": [
+        "pwsh",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "-NoRestore",
+        "-OutputReportPath",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/contract-parity-report.json"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:43:49.946088+00:00",
+      "finished_at_utc": "2026-10-14T14:44:33.154999+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-contract-parity-gates.log",
+      "log_sha256": "5679543ee23aeaadf90a41b75609dc9f99c42468f6589bfd0c6047fa4a49b8ac",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 7,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 3,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 1,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 5,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 3,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 7,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 216,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 4,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 3,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 96,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 620,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 12,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 571,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 7,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 9,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 4,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 58,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 586,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 8,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 2257
+    },
+    {
+      "id": "folders-domain-authorization-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Tests.Authorization.*",
+        "-class",
+        "Hexalith.Folders.Tests.Aggregates.Folder.FinalAclReauthorizationTests",
+        "-class",
+        "Hexalith.Folders.Tests.Aggregates.Folder.FolderArchiveAuthorizationGateTests",
+        "-class",
+        "Hexalith.Folders.Tests.Queries.Folders.FolderLifecycleStatusAuthorizationGateTests"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:43:32.781763+00:00",
+      "finished_at_utc": "2026-10-14T14:43:33.264048+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-domain-authorization-tests.log",
+      "log_sha256": "d2b2bd1784537b2cf5b8933f2eaaca4ddbaa6146624daff867128e2af1ce6dc5",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 150,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 150
+    },
+    {
+      "id": "folders-eventstore-adapter-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.EventStore.Tests/bin/Release/net10.0/Hexalith.Folders.EventStore.Tests.dll"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:43:32.773042+00:00",
+      "finished_at_utc": "2026-10-14T14:43:33.721058+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-eventstore-adapter-tests.log",
+      "log_sha256": "a26f67bc1ef38e3d0310ab744fe7a6f4b753f450339bbf4941095dbce2680209",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 58,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 58
+    },
+    {
+      "id": "folders-governance-gates",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:43:49.944052+00:00",
+      "finished_at_utc": "2026-10-14T14:43:53.501383+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-governance-gates.log",
+      "log_sha256": "c2972695288d101dc2813d8493fa598909a3d1990fe4f49a150f31659781ab74",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 23,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 7,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 3,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 33
+    },
+    {
+      "id": "folders-integration-routing-and-golden-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:43:49.941812+00:00",
+      "finished_at_utc": "2026-10-14T14:43:54.356978+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-integration-routing-and-golden-tests.log",
+      "log_sha256": "488ee53ea2c0044b3ab6b3447bcd21972f0a65ff6c58802121a59bbb1dac65df",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 114,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 114
+    },
+    {
+      "id": "folders-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-p:UseHexalithProjectReferences=false",
+        "--no-restore",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:42:42.562418+00:00",
+      "finished_at_utc": "2026-10-14T14:43:02.075281+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-release-build.log",
+      "log_sha256": "304f311bdd431152a542e85a07a2d889a625787f262c1a6aebc8bb86b631f609",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "build_summary": {
+        "warnings": 3,
+        "errors": 0
+      }
+    },
+    {
+      "id": "folders-release-restore",
+      "command": [
+        "dotnet",
+        "restore",
+        "Hexalith.Folders.CI.slnx",
+        "-p:Configuration=Release",
+        "-p:UseNuGetDeps=true",
+        "-p:UseHexalithProjectReferences=false",
+        "-m:1"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:41:55.818011+00:00",
+      "finished_at_utc": "2026-10-14T14:41:58.278635+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-release-restore.log",
+      "log_sha256": "8a4b9f4ed00f5c8f35903b20c4ea077875a04f4cf3c415d71b9a999b6481b918",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "folders-server-authorization-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.HumanAuthorityReceiptVerifierTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.VerifiedReceiptEventStoreAuthorizationValidatorTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FoldersDomainServiceRequestHandlerTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.SafeAuthorizationDenialMappingTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.HistoricalMutationAuthorizationTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10V2RequestFolderAuthorizationTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10V2ReadKeyPrecedenceTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationExecutorTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10AuthorizationAuditSinkTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.OrganizationAclReauthorizationTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.AuditEndpointsAuthorizationOrderTests"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:43:32.770872+00:00",
+      "finished_at_utc": "2026-10-14T14:43:40.927933+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-server-authorization-tests.log",
+      "log_sha256": "02ffe5146232f62ffd2dd0f69054bd08d4923f8b2d63bc1066a4a92a14513e83",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 133,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 133
+    },
+    {
+      "id": "inspector-version",
+      "command": [
+        "dnx",
+        "dotnet-inspect",
+        "-y",
+        "--",
+        "--version"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:54:18.507134+00:00",
+      "finished_at_utc": "2026-10-14T14:54:19.125147+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/inspector-version.log",
+      "log_sha256": "0fbfdd54d1eaaff6290aa2bc3479ec450622a9fad6208941ce7fce810f959c5b",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "projects-authorization-and-folders-adapter-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+        "-class",
+        "Hexalith.Projects.Server.Tests.Authorization.*",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectAuthorizationGateTests",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "started_at_utc": "2026-10-14T14:43:32.776250+00:00",
+      "finished_at_utc": "2026-10-14T14:43:33.336644+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/projects-authorization-and-folders-adapter-tests.log",
+      "log_sha256": "334ca3c62e7151ee54f1a9861400db064cb74ed8836cea3a0e163989cc90ac50",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "test_summaries": [
+        {
+          "total": 61,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ],
+      "executed_tests": 61
+    },
+    {
+      "id": "projects-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:NuGetAudit=false",
+        "--no-restore",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "started_at_utc": "2026-10-14T14:42:42.564084+00:00",
+      "finished_at_utc": "2026-10-14T14:43:01.331508+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/projects-release-build.log",
+      "log_sha256": "fa7fb7e3f1271009eab03c67b1adc14e2bf3a0557a5f5f9bdc803832cb0f3139",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "build_summary": {
+        "warnings": 0,
+        "errors": 0
+      }
+    },
+    {
+      "id": "projects-release-restore",
+      "command": [
+        "dotnet",
+        "restore",
+        "Hexalith.Projects.CI.slnx",
+        "-p:Configuration=Release",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:NuGetAudit=false",
+        "-m:1"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "started_at_utc": "2026-10-14T14:41:55.819331+00:00",
+      "finished_at_utc": "2026-10-14T14:41:58.843579+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/projects-release-restore.log",
+      "log_sha256": "59ed7d9938e012af48fb5d70fe83db26399c1da163f9b1e754c4b0ad7c32edbc",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "publication-complete",
+      "command": [
+        "python3",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/verify-publication-complete.py"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:55:02.619134+00:00",
+      "finished_at_utc": "2026-10-14T14:55:04.313279+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/publication-complete.log",
+      "log_sha256": "08fdc20159064a9f5ea65e483554f01dff7c752e77c6f6d940ec1c71c46d90f0",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/verify-publication-complete.py",
+      "script_snapshot_sha256": "45226c8f0a3627bff6ac9bbe9223abe2f85c2ce9ef3956fc80a14a14d15df38b",
+      "script_snapshot_reconstructed_from_recorded_edits": false
+    },
+    {
+      "id": "publication-final",
+      "command": [
+        "python3",
+        "/tmp/story117-package-unblock-20261014/verify-publication.py"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:41:21.334372+00:00",
+      "finished_at_utc": "2026-10-14T14:41:23.862078+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/publication-final.log",
+      "log_sha256": "5bdb033d917e29d992400d6ca8f1ba50d14e74469542864a312e7f1b33f195b2",
+      "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/verify-publication-identifiers.py",
+      "script_snapshot_sha256": "798beacaed657c5d71a4d4ce2bccb306d4c68cf356d76537d9842bf325e92d8c",
+      "script_snapshot_reconstructed_from_recorded_edits": true,
+      "script_snapshot_saved_after_execution": true,
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "publication-payload-comparison",
+      "command": [
+        "python3",
+        "/tmp/story117-package-unblock-20261014/verify-publication.py"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:48:28.636555+00:00",
+      "finished_at_utc": "2026-10-14T14:48:31.111374+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/publication-payload-comparison.log",
+      "log_sha256": "5bdb033d917e29d992400d6ca8f1ba50d14e74469542864a312e7f1b33f195b2",
+      "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/verify-publication.py",
+      "script_snapshot_sha256": "4bbabc996e8f373ee39c027b34f80dce04a697fd84840d1bbb26245b3c3ec75f",
+      "script_snapshot_reconstructed_from_recorded_edits": false,
+      "script_snapshot_saved_after_execution": true,
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "publication",
+      "command": [
+        "python3",
+        "/tmp/story117-package-unblock-20261014/verify-publication.py"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:39:56.791120+00:00",
+      "finished_at_utc": "2026-10-14T14:39:58.838372+00:00",
+      "exit_code": 1,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/publication.log",
+      "log_sha256": "431abd594c7799a434eeded6cc9e2609f7c801a07f20962982a13f29dd8ddf25",
+      "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/verify-publication-initial.py",
+      "script_snapshot_sha256": "841c2f1806624031d91ae9840a9cc2a7ac1fc767eb91f4f16a4de8c42fedb122",
+      "script_snapshot_reconstructed_from_recorded_edits": true,
+      "script_snapshot_saved_after_execution": true,
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    },
+    {
+      "id": "readiness-verification",
+      "command": [
+        "python3",
+        "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/collect-evidence.py"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "started_at_utc": "2026-10-14T14:55:51.232260+00:00",
+      "finished_at_utc": "2026-10-14T14:55:51.415198+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/readiness-verification.log",
+      "log_sha256": "6955acf03a05c15b334d0e7c00352f193f67caa0be67c6845477ee0a094835a9",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31",
+      "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/collect-evidence.py",
+      "script_snapshot_sha256": "d6f9935a342aa3a185c4e8b71709ae187664086ec2729401eb04e9d6d68f68ab",
+      "script_snapshot_reconstructed_from_recorded_edits": false
+    },
+    {
+      "id": "release-asset-download",
+      "command": [
+        "gh",
+        "release",
+        "download",
+        "v3.121.0",
+        "--repo",
+        "Hexalith/Hexalith.EventStore",
+        "--pattern",
+        "*.nupkg",
+        "--dir",
+        "/tmp/story117-package-unblock-20261014/github"
+      ],
+      "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+      "started_at_utc": "2026-10-14T14:41:22.493139+00:00",
+      "finished_at_utc": "2026-10-14T14:41:24.337535+00:00",
+      "exit_code": 0,
+      "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/release-asset-download.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+      "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+    }
+  ],
+  "consumers": [
+    {
+      "name": "folders",
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "assets_path": "src/Hexalith.Folders.Server/obj/project.assets.json",
+      "assets_sha256": "6ca476170143a14c0b8bb0ef03b200c39bf959599742a386a1a87a02b1c939c8",
+      "selected_libraries": {
+        "Hexalith.EventStore.Client/3.121.0": "package",
+        "Hexalith.EventStore.Contracts/3.121.0": "package",
+        "Hexalith.EventStore.DomainService/3.121.0": "package",
+        "Hexalith.EventStore.ServiceDefaults/3.121.0": "package",
+        "Hexalith.Folders.Contracts/1.0.0": "project",
+        "Hexalith.Folders.ServiceDefaults/1.0.0": "project"
+      },
+      "test_output": "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0",
+      "eventstore_runtime_payloads": {
+        "Hexalith.EventStore.Client.dll": {
+          "sha256": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Contracts.dll": {
+          "sha256": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.DomainService.dll": {
+          "sha256": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.ServiceDefaults.dll": {
+          "sha256": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+          "matches_published_3_121_0_payload": true
+        }
+      },
+      "consumer_binary_sha256": {
+        "Hexalith.Folders.Contracts.dll": "eb9284cbfeae95b98e43e3591e8ea12b93cda04747524971eb4646c04adad2b8",
+        "Hexalith.Folders.Server.Tests.dll": "e02acf46875b7e2b79653832cba010bd76f8bbbf5f5820c6a217c5b916f7a328",
+        "Hexalith.Folders.Server.dll": "8b066ae673755946a065474c5a6fb7388845b0e47ba478284f8bf66e1ecab025",
+        "Hexalith.Folders.ServiceDefaults.dll": "9b71b2a5f244cd9f859c5241d27610e3078591db8e62ee82bf0b493e9b9c6a57",
+        "Hexalith.Folders.Testing.dll": "cb635afecc74782aad1f4d032370a8718fc515fb33cc74a48a7dccd62fa4b1ca",
+        "Hexalith.Folders.dll": "e58fcbb254d69d6f08918ddaf23df74b946a3a2f6c16499470705499900bd4de"
+      },
+      "expected_eventstore_runtime_inventory": [
+        "Hexalith.EventStore.Client.dll",
+        "Hexalith.EventStore.Contracts.dll",
+        "Hexalith.EventStore.DomainService.dll",
+        "Hexalith.EventStore.ServiceDefaults.dll"
+      ]
+    },
+    {
+      "name": "folders-eventstore",
+      "repository": "/home/administrator/projects/hexalith/folders",
+      "assets_path": "src/Hexalith.Folders.EventStore/obj/project.assets.json",
+      "assets_sha256": "dd21ff0746b267f84a3c7425890b60db5f92584efe8339747f104b4f418cb073",
+      "selected_libraries": {
+        "Hexalith.EventStore.Admin.Abstractions/3.121.0": "package",
+        "Hexalith.EventStore.Client/3.121.0": "package",
+        "Hexalith.EventStore.Contracts/3.121.0": "package",
+        "Hexalith.EventStore.DomainService/3.121.0": "package",
+        "Hexalith.EventStore.Gateway/3.121.0": "package",
+        "Hexalith.EventStore.Server/3.121.0": "package",
+        "Hexalith.EventStore.ServiceDefaults/3.121.0": "package",
+        "Hexalith.Folders.Contracts/1.0.0": "project"
+      },
+      "test_output": "tests/Hexalith.Folders.EventStore.Tests/bin/Release/net10.0",
+      "eventstore_runtime_payloads": {
+        "Hexalith.EventStore.Admin.Abstractions.dll": {
+          "sha256": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Client.dll": {
+          "sha256": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Contracts.dll": {
+          "sha256": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.DomainService.dll": {
+          "sha256": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Gateway.dll": {
+          "sha256": "422eeb67ce471e9a524520c9d90dba56bca118a7003d23e5bc37bda8b61bab33",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Server.dll": {
+          "sha256": "1cd35bbd08eb501fa9d64061e2f637715ae93bab7ee4c43c23b449dabe60d4ca",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.ServiceDefaults.dll": {
+          "sha256": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+          "matches_published_3_121_0_payload": true
+        }
+      },
+      "consumer_binary_sha256": {
+        "Hexalith.Folders.Contracts.dll": "eb9284cbfeae95b98e43e3591e8ea12b93cda04747524971eb4646c04adad2b8",
+        "Hexalith.Folders.EventStore.Tests.dll": "a568ed1f5a92e3e0368778dee3c5b4c6f5949456ba7c4227721089744399495b",
+        "Hexalith.Folders.EventStore.dll": "5caa755f6ea650962be0b472990d7fca56cf6979657227719d6df1596e8d554f",
+        "Hexalith.Folders.Server.dll": "8b066ae673755946a065474c5a6fb7388845b0e47ba478284f8bf66e1ecab025",
+        "Hexalith.Folders.ServiceDefaults.dll": "9b71b2a5f244cd9f859c5241d27610e3078591db8e62ee82bf0b493e9b9c6a57",
+        "Hexalith.Folders.dll": "e58fcbb254d69d6f08918ddaf23df74b946a3a2f6c16499470705499900bd4de"
+      },
+      "expected_eventstore_runtime_inventory": [
+        "Hexalith.EventStore.Admin.Abstractions.dll",
+        "Hexalith.EventStore.Client.dll",
+        "Hexalith.EventStore.Contracts.dll",
+        "Hexalith.EventStore.DomainService.dll",
+        "Hexalith.EventStore.Gateway.dll",
+        "Hexalith.EventStore.Server.dll",
+        "Hexalith.EventStore.ServiceDefaults.dll"
+      ]
+    },
+    {
+      "name": "projects",
+      "repository": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+      "assets_path": "references/Hexalith.Projects/src/Hexalith.Projects.Server/obj/project.assets.json",
+      "assets_sha256": "bd0210b9b575547831a93132fadce1deeca81fbef528930200575e286361288c",
+      "selected_libraries": {
+        "Hexalith.EventStore.Admin.Abstractions/3.121.0": "package",
+        "Hexalith.EventStore.Client/3.121.0": "package",
+        "Hexalith.EventStore.Contracts/3.121.0": "package",
+        "Hexalith.EventStore.DomainService/3.121.0": "package",
+        "Hexalith.EventStore.Gateway/3.121.0": "package",
+        "Hexalith.EventStore.Server/3.121.0": "package",
+        "Hexalith.EventStore.ServiceDefaults/3.121.0": "package",
+        "Hexalith.Folders.Client/1.2.1": "package",
+        "Hexalith.Folders.Contracts/1.2.1": "package"
+      },
+      "test_output": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0",
+      "eventstore_runtime_payloads": {
+        "Hexalith.EventStore.Admin.Abstractions.dll": {
+          "sha256": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Client.dll": {
+          "sha256": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Contracts.dll": {
+          "sha256": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.DomainService.dll": {
+          "sha256": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Gateway.dll": {
+          "sha256": "422eeb67ce471e9a524520c9d90dba56bca118a7003d23e5bc37bda8b61bab33",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Server.dll": {
+          "sha256": "1cd35bbd08eb501fa9d64061e2f637715ae93bab7ee4c43c23b449dabe60d4ca",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.ServiceDefaults.dll": {
+          "sha256": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+          "matches_published_3_121_0_payload": true
+        },
+        "Hexalith.EventStore.Testing.dll": {
+          "sha256": "884c27ab0d3339912435a6cf67e0f80572e1a248d8f4e83b2603215a9ea8fd45",
+          "matches_published_3_121_0_payload": true
+        }
+      },
+      "consumer_binary_sha256": {
+        "Hexalith.Folders.Client.dll": "66efeccaa63848f9edb080355bfdcc0185797e1ef60da8ce794cc2c2d77a91a6",
+        "Hexalith.Folders.Contracts.dll": "1bc5dec0c971a332df80bab89b4c41f1789a071560c0298eff65b1e04384d8dc",
+        "Hexalith.Projects.Client.dll": "599ca6b4984c90f72d3f8166fa694061b870bb884521fff49510d9e4793ead1f",
+        "Hexalith.Projects.Contracts.dll": "c3372d0b6b344d42b148c32bd7bed3771e7c64ebc9a0958803be0defa4fda726",
+        "Hexalith.Projects.Infrastructure.dll": "b863f9f9c0cf70ef3787c93279420a806d02e2d2e876a4fa55857d179b9b5eb0",
+        "Hexalith.Projects.Server.Tests.dll": "fc772c1284b33f89ce0ed2f7def42f36bc531a0981a3a826f0d878df6fbb9a31",
+        "Hexalith.Projects.Server.dll": "b9aac5ca4e380518b1248e84673dc42c37ca9320f9936430c99123a195548ae6",
+        "Hexalith.Projects.ServiceDefaults.dll": "5782545e460b8dcb2e5879bf69dc601131e64a01d11cb74d62bcdef38ba1f480",
+        "Hexalith.Projects.Testing.dll": "7a760bd92735bf7e31a07caf428f2ee516ffe8fc63b6d00897e51a4d08e09f30",
+        "Hexalith.Projects.Workers.dll": "a2c5a880e4b1f5456be256c228c54905b4654756c7b8347410f137904760c595",
+        "Hexalith.Projects.dll": "4430e0e29edc796a42a9acb76daf070c9e76507ce85b7fbfb42f59694af75cc0"
+      },
+      "expected_eventstore_runtime_inventory": [
+        "Hexalith.EventStore.Admin.Abstractions.dll",
+        "Hexalith.EventStore.Client.dll",
+        "Hexalith.EventStore.Contracts.dll",
+        "Hexalith.EventStore.DomainService.dll",
+        "Hexalith.EventStore.Gateway.dll",
+        "Hexalith.EventStore.Server.dll",
+        "Hexalith.EventStore.ServiceDefaults.dll",
+        "Hexalith.EventStore.Testing.dll"
+      ]
+    }
+  ],
+  "executed_assemblies": [
+    {
+      "assembly": "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "sha256": "5ad8ebb7fbdb1f4ce9ae658e552772502d508782169a53f1ce39d7c7fbc76ae2",
+      "eventstore_dependency_sha256": {}
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.Client.Tests/bin/Release/net10.0/Hexalith.Folders.Client.Tests.dll",
+      "sha256": "9e037118ba5fc8d48cf40a03392bb4f77dc5459cba5d562fdce389bc15159fcb",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.Cli.Tests/bin/Release/net10.0/Hexalith.Folders.Cli.Tests.dll",
+      "sha256": "f8b04367ed646da0b3d19c34c903d8c52250aaf30ac0c7ccb526643f1f7ce566",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.Mcp.Tests/bin/Release/net10.0/Hexalith.Folders.Mcp.Tests.dll",
+      "sha256": "0b0e455d51098bc1ff4d841c2d0dbd7e3e0a482275f146b670287dcc089ae9e2",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.Tests/bin/Release/net10.0/Hexalith.Folders.Tests.dll",
+      "sha256": "a20f634f0f1e71703cc1d93693d038b86cfa365a358ff68c144b67789fecc5a7",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+      "sha256": "9d8b7b53308fc92c3aa9fb7addd351d2c4717a989737f41c40cd341cbf76d452",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.ServiceDefaults.dll": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+        "Hexalith.EventStore.Aspire.dll": "6f5bc7584dbadbad6b9bcc2abb09e42cde09684d308ca4605d3a339e6700f3d1",
+        "Hexalith.EventStore.DomainService.dll": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "sha256": "e02acf46875b7e2b79653832cba010bd76f8bbbf5f5820c6a217c5b916f7a328",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.ServiceDefaults.dll": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+        "Hexalith.EventStore.DomainService.dll": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "tests/Hexalith.Folders.EventStore.Tests/bin/Release/net10.0/Hexalith.Folders.EventStore.Tests.dll",
+      "sha256": "a568ed1f5a92e3e0368778dee3c5b4c6f5949456ba7c4227721089744399495b",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.ServiceDefaults.dll": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+        "Hexalith.EventStore.DomainService.dll": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+        "Hexalith.EventStore.Admin.Abstractions.dll": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+        "Hexalith.EventStore.Server.dll": "1cd35bbd08eb501fa9d64061e2f637715ae93bab7ee4c43c23b449dabe60d4ca",
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Gateway.dll": "422eeb67ce471e9a524520c9d90dba56bca118a7003d23e5bc37bda8b61bab33",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    },
+    {
+      "assembly": "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+      "sha256": "fc772c1284b33f89ce0ed2f7def42f36bc531a0981a3a826f0d878df6fbb9a31",
+      "eventstore_dependency_sha256": {
+        "Hexalith.EventStore.ServiceDefaults.dll": "19fedfacdfe4aba49e8787881f0c5235c88ccf83665fb6f0fe61c68c2dfad3cc",
+        "Hexalith.EventStore.DomainService.dll": "695e04f815830844e0f1b4b66e1cb7a9bd9082acaeecf28b550888ccee94add2",
+        "Hexalith.EventStore.Admin.Abstractions.dll": "e85acc77b6647301d918369c7f2be43d8116ac1bfbf37cc49cfb5963d695b680",
+        "Hexalith.EventStore.Server.dll": "1cd35bbd08eb501fa9d64061e2f637715ae93bab7ee4c43c23b449dabe60d4ca",
+        "Hexalith.EventStore.Testing.dll": "884c27ab0d3339912435a6cf67e0f80572e1a248d8f4e83b2603215a9ea8fd45",
+        "Hexalith.EventStore.Client.dll": "969a3e73b12601b56bf79dc9a3e3e14ba7d3690a0c0ad93a3856a9e86a48f749",
+        "Hexalith.EventStore.Gateway.dll": "422eeb67ce471e9a524520c9d90dba56bca118a7003d23e5bc37bda8b61bab33",
+        "Hexalith.EventStore.Contracts.dll": "cf38d3532d12e9db7a168beca38e689546dbb52bb13f8e47d2b11208c35f94c3"
+      }
+    }
+  ],
+  "folders_published_pair": [
+    {
+      "id": "Hexalith.Folders.Client",
+      "version": "1.2.1",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.Folders",
+        "commit": "17b5a70d2b4b91bbbf73ea63c8a214a0ad426759"
+      },
+      "cached_archive_sha256": "99c5996dbdcdd58759b8436a0ee3496616eefc071c29c8d40c0c3a77bf0d7391",
+      "runtime_payload_sha256": "66efeccaa63848f9edb080355bfdcc0185797e1ef60da8ce794cc2c2d77a91a6",
+      "runtime_matches_cached_archive": true
+    },
+    {
+      "id": "Hexalith.Folders.Contracts",
+      "version": "1.2.1",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.Folders",
+        "commit": "17b5a70d2b4b91bbbf73ea63c8a214a0ad426759"
+      },
+      "cached_archive_sha256": "325b4509ce924b92d31fb76ba40b21d1ee1eb1e90057ab53a19f6cf01f9ebb3d",
+      "runtime_payload_sha256": "1bc5dec0c971a332df80bab89b4c41f1789a071560c0298eff65b1e04384d8dc",
+      "runtime_matches_cached_archive": true
+    }
+  ],
+  "environment": {
+    "observed_after_execution": true,
+    "os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "tool_versions": {
+      "sdk": {
+        "command": [
+          "dotnet",
+          "--version"
+        ],
+        "output": "10.0.401"
+      },
+      "runtimes": {
+        "command": [
+          "dotnet",
+          "--list-runtimes"
+        ],
+        "output": "Microsoft.AspNetCore.App 10.0.10 [/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.11 [/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 10.0.10 [/home/administrator/.dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.11 [/home/administrator/.dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/home/administrator/.dotnet/shared/Microsoft.NETCore.App]"
+      },
+      "python": {
+        "command": [
+          "python3",
+          "--version"
+        ],
+        "output": "Python 3.14.4"
+      },
+      "powershell": {
+        "command": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-Command",
+          "$PSVersionTable.PSVersion.ToString()"
+        ],
+        "output": "7.6.2"
+      },
+      "github_cli": {
+        "command": [
+          "gh",
+          "--version"
+        ],
+        "output": "gh version 2.46.0 (2025-12-13 Ubuntu 2.46.0-4)\nhttps://github.com/cli/cli/releases/tag/v2.46.0"
+      },
+      "git": {
+        "command": [
+          "git",
+          "--version"
+        ],
+        "output": "git version 2.53.0"
+      },
+      "dotnet_inspect": {
+        "output": "0.26.0+d236a7a",
+        "source": "inspector-version.command.json",
+        "cache_package_versions": [
+          "0.20.0",
+          "0.26.0",
+          "0.17.0",
+          "0.22.0",
+          "0.16.0",
+          "0.24.0",
+          "0.23.0",
+          "0.21.0",
+          "0.25.0",
+          "0.18.0"
+        ],
+        "cached_package_sha256": "9d326031cc23718a351faa8d30dd680f309f24d5c52c0c0a4d761cc08c215f88"
+      }
+    },
+    "build_environment": {
+      "CI": null,
+      "Configuration": null,
+      "DOTNET_ROOT": "/home/administrator/.dotnet",
+      "DOTNET_ENVIRONMENT": null,
+      "ASPNETCORE_ENVIRONMENT": null,
+      "NUGET_PACKAGES": null,
+      "UseNuGetDeps": null,
+      "UseHexalithProjectReferences": null,
+      "DOTNET_CLI_TELEMETRY_OPTOUT": null
+    }
+  },
+  "baseline_snapshot": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/baseline.json",
+    "sha256": "b38d6c3f140b0dca4a90ed4b2f82c0c4969bf873c2429b935402e0daad9d594c"
+  },
+  "preservation": {
+    "historical_and_control_file_count": 29,
+    "historical_and_control_file_hashes": {
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+      "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": "ea04ef2229ea97a0afe13cac8f4e885a4f353e19537018293b02a0efc6ba7805",
+      "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420"
+    },
+    "all_captured_file_hashes_unchanged": true,
+    "source_test_and_gate_invariants": {
+      "folders": {
+        "count": 1572,
+        "before_sha256": "77e5f741b0ee092decdc5e2e284ca7f49b4c954ce3bc9cd9b481ba8fb5311c73",
+        "after_sha256": "77e5f741b0ee092decdc5e2e284ca7f49b4c954ce3bc9cd9b481ba8fb5311c73",
+        "changed_paths": []
+      },
+      "eventstore": {
+        "count": 3491,
+        "before_sha256": "8e5953d2d01a868364dc1ab5c7774e2b61eeea1cec360037d4fdee7365cf3b03",
+        "after_sha256": "8e5953d2d01a868364dc1ab5c7774e2b61eeea1cec360037d4fdee7365cf3b03",
+        "changed_paths": []
+      },
+      "builds": {
+        "count": 546,
+        "before_sha256": "ea7d0056b2e8050dadf7cbde91705e669e3a8c2045c03e0bba46c0f4cbc42307",
+        "after_sha256": "ea7d0056b2e8050dadf7cbde91705e669e3a8c2045c03e0bba46c0f4cbc42307",
+        "changed_paths": []
+      },
+      "projects": {
+        "count": 714,
+        "before_sha256": "9e2b60cf6dbbdef831d4532ae805191af9ebb2a782b0f3d6bfad937bfb49ee4f",
+        "after_sha256": "9e2b60cf6dbbdef831d4532ae805191af9ebb2a782b0f3d6bfad937bfb49ee4f",
+        "changed_paths": []
+      }
+    },
+    "gate_reports": {
+      "_bmad-output/gates/governance-completeness/latest.json": {
+        "comparison_source_revision": "ea1e9ac9745ad86aac7f2bf6ea84ee3741fea0ed",
+        "before_sha256": "5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb",
+        "after_sha256": "5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb",
+        "byte_identical": true
+      },
+      "_bmad-output/gates/contract-parity-ci/latest.json": {
+        "comparison_source_revision": "ea1e9ac9745ad86aac7f2bf6ea84ee3741fea0ed",
+        "before_sha256": "03f22fd4ee8d0018b3ee1ea42b5f93fd55cfa81e518a0bbc67b9c1583e78ae43",
+        "after_sha256": "03f22fd4ee8d0018b3ee1ea42b5f93fd55cfa81e518a0bbc67b9c1583e78ae43",
+        "byte_identical": true
+      }
+    },
+    "story_tracker_value": "backlog",
+    "routing_mode": "V1Only",
+    "t0_utc": null
+  },
+  "limitations": [
+    "Folders build passes with three existing NU1903 audit warnings for Microsoft.AspNetCore.SignalR.Common 10.0.12; existing WarningsNotAsErrors policy preserved.",
+    "Projects preserves the previous NuGetAudit=false environment pin. Its unchanged AppHost still builds explicit EventStore/Tenants executable resource references and E2E fixtures in solution-mapped Debug. Consumer libraries/test outputs use published EventStore 3.121.0; no source or configuration gate was changed.",
+    "The initial publication checker failed because Server XML documentation omits DomainServiceSafeDenialException; actual binary API inspection and identifier checks pass. Its failure log remains retained.",
+    "Focused tests and existing parity/governance gates ran; full unrelated test suites and remote consumer CI did not run.",
+    "No EventStore publication was required; no new release, deployment, migration window, T0, observation, v1 retirement, story closure or tracker transition occurred."
+  ],
+  "entry": {
+    "decision": "hold",
+    "required_routing_mode": "V1Only",
+    "t0_utc": null,
+    "production_entry_established": false,
+    "remaining_evidence": [
+      "exact published current candidate and production configurations/images",
+      "Projects deployment artifact and complete deployed periodic schedule",
+      "current version/consumer-attributed production baseline and census",
+      "numeric error/latency thresholds",
+      "exact-artifact preproduction reversal and prior v1 artifacts/configuration",
+      "UTC activation/retirement/expiry slots and named operations/on-call owners",
+      "ordinary-traffic observation",
+      "v1 retirement and post-retirement verification",
+      "closure decision and authorized tracker delta"
+    ]
+  }
+}

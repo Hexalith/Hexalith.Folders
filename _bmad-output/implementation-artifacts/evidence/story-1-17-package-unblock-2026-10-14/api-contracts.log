@@ -1,0 +1,47 @@
+# Hexalith.EventStore.Contracts.Commands.DomainServiceRequest
+
+DTO payload sent to the domain service via DAPR service invocation. Lives in Contracts so both the invoker (Server) and the domain service (Client/Sample) share the same wire format.
+
+Package: Hexalith.EventStore.Contracts | Version: 3.121.0 | TFM: net10.0 | Library: lib/net10.0/Hexalith.EventStore.Contracts.dll | Source: NuGet
+
+## Constructors
+
+| Name |
+| ---- |
+| .ctor |
+
+## Interfaces
+
+| Interface |
+| --------- |
+| System.IEquatable&lt;Hexalith.EventStore.Contracts.Commands.DomainServiceRequest&gt; |
+
+## Method Groups
+
+| Name | Return Type | Overloads |
+| ---- | ----------- | --------- |
+| Deconstruct | void | 1 |
+| Equals | bool | 2 |
+| GetHashCode | int | 1 |
+| ToString | string | 1 |
+
+## Operators
+
+| Name | Digest | Signature |
+| ---- | ------ | --------- |
+| operator == | `ded9b791f4` | `public static bool operator ==(Hexalith.EventStore.Contracts.Commands.DomainServiceRequest?, Hexalith.EventStore.Contracts.Commands.DomainServiceRequest?)` |
+| operator != | `34748305ce` | `public static bool operator !=(Hexalith.EventStore.Contracts.Commands.DomainServiceRequest?, Hexalith.EventStore.Contracts.Commands.DomainServiceRequest?)` |
+
+## Properties
+
+| Name | Return Type | Accessors |
+| ---- | ----------- | --------- |
+| Command | Hexalith.EventStore.Contracts.Commands.CommandEnvelope | get, set |
+| CommandStateProof | byte[]? | get, set |
+| CurrentState | object? | get, set |
+| HumanAuthorityReceipt | string? | get, set |
+| IncludePostCommandState | bool | get, set |
+| RegistryFingerprint | string? | get, set |
+| SnapshotCaptureProfileId | string? | get, set |
+| VerifiedEffectiveEvents | System.Collections.Generic.IReadOnlyList&lt;Hexalith.EventStore.Contracts.Events.VerifiedEffectiveCommandEvent&gt;? | get, set |
+| WriterMode | string? | get, set |

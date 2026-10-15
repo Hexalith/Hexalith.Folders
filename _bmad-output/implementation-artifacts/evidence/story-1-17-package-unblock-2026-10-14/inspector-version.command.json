@@ -1,0 +1,18 @@
+{
+  "id": "inspector-version",
+  "command": [
+    "dnx",
+    "dotnet-inspect",
+    "-y",
+    "--",
+    "--version"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "started_at_utc": "2026-10-14T14:54:18.507134+00:00",
+  "finished_at_utc": "2026-10-14T14:54:19.125147+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/inspector-version.log",
+  "log_sha256": "0fbfdd54d1eaaff6290aa2bc3479ec450622a9fad6208941ce7fce810f959c5b",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

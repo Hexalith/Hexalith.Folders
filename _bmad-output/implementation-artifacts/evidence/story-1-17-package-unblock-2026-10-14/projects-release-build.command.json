@@ -1,0 +1,23 @@
+{
+  "id": "projects-release-build",
+  "command": [
+    "dotnet",
+    "build",
+    "Hexalith.Projects.CI.slnx",
+    "--configuration",
+    "Release",
+    "-p:UseHexalithProjectReferences=false",
+    "-p:NuGetAudit=false",
+    "--no-restore",
+    "-warnaserror",
+    "-m:1"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+  "started_at_utc": "2026-10-14T14:42:42.564084+00:00",
+  "finished_at_utc": "2026-10-14T14:43:01.331508+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/projects-release-build.log",
+  "log_sha256": "fa7fb7e3f1271009eab03c67b1adc14e2bf3a0557a5f5f9bdc803832cb0f3139",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

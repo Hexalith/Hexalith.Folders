@@ -1,0 +1,26 @@
+Publication: 14/14 same-source packages. Runtime payloads match NuGet in all three consumers.
+Preserved: 29 historical/control files; 6323 source/test/gate files.
+api-contracts exit 0 tests None build None
+api-owner-proof exit 0 tests None build None
+api-owner-request exit 0 tests None build None
+api-receipt exit 0 tests None build None
+api-server exit 0 tests None build None
+catalog-authority-tests exit 0 tests None build None
+catalog-validation exit 0 tests None build None
+folders-contract-parity-gates exit 0 tests 2257 build None
+folders-domain-authorization-tests exit 0 tests 150 build None
+folders-eventstore-adapter-tests exit 0 tests 58 build None
+folders-governance-gates exit 0 tests 33 build None
+folders-integration-routing-and-golden-tests exit 0 tests 114 build None
+folders-release-build exit 0 tests None build {'warnings': 3, 'errors': 0}
+folders-release-restore exit 0 tests None build None
+folders-server-authorization-tests exit 0 tests 133 build None
+inspector-version exit 0 tests None build None
+projects-authorization-and-folders-adapter-tests exit 0 tests 61 build None
+projects-release-build exit 0 tests None build {'warnings': 0, 'errors': 0}
+projects-release-restore exit 0 tests None build None
+publication-complete exit 0 tests None build None
+publication-final exit 0 tests None build None
+publication-payload-comparison exit 0 tests None build None
+publication exit 1 tests None build None
+release-asset-download exit 0 tests None build None

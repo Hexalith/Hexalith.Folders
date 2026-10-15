@@ -1,0 +1,18 @@
+{
+  "id": "catalog-authority-tests",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "Tools/test-authoritative-package-catalog.ps1"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+  "started_at_utc": "2026-10-14T14:42:42.567715+00:00",
+  "finished_at_utc": "2026-10-14T14:42:47.450040+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/catalog-authority-tests.log",
+  "log_sha256": "a43f6ca3c93e7087ae20e004c9e72f545e8c19f760f01ebacda2f66476defa07",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

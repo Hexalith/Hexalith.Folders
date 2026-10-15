@@ -1,0 +1,20 @@
+{
+  "id": "projects-release-restore",
+  "command": [
+    "dotnet",
+    "restore",
+    "Hexalith.Projects.CI.slnx",
+    "-p:Configuration=Release",
+    "-p:UseHexalithProjectReferences=false",
+    "-p:NuGetAudit=false",
+    "-m:1"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+  "started_at_utc": "2026-10-14T14:41:55.819331+00:00",
+  "finished_at_utc": "2026-10-14T14:41:58.843579+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/projects-release-restore.log",
+  "log_sha256": "59ed7d9938e012af48fb5d70fe83db26399c1da163f9b1e754c4b0ad7c32edbc",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

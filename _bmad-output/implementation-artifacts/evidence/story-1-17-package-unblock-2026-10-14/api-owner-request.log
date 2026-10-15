@@ -1,0 +1,12 @@
+# Hexalith.EventStore.Contracts
+
+## Classes
+
+| Type | Members |
+| ---- | ------- |
+| `Hexalith.EventStore.Contracts.Queries.BoundOwnerQueryRequest` | 10 |
+
+Tips:
+member BoundOwnerQueryRequest --package Hexalith.EventStore.Contracts  # inspect type members
+type --package Hexalith.EventStore.Contracts --tree                    # view type tree
+type -t "*Writer*" --package Hexalith.EventStore.Contracts             # filter types by pattern

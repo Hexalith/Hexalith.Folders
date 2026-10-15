@@ -1,0 +1,13 @@
+# Hexalith.EventStore.ServiceDefaults
+
+## Classes
+
+| Type | Members |
+| ---- | ------- |
+| `Hexalith.EventStore.ServiceDefaults.Authentication.HumanAuthorityReceiptClaims` | 18 |
+| `Hexalith.EventStore.ServiceDefaults.Authentication.HumanAuthorityReceiptCodec` | 5 |
+
+Tips:
+member HumanAuthorityReceiptClaims --package Hexalith.EventStore.ServiceDefaults  # inspect type members
+type --package Hexalith.EventStore.ServiceDefaults --tree                         # view type tree
+type -t "*Writer*" --package Hexalith.EventStore.ServiceDefaults                  # filter types by pattern

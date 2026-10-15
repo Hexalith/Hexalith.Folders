@@ -1,0 +1,16 @@
+{
+  "id": "folders-governance-gates",
+  "command": [
+    "pwsh",
+    "tests/tools/run-governance-completeness-gates.ps1",
+    "-SkipRestoreBuild"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-10-14T14:43:49.944052+00:00",
+  "finished_at_utc": "2026-10-14T14:43:53.501383+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-governance-gates.log",
+  "log_sha256": "c2972695288d101dc2813d8493fa598909a3d1990fe4f49a150f31659781ab74",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "publication-final",
+  "command": [
+    "python3",
+    "/tmp/story117-package-unblock-20261014/verify-publication.py"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "started_at_utc": "2026-10-14T14:41:21.334372+00:00",
+  "finished_at_utc": "2026-10-14T14:41:23.862078+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/publication-final.log",
+  "log_sha256": "5bdb033d917e29d992400d6ca8f1ba50d14e74469542864a312e7f1b33f195b2",
+  "script_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/verify-publication-identifiers.py",
+  "script_snapshot_sha256": "798beacaed657c5d71a4d4ce2bccb306d4c68cf356d76537d9842bf325e92d8c",
+  "script_snapshot_reconstructed_from_recorded_edits": true,
+  "script_snapshot_saved_after_execution": true,
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

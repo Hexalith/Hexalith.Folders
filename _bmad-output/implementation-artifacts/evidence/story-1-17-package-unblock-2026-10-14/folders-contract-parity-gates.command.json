@@ -1,0 +1,18 @@
+{
+  "id": "folders-contract-parity-gates",
+  "command": [
+    "pwsh",
+    "tests/tools/run-contract-parity-ci-gates.ps1",
+    "-NoRestore",
+    "-OutputReportPath",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/contract-parity-report.json"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-10-14T14:43:49.946088+00:00",
+  "finished_at_utc": "2026-10-14T14:44:33.154999+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-contract-parity-gates.log",
+  "log_sha256": "5679543ee23aeaadf90a41b75609dc9f99c42468f6589bfd0c6047fa4a49b8ac",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

@@ -1,0 +1,37 @@
+  Determining projects to restore...
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Cli/Hexalith.Folders.Cli.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.EventStore/Hexalith.Folders.EventStore.csproj (in 298 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Generation/Shared/Hexalith.Folders.Client.Generation.Shared.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Workers/Hexalith.Folders.Workers.csproj (in 297 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Testing.Tests/Hexalith.Folders.Testing.Tests.csproj (in 304 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.UI/Hexalith.Folders.UI.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/tools/pattern-examples/Hexalith.Folders.PatternExamples.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Testing/Hexalith.Folders.Testing.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/samples/Hexalith.Folders.Sample/Hexalith.Folders.Sample.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders/Hexalith.Folders.csproj (in 296 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Contracts/Hexalith.Folders.Contracts.csproj (in 4 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj (in 2 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/Hexalith.Folders.Server.Tests.csproj (in 304 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.EventStore.Tests/Hexalith.Folders.EventStore.Tests.csproj (in 306 ms).
+  Restored /home/administrator/projects/hexalith/folders/samples/Hexalith.Folders.Sample.Tests/Hexalith.Folders.Sample.Tests.csproj (in 8 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.IntegrationTests/Hexalith.Folders.IntegrationTests.csproj (in 311 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Mcp.Tests/Hexalith.Folders.Mcp.Tests.csproj (in 23 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Client.Tests/Hexalith.Folders.Client.Tests.csproj (in 19 ms).
+/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj : warning NU1903: Package 'Microsoft.AspNetCore.SignalR.Common' 10.0.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-334f-vvp4-7g6p [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]
+/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj : warning NU1903: Package 'Microsoft.AspNetCore.SignalR.Common' 10.0.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-334f-vvp4-7g6p [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Aspire/Hexalith.Folders.Aspire.csproj (in 85 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.ServiceDefaults/Hexalith.Folders.ServiceDefaults.csproj (in 6 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Mcp/Hexalith.Folders.Mcp.csproj (in 68 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj (in 80 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/Hexalith.Folders.Contracts.Tests.csproj (in 94 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/Hexalith.Folders.Workers.Tests.csproj (in 77 ms).
+/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj : warning NU1903: Package 'Microsoft.AspNetCore.SignalR.Common' 10.0.12 has a known high severity vulnerability, https://github.com/advisories/GHSA-334f-vvp4-7g6p [/home/administrator/projects/hexalith/folders/Hexalith.Folders.CI.slnx]
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Cli.Tests/Hexalith.Folders.Cli.Tests.csproj (in 95 ms).
+  Restored /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/Hexalith.Folders.Server.csproj (in 11 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/load/Hexalith.Folders.LoadTests.csproj (in 123 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.LoadTests.Tests/Hexalith.Folders.LoadTests.Tests.csproj (in 126 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj (in 115 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Hexalith.Folders.Tests.csproj (in 92 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj (in 108 ms).
+  Restored /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.UI.E2E.Tests/Hexalith.Folders.UI.E2E.Tests.csproj (in 103 ms).

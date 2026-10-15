@@ -1,0 +1,23 @@
+{
+  "id": "release-asset-download",
+  "command": [
+    "gh",
+    "release",
+    "download",
+    "v3.121.0",
+    "--repo",
+    "Hexalith/Hexalith.EventStore",
+    "--pattern",
+    "*.nupkg",
+    "--dir",
+    "/tmp/story117-package-unblock-20261014/github"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "started_at_utc": "2026-10-14T14:41:22.493139+00:00",
+  "finished_at_utc": "2026-10-14T14:41:24.337535+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/release-asset-download.log",
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

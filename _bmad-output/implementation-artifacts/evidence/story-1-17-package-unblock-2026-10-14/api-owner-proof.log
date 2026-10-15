@@ -1,0 +1,12 @@
+# Hexalith.EventStore.Client
+
+## Classes
+
+| Type | Members |
+| ---- | ------- |
+| `Hexalith.EventStore.Client.Gateway.BoundOwnerQueryProof` | 3 |
+
+Tips:
+member BoundOwnerQueryProof --package Hexalith.EventStore.Client  # inspect type members
+type --package Hexalith.EventStore.Client --tree                  # view type tree
+type -t "*Writer*" --package Hexalith.EventStore.Client           # filter types by pattern

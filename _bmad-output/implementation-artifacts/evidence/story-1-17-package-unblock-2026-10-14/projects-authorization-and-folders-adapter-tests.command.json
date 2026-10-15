@@ -1,0 +1,23 @@
+{
+  "id": "projects-authorization-and-folders-adapter-tests",
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+    "-class",
+    "Hexalith.Projects.Server.Tests.Authorization.*",
+    "-class",
+    "Hexalith.Projects.Server.Tests.ProjectAuthorizationGateTests",
+    "-class",
+    "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+    "-class",
+    "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Projects",
+  "started_at_utc": "2026-10-14T14:43:32.776250+00:00",
+  "finished_at_utc": "2026-10-14T14:43:33.336644+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/projects-authorization-and-folders-adapter-tests.log",
+  "log_sha256": "334ca3c62e7151ee54f1a9861400db064cb74ed8836cea3a0e163989cc90ac50",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

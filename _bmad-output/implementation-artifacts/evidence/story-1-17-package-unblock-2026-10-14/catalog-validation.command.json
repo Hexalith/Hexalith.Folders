@@ -1,0 +1,18 @@
+{
+  "id": "catalog-validation",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "Tools/validate-central-package-versions.ps1"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+  "started_at_utc": "2026-10-14T14:41:55.820952+00:00",
+  "finished_at_utc": "2026-10-14T14:41:58.081606+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/catalog-validation.log",
+  "log_sha256": "7e7c34f07168b773417ac598b81d6f51c5764d4f3bd4e5bd2d8f2f3cd64936a3",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

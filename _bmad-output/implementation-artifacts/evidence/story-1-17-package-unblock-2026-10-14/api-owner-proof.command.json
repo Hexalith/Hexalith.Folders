@@ -1,0 +1,22 @@
+{
+  "id": "api-owner-proof",
+  "command": [
+    "dnx",
+    "dotnet-inspect",
+    "-y",
+    "--",
+    "type",
+    "--package",
+    "Hexalith.EventStore.Client@3.121.0",
+    "-t",
+    "BoundOwnerQueryProof"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "started_at_utc": "2026-10-14T14:42:42.570409+00:00",
+  "finished_at_utc": "2026-10-14T14:42:43.737529+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/api-owner-proof.log",
+  "log_sha256": "968009ab0c7144ba9992b04e874394346ae4c8da0f8babdaf3b5d206302587c9",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

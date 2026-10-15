@@ -1,0 +1,29 @@
+{
+  "version": "3.121.0",
+  "source_revision": "21b34c01ec919769cfba9cfe0d47e50886b57ded",
+  "release": "https://github.com/Hexalith/Hexalith.EventStore/releases/tag/v3.121.0",
+  "published_at_utc": "2026-10-14T06:51:12Z",
+  "release_workflow_run": {
+    "databaseId": 38523534652,
+    "headSha": "21b34c01ec919769cfba9cfe0d47e50886b57ded",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/38523534652"
+  },
+  "package_count": 14,
+  "publication_required": false
+}
+Hexalith.EventStore.Contracts 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 4c3d1e91438ca17b45d1ba19f27192617f1d1a12c61f0d678821d662383dda47 ['BoundOwnerQueryRequest', 'DomainServiceRequest.HumanAuthorityReceipt']
+Hexalith.EventStore.Client 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded a8d477173646c222dd12f36fffd9dbf94eef488c1b17b215447ce574dccc1cb5 ['BoundOwnerQueryProof']
+Hexalith.EventStore.Server 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded e5ca8d1bad4dfb330310391666ccbd239d9a47dd6f47abdefbebb07b14544f3e ['DomainServiceSafeDenialException']
+Hexalith.EventStore.SignalR 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded b6f8f2db15e77d4f7b44bb02fdffc7a70112c0379b1192df0bd40f74483ab22a []
+Hexalith.EventStore.Testing 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 4b08e87b0632220fd7be536ba0bd08ea90f3fbe5c501140ecbd7bb13ab0f96b4 []
+Hexalith.EventStore.Testing.Integration 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 2ef61b2e5c6859a27ea6caa65184aeabfef7f458f60bc66c8fdfc3f4e5b1fb27 []
+Hexalith.EventStore.Aspire 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 549568c6fae2a2b71c3e4aa7a2dd01483870e32edb83eb68507385abd3fee1b9 []
+Hexalith.EventStore.ServiceDefaults 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 59c24d0c5c8f01795a5a171504980ee65d35d4b38f30d9bb61255589f2eb0802 ['HumanAuthorityReceiptClaims', 'HumanAuthorityReceiptCodec']
+Hexalith.EventStore.DomainService 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 5128cc72f4b27cd601f663c326de61af520fe9e8fb8b2f24cdafdb0a281a8c57 []
+Hexalith.EventStore.RestApi.Generators 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded ccdf3eb247a78a66275228bb8aeeec684837fd901d3bb1698d57326e0f800344 []
+Hexalith.EventStore.Gateway 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 1b8c6f991d5cbe8e729a5db39789dc1fb3d1d58ab5a87b9393c05584951387cf []
+Hexalith.EventStore.Admin.Abstractions 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded f74f4e565b57149754e1e44e777edf98d5d44c2dc90e939987736f0fc6eaa233 []
+Hexalith.EventStore.Admin.Cli 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded e0608929d87f361b990531ab792600be97b7e6d9110c755cd3060d5bea7e6774 []
+Hexalith.EventStore.Admin.Server 3.121.0 21b34c01ec919769cfba9cfe0d47e50886b57ded 5d784732931c2ea430701535945a614c19759e359899e8b8c9c09ca6b7e487bb []

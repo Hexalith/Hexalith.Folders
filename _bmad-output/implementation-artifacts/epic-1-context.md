@@ -40,6 +40,8 @@ Content, credentials, secrets, raw provider payloads/paths, and unauthorized exi
 
 ## Technical Decisions
 
+Use .NET 10 and the `.slnx` solution with central package management and warnings as errors. Debug/default builds consume sibling projects; Release builds consume published NuGet packages. Both modes must remain buildable. Package versions belong to the shared Hexalith.Builds catalog and importing repository configuration; approval-bound provider/native pins require compatibility evidence. Initialize only root-declared submodules.
+
 OpenAPI 3.1 drives generation. Extensions cannot weaken safety. NSwag generates the SDK and helpers from ordered equivalence fields; reads receive no helper and the SDK never invents a key. Golden regeneration is diff-free; emitted REST schemas match the spine.
 
 C13 generates one row per operation: SDK/REST transport parity and CLI/MCP behavioral parity. Diagnostic exceptions need approved rationale; removals need deprecation evidence. Previous-spine fingerprints include status/error vocabulary. `read_model_unavailable` maps to CLI exit `73`; `concurrency_conflict` to exit `77` and matching MCP kind. Counts are generated.

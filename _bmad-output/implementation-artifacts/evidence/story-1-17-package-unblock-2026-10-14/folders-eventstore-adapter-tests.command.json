@@ -1,0 +1,15 @@
+{
+  "id": "folders-eventstore-adapter-tests",
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Release/net10.0/Hexalith.Folders.EventStore.Tests.dll"
+  ],
+  "working_directory": "/home/administrator/projects/hexalith/folders",
+  "started_at_utc": "2026-10-14T14:43:32.773042+00:00",
+  "finished_at_utc": "2026-10-14T14:43:33.721058+00:00",
+  "exit_code": 0,
+  "log": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/folders-eventstore-adapter-tests.log",
+  "log_sha256": "a26f67bc1ef38e3d0310ab744fe7a6f4b753f450339bbf4941095dbce2680209",
+  "environment_snapshot": "_bmad-output/implementation-artifacts/evidence/story-1-17-package-unblock-2026-10-14/environment.json",
+  "environment_snapshot_sha256": "7053d3698675dfb3019f84f00fe5bb41a75cfe69282a1e420ca05266e71a2c31"
+}

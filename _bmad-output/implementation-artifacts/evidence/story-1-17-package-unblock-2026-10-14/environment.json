@@ -1,0 +1,79 @@
+{
+  "observed_after_execution": true,
+  "os": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "tool_versions": {
+    "sdk": {
+      "command": [
+        "dotnet",
+        "--version"
+      ],
+      "output": "10.0.401"
+    },
+    "runtimes": {
+      "command": [
+        "dotnet",
+        "--list-runtimes"
+      ],
+      "output": "Microsoft.AspNetCore.App 10.0.10 [/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.11 [/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/home/administrator/.dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 10.0.10 [/home/administrator/.dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.11 [/home/administrator/.dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/home/administrator/.dotnet/shared/Microsoft.NETCore.App]"
+    },
+    "python": {
+      "command": [
+        "python3",
+        "--version"
+      ],
+      "output": "Python 3.14.4"
+    },
+    "powershell": {
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$PSVersionTable.PSVersion.ToString()"
+      ],
+      "output": "7.6.2"
+    },
+    "github_cli": {
+      "command": [
+        "gh",
+        "--version"
+      ],
+      "output": "gh version 2.46.0 (2025-12-13 Ubuntu 2.46.0-4)\nhttps://github.com/cli/cli/releases/tag/v2.46.0"
+    },
+    "git": {
+      "command": [
+        "git",
+        "--version"
+      ],
+      "output": "git version 2.53.0"
+    },
+    "dotnet_inspect": {
+      "output": "0.26.0+d236a7a",
+      "source": "inspector-version.command.json",
+      "cache_package_versions": [
+        "0.20.0",
+        "0.26.0",
+        "0.17.0",
+        "0.22.0",
+        "0.16.0",
+        "0.24.0",
+        "0.23.0",
+        "0.21.0",
+        "0.25.0",
+        "0.18.0"
+      ],
+      "cached_package_sha256": "9d326031cc23718a351faa8d30dd680f309f24d5c52c0c0a4d761cc08c215f88"
+    }
+  },
+  "build_environment": {
+    "CI": null,
+    "Configuration": null,
+    "DOTNET_ROOT": "/home/administrator/.dotnet",
+    "DOTNET_ENVIRONMENT": null,
+    "ASPNETCORE_ENVIRONMENT": null,
+    "NUGET_PACKAGES": null,
+    "UseNuGetDeps": null,
+    "UseHexalithProjectReferences": null,
+    "DOTNET_CLI_TELEMETRY_OPTOUT": null
+  }
+}

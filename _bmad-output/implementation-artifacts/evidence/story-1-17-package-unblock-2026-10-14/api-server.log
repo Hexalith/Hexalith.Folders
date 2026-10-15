@@ -1,0 +1,12 @@
+# Hexalith.EventStore.Server
+
+## Classes
+
+| Type | Members |
+| ---- | ------- |
+| `Hexalith.EventStore.Server.DomainServices.DomainServiceSafeDenialException` | 4 |
+
+Tips:
+member DomainServiceSafeDenialException --package Hexalith.EventStore.Server  # inspect type members
+type --package Hexalith.EventStore.Server --tree                              # view type tree
+type -t "*Writer*" --package Hexalith.EventStore.Server                       # filter types by pattern
