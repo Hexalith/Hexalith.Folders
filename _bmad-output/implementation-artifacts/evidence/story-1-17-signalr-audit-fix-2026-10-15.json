@@ -1,0 +1,558 @@
+{
+  "record_id": "story-1-17-signalr-audit-fix-2026-10-15",
+  "recorded_at_utc": "2026-10-15T16:54:58.930692+00:00",
+  "scope": "Fix reported Folders NU1903 build failure through the owning Builds catalog; no commit, push, publication or deployment.",
+  "advisory": "https://github.com/dotnet/aspnetcore/security/advisories/GHSA-334f-vvp4-7g6p",
+  "source": {
+    "folders_commit": "2236855ee181bdeed2a103537c66316a1612c792",
+    "builds_commit": "f9f115528e43060d5f0af7dfbd8b22addc3c9a89",
+    "catalog_change_state": "uncommitted working-tree edit",
+    "catalog_path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+    "before_sha256": "47f38330465a4c19a2aaae3c2eed9a21b6cd671eb31b80ef0c189c34ab286b50",
+    "after_sha256": "014821f1432b3a80122f58f14ad21329800929088ccf733139ab01c0eb0aa853",
+    "added_package_versions": {
+      "Microsoft.AspNetCore.SignalR.Common": "10.0.13"
+    },
+    "changed_package_versions": {
+      "Microsoft.Extensions.Options": [
+        "10.0.12",
+        "10.0.13"
+      ],
+      "Microsoft.Extensions.DependencyInjection.Abstractions": [
+        "10.0.12",
+        "10.0.13"
+      ]
+    },
+    "other_versions_unchanged": true,
+    "utf8_bom_and_crlf_preserved": true
+  },
+  "effective_folders_audit_policy": {
+    "NuGetAudit": "true",
+    "NuGetAuditMode": "all",
+    "CentralPackageTransitivePinningEnabled": "true",
+    "TreatWarningsAsErrors": "true"
+  },
+  "checks": [
+    {
+      "id": "audit-policy",
+      "command": [
+        "dotnet",
+        "msbuild",
+        "tests/Hexalith.Folders.UI.Tests/Hexalith.Folders.UI.Tests.csproj",
+        "-p:Configuration=Release",
+        "-p:UseNuGetDeps=true",
+        "-getProperty:NuGetAudit,NuGetAuditMode,CentralPackageTransitivePinningEnabled,TreatWarningsAsErrors"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:50:05.294915+00:00",
+      "finished_at_utc": "2026-10-15T16:50:05.967132+00:00",
+      "exit_code": 0,
+      "log_sha256": "932efeee3a9559186dfee8b0c05db2beb5a0fb69c435f142dac000c7884f6f91",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/audit-policy.log",
+      "test_summaries": []
+    },
+    {
+      "id": "candidate-generation-a",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--output",
+        "{temporary_directory}/candidate-a.yaml"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:52:04.721374+00:00",
+      "finished_at_utc": "2026-10-15T16:52:04.890256+00:00",
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/candidate-generation-a.log",
+      "test_summaries": []
+    },
+    {
+      "id": "candidate-generation-b",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--output",
+        "{temporary_directory}/candidate-b.yaml"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:52:04.702491+00:00",
+      "finished_at_utc": "2026-10-15T16:52:04.889981+00:00",
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/candidate-generation-b.log",
+      "test_summaries": []
+    },
+    {
+      "id": "catalog-authority",
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "Tools/test-authoritative-package-catalog.ps1"
+      ],
+      "working_directory": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-15T16:48:22.759387+00:00",
+      "finished_at_utc": "2026-10-15T16:48:28.188335+00:00",
+      "exit_code": 0,
+      "log_sha256": "a43f6ca3c93e7087ae20e004c9e72f545e8c19f760f01ebacda2f66476defa07",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/catalog-authority.log",
+      "test_summaries": []
+    },
+    {
+      "id": "catalog-validation",
+      "command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-File",
+        "Tools/validate-central-package-versions.ps1"
+      ],
+      "working_directory": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-15T16:48:22.758699+00:00",
+      "finished_at_utc": "2026-10-15T16:48:25.372387+00:00",
+      "exit_code": 0,
+      "log_sha256": "5dced535c8bbc92eaf6439cd7e6d310236039677bbc9af528dc60d50930a96e2",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/catalog-validation.log",
+      "test_summaries": []
+    },
+    {
+      "id": "final-conformance",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Documentation.AdrAndRunbookDocumentationConformanceTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:52:56.096015+00:00",
+      "finished_at_utc": "2026-10-15T16:52:58.919833+00:00",
+      "exit_code": 0,
+      "log_sha256": "e6105647d352abc3462846ea1ed0190179cdeedd21c62b18cf9a31ae3c864d77",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/final-conformance.log",
+      "test_summaries": [
+        {
+          "total": 40,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "final-folders-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:52:04.805783+00:00",
+      "finished_at_utc": "2026-10-15T16:52:46.580847+00:00",
+      "exit_code": 0,
+      "log_sha256": "de55825e6ce514c0b2dfa1d736f31eadcd538be5c181bafb0966851fcbe31c05",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/final-folders-release-build.log",
+      "test_summaries": []
+    },
+    {
+      "id": "final-governance",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:52:56.096726+00:00",
+      "finished_at_utc": "2026-10-15T16:53:00.416134+00:00",
+      "exit_code": 0,
+      "log_sha256": "cd17f49f52555b5bc2dbf5b5aecd62ddc762151fc0e85c660f15e10346c03c28",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/final-governance.log",
+      "test_summaries": [
+        {
+          "total": 23,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 7,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        {
+          "total": 3,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "final-runbook-docs",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:53:12.174262+00:00",
+      "finished_at_utc": "2026-10-15T16:53:12.826132+00:00",
+      "exit_code": 0,
+      "log_sha256": "c29555da1e6f62705a38cd659187eb075a2929bc5508ff747274c0f851ac7b0b",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/final-runbook-docs.log",
+      "test_summaries": [
+        {
+          "total": 10,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "folders-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:48:21.602071+00:00",
+      "finished_at_utc": "2026-10-15T16:48:55.449334+00:00",
+      "exit_code": 0,
+      "log_sha256": "50a9bc1b7cbf674e738b5cb9863e8c73b7993ede16f99eb04ebdd2f7351f9687",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/folders-release-build.log",
+      "test_summaries": []
+    },
+    {
+      "id": "folders-routing-golden",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:50:05.300323+00:00",
+      "finished_at_utc": "2026-10-15T16:50:12.496501+00:00",
+      "exit_code": 0,
+      "log_sha256": "996a5abfbf4b6afc0188bf68462c76a17c0ccf3824a4a25ee102142d89f27aaf",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/folders-routing-golden.log",
+      "test_summaries": [
+        {
+          "total": 114,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "folders-startup-authorization",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10V2RequestFolderAuthorizationTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10V2ReadKeyPrecedenceTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationExecutorTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:49:18.844362+00:00",
+      "finished_at_utc": "2026-10-15T16:49:21.477471+00:00",
+      "exit_code": 0,
+      "log_sha256": "6a7753769f4380731d285189f5749f210ac4ece3244e228b2e7925ca6587ba8b",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/folders-startup-authorization.log",
+      "test_summaries": [
+        {
+          "total": 29,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "folders-ui-tests",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.UI.Tests/bin/Release/net10.0/Hexalith.Folders.UI.Tests.dll"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:49:18.844858+00:00",
+      "finished_at_utc": "2026-10-15T16:49:22.941041+00:00",
+      "exit_code": 0,
+      "log_sha256": "646a7877f25559f212a3551d6d33810151e3b3180633d0ac475d0d7c780d1bc2",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/folders-ui-tests.log",
+      "test_summaries": [
+        {
+          "total": 552,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "projects-folders-adapters",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests"
+      ],
+      "working_directory": "references/Hexalith.Projects",
+      "started_at_utc": "2026-10-15T16:50:05.296453+00:00",
+      "finished_at_utc": "2026-10-15T16:50:06.089053+00:00",
+      "exit_code": 0,
+      "log_sha256": "35bca65c89f9595d15e3d71c75fa4a99844835108a72ee2e9020bfd6ad695d81",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/projects-folders-adapters.log",
+      "test_summaries": [
+        {
+          "total": 39,
+          "errors": 0,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      ]
+    },
+    {
+      "id": "projects-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-warnaserror"
+      ],
+      "working_directory": "references/Hexalith.Projects",
+      "started_at_utc": "2026-10-15T16:49:18.802731+00:00",
+      "finished_at_utc": "2026-10-15T16:49:41.096728+00:00",
+      "exit_code": 0,
+      "log_sha256": "a2a2f98d5f71742347dc90f7c9450c9683ed568337b6aeed768d2b7ce632ba34",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/projects-release-build.log",
+      "test_summaries": []
+    }
+  ],
+  "affected_graphs": [
+    {
+      "project": "Hexalith.Folders.Tests",
+      "assets_path": "tests/Hexalith.Folders.Tests/obj/project.assets.json",
+      "assets_sha256": "04f47a46ce3f951ee0cc8ad09714511dec2c6489f5a02f95ac5956527f159c17",
+      "package_type": "package",
+      "common_version": "10.0.13",
+      "cached_archive_sha256": "5f6161ebe0b771dc4c770e1ff06d4bcc1352a4545bc061e0db02488c86f03fe8",
+      "package_payload_sha256": "a118994d2dae05f093cc4337357c61758ac2d04d1033d45ca8f3aaea99e73d2b",
+      "runtime_path": "tests/Hexalith.Folders.Tests/bin/Release/net10.0/Microsoft.AspNetCore.SignalR.Common.dll",
+      "runtime_sha256": "a118994d2dae05f093cc4337357c61758ac2d04d1033d45ca8f3aaea99e73d2b"
+    },
+    {
+      "project": "Hexalith.Folders.UI.Tests",
+      "assets_path": "tests/Hexalith.Folders.UI.Tests/obj/project.assets.json",
+      "assets_sha256": "4f244bf5ecd24eafa4205fbf848c9c36d0650ea33bb22f9ba6b9f0bee0fd04a8",
+      "package_type": "package",
+      "common_version": "10.0.13",
+      "cached_archive_sha256": "5f6161ebe0b771dc4c770e1ff06d4bcc1352a4545bc061e0db02488c86f03fe8",
+      "package_payload_sha256": "a118994d2dae05f093cc4337357c61758ac2d04d1033d45ca8f3aaea99e73d2b",
+      "runtime_path": "tests/Hexalith.Folders.UI.Tests/bin/Release/net10.0/Microsoft.AspNetCore.SignalR.Common.dll",
+      "runtime_sha256": "a118994d2dae05f093cc4337357c61758ac2d04d1033d45ca8f3aaea99e73d2b"
+    },
+    {
+      "project": "Hexalith.Folders.UI.E2E.Tests",
+      "assets_path": "tests/Hexalith.Folders.UI.E2E.Tests/obj/project.assets.json",
+      "assets_sha256": "b87d1587c841d0d5bf022afc72dd3d400d828f0001e17154018012894d3521a7",
+      "package_type": "package",
+      "common_version": "10.0.13",
+      "cached_archive_sha256": "5f6161ebe0b771dc4c770e1ff06d4bcc1352a4545bc061e0db02488c86f03fe8",
+      "package_payload_sha256": "a118994d2dae05f093cc4337357c61758ac2d04d1033d45ca8f3aaea99e73d2b",
+      "runtime_path": "tests/Hexalith.Folders.UI.E2E.Tests/bin/Release/net10.0/Microsoft.AspNetCore.SignalR.Common.dll",
+      "runtime_sha256": "a118994d2dae05f093cc4337357c61758ac2d04d1033d45ca8f3aaea99e73d2b"
+    }
+  ],
+  "candidate": {
+    "path": "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+    "sha256": "4b8470beda4f19c1293be1c40b4b36914e5148fa0f1a05ab2817d4fe43156cce",
+    "artifact_count": 229,
+    "current_binding_count": 20,
+    "two_generations_equal": true,
+    "planning_manifest_sha256": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924"
+  },
+  "preservation": {
+    "baseline_path": "nupkgs/artifacts/story-1-17-signalr-audit-fix-2026-10-15/baseline.json",
+    "baseline_sha256": "155dce5e1b4289304d687d95731679a1811c4941090a85fd9a4128344ef19f82",
+    "preexisting_files": [
+      {
+        "path": "_bmad-output/implementation-artifacts/epic-1-context.md",
+        "before_sha256": "00c3b3199eb64dfe3073436d2f49355b732c0ba6282560033040dde7bef2fa76",
+        "after_sha256": "00c3b3199eb64dfe3073436d2f49355b732c0ba6282560033040dde7bef2fa76",
+        "append_only": true,
+        "changed_for_fix": false
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-local-recheck-2026-10-15.json",
+        "before_sha256": "dbb67bc7e38522556208bd7deb5eb12347f123ee9f23b23b04bfd7c78770249b",
+        "after_sha256": "dbb67bc7e38522556208bd7deb5eb12347f123ee9f23b23b04bfd7c78770249b",
+        "append_only": true,
+        "changed_for_fix": false
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-operational-discovery-2026-10-15.json",
+        "before_sha256": "a6f27f281e031fb614c4c321eacb0121264b5f80f143167d865499b74aa93c38",
+        "after_sha256": "a6f27f281e031fb614c4c321eacb0121264b5f80f143167d865499b74aa93c38",
+        "append_only": true,
+        "changed_for_fix": false
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/evidence/verify-story-1-17-local-recheck-2026-10-15.py",
+        "before_sha256": "765ca240c130f7079b90180850a6d80f00563adff13395bf42a8228e962993e1",
+        "after_sha256": "765ca240c130f7079b90180850a6d80f00563adff13395bf42a8228e962993e1",
+        "append_only": true,
+        "changed_for_fix": false
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+        "before_sha256": "f207be8a88eae690d838650fa6587543ead6e7ca03a930584769cf97a21adbee",
+        "after_sha256": "0f9121a4a2c0c7e04070519ccc02be499ed9378a6f991b16dc9db56e9c6fd61a",
+        "append_only": true,
+        "changed_for_fix": true
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+        "before_sha256": "b9cbc50300fba17507fc4d20bffd2343f49084aafa83babef77c05df6f6fd563",
+        "after_sha256": "b5400a50cffb9cee206ca5df23d14135428c2ef093f35fd0022e4a71bf2f01d2",
+        "append_only": true,
+        "changed_for_fix": true
+      },
+      {
+        "path": "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md",
+        "before_sha256": "7ef861e251d1a9fece1eb21907794eaf23ae325f3290c8565adc03c1f52e11d1",
+        "after_sha256": "f6ffe3739d89f76c096ab6327e7f151b32fe9b801270c02f86a07444cc233d2f",
+        "append_only": false,
+        "changed_for_fix": true
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+        "before_sha256": "87924559727706529487ef28ee3fd66ffa9e018a2b0e0427b78a51a0833baf2e",
+        "after_sha256": "4b8470beda4f19c1293be1c40b4b36914e5148fa0f1a05ab2817d4fe43156cce",
+        "append_only": false,
+        "changed_for_fix": true
+      },
+      {
+        "path": "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+        "before_sha256": "64938b7035b8cb6b9a0fe97d8ed4528d387345ca1a44f8a947e467879fb07387",
+        "after_sha256": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924",
+        "append_only": false,
+        "changed_for_fix": true
+      },
+      {
+        "path": "docs/contract/pd10-v2-consumer-discovery.md",
+        "before_sha256": "981eef239c1f575d478c5455c13b6cfa9258b9b00a4829ee9f40d296513d3685",
+        "after_sha256": "c7996d52309ffd7d40da30d1b758cd6900ab8af4665d2259d8c05b463e3e05a5",
+        "append_only": false,
+        "changed_for_fix": true
+      },
+      {
+        "path": "docs/runbooks/rollback.md",
+        "before_sha256": "234515e04cd2705f0bcc0fbd12d98adf037533e755fd55f8a203a474e9bad8d4",
+        "after_sha256": "b127688e1199b0d15f15d66cfd26854ca0ed78d095828646c54d9adbf7747192",
+        "append_only": true,
+        "changed_for_fix": true
+      }
+    ],
+    "historical_and_control_file_hashes": {
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+      "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+      "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420"
+    },
+    "historical_and_lifecycle_manifest_unchanged": true,
+    "original_frozen_spec_sha256": "e9babd86c7cf3d230b8bbf7739e22475feb8fc4798b4ac1a8cc070f1d71e5d2b",
+    "story_tracker": "backlog",
+    "required_mode": "V1Only",
+    "t0_utc": null
+  },
+  "review": {
+    "layers": [
+      "blind-hunter"
+    ],
+    "finding": "The new central Common selection only protects transitive consumers when they enable central transitive pinning.",
+    "triage": "low, patched the catalog comment to state the opt-in; Folders effective policy and its actual graph/runtime verification prove the opt-in is met; existing sample/default policy remains unchanged.",
+    "deferred_findings": []
+  },
+  "limitations": [
+    "The SDK and shared .NET runtime remain 10.0.401 / 10.0.12; this proves the restored package/build fix, not a deployed runtime patch.",
+    "Projects retains its previous NuGetAudit=false build environment pin, separately from Folders audit-enabled success.",
+    "The earlier local-recheck record/verifier are historical and still bind the earlier catalog and outputs.",
+    "The first combined conformance command matched 40 tests; its mistyped runbook class was unmatched. The separate final-runbook-docs command ran all 10 correct tests.",
+    "Production subject/consumer scope, current release/deployment identities and operational entry gates remain open."
+  ]
+}

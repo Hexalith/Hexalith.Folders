@@ -56,6 +56,8 @@ public sealed class LifecycleCapacityHarnessTests
         LifecycleCapacityIteration second = LifecycleCapacityProfile.Quick.CreateIteration(2);
 
         first.TenantId.ShouldNotBe(second.TenantId);
+        first.OrganizationId.ShouldBe(first.TenantId);
+        second.OrganizationId.ShouldBe(second.TenantId);
         first.FolderId.ShouldBe(second.FolderId);
         first.WorkspaceId.ShouldBe(second.WorkspaceId);
         SafeOrdinalId.IsSafe(first.TenantId).ShouldBeTrue();

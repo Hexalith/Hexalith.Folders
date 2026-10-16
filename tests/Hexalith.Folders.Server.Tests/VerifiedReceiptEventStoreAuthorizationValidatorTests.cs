@@ -43,7 +43,8 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
                 HttpContext = context,
             });
             LayeredFolderAuthorizationAllowedContext matching = new("tenant-a", "user-a", "archive_folder",
-                "folder-a", null, null, null, []) { PrincipalId = "user-a" };
+                "folder-a", null, null, null, [])
+            { PrincipalId = "user-a" };
             (await validator.ValidateAsync(new(matching, "mutation"), TestContext.Current.CancellationToken))
                 .Status.ShouldBe(EventStoreAuthorizationValidationStatus.Allowed);
             foreach (LayeredFolderAuthorizationAllowedContext mismatch in new[]
@@ -73,7 +74,8 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
             HttpContext = context,
         });
         LayeredFolderAuthorizationAllowedContext safe = new("tenant-a", "user-a", "read_metadata",
-            "folder-a", null, null, null, []) { PrincipalId = "user-a" };
+            "folder-a", null, null, null, [])
+        { PrincipalId = "user-a" };
 
         (await validator.ValidateAsync(new(safe, "strict_read"), TestContext.Current.CancellationToken))
             .Status.ShouldBe(EventStoreAuthorizationValidationStatus.Allowed);

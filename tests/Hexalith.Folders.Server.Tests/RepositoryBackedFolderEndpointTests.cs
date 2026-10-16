@@ -1320,7 +1320,9 @@ public sealed class RepositoryBackedFolderEndpointTests
         {
             Response = new SubmitCommandResponse("correlation-a", JsonSerializer.SerializeToElement(new
             {
-                status = "accepted", failureCode, idempotentReplay = false,
+                status = "accepted",
+                failureCode,
+                idempotentReplay = false,
             })),
         };
         WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);

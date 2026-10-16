@@ -95,7 +95,8 @@ public sealed class OrganizationAclReauthorizationTests
         using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
         using HttpResponseMessage response = await client.PostAsJsonAsync(FoldersServerModule.ProcessRoute,
             new DomainServiceRequest(Command(FoldersServerModule.InitializeOrganizationAclBaselineCommandType)
-                with { AggregateId = "tenant-b" }, null), TestContext.Current.CancellationToken);
+                with
+            { AggregateId = "tenant-b" }, null), TestContext.Current.CancellationToken);
         response.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
         tenants.Reads.ShouldBe(0);
         (await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).ShouldNotContain("events");
@@ -170,9 +171,12 @@ public sealed class OrganizationAclReauthorizationTests
 
     private static CommandEnvelope Command(string type)
         => new("message-new", "tenant-a", "folders", "tenant-a", type,
-            JsonSerializer.SerializeToUtf8Bytes(new { operations = new[]
+            JsonSerializer.SerializeToUtf8Bytes(new
+            {
+                operations = new[]
                 { new { principalKind = "User", principalId = "user-a",
-                    action = type == FoldersServerModule.RevokeOrganizationAclPrincipalCommandType ? "create_folder" : "bind_repository" } } }),
+                    action = type == FoldersServerModule.RevokeOrganizationAclPrincipalCommandType ? "create_folder" : "bind_repository" } }
+            }),
             "correlation-a", null, "user-a", new Dictionary<string, string> { ["taskId"] = "task-a" });
 
     private static DomainServiceCurrentState RetainedBaseline()

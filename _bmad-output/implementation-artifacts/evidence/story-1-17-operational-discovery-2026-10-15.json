@@ -1,0 +1,1675 @@
+{
+  "schema_version": 1,
+  "mode": "read-only-discovery",
+  "authorization": "User instructed: I dont know find yourself (Story 1.17 operational evidence lookup)",
+  "captured_at_utc": "2026-10-15T16:26:10.360389+00:00",
+  "kubectl_sha256": "90b7b9058ffeb5c10710bb1c73f541eaf426fb1b4e87df435db669de9a2564a2",
+  "queries": [
+    {
+      "id": "cluster-version",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-private-native-kubeconfig>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "--raw=/version"
+      ],
+      "started_at_utc": "2026-10-15T16:26:09.766715+00:00",
+      "finished_at_utc": "2026-10-15T16:26:10.080085+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "2b738efadc6e373e4573786d656dedf10b0925dbc875723c6cc26e6f3bde8aaa",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observations": {
+        "gitVersion": "v1.34.9"
+      }
+    },
+    {
+      "id": "cluster-identity",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-private-native-kubeconfig>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "namespace",
+        "kube-system",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-15T16:26:09.766937+00:00",
+      "finished_at_utc": "2026-10-15T16:26:10.089496+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "f443be1414e0d22a7744c7d125f7236b6e91a7cd8e618c61ee7c20a6bcad8d43",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observations": {
+        "namespace": "kube-system",
+        "uid": "b5860674-1d1e-4a3b-b413-e1bb3b9a4557"
+      }
+    },
+    {
+      "id": "native-inventory",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-private-native-kubeconfig>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "deployment,statefulset,daemonset,job,cronjob,pod,service,ingress",
+        "--all-namespaces",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-15T16:26:09.767719+00:00",
+      "finished_at_utc": "2026-10-15T16:26:10.344599+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "344bcf956b65792015e7674969b4596b65811432af93f7bc11fed0c29eabcf34",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observations": {
+        "item_count": 269,
+        "counts_by_kind": {
+          "Deployment": 38,
+          "StatefulSet": 6,
+          "DaemonSet": 5,
+          "Job": 44,
+          "CronJob": 3,
+          "Pod": 111,
+          "Service": 56,
+          "Ingress": 6
+        },
+        "folders_or_projects_matches": [],
+        "matching_scope": "case-insensitive folders/projects anywhere in each complete returned object; sanitized identities only"
+      }
+    },
+    {
+      "id": "folders-deployments",
+      "command": [
+        "gh",
+        "api",
+        "--paginate",
+        "--slurp",
+        "repos/Hexalith/Hexalith.Folders/deployments?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:09.768501+00:00",
+      "finished_at_utc": "2026-10-15T16:26:09.790660+00:00",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "8fbdf01d7bfc79357ac4103cac53e183b4d56414792487feadb6ab4e69c935ae",
+      "failure_category": "transport-or-command-failure"
+    },
+    {
+      "id": "projects-deployments",
+      "command": [
+        "gh",
+        "api",
+        "--paginate",
+        "--slurp",
+        "repos/Hexalith/Hexalith.Projects/deployments?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:09.768692+00:00",
+      "finished_at_utc": "2026-10-15T16:26:09.791430+00:00",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "8fbdf01d7bfc79357ac4103cac53e183b4d56414792487feadb6ab4e69c935ae",
+      "failure_category": "transport-or-command-failure"
+    }
+  ],
+  "limitations": [
+    "No secret, ConfigMap, log, content, mutation, deployment, or routing calls. Raw API responses remained in memory; only sanitized results and response hashes retained.",
+    "Native observation covers one context only; GitHub deployment records are deployment metadata, not current workload health or evidence of public routing."
+  ],
+  "github_followup": [
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:45.078236+00:00",
+      "finished_at_utc": "2026-10-15T16:26:45.464982+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "10d0f9d60b0b6a3b32438648cca5fd62c91b9de4b4af20fa91595cd56166d84f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-page-1",
+      "observations": [
+        {
+          "id": 6961109659,
+          "sha": "17b5a70d2b4b91bbbf73ea63c8a214a0ad426759",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-09T12:51:17Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6955974120,
+          "sha": "503540aef1ebe42af2131cc3910aa52f96255acb",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-09T08:04:37Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6807459211,
+          "sha": "d5f49e96dfab10bf2839ec263a343a6a4c13b06f",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-02T11:34:12Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6805822845,
+          "sha": "d5f49e96dfab10bf2839ec263a343a6a4c13b06f",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-02T09:52:05Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6804680208,
+          "sha": "9fb9601374a8e3487af7ed7d53dbd3832054fcd7",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-02T08:42:35Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6804376639,
+          "sha": "116464a2e1e4697ae964efb4a0e358e609eb992d",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-02T08:23:29Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6802700916,
+          "sha": "e88aca956ff24cd6371a5fe3446034c45c70e644",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-02T06:28:17Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6546836679,
+          "sha": "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-09-19T23:20:19Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6546802692,
+          "sha": "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-09-19T23:15:51Z",
+          "task": "deploy",
+          "production_environment": false
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6961109659/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:45.465228+00:00",
+      "finished_at_utc": "2026-10-15T16:26:45.848984+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "c629103e39393ec4eaecdd85adb6314714c34694746f3015d1ad19b6496f546b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6961109659",
+      "observations": [
+        {
+          "id": 19519394348,
+          "state": "success",
+          "created_at": "2026-10-09T12:54:48Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37932766815/job/113827343614",
+          "description": ""
+        },
+        {
+          "id": 19519268686,
+          "state": "in_progress",
+          "created_at": "2026-10-09T12:52:03Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37932766815/job/113827343614",
+          "description": ""
+        },
+        {
+          "id": 19519266640,
+          "state": "queued",
+          "created_at": "2026-10-09T12:52:01Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37932766815/job/113827343614",
+          "description": ""
+        },
+        {
+          "id": 19519232893,
+          "state": "waiting",
+          "created_at": "2026-10-09T12:51:18Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37932766815/job/113827343614",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/37932766815"
+      ],
+      "started_at_utc": "2026-10-15T16:26:45.849219+00:00",
+      "finished_at_utc": "2026-10-15T16:26:46.264147+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "84b7429f2d2274417fb07a6a1abaf36423095a32607d85a5fd1d2a88be0b9196",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-37932766815",
+      "observations": {
+        "id": 37932766815,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "17b5a70d2b4b91bbbf73ea63c8a214a0ad426759",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37932766815",
+        "created_at": "2026-10-09T12:51:08Z",
+        "updated_at": "2026-10-09T12:54:48Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6955974120/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:46.264281+00:00",
+      "finished_at_utc": "2026-10-15T16:26:46.620560+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "6664fe72b6db9424b275080d7789bd379e26506951e7d420a58520b04d0cbd66",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6955974120",
+      "observations": [
+        {
+          "id": 19507946198,
+          "state": "success",
+          "created_at": "2026-10-09T08:25:30Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37902452459/job/113728848667",
+          "description": ""
+        },
+        {
+          "id": 19507808612,
+          "state": "in_progress",
+          "created_at": "2026-10-09T08:21:58Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37902452459/job/113728848667",
+          "description": ""
+        },
+        {
+          "id": 19507806573,
+          "state": "queued",
+          "created_at": "2026-10-09T08:21:55Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37902452459/job/113728848667",
+          "description": ""
+        },
+        {
+          "id": 19507121989,
+          "state": "waiting",
+          "created_at": "2026-10-09T08:04:38Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37902452459/job/113728848667",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/37902452459"
+      ],
+      "started_at_utc": "2026-10-15T16:26:46.620690+00:00",
+      "finished_at_utc": "2026-10-15T16:26:47.003014+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "3934598cf67bcda6ba93da10bbe8151ef3ba632e727737c631db6de2be2aebab",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-37902452459",
+      "observations": {
+        "id": 37902452459,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "503540aef1ebe42af2131cc3910aa52f96255acb",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37902452459",
+        "created_at": "2026-10-09T08:01:45Z",
+        "updated_at": "2026-10-09T08:25:30Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6807459211/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:47.003164+00:00",
+      "finished_at_utc": "2026-10-15T16:26:47.355616+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "29635d5a555229f0c30c7bbfeefdce84fb9b1e7d9b6bd29b100a483d3c6a3354",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6807459211",
+      "observations": [
+        {
+          "id": 19167696743,
+          "state": "success",
+          "created_at": "2026-10-02T11:42:06Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37001706122/job/110820699384",
+          "description": ""
+        },
+        {
+          "id": 19167557947,
+          "state": "in_progress",
+          "created_at": "2026-10-02T11:38:31Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37001706122/job/110820699384",
+          "description": ""
+        },
+        {
+          "id": 19167556195,
+          "state": "queued",
+          "created_at": "2026-10-02T11:38:29Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37001706122/job/110820699384",
+          "description": ""
+        },
+        {
+          "id": 19167395013,
+          "state": "waiting",
+          "created_at": "2026-10-02T11:34:13Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37001706122/job/110820699384",
+          "description": ""
+        },
+        {
+          "id": 19167394993,
+          "state": "waiting",
+          "created_at": "2026-10-02T11:34:13Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37001706122/job/110820699384",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/37001706122"
+      ],
+      "started_at_utc": "2026-10-15T16:26:47.355781+00:00",
+      "finished_at_utc": "2026-10-15T16:26:47.761778+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "84117b3c43fb14870156b177d378b47136e6ce72c1cb5048e30fd4ce4349b737",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-37001706122",
+      "observations": {
+        "id": 37001706122,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "d5f49e96dfab10bf2839ec263a343a6a4c13b06f",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/37001706122",
+        "created_at": "2026-10-02T11:34:02Z",
+        "updated_at": "2026-10-02T11:42:07Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6805822845/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:47.761910+00:00",
+      "finished_at_utc": "2026-10-15T16:26:48.111948+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "da9221381e49f8e3631326e20755237943c7cadf36dd47cf4f5c7969cda18a05",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6805822845",
+      "observations": [
+        {
+          "id": 19166797279,
+          "state": "failure",
+          "created_at": "2026-10-02T11:18:30Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36992233355/job/110790891460",
+          "description": ""
+        },
+        {
+          "id": 19166717225,
+          "state": "in_progress",
+          "created_at": "2026-10-02T11:16:24Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36992233355/job/110790891460",
+          "description": ""
+        },
+        {
+          "id": 19166715433,
+          "state": "queued",
+          "created_at": "2026-10-02T11:16:22Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36992233355/job/110790891460",
+          "description": ""
+        },
+        {
+          "id": 19163577266,
+          "state": "waiting",
+          "created_at": "2026-10-02T09:52:06Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36992233355/job/110790891460",
+          "description": ""
+        },
+        {
+          "id": 19163577248,
+          "state": "waiting",
+          "created_at": "2026-10-02T09:52:06Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36992233355/job/110790891460",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/36992233355"
+      ],
+      "started_at_utc": "2026-10-15T16:26:48.112085+00:00",
+      "finished_at_utc": "2026-10-15T16:26:48.573158+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "c147cc2986f638b1e28ac9dc0a7f6bad78dffa889af768870bd0e3b99e6e3982",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-36992233355",
+      "observations": {
+        "id": 36992233355,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "d5f49e96dfab10bf2839ec263a343a6a4c13b06f",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36992233355",
+        "created_at": "2026-10-02T09:51:57Z",
+        "updated_at": "2026-10-02T11:18:30Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6804680208/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:48.573292+00:00",
+      "finished_at_utc": "2026-10-15T16:26:48.908947+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "f904295566ed125805eba13cc0819030576abf181da0fa004414f77c2a5b0af6",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6804680208",
+      "observations": [
+        {
+          "id": 19161071940,
+          "state": "failure",
+          "created_at": "2026-10-02T08:45:11Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36985567814/job/110769737946",
+          "description": ""
+        },
+        {
+          "id": 19160990289,
+          "state": "in_progress",
+          "created_at": "2026-10-02T08:42:55Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36985567814/job/110769737946",
+          "description": ""
+        },
+        {
+          "id": 19160987358,
+          "state": "queued",
+          "created_at": "2026-10-02T08:42:50Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36985567814/job/110769737946",
+          "description": ""
+        },
+        {
+          "id": 19160978336,
+          "state": "waiting",
+          "created_at": "2026-10-02T08:42:36Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36985567814/job/110769737946",
+          "description": ""
+        },
+        {
+          "id": 19160978319,
+          "state": "waiting",
+          "created_at": "2026-10-02T08:42:36Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36985567814/job/110769737946",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/36985567814"
+      ],
+      "started_at_utc": "2026-10-15T16:26:48.909083+00:00",
+      "finished_at_utc": "2026-10-15T16:26:49.496734+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "f05c4affbd49460cbc3d6fecbe8edabc14fe48075317b36b0c030f1b17eda543",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-36985567814",
+      "observations": {
+        "id": 36985567814,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "9fb9601374a8e3487af7ed7d53dbd3832054fcd7",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36985567814",
+        "created_at": "2026-10-02T08:42:25Z",
+        "updated_at": "2026-10-02T08:45:11Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6804376639/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:49.496933+00:00",
+      "finished_at_utc": "2026-10-15T16:26:49.853504+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "e1a1a10dcbce0fe6e32cf221976890dfe588f9ca894c22c00a4f8d56bffd3110",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6804376639",
+      "observations": [
+        {
+          "id": 19160301278,
+          "state": "failure",
+          "created_at": "2026-10-02T08:24:26Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36983740518/job/110763966122",
+          "description": ""
+        },
+        {
+          "id": 19160297991,
+          "state": "in_progress",
+          "created_at": "2026-10-02T08:24:21Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36983740518/job/110763966122",
+          "description": ""
+        },
+        {
+          "id": 19160296249,
+          "state": "queued",
+          "created_at": "2026-10-02T08:24:18Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36983740518/job/110763966122",
+          "description": ""
+        },
+        {
+          "id": 19160267211,
+          "state": "waiting",
+          "created_at": "2026-10-02T08:23:30Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36983740518/job/110763966122",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/36983740518"
+      ],
+      "started_at_utc": "2026-10-15T16:26:49.853660+00:00",
+      "finished_at_utc": "2026-10-15T16:26:50.338574+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "a43858d134051895c5007bba679aca72c932bab84d44d1c26e2d3e6a51edbdf7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-36983740518",
+      "observations": {
+        "id": 36983740518,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "116464a2e1e4697ae964efb4a0e358e609eb992d",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36983740518",
+        "created_at": "2026-10-02T08:23:20Z",
+        "updated_at": "2026-10-02T08:24:27Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6802700916/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:50.338715+00:00",
+      "finished_at_utc": "2026-10-15T16:26:50.693487+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "45b8d2f2383038b70cde925c17fcd58a3c40e05abbfd90603ab1c72c3ff69727",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6802700916",
+      "observations": [
+        {
+          "id": 19156509701,
+          "state": "failure",
+          "created_at": "2026-10-02T06:32:26Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36973683976/job/110732865980",
+          "description": ""
+        },
+        {
+          "id": 19156402463,
+          "state": "in_progress",
+          "created_at": "2026-10-02T06:28:58Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36973683976/job/110732865980",
+          "description": ""
+        },
+        {
+          "id": 19156401223,
+          "state": "queued",
+          "created_at": "2026-10-02T06:28:55Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36973683976/job/110732865980",
+          "description": ""
+        },
+        {
+          "id": 19156382536,
+          "state": "waiting",
+          "created_at": "2026-10-02T06:28:18Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36973683976/job/110732865980",
+          "description": ""
+        },
+        {
+          "id": 19156382520,
+          "state": "waiting",
+          "created_at": "2026-10-02T06:28:18Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36973683976/job/110732865980",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/36973683976"
+      ],
+      "started_at_utc": "2026-10-15T16:26:50.693632+00:00",
+      "finished_at_utc": "2026-10-15T16:26:51.237450+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "29c4f4a9273f2e5259de4aad015753667c2cc61df35d3f035edf4f0d8bc3ddc0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-36973683976",
+      "observations": {
+        "id": 36973683976,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "e88aca956ff24cd6371a5fe3446034c45c70e644",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/36973683976",
+        "created_at": "2026-10-02T06:28:07Z",
+        "updated_at": "2026-10-02T06:32:26Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6546836679/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:51.237596+00:00",
+      "finished_at_utc": "2026-10-15T16:26:51.570459+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "0269ca1d891e673f6b96e97b67b99c95e5c176be581e1a91143bae19e58a7cc3",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6546836679",
+      "observations": [
+        {
+          "id": 18575259178,
+          "state": "success",
+          "created_at": "2026-09-19T23:23:38Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475836727/job/105984842282",
+          "description": ""
+        },
+        {
+          "id": 18575200068,
+          "state": "in_progress",
+          "created_at": "2026-09-19T23:20:27Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475836727/job/105984842282",
+          "description": ""
+        },
+        {
+          "id": 18575199133,
+          "state": "queued",
+          "created_at": "2026-09-19T23:20:24Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475836727/job/105984842282",
+          "description": ""
+        },
+        {
+          "id": 18575197757,
+          "state": "waiting",
+          "created_at": "2026-09-19T23:20:20Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475836727/job/105984842282",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/35475836727"
+      ],
+      "started_at_utc": "2026-10-15T16:26:51.570608+00:00",
+      "finished_at_utc": "2026-10-15T16:26:51.960121+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "9ca0d44da93cfafa948af1fb4b020addd602d57745a60993782981dd5ee8024b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-35475836727",
+      "observations": {
+        "id": 35475836727,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475836727",
+        "created_at": "2026-09-19T23:20:10Z",
+        "updated_at": "2026-09-19T23:23:38Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/deployments/6546802692/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:51.960280+00:00",
+      "finished_at_utc": "2026-10-15T16:26:52.319989+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "2a9f1ff0a1a025dce9502a006002fdd454397239dc11dee7c7ac9f8091cdb2f0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-deployment-status-6546802692",
+      "observations": [
+        {
+          "id": 18575165903,
+          "state": "success",
+          "created_at": "2026-09-19T23:18:32Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475623411/job/105984281516",
+          "description": ""
+        },
+        {
+          "id": 18575129404,
+          "state": "in_progress",
+          "created_at": "2026-09-19T23:16:29Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475623411/job/105984281516",
+          "description": ""
+        },
+        {
+          "id": 18575128536,
+          "state": "queued",
+          "created_at": "2026-09-19T23:16:26Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475623411/job/105984281516",
+          "description": ""
+        },
+        {
+          "id": 18575117567,
+          "state": "waiting",
+          "created_at": "2026-09-19T23:15:52Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475623411/job/105984281516",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Folders/actions/runs/35475623411"
+      ],
+      "started_at_utc": "2026-10-15T16:26:52.320163+00:00",
+      "finished_at_utc": "2026-10-15T16:26:52.728240+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "b2d56e15cf1f19cd5e8f5c1d127d1b4cf7199e3a4436a5846c26bd135d1c6204",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Folders-run-35475623411",
+      "observations": {
+        "id": 35475623411,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Folders/actions/runs/35475623411",
+        "created_at": "2026-09-19T23:15:42Z",
+        "updated_at": "2026-09-19T23:18:32Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/deployments?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:52.728394+00:00",
+      "finished_at_utc": "2026-10-15T16:26:53.101058+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "47aad621f399e78801ef1aac687ec99b7913a35f8785bdf90c31c75702e5afd1",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-deployment-page-1",
+      "observations": [
+        {
+          "id": 6803609145,
+          "sha": "66b7e1bd12eade0f43b464744d3ddc588d858f19",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-10-02T07:33:48Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6547910236,
+          "sha": "c767d38d8ae76f9ad949965ac4870a842c699f9c",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-09-20T01:50:24Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6547845140,
+          "sha": "93957776e20d22026792c8d1e9b8d1a20c49fddd",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-09-20T01:40:24Z",
+          "task": "deploy",
+          "production_environment": false
+        },
+        {
+          "id": 6547822205,
+          "sha": "93957776e20d22026792c8d1e9b8d1a20c49fddd",
+          "ref": "main",
+          "environment": "production",
+          "created_at": "2026-09-20T01:37:09Z",
+          "task": "deploy",
+          "production_environment": false
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/deployments/6803609145/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:53.101250+00:00",
+      "finished_at_utc": "2026-10-15T16:26:53.476287+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "467d37f73bfbf5b590ef7803e5bc910ee959e7a8f6b794f221e0580035086f85",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-deployment-status-6803609145",
+      "observations": [
+        {
+          "id": 19158595458,
+          "state": "failure",
+          "created_at": "2026-10-02T07:36:46Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/36979197909/job/110749667304",
+          "description": ""
+        },
+        {
+          "id": 19158488513,
+          "state": "in_progress",
+          "created_at": "2026-10-02T07:33:51Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/36979197909/job/110749667304",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/actions/runs/36979197909"
+      ],
+      "started_at_utc": "2026-10-15T16:26:53.476405+00:00",
+      "finished_at_utc": "2026-10-15T16:26:53.913976+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "82aa338b202a6bffb7af5002950f1ddfe6c7078749fa222824dde8765d8364a7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-run-36979197909",
+      "observations": {
+        "id": 36979197909,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "66b7e1bd12eade0f43b464744d3ddc588d858f19",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/36979197909",
+        "created_at": "2026-10-02T07:33:37Z",
+        "updated_at": "2026-10-02T07:36:46Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/deployments/6547910236/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:53.914122+00:00",
+      "finished_at_utc": "2026-10-15T16:26:54.233283+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "8ccb05fcdb088973996b09e2a1d1894fe559d9bae774c863b056603dd56d6238",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-deployment-status-6547910236",
+      "observations": [
+        {
+          "id": 18577725106,
+          "state": "success",
+          "created_at": "2026-09-20T01:53:34Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35482414271/job/106002486691",
+          "description": ""
+        },
+        {
+          "id": 18577678513,
+          "state": "in_progress",
+          "created_at": "2026-09-20T01:50:28Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35482414271/job/106002486691",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/actions/runs/35482414271"
+      ],
+      "started_at_utc": "2026-10-15T16:26:54.233446+00:00",
+      "finished_at_utc": "2026-10-15T16:26:54.803764+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "26611e02c6508b4498ebbef183abe3de3cef85e6f0a2f9a832b53c17fa017ef9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-run-35482414271",
+      "observations": {
+        "id": 35482414271,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "c767d38d8ae76f9ad949965ac4870a842c699f9c",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35482414271",
+        "created_at": "2026-09-20T01:50:16Z",
+        "updated_at": "2026-09-20T01:53:34Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/deployments/6547845140/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:54.803912+00:00",
+      "finished_at_utc": "2026-10-15T16:26:55.167777+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "1f09c94e520fae001a7b920ec6259e40e217d34d3936818257526fa81343e19b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-deployment-status-6547845140",
+      "observations": [
+        {
+          "id": 18577561859,
+          "state": "failure",
+          "created_at": "2026-09-20T01:42:39Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35481993863/job/106001354109",
+          "description": ""
+        },
+        {
+          "id": 18577526174,
+          "state": "in_progress",
+          "created_at": "2026-09-20T01:40:28Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35481993863/job/106001354109",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/actions/runs/35481993863"
+      ],
+      "started_at_utc": "2026-10-15T16:26:55.167926+00:00",
+      "finished_at_utc": "2026-10-15T16:26:55.542020+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "8656ae73134a8f4c94bc585744086d1d4f17624db0aa2217811e4128b703d18f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-run-35481993863",
+      "observations": {
+        "id": 35481993863,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "93957776e20d22026792c8d1e9b8d1a20c49fddd",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35481993863",
+        "created_at": "2026-09-20T01:40:17Z",
+        "updated_at": "2026-09-20T01:42:39Z"
+      }
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/deployments/6547822205/statuses?per_page=100"
+      ],
+      "started_at_utc": "2026-10-15T16:26:55.542161+00:00",
+      "finished_at_utc": "2026-10-15T16:26:55.901255+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "47dd5f0260e4d4464456c5c2492b1c35928bee65a8830f7e3f3b827d40fb4d8d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-deployment-status-6547822205",
+      "observations": [
+        {
+          "id": 18577507094,
+          "state": "success",
+          "created_at": "2026-09-20T01:39:22Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35481850205/job/106000979534",
+          "description": ""
+        },
+        {
+          "id": 18577472099,
+          "state": "in_progress",
+          "created_at": "2026-09-20T01:37:13Z",
+          "log_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35481850205/job/106000979534",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Projects/actions/runs/35481850205"
+      ],
+      "started_at_utc": "2026-10-15T16:26:55.901370+00:00",
+      "finished_at_utc": "2026-10-15T16:26:56.382829+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "88473a893b6a8b7e83739d2da2577b3b6b5773d647d4fa9b73636e0cd285fc72",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "Hexalith.Projects-run-35481850205",
+      "observations": {
+        "id": 35481850205,
+        "name": "Release",
+        "event": "workflow_dispatch",
+        "path": ".github/workflows/release.yml",
+        "head_sha": "93957776e20d22026792c8d1e9b8d1a20c49fddd",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.Projects/actions/runs/35481850205",
+        "created_at": "2026-09-20T01:37:00Z",
+        "updated_at": "2026-09-20T01:39:22Z"
+      }
+    }
+  ],
+  "native_followup": [
+    {
+      "id": "workload-images",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-private-native-kubeconfig>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "deployments,statefulsets,daemonsets",
+        "--all-namespaces",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-15T16:28:20.569733+00:00",
+      "finished_at_utc": "2026-10-15T16:28:21.398264+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "84ccdc232424986f7f9d81e30bf4030c25841a45a35b6d1afb302b7f06fc6dda",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observations": {
+        "item_count": 49,
+        "counts_by_kind": {
+          "Deployment": 38,
+          "StatefulSet": 6,
+          "DaemonSet": 5
+        },
+        "workload_images_reviewed": 49,
+        "folders_projects_or_shared_platform_candidate_images": []
+      }
+    },
+    {
+      "id": "monitoring-inventory",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-private-native-kubeconfig>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "prometheusrules,servicemonitors,podmonitors",
+        "--all-namespaces",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-15T16:28:21.407762+00:00",
+      "finished_at_utc": "2026-10-15T16:28:21.808754+00:00",
+      "exit_code": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e5527517f2a4a5ae43e0fd13535ca82cbd475d72ace08a9d4061eca28b5a4027",
+      "failure_category": "resource-or-transport-failure"
+    }
+  ],
+  "source_inspection": [
+    {
+      "id": "folders-historical-workflow",
+      "repository": ".",
+      "revision": "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef",
+      "path": ".github/workflows/release.yml",
+      "command": [
+        "git",
+        "show",
+        "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef:.github/workflows/release.yml"
+      ],
+      "exit_code": 0,
+      "sha256": "81fae8e6511f7791aa012b559ba6b3a58c980ff0e2f38d01eb515438d9e63486",
+      "relevant_lines": [
+        {
+          "line": 82,
+          "text": "environment-name: production"
+        },
+        {
+          "line": 84,
+          "text": "publish-containers: false"
+        },
+        {
+          "line": 93,
+          "text": "NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}"
+        }
+      ]
+    },
+    {
+      "id": "folders-historical-release-config",
+      "repository": ".",
+      "revision": "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef",
+      "path": ".releaserc.json",
+      "command": [
+        "git",
+        "show",
+        "823dce16bca7d1eb9c10c4d871bf581fc9dc61ef:.releaserc.json"
+      ],
+      "exit_code": 0,
+      "sha256": "26737d0fa1c67330b85d8a03a7220cee612a9eb0269d59de4e9f452b711bd5b5",
+      "relevant_lines": [
+        {
+          "line": 12,
+          "text": "\"publishCmd\": \"bash scripts/validate-release-secrets.sh && bash scripts/validate-publication-preflight.sh ${nextRelease.version} publish && pwsh -NoProfile -File ./tests/tools/run-release-package-gates.ps1 -Version ${nextRelease.version} -ReleaseTag v${nextRelease.version} -SourceRevisionId $GITHUB_SHA -Mode Publish -FeedSource https://api.nuget.org/v3/index.json -ApiKeyEnvironmentVariable NUGET_API_KEY -SkipRestoreBuild -SkipPack\""
+        }
+      ]
+    },
+    {
+      "id": "projects-historical-workflow",
+      "repository": "references/Hexalith.Projects",
+      "revision": "c767d38d8ae76f9ad949965ac4870a842c699f9c",
+      "path": ".github/workflows/release.yml",
+      "command": [
+        "git",
+        "show",
+        "c767d38d8ae76f9ad949965ac4870a842c699f9c:.github/workflows/release.yml"
+      ],
+      "exit_code": 0,
+      "sha256": "7582d3e3e959c5f00a2d1a391b6f3effe5ce6d1fb25bd82c2b56492b3cf01041",
+      "relevant_lines": [
+        {
+          "line": 101,
+          "text": "environment-name: production"
+        },
+        {
+          "line": 103,
+          "text": "publish-containers: false"
+        },
+        {
+          "line": 118,
+          "text": "NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}"
+        }
+      ]
+    },
+    {
+      "id": "folders-shared-release-workflow",
+      "repository": "references/Hexalith.Builds",
+      "revision": "b93e9889e9e7b67036837015b4b2b115e326c4da",
+      "path": ".github/workflows/domain-release.yml",
+      "command": [
+        "git",
+        "show",
+        "b93e9889e9e7b67036837015b4b2b115e326c4da:.github/workflows/domain-release.yml"
+      ],
+      "exit_code": 0,
+      "sha256": "ef165465294b7f8ac9e82c60c51d1bb96b94bc9262a7aaffe3dcbd4fed981168",
+      "relevant_lines": [
+        {
+          "line": 15,
+          "text": "description: 'Comma-separated hashFiles() patterns for the NuGet cache key.'"
+        },
+        {
+          "line": 54,
+          "text": "environment-name:"
+        },
+        {
+          "line": 61,
+          "text": "publish-containers:"
+        },
+        {
+          "line": 92,
+          "text": "Number of NuGet package IDs the caller publishes. Declared by the caller"
+        },
+        {
+          "line": 134,
+          "text": "nuget-signing-timestamper:"
+        },
+        {
+          "line": 202,
+          "text": "NUGET_API_KEY:"
+        },
+        {
+          "line": 203,
+          "text": "description: 'NuGet.org API key supplied explicitly by the caller.'"
+        },
+        {
+          "line": 211,
+          "text": "NUGET_SIGNING_CERTIFICATE_BASE64:"
+        },
+        {
+          "line": 214,
+          "text": "NUGET_SIGNING_CERTIFICATE_PASSWORD:"
+        },
+        {
+          "line": 305,
+          "text": "- name: Cache NuGet packages"
+        },
+        {
+          "line": 308,
+          "text": "path: ~/.nuget/packages"
+        },
+        {
+          "line": 309,
+          "text": "key: nuget-${{ hashFiles(inputs.packages-lock-file) }}"
+        },
+        {
+          "line": 310,
+          "text": "restore-keys: nuget-"
+        },
+        {
+          "line": 312,
+          "text": "if: ${{ inputs.publish-containers }}"
+        },
+        {
+          "line": 319,
+          "text": "# only after publishCmd has already pushed NuGet packages, so a late rejection would"
+        },
+        {
+          "line": 391,
+          "text": "if: ${{ inputs.publish-containers }}"
+        },
+        {
+          "line": 392,
+          "text": "uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0"
+        },
+        {
+          "line": 396,
+          "text": "if: ${{ inputs.publish-containers }}"
+        },
+        {
+          "line": 397,
+          "text": "uses: ./.hexalith/builds-execution/Github/publish-containers"
+        },
+        {
+          "line": 469,
+          "text": "NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}"
+        },
+        {
+          "line": 486,
+          "text": "if: ${{ always() && inputs.publish-containers }}"
+        },
+        {
+          "line": 555,
+          "text": "SIGNING_TIMESTAMPER: ${{ inputs.nuget-signing-timestamper }}"
+        },
+        {
+          "line": 558,
+          "text": "SIGNING_CERTIFICATE_PRESENT: ${{ secrets.NUGET_SIGNING_CERTIFICATE_BASE64 != '' }}"
+        },
+        {
+          "line": 559,
+          "text": "SIGNING_PASSWORD_PRESENT: ${{ secrets.NUGET_SIGNING_CERTIFICATE_PASSWORD != '' }}"
+        },
+        {
+          "line": 627,
+          "text": "reject \"governed mode requires nuget-signing-timestamper to be an absolute RFC 3161 timestamp-authority URL.\""
+        },
+        {
+          "line": 635,
+          "text": "reject \"governed mode requires the NUGET_SIGNING_CERTIFICATE_BASE64 secret; refusing to publish unsigned packages.\""
+        },
+        {
+          "line": 638,
+          "text": "reject \"governed mode requires the NUGET_SIGNING_CERTIFICATE_PASSWORD secret; refusing to publish unsigned packages.\""
+        },
+        {
+          "line": 718,
+          "text": "- name: Cache NuGet packages"
+        },
+        {
+          "line": 722,
+          "text": "path: ~/.nuget/packages"
+        },
+        {
+          "line": 723,
+          "text": "key: nuget-${{ hashFiles(inputs.packages-lock-file) }}"
+        },
+        {
+          "line": 724,
+          "text": "restore-keys: nuget-"
+        },
+        {
+          "line": 726,
+          "text": "if: ${{ steps.publish-gate.outputs.publish-enabled == 'true' && inputs.publish-containers }}"
+        },
+        {
+          "line": 807,
+          "text": "if: ${{ steps.publish-gate.outputs.publish-enabled == 'true' && inputs.publish-containers }}"
+        },
+        {
+          "line": 808,
+          "text": "uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0"
+        },
+        {
+          "line": 812,
+          "text": "if: ${{ steps.publish-gate.outputs.publish-enabled == 'true' && inputs.publish-containers }}"
+        },
+        {
+          "line": 813,
+          "text": "uses: ./.hexalith/builds-execution/Github/publish-containers"
+        },
+        {
+          "line": 867,
+          "text": "HEXALITH_NUGET_SIGNING_TIMESTAMPER: ${{ inputs.nuget-signing-timestamper }}"
+        },
+        {
+          "line": 868,
+          "text": "NUGET_SIGNING_CERTIFICATE_BASE64: ${{ secrets.NUGET_SIGNING_CERTIFICATE_BASE64 }}"
+        },
+        {
+          "line": 869,
+          "text": "NUGET_SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.NUGET_SIGNING_CERTIFICATE_PASSWORD }}"
+        },
+        {
+          "line": 901,
+          "text": "# side effect exists, so the attested bytes are the bytes NuGet later receives."
+        },
+        {
+          "line": 1023,
+          "text": "NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}"
+        },
+        {
+          "line": 1193,
+          "text": "if: ${{ always() && inputs.publish-containers }}"
+        }
+      ]
+    },
+    {
+      "id": "projects-shared-release-workflow",
+      "repository": "references/Hexalith.Builds",
+      "revision": "a07078ad74d3727bc5a6b6d85d47d56a6e5c9fec",
+      "path": ".github/workflows/domain-release.yml",
+      "command": [
+        "git",
+        "show",
+        "a07078ad74d3727bc5a6b6d85d47d56a6e5c9fec:.github/workflows/domain-release.yml"
+      ],
+      "exit_code": 0,
+      "sha256": "18feb281ec363a930c1a26ba67bf89f25acddd544e84f2c0f78f296a03722127",
+      "relevant_lines": [
+        {
+          "line": 15,
+          "text": "description: 'Comma-separated hashFiles() patterns for the NuGet cache key.'"
+        },
+        {
+          "line": 50,
+          "text": "environment-name:"
+        },
+        {
+          "line": 57,
+          "text": "publish-containers:"
+        },
+        {
+          "line": 88,
+          "text": "Number of NuGet package IDs the caller publishes. Declared by the caller"
+        },
+        {
+          "line": 130,
+          "text": "nuget-signing-timestamper:"
+        },
+        {
+          "line": 198,
+          "text": "NUGET_API_KEY:"
+        },
+        {
+          "line": 199,
+          "text": "description: 'NuGet.org API key supplied explicitly by the caller.'"
+        },
+        {
+          "line": 207,
+          "text": "NUGET_SIGNING_CERTIFICATE_BASE64:"
+        },
+        {
+          "line": 210,
+          "text": "NUGET_SIGNING_CERTIFICATE_PASSWORD:"
+        },
+        {
+          "line": 301,
+          "text": "- name: Cache NuGet packages"
+        },
+        {
+          "line": 304,
+          "text": "path: ~/.nuget/packages"
+        },
+        {
+          "line": 305,
+          "text": "key: nuget-${{ hashFiles(inputs.packages-lock-file) }}"
+        },
+        {
+          "line": 306,
+          "text": "restore-keys: nuget-"
+        },
+        {
+          "line": 308,
+          "text": "if: ${{ inputs.publish-containers }}"
+        },
+        {
+          "line": 315,
+          "text": "# only after publishCmd has already pushed NuGet packages, so a late rejection would"
+        },
+        {
+          "line": 386,
+          "text": "if: ${{ inputs.publish-containers }}"
+        },
+        {
+          "line": 387,
+          "text": "uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0"
+        },
+        {
+          "line": 391,
+          "text": "if: ${{ inputs.publish-containers }}"
+        },
+        {
+          "line": 392,
+          "text": "uses: ./.hexalith/builds-execution/Github/publish-containers"
+        },
+        {
+          "line": 464,
+          "text": "NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}"
+        },
+        {
+          "line": 481,
+          "text": "if: ${{ always() && inputs.publish-containers }}"
+        },
+        {
+          "line": 550,
+          "text": "SIGNING_TIMESTAMPER: ${{ inputs.nuget-signing-timestamper }}"
+        },
+        {
+          "line": 553,
+          "text": "SIGNING_CERTIFICATE_PRESENT: ${{ secrets.NUGET_SIGNING_CERTIFICATE_BASE64 != '' }}"
+        },
+        {
+          "line": 554,
+          "text": "SIGNING_PASSWORD_PRESENT: ${{ secrets.NUGET_SIGNING_CERTIFICATE_PASSWORD != '' }}"
+        },
+        {
+          "line": 622,
+          "text": "reject \"governed mode requires nuget-signing-timestamper to be an absolute RFC 3161 timestamp-authority URL.\""
+        },
+        {
+          "line": 630,
+          "text": "reject \"governed mode requires the NUGET_SIGNING_CERTIFICATE_BASE64 secret; refusing to publish unsigned packages.\""
+        },
+        {
+          "line": 633,
+          "text": "reject \"governed mode requires the NUGET_SIGNING_CERTIFICATE_PASSWORD secret; refusing to publish unsigned packages.\""
+        },
+        {
+          "line": 713,
+          "text": "- name: Cache NuGet packages"
+        },
+        {
+          "line": 717,
+          "text": "path: ~/.nuget/packages"
+        },
+        {
+          "line": 718,
+          "text": "key: nuget-${{ hashFiles(inputs.packages-lock-file) }}"
+        },
+        {
+          "line": 719,
+          "text": "restore-keys: nuget-"
+        },
+        {
+          "line": 721,
+          "text": "if: ${{ steps.publish-gate.outputs.publish-enabled == 'true' && inputs.publish-containers }}"
+        },
+        {
+          "line": 801,
+          "text": "if: ${{ steps.publish-gate.outputs.publish-enabled == 'true' && inputs.publish-containers }}"
+        },
+        {
+          "line": 802,
+          "text": "uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0"
+        },
+        {
+          "line": 806,
+          "text": "if: ${{ steps.publish-gate.outputs.publish-enabled == 'true' && inputs.publish-containers }}"
+        },
+        {
+          "line": 807,
+          "text": "uses: ./.hexalith/builds-execution/Github/publish-containers"
+        },
+        {
+          "line": 860,
+          "text": "HEXALITH_NUGET_SIGNING_TIMESTAMPER: ${{ inputs.nuget-signing-timestamper }}"
+        },
+        {
+          "line": 861,
+          "text": "NUGET_SIGNING_CERTIFICATE_BASE64: ${{ secrets.NUGET_SIGNING_CERTIFICATE_BASE64 }}"
+        },
+        {
+          "line": 862,
+          "text": "NUGET_SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.NUGET_SIGNING_CERTIFICATE_PASSWORD }}"
+        },
+        {
+          "line": 890,
+          "text": "# side effect exists, so the attested bytes are the bytes NuGet later receives."
+        },
+        {
+          "line": 1006,
+          "text": "NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}"
+        },
+        {
+          "line": 1171,
+          "text": "if: ${{ always() && inputs.publish-containers }}"
+        }
+      ]
+    }
+  ],
+  "local_sources": [
+    {
+      "path": "references/Hexalith.Platform/.github/CODEOWNERS",
+      "sha256": "2b338e90f00d9d29582065320a7a7d38bd68e7b33598516d894be9d966eefc21"
+    },
+    {
+      "path": "references/Hexalith.Platform/eng/cluster-management/NEXT-OPERATOR-ACTION.md",
+      "sha256": "f135a7f5a4b85cf1180ded1ba9d80d0e0166dc525e1fc0832579534a0cd4fdc0"
+    },
+    {
+      "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/evidence/epic-4/4-1/20261007t144445z-maintenance-window-amendment.json",
+      "sha256": "1d6d07f87ffb84c43ccb93a72c9e54bd23cfcd764cf8026444f584518b326bcb"
+    },
+    {
+      "path": "deploy/observability/production/observability.yaml",
+      "sha256": "6e3e629a2964f40da53ae109035331fa83310363e585d4e1a0e57bad164c7b6b"
+    },
+    {
+      "path": "docs/operations/incident-alerting-and-recovery.md",
+      "sha256": "bf30c4ef5ab6b152b55a61002aecf362b481810b111937184031ee4fb9361d69"
+    }
+  ],
+  "investigation_revision": {
+    "folders": "2236855ee181bdeed2a103537c66316a1612c792",
+    "platform": "3a29fe039320ab13d95ff7d9801761dad72bfed9"
+  },
+  "operator_and_schedule_findings": {
+    "platform_code_and_workflow_owner": "@jpiquot",
+    "platform_recovery_accountable_operator": "Administrator",
+    "recovery_maintenance_window_start_utc": "2026-10-07T14:44:45Z",
+    "recovery_maintenance_window_end_exclusive_utc": "2026-10-31T23:00:00Z",
+    "incident_channel": "this ChatGPT/Codex conversation",
+    "scope_limit": "Recovery work ownership/window. No Folders migration appointment, extra workload outage, exact capture, or signing authority is inferred.",
+    "folders_migration_owner_appointment": "not found in inspected records",
+    "folders_actual_activation_retirement_slots": "not found in inspected records",
+    "numeric_projection_lag_target_ms": 500,
+    "projection_target_limit": "General published projection freshness target; not a live migration API error/latency threshold or configured paging proof.",
+    "migration_numeric_error_latency_thresholds": "not found in inspected records"
+  },
+  "conclusions": [
+    "The known native context is accessible and reports the same cluster UID as retained Platform evidence.",
+    "No Folders/Projects reference was found in the 269 inspected workload/service/ingress/job objects. Native results cover one cluster, eight resource kinds, and the capture time; this is not global/historical absence proof or inspection of all possible shared-host module configuration.",
+    "All nine Folders and four Projects GitHub deployment records returned in the complete first pages trace through status log URLs to Release workflow runs. The September records previously cited as deployed-v1 consumer evidence are package release environment jobs. Exact historic caller workflows select publish-containers:false. These records do not establish deployed workloads or a live v1 consumer.",
+    "The earlier categorical deployed-Projects premise requires correction. Preserving its historical record does not make that inference current evidence. No approval, accepted migration scope, route mode, T0, retirement, or tracker is changed.",
+    "The recorded Platform maintainer and recovery maintenance window are available without requesting them again. Actual Folders/Projects deployment, call schedule and migration baseline still have no measured subject in this inspected cluster."
+  ],
+  "superseded_attempt_note": "First GitHub calls failed because installed gh 2.46.0 does not support --slurp. Corrected single-page calls succeeded and returned fewer than 100 records each; all returned deployment statuses/runs were followed."
+}

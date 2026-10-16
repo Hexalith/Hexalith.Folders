@@ -4,7 +4,7 @@
 
 ## Goal
 
-Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Spine driving REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Shared rules and generation gates prevent drift. Candidate generation alone does not authorize production exposure or story closure.
+Give consumers and adapter implementers one versioned OpenAPI v2 Contract Spine driving REST, SDK, CLI, MCP, schemas, errors, and parity evidence. Generation gates prevent drift. Candidate generation, story closure, and production exposure require separate acceptance.
 
 ## Stories
 
@@ -28,38 +28,34 @@ Give API consumers and adapter implementers one versioned OpenAPI v2 Contract Sp
 
 ## Requirements & Constraints
 
-The spine owns operation/schema identities; product decisions own actors, scope, and safety. `Hexalith.McpCli` is the CLI/MCP target. Proprietary Folders adapters are migration sources requiring inventory decisions and parity evidence before retirement; do not extend them with new capabilities.
+The spine owns operation and schema identities; product decisions own actors, scope, safety, and user-visible outcomes. Conflicts require reconciliation before release. `Hexalith.McpCli` is the CLI/MCP target; proprietary module adapters are migration sources requiring inventory, approved replacement or withdrawal, and behavior evidence before retirement.
 
-Before protected lookup or effects, authorize in order: authentication, authority availability, fresh tenant authority, folder ACL/derived scope, EventStore validation, Dapr deny-by-default policy. Unauthenticated requests receive `401`; fresh negative authority receives one byte-equivalent non-enumerating `404`; stale/unavailable/conflicting/incomplete authority receives one non-disclosing retryable `503`. Protected v2 excludes `403`, `not_found`, `cross_tenant_access_denied`, and `audit_access_denied`. Locators and payload tenant identifiers never grant authority.
+Authorize before protected lookup or effects: authenticate, establish available and fresh tenant authority, prove folder ACL/derived scope, then enforce EventStore validation and Dapr deny-by-default policy. Locators, task identifiers, and payload tenant values grant no authority. Unauthenticated requests use `401`; fresh negative authority uses one byte-equivalent, non-enumerating `404`; stale, unavailable, conflicting, or incomplete authority uses one non-disclosing, retryable `503`. Protected v2 excludes `403`, `not_found`, `cross_tenant_access_denied`, and `audit_access_denied`.
 
-Errors require category, code, safe message, correlation, retryability, client action, and closed metadata-only details with visibility. Adapter projections must agree. Glossary/state casing is normative; lifecycle, lock state, disposition, freshness, and disclosure stay separate.
+Errors preserve category, code, safe message, correlation, retryability, client action, and closed metadata-only details with visibility across surfaces. Keep lifecycle, lock state, operation disposition, freshness, and disclosure separate; preserve their canonical vocabularies.
 
-Every operation is mutation or read. Equivalence excludes transport/retry metadata. Replay rechecks authorization; different intent conflicts without prior-intent disclosure; expired keys never execute. Reads reject keys before source execution. Commit replay has longer retention.
+Every operation is classified as mutation or read. Mutations require idempotency; reads reject keys before source execution. Equivalence excludes transport/retry metadata. Replay rechecks authorization; changed intent conflicts without exposing prior intent; expired keys never execute. File mutations never auto-commit.
 
-Content, credentials, secrets, raw provider payloads/paths, and unauthorized existence stay out of persisted metadata, telemetry, errors, and evidence. Bounded context responses require authorization/path policy. Mutations do not auto-commit.
+Exclude content, diffs, generated context, secrets, credentials, raw provider payloads, and unauthorized existence from metadata, telemetry, errors, console output, and evidence. Context reads remain bounded and subject to authorization and path policy.
 
 ## Technical Decisions
 
-Use .NET 10 and the `.slnx` solution with central package management and warnings as errors. Debug/default builds consume sibling projects; Release builds consume published NuGet packages. Both modes must remain buildable. Package versions belong to the shared Hexalith.Builds catalog and importing repository configuration; approval-bound provider/native pins require compatibility evidence. Initialize only root-declared submodules.
+Use .NET 10, `.slnx`, central packages, and warnings as errors. Default/Debug consumes sibling projects; Release/CI consumes published NuGet packages. Both modes must build. Reuse platform capabilities; initialize only root-declared submodules.
 
-OpenAPI 3.1 drives generation. Extensions cannot weaken safety. NSwag generates the SDK and helpers from ordered equivalence fields; reads receive no helper and the SDK never invents a key. Golden regeneration is diff-free; emitted REST schemas match the spine.
+OpenAPI 3.1 drives NSwag SDK generation and canonical idempotency helpers. Helpers follow ordered equivalence fields; reads have no helper; the SDK never invents mutation keys. Golden regeneration must be diff-free, and emitted REST schemas must match the spine. Extensions cannot weaken safety.
 
-C13 generates one row per operation: SDK/REST transport parity and CLI/MCP behavioral parity. Diagnostic exceptions need approved rationale; removals need deprecation evidence. Previous-spine fingerprints include status/error vocabulary. `read_model_unavailable` maps to CLI exit `73`; `concurrency_conflict` to exit `77` and matching MCP kind. Counts are generated.
+C13 generates one row per operation, proving SDK/REST transport parity and CLI/MCP behavioral parity. Diagnostic exceptions need approved rationale; removals need deprecation evidence. Previous-spine fingerprints include status/error vocabulary. Counts are generated. `read_model_unavailable` maps to CLI exit `73`; `concurrency_conflict` maps to exit `77` and matching MCP kind.
 
-EventStore owns idempotency admission after authentication, authorization, and validation. The v2 matrix covers fourteen access states and every protected operation family once. Diagnostics/task status carry folder scope; task lookup proves its binding. Gates prove zero protected reads before denial.
+EventStore owns durable idempotency admission after authorization and validation. Authorization coverage includes all fourteen canonical access states and every protected operation family once. Diagnostic/task queries carry explicit folder scope; task lookup proves its binding. Gates prove zero protected reads before denial.
 
-v1 is historical; accepted migration removes supported production routes/client targets. External v1 consumers block release pending a migration decision. Server/SDK/UI/parity/drift changes are validated together.
+Keep v2 server, SDK, adapter, UI, parity, drift, and previous-spine artifacts synchronized. v1 becomes historical after accepted migration; deployed external v1 consumers require an explicit migration decision. Preserve `V1Only` and unset `T0` until migration entry gates pass.
 
-The general hold was removed after corrective A8; only Story 1.17 has scoped execution authorization. Closure, v2 exposure, and other ordinary-story execution remain unauthorized. Use its isolated branch/worktree lane and preserve bound main artifacts until combined closure checks pass. Historical digests remain provenance. Jerome's single-owner policy governs new decisions: changed bytes require technical rechecks; materially changed behavior, risk, scope, exposure, or rollback requires another decision. Never infer acceptance.
-
-Keep `V1Only` active and `T0` unset until every migration entry gate passes. Preserve historical approval records separately from current technical evidence bindings; passing a technical gate does not supply production authorization.
+The manifest records hold removal but withholds ordinary execution, v2 exposure, and Story 1.17 closure; 1.17 has scoped execution. Preserve bound artifacts and historical approvals. Jerome's single-owner policy requires technical rechecks for changed bytes and a new decision for material behavior, risk, scope, exposure, or rollback changes. Passing checks never implies acceptance.
 
 ## UX & Interaction Patterns
 
-The console is read-only and metadata-only. Denial never invites retry; authority unavailability does. Both show safe correlation without confirming existence. Visible/redacted/withheld/unknown/missing disclosure stays separate from availability.
+The console remains read-only and metadata-only. Denial is terminal for the caller; authority unavailability invites retry. Both expose safe correlation without confirming resource existence. Disclosure states remain distinct from availability.
 
 ## Cross-Story Dependencies
 
-Scaffold/policy precede fixtures, decisions, equivalence, operation groups, SDK/parity generation, gates, and publication. Story 1.17 closes only after its bounded slices pass contract, generation, drift, parity, and safe-authorization checks under the accepted decision scope.
-
-Later epics consume the accepted contract. Story 4.23 owns lock identity/timing and adds v2-only renewal after 1.17 closes, with matching enrollment, authorization, idempotency, and parity. The October amendment leaves the bound candidate unchanged. Manifest ranks/prerequisites govern order; authorization stays separate from lifecycle tracking.
+Scaffold and root policy precede fixtures, normative decisions, equivalence, operation groups, generation, parity, gates, and publication. Story 1.17 closes only after its bounded slices and combined conformance/authorization checks satisfy the accepted decision scope; later epics consume the accepted contract. Manifest ranks and exact prerequisites determine execution order. Story 4.23 adds lock identity/timing and v2 renewal after 1.17; its accepted October amendment leaves the bound 1.17 candidate unchanged.

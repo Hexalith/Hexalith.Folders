@@ -1,0 +1,437 @@
+{
+    "schema": "story117-platform-qualification.configuration.v1",
+    "status": "proposed-inert",
+    "qualification": "HOLD",
+    "productionControl": {
+        "routeMode": "V1Only",
+        "T0": null,
+        "activationAuthority": null,
+        "deploymentAuthorized": false,
+        "publicationAuthorized": false,
+        "trackerTransitionAuthorized": false
+    },
+    "installationProposal": {
+        "branch": "first-install-in-observed-target",
+        "confirmed": false,
+        "productionWorkingBaseline": null,
+        "retainedApplicationData": null,
+        "owner": "Platform and Administrator",
+        "observationScope": "One context at capture time; no global or historical absence claim.",
+        "branchRule": "Confirm target and retained data before staging. A discovered installation returns to the original migration branch; never infer a prior deployment from package releases."
+    },
+    "acceptedEnvelope": {
+        "topology": "single-node",
+        "rpoSeconds": 3600,
+        "rtoSeconds": 14400,
+        "backupIntervalSeconds": 1800,
+        "frequentRetentionDays": 7,
+        "dailyRetentionDays": 30,
+        "rtoScope": "Outages beginning within declared response coverage; prepared-capacity restore, no HA or standby."
+    },
+    "sourceSnapshots": {
+        "Folders": {
+            "revision": "2236855ee181bdeed2a103537c66316a1612c792",
+            "scope": "local-checkout",
+            "state": "dirty",
+            "dirtyInputs": [
+                "Pre-existing working-tree edits preserved; this packet is also uncommitted."
+            ]
+        },
+        "Projects": {
+            "revision": "42c8e7bc3a58d78e7c6ea4273711d697e81175e7",
+            "scope": "local-checkout",
+            "state": "not-attested",
+            "dirtyInputs": []
+        },
+        "Platform": {
+            "revision": "3a29fe039320ab13d95ff7d9801761dad72bfed9",
+            "scope": "local-checkout",
+            "state": "not-attested",
+            "dirtyInputs": []
+        },
+        "EventStore": {
+            "revision": "210b90da172cc7ca946fbb06cfd44390bffa707b",
+            "scope": "local-checkout",
+            "state": "not-attested",
+            "dirtyInputs": []
+        },
+        "Builds": {
+            "revision": "f9f115528e43060d5f0af7dfbd8b22addc3c9a89",
+            "scope": "local-checkout",
+            "state": "dirty",
+            "dirtyInputs": [
+                "Props/Directory.Packages.props"
+            ]
+        }
+    },
+    "sourceInputs": {
+        "src/Hexalith.Folders.Server/FoldersApiRouting.cs": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce",
+        "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "5f7a2725ecc97d50001c83453dd568ebb7635024e301be8d0e4557dbde766fc5",
+        "src/Hexalith.Folders.Server/Authentication/FoldersOidcOptions.cs": "af14f6338f85f5741a4d1879691c3c855204779fe9fc33b357dc8e7cb9c66ae2",
+        "src/Hexalith.Folders.Server/Authentication/FoldersAuthenticationServiceCollectionExtensions.cs": "fbd504afe0d7728a9fa371afcb37b949b8c97162b6cda3e3b6f54a1240ca6a4d",
+        "src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs": "441f372f57ebc827220859ef69a043460b02fba380e2705d932c969254727fcb",
+        "src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs": "52d5588cd38c2d5ae0c3815fa0226eb4594ddc91475977d86cff6a9534294737",
+        "src/Hexalith.Folders.Workers/FoldersWorkersHostComposition.cs": "e313c3aff1f644bf94117962973d962dd8cca08a7f969fa4f92020f4f78ac3bb",
+        "src/Hexalith.Folders.Workers/FoldersTenantEventSubscriptionOptionsValidator.cs": "74af7e9311da8dc6f881afc5631df3546613e8a4c8cf7adc02b9eecc69b7b3e6",
+        "src/Hexalith.Folders.UI/Configuration/FoldersAuthenticationOptions.cs": "8dc9e92b967189714f7e082e7e14363abf3fd221d9c7dd474b692f5866199473",
+        "src/Hexalith.Folders.UI/CompositionRoot.cs": "0f801450a0f43a610e6ac3f3936d9be573b476000c7940a66e4a079773e5083a",
+        "src/Hexalith.Folders.Client/FoldersClientOptions.cs": "176d153139af1f0ea0943c82cac3f98bd246d54ead96b9708df687e8e9580cb1",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs": "dbc41081169dc3562d91bfa2133f9655b2fa5a68843aa9737197c522e476d2b5",
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs": "0b7d96d99283d114b16e245c9412cfb3ba8aa8213ebfdb07fc5de723d37f8944",
+        "src/Hexalith.Folders/Projections/TenantAccess/EventStoreFolderTenantAccessProjectionStore.cs": "33fced4544ad8b3e382c1ab57018bad2927e7a9d08d4fd26da2e2434dad15c11",
+        "src/Hexalith.Folders.AppHost/DaprComponents/statestore.yaml": "011e2a9fdf4c7f1788024dc506934494e715e9f998b935f01fd604540bca7803",
+        "deploy/dapr/production/sidecar-config-bindings.yaml": "7949ab56f5e1b43ee0d847df2a7c55077b44824a5670c92bdc9e11b89a5a5e24",
+        "docs/operations/container-images-and-dapr-app-ids.md": "6fc6869b078e759ec6e79958bb286ed21d78410ede43b2f5853a77fe0f51e9f1",
+        "docs/runbooks/rollback.md": "b127688e1199b0d15f15d66cfd26854ca0ed78d095828646c54d9adbf7747192",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs": "46a3dfc12d83a62051f77a498c517b49f908b1bb0fe57d3a996f3e128392c6af",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs": "dcea1de00934076e26e33b4ac902685ab4dc44eafbb2aafc1a80b084ea6e580b",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs": "dc24eb9dedc6452d57c4cab8e432154d1b544ddf9d5b5162c364f11e99108269",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthenticationOptions.cs": "61efa06814289479a55795afc922f2fd15138fd41d05d75c63d005c793050553",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAssertionIssuerOptions.cs": "6c883a91fbdc652484e3b15430a89486e21bae8aaa54d1ed4277aefe0f06cc60",
+        "references/Hexalith.Builds/Props/Directory.Packages.props": "014821f1432b3a80122f58f14ad21329800929088ccf733139ab01c0eb0aa853",
+        "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md": "de4a2566048ac5ef59e474d5508b5836a2869cd995a577bf9afda637f8706ca5"
+    },
+    "releaseIdentity": {
+        "owner": "Platform publication owner with Builds and module owners",
+        "sourceProvenance": null,
+        "exactFoldersClientContractsPair": null,
+        "moduleImageDigests": null,
+        "applicationPackageDigest": null,
+        "composedEventStoreDigest": null,
+        "releaseRecord": null,
+        "successfulExactRevisionCI": null,
+        "priorV1Deployment": null,
+        "boundary": "Local source fingerprints and catalog version inputs are not clean build, attestation, publication, deployed artifact or current remote Platform evidence."
+    },
+    "moduleConfiguration": {
+        "folders-server": {
+            "owner": "Folders; Platform supplies environment values",
+            "source": "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
+            "values": {
+                "Folders:ApiRouting:Mode": "V1Only",
+                "Folders:Authentication:Authority": null,
+                "Folders:Authentication:MetadataAddress": null,
+                "Folders:Authentication:Audience": null,
+                "Folders:Authentication:ValidIssuer": null,
+                "Folders:Authentication:RequireHttpsMetadata": true,
+                "Authentication:JwtBearer:Authority": null,
+                "Authentication:JwtBearer:Issuer": null,
+                "Authentication:Workload:Audience": "folders",
+                "Authentication:Workload:AllowedCallers:0": "eventstore",
+                "Authentication:HumanAuthorityReceipt:SigningKey": null,
+                "APP_API_TOKEN": null
+            },
+            "boundary": "Folders OIDC options configure public bearer validation. Workload assertions use the shared EventStore JWT contract; a human receipt separately authorizes /process. Secret material stays external."
+        },
+        "folders-workers": {
+            "owner": "Folders; Platform binds the isolated inbound broker component",
+            "source": "src/Hexalith.Folders.Workers/FoldersTenantEventSubscriptionOptionsValidator.cs",
+            "values": {
+                "Folders:Workers:PubSubName": "folders-workers-pubsub",
+                "APP_API_TOKEN": null
+            },
+            "boundary": "Existing isolated inbound component name is a conformance input; Platform must qualify broker, declarative subscriptions, concurrency, retries and dead letters. Shared pubsub remains outbound."
+        },
+        "folders-ui": {
+            "owner": "Folders and FrontComposer; Platform owns confidential UI identity integration",
+            "source": "src/Hexalith.Folders.UI/CompositionRoot.cs",
+            "values": {
+                "Folders:Authentication:Mode": "oidc",
+                "Folders:Authentication:Authority": null,
+                "Folders:Authentication:ClientId": null,
+                "Folders:Authentication:RequireHttpsMetadata": true,
+                "Folders:Client:BaseAddress": null
+            },
+            "boundary": "Current options expose no ClientSecret key. The current bearer forwarding handler is source input; qualified confidential UI credentials and downstream delegation remain unresolved. Never use hermetic-test auth for staging qualification."
+        },
+        "folders-sdk": {
+            "owner": "Folders SDK; consuming host owns transport and authentication",
+            "source": "src/Hexalith.Folders.Client/FoldersClientOptions.cs",
+            "values": {
+                "Folders:BaseAddress": null
+            },
+            "boundary": "This key belongs to the SDK parameterless configuration overload. Projects uses explicit options and does not bind it; the SDK requires an authentication handler on the returned IHttpClientBuilder."
+        },
+        "eventstore-inputs": {
+            "owner": "EventStore semantics; Platform composes one shared host",
+            "source": "deploy/dapr/production/sidecar-config-bindings.yaml",
+            "values": {
+                "EventStore:Publisher:TopicOverrides:folders": "folders.events",
+                "Authentication:WorkloadIssuer:ClientId": null,
+                "Authentication:WorkloadIssuer:ClientSecret": null,
+                "Authentication:HumanAuthorityReceipt:SigningKey": null,
+                "EventStore:IdempotencyAdmission:Enabled": true,
+                "EventStore:IdempotencyAdmission:DigestKeySource": "DaprSecret",
+                "EventStore:IdempotencyAdmission:ActiveDigestKeyVersion": null,
+                "EventStore:IdempotencyAdmission:DigestKeySecretStoreName": null,
+                "EventStore:IdempotencyAdmission:DigestKeySecretName": null,
+                "EventStore:IdempotencyAdmission:DigestKeySecretGeneration": null
+            },
+            "boundary": "Colon notation maps to double underscores in environment variables. Kubernetes secret-store references in existing fragments require reconciliation with Platform OpenBao/secret-contract scopes; no composed image is qualified here."
+        },
+        "folders-server-and-workers-telemetry": {
+            "owner": "Platform telemetry owner; Folders ServiceDefaults consumes the key",
+            "source": "src/Hexalith.Folders.ServiceDefaults/Extensions.cs",
+            "values": {
+                "OTEL_EXPORTER_OTLP_ENDPOINT": null
+            },
+            "boundary": "Server and Workers wire this exporter seam. UI does not call AddServiceDefaults in its current entry point; Platform/FrontComposer must qualify UI telemetry rather than assume the key alone enables it."
+        }
+    },
+    "platformBindings": {
+        "release-and-hosting": {
+            "value": null,
+            "owner": "Platform with Builds and EventStore",
+            "reason": "No accepted retained Platform release or hosted composition is supplied.",
+            "contract": "One retained application package and one Platform-composed eventstore host; existing module wrappers are inputs only."
+        },
+        "profile": {
+            "value": null,
+            "owner": "Platform and EventStore",
+            "reason": "Qualified common profile digest and provider versions are absent.",
+            "contract": "Same ratified template for staging and production; no separate Folders backend/topology gate."
+        },
+        "namespaces-and-network": {
+            "value": null,
+            "owner": "Platform and Administrator",
+            "reason": "Application/data namespaces, trust domains, Gateway and enforced isolation remain unbound.",
+            "contract": "Separate environment state, restricted pods, HotReload off and negative isolation matrix."
+        },
+        "read-model": {
+            "value": null,
+            "owner": "Platform environment-layer owner with Folders and EventStore",
+            "reason": "Qualified physical state backend and injected logical-role mapping are absent.",
+            "contract": "Existing component statestore uses keyPrefix=none and the same physical backend for folders and folders-workers; fixed source names require AD-9 adoption."
+        },
+        "broker": {
+            "value": null,
+            "owner": "Platform and EventStore with Folders",
+            "reason": "Production durable broker and backlog/dead-letter recovery are unqualified.",
+            "contract": "folders-workers-pubsub inbound and shared outbound pubsub use one qualified broker; EventStore topic override is folders.events. Local Redis pubsub is not production qualification."
+        },
+        "realm-and-workload-auth": {
+            "value": null,
+            "owner": "Platform instance; EventStore claim semantics; Administrator production authority",
+            "reason": "Issuer, audiences, client-to-surface map, scoped clients and token exchange remain unbound.",
+            "contract": "Real environment OIDC, actor plus workload checks, own-audience validation and receipt binding; no raw user-token forwarding authority."
+        },
+        "projects-client-delegation": {
+            "value": null,
+            "owner": "Projects hosting owner with Platform and EventStore",
+            "reason": "Projects explicit AddFoldersClient has a hard-coded URI and no auth handler; no qualified authenticated transport is supplied.",
+            "contract": "Read-only SDK operations only; qualify downscoped delegation with original actor and surface, and authenticated client_id/azp attribution. Do not invent an endpoint/config key or token issuer."
+        },
+        "ui-confidential-client": {
+            "value": null,
+            "owner": "Platform, FrontComposer and Folders UI owner",
+            "reason": "Current UI options do not expose confidential-client credential wiring and use bearer forwarding.",
+            "contract": "Qualify hosted confidential UI integration and target-scoped downstream delegation before enrollment."
+        },
+        "provider-tenancy-and-egress": {
+            "value": null,
+            "owner": "Folders provider owners with Platform",
+            "reason": "Per-environment provider tenancy, least-privilege references and allowed egress are absent.",
+            "contract": "No real provider endpoints, payloads or effects in packet or smoke evidence; unknown provider outcomes require reconciliation."
+        },
+        "secret-contract": {
+            "value": null,
+            "owner": "Platform scope owner; Administrator and module secret custodians",
+            "reason": "Environment-specific OpenBao, per-app bootstrap/token mounts and acknowledged rotations are absent.",
+            "contract": "Existing Kubernetes secret names are reference inputs only; reconcile to the environment secret contract without committing material."
+        },
+        "telemetry": {
+            "value": null,
+            "owner": "Platform telemetry owner",
+            "reason": "Environment sink, exporter/egress, retention and off-site evidence are absent.",
+            "contract": "Capture api.version, consumer, status and durations; qualify Server, Workers and UI instrumentation separately."
+        },
+        "attempt-controls": {
+            "value": null,
+            "owner": "Platform with Builds and Administrator",
+            "reason": "Signed record encodings, CAS lock/epoch/stop store and scoped executor remain absent.",
+            "contract": "Administrator-approved pre-G3 mode still requires staging, provenance, lock, verification and records; packet grants no approval."
+        },
+        "recovery": {
+            "value": null,
+            "owner": "Administrator and recovery deputy with Platform and module owners",
+            "reason": "Usable recovery sets, hooks, fencing, response coverage and drill evidence are absent.",
+            "contract": "Accepted 1h RPO/4h RTO, 7-day frequent/30-day daily retention and prepared-capacity restore; preserve keys, erasure, holds, revocations and external-effect reconciliation."
+        }
+    },
+    "secretReferences": {
+        "folders-app-channel": {
+            "consumers": [
+                "folders"
+            ],
+            "sourceName": "hexalith-folders-server-app-token",
+            "sourceKey": "token",
+            "targetKeys": [
+                "APP_API_TOKEN",
+                "dapr.io/app-token-secret"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        },
+        "workers-app-channel": {
+            "consumers": [
+                "folders-workers"
+            ],
+            "sourceName": "hexalith-folders-workers-app-token",
+            "sourceKey": "token",
+            "targetKeys": [
+                "APP_API_TOKEN",
+                "dapr.io/app-token-secret"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        },
+        "tenants-app-channel": {
+            "consumers": [
+                "tenants"
+            ],
+            "sourceName": "hexalith-tenants-app-token",
+            "sourceKey": "token",
+            "targetKeys": [
+                "APP_API_TOKEN",
+                "dapr.io/app-token-secret"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        },
+        "human-receipt": {
+            "consumers": [
+                "eventstore",
+                "folders"
+            ],
+            "sourceName": "hexalith-human-authority-receipt-signing-key",
+            "sourceKey": "signing-key",
+            "targetKeys": [
+                "Authentication:HumanAuthorityReceipt:SigningKey"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        },
+        "workload-client-id": {
+            "consumers": [
+                "eventstore"
+            ],
+            "sourceName": "hexalith-eventstore-workload-client",
+            "sourceKey": "client-id",
+            "targetKeys": [
+                "Authentication:WorkloadIssuer:ClientId"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        },
+        "workload-client-secret": {
+            "consumers": [
+                "eventstore"
+            ],
+            "sourceName": "hexalith-eventstore-workload-client",
+            "sourceKey": "client-secret",
+            "targetKeys": [
+                "Authentication:WorkloadIssuer:ClientSecret"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        },
+        "idempotency-key-ring": {
+            "consumers": [
+                "eventstore"
+            ],
+            "sourceName": "hexalith-eventstore-idempotency-keys",
+            "sourceKey": "generation, active-version and retained version entries",
+            "targetKeys": [
+                "EventStore:IdempotencyAdmission:DigestKeySecretGeneration",
+                "EventStore:IdempotencyAdmission:ActiveDigestKeyVersion",
+                "EventStore:IdempotencyAdmission:DigestKeySecretName"
+            ],
+            "environmentSource": null,
+            "value": null,
+            "owner": "Platform secret-contract owner with owning module custodian",
+            "boundary": "Existing source reference only; no deployed secret or qualified provider binding claimed."
+        }
+    },
+    "dependencies": {
+        "eventstore": {
+            "appId": "eventstore",
+            "catalogInputPin": "3.121.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "tenants": {
+            "appId": "tenants",
+            "catalogInputPin": "5.8.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "memories": {
+            "appId": "memories",
+            "catalogInputPin": "2.27.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "folders-server": {
+            "appId": "folders",
+            "catalogInputPin": "1.2.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "folders-workers": {
+            "appId": "folders-workers",
+            "catalogInputPin": "1.2.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "folders-ui": {
+            "appId": "folders-ui",
+            "catalogInputPin": "1.2.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "projects-server": {
+            "appId": "projects",
+            "catalogInputPin": "1.0.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        },
+        "frontcomposer": {
+            "appId": null,
+            "catalogInputPin": "4.6.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner"
+        }
+    },
+    "projectsReadOnlyOperations": [
+        {
+            "operation": "GetFolderLifecycleStatusAsync",
+            "method": "GET",
+            "path": "/api/v2/folders/{folderId}/lifecycle-status",
+            "mutates": false
+        },
+        {
+            "operation": "GetEffectivePermissionsAsync",
+            "method": "GET",
+            "path": "/api/v2/folders/{folderId}/effective-permissions",
+            "mutates": false
+        },
+        {
+            "operation": "GetFolderFileMetadataAsync",
+            "method": "POST",
+            "path": "/api/v2/folders/{folderId}/workspaces/{workspaceId}/context/metadata",
+            "mutates": false
+        }
+    ]
+}

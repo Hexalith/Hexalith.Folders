@@ -305,7 +305,7 @@ public sealed class LifecycleCapacityDriver
             "Capacity Folder",
             "metadata only capacity folder",
             _iteration.FolderId,
-            ["capacity", "synthetic"],
+            ["capacity", "calibration"],
             _iteration.PrincipalId,
             "correlation-seed-0001",
             _iteration.TaskId,

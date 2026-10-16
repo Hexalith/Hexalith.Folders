@@ -68,7 +68,7 @@ public sealed record LifecycleCapacityProfile(
 
         return new LifecycleCapacityIteration(
             tenantId,
-            "organization-0001",
+            tenantId,
             folderId,
             workspaceId,
             taskId,

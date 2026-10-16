@@ -44,12 +44,15 @@ public sealed class EventStoreFolderTenantAccessProjectionStoreTests
         DateTimeOffset now = DateTimeOffset.UtcNow;
         FolderTenantAccessProjection initial = new()
         {
-            TenantId = "tenant-a", Enabled = true, Watermark = 1,
+            TenantId = "tenant-a",
+            Enabled = true,
+            Watermark = 1,
             Principals = new Dictionary<string, FolderTenantPrincipalEvidence>
             {
                 ["user-a"] = new("user-a", "TenantOwner"),
             },
-            LastEventTimestamp = now, ProjectionWatermark = "tenant-a:1",
+            LastEventTimestamp = now,
+            ProjectionWatermark = "tenant-a:1",
         };
         CancellationToken ct = TestContext.Current.CancellationToken;
         await adapter.SaveAsync(initial, ct);

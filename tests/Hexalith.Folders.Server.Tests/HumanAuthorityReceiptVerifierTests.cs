@@ -50,7 +50,7 @@ public sealed class HumanAuthorityReceiptVerifierTests
 
         verifier.TryEnter(new DomainServiceRequest(command, null), out _).ShouldBeFalse();
         verifier.TryEnter(new DomainServiceRequest(command with { AggregateId = "other-folder" }, null)
-            { HumanAuthorityReceipt = receipt }, out _).ShouldBeFalse();
+        { HumanAuthorityReceipt = receipt }, out _).ShouldBeFalse();
         context.User.FindFirstValue("sub").ShouldBeNull();
         context.Items.ShouldNotContainKey(HumanAuthorityReceiptVerifier.VerifiedClaimsItemKey);
 

@@ -1,0 +1,620 @@
+{
+  "record_id": "STORY-1-17-LOCAL-RECHECK-2026-10-15",
+  "observed_at_utc": "2026-10-15T16:33:46.964839+00:00",
+  "evidence_scope": "Local package-profile builds, composed-host tests and mocked HTTP. No production observation, migration or publication.",
+  "source": {
+    "repositories": {
+      "folders": {
+        "commit": "2236855ee181bdeed2a103537c66316a1612c792",
+        "working_tree": [
+          " M _bmad-output/implementation-artifacts/epic-1-context.md"
+        ]
+      },
+      "projects": {
+        "commit": "42c8e7bc3a58d78e7c6ea4273711d697e81175e7",
+        "working_tree": []
+      },
+      "builds": {
+        "commit": "f9f115528e43060d5f0af7dfbd8b22addc3c9a89",
+        "working_tree": []
+      },
+      "eventstore": {
+        "commit": "210b90da172cc7ca946fbb06cfd44390bffa707b",
+        "working_tree": []
+      }
+    },
+    "central_catalog_sha256": "47f38330465a4c19a2aaae3c2eed9a21b6cd671eb31b80ef0c189c34ab286b50",
+    "released_pair": [
+      {
+        "id": "Hexalith.Folders.Client",
+        "version": "1.2.1",
+        "repository_commit": "17b5a70d2b4b91bbbf73ea63c8a214a0ad426759",
+        "cached_archive_sha256": "99c5996dbdcdd58759b8436a0ee3496616eefc071c29c8d40c0c3a77bf0d7391",
+        "runtime_dll_sha256": "66efeccaa63848f9edb080355bfdcc0185797e1ef60da8ce794cc2c2d77a91a6",
+        "runtime_matches_archive": true
+      },
+      {
+        "id": "Hexalith.Folders.Contracts",
+        "version": "1.2.1",
+        "repository_commit": "17b5a70d2b4b91bbbf73ea63c8a214a0ad426759",
+        "cached_archive_sha256": "325b4509ce924b92d31fb76ba40b21d1ee1eb1e90057ab53a19f6cf01f9ebb3d",
+        "runtime_dll_sha256": "1bc5dec0c971a332df80bab89b4c41f1789a071560c0298eff65b1e04384d8dc",
+        "runtime_matches_archive": true
+      }
+    ],
+    "source_inventory_sha256": {
+      "src/Hexalith.Folders.Server/FoldersApiRouting.cs": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce",
+      "src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs": "52d5588cd38c2d5ae0c3815fa0226eb4594ddc91475977d86cff6a9534294737",
+      "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "5f7a2725ecc97d50001c83453dd568ebb7635024e301be8d0e4557dbde766fc5",
+      "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs": "dcea1de00934076e26e33b4ac902685ab4dc44eafbb2aafc1a80b084ea6e580b",
+      "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs": "dc24eb9dedc6452d57c4cab8e432154d1b544ddf9d5b5162c364f11e99108269",
+      "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/ProjectFolderDirectoryTests.cs": "1a4d000928fe1f9c6578825afa427a0c51e2cbd2c65864e48618367b30ed5166",
+      "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/ProjectFileReferenceDirectoryTests.cs": "f5cce40803388275377f59a131815c928052149566f51c7c895b3107fb750fa3"
+    },
+    "test_runtime_sha256": {
+      "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll": "3e10cbe89c8b147688d7fb8527a793822dc94420d1f312901a1dfd5a38a21804",
+      "references/Hexalith.Projects/tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.dll": "2c5d3225df9f1b9dbfc9897c9fbef76b5efc5f8818f6c558b8227ec3c3b69e72",
+      "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll": "3c67df59a64d806a0214f7af5606ca39668f41e6d264502b802c79ea343aaac1",
+      "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll": "41407af04f9b988fa6853005060d87fe79b43fc1352881d9d13e4d98b26c41b8",
+      "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll": "10679d6d7ffc28d81a482cd7f8b58fb9eaa049208a905b7ac19182afeefbe91e"
+    }
+  },
+  "candidate": {
+    "artifact_count": 229,
+    "raw_sha256": "87924559727706529487ef28ee3fd66ffa9e018a2b0e0427b78a51a0833baf2e",
+    "candidate_set_sha256": "eef179d95557292e4527b6a1096deb471eb9567a13af5e3f7ba33fc90a49f8db",
+    "planning_manifest_raw_sha256": "64938b7035b8cb6b9a0fe97d8ed4528d387345ca1a44f8a947e467879fb07387",
+    "current_binding_count": 20,
+    "two_generations_equal": true,
+    "changed_artifact_paths": [
+      "docs/contract/pd10-v2-consumer-discovery.md"
+    ],
+    "changed_current_binding_paths": [
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+    ],
+    "manifest_except_current_provenance_unchanged": true,
+    "path": "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+  },
+  "checks": [
+    {
+      "id": "folders-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:21:08.786444+00:00",
+      "finished_at_utc": "2026-10-15T16:21:11.064461+00:00",
+      "exit_code": 1,
+      "raw_log_sha256": "19bb80e6b27539598729f5dc47a6026e288ea02e3576fb9c7a27ad16df3bcf86",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/folders-release-build.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Build FAILED.",
+        "0 Warning(s)",
+        "3 Error(s)"
+      ]
+    },
+    {
+      "id": "folders-release-fallback",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseNuGetDeps=true",
+        "-p:NuGetAudit=false",
+        "-warnaserror",
+        "-m:1"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:21:24.889712+00:00",
+      "finished_at_utc": "2026-10-15T16:21:41.332635+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "740b3aad1ffd613b58200b72f21b8d30e52982deefb4f1c9fbb871c3e94cfaa4",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/folders-release-fallback.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Build succeeded.",
+        "0 Warning(s)",
+        "0 Error(s)"
+      ]
+    },
+    {
+      "id": "projects-release-build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Projects.CI.slnx",
+        "--configuration",
+        "Release",
+        "-p:UseHexalithProjectReferences=false",
+        "-p:NuGetAudit=false",
+        "-m:1",
+        "-warnaserror"
+      ],
+      "working_directory": "references/Hexalith.Projects",
+      "started_at_utc": "2026-10-15T16:21:45.421484+00:00",
+      "finished_at_utc": "2026-10-15T16:22:00.576636+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "d320452a3d7c42c8b3bc09237c4d33925c983ecb7ff375b96c510d9763a1ff3f",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/projects-release-build.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Build succeeded.",
+        "0 Warning(s)",
+        "0 Error(s)"
+      ]
+    },
+    {
+      "id": "projects-folders-adapters",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Projects.Server.Tests/bin/Release/net10.0/Hexalith.Projects.Server.Tests.dll",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFolderDirectoryTests",
+        "-class",
+        "Hexalith.Projects.Server.Tests.ProjectFileReferenceDirectoryTests"
+      ],
+      "working_directory": "references/Hexalith.Projects",
+      "started_at_utc": "2026-10-15T16:22:14.448123+00:00",
+      "finished_at_utc": "2026-10-15T16:22:15.097876+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "dfb076d5b68b77f8c254a33ff220d906d4c335f4838b4df1b912ed7ddbccb1f3",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/projects-folders-adapters.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Projects.Server.Tests  Total: 39, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.402s"
+      ]
+    },
+    {
+      "id": "folders-routing-and-golden",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.IntegrationTests/bin/Release/net10.0/Hexalith.Folders.IntegrationTests.dll",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.Routing.FoldersApiRoutingModeTests",
+        "-class",
+        "Hexalith.Folders.IntegrationTests.EndToEnd.GoldenLifecycleParityTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:22:19.174793+00:00",
+      "finished_at_utc": "2026-10-15T16:22:23.327484+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "caece0d1f9770e07e1bcc286b9a1fd1467852aa23209e542227fc447cf1c4404",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/folders-routing-and-golden.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.IntegrationTests  Total: 114, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 3.960s"
+      ]
+    },
+    {
+      "id": "folders-startup-authorization",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Server.Tests/bin/Release/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Server.Tests.FolderRepositoryStartupAssertionTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10V2RequestFolderAuthorizationTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10V2ReadKeyPrecedenceTests",
+        "-class",
+        "Hexalith.Folders.Server.Tests.Pd10ProtectedOperationExecutorTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:22:38.953320+00:00",
+      "finished_at_utc": "2026-10-15T16:22:39.964145+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "1593c2bc883bdbef78a8931ca125610206e8065cbbef717e139a21dcbd884aac",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/folders-startup-authorization.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.Server.Tests  Total: 29, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.796s"
+      ]
+    },
+    {
+      "id": "contracts-conformance-package-nfr",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:24:50.937815+00:00",
+      "finished_at_utc": "2026-10-15T16:24:53.714673+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "96c847599739b8ab4b3ea04db265b2fcf78431279799e7817750d9eb2c20b962",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/contracts-conformance-package-nfr.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.Contracts.Tests  Total: 40, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.520s"
+      ]
+    },
+    {
+      "id": "governance",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:24:58.224937+00:00",
+      "finished_at_utc": "2026-10-15T16:25:02.166333+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "4e37fa444f6b1766db094212f9eae26fa1194aaeb075d53d254c3b0b2e07e3a8",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/governance.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.Contracts.Tests  Total: 23, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.637s",
+        "Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.621s",
+        "Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.121s"
+      ]
+    },
+    {
+      "id": "contract-parity",
+      "command": [
+        "pwsh",
+        "tests/tools/run-contract-parity-ci-gates.ps1",
+        "-NoRestore",
+        "-OutputReportPath",
+        "{temporary_directory}/contract-parity-report.json"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:25:09.841696+00:00",
+      "finished_at_utc": "2026-10-15T16:25:59.486478+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "9e188fe9fc9557998cb05f859908f81afe7bfa3b34c0bdb14759bb8c72c987fe",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/contract-parity.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.220s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.177s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.309s",
+        "Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.752s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.531s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.362s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.925s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.957s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.030s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.122s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.373s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.186s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.118s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.130s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 7.111s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.133s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.298s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.136s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.135s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.103s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.142s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.112s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.162s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.115s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.207s",
+        "Hexalith.Folders.Client.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.160s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.271s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.143s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.130s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.094s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.116s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.881s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.870s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.268s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.755s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.724s",
+        "Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.042s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.767s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.774s",
+        "Hexalith.Folders.Contracts.Tests  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.728s",
+        "Hexalith.Folders.Contracts.Tests  Total: 5, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.571s",
+        "Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.269s",
+        "Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.535s",
+        "Hexalith.Folders.Client.Tests  Total: 216, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.184s",
+        "Hexalith.Folders.Client.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.118s",
+        "Hexalith.Folders.Client.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.117s",
+        "Hexalith.Folders.IntegrationTests  Total: 96, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 3.691s",
+        "Hexalith.Folders.Cli.Tests  Total: 620, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.342s",
+        "Hexalith.Folders.Cli.Tests  Total: 12, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.183s",
+        "Hexalith.Folders.Mcp.Tests  Total: 571, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.400s",
+        "Hexalith.Folders.Mcp.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.177s",
+        "Hexalith.Folders.Mcp.Tests  Total: 9, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.267s",
+        "Hexalith.Folders.Mcp.Tests  Total: 4, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.196s",
+        "Hexalith.Folders.Mcp.Tests  Total: 58, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.111s",
+        "Hexalith.Folders.IntegrationTests  Total: 586, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.452s",
+        "Hexalith.Folders.IntegrationTests  Total: 8, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 1.606s"
+      ]
+    },
+    {
+      "id": "sealed-candidate-generation-a",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--output",
+        "{temporary_directory}/sealed-candidate-a.yaml"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:32:44.739427+00:00",
+      "finished_at_utc": "2026-10-15T16:32:44.797131+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/sealed-candidate-generation-a.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": []
+    },
+    {
+      "id": "sealed-candidate-generation-b",
+      "command": [
+        "python3",
+        "scripts/generate-pd10-v2-conformance-set.py",
+        "--output",
+        "{temporary_directory}/sealed-candidate-b.yaml"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:32:44.846126+00:00",
+      "finished_at_utc": "2026-10-15T16:32:44.934087+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/sealed-candidate-generation-b.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": []
+    },
+    {
+      "id": "sealed-conformance",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2CandidateContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10V2ContractTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.ReleasePackageConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.NfrTraceabilityConformanceTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:32:59.068229+00:00",
+      "finished_at_utc": "2026-10-15T16:33:01.482347+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "85981a1bd8f4a29128bf23ba2b87978e5bb76782d60333d534b5909857c0847a",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/sealed-conformance.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.Contracts.Tests  Total: 50, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 2.225s"
+      ]
+    },
+    {
+      "id": "sealed-governance",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "working_directory": ".",
+      "started_at_utc": "2026-10-15T16:33:06.809830+00:00",
+      "finished_at_utc": "2026-10-15T16:33:10.280874+00:00",
+      "exit_code": 0,
+      "raw_log_sha256": "185fcd5d040a8262d37e9f77fb6cf24957e78f754a77d64bc6954ce2e771adb5",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-local-recheck-2026-10-15/sealed-governance.log",
+      "raw_log_retained_locally_only": true,
+      "summary_lines": [
+        "Hexalith.Folders.Contracts.Tests  Total: 23, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.604s",
+        "Hexalith.Folders.Contracts.Tests  Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.555s",
+        "Hexalith.Folders.Contracts.Tests  Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.114s"
+      ]
+    }
+  ],
+  "default_build_blocker": {
+    "id": "folders-release-build",
+    "errors": 3,
+    "code": "NU1903",
+    "package": "Microsoft.AspNetCore.SignalR.Common",
+    "version": "10.0.12",
+    "advisory_reported_by_build": "https://github.com/advisories/GHSA-334f-vvp4-7g6p",
+    "audit_disabled_fallback_satisfies_default_gate": false
+  },
+  "preservation": {
+    "historical_and_control_file_hashes": {
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+      "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+      "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420"
+    },
+    "all_historical_and_control_hashes_unchanged": true,
+    "spec_baseline_preserved": "37d348945b35620da6ba4e524a09bee202712460",
+    "spec_frozen_sha256": "e9babd86c7cf3d230b8bbf7739e22475feb8fc4798b4ac1a8cc070f1d71e5d2b",
+    "manifest_except_current_provenance_unchanged": true,
+    "story_tracker_value": "backlog",
+    "all_other_initially_tracked_files_unchanged": true,
+    "initially_tracked_file_count": 4817,
+    "changed_initially_tracked_paths": [
+      "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+      "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+      "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md",
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+      "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+      "docs/contract/pd10-v2-consumer-discovery.md",
+      "docs/runbooks/rollback.md"
+    ],
+    "preexisting_epic_context_edit_unchanged": true,
+    "default_gate_reports_sha256": {
+      "_bmad-output/gates/contract-parity-ci/latest.json": "03f22fd4ee8d0018b3ee1ea42b5f93fd55cfa81e518a0bbc67b9c1583e78ae43",
+      "_bmad-output/gates/governance-completeness/latest.json": "5f18ede6f3d772c51a6c69baed5770e9d43e4d159f3a721c0f81069cb827ccbb"
+    }
+  },
+  "matrix": {
+    "hold": {
+      "local_passed": true,
+      "check": "folders-routing-and-golden"
+    },
+    "coexistence": {
+      "local_passed": true,
+      "check": "folders-routing-and-golden",
+      "production_window_observed": false
+    },
+    "projects_migration": {
+      "mocked_http_passed": true,
+      "check": "projects-folders-adapters",
+      "production_migration_executed": false
+    },
+    "retirement": {
+      "local_passed": true,
+      "check": "folders-routing-and-golden",
+      "production_retirement_executed": false
+    },
+    "expiry_or_incident": {
+      "procedure_recorded": true,
+      "exact_artifact_execution_result": false
+    }
+  },
+  "entry": {
+    "decision": "hold",
+    "required_routing_mode": "V1Only",
+    "t0_utc": null,
+    "production_entry_established": false,
+    "missing_evidence": [
+      "passing default Folders Release/package gate",
+      "established production subject and runtime consumer scope, or explicit decision resolving the corrected deployment premise",
+      "exact current-candidate published pair and Folders production artifact/configuration/durable path",
+      "immutable Projects deployment artifact and every deployed periodic schedule",
+      "current version/consumer-attributed production baseline and v1-consumer census",
+      "agreed numeric error/latency thresholds and evaluation intervals",
+      "exact-artifact preproduction reversal and verified prior v1 artifacts/configuration",
+      "actual UTC activation/retirement/expiry slots and named operations/on-call owners",
+      "24 hours of ordinary traffic and every periodic execution",
+      "v1 retirement and post-retirement verification before expiry",
+      "closure decision and authorized tracker delta"
+    ]
+  },
+  "reproduction": {
+    "temporary_directory_note": "A fresh system temporary directory may replace this parameter; its path does not enter generated bytes.",
+    "identity_verifier": "python3 _bmad-output/implementation-artifacts/evidence/verify-story-1-17-local-recheck-2026-10-15.py",
+    "runtime_prerequisite": "Run the recorded package-profile builds first; verifier binds their actual cached packages, assets and runtime DLLs.",
+    "test_scope_limit": "The verifier rechecks identities and preservation; rerun the recorded test commands to renew behavioral evidence.",
+    "retained_logs": "Ignored repository-relative nupkgs/artifacts paths in each check; verifier checks exact raw-output hashes."
+  },
+  "parity_categories": [
+    {
+      "category": "server-vs-spine",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "previous-spine",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "generated-client",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "idempotency-helpers",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "parity-oracle-schema",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "parity-oracle-determinism",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "pd10-v2-conformance-set",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "sdk-transport-parity",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "rest-sdk-golden-parity",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "cli-behavioral-parity",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "mcp-behavioral-parity",
+      "status": "passed",
+      "exit_code": 0
+    },
+    {
+      "category": "mixed-surface-handoff",
+      "status": "passed",
+      "exit_code": 0
+    }
+  ],
+  "parity_total_test_executions": 2257,
+  "operational_discovery": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-1-17-operational-discovery-2026-10-15.json",
+    "sha256": "a6f27f281e031fb614c4c321eacb0121264b5f80f143167d865499b74aa93c38",
+    "scope": "Separate user-directed read-only remote lookup by the root agent; raw API responses not retained.",
+    "running_production_consumer_established": false,
+    "global_consumer_absence_established": false,
+    "found_platform_code_workflow_owner": "@jpiquot",
+    "found_recovery_operator": "Administrator",
+    "found_recovery_window_start_utc": "2026-10-07T14:44:45Z",
+    "found_recovery_window_end_exclusive_utc": "2026-10-31T23:00:00Z",
+    "folders_migration_appointment_established": false,
+    "retained_record_is_read_only": true
+  },
+  "parity_scope": "All twelve categories ran before the final operational-discovery text correction. The affected conformance, authorization-matrix/governance and runbook checks ran again on the final sealed bytes; no product source changed."
+}
