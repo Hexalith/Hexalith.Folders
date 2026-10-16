@@ -53,3 +53,7 @@ _bmad-output/implementation-artifacts/evidence/story-1-17-builds-package-qualifi
 # Byte-bound committed Builds qualification receipt and portable artifacts.
 _bmad-output/implementation-artifacts/evidence/story-1-17-builds-clean-source-qualification-2026-10-16* -text whitespace=cr-at-eol
 eng/story117-builds-clean-source/** text eol=lf
+
+# Preserve signed publication observations and their retained archive bytes.
+_bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16* -text whitespace=cr-at-eol
+eng/story117-builds-publication/** text eol=lf

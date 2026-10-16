@@ -1,0 +1,127 @@
+{
+  "schema": "hexalith.story117.builds-publication-verification.v1",
+  "recordedAtUtc": "2026-10-16T17:47:25.005088+00:00",
+  "receiptSha256": "deeb0cb92fe9356d6f47ab6a996445459df506f398fed95ea2088cdc89c64678",
+  "bundleSha256": "1635ce208993a6a33fc097df82ed5a1254ea1a4ebffd38e44e4a07054cc43bc1",
+  "hashReportSha256": "00612af36b62e65aa9a884e3cb0f20cf7beaede5026462b3a55c2131e510136f",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "eng/story117-builds-publication/verify.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-10-16T17:45:59.131678+00:00",
+      "finishedAtUtc": "2026-10-16T17:46:00.344581+00:00",
+      "exitCode": 0,
+      "log": "retained-publication-verification.log",
+      "sha256": "d745605778ad4b946dd861f89e4b6ae689666adfd8fe48d4e5c6819650f712e9",
+      "output": "Verified published Builds 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf, both signed package identities, 37 exact synthetic controls and both seed modes. Platform acceptance, staging and Story closure remain open.\n"
+    },
+    {
+      "command": [
+        "python3",
+        "artifacts/story117-builds-publication-20261016/verify-controls.py"
+      ],
+      "cwd": "/home/administrator/projects/hexalith/folders",
+      "startedAtUtc": "2026-10-16T17:46:09.247937+00:00",
+      "finishedAtUtc": "2026-10-16T17:46:42.704421+00:00",
+      "exitCode": 0,
+      "log": "verifier-tamper-controls.log",
+      "sha256": "9799e893fcf6838d96623c9c4dca2dc96a99d32234665c5ce5d20339a13d8208",
+      "output": "duplicate-signed-tool: expected refusal after recomputing outer hashes\nduplicate-signature-target: expected refusal after recomputing outer hashes\nduplicate-control: expected refusal after recomputing outer hashes\nchanged-expectation: expected refusal after recomputing outer hashes\nmissing-protected-files: expected refusal after recomputing outer hashes\nwrong-workflow: expected refusal after recomputing outer hashes\nnoncanonical-stdout: expected refusal after recomputing outer hashes\nstale-source-ci: expected refusal after recomputing outer hashes\nchanged-diagnostic-archive: expected refusal after recomputing outer hashes\nstale-diagnostic-source: expected refusal after recomputing outer hashes\nAll eleven altered-execution/artifact controls refused as expected.\n"
+    }
+  ],
+  "tamperControls": {
+    "baseline": {
+      "exitCode": 0,
+      "stdout": "Verified published Builds 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf, both signed package identities, 37 exact synthetic controls and both seed modes. Platform acceptance, staging and Story closure remain open.\n",
+      "stderr": ""
+    },
+    "syntheticTamperInputs": true,
+    "allRefusedAsExpected": true,
+    "controls": [
+      {
+        "case": "duplicate-signed-tool",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "duplicate-signature-target",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "duplicate-control",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "changed-expectation",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: evidence/acceptance/positive/p0-acceptance.expected.json\n"
+      },
+      {
+        "case": "missing-protected-files",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "wrong-workflow",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "noncanonical-stdout",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "stale-source-ci",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "changed-diagnostic-archive",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: \n"
+      },
+      {
+        "case": "stale-diagnostic-source",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Publication evidence verification failed: diagnostic archive source\n"
+      },
+      {
+        "case": "optimized-python",
+        "exitCode": 1,
+        "expectedExitCode": 1,
+        "matched": true,
+        "stderr": "Integrity verification requires Python assertions; optimization is refused.\n"
+      }
+    ]
+  },
+  "allRequiredChecksPassed": true,
+  "platformAcceptance": false,
+  "stagingQualification": false,
+  "storyClosure": false
+}

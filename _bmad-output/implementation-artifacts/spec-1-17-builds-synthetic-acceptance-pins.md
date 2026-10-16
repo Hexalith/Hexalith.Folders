@@ -49,3 +49,19 @@ First-install preparation and reversible local changes are authorized. Git write
 - Low, patched: copied initial-attempt log path omitted the corpus-repair prefix; copied command and registry body paths are rebased to retained files. Final evidence review verifies archives, all 55 inventory evidence members, bindings, counts/skips and actual pre-tag refusal; no findings deferred.
 
 - Follow-up Git authorization: prepared source committed/pushed, reconciled with upstream through 5aceb5ab0683b5e8c494e82f865e138685180f36, and full clean-source G-4 plus successful exact-head push CI verified. Concurrent catalog EventStore 3.123.0/audit/fixture work was preserved. Current proof and verifier live in the Folders clean-source qualification handoff. The earlier dirty diagnostic remains historical/ineligible; no publication, Platform acceptance, deployment, activation, tracker change or story closure occurred.
+
+- Publication follow-up: authorized actual release 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf and independent signed-download/installed-tool/37-control/two-mode verification are recorded in evidence/story-1-17-builds-publication-2026-10-16.json. No Platform acceptance, staging, activation or Story closure is claimed.
+
+## Publication verifier review triage
+
+- medium / patch: distinct signed package identities. Require the exact two approved IDs and unique canonical download paths.
+- medium / patch: signature command and artifact binding. Require each command to target a different retained signed archive from the captured workspace and Builds cwd, with matching NuGet repository-signature log identity.
+- medium / patch: complete unique synthetic control set. Require precisely the canonical 37 fixture identities, not a repeated row count.
+- medium / patch: qualified fixture and expectation binding. Compare copied and archived fixtures with the released inventory and canonical expectation hashes anchored to prior qualification.
+- medium / patch: protected path-set preservation. Anchor the original 42-file map and complete Platform snapshot to immutable prior receipt SHA-256 80604829ed24bc571732384ea654004b2d234228de11531c260d7c9e16a398db.
+- medium / patch: repository workflow and tag identity. Require Hexalith/Hexalith.Builds, build-release.yml and exact refs/tags/v<observed version>.
+- medium / patch: canonical stdout framing. Recheck UTF-8 without BOM, no CR, one terminal LF in portable verification.
+- medium / patch: Python optimized execution. Refuse optimized execution before assertions in verifier and all evidence preparation helpers.
+- medium / patch: Diagnostic symbols excluded from retained suffixes. Added .snupkg to finalizer retention; both qualified diagnostic symbol archives are required by the verifier.
+- medium / patch: Diagnostic archives lacked embedded source checks. Every diagnostic package/symbol nuspec must match its ID, observed diagnostic version and actual candidate commit; stale-source tamper control added.
+- medium / patch: Tamper controls could pass against a broken baseline. The unchanged real receipt must verify successfully before any temporary tamper mutation is tested.

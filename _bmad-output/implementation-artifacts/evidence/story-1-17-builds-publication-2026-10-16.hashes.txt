@@ -1,0 +1,15 @@
+Builds 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf
+SHA-256  artifact
+93b34284cdfd1995d8c892a79b58eade34e47392470726ab870e6a72a0d98bf2  published signed downloads/hexalith.builds.evidence.cli.4.32.0.nupkg
+9e9a9daf825b0ec3a7d6dba2f3e4f473c375181509ed870b6f81e795553fc6d5  published signed downloads/hexalith.builds.module.cli.4.32.0.nupkg
+5d58b2bdb1be342507066f342ac7f8620df98acc913d0ab634c424d7d4ebcdec  published qualification Hexalith.Builds.Evidence.Cli.4.32.0.nupkg
+df9075c8fadcf4548f984b6e99a4e47b3b844e3f93b257deff821e3266e25539  published qualification Hexalith.Builds.Evidence.Cli.4.32.0.snupkg
+0056cd21fedcbbef5a3c6c828c96557111f6a28749eecb59797954740374d5c8  published qualification Hexalith.Builds.Module.Cli.4.32.0.nupkg
+e5fcbfc00239a5df0a5500e99ac2679520e35d5b63c3a63b4adfbd3415d1e754  published qualification Hexalith.Builds.Module.Cli.4.32.0.snupkg
+08ed562acabf661f05d612032255ce530aee436e0e6082046d5f2e11e5f7a7f1  local diagnostic only Hexalith.Builds.Evidence.Cli.4.31.2.nupkg
+bdbcd40fafa16c7cd60cd70515ddfca5ac5eabc5245d4c3e5ada65a9e7bf43e8  local diagnostic only Hexalith.Builds.Evidence.Cli.4.31.2.snupkg
+2fbf293df148117aa13f1edbeb5b0b511a69ff2835bace9545108659c64aaf8d  local diagnostic only Hexalith.Builds.Module.Cli.4.31.2.nupkg
+cab6a72231a0f10faea7fe0b894f6eb7c044fd4e60b068e0bc76012217fd8465  local diagnostic only Hexalith.Builds.Module.Cli.4.31.2.snupkg
+d758be014bde6bf562068f300eaa1994aa7b06f36158554d21e9990fbe18d2d8  released g4-tool-package-inventory.json
+1635ce208993a6a33fc097df82ed5a1254ea1a4ebffd38e44e4a07054cc43bc1  story-1-17-builds-publication-2026-10-16.artifacts.tar.gz
+deeb0cb92fe9356d6f47ab6a996445459df506f398fed95ea2088cdc89c64678  story-1-17-builds-publication-2026-10-16.json
