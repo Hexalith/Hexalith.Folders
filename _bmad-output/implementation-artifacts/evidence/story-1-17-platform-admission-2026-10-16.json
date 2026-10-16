@@ -1,0 +1,1990 @@
+{
+  "record_id": "story-1-17-platform-admission-2026-10-16",
+  "recorded_at_utc": "2026-10-16T11:41:13.496294+00:00",
+  "authorization": {
+    "first_install_preparation": true,
+    "reversible_local_changes": true,
+    "read_only_github_registry_infrastructure_queries": true,
+    "publication_deployment_real_git_writes_production_activation": false
+  },
+  "change": {
+    "owners": [
+      "Hexalith.Platform",
+      "Hexalith.Builds"
+    ],
+    "implementation": [
+      "Platform default file-entry anchor uses hexalith-platform.json and existing WorkspaceRootResolver; owners resolve through one mapping. Explicit declaration and hash-bound mapping branches remain. Normalize the Builds root after CustomAfterMicrosoftCommonProps so catalog/tooling/seed also honor the mapping.",
+      "Builds package seed reuses Platform configured/declarative projection-subscription behavior. No existing assertion changed.",
+      "Existing Builds audit generator refreshed 306 packages/147 families against the unchanged committed catalog, retaining prior observations as history.",
+      "Prepared inert owner intake/source tuple with absent acceptance/release fields left null. No intake schema, deployer or publication workflow is represented as implemented."
+    ],
+    "limits": "This completes a bounded reversible prerequisite, not release admission, staging qualification or Story 1.17."
+  },
+  "source": {
+    "repositories": {
+      "folders": {
+        "path": ".",
+        "commit": "9fe3fd38c0da74e804dd87c20d2ed59f93085eae"
+      },
+      "platform": {
+        "path": "references/Hexalith.Platform",
+        "commit": "1711deba08a4e66b46acfff8d08e7f2ad7f74ba1"
+      },
+      "builds": {
+        "path": "references/Hexalith.Builds",
+        "commit": "728174f506d56204657e0c52e98a4453aef79f6a"
+      },
+      "eventstore": {
+        "path": "references/Hexalith.EventStore",
+        "commit": "0b38a562cd4fb6191a0c3c78a44b4c48d1f05390"
+      },
+      "tenants": {
+        "path": "references/Hexalith.Tenants",
+        "commit": "6da0ed99ed87dd0c6811e9685e432f29afa151c5"
+      },
+      "memories": {
+        "path": "references/Hexalith.Memories",
+        "commit": "61074e981bd92019488db19da0c8572bd4bf8b97"
+      },
+      "projects": {
+        "path": "references/Hexalith.Projects",
+        "commit": "9e738470dd04375a27c0c379a9a237803c4c0416"
+      }
+    },
+    "task_source_file_sha256": {
+      ".gitattributes": "1fb4b54d6705f0eb5114564416d72ecb4c241f999d38470bc4444c54145cce0f",
+      "references/Hexalith.Platform/.gitattributes": "57324c4828083a72b67052ea36bc91be6cdb91b8e8c5e5457b08c7bfeab6bfd2",
+      "references/Hexalith.Platform/Directory.Build.props": "e07baf3cf5b11bf417590e268087202935b0f07d81f041d3d9a541f70e3bd20f",
+      "references/Hexalith.Platform/Directory.Packages.props": "71bbbb3b3bf472b00e24c0fa29130ee60851f9c929b8e2e0f32ae19c6c1c8b29",
+      "references/Hexalith.Platform/eng/test_host_builds_resolution.py": "956e1120c6006a81099ff88a5de1d3ff1efcca91d55047dc3b3bfc57331e2cb6",
+      "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs": "e2d7708f6cb79db27c66b214bfa556822ef3c57247916692fc4fb97304926344",
+      "references/Hexalith.Platform/docs/platform-apphost-form.md": "7501c6bbd5932a3597dbffe31fd96e624ab670aead9e17ea0f435835772b7e09",
+      "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformFileEntryMappingTests.cs": "c1e91ed56df23ed0644aa4d39bf4ada70fe735ee225507060283a4b04efa925c",
+      "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.EventStoreHost/Program.cs": "3000aea0569f734c39953e9bcc93536e3afea693e271f44887a853710d3ff8d7",
+      "references/Hexalith.Builds/Tools/package-version-audit.json": "48a5374d6d1db7dc120187bebf57057e50365436f9c476136d252f0ef15d0c61"
+    },
+    "prepared_patches": {
+      "Hexalith.Platform": {
+        "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Platform.prepared.patch",
+        "sha256": "55643f3926dbd3ff9a30d051ec6c5657b982d4f8312dab89c41c88e589862c7b"
+      },
+      "Hexalith.Builds": {
+        "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Builds.prepared.patch",
+        "sha256": "92bc08098b775b4a484f1ae812359a76748798fdd03ed61c9521d4efd3e6a186"
+      }
+    },
+    "platform_bootstrap_source_input_sha256": {
+      "Directory.Build.props": "9d6ad54914b813f21512c86e0bf554e8fbc7ef48364303a12333539a3945dcb0",
+      "Directory.Packages.props": "3fd2f13bcd966d8892a5e901faa1b27a74552b706a1fb3b5811c59ee0377bccf",
+      "apphost.cs": "2d22552e42b02cbca912cd79c9aae840a5377f2184cc042f65e64d4313c49262",
+      "docs/platform-apphost-form.md": "8a22dfb5e93cb8c80bf00c236d60653c04453c645770dc1979bf1d93ee6b5935",
+      "eng/test_verify_platform_pins.py": "6f15df25525fe77c891ffd5dd024109d8f494b7ccb183a6b90e7422fde927dbc",
+      "eng/verify-platform-pins.py": "e3f8d85ff7744eefc65452c9e70f9989ffa07f900929f1f4bf73f4d184d35874",
+      "src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj": "c76654a9f99ddee50916cd9954eca8888bdc5e7e80d134f6f88f1aa670ef3d33",
+      "src/Hexalith.Platform.Composition/PlatformAppModel.cs": "0d09df13032b4ef89afca3998b80341e0cff94f9f2953d4ba5500c425112ac0f",
+      "src/Hexalith.Platform.Composition/PlatformDaprBindings.cs": "23c0d5c8892d562b59435ee7051aaef60fa2ca7d3231fc84c651e84d0b6afd93",
+      "src/Hexalith.Platform.Composition/PlatformDaprEndpointSubscriber.cs": "1dd8b69e5e35384dca294570274641efe9c38a62c71530681162d0af5ae93e3e",
+      "src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs": "e0e3b89998845bde3ced92b6006864aa14330e0fb90abe150f4b565a1a0c569d",
+      "src/Hexalith.Platform.Composition/PlatformLocalProfile.cs": "ffcff69bd5b5ae549a531b45be1223e56c880b01146d881ee22746c3508cedd1",
+      "src/Hexalith.Platform.Composition/PlatformServerBindings.cs": "b5b0b55913fff3ca69c9ec94a23932f7ad7c92ccf29cbd7c922bf07c3eddd36e",
+      "src/Hexalith.Platform.Composition/WorksPreviewModel.cs": "959b2f64e006b957e5a128394da57189194299fe021a6589853815b5460025d3",
+      "tests/Hexalith.Platform.Composition.Tests/BuildsSourceStartupTests.cs": "599227773d0ea94e51ad3fc8571cfc9eaf15640459cf655629803638e4516e0c",
+      "tests/Hexalith.Platform.Composition.Tests/GatewaySeedSubscriptionTests.cs": "93cb2a58440fa50c5d54fae5fccc32eb872066b16e7375b478652828746cca29",
+      "tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj": "f5286c4a254d8240ded1028d88ae4011fe305f35147214c92d8e196d019cb224",
+      "tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs": "f0a50fe6f833df3702e9b581a88669ec8bfd21ca27a18e45cfdf2721ef2de75f",
+      "tests/Hexalith.Platform.Composition.Tests/TimesheetsHostBindingTests.cs": "1cbf70ea779a95b7e00b8977093e25f0343b205a0cf20460def28dd0ced12b5d",
+      "tests/Hexalith.Platform.Composition.Tests/WriterProtocolStartupTests.cs": "fd3fe5ee48f049c6bdc9f1636724c9ba6a1b41eb0682adef7ee42499df78e137",
+      "eng/test_host_builds_resolution.py": "106189de578f68c4d8dd95bfe7b8211eb5f526fd50299a971ed91136832551f1"
+    },
+    "catalog_path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+    "catalog_sha256": "c0d2e3a0433543483f844e9feccf08e40e2c431a422fb4d7cf52656cd0728a48",
+    "catalog_changed_by_task": false,
+    "provenance": "Full baseline revisions plus retained dirty-source patches and file hashes identify local preparation only. Real repository refs, index, commits and gitlinks were not written."
+  },
+  "intake_preparation": {
+    "path": "references/Hexalith.Platform/docs/implementation/story-1-17-admission-preparation-2026-10-16.json",
+    "sha256": "f9dcd28a12cb7d9b0cb528424e7cdad4b2927fbd1f8f376ac6304635bf5fa50d",
+    "platform": {
+      "local_baseline": "1711deba08a4e66b46acfff8d08e7f2ad7f74ba1",
+      "observed_remote_main": "114e08830da2d8cca0e77cd870b8867506b4c68b",
+      "remote_release_count": 0,
+      "remote_tag_count": 0,
+      "remote_workflow_count": 0,
+      "committed_builds_pin": "5636b7f36e28e2731111b049f974b1fa951d1c36",
+      "pinned_commit_github_result": 404,
+      "accepted_tool_version": null,
+      "accepted_tool_range": null,
+      "release_tag": null,
+      "release_commit": null,
+      "release_record": null,
+      "application_chart_digest": null,
+      "composed_eventstore_image_digest": null
+    },
+    "builds_published_tool": {
+      "method": "GET",
+      "url": "https://api.nuget.org/v3-flatcontainer/hexalith.builds.module.cli/4.31.2/hexalith.builds.module.cli.4.31.2.nupkg",
+      "recorded_at_utc": "2026-10-16T11:20:22.518568+00:00",
+      "status": 200,
+      "sha256": "cc89eea1ae8ec9ded0dd304e94f7658082ae7614d339abb881de146b0471ffae",
+      "size_bytes": 35869969,
+      "release_inventory_hash_matches": false,
+      "release_inventory_prepublication_sha256": "d821ab56e5c2c49be2a0a8be29654da881d7dd25014791b1b1b850e03a10b9be",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/Hexalith/Hexalith.Builds",
+        "branch": "refs/heads/main",
+        "commit": "9b44fedd0017d42ee1b3e887730ab667046bda4d"
+      },
+      "seed_assemblies": [
+        {
+          "path": "tools/net10.0/any/g4-host/bin/EventStoreHost/Hexalith.Builds.Module.EventStoreHost.dll",
+          "sha256": "64ed9c74a24de1b526cb61112d49ed58f6ee3bdfd0994e354e9a594f080a7a71"
+        }
+      ],
+      "signature_entry_present": true,
+      "note": "The signed NuGet archive hash differs from the prepublication inventory hash. NuGet repository signature verification passes; content equivalence with the unsigned inventory is not inferred.",
+      "repository_signature_verification": {
+        "command": "dotnet nuget verify --all Hexalith.Builds.Module.Cli.4.31.2.nupkg",
+        "exit_code": 0,
+        "log_sha256": "739185cb235474c223dd0504b1f976438b7797fcf65a76221a95bd7b7330739d"
+      }
+    },
+    "owners": [
+      {
+        "module": "eventstore",
+        "catalog_version": "3.122.0",
+        "release_commit": "1dac529c4690910c89d4090784a7d46cb9433a9d",
+        "released_v2_declaration": {
+          "path": "module/hexalith.module-manifest.v2.json",
+          "available": true,
+          "sha256": "c76853a3fd0d03f345929927f94cafcdf71714fdc20192bc2717a5fda8501a09",
+          "github_result": 200
+        },
+        "image": {
+          "reference": "registry.hexalith.com/eventstore:3.122.0",
+          "manifest_digest": "sha256:bdd242bf5d54010d2a8340023c5164a6112c8e23bd5d7d390f33c50fecc8bf43",
+          "referrers_returned": 0,
+          "attestation_verified": false,
+          "observed_labels": {
+            "org.opencontainers.image.licenses": "MIT",
+            "org.opencontainers.image.vendor": "Hexalith",
+            "org.opencontainers.image.description": "DAPR-native event sourcing server for .NET",
+            "org.opencontainers.image.authors": "Hexalith Contributors",
+            "org.opencontainers.image.base.name": "mcr.microsoft.com/dotnet/aspnet",
+            "org.opencontainers.image.source": "https://github.com/Hexalith/Hexalith.EventStore",
+            "org.opencontainers.image.url": "https://github.com/Hexalith/Hexalith.EventStore/releases/tag/v3.122.0",
+            "org.opencontainers.image.documentation": "https://github.com/Hexalith/Hexalith.EventStore/blob/1dac529c4690910c89d4090784a7d46cb9433a9d/README.md",
+            "org.opencontainers.image.revision": "1dac529c4690910c89d4090784a7d46cb9433a9d",
+            "org.opencontainers.image.version": "3.122.0",
+            "org.opencontainers.image.created": "2026-10-14T15:26:56Z",
+            "org.opencontainers.image.base.digest": "sha256:eca1355b1fefb0a93617b7d01749dc8ac821e0eadcedbcf7d64e4b59cad60104"
+          }
+        }
+      },
+      {
+        "module": "tenants",
+        "catalog_version": "5.8.0",
+        "release_commit": "032573384d3df4bc7a5bc0e69945ecca4e00967f",
+        "released_v2_declaration": {
+          "path": "module/hexalith.module-manifest.v2.json",
+          "available": false,
+          "sha256": null,
+          "github_result": 404
+        },
+        "image": {
+          "reference": "registry.hexalith.com/tenants:5.8.0",
+          "manifest_digest": "sha256:c0e017e029053dfa9b095b6431058a7603b371da1f56a89d336001070fc5ffae",
+          "referrers_returned": 0,
+          "attestation_verified": false,
+          "observed_labels": {
+            "org.opencontainers.image.source": "https",
+            "org.opencontainers.image.licenses": "MIT",
+            "org.opencontainers.image.vendor": "Hexalith",
+            "org.opencontainers.image.created": "2026-10-08T17",
+            "org.opencontainers.image.description": "Multi-tenant management service for .NET built on Hexalith.EventStore",
+            "org.opencontainers.image.authors": "Hexalith Contributors",
+            "org.opencontainers.image.url": "https",
+            "org.opencontainers.image.documentation": "https",
+            "org.opencontainers.image.version": "5.8.0",
+            "org.opencontainers.image.base.name": "mcr.microsoft.com/dotnet/aspnet",
+            "org.opencontainers.image.base.digest": "sha256:3de0537252e9e0e26e5255582561977905ea3b969b9bf256e9343c8ad627d365"
+          }
+        }
+      },
+      {
+        "module": "memories",
+        "catalog_version": "2.27.1",
+        "release_commit": "d54dba5be30a3626e871b4fc56dd78e76a7acf71",
+        "released_v2_declaration": {
+          "path": "module/hexalith.module-manifest.v2.json",
+          "available": false,
+          "sha256": null,
+          "github_result": 404
+        },
+        "image": {
+          "reference": "registry.hexalith.com/memories:2.27.1",
+          "manifest_digest": "sha256:2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+          "referrers_returned": 0,
+          "attestation_verified": false,
+          "observed_labels": {
+            "org.opencontainers.image.source": "https://github.com/Hexalith/Hexalith.Memories",
+            "org.opencontainers.image.version": "2.27.1",
+            "org.opencontainers.image.created": "2026-09-08T13:57:21.5097617Z",
+            "org.opencontainers.image.authors": "Hexalith.Memories.Server",
+            "org.opencontainers.image.base.name": "mcr.microsoft.com/dotnet/aspnet:10.0-alpine",
+            "org.opencontainers.image.base.digest": "sha256:f95807c53deaba56064fd7c490378869e9fa94c787e8ff7a028ea893d4d9fcea"
+          }
+        }
+      }
+    ],
+    "admitted_tuple_available": false
+  },
+  "checks": [
+    {
+      "id": "actual-package-admission-stdout",
+      "command": [
+        "dotnet",
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Module.Cli/bin/Debug/net10.0/Hexalith.Builds.Module.Cli.dll",
+        "run",
+        "--manifest",
+        "references/Hexalith.EventStore/module/hexalith.module-manifest.v2.json",
+        "--mode",
+        "package",
+        "--output",
+        "json"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:25:15.761940+00:00",
+      "finished_at_utc": "2026-10-16T11:25:16.273882+00:00",
+      "exit_code": 2,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/actual-package-admission-stdout.log",
+      "log_sha256": "279bc455bb5a3ec40f532ab1f1fb8525ccd6d73e0d988f42cf3b37976c5aaccc"
+    },
+    {
+      "id": "actual-package-admission",
+      "command": [
+        "dotnet",
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Module.Cli/bin/Debug/net10.0/Hexalith.Builds.Module.Cli.dll",
+        "run",
+        "--manifest",
+        "references/Hexalith.EventStore/module/hexalith.module-manifest.v2.json",
+        "--mode",
+        "package",
+        "--output",
+        "json",
+        "--evidence",
+        "/home/administrator/projects/hexalith/folders/nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/package-admission-result.json"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:25:05.118483+00:00",
+      "finished_at_utc": "2026-10-16T11:25:05.746704+00:00",
+      "exit_code": 2,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/actual-package-admission.log",
+      "log_sha256": "25955e47c266d05b0e870b4e86eceb76d637209e686811d6448bfb255260571d"
+    },
+    {
+      "id": "after-start",
+      "command": [
+        "aspire",
+        "start",
+        "--apphost",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/apphost.cs",
+        "--non-interactive",
+        "--format",
+        "Json"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:25:05.098124+00:00",
+      "finished_at_utc": "2026-10-16T11:25:18.041304+00:00",
+      "exit_code": 2,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/after-start.log",
+      "log_sha256": "4a172c217aec696295d694e3c184d94ebd06111b907fedf0d9a3e9fbafed7c9d"
+    },
+    {
+      "id": "audit-refresh",
+      "command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "Tools/audit-central-package-versions.ps1",
+        "-PriorAuditPath",
+        "/home/administrator/projects/hexalith/folders/nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/package-version-audit.before.json",
+        "-OutputPath",
+        "/home/administrator/projects/hexalith/folders/nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/package-version-audit.proposed.json"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:21:15.884937+00:00",
+      "finished_at_utc": "2026-10-16T11:23:36.811100+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/audit-refresh.log",
+      "log_sha256": "4479b4c638a03da0825c5e453b81b4c8d9976c854c0ad4d4328d8899e33eafc7"
+    },
+    {
+      "id": "baseline-start",
+      "command": [
+        "aspire",
+        "start",
+        "--apphost",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/apphost.cs",
+        "--non-interactive",
+        "--format",
+        "Json"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:15:24.656225+00:00",
+      "finished_at_utc": "2026-10-16T11:16:03.176570+00:00",
+      "exit_code": 2,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/baseline-start.log",
+      "log_sha256": "475a934625e5a659e72bb2c2ec272a0694a4267e46f2d4966ebf6ac0d1540d48"
+    },
+    {
+      "id": "builds-audit-validation-refreshed",
+      "command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "Tools/validate-package-version-audit.ps1"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:24:29.082131+00:00",
+      "finished_at_utc": "2026-10-16T11:24:52.019378+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-audit-validation-refreshed.log",
+      "log_sha256": "1904d98a73749adf6a09969abd76ded90fb0f8b1e117ec10807bc740e1c5a2f2"
+    },
+    {
+      "id": "builds-audit-validation",
+      "command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "Tools/validate-package-version-audit.ps1"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:20:04.753592+00:00",
+      "finished_at_utc": "2026-10-16T11:20:25.338622+00:00",
+      "exit_code": 1,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-audit-validation.log",
+      "log_sha256": "fb32be4c9b5e3164597a34895b5866a797b286eb106a48f6a77d91b492a98bf7"
+    },
+    {
+      "id": "builds-ci-failed-jobs",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/actions/runs/38867997389/jobs?per_page=100",
+        "--jq",
+        "{jobs:[.jobs[]|{name,conclusion,steps:[.steps[]|select(.conclusion==\"failure\")|{name,conclusion}]}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:19:45.961814+00:00",
+      "finished_at_utc": "2026-10-16T11:19:46.714109+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-ci-failed-jobs.log",
+      "log_sha256": "4742c458b77c2348cdff4ef411e6c68be4847c1b74fbe3f21bd47468e1362c0f"
+    },
+    {
+      "id": "builds-current-ci",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/actions/runs?head_sha=728174f506d56204657e0c52e98a4453aef79f6a&per_page=100",
+        "--jq",
+        "{total_count,runs:[.workflow_runs[]|{id,name,path,head_sha,event,status,conclusion}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:28.201398+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.696722+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-current-ci.log",
+      "log_sha256": "eb0bec366752ce991a278b44d85ae24a77ac1a28d0b6af8fd9dfce7b7f8713b5"
+    },
+    {
+      "id": "builds-diff-check",
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=cr-at-eol",
+        "diff",
+        "--check"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:25:58.968500+00:00",
+      "finished_at_utc": "2026-10-16T11:25:59.041770+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "builds-inventory-bytes",
+      "command": [
+        "gh",
+        "api",
+        "-H",
+        "Accept: application/octet-stream",
+        "repos/Hexalith/Hexalith.Builds/releases/assets/638179899"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:27.694463+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.179384+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-inventory-bytes.log",
+      "log_sha256": "88a3f39dfe4b9e93074bf37b2c2cfce649022143e87141ae16ae5ddb40c1fb13"
+    },
+    {
+      "id": "builds-latest",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/releases/latest",
+        "--jq",
+        "{tag_name,target_commitish,published_at,assets:[.assets[]|{name,browser_download_url,digest}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.918062+00:00",
+      "finished_at_utc": "2026-10-16T11:15:45.333256+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-latest.log",
+      "log_sha256": "2e0646741698425f3ceb1ba073087e2eef343c37093b5f40f58562e265ba08bb"
+    },
+    {
+      "id": "builds-main",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/commits/main",
+        "--jq",
+        "{sha,date:.commit.committer.date}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.874688+00:00",
+      "finished_at_utc": "2026-10-16T11:15:45.336161+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-main.log",
+      "log_sha256": "8ddc12e26208d3278f0152a58ef9b17d18c029a2076ab05a2934d005a7af5111"
+    },
+    {
+      "id": "builds-pinned-catalog",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/contents/Props/Directory.Packages.props?ref=5636b7f36e28e2731111b049f974b1fa951d1c36",
+        "--jq",
+        "{sha,size,encoding,content}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:17:07.769249+00:00",
+      "finished_at_utc": "2026-10-16T11:17:08.141632+00:00",
+      "exit_code": 1,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-pinned-catalog.log",
+      "log_sha256": "74abf3da3d8cc888bbec92a05eaa256ec4674c2438cc3f912244af2ea7369a81"
+    },
+    {
+      "id": "builds-release-tag",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/git/ref/tags/v4.31.2"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:17:07.772777+00:00",
+      "finished_at_utc": "2026-10-16T11:17:08.140063+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-release-tag.log",
+      "log_sha256": "7e14a00f448b9e091e397d3081521a7b8ace140d7ec0de03c1a594e468f8dd21"
+    },
+    {
+      "id": "builds-release-to-main",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/compare/9b44fedd0017d42ee1b3e887730ab667046bda4d...728174f506d56204657e0c52e98a4453aef79f6a",
+        "--jq",
+        "{status,total_commits,files:[.files[].filename]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:19:45.962523+00:00",
+      "finished_at_utc": "2026-10-16T11:19:46.721056+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-release-to-main.log",
+      "log_sha256": "a2fc765162795e33905f184bbdc45e9e4b53dd4229169c71565d530b1af99ab3"
+    },
+    {
+      "id": "builds-tool-inventory",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Builds/releases/tags/v4.31.2",
+        "--jq",
+        "{id,assets:[.assets[]|{id,name,digest,url}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:17:07.774480+00:00",
+      "finished_at_utc": "2026-10-16T11:17:08.172078+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-tool-inventory.log",
+      "log_sha256": "f50b948d8b1247d915b61c46c037c1749757acba2ffbef5e0480648d56b6fa92"
+    },
+    {
+      "id": "eventstore-release-declaration",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.EventStore/contents/module/hexalith.module-manifest.v2.json?ref=1dac529c4690910c89d4090784a7d46cb9433a9d",
+        "--jq",
+        "{sha,size,encoding,content}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:17:07.773506+00:00",
+      "finished_at_utc": "2026-10-16T11:17:08.190005+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-release-declaration.log",
+      "log_sha256": "0eddaf148b3ca37a24a6ff1ad85b2e766ee33095a891d80a792dd4e619773c40"
+    },
+    {
+      "id": "eventstore-release",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.EventStore/releases/tags/v3.122.0",
+        "--jq",
+        "{tag_name,target_commitish,published_at,assets:[.assets[]|{name,digest}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.932036+00:00",
+      "finished_at_utc": "2026-10-16T11:15:45.356313+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-release.log",
+      "log_sha256": "f5fab2495ff2efcf4aa2e33d226d083d430ba22a12240268f5c522d41724c858"
+    },
+    {
+      "id": "eventstore-tag",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.EventStore/git/ref/tags/v3.122.0"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:45.038863+00:00",
+      "finished_at_utc": "2026-10-16T11:15:45.484252+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-tag.log",
+      "log_sha256": "276ab68ae37c05474b2f85fdaad01bf41bd7fbaa25ba4767a28b859682f5ca79"
+    },
+    {
+      "id": "evidence-attributes",
+      "command": [
+        "git",
+        "check-attr",
+        "text",
+        "--",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.json",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.manifest.json",
+        "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.tar.gz"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:40:15.240686+00:00",
+      "finished_at_utc": "2026-10-16T11:40:15.243334+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/evidence-attributes.log",
+      "log_sha256": "831e8df16cf43782909ff7ea3997482a72b8d46ab9c3dfc2e21ea1e7ad46c4b1"
+    },
+    {
+      "id": "executable-tool-range-replay",
+      "command": [
+        "dotnet",
+        "test/Hexalith.Builds.Module.Tests/bin/Debug/net10.0/Hexalith.Builds.Module.Tests.dll",
+        "-noLogo",
+        "-parallelMode",
+        "none",
+        "-method",
+        "*ExecutableCliVersionControlsToolRangeAsync"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:27:28.109294+00:00",
+      "finished_at_utc": "2026-10-16T11:27:33.691851+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/executable-tool-range-replay.log",
+      "log_sha256": "f0e23446b13f719c53de094e902398f4a6c8109b607bfc09888f419e9e1f6ba3"
+    },
+    {
+      "id": "final-apphost-build-supported",
+      "command": [
+        "dotnet",
+        "build",
+        "apphost.cs",
+        "-c",
+        "Debug",
+        "-p:AspireUseCliBundle=true",
+        "-p:TreatWarningsAsErrors=true"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:40:27.015058+00:00",
+      "finished_at_utc": "2026-10-16T11:40:36.413780+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-build-supported.log",
+      "log_sha256": "669b25af6b6c3b39ff0f84a2ca5143c11dd712dfa816294dc08095b3c0c25cbd"
+    },
+    {
+      "id": "final-apphost-build",
+      "command": [
+        "dotnet",
+        "build",
+        "apphost.cs",
+        "-c",
+        "Debug",
+        "-m:1",
+        "-warnaserror",
+        "-p:AspireUseCliBundle=true"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:36.095167+00:00",
+      "finished_at_utc": "2026-10-16T11:39:36.386940+00:00",
+      "exit_code": 1,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-build.log",
+      "log_sha256": "5447aeca3612818c2edf59694daf75d18571493df9b3b9968e58046c810a46e8"
+    },
+    {
+      "id": "final-apphost-refusal",
+      "command": [
+        "aspire",
+        "start",
+        "--apphost",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/apphost.cs",
+        "--non-interactive",
+        "--format",
+        "Json"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:51.284182+00:00",
+      "finished_at_utc": "2026-10-16T11:40:06.019745+00:00",
+      "exit_code": 2,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-refusal.log",
+      "log_sha256": "6e759a2368a0c7225a5814875f3186bf366f41f1d6c12b092c7a87faae7bdae2"
+    },
+    {
+      "id": "final-builds-diff-check",
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=cr-at-eol",
+        "diff",
+        "--check"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:40:48.343737+00:00",
+      "finished_at_utc": "2026-10-16T11:40:48.424199+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-builds-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "final-builds-resolution",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng",
+        "-p",
+        "test_host_builds_resolution.py",
+        "-v"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:27.953076+00:00",
+      "finished_at_utc": "2026-10-16T11:39:35.544617+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-builds-resolution.log",
+      "log_sha256": "0e1035fd03e5c8c5581c6fe43a0583dfaf9db04f4154348445dbb0b84c167ae6"
+    },
+    {
+      "id": "final-composition-test-build",
+      "command": [
+        "dotnet",
+        "build",
+        "tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj",
+        "-c",
+        "Debug",
+        "-m:1",
+        "-warnaserror"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:36.408727+00:00",
+      "finished_at_utc": "2026-10-16T11:39:48.446927+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-composition-test-build.log",
+      "log_sha256": "1e9422a3ca991cf1abb22107e9a17c9579534b510daeef99f5efeb8017289f0a"
+    },
+    {
+      "id": "final-folders-diff-check",
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=cr-at-eol",
+        "diff",
+        "--check"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:40:48.446664+00:00",
+      "finished_at_utc": "2026-10-16T11:40:48.502339+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-folders-diff-check.log",
+      "log_sha256": "35a4af14462ea13a24373518f6a3ae1ccc9101414761cf0667e035523807a91a"
+    },
+    {
+      "id": "final-mapping-seed-writer",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.Tests.dll",
+        "-noLogo",
+        "-parallelMode",
+        "none",
+        "-class",
+        "*PlatformFileEntryMappingTests",
+        "-class",
+        "*GatewaySeedSubscriptionTests",
+        "-class",
+        "*WriterProtocolStartupTests"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:48.472025+00:00",
+      "finished_at_utc": "2026-10-16T11:39:51.258062+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-mapping-seed-writer.log",
+      "log_sha256": "2045854957833a7112aa76b2b5d6945c9c474ddce1e5d473136d872e73eb4ccc"
+    },
+    {
+      "id": "final-pin-guard",
+      "command": [
+        "python3",
+        "eng/verify-platform-pins.py",
+        "--root",
+        "."
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:36.041336+00:00",
+      "finished_at_utc": "2026-10-16T11:39:36.072529+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-pin-guard.log",
+      "log_sha256": "50818282c9dbedaa22ef94c2b71de68c7e4ff83fdecfcd984f774605b76acfc7"
+    },
+    {
+      "id": "final-pin-tests",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "eng",
+        "-p",
+        "test_verify_platform_pins.py",
+        "-v"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:39:35.569903+00:00",
+      "finished_at_utc": "2026-10-16T11:39:36.018839+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-pin-tests.log",
+      "log_sha256": "bddd7c7f7d391b79316d468920f58553eb3d5b0045bd84f9a6f5b9ab81b7fc9c"
+    },
+    {
+      "id": "final-platform-diff-check",
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=cr-at-eol",
+        "diff",
+        "--check"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:40:48.311907+00:00",
+      "finished_at_utc": "2026-10-16T11:40:48.318670+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-platform-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "final-selected-host-state",
+      "command": [
+        "aspire",
+        "describe",
+        "--apphost",
+        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/apphost.cs",
+        "--format",
+        "Json"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:40:06.043122+00:00",
+      "finished_at_utc": "2026-10-16T11:40:06.308977+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-selected-host-state.log",
+      "log_sha256": "c201ac93af41c559317f5ea3e9fb147acbe4340019661c15b8e235763bd0ee2c"
+    },
+    {
+      "id": "intake-attributes",
+      "command": [
+        "git",
+        "check-attr",
+        "text",
+        "--",
+        "docs/implementation/story-1-17-admission-preparation-2026-10-16.json"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:40:15.263823+00:00",
+      "finished_at_utc": "2026-10-16T11:40:15.266109+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/intake-attributes.log",
+      "log_sha256": "941cba68bef5901447e7f9d377b95f297fdddd2ca3553cde8cf77dad66216c91"
+    },
+    {
+      "id": "memories-release-declaration",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Memories/contents/module/hexalith.module-manifest.v2.json?ref=v2.27.1",
+        "--jq",
+        "{sha,size,encoding,content}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:27.694359+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.068944+00:00",
+      "exit_code": 1,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release-declaration.log",
+      "log_sha256": "e74b878486db1fc673f35c8fe02a4df2515e2e288dffea9bbd1d8404bc1b2630"
+    },
+    {
+      "id": "memories-release-tag",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Memories/git/ref/tags/v2.27.1"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:27.693973+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.084334+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release-tag.log",
+      "log_sha256": "b31cf7b096443a080df7746cb64059b262cd45c3b35b92963d84b1b15cd8d352"
+    },
+    {
+      "id": "memories-release",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Memories/releases/tags/v2.27.1",
+        "--jq",
+        "{tag_name,published_at,assets:[.assets[]|{name,digest}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:27.696007+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.103366+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release.log",
+      "log_sha256": "aaa2d96b68284fad8fe131c7654679fc7d1ab8affd1c804121c43d5fd27856d7"
+    },
+    {
+      "id": "nuget-tool-signature",
+      "command": [
+        "dotnet",
+        "nuget",
+        "verify",
+        "--all",
+        "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Builds.Module.Cli.4.31.2.nupkg"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:20:42.894353+00:00",
+      "finished_at_utc": "2026-10-16T11:20:43.257935+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/nuget-tool-signature.log",
+      "log_sha256": "739185cb235474c223dd0504b1f976438b7797fcf65a76221a95bd7b7330739d"
+    },
+    {
+      "id": "owner-declarations",
+      "command": [
+        "dotnet",
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Module.Cli/bin/Debug/net10.0/Hexalith.Builds.Module.Cli.dll",
+        "validate",
+        "--manifest",
+        "references/Hexalith.EventStore/module/hexalith.module-manifest.v2.json",
+        "--manifest",
+        "references/Hexalith.Tenants/module/hexalith.module-manifest.v2.json",
+        "--manifest",
+        "references/Hexalith.Memories/module/hexalith.module-manifest.v2.json",
+        "--output",
+        "json"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:25:05.098532+00:00",
+      "finished_at_utc": "2026-10-16T11:25:05.345238+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/owner-declarations.log",
+      "log_sha256": "724d6ace8bd53e2658aa456dc61b065be48a3fe24e71ebb7c93b76c056cd0d53"
+    },
+    {
+      "id": "platform-compare",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Platform/compare/1711deba08a4e66b46acfff8d08e7f2ad7f74ba1...114e08830da2d8cca0e77cd870b8867506b4c68b",
+        "--jq",
+        "{status,total_commits,files:[.files[].filename]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:17:08.164304+00:00",
+      "finished_at_utc": "2026-10-16T11:17:08.807399+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-compare.log",
+      "log_sha256": "a7c511a87211a38278122a45e28eceaf4a5c0366cedc69fa8f1436ae669b3a26"
+    },
+    {
+      "id": "platform-diff-check",
+      "command": [
+        "git",
+        "-c",
+        "core.whitespace=cr-at-eol",
+        "diff",
+        "--check"
+      ],
+      "cwd": "references/Hexalith.Platform",
+      "started_at_utc": "2026-10-16T11:25:58.941255+00:00",
+      "finished_at_utc": "2026-10-16T11:25:58.947460+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-diff-check.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "platform-identity",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Platform/contents/hexalith-platform.json?ref=114e08830da2d8cca0e77cd870b8867506b4c68b",
+        "--jq",
+        "{sha,size,encoding,content}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:17:08.163968+00:00",
+      "finished_at_utc": "2026-10-16T11:17:08.591585+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-identity.log",
+      "log_sha256": "0b75ca37795401a2b781c66902d6c64c79d418994d5d7a2c9a6e0c2fae9af1c5"
+    },
+    {
+      "id": "platform-main",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Platform/commits/main",
+        "--jq",
+        "{sha,date:.commit.committer.date}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.486902+00:00",
+      "finished_at_utc": "2026-10-16T11:15:44.951998+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-main.log",
+      "log_sha256": "87f93c4d7a4783c19231c121fe75c1e21b5223946d1208200f00ac3afb9737aa"
+    },
+    {
+      "id": "platform-releases",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Platform/releases?per_page=100",
+        "--jq",
+        "[.[]|{tag_name,target_commitish,draft,prerelease,assets:[.assets[].name]}]"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.480495+00:00",
+      "finished_at_utc": "2026-10-16T11:15:44.865491+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-releases.log",
+      "log_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "id": "platform-tags",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Platform/tags?per_page=100"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.480591+00:00",
+      "finished_at_utc": "2026-10-16T11:15:44.866217+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-tags.log",
+      "log_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "platform-workflows",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Platform/actions/workflows?per_page=100",
+        "--jq",
+        "{total_count,workflows:[.workflows[]|{name,path,state}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:15:44.480557+00:00",
+      "finished_at_utc": "2026-10-16T11:15:44.811930+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-workflows.log",
+      "log_sha256": "a251d32568a7a08232ca3304ee97a5e6548146464133182aabeb86f463b3230b"
+    },
+    {
+      "id": "proposed-audit-validation",
+      "command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "Tools/validate-package-version-audit.ps1",
+        "-AuditPath",
+        "/home/administrator/projects/hexalith/folders/nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/package-version-audit.proposed.json"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:23:51.306729+00:00",
+      "finished_at_utc": "2026-10-16T11:24:11.294861+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/proposed-audit-validation.log",
+      "log_sha256": "1904d98a73749adf6a09969abd76ded90fb0f8b1e117ec10807bc740e1c5a2f2"
+    },
+    {
+      "id": "release-apphost-test-prerequisite",
+      "command": [
+        "dotnet",
+        "build",
+        "src/hosts/Hexalith.Builds.Module.AppHost/Hexalith.Builds.Module.AppHost.csproj",
+        "-c",
+        "Release",
+        "-m:1",
+        "-warnaserror",
+        "-p:GeneratePackageOnBuild=false"
+      ],
+      "cwd": "references/Hexalith.Builds",
+      "started_at_utc": "2026-10-16T11:27:09.513770+00:00",
+      "finished_at_utc": "2026-10-16T11:27:20.960416+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/release-apphost-test-prerequisite.log",
+      "log_sha256": "09eaff76de40ef2fe2005189dd701cded2dc40200b33d4b926af71f23778befd"
+    },
+    {
+      "id": "selected-host-final-state",
+      "command": [
+        "aspire",
+        "ps",
+        "--format",
+        "Json"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:25:58.658874+00:00",
+      "finished_at_utc": "2026-10-16T11:25:58.920215+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/selected-host-final-state.log",
+      "log_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "id": "tenants-release-declaration",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Tenants/contents/module/hexalith.module-manifest.v2.json?ref=v5.8.0",
+        "--jq",
+        "{sha,size,encoding,content}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:28.107143+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.405737+00:00",
+      "exit_code": 1,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release-declaration.log",
+      "log_sha256": "e74b878486db1fc673f35c8fe02a4df2515e2e288dffea9bbd1d8404bc1b2630"
+    },
+    {
+      "id": "tenants-release-tag",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Tenants/git/ref/tags/v5.8.0"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:28.095382+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.483877+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release-tag.log",
+      "log_sha256": "2e971e635edb80e458fdb5750b3feaabee538f95a833329c932282d6f6bd3663"
+    },
+    {
+      "id": "tenants-release",
+      "command": [
+        "gh",
+        "api",
+        "repos/Hexalith/Hexalith.Tenants/releases/tags/v5.8.0",
+        "--jq",
+        "{tag_name,published_at,assets:[.assets[]|{name,digest}]}"
+      ],
+      "cwd": ".",
+      "started_at_utc": "2026-10-16T11:18:28.125473+00:00",
+      "finished_at_utc": "2026-10-16T11:18:28.492404+00:00",
+      "exit_code": 0,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release.log",
+      "log_sha256": "ff96d0a1b841bbeea2de7b853de0f928c3e0d8617484c0bcfa68219c14a7cd9d"
+    }
+  ],
+  "implementation_checks": [
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj -c Debug -m:1 --nologo",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "log": "implementation-platform-build.log",
+      "nugetAuditDisabled": false,
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-platform-build.log",
+      "log_sha256": "fb0f32abfd48ef27d4a2c78acacfdb0820c926462dd211fb3b4d4f87ab1a76a7"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "command": "dotnet tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.Tests.dll -class '*PlatformFileEntryMappingTests'",
+      "exitCode": 0,
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "log": "implementation-mapping-tests.log",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-mapping-tests.log",
+      "log_sha256": "5ff5ebe8093216acb9b69476d5cac8a720c119d28af6a1c05477e25b48e3ad4d"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+      "command": "dotnet tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.Tests.dll -class '*GatewaySeedSubscriptionTests' -class '*WriterProtocolStartupTests'",
+      "exitCode": 0,
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "log": "implementation-seed-writer-tests.log",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-seed-writer-tests.log",
+      "log_sha256": "d0a7780e58418d8c0b4693403a6fdce4aad56a6ab278913bbe2a3225049f1fe0"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "command": "dotnet build test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj -c Debug -m:1 --nologo",
+      "exitCode": 1,
+      "errors": 1,
+      "log": "implementation-builds-contract-build-pack-prerequisite.log",
+      "blocker": "RequirePackagedHosts: Build the Hexalith.Builds.Module.AppHost Release output before packing the module tool.",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-contract-build-pack-prerequisite.log",
+      "log_sha256": "710f7e54586b26f93a36b084d3749ae21f60cbcc50103048e85498e9f67237db"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "command": "dotnet build test/Hexalith.Builds.Module.Tests/Hexalith.Builds.Module.Tests.csproj -c Debug -m:1 --nologo -p:GeneratePackageOnBuild=false",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "log": "implementation-builds-contract-build.log",
+      "note": "Test-only build avoids automatic packing; no tracked build configuration or admission gate was changed.",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-contract-build.log",
+      "log_sha256": "61d6c437c8f1f48a8a587d013242bd9292531e1f995253f54681960da50f5bd8"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "command": "dotnet test/Hexalith.Builds.Module.Tests/bin/Debug/net10.0/Hexalith.Builds.Module.Tests.dll -class '*WorkspaceRootResolverTests' -class '*PlatformIdentityTests' -class '*CatalogVersionTests' -class '*WorkspaceMsBuildTests'",
+      "exitCode": 1,
+      "total": 237,
+      "passed": 236,
+      "failed": 1,
+      "skipped": 0,
+      "log": "implementation-builds-contract-tests.log",
+      "failedTest": "Hexalith.Builds.ModuleTool.Tests.Workspace.PlatformIdentityTests.ExecutableCliVersionControlsToolRangeAsync",
+      "blocker": "The unchanged test internally builds CLI with automatic packing and requires absent Release AppHost output; all remaining 236 guard cases passed.",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-contract-tests.log",
+      "log_sha256": "b725545fc1be299a016a417b24e8e165c99a71a3c11d9a1b3ba243af1d6ec459"
+    },
+    {
+      "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.Builds",
+      "command": "dotnet test/Hexalith.Builds.Module.Tests/bin/Debug/net10.0/Hexalith.Builds.Module.Tests.dll -class '*AppHostRunnerValidationTests'",
+      "exitCode": 0,
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "log": "implementation-builds-apphost-validation-tests.log",
+      "retained_log_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-apphost-validation-tests.log",
+      "log_sha256": "68737544f4f5300d08225eef094dde71fa5998d7a56c80abaeb8f870e8ddf0b0"
+    }
+  ],
+  "implementation_checks_scope": "Initial implementation checks retained; final reviewed-tree checks are the final-* commands.",
+  "review_fix_checks": {
+    "scope": "Small review fixes; only bootstrap resolution and file-entry mapping test lanes were run.",
+    "files": [
+      {
+        "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Build.props",
+        "sha256": "e07baf3cf5b11bf417590e268087202935b0f07d81f041d3d9a541f70e3bd20f"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/Directory.Packages.props",
+        "sha256": "71bbbb3b3bf472b00e24c0fa29130ee60851f9c929b8e2e0f32ae19c6c1c8b29"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/eng/test_host_builds_resolution.py",
+        "sha256": "956e1120c6006a81099ff88a5de1d3ff1efcca91d55047dc3b3bfc57331e2cb6"
+      },
+      {
+        "path": "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformFileEntryMappingTests.cs",
+        "sha256": "c1e91ed56df23ed0644aa4d39bf4ada70fe735ee225507060283a4b04efa925c"
+      }
+    ],
+    "checks": [
+      {
+        "command": "python3 -m unittest discover -s eng -p 'test_host_builds_resolution.py' -v",
+        "exitCode": 0,
+        "total": 12,
+        "passed": 12,
+        "log": "review-fixes-msbuild-after.log",
+        "beforeFixLog": "review-fixes-msbuild-before.log",
+        "beforeFixFailingSubcases": 6
+      },
+      {
+        "command": "dotnet build tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj -c Debug -m:1 --nologo --no-restore",
+        "exitCode": 0,
+        "warnings": 0,
+        "errors": 0,
+        "log": "review-fixes-platform-build.log"
+      },
+      {
+        "command": "dotnet tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.Tests.dll -class '*PlatformFileEntryMappingTests'",
+        "exitCode": 0,
+        "total": 5,
+        "passed": 5,
+        "log": "review-fixes-mapping-tests.log",
+        "environmentEvidence": "review-fixes-mapping-isolation.json"
+      }
+    ],
+    "preserved": [
+      "All existing assertions",
+      "Sibling and standalone default selection",
+      "Explicit roots relative to the Platform root",
+      "Refusal from a missing explicitly mapped root"
+    ]
+  },
+  "results": {
+    "builds_resolution_regressions": {
+      "total": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "pin_guard_regressions": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "platform_mapping_cases": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "unchanged_seed_writer_cases": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "builds_guards_latest_unique_outcomes": {
+      "total": 242,
+      "passed": 242,
+      "failed": 0,
+      "skipped": 0,
+      "original_run": "236/237 plus 5/5; internal ExecutableCliVersionControlsToolRangeAsync initially failed on absent Release AppHost output.",
+      "resolution": "Serialized Release AppHost prerequisite build passed without warnings; unchanged failed test replay passed 1/1. Prior results reused for unchanged Debug test/guard inputs."
+    },
+    "builds_audit": {
+      "before": "exit 1; 19 errors",
+      "after": "exit 0; 306 packages, 147 families, one source",
+      "semantic_delta": {
+        "selected_version_delta": {
+          "Hexalith.EventStore.Admin.Abstractions": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Admin.Server": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Aspire": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Client": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Contracts": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.DomainService": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Gateway": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.RestApi.Generators": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Server": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.ServiceDefaults": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.SignalR": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Testing": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Hexalith.EventStore.Testing.Integration": {
+            "old_audit": "3.120.0",
+            "new_audit": "3.122.0"
+          },
+          "Microsoft.AspNetCore.SignalR.Common": {
+            "old_audit": null,
+            "new_audit": "10.0.13"
+          },
+          "Microsoft.Extensions.DependencyInjection.Abstractions": {
+            "old_audit": "10.0.12",
+            "new_audit": "10.0.13"
+          },
+          "Microsoft.Extensions.Options": {
+            "old_audit": "10.0.12",
+            "new_audit": "10.0.13"
+          },
+          "StackExchange.Redis": {
+            "old_audit": "3.4.0",
+            "new_audit": "3.4.5"
+          },
+          "System.CommandLine": {
+            "old_audit": "2.0.12",
+            "new_audit": "2.0.13"
+          }
+        },
+        "catalog_worktree_sha256": "c0d2e3a0433543483f844e9feccf08e40e2c431a422fb4d7cf52656cd0728a48",
+        "catalog_unchanged_from_task_start": true,
+        "historical_context_preserved": true,
+        "current_disposition_counts": {
+          "retained": 301,
+          "accepted": 5
+        },
+        "history_preservation": {
+          "packages": {
+            "prior_history_entries": 4999,
+            "lost_prior_history_entries": []
+          },
+          "familyDecisions": {
+            "prior_history_entries": 2145,
+            "lost_prior_history_entries": []
+          }
+        }
+      }
+    },
+    "owner_declaration_validation": "exit 0; source declarations validated together",
+    "actual_apphost": "exit 2/process 134; now resolves owner source, then exact pinned Builds catalog materialization refuses before resources.",
+    "actual_package_admission": "exit 2; HXW011/HXW009/HXW007/HXW010 preserved.",
+    "published_tool_signature": "dotnet nuget verify --all: exit 0; repository signature. NuGet signed archive hash is distinct from prepublication inventory hash.",
+    "staging_checks_executed": 0,
+    "validation_command_corrections": "An initial file-AppHost build used unsupported -m:1/-warnaserror switches and failed command routing. The supported command using -p:TreatWarningsAsErrors=true then passed; both logs are retained."
+  },
+  "infrastructure_queries": [
+    {
+      "id": "target-uid",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-native-client-custody>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=20s",
+        "get",
+        "namespace",
+        "kube-system",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-16T11:18:47.095625+00:00",
+      "finished_at_utc": "2026-10-16T11:18:47.363375+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "f443be1414e0d22a7744c7d125f7236b6e91a7cd8e618c61ee7c20a6bcad8d43",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observation": {
+        "kube_system_uid": "b5860674-1d1e-4a3b-b413-e1bb3b9a4557"
+      }
+    },
+    {
+      "id": "target-namespaces",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-native-client-custody>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=20s",
+        "get",
+        "namespace",
+        "hexalith-staging",
+        "hexalith-staging-data",
+        "hexalith-production",
+        "hexalith-production-data",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-16T11:18:47.363411+00:00",
+      "finished_at_utc": "2026-10-16T11:18:47.649244+00:00",
+      "exit_code": 1,
+      "stdout_sha256": "7a779468a2dde976a9b896541df1e4ef805e813093bd5edb40ef1a6eea588edf",
+      "stderr_sha256": "31b023b468c8910b4938403bd83392d083c1dbd93f835a408bb3f99e6b52f4fc",
+      "observation": {
+        "names": [],
+        "stderr": "Error from server (NotFound): namespaces \"hexalith-staging\" not found\nError from server (NotFound): namespaces \"hexalith-staging-data\" not found\nError from server (NotFound): namespaces \"hexalith-production\" not found\nError from server (NotFound): namespaces \"hexalith-production-data\" not found\n"
+      }
+    },
+    {
+      "id": "gateway-api",
+      "command": [
+        "<retained-kubectl-v1.34.12>",
+        "--kubeconfig",
+        "<existing-native-client-custody>",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=20s",
+        "api-resources",
+        "--api-group=gateway.networking.k8s.io",
+        "-o",
+        "name"
+      ],
+      "started_at_utc": "2026-10-16T11:18:47.649278+00:00",
+      "finished_at_utc": "2026-10-16T11:18:47.953953+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observation": {
+        "resource_types": []
+      }
+    },
+    {
+      "id": "retained-registry-catalog",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/_catalog?n=100",
+      "started_at_utc": "2026-10-16T11:18:47.953991+00:00",
+      "finished_at_utc": "2026-10-16T11:18:48.048296+00:00",
+      "credential_source": "existing Docker Desktop helper; in-memory only",
+      "status": 200,
+      "body_sha256": "87306fc8871fe7c73c49f425b66eca9e36f8f69161e14ec0514888f2eb5b5190",
+      "observation": {
+        "repository_count": 9,
+        "repositories": [
+          "eventstore",
+          "memories",
+          "memories-access-telemetry",
+          "memories-access-telemetry-clock",
+          "memories-mcp",
+          "parties",
+          "parties-mcp",
+          "parties-ui",
+          "tenants"
+        ],
+        "pagination_link_present": false
+      }
+    }
+  ],
+  "registry_queries": [
+    {
+      "id": "registry-eventstore",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/eventstore/manifests/3.122.0",
+      "started_at_utc": "2026-10-16T11:19:45.713055+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.740811+00:00",
+      "status": 200,
+      "body_sha256": "bdd242bf5d54010d2a8340023c5164a6112c8e23bd5d7d390f33c50fecc8bf43",
+      "digest": "sha256:bdd242bf5d54010d2a8340023c5164a6112c8e23bd5d7d390f33c50fecc8bf43",
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-eventstore.json"
+    },
+    {
+      "id": "registry-eventstore-referrers",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/eventstore/referrers/sha256:bdd242bf5d54010d2a8340023c5164a6112c8e23bd5d7d390f33c50fecc8bf43",
+      "started_at_utc": "2026-10-16T11:19:45.740853+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.766060+00:00",
+      "status": 200,
+      "body_sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "digest": null,
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-eventstore-referrers.json"
+    },
+    {
+      "id": "registry-tenants",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/tenants/manifests/5.8.0",
+      "started_at_utc": "2026-10-16T11:19:45.766100+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.780377+00:00",
+      "status": 200,
+      "body_sha256": "c0e017e029053dfa9b095b6431058a7603b371da1f56a89d336001070fc5ffae",
+      "digest": "sha256:c0e017e029053dfa9b095b6431058a7603b371da1f56a89d336001070fc5ffae",
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-tenants.json"
+    },
+    {
+      "id": "registry-tenants-referrers",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/tenants/referrers/sha256:c0e017e029053dfa9b095b6431058a7603b371da1f56a89d336001070fc5ffae",
+      "started_at_utc": "2026-10-16T11:19:45.780419+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.793601+00:00",
+      "status": 200,
+      "body_sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "digest": null,
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-tenants-referrers.json"
+    },
+    {
+      "id": "registry-memories",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/memories/manifests/2.27.1",
+      "started_at_utc": "2026-10-16T11:19:45.793637+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.809865+00:00",
+      "status": 200,
+      "body_sha256": "2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+      "digest": "sha256:2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+      "content_type": "application/vnd.docker.distribution.manifest.v2+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories.json"
+    },
+    {
+      "id": "registry-memories-referrers",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/memories/referrers/sha256:2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+      "started_at_utc": "2026-10-16T11:19:45.809900+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.826650+00:00",
+      "status": 200,
+      "body_sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "digest": null,
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-referrers.json"
+    },
+    {
+      "id": "registry-memories-access-telemetry",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/memories-access-telemetry/manifests/2.27.1",
+      "started_at_utc": "2026-10-16T11:19:45.826680+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.841437+00:00",
+      "status": 200,
+      "body_sha256": "ca6d974183ef724171e2ff03156d12ccc24c5bc8fa2eeb91ce6fef1ba49746a6",
+      "digest": "sha256:ca6d974183ef724171e2ff03156d12ccc24c5bc8fa2eeb91ce6fef1ba49746a6",
+      "content_type": "application/vnd.docker.distribution.manifest.v2+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry.json"
+    },
+    {
+      "id": "registry-memories-access-telemetry-referrers",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/memories-access-telemetry/referrers/sha256:ca6d974183ef724171e2ff03156d12ccc24c5bc8fa2eeb91ce6fef1ba49746a6",
+      "started_at_utc": "2026-10-16T11:19:45.841468+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.855315+00:00",
+      "status": 200,
+      "body_sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "digest": null,
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry-referrers.json"
+    },
+    {
+      "id": "registry-memories-access-telemetry-clock",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/memories-access-telemetry-clock/manifests/2.27.1",
+      "started_at_utc": "2026-10-16T11:19:45.855351+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.870746+00:00",
+      "status": 200,
+      "body_sha256": "ff96594400e13c10767384d231c493f6c056c1e0730d6f3b83c6516815d66cf0",
+      "digest": "sha256:ff96594400e13c10767384d231c493f6c056c1e0730d6f3b83c6516815d66cf0",
+      "content_type": "application/vnd.docker.distribution.manifest.v2+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry-clock.json"
+    },
+    {
+      "id": "registry-memories-access-telemetry-clock-referrers",
+      "method": "GET",
+      "url": "https://registry.hexalith.com/v2/memories-access-telemetry-clock/referrers/sha256:ff96594400e13c10767384d231c493f6c056c1e0730d6f3b83c6516815d66cf0",
+      "started_at_utc": "2026-10-16T11:19:45.870786+00:00",
+      "finished_at_utc": "2026-10-16T11:19:45.885041+00:00",
+      "status": 200,
+      "body_sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "digest": null,
+      "content_type": "application/vnd.oci.image.index.v1+json",
+      "retained_body_path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry-clock-referrers.json"
+    }
+  ],
+  "registry_image_identity_observations": [
+    {
+      "repository": "eventstore",
+      "platform": "linux/amd64",
+      "method": "GET",
+      "manifest_url": "https://registry.hexalith.com/v2/eventstore/manifests/sha256:ab192ac8e0a161a15ef9f39e957fc17d0714ddc6a2af127ca44cf6d234db478e",
+      "config_url": "https://registry.hexalith.com/v2/eventstore/blobs/sha256:d9e21b8427fe550694d74566654cf44331a48a0b36291eca7b711fd4a8d8638c",
+      "manifest_digest": "sha256:ab192ac8e0a161a15ef9f39e957fc17d0714ddc6a2af127ca44cf6d234db478e",
+      "manifest_body_sha256": "ab192ac8e0a161a15ef9f39e957fc17d0714ddc6a2af127ca44cf6d234db478e",
+      "config_digest": "sha256:d9e21b8427fe550694d74566654cf44331a48a0b36291eca7b711fd4a8d8638c",
+      "config_body_sha256": "d9e21b8427fe550694d74566654cf44331a48a0b36291eca7b711fd4a8d8638c",
+      "oci_labels": {
+        "org.opencontainers.image.licenses": "MIT",
+        "org.opencontainers.image.vendor": "Hexalith",
+        "org.opencontainers.image.description": "DAPR-native event sourcing server for .NET",
+        "org.opencontainers.image.authors": "Hexalith Contributors",
+        "org.opencontainers.image.base.name": "mcr.microsoft.com/dotnet/aspnet",
+        "org.opencontainers.image.source": "https://github.com/Hexalith/Hexalith.EventStore",
+        "org.opencontainers.image.url": "https://github.com/Hexalith/Hexalith.EventStore/releases/tag/v3.122.0",
+        "org.opencontainers.image.documentation": "https://github.com/Hexalith/Hexalith.EventStore/blob/1dac529c4690910c89d4090784a7d46cb9433a9d/README.md",
+        "org.opencontainers.image.revision": "1dac529c4690910c89d4090784a7d46cb9433a9d",
+        "org.opencontainers.image.version": "3.122.0",
+        "org.opencontainers.image.created": "2026-10-14T15:26:56Z",
+        "org.opencontainers.image.base.digest": "sha256:eca1355b1fefb0a93617b7d01749dc8ac821e0eadcedbcf7d64e4b59cad60104"
+      },
+      "retrieved_at_utc": "2026-10-16T11:22:01.314411+00:00",
+      "limit": "Labels are observations, not verified attestations."
+    },
+    {
+      "repository": "tenants",
+      "platform": "linux/amd64",
+      "method": "GET",
+      "manifest_url": "https://registry.hexalith.com/v2/tenants/manifests/sha256:c7a666b9b172fe143862989ae552963e6d56726982431bf30769f67c8a4226c0",
+      "config_url": "https://registry.hexalith.com/v2/tenants/blobs/sha256:06ad4117cc8a16309c5e773dd019a9de327fb6620a15d0a92910db8cf1360122",
+      "manifest_digest": "sha256:c7a666b9b172fe143862989ae552963e6d56726982431bf30769f67c8a4226c0",
+      "manifest_body_sha256": "c7a666b9b172fe143862989ae552963e6d56726982431bf30769f67c8a4226c0",
+      "config_digest": "sha256:06ad4117cc8a16309c5e773dd019a9de327fb6620a15d0a92910db8cf1360122",
+      "config_body_sha256": "06ad4117cc8a16309c5e773dd019a9de327fb6620a15d0a92910db8cf1360122",
+      "oci_labels": {
+        "org.opencontainers.image.source": "https",
+        "org.opencontainers.image.licenses": "MIT",
+        "org.opencontainers.image.vendor": "Hexalith",
+        "org.opencontainers.image.created": "2026-10-08T17",
+        "org.opencontainers.image.description": "Multi-tenant management service for .NET built on Hexalith.EventStore",
+        "org.opencontainers.image.authors": "Hexalith Contributors",
+        "org.opencontainers.image.url": "https",
+        "org.opencontainers.image.documentation": "https",
+        "org.opencontainers.image.version": "5.8.0",
+        "org.opencontainers.image.base.name": "mcr.microsoft.com/dotnet/aspnet",
+        "org.opencontainers.image.base.digest": "sha256:3de0537252e9e0e26e5255582561977905ea3b969b9bf256e9343c8ad627d365"
+      },
+      "retrieved_at_utc": "2026-10-16T11:22:01.343550+00:00",
+      "limit": "Labels are observations, not verified attestations."
+    },
+    {
+      "repository": "memories",
+      "platform": "linux/amd64",
+      "method": "GET",
+      "manifest_url": null,
+      "config_url": "https://registry.hexalith.com/v2/memories/blobs/sha256:88a3ee5eb1df754ea1c79596cf0b98a640bf7fd2df04b7a2a6bddc8b07b10024",
+      "manifest_digest": "sha256:2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+      "manifest_body_sha256": "2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+      "config_digest": "sha256:88a3ee5eb1df754ea1c79596cf0b98a640bf7fd2df04b7a2a6bddc8b07b10024",
+      "config_body_sha256": "88a3ee5eb1df754ea1c79596cf0b98a640bf7fd2df04b7a2a6bddc8b07b10024",
+      "oci_labels": {
+        "org.opencontainers.image.source": "https://github.com/Hexalith/Hexalith.Memories",
+        "org.opencontainers.image.version": "2.27.1",
+        "org.opencontainers.image.created": "2026-09-08T13:57:21.5097617Z",
+        "org.opencontainers.image.authors": "Hexalith.Memories.Server",
+        "org.opencontainers.image.base.name": "mcr.microsoft.com/dotnet/aspnet:10.0-alpine",
+        "org.opencontainers.image.base.digest": "sha256:f95807c53deaba56064fd7c490378869e9fa94c787e8ff7a028ea893d4d9fcea"
+      },
+      "retrieved_at_utc": "2026-10-16T11:22:01.355770+00:00",
+      "limit": "Labels are observations, not verified attestations."
+    }
+  ],
+  "evidence_reuse": {
+    "bootstrap_record_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-bootstrap-2026-10-16.json",
+    "bootstrap_record_sha256": "97b44055b33b1a3ea72155212f5d49d4d8b7eb5c3be177554b3f701fdaa0bb28",
+    "bootstrap_source_file_matches": {
+      "Directory.Build.props": false,
+      "Directory.Packages.props": false,
+      "apphost.cs": true,
+      "docs/platform-apphost-form.md": false,
+      "eng/test_verify_platform_pins.py": true,
+      "eng/verify-platform-pins.py": true,
+      "src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj": true,
+      "src/Hexalith.Platform.Composition/PlatformAppModel.cs": false,
+      "src/Hexalith.Platform.Composition/PlatformDaprBindings.cs": true,
+      "src/Hexalith.Platform.Composition/PlatformDaprEndpointSubscriber.cs": true,
+      "src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs": true,
+      "src/Hexalith.Platform.Composition/PlatformLocalProfile.cs": true,
+      "src/Hexalith.Platform.Composition/PlatformServerBindings.cs": true,
+      "src/Hexalith.Platform.Composition/WorksPreviewModel.cs": true,
+      "tests/Hexalith.Platform.Composition.Tests/BuildsSourceStartupTests.cs": true,
+      "tests/Hexalith.Platform.Composition.Tests/GatewaySeedSubscriptionTests.cs": true,
+      "tests/Hexalith.Platform.Composition.Tests/Hexalith.Platform.Composition.Tests.csproj": true,
+      "tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs": true,
+      "tests/Hexalith.Platform.Composition.Tests/TimesheetsHostBindingTests.cs": true,
+      "tests/Hexalith.Platform.Composition.Tests/WriterProtocolStartupTests.cs": true,
+      "eng/test_host_builds_resolution.py": false
+    },
+    "pin_and_builds_resolution_tests": "Fresh resolver regressions cover the changed import timing. The unchanged pin verifier/catalog retain their earlier evidence; no earlier runtime result is promoted to newly built assemblies.",
+    "source_candidate_results": "Folders/Projects earlier passing evidence remains dated evidence only for its unchanged source/candidate/packet inputs. No broad suite was rerun or current operational result inferred.",
+    "operational_results_reused": false
+  },
+  "preservation": {
+    "historical_and_control_file_hashes": {
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": {
+        "sha256": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": {
+        "sha256": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": {
+        "sha256": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": {
+        "sha256": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": {
+        "sha256": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": {
+        "sha256": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": {
+        "sha256": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": {
+        "sha256": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": {
+        "sha256": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": {
+        "sha256": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": {
+        "sha256": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": {
+        "sha256": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": {
+        "sha256": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": {
+        "sha256": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": {
+        "sha256": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": {
+        "sha256": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": {
+        "sha256": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": {
+        "sha256": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": {
+        "sha256": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": {
+        "sha256": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": {
+        "sha256": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": {
+        "sha256": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": {
+        "sha256": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": {
+        "sha256": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": {
+        "sha256": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": {
+        "sha256": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+        "matches": true
+      },
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": {
+        "sha256": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+        "matches": true
+      },
+      "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": {
+        "sha256": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+        "matches": true
+      },
+      "docs/contract/authorization-matrix.md": {
+        "sha256": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+        "matches": true
+      }
+    },
+    "historical_and_control_file_hashes_all_match": true,
+    "unchanged_candidate_and_packet_hashes": {
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": {
+        "sha256": "4b8470beda4f19c1293be1c40b4b36914e5148fa0f1a05ab2817d4fe43156cce",
+        "matches": true
+      },
+      "_bmad-output/planning-artifacts/planning-story-manifest.yaml": {
+        "sha256": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924",
+        "matches": true
+      },
+      "eng/story117-platform-qualification/configuration.proposed.json": {
+        "sha256": "0df68be75eae271b79533a59f168bc964df56b0de7982a44448b16baca3cc3b5",
+        "matches": true
+      },
+      "eng/story117-platform-qualification/staging-checks.json": {
+        "sha256": "cd351aaf2c63d2493f32f4728af4776925ffefb736da442ff6b2b074bcec7339",
+        "matches": true
+      },
+      "eng/story117-platform-qualification/README.md": {
+        "sha256": "4468d80d246a8b5b5968b9a5fbd2ce7ecf588af89fe6e0a3bdcba47770d7a40d",
+        "matches": true
+      },
+      "eng/story117-platform-qualification/verify.py": {
+        "sha256": "b667eac8131f5c0312ed7e78c7284d756b749175d0f1faf756adbb43cd53a4db",
+        "matches": true
+      },
+      "eng/story117-platform-qualification/test_verify.py": {
+        "sha256": "f42c880468a5a3e4a04a7f948a3ea6eee86e67ec34dd2c119795d7b2b422d0c5",
+        "matches": true
+      },
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-qualification-2026-10-16.json": {
+        "sha256": "60becb00027d779bfdb76bc021f1e5e89f7e55063c8fef67f73922942866017e",
+        "matches": true
+      },
+      "_bmad-output/implementation-artifacts/story-1-17-platform-rollout-proposal-2026-10-16.md": {
+        "sha256": "512db77734f6caa939cc115a28e6fa7bda6583d3864c5217d2c0d82419415354",
+        "matches": true
+      }
+    },
+    "unchanged_candidate_and_packet_hashes_all_match": true,
+    "required_mode": "V1Only",
+    "t0_utc": null,
+    "story_1_17_tracker": "backlog",
+    "existing_test_assertions_changed": false,
+    "readiness_append": {
+      "prior_length_bytes": 149431,
+      "prior_sha256": "9f7b98137a8a6b983f96408d92d225a38e290b803a879a189a2ef3f6536e2921",
+      "retained_prefix_identical": true
+    },
+    "git_write_limit": "Disposable test fixtures perform local synthetic Git operations; no Git staging/commit/push/tag/update occurred in the real workspace repositories."
+  },
+  "output_sha256": {
+    "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/bin/Debug/net10.0/Hexalith.Platform.Composition.Tests.dll": "95e9aa740d6b85eebd2e1af0a8af84f8325ce707fe76abf505744fd0dab71ba6",
+    "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/bin/Debug/net10.0/Hexalith.Builds.Module.Tests.dll": "95842fea64f966ca84b71d86f2091a90efaaa561900124a9c322499361f20ed2",
+    "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.EventStoreHost/bin/Debug/net10.0/Hexalith.Builds.Module.EventStoreHost.dll": "a38f5b83049433a27ef81b05e4368c140dbffb7d0de4b6d766197c972de29230",
+    "references/Hexalith.Builds/src/hosts/Hexalith.Builds.Module.EventStoreHost/bin/Release/net10.0/Hexalith.Builds.Module.EventStoreHost.dll": "e92cb38eaf10a84e14b5e04ccc818b05e417f3a66193b9e926bff5ad71bb893b"
+  },
+  "next_blocker": {
+    "owner": "Platform with Builds/module owners",
+    "subject": "A real clean released and accepted tuple, through planned Platform 1.9/4.8/4.12 intake/publication",
+    "facts": [
+      "Platform pin 5636b7f36e28e2731111b049f974b1fa951d1c36 is unavailable locally and returns GitHub 404; observed Builds main is 728174f506d56204657e0c52e98a4453aef79f6a.",
+      "Platform has zero observed releases/tags/workflows and no accepted tool range or tool manifest.",
+      "Released Builds 4.31.2 is available, but the local seed correction/audit need a new clean committed release; a source-built timestamp version is not an accepted released tool.",
+      "EventStore 3.122.0 has the released declaration hash; catalog Tenants 5.8.0/Memories 2.27.1 have no released v2 declaration at their tags.",
+      "Selected registry referrer listings are empty; no verified module-image attestation supplied. No retained Platform application package/composed image exists in the queried catalog."
+    ],
+    "prepared_actions": [
+      {
+        "owner": "Builds",
+        "action": "Qualify and record the reviewed seed correction plus current audit on clean committed source, including Builds-owned configured/declarative HTTP checks against the seed inside the distributable tool; obtain successful exact-head push CI, then use the existing release workflow after separate Git/publication authorization. Semantic-release selects the next version.",
+        "publication_command_after_authorization": "gh workflow run build-release.yml --repo Hexalith/Hexalith.Builds --ref main",
+        "precondition": "Approved commit/push, exact current main and successful push CI; no dispatch performed."
+      },
+      {
+        "owner": "Platform with module owners",
+        "action": "Complete the missing intake implementation, release Tenants/Memories v2 declarations with verified image attestations, then ingest exact released commits/declaration hashes/catalog versions. EventStore 3.122.0 declaration is available; do not relabel old snapshots as released."
+      },
+      {
+        "owner": "Platform",
+        "action": "Ratify a released Builds tool containing the fix; pin that exact version in .config/dotnet-tools.json, record its accepted toolVersionRange and exact Builds catalog gitlink, and qualify/release Platform from clean source. The owning future commits and versions remain null until produced.",
+        "publication_command": null,
+        "reason": "No Platform publication workflow exists to dispatch."
+      },
+      {
+        "owner": "Platform",
+        "action": "Resolve one command-owned mapping; retain hash-bound mapping/catalog and signed run evidence, then perform separately authorized staging qualification."
+      }
+    ],
+    "authorization_needed": [
+      "Separate authorization for reviewed source Git staging/commit/push and aligned gitlink changes.",
+      "Separate Builds publication authorization after successful exact-head CI; semantic-release chooses the real next version.",
+      "Platform owner acceptance of the exact released tool/range and completed intake/publication implementation, followed by separate publication authority.",
+      "Separate staging/deployment authority after remaining hosted/profile/identity/recovery evidence is supplied."
+    ]
+  },
+  "remaining_qualification_gates": [
+    "Retained Platform chart/composed-host release, signed release/attempt evidence and qualified executor.",
+    "Provider-free Folders AD-13 extension packaging and hosted declaration enrollment; ACL adapter depends on core/provider SDKs, and the current catalog rejects unrelated module adapters.",
+    "Projects target-scoped actor/surface/audience delegation and authenticated consumer attribution.",
+    "Target/data disposition, isolation/Gateway/secret/profile/recovery prerequisites, operators/UTC slots and real schedules/baselines.",
+    "Exact-artifact install/reversal and the accepted operational entry/exit evidence."
+  ],
+  "decision": {
+    "operational_qualification": "HOLD",
+    "staging_checks_executed": 0,
+    "production_activated": false,
+    "publication_performed": false,
+    "deployment_performed": false,
+    "git_writes_performed_in_real_repositories": false,
+    "story_1_17_closed": false,
+    "tracker_transition_performed": false
+  },
+  "retained_artifact_bundle": {
+    "manifest_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.manifest.json",
+    "manifest_sha256": "801abeb2e7bd979d4b687da140b09f601755b8a890aa200f8f2172e5c431e3a5",
+    "archive_path": "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.tar.gz",
+    "archive_sha256": "d64c7f23e3fa8f2c78c9b7604a1e100c57823b8cc491c94e9f7c8e88f83bf14b",
+    "member_count": 146,
+    "reconstruction": "Archive members retain workspace-relative paths matching retained_log_path and prepared_patches. Extract into a separate directory to inspect; all members were rehashed."
+  },
+  "review": {
+    "triage_path": "_bmad-output/implementation-artifacts/spec-1-17-platform-admission-prerequisite.md",
+    "verification_gap_findings": 0,
+    "edge_case_findings": 0,
+    "blind_findings": 10,
+    "patches": [
+      "Normalize Builds root after mapping import; real MSBuild late-root/missing-root regressions.",
+      "Isolate disposable Git fixture configuration and handle read-only object cleanup.",
+      "Reconcile historical deferred seed entry and retain portable evidence bundle."
+    ],
+    "deferred": [
+      "Builds-owned configured/declarative HTTP qualification against the seed embedded in the future distributable tool, before publication/acceptance."
+    ]
+  }
+}

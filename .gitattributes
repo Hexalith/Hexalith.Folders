@@ -43,3 +43,13 @@ _bmad-output/implementation-artifacts/renegotiation-1-17-2026-09-23/spec-1-17-pu
 eng/story117-platform-qualification/** -text whitespace=cr-at-eol
 _bmad-output/implementation-artifacts/story-1-17-platform-rollout-proposal-2026-10-16.md -text whitespace=cr-at-eol
 _bmad-output/implementation-artifacts/evidence/story-1-17-platform-qualification-2026-10-16.json -text whitespace=cr-at-eol
+
+# Preserve exact qualification evidence bytes across checkouts.
+_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16* -text
+
+# Bind the exact bytes of the Builds packaged-seed qualification handoff.
+_bmad-output/implementation-artifacts/evidence/story-1-17-builds-package-qualification-2026-10-16* -text
+
+# Byte-bound committed Builds qualification receipt and portable artifacts.
+_bmad-output/implementation-artifacts/evidence/story-1-17-builds-clean-source-qualification-2026-10-16* -text whitespace=cr-at-eol
+eng/story117-builds-clean-source/** text eol=lf

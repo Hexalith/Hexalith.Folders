@@ -2914,3 +2914,29 @@ archived: 2026-09-18
 - source_spec: `_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay-4.md`
   summary: Include the pre-existing dirty central package configuration in the Story 12.1 verification environment record.
   evidence: `Directory.Packages.props` imports `references/Hexalith.Builds/Props/Directory.Packages.props`, whose preserved user edit changes `HexalithEventStoreVersion` from `3.120.0` to `3.121.0` at Builds revision `9f0121c77e3f085c58f5c926057606db8e6511a7`. The executed Debug lane explicitly selects EventStore source projects, so the passing source checks do not establish packaged Release compatibility. The one-shot workflow defers spec-only reproducibility improvements; no dependency edit or failing consumer check resulted.
+
+- source_spec: `spec-story-1-17-platform-host-bootstrap.md`
+  summary: Resolve Platform runtime image-version catalog lookup from the qualified workspace mapping.
+  evidence: PlatformServerBindings.Version still reads Platform/references/Hexalith.Builds/Props/Directory.Packages.props; the bootstrap fix does not qualify runtime image selection in a sibling-only workspace.
+- source_spec: `spec-story-1-17-platform-host-bootstrap.md`
+  summary: Resolve the opt-in Builds source smoke runner from the qualified Builds selection.
+  evidence: BuildsSourceStartupTests still selects the nested Builds AppHost DLL; no live topology qualification was claimed or run through that unqualified path.
+- source_spec: `spec-story-1-17-platform-host-bootstrap.md`
+  summary: Qualify Builds package seed configured and declarative projection subscriptions before staging use.
+  evidence: Two GatewaySeedSubscriptionTests cases fail against Builds 728174f506d56204657e0c52e98a4453aef79f6a: dynamic metadata uses pubsub instead of configured-seed-events, and declarative mode returns 200 from /dapr/subscribe instead of 404. Platform seed cases and writer-protocol cases pass. Do not weaken expectations.
+
+
+- source_spec: `spec-1-17-platform-admission-prerequisite.md`
+  summary: Include configured/declarative package-seed HTTP regression in Builds-owned packaged-tool qualification before publishing or accepting the corrected tool.
+  evidence: Review BH3/BH4 confirms the six current seed/writer assertions run from Platform and reference the source seed project. They pass, but do not verify the seed copied into a future distributable Builds tool. Current released 4.31.2 lacks this correction; preserve this exact-artifact publication/acceptance prerequisite and existing expectations.
+
+Resolution of the earlier `spec-story-1-17-platform-host-bootstrap.md` package-seed subscription entry: source-host correction is verified by six passing unchanged seed/writer checks in `evidence/story-1-17-platform-admission-2026-10-16.json`. Both originally failing Builds cases now pass. The original failure record is retained; packaged-tool qualification remains the separate deferred item above.
+
+
+Follow-up to the `spec-1-17-platform-admission-prerequisite.md` packaged-tool regression entry: Builds-owned HTTP and receiver-metadata checks are now implemented and verified against a local distributable module-tool archive in `evidence/story-1-17-builds-package-qualification-2026-10-16.json`. Source-host tests do not satisfy this gate. The signed published 4.31.2 negative control fails both modes. This resolves local regression implementation/diagnostic preparation only; the existing publication/acceptance prerequisite remains open until full clean-source qualification and a real accepted release exist.
+
+- source_spec: `spec-1-17-builds-packaged-seed-qualification.md`
+  summary: Reconcile the Builds G-4 synthetic P0 corpus with the current authoritative pins before clean-source release qualification.
+  status: resolved-clean-source-qualification
+  resolution: Resolved for source qualification on 2026-10-16: committed/pushed preparation reconciled with upstream source 5aceb5ab0683b5e8c494e82f865e138685180f36; authoritative synthetic pins and hashes preserve all exact expectations, negative controls and sample approvals. Complete G-4 source/package workflow passes with required controls and no source skip; exact-head push CI succeeds. The new clean inventory is technically release-eligible, while the earlier dirty diagnostic remains release-ineligible. Publication and Platform acceptance remain open and separately authorized.
+  evidence: Current proof is evidence/story-1-17-builds-clean-source-qualification-2026-10-16.json and eng/story117-builds-clean-source/verify.py. The historical initial 31 HXE202 failures, dirty corpus-repaired diagnostic and superseded clean 3.122.0 run remain retained. Concurrent upstream EventStore 3.123.0/catalog/audit selections were preserved; no dependency selection was edited locally to satisfy fixtures. See the latest readiness addendum for exact commit, CI, hashes and remaining publication/intake prerequisites.

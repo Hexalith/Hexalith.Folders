@@ -1,0 +1,37 @@
+{
+  "schema": "hexalith.story117.clean-source-verification.v1",
+  "receiptSha256": "80604829ed24bc571732384ea654004b2d234228de11531c260d7c9e16a398db",
+  "bundleSha256": "d2769242275a087a5ec03e617c73b4c2bfdeed22157859bd8dff12c85d032062",
+  "checks": {
+    "positive": {
+      "execution": {
+        "command": [
+          "python3",
+          "eng/story117-builds-clean-source/verify.py"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "startedAtUtc": "2026-10-16T15:33:49.924530+00:00",
+        "finishedAtUtc": "2026-10-16T15:33:50.340871+00:00",
+        "exitCode": 0,
+        "log": "evidence-verification-final.log",
+        "sha256": "32e5dffffea789879fd84855d3158aafb5f9057f1180ff0886d94e722a9875b8"
+      },
+      "stdout": "Verified clean Builds 5aceb5ab0683b5e8c494e82f865e138685180f36, successful exact-head push CI, 240 retained members, four diagnostic archives, 55 qualification artifacts and both seed modes. Technical qualification passed; publication and acceptance remain unauthorized.\n"
+    },
+    "negativeControls": {
+      "execution": {
+        "command": [
+          "python3",
+          "artifacts/story117-git-qualification-20261016/verify-controls.py"
+        ],
+        "cwd": "/home/administrator/projects/hexalith/folders",
+        "startedAtUtc": "2026-10-16T15:33:49.924500+00:00",
+        "finishedAtUtc": "2026-10-16T15:33:50.473841+00:00",
+        "exitCode": 0,
+        "log": "evidence-verification-controls.log",
+        "sha256": "bfb0f50357281bac7864418b7da68e89c174d331a038cc7d44b27f595ea048eb"
+      },
+      "stdout": "archive-hash: expected refusal, exit 1\nci-revision: expected refusal, exit 1\nrelease-admission: expected refusal, exit 1\nAll three altered-receipt controls refused as expected.\n"
+    }
+  }
+}

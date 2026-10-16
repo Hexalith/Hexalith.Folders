@@ -1,0 +1,737 @@
+{
+  "archive": "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.tar.gz",
+  "archive_sha256": "d64c7f23e3fa8f2c78c9b7604a1e100c57823b8cc491c94e9f7c8e88f83bf14b",
+  "members": [
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/.before.patch",
+      "sha256": "b224d5ab2a0350df316c58622823c5f075b6a799af1e8fc736f67877b5008569",
+      "size_bytes": 13265
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Builds.before.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Builds.prepared.patch",
+      "sha256": "92bc08098b775b4a484f1ae812359a76748798fdd03ed61c9521d4efd3e6a186",
+      "size_bytes": 611786
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Platform.before.patch",
+      "sha256": "474ee023f126500ba8072d77e28f22bd1a8aa4503665b4f8998bf5fdfeeadbe1",
+      "size_bytes": 31703
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/Hexalith.Platform.prepared.patch",
+      "sha256": "55643f3926dbd3ff9a30d051ec6c5657b982d4f8312dab89c41c88e589862c7b",
+      "size_bytes": 75633
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/actual-package-admission-stdout.command.json",
+      "sha256": "6249eefe6caa7fe953456d4295f9252b91060bd293858d88d4a613b715b5a714",
+      "size_bytes": 716
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/actual-package-admission-stdout.log",
+      "sha256": "279bc455bb5a3ec40f532ab1f1fb8525ccd6d73e0d988f42cf3b37976c5aaccc",
+      "size_bytes": 2281
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/actual-package-admission.command.json",
+      "sha256": "279b7076fafa218730b3b1788a72add2b27cfb9f901f49657e528bc49d5ec17e",
+      "size_bytes": 861
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/actual-package-admission.log",
+      "sha256": "25955e47c266d05b0e870b4e86eceb76d637209e686811d6448bfb255260571d",
+      "size_bytes": 2549
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/after-start.command.json",
+      "sha256": "6b2a38c1b972ae5c054e80e5458dda08f14383662cb52a7e205f8424ded502c2",
+      "size_bytes": 564
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/after-start.log",
+      "sha256": "4a172c217aec696295d694e3c184d94ebd06111b907fedf0d9a3e9fbafed7c9d",
+      "size_bytes": 4827
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/audit-refresh.command.json",
+      "sha256": "35babb9db61e52e72a6809bf98f97bdda3a51cce2bb89e62ff121f3eab8cfc95",
+      "size_bytes": 828
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/audit-refresh.log",
+      "sha256": "4479b4c638a03da0825c5e453b81b4c8d9976c854c0ad4d4328d8899e33eafc7",
+      "size_bytes": 243
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/audit-semantic-delta.json",
+      "sha256": "a8e84e59503c44ee4e3e799791af06e88291e53b4b2f1f444d860e669be312cc",
+      "size_bytes": 2451
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/baseline-start.command.json",
+      "sha256": "126e15de76c2850ab7de7ec03a00bca39fc3886690e18166bd6a1196f318fcef",
+      "size_bytes": 597
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/baseline-start.log",
+      "sha256": "475a934625e5a659e72bb2c2ec272a0694a4267e46f2d4966ebf6ac0d1540d48",
+      "size_bytes": 4786
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-audit-validation-refreshed.command.json",
+      "sha256": "c866798f69fc40db3a0eb6b5a35057cdd587f9aaa295968768453d59e9b70847",
+      "size_bytes": 534
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-audit-validation-refreshed.log",
+      "sha256": "1904d98a73749adf6a09969abd76ded90fb0f8b1e117ec10807bc740e1c5a2f2",
+      "size_bytes": 89
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-audit-validation.command.json",
+      "sha256": "8d003b87fa6f973284675356e511883ceae09ff3c82f1a81c5247bc73616e337",
+      "size_bytes": 514
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-audit-validation.log",
+      "sha256": "fb32be4c9b5e3164597a34895b5866a797b286eb106a48f6a77d91b492a98bf7",
+      "size_bytes": 2218
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-ci-failed-jobs.command.json",
+      "sha256": "7dcee0c13bfa6bedf4d3844bd02150edb90720452f3688e116b2e911accfddc2",
+      "size_bytes": 618
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-ci-failed-jobs.log",
+      "sha256": "4742c458b77c2348cdff4ef411e6c68be4847c1b74fbe3f21bd47468e1362c0f",
+      "size_bytes": 327
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-current-ci.command.json",
+      "sha256": "b6119f4ce1635aa4529d3b4de849164f99dc00b6862865bec1237d4b08a32c9e",
+      "size_bytes": 626
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-current-ci.log",
+      "sha256": "eb0bec366752ce991a278b44d85ae24a77ac1a28d0b6af8fd9dfce7b7f8713b5",
+      "size_bytes": 406
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-diff-check.command.json",
+      "sha256": "321fe97e0dfe4b86fd9add74261a136eb981bf1439c0eda24cfa6b6fb15aa8c5",
+      "size_bytes": 492
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-inventory-bytes.command.json",
+      "sha256": "1a7c548cd285e5f5c2ef0b811cfe3f3f1f4a03a16a0777ae6c4940d02c4b2f67",
+      "size_bytes": 531
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-inventory-bytes.log",
+      "sha256": "88a3f39dfe4b9e93074bf37b2c2cfce649022143e87141ae16ae5ddb40c1fb13",
+      "size_bytes": 72853
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-latest.command.json",
+      "sha256": "43917816b568b0b0645af6c65edaa3eed24cad04c85a736945f9cacd3984d248",
+      "size_bytes": 567
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-latest.log",
+      "sha256": "2e0646741698425f3ceb1ba073087e2eef343c37093b5f40f58562e265ba08bb",
+      "size_bytes": 349
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-main.command.json",
+      "sha256": "4e19cd273aa2aed038e54252754c4a29b6a3990304f62ac91b8ccca7f3c7af01",
+      "size_bytes": 499
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-main.log",
+      "sha256": "8ddc12e26208d3278f0152a58ef9b17d18c029a2076ab05a2934d005a7af5111",
+      "size_bytes": 81
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-pinned-catalog.command.json",
+      "sha256": "039d23be33ec3ff07260049e033daaee1d879e401fec5b6ffe56050d7cb4070d",
+      "size_bytes": 585
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-pinned-catalog.log",
+      "sha256": "74abf3da3d8cc888bbec92a05eaa256ec4674c2438cc3f912244af2ea7369a81",
+      "size_bytes": 246
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-release-tag.command.json",
+      "sha256": "b97bc8c98ab2434ece774a8c1153ad590b6090ffe9326e19855d089757af7ade",
+      "size_bytes": 468
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-release-tag.log",
+      "sha256": "7e14a00f448b9e091e397d3081521a7b8ace140d7ec0de03c1a594e468f8dd21",
+      "size_bytes": 353
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-release-to-main.command.json",
+      "sha256": "5e2846dfec912614d46500b3f937b5bc2fa19a4ca18ed86fce118fa609b64b75",
+      "size_bytes": 615
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-release-to-main.log",
+      "sha256": "a2fc765162795e33905f184bbdc45e9e4b53dd4229169c71565d530b1af99ab3",
+      "size_bytes": 1095
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-tool-inventory.command.json",
+      "sha256": "23224f1d0437e9a4063e688c26d51efe5b98a482b64609c18f3e59df8cbf1b18",
+      "size_bytes": 539
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/builds-tool-inventory.log",
+      "sha256": "f50b948d8b1247d915b61c46c037c1749757acba2ffbef5e0480648d56b6fa92",
+      "size_bytes": 256
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-release-declaration.command.json",
+      "sha256": "5506c11a634558862532e137488e96d6f5af48df76f5b99c02f92b61b01cf7b8",
+      "size_bytes": 616
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-release-declaration.log",
+      "sha256": "0eddaf148b3ca37a24a6ff1ad85b2e766ee33095a891d80a792dd4e619773c40",
+      "size_bytes": 21571
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-release.command.json",
+      "sha256": "2a238ad4e9610f4b02da38649b608184486821e1aad5d99ebdd2889bff1d3868",
+      "size_bytes": 567
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-release.log",
+      "sha256": "f5fab2495ff2efcf4aa2e33d226d083d430ba22a12240268f5c522d41724c858",
+      "size_bytes": 2057
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-tag.command.json",
+      "sha256": "55aebee5dec66c9ad99f4985f704fac2943e2121f746a982b6ee1669df651e3e",
+      "size_bytes": 465
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/eventstore-tag.log",
+      "sha256": "276ab68ae37c05474b2f85fdaad01bf41bd7fbaa25ba4767a28b859682f5ca79",
+      "size_bytes": 364
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/evidence-attributes.command.json",
+      "sha256": "ed0973a097c5509fc579a523335d2db84e06ceb92022e2af1b0a02d5475a6125",
+      "size_bytes": 772
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/evidence-attributes.log",
+      "sha256": "831e8df16cf43782909ff7ea3997482a72b8d46ab9c3dfc2e21ea1e7ad46c4b1",
+      "size_bytes": 349
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/executable-tool-range-replay.command.json",
+      "sha256": "8be98a40607513786a57d74a76e50bdf430a799d64188d305f4c6a0b481b81f6",
+      "size_bytes": 653
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/executable-tool-range-replay.log",
+      "sha256": "f0e23446b13f719c53de094e902398f4a6c8109b607bfc09888f419e9e1f6ba3",
+      "size_bytes": 383
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-build-supported.command.json",
+      "sha256": "3e565e0ea5007f42aa0240d66b354c8f058a34f16f7286930e926dd7205baece",
+      "size_bytes": 576
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-build-supported.log",
+      "sha256": "669b25af6b6c3b39ff0f84a2ca5143c11dd712dfa816294dc08095b3c0c25cbd",
+      "size_bytes": 1229
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-build.command.json",
+      "sha256": "ab6e765ca936510d086a1726993143a5442beb8a8f957409514fcf3c3050a273",
+      "size_bytes": 551
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-build.log",
+      "sha256": "5447aeca3612818c2edf59694daf75d18571493df9b3b9968e58046c810a46e8",
+      "size_bytes": 687
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-refusal.command.json",
+      "sha256": "29c63eb6446ac16621dbf75f1e79923378cc346e3e250458dc78728e921c6436",
+      "size_bytes": 611
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-apphost-refusal.log",
+      "sha256": "6e759a2368a0c7225a5814875f3186bf366f41f1d6c12b092c7a87faae7bdae2",
+      "size_bytes": 4827
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-builds-diff-check.command.json",
+      "sha256": "83b337b3259c940302573da677cfc9e94dd692c27f597c72c890fe22e083c9af",
+      "size_bytes": 504
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-builds-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-builds-resolution.command.json",
+      "sha256": "4a79daa97b84c8bde2b2cb74ad49a63288bce1aa6538c89d627bfd04eadd3774",
+      "size_bytes": 561
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-builds-resolution.log",
+      "sha256": "0e1035fd03e5c8c5581c6fe43a0583dfaf9db04f4154348445dbb0b84c167ae6",
+      "size_bytes": 2255
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-composition-test-build.command.json",
+      "sha256": "9a2e48745799d84f278b4d2e214f096a1aefd76717f374e4f5150faeb66d9391",
+      "size_bytes": 609
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-composition-test-build.log",
+      "sha256": "1e9422a3ca991cf1abb22107e9a17c9579534b510daeef99f5efeb8017289f0a",
+      "size_bytes": 3512
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-folders-diff-check.command.json",
+      "sha256": "3c067e0ac1c98b1bf34e7596a2de0abb594aec26f7a8630aa7300f55b623303f",
+      "size_bytes": 481
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-folders-diff-check.log",
+      "sha256": "35a4af14462ea13a24373518f6a3ae1ccc9101414761cf0667e035523807a91a",
+      "size_bytes": 295
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-mapping-seed-writer.command.json",
+      "sha256": "f44a6ad4884b7b8b881b9d11419ec333c532becdcf8b47d33acc53f335e71154",
+      "size_bytes": 750
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-mapping-seed-writer.log",
+      "sha256": "2045854957833a7112aa76b2b5d6945c9c474ddce1e5d473136d872e73eb4ccc",
+      "size_bytes": 30551
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-pin-guard.command.json",
+      "sha256": "9c704b51aeb0cb258651221037c557ee6a7156fda06c20c9ebe5ed93790da5c5",
+      "size_bytes": 482
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-pin-guard.log",
+      "sha256": "50818282c9dbedaa22ef94c2b71de68c7e4ff83fdecfcd984f774605b76acfc7",
+      "size_bytes": 73
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-pin-tests.command.json",
+      "sha256": "ebff460dcf8f8cb7a0e9501b11f9b933b588fd1b3573f9d8126ffca1b2f4b861",
+      "size_bytes": 543
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-pin-tests.log",
+      "sha256": "bddd7c7f7d391b79316d468920f58553eb3d5b0045bd84f9a6f5b9ab81b7fc9c",
+      "size_bytes": 1643
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-platform-diff-check.command.json",
+      "sha256": "b9ba1c1eedc3291cbde489e07c058c02ab56b9d6d5d59f9d82e4871978ec3159",
+      "size_bytes": 510
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-platform-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-preservation-proof.json",
+      "sha256": "7ee3576013c654b4135c9e9bd7c6effc4315a3297e752ae484cce6e8036aa58e",
+      "size_bytes": 380
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-selected-host-state.command.json",
+      "sha256": "a8009a1e79b6f065db8a53251dcfc56d8ea1bb659bc7bfea63b81d62b5a1a643",
+      "size_bytes": 597
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/final-selected-host-state.log",
+      "sha256": "c201ac93af41c559317f5ea3e9fb147acbe4340019661c15b8e235763bd0ee2c",
+      "size_bytes": 93
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-build-configureawait-first-failure.log",
+      "sha256": "6ce30493b3e8d8eaa3b6bdd9f39f8a6c36af7d6d5f2f23a3482d90cf965a2f14",
+      "size_bytes": 9902
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-build-style-first-failure.log",
+      "sha256": "6ca872b95d1688eea8519537dbbac22464a5b219bd01c8ad16e391802a102ce0",
+      "size_bytes": 10776
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-build-style-second-failure.log",
+      "sha256": "0c9bcc3654ee90a26a9082031b653ede27641148e6d92cdb93b6dd9c929c6b29",
+      "size_bytes": 3938
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-apphost-validation-tests.log",
+      "sha256": "68737544f4f5300d08225eef094dde71fa5998d7a56c80abaeb8f870e8ddf0b0",
+      "size_bytes": 454
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-contract-build-pack-prerequisite.log",
+      "sha256": "710f7e54586b26f93a36b084d3749ae21f60cbcc50103048e85498e9f67237db",
+      "size_bytes": 4844
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-contract-build.log",
+      "sha256": "61d6c437c8f1f48a8a587d013242bd9292531e1f995253f54681960da50f5bd8",
+      "size_bytes": 3280
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-builds-contract-tests.log",
+      "sha256": "b725545fc1be299a016a417b24e8e165c99a71a3c11d9a1b3ba243af1d6ec459",
+      "size_bytes": 2247
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-mapping-tests-first-failure.log",
+      "sha256": "4ede29d5fa2954d2729df3f3b69553d194bf13d27b6cb347df2f397e63c6f39b",
+      "size_bytes": 1338
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-mapping-tests.log",
+      "sha256": "5ff5ebe8093216acb9b69476d5cac8a720c119d28af6a1c05477e25b48e3ad4d",
+      "size_bytes": 489
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-platform-build.log",
+      "sha256": "fb0f32abfd48ef27d4a2c78acacfdb0820c926462dd211fb3b4d4f87ab1a76a7",
+      "size_bytes": 3512
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-seed-writer-tests.log",
+      "sha256": "d0a7780e58418d8c0b4693403a6fdce4aad56a6ab278913bbe2a3225049f1fe0",
+      "size_bytes": 30622
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/implementation-verification.json",
+      "sha256": "21952647d57f9e7b55c0d3b6307be7ad72a1583084e3f8ec2e3ff7c5eec172dc",
+      "size_bytes": 5629
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/infrastructure-queries.json",
+      "sha256": "117a3ede2ad6b86c9a4879db783666a56a36a0bfa6c9f4b04c8eb83ddc5c2fca",
+      "size_bytes": 3302
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/intake-attributes.command.json",
+      "sha256": "6ce13ecba18b8f2786380d32eea8acff12bcbc133ea20cd60502fd3c9c98273d",
+      "size_bytes": 540
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/intake-attributes.log",
+      "sha256": "941cba68bef5901447e7f9d377b95f297fdddd2ca3553cde8cf77dad66216c91",
+      "size_bytes": 82
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release-declaration.command.json",
+      "sha256": "03dbd5126a7606ca6d2fbf4bbdc13444b733c4001284c0230208708981dfdeba",
+      "size_bytes": 577
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release-declaration.log",
+      "sha256": "e74b878486db1fc673f35c8fe02a4df2515e2e288dffea9bbd1d8404bc1b2630",
+      "size_bytes": 152
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release-tag.command.json",
+      "sha256": "904c978958cef31791c4318f5c8d6f2a2e5d3c8316a291de362c522123276104",
+      "size_bytes": 474
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release-tag.log",
+      "sha256": "b31cf7b096443a080df7746cb64059b262cd45c3b35b92963d84b1b15cd8d352",
+      "size_bytes": 357
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release.command.json",
+      "sha256": "df897c15965c11ec806cc2c575b303a83d3f6773ba80e6b1f0f52470c617ad2c",
+      "size_bytes": 543
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/memories-release.log",
+      "sha256": "aaa2d96b68284fad8fe131c7654679fc7d1ab8affd1c804121c43d5fd27856d7",
+      "size_bytes": 1405
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/nuget-tool-signature.command.json",
+      "sha256": "69f11e17e60638accc1db04dfdb50b06591a7d9037c51949f9e6e4cdfc6f8764",
+      "size_bytes": 551
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/nuget-tool-signature.log",
+      "sha256": "739185cb235474c223dd0504b1f976438b7797fcf65a76221a95bd7b7330739d",
+      "size_bytes": 434
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/owner-declarations.command.json",
+      "sha256": "77149dfeaaff02c8a15937b1d11eda90177cb5d783a8708a94de143a29b7bedd",
+      "size_bytes": 853
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/owner-declarations.log",
+      "sha256": "724d6ace8bd53e2658aa456dc61b065be48a3fe24e71ebb7c93b76c056cd0d53",
+      "size_bytes": 120
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-compare.command.json",
+      "sha256": "7094909c3ee2783813638edaa8a42d5b54b6291919f6bd814dde9f664f09ab75",
+      "size_bytes": 605
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-compare.log",
+      "sha256": "a7c511a87211a38278122a45e28eceaf4a5c0366cedc69fa8f1436ae669b3a26",
+      "size_bytes": 1309
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-diff-check.command.json",
+      "sha256": "5a7b108801cbf5c79ac5a6f690cb72b780b1e544dc9aed484780eabfb7caac49",
+      "size_bytes": 498
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-identity.command.json",
+      "sha256": "c1fca3a221063eab6ce66ba58b60f49b24e63fed37e671135985752aac92fbb9",
+      "size_bytes": 571
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-identity.log",
+      "sha256": "0b75ca37795401a2b781c66902d6c64c79d418994d5d7a2c9a6e0c2fae9af1c5",
+      "size_bytes": 132
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-main.command.json",
+      "sha256": "473dbc905affa4911bbd19d9f306f345e6c789025976fb36425b22778c802309",
+      "size_bytes": 505
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-main.log",
+      "sha256": "87f93c4d7a4783c19231c121fe75c1e21b5223946d1208200f00ac3afb9737aa",
+      "size_bytes": 81
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-releases.command.json",
+      "sha256": "7877c0d6303670fbdecf7c7b7cf7825427555f5ca775b6bda0620b00835c6a75",
+      "size_bytes": 563
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-releases.log",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size_bytes": 3
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-tags.command.json",
+      "sha256": "58c7564789f252c9a8f63b4123b1908d12da4d4a85b2193e2a5e447ec135631a",
+      "size_bytes": 457
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-tags.log",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "size_bytes": 2
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-task-delta.patch",
+      "sha256": "afc55480547dc992b29b9a4cac29eadbbc587f5cd965daa9fba4ab8b1ec43033",
+      "size_bytes": 2578
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-workflows.command.json",
+      "sha256": "59a4e9f50d9bd4d39b2bf67d27666cade3e8b741a083247d7c533ee40ae40b61",
+      "size_bytes": 556
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/platform-workflows.log",
+      "sha256": "a251d32568a7a08232ca3304ee97a5e6548146464133182aabeb86f463b3230b",
+      "size_bytes": 33
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/proposed-audit-validation.command.json",
+      "sha256": "0849785543e381df73913886629e564877537903d2d270407e05cde340fd0ace",
+      "size_bytes": 683
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/proposed-audit-validation.log",
+      "sha256": "1904d98a73749adf6a09969abd76ded90fb0f8b1e117ec10807bc740e1c5a2f2",
+      "size_bytes": 89
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/published-tool.json",
+      "sha256": "17202ca9961f79ded3ed49b6e22b8f2327a67d091fa2a77c80f89582677513e8",
+      "size_bytes": 1103
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-eventstore-referrers.json",
+      "sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "size_bytes": 88
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-eventstore.json",
+      "sha256": "bdd242bf5d54010d2a8340023c5164a6112c8e23bd5d7d390f33c50fecc8bf43",
+      "size_bytes": 493
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-image-identities.json",
+      "sha256": "859ce7aa5a5c9a25e5386df11e7aca6916843f279530a79f16144ba21082ca48",
+      "size_bytes": 4910
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry-clock-referrers.json",
+      "sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "size_bytes": 88
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry-clock.json",
+      "sha256": "ff96594400e13c10767384d231c493f6c056c1e0730d6f3b83c6516815d66cf0",
+      "size_bytes": 1406
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry-referrers.json",
+      "sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "size_bytes": 88
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-access-telemetry.json",
+      "sha256": "ca6d974183ef724171e2ff03156d12ccc24c5bc8fa2eeb91ce6fef1ba49746a6",
+      "size_bytes": 1406
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories-referrers.json",
+      "sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "size_bytes": 88
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-memories.json",
+      "sha256": "2417d95d5e1e6b37ed60b7aa45765c4a09bbd82677213ef27cab825113330733",
+      "size_bytes": 1408
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-queries.json",
+      "sha256": "935620bd031b3370c598e384bbb50d54461db2487c4fee7af7259fec1b34aec4",
+      "size_bytes": 6548
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-tenants-referrers.json",
+      "sha256": "dff9de10919148711140d349bf03f1a99eb06f94b03e51715ccebfa7cdc518e2",
+      "size_bytes": 88
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/registry-tenants.json",
+      "sha256": "c0e017e029053dfa9b095b6431058a7603b371da1f56a89d336001070fc5ffae",
+      "size_bytes": 493
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/release-apphost-test-prerequisite.command.json",
+      "sha256": "817d25fa8e183150bc9b73976b2981fb42349c4e1a37d9cd0a74721d574542f0",
+      "size_bytes": 652
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/release-apphost-test-prerequisite.log",
+      "sha256": "09eaff76de40ef2fe2005189dd701cded2dc40200b33d4b926af71f23778befd",
+      "size_bytes": 1520
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/review-fixes-mapping-isolation.json",
+      "sha256": "73a6fc0cc92f121ef960d7d1ae5a7761c38e0d05a2d4b280e87eceed392f33e5",
+      "size_bytes": 494
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/review-fixes-mapping-tests.log",
+      "sha256": "2b566c5a453db121f068504e693fb3293d5ac5e124792379bd4eb9e41322e48b",
+      "size_bytes": 489
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/review-fixes-msbuild-after.log",
+      "sha256": "b9c40f208750a0e3e0bd3f15aa72b59936726888a342ce062c2a5bac1f838913",
+      "size_bytes": 2255
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/review-fixes-msbuild-before.log",
+      "sha256": "197d23b18b3d9ebd8005930f97116fcb240c68937a96e9a0f659cda73df3c69e",
+      "size_bytes": 9826
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/review-fixes-platform-build.log",
+      "sha256": "9ecdeacfbbcb20b4707d67fd53f6d567c5262a19ed4108a6169c177207d01c75",
+      "size_bytes": 2907
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/review-fixes-verification.json",
+      "sha256": "1c360f59671315f8c14d965751abce60daf6b4685a21bbf0bf8ab159f14f4727",
+      "size_bytes": 2191
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/selected-host-final-state.command.json",
+      "sha256": "d057f3eafa7346f9b50237b17a36a044df5ccbc7d5f9da14c12600811c3ce695",
+      "size_bytes": 454
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/selected-host-final-state.log",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size_bytes": 3
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release-declaration.command.json",
+      "sha256": "899a050e92d2465868932e19586ce92a46d0b5815994ec8747d76defe64f7013",
+      "size_bytes": 573
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release-declaration.log",
+      "sha256": "e74b878486db1fc673f35c8fe02a4df2515e2e288dffea9bbd1d8404bc1b2630",
+      "size_bytes": 152
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release-tag.command.json",
+      "sha256": "0a60cfd8ef51ba38893502251402110baa07d2228f80edc04dc7dbe97cf498af",
+      "size_bytes": 470
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release-tag.log",
+      "sha256": "2e971e635edb80e458fdb5750b3feaabee538f95a833329c932282d6f6bd3663",
+      "size_bytes": 351
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release.command.json",
+      "sha256": "4a3695b0c0bce8ba22211b9b9b377a7183fe0be4e14d7f474bca6f7ec52f4882",
+      "size_bytes": 539
+    },
+    {
+      "path": "nupkgs/artifacts/story-1-17-platform-admission-2026-10-16/tenants-release.log",
+      "sha256": "ff96d0a1b841bbeea2de7b853de0f928c3e0d8617484c0bcfa68219c14a7cd9d",
+      "size_bytes": 725
+    }
+  ],
+  "limits": "Diagnostic/source preparation only. Public NuGet archive remains retrievable by recorded URL and SHA-256; no release identity or artifact acceptance is conferred."
+}
