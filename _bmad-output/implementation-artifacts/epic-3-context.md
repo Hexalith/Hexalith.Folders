@@ -4,7 +4,7 @@
 
 ## Goal
 
-Tenant administrators can establish tenant-scoped Git provider policy, authorized actors can create or bind repository-backed folders through GitHub or Forgejo, and operators can prove readiness without gaining configuration authority or exposing protected data. This prevents avoidable provider failures before workspace work begins and gives later task lifecycles a provider-neutral, deterministic repository binding.
+Tenant administrators establish tenant-scoped Git provider policy; authorized actors create or bind repository-backed folders; operators inspect readiness without gaining configuration authority or exposing protected data. Durable asynchronous completion turns provider requests into inspectable binding outcomes that later workspace tasks can trust.
 
 ## Stories
 
@@ -25,35 +25,32 @@ Tenant administrators can establish tenant-scoped Git provider policy, authorize
 
 ## Requirements & Constraints
 
-- Tenant administrators own provider bindings, opaque credential references, repository naming/default-ref policy, and required capability policy. Scoped operators may validate and diagnose readiness but cannot change tenant policy.
-- Check fresh authorization before credential resolution, protected-target observation, or provider mutation. Wrong-tenant, stale, revoked, and unauthorized requests fail closed without confirming repository or binding existence.
-- Readiness validates configuration, credential-reference availability and least privilege, provider/version compatibility, required capabilities, provisioning support, and branch/ref policy. It exposes safe reason, retryability, remediation category, provider reference, correlation ID, and supported/unsupported/unknown evidence; unknown or incompatible evidence is never ready.
-- Creation and existing-repository binding are distinct. Binding also checks access, canonical identity and aliases, duplicates, and exact branch/ref compatibility. Accepted policy becomes part of readiness, binding, and the serializing target; rejection leaves policy and binding unchanged and causes no provider side effect.
-- Provider work is asynchronous after prompt acknowledgement. Persist one inspectable lifecycle and terminal task/binding result, and survive restart without duplicating effects. Every mutation is idempotent: equivalent replay returns the same logical result, conflicting replay is rejected without prior-intent disclosure, and expired keys never execute as fresh work.
-- Map known provider failures to stable product categories and retry guidance. An unconfirmed effect enters `unknown_provider_outcome`; only bounded read-only checks—at most five in 15 minutes—may run before unresolved or conflicting evidence becomes `reconciliation_required`. Never retry a mutation blindly.
-- Events, checkpoints, projections, audit, telemetry, diagnostics, and errors are metadata-only. Exclude bodies, diffs, tokens, credential values, provider responses, protected repository/ref locators, and unauthorized existence.
-- Completion requires production registration and real-adapter evidence for success, denial, conflict, failure, timeout/ambiguity, cancellation, tenant isolation, and relevant boundaries. Fakes, NoOp adapters, seeds, unavailable responses, and safe-empty evidence are insufficient.
+- Tenant administrators own provider bindings, opaque credential references, naming/default-ref policy, accepted credential profiles, and required capabilities. Scoped validation and diagnostic permissions confer no configuration authority.
+- Recheck authorization immediately before asynchronous side effects, before credential resolution or protected observation. Wrong-tenant, stale, revoked, hidden, and absent-target requests use the non-enumerating safe result.
+- Readiness checks configuration, credential-reference availability and permission, provider/version support, provisioning capability, and branch/ref policy. Unsupported, unknown, stale, or unavailable required evidence cannot be ready. Return safe reason, retryability, remediation, correlation identity, and capability evidence.
+- Creation and existing-repository binding are separate authorized flows for an existing logical folder. Binding checks access, canonical identity and aliases, duplicates, and exact ref compatibility. A matching repository proves creation only with evidence tying it to the originating operation; otherwise it requires the separately authorized binding flow.
+- Acknowledge commands within 1 second p95, then persist asynchronous lifecycle, checkpoints, and one terminal task/binding result. Equivalent replay cannot duplicate effects; conflicting replay is rejected safely; expired idempotency keys never execute as fresh work.
+- Unconfirmed provider effects enter `unknown_provider_outcome`. Start bounded read-only reconciliation immediately: at most five checks within 15 minutes, then `reconciliation_required` for unresolved or conflicting evidence. Never blindly repeat a mutation; confirmed absence permits a fresh authorized attempt with a new key.
+- Events, checkpoints, projections, audit, telemetry, errors, and diagnostics contain approved metadata only. Exclude content, diffs, credentials, provider response bodies, raw protected repository/ref locators, and unauthorized existence.
+- Outer lifecycle completion requires deployed durable success, restart replay from an empty checkpoint, and negative, tenant-isolation, cancellation, and boundary evidence. Adapter registration and hermetic real-transport evidence establish adapter behavior only; fakes, seeds, NoOp, unavailable, and safe-empty results cannot establish lifecycle completion.
 
 ## Technical Decisions
 
-- Use a capability-discoverable `IGitProvider` port that supports N providers. GitHub and Forgejo remain separate adapters; provider authentication, DTOs, and failure shapes stay behind the port.
-- GitHub uses Octokit inside its adapter. Forgejo uses a version-aware typed HTTP adapter backed by pinned per-version OpenAPI snapshots and a supported-version manifest. Hermetic contract checks gate changes, while scheduled schema-drift checks classify compatible additions separately from breaking drift.
-- Keep aggregates pure: provider policy belongs to organization state; binding and folder lifecycle belong to folder state; workers/process managers own external provisioning, retry, reconciliation, and follow-up commands. Provider adapters execute mechanics but do not persist domain state or orchestrate workflows.
-- Persist durable admission, checkpoints, fencing, and sanitized outcomes around external work. Provider state remains authoritative at GitHub or Forgejo; Folders stores only provider-neutral state and evidence needed for replay and projections.
-- Canonical repository identity plus normalized target ref determines equivalence, aliases, and conflicts. A remote repository/ref is bound by at most one managed tenant; cross-tenant attempts use the safe non-enumerating denial.
-- Follow the versioned Contract Spine and RFC 9457 error contract. Capability semantics, outcomes, correlation/task identity, idempotency, authorization, and audit behavior remain equivalent across REST, SDK, CLI, and MCP.
-- No provider webhook ingestion is part of the MVP. External Git work is driven by durable domain events and process managers rather than side effects in aggregate handlers.
+- Use an N-provider capability-discoverable `IGitProvider` port. Keep GitHub authentication/Octokit and Forgejo version-aware HTTP contracts private to separate adapters. Forgejo support uses pinned version snapshots, a supported-version manifest, hermetic contract gates, and scheduled drift classification.
+- Keep aggregates pure: organization state owns provider policy; folder state owns binding/lifecycle; durable workers/process managers own provisioning, retries, reconciliation, and follow-up commands. Adapters execute provider mechanics without persisting or orchestrating domain decisions.
+- Persist provider-neutral admission, checkpoints, fencing, and sanitized outcomes. GitHub/Forgejo remain authoritative for remote state. Serialization uses managed tenant + canonical provider/repository identity + normalized target-ref token; aliases collide. A remote repository/ref is bound by at most one managed tenant; cross-tenant conflicts remain non-enumerating.
+- Preserve Contract Spine/RFC 9457 outcomes and authorization, idempotency, correlation, task, and audit parity across supported surfaces. The v2 candidate is governed by Story 1.17; historical v1 evidence cannot authorize v2 exposure. No provider webhook ingestion belongs to MVP.
 
 ## UX & Interaction Patterns
 
-- Provider evidence is read-only and projection-driven. Lead with tenant scope, authorization posture, provider/binding identity, readiness, reason, and freshness, then show each required capability as supported, unsupported, or unknown.
-- Show safe provider/API profile, credential profile, remediation posture, retryability, and correlation reference. Never reveal credentials, tokens, protected locators, or unauthorized existence.
-- Keep failed, unavailable, stale, unknown, missing, redacted, withheld, and inaccessible states distinct. Use text, icons, and accessible labels, never color alone; unavailability is not an empty result.
-- The MVP console offers search/filtering and safe copy for identifiers only. It provides no provider configuration, repository mutation, credential reveal, retry, repair, or reconciliation controls.
+- Read-only, projection-driven evidence leads with tenant scope, authorization posture, readiness, safe reason, and freshness. Show required capabilities as supported, unsupported, or unknown, with safe retry/remediation and correlation references.
+- Distinguish unavailable/stale evidence from field disclosure: visible, redacted, withheld, unknown, and missing have separate text and accessible non-color cues. During bounded reconciliation show progress and remaining budget; human escalation begins at `reconciliation_required`.
+- The console offers scoped search/filtering and safe identifier copying; it exposes no configuration, credential reveal, mutation, retry, repair, or reconciliation controls.
 
 ## Cross-Story Dependencies
 
-- Provider configuration and the neutral port enable provider discovery; readiness and branch/ref policy then gate creation and binding. GitHub and Forgejo adapters supply the mechanics consumed by asynchronous completion and later workspace orchestration.
-- Epic 1 supplies the Contract Spine and parity rules; Epic 2 supplies folders and authorization; Epic 4 consumes ready bindings; Epic 6 presents provider evidence without redefining it.
-- Story 3.14 runs after accepted GitHub and Forgejo provisioning/binding behavior and Epic 12's durable admission, checkpoints, process-manager execution, reconciliation, and terminal projections. Epic 12 consumes rather than reimplements the adapters.
-- Epic 13 supplies endpoint validation, credential handling, call-budget controls, and production hardening for readiness and later provider calls.
+- Configuration and provider-neutral contracts enable discovery; readiness/ref policy gate creation and binding. Epic 2 supplies folder authorization, Epic 4 consumes ready bindings, Epic 6 presents evidence, and Epic 13 supplies provider-security hardening.
+- Story 3.14 has accepted-terminal adapter prerequisites 3.10 and 3.12, plus Stories 12.1, 12.2, and 12.4. Story 12.4 also depends on 12.3 and 12.7. Adapters are consumed, not reimplemented. Execution rank 31 must remain later than unresolved prerequisites.
+- Current execution authority is the planning-story manifest; sprint status tracks lifecycle only. Story 3.14 remains `backlog`/`held` with open delivery evidence. The general hold was removed and A6b/A8 accepted, but ordinary-story execution is not generally authorized. The epics definition governs; the two frozen 3.14 specifications are historical workflow snapshots.
+- Story 12.1 has completed source verification recorded on 2026-10-15, while its manifest acceptance remains open; this does not prove deployed durability. Story 1.17 remains open, v2 exposure unauthorized, and the accepted 2026-10-17 qualification refresh leaves Platform qualification outstanding.
+- The accepted 2026-10-06 correction assigns canonical lock identity/timing to 4.23 and shared deployed proof to 11.15 for 4.18–4.21; it adds no direct 3.14 prerequisite and does not close its existing dependencies.
