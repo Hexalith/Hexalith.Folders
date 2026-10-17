@@ -6,6 +6,9 @@ using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Queries;
+using Hexalith.EventStore.Client.Discovery;
+using Hexalith.Folders.Contracts;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -87,6 +90,18 @@ public static class FoldersDomainServiceEndpoints
     public static IEndpointRouteBuilder MapFoldersDomainServiceEndpoints(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
+
+        endpoints.MapPost("/query", async (QueryEnvelope query, IServiceProvider services, CancellationToken token) =>
+        {
+            QueryResult result = await DomainQueryDispatcher.ExecuteAsync(services, query, token).ConfigureAwait(false);
+            return result.Success ? Results.Ok(result) : result.ErrorMessage is QueryAdapterFailureReason.InvalidEnvelope or QueryAdapterFailureReason.InvalidCursor
+                ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
+        }).RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
+            EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceQuery));
+        endpoints.MapPost("/admin/operational-index-metadata", (AdminOperationalIndexMetadata.Request request, DiscoveryResult discovery, IEnumerable<IDomainQueryHandler> handlers) =>
+            Results.Ok(AdminOperationalIndexMetadata.Create(discovery, request.Domains, handlers)))
+            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
+                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceMetadata));
 
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,
