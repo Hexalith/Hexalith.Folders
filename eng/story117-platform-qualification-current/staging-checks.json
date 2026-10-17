@@ -1,0 +1,332 @@
+{
+    "schema": "story117-platform-qualification-current.staging.v1",
+    "status": "proposed-inert",
+    "qualification": "HOLD",
+    "productionControl": {
+        "routeMode": "V1Only",
+        "T0": null,
+        "activationAuthority": null
+    },
+    "executionScope": "staging-only-external-execution",
+    "evidencePolicy": "Every check is unexecuted. Future execution belongs to qualified Platform owners and external signed records; this packet accepts no operational results.",
+    "checks": [
+        {
+            "id": "artifact-provenance",
+            "order": 1,
+            "owner": "Platform publication owner with Builds and module owners",
+            "maxDurationSeconds": 1200,
+            "preconditions": [
+                "Separately authorized owners have supplied the exact release tuple and acceptance prerequisites; no preceding check or execution authority is assumed."
+            ],
+            "procedure": [
+                "Resolve immutable Folders Server/Workers/UI and Projects artifacts plus exact Client/Contracts content identities, composed EventStore extensions, retained application package, catalog, check-suite and profile digests.",
+                "Verify protected-ref source, signer workflow/digest, Build Config URI and pinned workflow closure. Distinguish published Builds 4.32.0 source/catalog (EventStore 3.123.0) from the current local catalog (3.124.0); refuse substituted inputs. Obtain Platform Story 1.8 qualification, Story 1.9 accepted tool pin/range, coherent Builds gitlink and completed module intake."
+            ],
+            "requiredEvidence": [
+                "Signed release record and image/package attestations binding full canonical source revisions, content digests and exact successful CI; source snapshots alone are insufficient.",
+                "Intake manifest for every dependency, composed host release-availability evidence, retained package/image identities and off-site retention references; package Release jobs never stand in for deployment records."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "first-install-baseline-selection",
+            "order": 2,
+            "owner": "Platform deployment owner with Administrator",
+            "maxDurationSeconds": 600,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Reconfirm exact target and whether any working baseline or retained application data exists; current single-context absence is insufficient for global absence.",
+                "If no production working baseline exists, select the Platform fresh-install-plus-candidate staging branch. A discovered existing installation returns to the original migration branch; retained data requires compatible rehearsal or separately named restore."
+            ],
+            "requiredEvidence": [
+                "Scoped observation time/target identity and data inventory, plus Administrator-owned first-install scope disposition.",
+                "Explicit selected branch and baseline/data disposition; no invented prior v1 deployment, ordinary traffic or periodic-call schedule."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "platform-profile-and-isolation",
+            "order": 3,
+            "owner": "Platform environment-layer owner with EventStore and Administrator",
+            "maxDurationSeconds": 1800,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Qualify the common profile, dependency/provider pins, per-environment application/data namespaces, volumes, OpenBao, realm, Gateway, trust domain and enforced default-deny policies.",
+                "Verify keyPrefix=none and shared Server/Workers physical read-model backend; topic override folders.events; isolated inbound broker, retries/dead letters and recoverable backlog; HotReload off and Dapr activation restarts.",
+                "Verify canonical hosting uses Hexalith.EventStore.Aspire, Hexalith.EventStore.ServiceDefaults and CommunityToolkit.Aspire.Hosting.Dapr with Commons supporting primitives only; all file AppHost, runtime, CLI and local control-plane image pins agree with Builds.",
+                "Reconcile logical-role/recovery-class names with actual owner keys and selected server scopes; render receiver deny-default ACLs and explicit caller/path/verb grants before adding resources. Qualify local sidecars, Sentry, placement and scheduler mTLS using localhost/default control-plane bindings and public workload SPIFFE ACL matching.",
+                "Render declarative subscriptions with explicit receiver/route and resolved component/physical topic/dead-letter policy; refuse duplicate identities, disable programmatic discovery while keeping delivery routes, and deliver scoped files to actual CLI resource paths for project, container and signed-plan paths. Local pattern syntax does not qualify provider wildcard support."
+            ],
+            "requiredEvidence": [
+                "Profile/template and binding digests, qualified providers and durable broker evidence, declarative subscriptions, component names/scopes and namespace/volume identities.",
+                "Restricted admission and negative NFR-3 matrix covering staging access to production data, secrets, app ports/sidecars/actors/workflows, duplicate app IDs, PVs, hostnames/certificates, realm admin and automation/record/backup/recovery targets, prior-epoch credentials and restored copies.",
+                "External evidence of actual loaded local mTLS, deny-default ACL denials and explicit grants, scoped components, declarative delivery/dead letters and disabled programmatic discovery on each applicable resource path. Model/fixture assertions are not live enforcement; hosted-policy migration and concurrent-run isolation retain their owning stories."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "attempt-controls",
+            "order": 4,
+            "owner": "Platform with Builds and Administrator",
+            "maxDurationSeconds": 1200,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Resolve the staging attempt owner, CAS lock, monotonic epoch, stop store, scoped executor, sandbox, finite deadlines and signed record writers.",
+                "Cut a usable staging recovery point before serialized staging mutation. Pre-G3 Administrator-approved mode does not waive staging, provenance, locks, verification or records."
+            ],
+            "requiredEvidence": [
+                "External signed staging attempt/recovery-point records with lock/epoch and fencing, artifact/configuration/profile identities and finite evidence age policy.",
+                "Scoped executor/sandbox and expiry/notification proof; failed/incomplete/stale/rerun evidence remains visible. No approval or execution token is placed in this packet."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "readiness",
+            "order": 5,
+            "owner": "Platform staging executor with Folders and dependency owners",
+            "maxDurationSeconds": 600,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none.",
+                "Platform Story 1.8 startup behavior and Story 1.9 tool acceptance/pin/range are externally qualified for the exact release; neither is granted by this offline packet."
+            ],
+            "procedure": [
+                "Run fresh-install-plus-candidate readiness on the qualified staging branch and exact proposed artifacts, including required startup tasks and dependency readiness.",
+                "Check Server and Workers /health/live and /health/ready; qualify UI readiness separately because its current entry point has no shared health endpoint registration. Prove durable auth/read-model readiness rather than accepting default healthy snapshots alone."
+            ],
+            "requiredEvidence": [
+                "Timestamped intended and loaded artifact/configuration/profile identities, per-resource readiness, startup-task outcome, effective finite deadline and duration.",
+                "Dapr/actor, projection/tenant-authority and provider readiness evidence, UI declared probe result, and degraded-but-serving disposition with actual lag; process-running is insufficient."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "authentication-and-authorization-negatives",
+            "order": 6,
+            "owner": "Platform identity owner with EventStore, Folders and Projects",
+            "maxDurationSeconds": 1200,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Qualify real environment OIDC and confidential UI/workload client integration with actor, audience, originating surface and scoped token exchange; resolve Projects missing client auth handler before success cases.",
+                "Test missing/expired/wrong-issuer/wrong-audience tokens, cross-tenant/permission denials, spoofed actor/client attribution, direct app-channel access, bad workload assertion and missing/altered/expired command-bound human receipt.",
+                "Test every client surface directly and through a cross-module hop; agent/service origins never gain UI-only authority. No fixture auth or raw user-token forwarding serves as qualification."
+            ],
+            "requiredEvidence": [
+                "Distinct authentication, authorization and availability outcomes with safe status/category/trace metadata; no tokens, claims dumps, credentials or payload bodies.",
+                "Own-audience validation, app-channel token protection and workload-plus-human-receipt proofs; staging-to-production negative matrix and no identity-administration grants to application clients."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "durable-end-state",
+            "order": 7,
+            "owner": "Folders and EventStore owners with staging executor",
+            "maxDurationSeconds": 1200,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Use staging-only synthetic scoped writes admitted through the composed EventStore host, then verify persisted aggregate state/events and read-model contents.",
+                "Restart serving and worker processes/sidecars and prove state, tenant authority, ACL decisions, idempotency and projection checkpoints persist and converge; exercise retry, sequence-gap/poison capture and ordered recovery."
+            ],
+            "requiredEvidence": [
+                "Authoritative state-store end-state assertions before/after restart and replay, stream/checkpoint/version identities and redacted integrity outcomes, bound to exact serving release.",
+                "Proof Workers writes and Server reads address the same keyPrefix=none backend keys; HTTP 2xx or mock call counts alone do not establish durability."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "projects-lifecycle",
+            "order": 8,
+            "owner": "Projects and Folders owners with staging executor",
+            "maxDurationSeconds": 600,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Exercise GetFolderLifecycleStatusAsync through the deployed Projects adapter in staging Coexistence/V2Only rehearsals; prove accessible, archived, stale and inaccessible states.",
+                "For this read family record raw Folders 401 authentication failure, 404 concealed denial/not-found, and 503 dependency/read-model unavailability separately; Projects maps 401/404 to Denied and 503 to Unavailable, never a fabricated success."
+            ],
+            "requiredEvidence": [
+                "Exact SDK operation/artifact identity and safe HTTP status/category, Projects result and trace linkage for each 401/404/503 case and allowed/archived/stale cases.",
+                "Read-only effects confirmed and no dependency failure reclassified as authorization success."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "projects-permissions",
+            "order": 9,
+            "owner": "Projects and Folders authorization owners",
+            "maxDurationSeconds": 600,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Exercise GetEffectivePermissionsAsync through Projects for current tenant ACL/membership, allowed read/write/admin levels, denied and stale cases.",
+                "For this read family record raw Folders 401 authentication failure, 404 concealed denial/not-found, and 503 dependency/read-model unavailability separately; Projects maps 401/404 to Denied and 503 to Unavailable, never a fabricated success."
+            ],
+            "requiredEvidence": [
+                "Raw 401/404/503 cases kept distinct with Projects Denied/Unavailable mappings, authorization freshness and task/correlation trace linkage.",
+                "Cross-tenant and nonmember concealment without disclosure; durable projection assertions and no mutating Projects v2 callers."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "projects-file-metadata",
+            "order": 10,
+            "owner": "Projects and Folders provider owners",
+            "maxDurationSeconds": 600,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Exercise GetFolderFileMetadataAsync, a read-only POST, with metadata_only/NFC requests and scoped workspace/task identity; cover present, missing, stale and unavailable provider/read-model cases.",
+                "For this read family record raw Folders 401 authentication failure, 404 concealed denial/not-found, and 503 dependency/read-model unavailability separately; Projects maps 401/404 to Denied and 503 to Unavailable, never a fabricated success."
+            ],
+            "requiredEvidence": [
+                "Raw 401/404/503 cases and Projects result mappings; schema/freshness/policy results, safe counts/status/duration/trace metadata and no file contents or provider payloads.",
+                "No repository mutation or external provider effect from any of the three Projects read families."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "consumer-attribution",
+            "order": 11,
+            "owner": "Platform telemetry owner with Projects and Folders",
+            "maxDurationSeconds": 900,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Through the qualified Projects transport prove the authenticated client_id or fallback azp equals Hexalith.Projects and is labelled consumer=projects; test other and unattributed clients and reject spoofed headers.",
+                "Capture api.version, consumer, http.status_code, counts, error rate and latency with trace linkage; qualify exporter/sink/retention for each host. Keep staged synthetic traffic separate from ordinary production traffic."
+            ],
+            "requiredEvidence": [
+                "Exact-release staged metrics/traces across all three read families with projects attribution and separate 401/404/503 outcomes, plus negative attribution results.",
+                "Owner-supplied numeric thresholds and evaluation intervals; production ordinary traffic, deployed-consumer census and every periodic call schedule remain separate missing migration evidence."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "route-restart-and-reversal",
+            "order": 12,
+            "owner": "Delivery and Platform staging executor with Projects and Folders",
+            "maxDurationSeconds": 1200,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Rehearse V1Only, Coexistence and V2Only only in isolated staging, restarting/redeploying for every startup-read route change. Confirm all three read families and v1 retirement behavior.",
+                "When a verified prior Projects v1 artifact exists, ordinary reversal retains v1, restores it, verifies all three v1 reads, then restarts Folders V1Only; incident reversal disables v2 first, restores Projects v1 and verifies. Without it record that migration reversal remains unqualified.",
+                "Time restarts and final V1Only restoration. Reversal never undoes completed writes; retain read-only caller scope. Do not start production T0, extend its seven-day exception or rewrite historical approvals."
+            ],
+            "requiredEvidence": [
+                "Per-step exact artifacts/configuration IDs, route modes, UTC times, counts/status/duration/trace IDs and final restored staging V1Only proof.",
+                "Verified prior v1 artifacts and exact-artifact restoration results when applicable; fresh-install failure-path evidence is explicitly separate from a completed migration rollback."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "retained-data-recovery",
+            "order": 13,
+            "owner": "Administrator and recovery deputy with Platform and module owners",
+            "maxDurationSeconds": 14400,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "For first install without retained application data, prove failed candidate workload removal keeps ingress closed and preserves persistent objects; never invent an automatic old-baseline rollback.",
+                "For retained data, prove baseline compatibility/AD-15 rollback set or name a separately approved data-restore recovery, cut a usable post-lock recovery point, close ingress, quiesce effects and retain data on candidate failure.",
+                "Rehearse isolated restore/quarantine, deletion/hold/revocation and erased-key/tombstone continuity, current admission reconciliation, empty-broker catch-up, external-operation reconciliation and old-credential denial before reopening; unknown provider outcomes never repeat blindly."
+            ],
+            "requiredEvidence": [
+                "Signed branch/data/compatibility disposition, recovery-point cut/release/configuration/profile identities, recovery-hook contract, lock/epoch/fencing and timed workload-removal or recovery results.",
+                "Native/module-approved durable end-state and cross-module integrity results, key custody/lineage, revocation/hold safety and external-effect reconciliation before worker enablement; no production mutation by a drill.",
+                "Prepared capacity, independent access/artifacts/keys, named coverage/deputy proof, measured RPO <=3600s and applicable RTO <=14400s, 1800s backup cadence with 7-day frequent/30-day daily retention; no Folders-only HA/backend/5-minute gate."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        },
+        {
+            "id": "verification-and-records",
+            "order": 14,
+            "owner": "Platform with Builds, Administrator and module owners",
+            "maxDurationSeconds": 600,
+            "preconditions": [
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+            ],
+            "procedure": [
+                "Require every external exact-release staging check and critical-flow mapping for all included modules, including unchanged modules and McpCli; skipped/failed/stale/wrong-release evidence blocks qualification.",
+                "Qualify retained-suite production verification policy separately: five-minute window after readiness, <=10s availability samples, 60s continuous unavailability threshold, repeated smoke failure at 30s and passing latest results at deadline.",
+                "Keep this proposal HOLD until release/provider/hosting evidence and material scope approval exist. Operational qualification is an external signed decision, never an offline verifier success."
+            ],
+            "requiredEvidence": [
+                "Complete exact-artifact flow-to-test matrix, current suite/profile/configuration digests, evidence age policy and all failure/rerun history, owned signed qualification/attempt records and notification proof.",
+                "Production entry remains V1Only with T0 null and no packet activation authority; original migration execution record, owners, schedule/expiry, ordinary attributed traffic and consumer census are not fabricated by first-install evidence."
+            ],
+            "status": "unexecuted",
+            "result": null,
+            "observedEvidence": [],
+            "startedAt": null,
+            "completedAt": null
+        }
+    ]
+}

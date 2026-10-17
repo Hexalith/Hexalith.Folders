@@ -1,0 +1,1432 @@
+{
+    "schema": "hexalith.story117.current-qualification.v1",
+    "recordedAtUtc": "2026-10-17T07:53:24.158130+00:00",
+    "implementationBaseline": "d06799dd70334366dddaee6ace6b9a472f78c93e",
+    "status": "CURRENT_REFRESH_REVIEWED_ACCEPTANCE_SATISFIED_PLATFORM_HOLD",
+    "scope": "Offline Folders proposal and disposable safety tests only; no staging or production operation.",
+    "contextLoaded": [
+        "AGENTS.md",
+        "references/Hexalith.AI.Tools/hexalith-llm-instructions.md"
+    ],
+    "currentSourceSnapshots": {
+        "Folders": {
+            "revision": "d06799dd70334366dddaee6ace6b9a472f78c93e",
+            "scope": "local-checkout",
+            "state": "dirty",
+            "dirtyInputs": [
+                "Pre-existing refresh-spec edit preserved; current packet and evidence are uncommitted preparation."
+            ],
+            "artifactProvenance": null
+        },
+        "Projects": {
+            "revision": "a8059addf27261c0f2bddd23d2b266ebcfa00660",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "Platform": {
+            "revision": "b54dc5f2e8fe070db9a0ca3a72ad495b380d2b5e",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "EventStore": {
+            "revision": "77d9af18a54d92506e310fe5a45021a395e66f60",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        },
+        "Builds": {
+            "revision": "4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77",
+            "scope": "local-checkout",
+            "state": "clean",
+            "dirtyInputs": [],
+            "artifactProvenance": null
+        }
+    },
+    "sourceBindingsSha256": {
+        "src/Hexalith.Folders.Server/FoldersApiRouting.cs": "5eaf1a36aaebd3039cba6279bb3d94396b2202801407036d2b3bd5caba0d89ce",
+        "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "5f7a2725ecc97d50001c83453dd568ebb7635024e301be8d0e4557dbde766fc5",
+        "src/Hexalith.Folders.Server/Authentication/FoldersOidcOptions.cs": "af14f6338f85f5741a4d1879691c3c855204779fe9fc33b357dc8e7cb9c66ae2",
+        "src/Hexalith.Folders.Server/Authentication/FoldersAuthenticationServiceCollectionExtensions.cs": "fbd504afe0d7728a9fa371afcb37b949b8c97162b6cda3e3b6f54a1240ca6a4d",
+        "src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs": "441f372f57ebc827220859ef69a043460b02fba380e2705d932c969254727fcb",
+        "src/Hexalith.Folders.Server/FoldersApiRouteTelemetry.cs": "52d5588cd38c2d5ae0c3815fa0226eb4594ddc91475977d86cff6a9534294737",
+        "src/Hexalith.Folders.Workers/FoldersWorkersHostComposition.cs": "e313c3aff1f644bf94117962973d962dd8cca08a7f969fa4f92020f4f78ac3bb",
+        "src/Hexalith.Folders.Workers/FoldersTenantEventSubscriptionOptionsValidator.cs": "74af7e9311da8dc6f881afc5631df3546613e8a4c8cf7adc02b9eecc69b7b3e6",
+        "src/Hexalith.Folders.UI/Configuration/FoldersAuthenticationOptions.cs": "8dc9e92b967189714f7e082e7e14363abf3fd221d9c7dd474b692f5866199473",
+        "src/Hexalith.Folders.UI/CompositionRoot.cs": "0f801450a0f43a610e6ac3f3936d9be573b476000c7940a66e4a079773e5083a",
+        "src/Hexalith.Folders.Client/FoldersClientOptions.cs": "176d153139af1f0ea0943c82cac3f98bd246d54ead96b9708df687e8e9580cb1",
+        "src/Hexalith.Folders.Client/Generated/HexalithFoldersClient.g.cs": "dbc41081169dc3562d91bfa2133f9655b2fa5a68843aa9737197c522e476d2b5",
+        "src/Hexalith.Folders.ServiceDefaults/Extensions.cs": "0b7d96d99283d114b16e245c9412cfb3ba8aa8213ebfdb07fc5de723d37f8944",
+        "src/Hexalith.Folders/Projections/TenantAccess/EventStoreFolderTenantAccessProjectionStore.cs": "33fced4544ad8b3e382c1ab57018bad2927e7a9d08d4fd26da2e2434dad15c11",
+        "src/Hexalith.Folders.AppHost/DaprComponents/statestore.yaml": "011e2a9fdf4c7f1788024dc506934494e715e9f998b935f01fd604540bca7803",
+        "deploy/dapr/production/sidecar-config-bindings.yaml": "7949ab56f5e1b43ee0d847df2a7c55077b44824a5670c92bdc9e11b89a5a5e24",
+        "docs/operations/container-images-and-dapr-app-ids.md": "6fc6869b078e759ec6e79958bb286ed21d78410ede43b2f5853a77fe0f51e9f1",
+        "docs/runbooks/rollback.md": "b127688e1199b0d15f15d66cfd26854ca0ed78d095828646c54d9adbf7747192",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/ProjectsServerServiceCollectionExtensions.cs": "46a3dfc12d83a62051f77a498c517b49f908b1bb0fe57d3a996f3e128392c6af",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFolderDirectory.cs": "dcea1de00934076e26e33b4ac902685ab4dc44eafbb2aafc1a80b084ea6e580b",
+        "references/Hexalith.Projects/src/Hexalith.Projects.Server/Folders/FoldersProjectFileReferenceDirectory.cs": "dc24eb9dedc6452d57c4cab8e432154d1b544ddf9d5b5162c364f11e99108269",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthenticationOptions.cs": "61efa06814289479a55795afc922f2fd15138fd41d05d75c63d005c793050553",
+        "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAssertionIssuerOptions.cs": "6c883a91fbdc652484e3b15430a89486e21bae8aaa54d1ed4277aefe0f06cc60",
+        "references/Hexalith.Builds/Props/Directory.Packages.props": "1a9fcfe7360e4b756db11173ef9bbc4f6dc49dd983c297b7fc27d42bd7f31dcd",
+        "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md": "cc95a53ab85becee18f924cc9a1a915a2a05fcce8caed3a3d46643ee1051e936"
+    },
+    "sourceBindingDeltas": [
+        {
+            "path": "references/Hexalith.Builds/Props/Directory.Packages.props",
+            "historicalPacketSha256": "014821f1432b3a80122f58f14ad21329800929088ccf733139ab01c0eb0aa853",
+            "currentSha256": "1a9fcfe7360e4b756db11173ef9bbc4f6dc49dd983c297b7fc27d42bd7f31dcd"
+        },
+        {
+            "path": "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md",
+            "historicalPacketSha256": "de4a2566048ac5ef59e474d5508b5836a2869cd995a577bf9afda637f8706ca5",
+            "currentSha256": "cc95a53ab85becee18f924cc9a1a915a2a05fcce8caed3a3d46643ee1051e936"
+        }
+    ],
+    "proposalFilesSha256": {
+        "eng/story117-platform-qualification-current/README.md": "30db7e4088bf5a152fee96b1eec35d5c58a349b2dea53de42b36c2fc5711b870",
+        "eng/story117-platform-qualification-current/configuration.proposed.json": "26af4411745c6f4fa287a84d37afa641f12446bfef47d51cd41e2f86165f89f7",
+        "eng/story117-platform-qualification-current/staging-checks.json": "0b7ef78eb7caeaf0c27b510450f476d8b7627d29fc36ccb4fe39567cf321f0de",
+        "eng/story117-platform-qualification-current/test_verify.py": "3d6533a0a15bd44c275f995ce19a7db02417001703e90cf8cd055165ff55c7a6",
+        "eng/story117-platform-qualification-current/verify.py": "d62a33e757c37d80355ad6c48c14ebd9b9dedce2214f7b3ea033336aca7ad95d"
+    },
+    "lineEndingPolicy": {
+        "path": ".gitattributes",
+        "sha256": "bbc14e25919932c006c711d510c056e359edad1a7e42b0118030931f8aa99e9f",
+        "change": "Only additive explicit LF attributes for the new packet and this evidence; all prior rules preserved."
+    },
+    "observedCatalogSelections": {
+        "eventstore": {
+            "appId": "eventstore",
+            "catalogInputPin": "3.124.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithEventStoreVersion",
+            "catalogPackage": "Hexalith.EventStore.Server"
+        },
+        "tenants": {
+            "appId": "tenants",
+            "catalogInputPin": "5.8.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithTenantsVersion",
+            "catalogPackage": "Hexalith.Tenants.Contracts"
+        },
+        "memories": {
+            "appId": "memories",
+            "catalogInputPin": "2.27.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithMemoriesVersion",
+            "catalogPackage": "Hexalith.Memories.Contracts"
+        },
+        "folders-server": {
+            "appId": "folders",
+            "catalogInputPin": "1.2.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithFoldersVersion",
+            "catalogPackage": "Hexalith.Folders.Contracts"
+        },
+        "folders-workers": {
+            "appId": "folders-workers",
+            "catalogInputPin": "1.2.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithFoldersVersion",
+            "catalogPackage": "Hexalith.Folders.Contracts"
+        },
+        "folders-ui": {
+            "appId": "folders-ui",
+            "catalogInputPin": "1.2.1",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithFoldersVersion",
+            "catalogPackage": "Hexalith.Folders.Contracts"
+        },
+        "projects-server": {
+            "appId": "projects",
+            "catalogInputPin": "1.0.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithProjectsVersion",
+            "catalogPackage": "Hexalith.Projects.Contracts"
+        },
+        "frontcomposer": {
+            "appId": null,
+            "catalogInputPin": "4.6.0",
+            "qualifiedArtifact": null,
+            "owner": "Platform intake owner with module owner",
+            "catalogProperty": "HexalithFrontComposerVersion",
+            "catalogPackage": "Hexalith.FrontComposer.Contracts"
+        }
+    },
+    "publishedBuildsObservation": {
+        "receiptPath": "_bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16.json",
+        "receiptSha256": "deeb0cb92fe9356d6f47ab6a996445459df506f398fed95ea2088cdc89c64678",
+        "version": "4.32.0",
+        "sourceRevision": "abdfca89ed82f388b54664825a8a79fed73e7ccf",
+        "signedPackageSha256": {
+            "Hexalith.Builds.Evidence.Cli": "93b34284cdfd1995d8c892a79b58eade34e47392470726ab870e6a72a0d98bf2",
+            "Hexalith.Builds.Module.Cli": "9e9a9daf825b0ec3a7d6dba2f3e4f473c375181509ed870b6f81e795553fc6d5"
+        },
+        "sourceCatalogObservation": {
+            "path": "Props/Directory.Packages.props",
+            "revision": "abdfca89ed82f388b54664825a8a79fed73e7ccf",
+            "sha256": "a0e75c1387d7bf08fb9264fd2de9ef9b16ade4b7643907e8d4c2df7ec3a4135b",
+            "eventStorePin": "3.123.0",
+            "scope": "retained-local-git-object-observation"
+        },
+        "boundary": "The receipt records historical successful Builds publication; its unchanged full verifier must run separately and currently refuses drift in its historical Platform snapshot. The catalog above was read from that release revision in the local Git object store, not from a new artifact attestation. Local EventStore 3.124.0 never replaces published catalog 3.123.0. No accepted tool/range or Platform admission is inferred."
+    },
+    "verificationCommands": [
+        {
+            "command": [
+                "python3",
+                "eng/story117-platform-qualification-current/verify.py"
+            ],
+            "environment": {
+                "PYTHONDONTWRITEBYTECODE": "1"
+            },
+            "exitCode": 0,
+            "stdout": "PASS: packet consistency only; operational qualification remains HOLD; staging checks executed: 0; V1Only; T0 unset; no activation authority.\n",
+            "stderr": "",
+            "classification": "current-workspace"
+        },
+        {
+            "command": [
+                "python3",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "eng/story117-platform-qualification-current",
+                "-p",
+                "test_*.py",
+                "-v"
+            ],
+            "environment": {
+                "PYTHONDONTWRITEBYTECODE": "1"
+            },
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "test_current_binding_refuses_missing_or_changed_sources_in_disposable_copy (test_verify.CurrentSourceBindingTests.test_current_binding_refuses_missing_or_changed_sources_in_disposable_copy) ... ok\ntest_current_proposal_binds_all_25_real_sources (test_verify.CurrentSourceBindingTests.test_current_proposal_binds_all_25_real_sources) ... ok\ntest_ad9_adoption_evidence_or_alternate_hosting_is_refused (test_verify.PacketMutationTests.test_ad9_adoption_evidence_or_alternate_hosting_is_refused) ... ok\ntest_all_checks_require_owners_procedures_evidence_and_finite_duration (test_verify.PacketMutationTests.test_all_checks_require_owners_procedures_evidence_and_finite_duration) ... ok\ntest_authority_and_clock_claims_rejected (test_verify.PacketMutationTests.test_authority_and_clock_claims_rejected) ... ok\ntest_case_restores_packet_and_sources_even_after_failure (test_verify.PacketMutationTests.test_case_restores_packet_and_sources_even_after_failure) ... ok\ntest_catalog_inconsistency_fails_after_matching_fingerprint (test_verify.PacketMutationTests.test_catalog_inconsistency_fails_after_matching_fingerprint) ... ok\ntest_controlled_proposal_passes_and_cli_reports_only_consistency (test_verify.PacketMutationTests.test_controlled_proposal_passes_and_cli_reports_only_consistency) ... ok\ntest_dependency_pins_and_package_bindings_match_observed_catalog (test_verify.PacketMutationTests.test_dependency_pins_and_package_bindings_match_observed_catalog) ... ok\ntest_each_allowlisted_source_change_or_absence_is_refused (test_verify.PacketMutationTests.test_each_allowlisted_source_change_or_absence_is_refused) ... ok\ntest_every_check_refuses_results_or_execution_claims (test_verify.PacketMutationTests.test_every_check_refuses_results_or_execution_claims) ... ok\ntest_execution_approval_or_any_other_argument_is_refused_before_reads (test_verify.PacketMutationTests.test_execution_approval_or_any_other_argument_is_refused_before_reads) ... ok\ntest_first_install_scope_and_baseline_stay_unconfirmed (test_verify.PacketMutationTests.test_first_install_scope_and_baseline_stay_unconfirmed) ... ok\ntest_json_documents_and_nested_fields_have_strict_types (test_verify.PacketMutationTests.test_json_documents_and_nested_fields_have_strict_types) ... ok\ntest_json_rejects_duplicate_keys_nonstandard_numbers_and_bad_encoding (test_verify.PacketMutationTests.test_json_rejects_duplicate_keys_nonstandard_numbers_and_bad_encoding) ... ok\ntest_missing_module_key_preserves_hold_in_cli_failure (test_verify.PacketMutationTests.test_missing_module_key_preserves_hold_in_cli_failure) ... ok\ntest_missing_packet_and_packet_symlinks_are_bounded (test_verify.PacketMutationTests.test_missing_packet_and_packet_symlinks_are_bounded) ... ok\ntest_projects_operations_remain_read_only (test_verify.PacketMutationTests.test_projects_operations_remain_read_only) ... ok\ntest_published_release_cannot_be_substituted_with_local_source (test_verify.PacketMutationTests.test_published_release_cannot_be_substituted_with_local_source) ... ok\ntest_release_platform_and_source_observations_cannot_gain_acceptance (test_verify.PacketMutationTests.test_release_platform_and_source_observations_cannot_gain_acceptance) ... ok\ntest_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) ... ok\ntest_reordered_or_duplicated_checks_are_rejected (test_verify.PacketMutationTests.test_reordered_or_duplicated_checks_are_rejected) ... ok\ntest_route_activation_rejected_in_both_documents_and_module (test_verify.PacketMutationTests.test_route_activation_rejected_in_both_documents_and_module) ... ok\ntest_secret_or_environment_values_are_refused_without_disclosure (test_verify.PacketMutationTests.test_secret_or_environment_values_are_refused_without_disclosure) ... ok\ntest_source_allowlist_cannot_be_removed_extended_or_replaced (test_verify.PacketMutationTests.test_source_allowlist_cannot_be_removed_extended_or_replaced) ... ok\ntest_source_digests_have_strict_types_and_are_checked (test_verify.PacketMutationTests.test_source_digests_have_strict_types_and_are_checked) ... ok\ntest_source_symlink_escape_is_refused_without_target_disclosure (test_verify.PacketMutationTests.test_source_symlink_escape_is_refused_without_target_disclosure) ... ok\ntest_status_and_qualification_cannot_change_in_either_document (test_verify.PacketMutationTests.test_status_and_qualification_cannot_change_in_either_document) ... ok\ntest_unknown_authority_keys_and_fixture_auth_are_rejected (test_verify.PacketMutationTests.test_unknown_authority_keys_and_fixture_auth_are_rejected) ... ok\ntest_verifier_has_no_subprocess_or_network_imports (test_verify.PacketMutationTests.test_verifier_has_no_subprocess_or_network_imports) ... ok\n\n----------------------------------------------------------------------\nRan 30 tests in 1.363s\n\nOK\n",
+            "classification": "current-workspace"
+        },
+        {
+            "command": [
+                "python3",
+                "eng/story117-builds-publication/verify.py"
+            ],
+            "environment": {
+                "PYTHONDONTWRITEBYTECODE": "1"
+            },
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "Publication evidence verification failed: references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml\n",
+            "classification": "current-workspace"
+        },
+        {
+            "command": [
+                "git",
+                "diff",
+                "--check"
+            ],
+            "environment": {
+                "PYTHONDONTWRITEBYTECODE": "1"
+            },
+            "exitCode": 0,
+            "stdout": "",
+            "stderr": "warning: in the working copy of '_bmad-output/implementation-artifacts/spec-1-17-refresh-platform-qualification-proposal.md', CRLF will be replaced by LF the next time Git touches it\n",
+            "classification": "current-workspace"
+        },
+        {
+            "command": [
+                "python3",
+                "eng/story117-platform-qualification/verify.py"
+            ],
+            "environment": {
+                "PYTHONDONTWRITEBYTECODE": "1"
+            },
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "FAIL: packet consistency: source changed: references/Hexalith.Builds/Props/Directory.Packages.props; operational qualification remains HOLD.\n",
+            "classification": "historical-refusal-source-drift"
+        },
+        {
+            "command": [
+                "python3",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "eng/story117-platform-qualification",
+                "-p",
+                "test_*.py",
+                "-v"
+            ],
+            "environment": {
+                "PYTHONDONTWRITEBYTECODE": "1"
+            },
+            "exitCode": 1,
+            "stdout": "",
+            "stderr": "test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) ... \n  test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'owner': ' '}) ... FAIL\n  test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'requiredEvidence': []}) ... FAIL\n  test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'maxDurationSeconds': 0}) ... FAIL\n  test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'maxDurationSeconds': True}) ... FAIL\ntest_changed_source_fingerprint_is_rejected (test_verify.PacketMutationTests.test_changed_source_fingerprint_is_rejected) ... ok\ntest_claimed_production_authority_or_clock_is_rejected (test_verify.PacketMutationTests.test_claimed_production_authority_or_clock_is_rejected) ... ok\ntest_duplicate_json_keys_are_rejected (test_verify.PacketMutationTests.test_duplicate_json_keys_are_rejected) ... ok\ntest_execution_or_approval_arguments_are_rejected (test_verify.PacketMutationTests.test_execution_or_approval_arguments_are_rejected) ... ok\ntest_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) ... \n  test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'result': 'pass'}) ... FAIL\n  test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'status': 'passed', 'result': 'pass', 'observedEvidence': ['invented-run']}) ... FAIL\n  test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'status': 'executed', 'result': 'pass', 'startedAt': '2026-10-16T00:00:00Z', 'completedAt': '2026-10-16T00:01:00Z'}) ... FAIL\n  test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'observedEvidence': ['invented-run']}) ... FAIL\ntest_honest_proposal_and_diagnostic_are_explicitly_not_qualification (test_verify.PacketMutationTests.test_honest_proposal_and_diagnostic_are_explicitly_not_qualification) ... ERROR\ntest_removed_module_key_fails_the_cli_and_preserves_hold_diagnostic (test_verify.PacketMutationTests.test_removed_module_key_fails_the_cli_and_preserves_hold_diagnostic) ... FAIL\ntest_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) ... \n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=0) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=1) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=2) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=3) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=4) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=5) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=6) ... FAIL\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=7) ... ERROR\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=8) ... ERROR\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=9) ... ERROR\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=10) ... ERROR\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=11) ... ERROR\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=12) ... ERROR\n  test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=13) ... ERROR\ntest_route_activation_is_rejected_in_either_document_or_module_key (test_verify.PacketMutationTests.test_route_activation_is_rejected_in_either_document_or_module_key) ... \n  test_route_activation_is_rejected_in_either_document_or_module_key (test_verify.PacketMutationTests.test_route_activation_is_rejected_in_either_document_or_module_key) (name='staging-checks.json') ... FAIL\n  test_route_activation_is_rejected_in_either_document_or_module_key (test_verify.PacketMutationTests.test_route_activation_is_rejected_in_either_document_or_module_key) (name='configuration.proposed.json') ... FAIL\ntest_source_manifest_cannot_remove_a_source_or_read_arbitrary_paths (test_verify.PacketMutationTests.test_source_manifest_cannot_remove_a_source_or_read_arbitrary_paths) ... ok\ntest_unknown_authority_key_and_fixture_auth_are_rejected (test_verify.PacketMutationTests.test_unknown_authority_key_and_fixture_auth_are_rejected) ... FAIL\ntest_unresolved_hosting_and_release_cannot_be_claimed_qualified (test_verify.PacketMutationTests.test_unresolved_hosting_and_release_cannot_be_claimed_qualified) ... \n  test_unresolved_hosting_and_release_cannot_be_claimed_qualified (test_verify.PacketMutationTests.test_unresolved_hosting_and_release_cannot_be_claimed_qualified) (message='unresolved value') ... FAIL\n  test_unresolved_hosting_and_release_cannot_be_claimed_qualified (test_verify.PacketMutationTests.test_unresolved_hosting_and_release_cannot_be_claimed_qualified) (message='applicationPackageDigest') ... FAIL\n\n======================================================================\nERROR: test_honest_proposal_and_diagnostic_are_explicitly_not_qualification (test_verify.PacketMutationTests.test_honest_proposal_and_diagnostic_are_explicitly_not_qualification)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 39, in test_honest_proposal_and_diagnostic_are_explicitly_not_qualification\n    verify.validate_packet(self.packet, verify.WORKSPACE)\n    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/verify.py\", line 212, in validate_packet\n    require(hashlib.sha256(path.read_bytes()).hexdigest() == digest, f\"source changed: {relative}\")\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/verify.py\", line 111, in require\n    raise PacketError(message)\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=7)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=8)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=9)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=10)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=11)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=12)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nERROR: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=13)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in test_removing_any_required_check_is_rejected\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 31, in edit\n    change(data)\n    ~~~~~~^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 93, in <lambda>\n    self.edit(path.name, lambda d: d[\"checks\"].pop(index))\n                                   ~~~~~~~~~~~~~~~^^^^^^^\nIndexError: pop index out of range\n\n======================================================================\nFAIL: test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'owner': ' '})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 104, in test_blank_owner_missing_evidence_or_unbounded_check_is_rejected\n    self.assert_rejected(message)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"owner\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'requiredEvidence': []})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 104, in test_blank_owner_missing_evidence_or_unbounded_check_is_rejected\n    self.assert_rejected(message)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"requiredEvidence\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'maxDurationSeconds': 0})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 104, in test_blank_owner_missing_evidence_or_unbounded_check_is_rejected\n    self.assert_rejected(message)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"finite duration\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_blank_owner_missing_evidence_or_unbounded_check_is_rejected (test_verify.PacketMutationTests.test_blank_owner_missing_evidence_or_unbounded_check_is_rejected) (mutation={'maxDurationSeconds': True})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 104, in test_blank_owner_missing_evidence_or_unbounded_check_is_rejected\n    self.assert_rejected(message)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"finite duration\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'result': 'pass'})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 84, in test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed\n    self.assert_rejected(\"no executed evidence|status\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"no executed evidence|status\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'status': 'passed', 'result': 'pass', 'observedEvidence': ['invented-run']})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 84, in test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed\n    self.assert_rejected(\"no executed evidence|status\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"no executed evidence|status\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'status': 'executed', 'result': 'pass', 'startedAt': '2026-10-16T00:00:00Z', 'completedAt': '2026-10-16T00:01:00Z'})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 84, in test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed\n    self.assert_rejected(\"no executed evidence|status\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"no executed evidence|status\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed (test_verify.PacketMutationTests.test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed) (evidence={'observedEvidence': ['invented-run']})\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 84, in test_fabricated_passing_staging_evidence_is_rejected_even_if_marked_executed\n    self.assert_rejected(\"no executed evidence|status\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"no executed evidence|status\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removed_module_key_fails_the_cli_and_preserves_hold_diagnostic (test_verify.PacketMutationTests.test_removed_module_key_fails_the_cli_and_preserves_hold_diagnostic)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 151, in test_removed_module_key_fails_the_cli_and_preserves_hold_diagnostic\n    self.assertIn(\"required keys differ\", output.getvalue())\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'required keys differ' not found in 'FAIL: packet consistency: source changed: references/Hexalith.Builds/Props/Directory.Packages.props; operational qualification remains HOLD.\\n'\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=0)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=1)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=2)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=3)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=4)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=5)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) (index=6)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 94, in test_removing_any_required_check_is_rejected\n    self.assert_rejected(\"required staging checks\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"required staging checks\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_route_activation_is_rejected_in_either_document_or_module_key (test_verify.PacketMutationTests.test_route_activation_is_rejected_in_either_document_or_module_key) (name='staging-checks.json')\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 59, in test_route_activation_is_rejected_in_either_document_or_module_key\n    self.assert_rejected(\"routeMode|Folders:ApiRouting:Mode\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"routeMode|Folders:ApiRouting:Mode\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_route_activation_is_rejected_in_either_document_or_module_key (test_verify.PacketMutationTests.test_route_activation_is_rejected_in_either_document_or_module_key) (name='configuration.proposed.json')\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 59, in test_route_activation_is_rejected_in_either_document_or_module_key\n    self.assert_rejected(\"routeMode|Folders:ApiRouting:Mode\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"routeMode|Folders:ApiRouting:Mode\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_unknown_authority_key_and_fixture_auth_are_rejected (test_verify.PacketMutationTests.test_unknown_authority_key_and_fixture_auth_are_rejected)\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 114, in test_unknown_authority_key_and_fixture_auth_are_rejected\n    self.assert_rejected(\"Folders:Authentication:Mode\")\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"Folders:Authentication:Mode\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_unresolved_hosting_and_release_cannot_be_claimed_qualified (test_verify.PacketMutationTests.test_unresolved_hosting_and_release_cannot_be_claimed_qualified) (message='unresolved value')\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 126, in test_unresolved_hosting_and_release_cannot_be_claimed_qualified\n    self.assert_rejected(message)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"unresolved value\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n======================================================================\nFAIL: test_unresolved_hosting_and_release_cannot_be_claimed_qualified (test_verify.PacketMutationTests.test_unresolved_hosting_and_release_cannot_be_claimed_qualified) (message='applicationPackageDigest')\n----------------------------------------------------------------------\nstory117_packet_verify.PacketError: source changed: references/Hexalith.Builds/Props/Directory.Packages.props\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 126, in test_unresolved_hosting_and_release_cannot_be_claimed_qualified\n    self.assert_rejected(message)\n    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^\n  File \"/home/administrator/projects/hexalith/folders/eng/story117-platform-qualification/test_verify.py\", line 35, in assert_rejected\n    with self.assertRaisesRegex(verify.PacketError, pattern):\n         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"applicationPackageDigest\" does not match \"source changed: references/Hexalith.Builds/Props/Directory.Packages.props\"\n\n----------------------------------------------------------------------\nRan 13 tests in 0.065s\n\nFAILED (failures=21, errors=8)\n",
+            "classification": "historical-refusal-source-drift"
+        }
+    ],
+    "currentSafetyTests": {
+        "testsRun": 39,
+        "failed": 0,
+        "errors": 0,
+        "result": "passed",
+        "syntheticMutationSourceFixtures": true,
+        "realSourceBindingSeparate": true,
+        "perSubtestReset": "before and finally; assertion-failure restoration is tested",
+        "operationalEvidence": false,
+        "verificationRef": "#/reviewVerification/commands/1"
+    },
+    "historicalRefusals": {
+        "verifierExitCode": 1,
+        "firstChangedSource": "references/Hexalith.Builds/Props/Directory.Packages.props",
+        "testMethods": 13,
+        "failures": 21,
+        "errors": 8,
+        "classification": "Historical source-drift refusals; intended mutation assertions are masked and do not pass."
+    },
+    "publicationCurrentWorkspace": {
+        "exitCode": 1,
+        "firstFailure": "references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml",
+        "protectedWorkspaceInputsMatched": 42,
+        "historicalPlatformSnapshot": {
+            "historicalCount": 4888,
+            "changed": [
+                {
+                    "path": "references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml",
+                    "historicalSha256": "63cbe00ff495c361ff9bf105e7aee37c36b10f2fea9911b8985e3f8b307e3f03",
+                    "currentSha256": "575759ec19b0e264945aafd9768b447d955498f8b17f6512e7512519be10d707"
+                },
+                {
+                    "path": "references/Hexalith.Platform/DaprComponents/accesscontrol.works.yaml",
+                    "historicalSha256": "d2cf2d46ae595217e58973d44e9687202aa3edd7d628c74ee34d01daa426d526",
+                    "currentSha256": "750d940c5d3019e930183bcf405a18534eeb563c371a8da27e4fa522f28d84b7"
+                },
+                {
+                    "path": "references/Hexalith.Platform/DaprComponents/accesscontrol.yaml",
+                    "historicalSha256": "fdab54b01be904bdd27374cf4356e3ff0397a7205735b0e6972b4feed48466c1",
+                    "currentSha256": "876d63ac2f257fd44c8a963b32f6f8c451bb26d6d9a5fcd1508a5f5932041d89"
+                },
+                {
+                    "path": "references/Hexalith.Platform/DaprSelfHostedMtls.cs",
+                    "historicalSha256": "3c1310995c4d509316ee1780b06229ad2e607082bfabc0e5c8872f1e05285d23",
+                    "currentSha256": "6af6f46996296b225d03ed6eb317bf26bd0dd598595e78e90196e329de635b6c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/Hexalith.Platform.slnx",
+                    "historicalSha256": "c99657edd267160acc9be791822c03573323177b719ed1911384c1feba8881bd",
+                    "currentSha256": "1085b61e0a7de05172ba87a90fbacf52f7188763c5aa37b4d7d93762d5ff4657"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/deferred-work.md",
+                    "historicalSha256": "4fe121e5c13e9fd1d4f6e20849e9156ab39df843ca4e2de446aa34628590e9d6",
+                    "currentSha256": "b9d6541de1dab473439027615e17f8ef09e54f643334ddee79884bc299b5ab56"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/epic-1-context.md",
+                    "historicalSha256": "a9f048f500efc656f081ea308819d8e8cebab7ba2659ed573d9cdf848fe96e40",
+                    "currentSha256": "1e046446213695dee2af15a03858cd3246800edfc94f2105da4043509d85fc62"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md",
+                    "historicalSha256": "4cc1b4622914f01670bf1dae8158ca281e8870de865dab96eb375aec5e6c1949",
+                    "currentSha256": "c072647f4460c305e94a8937ab2802efe382ee2f4fea9c50168e85b8b877c525"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/sprint-status.yaml",
+                    "historicalSha256": "2d0c7c85dc259481180cd9c65fb327c32706e9ddbfa0c1a01fcd848da2d2d41e",
+                    "currentSha256": "e60e80a708d9788b576145775652de1c9b483b5e0e1791c043077fc0a69c3a28"
+                },
+                {
+                    "path": "references/Hexalith.Platform/apphost.cs",
+                    "historicalSha256": "2d22552e42b02cbca912cd79c9aae840a5377f2184cc042f65e64d4313c49262",
+                    "currentSha256": "b20f4f483723953943458ea438a9762ebfd08dc617ab5e7f5ec522b856f736f9"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/README.md",
+                    "historicalSha256": "38a85a86d94074088f9d420f28630a5908ce474ed591f123cb93e8db767784a4",
+                    "currentSha256": "778c0ced77152fb8d57859d67596e6000079ad318f5a34b08b8e0d59589fdecf"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/census-2026-10-08.json",
+                    "historicalSha256": "f285424ced14719eb8a84a1fa983545eadd0f7cbcffe86b8a01230b2fdfe63cc",
+                    "currentSha256": "10c93bd84800276a38717043e4d34d08f94f9af6e9e5fccdb76c08a210331996"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/qualify.py",
+                    "historicalSha256": "273638cfe044ccfd874e9e99fb08e4955b0ef230320cedf0437971e39eacb653",
+                    "currentSha256": "6f49a2e0c808bd1325f8794c9a8d530ff5bc8f9b34805303321c9843de49785c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/replacement-acceptance-packet.json",
+                    "historicalSha256": "3090e45d873ef272bfbc6a7c1a851a18726c0ee1cb4748036267a52944a6b5ee",
+                    "currentSha256": null
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/runtime-reference.example.json",
+                    "historicalSha256": "ee679e9859d1d4143c15635a13676490f03fbcbea019bfbd70938088102b6c18",
+                    "currentSha256": "bc8d415d11704c523e7a0c12a6bcd9be957b2120cad56728113d578ba9153ed0"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/test_qualify.py",
+                    "historicalSha256": "83b8078666139b8c989cc3bdf4b0bb6ab746a91c18dfe4a45b3eb9d851ebe024",
+                    "currentSha256": "1175f4d4dabdc04c03164e87ac0162365be9f923ce512bcb9b3b80fe09c7faf2"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/unapplied-reference-artifacts.json",
+                    "historicalSha256": "7c66e635ee5faece54281ef233d14aa10e1669f5b86088f7647c85a1a6d4602b",
+                    "currentSha256": "a8aecd13a7ea01fccc07bfe5dfe344f1aba0958e746f75837d146619656f5e8b"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/test-local-dapr-security.py",
+                    "historicalSha256": "31a958f984d6d738b37262e39cde1e95f5a8febbaf6de92bdd5343cff4117d6a",
+                    "currentSha256": "434523bea69da5b2bd25f9fcb0952e5a30b1e24c0d20b539901dae18e809d316"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/test_verify_platform_pins.py",
+                    "historicalSha256": "6f15df25525fe77c891ffd5dd024109d8f494b7ccb183a6b90e7422fde927dbc",
+                    "currentSha256": "330856f62f27c3c0b53a20a33b100c110f7309ec4311f2f5f69a166efad645a3"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/verify-agents-host.sh",
+                    "historicalSha256": "f3f5eb51d0d1e58a4facfa6da0abff49053468b18701c65807867fc57ebc1bf2",
+                    "currentSha256": "e749430cd605c2e944d65edeb54ef6c62d5cb4a62534d8fbac25b52666fabbde"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/verify-ext-secrets-1.ps1",
+                    "historicalSha256": "8665f143dfe4d2934613cc45f1d61b759f5cad3e72b1f0ef578f34db43cfabe1",
+                    "currentSha256": "faf026364f6458cf402ad15a476f1d48b23e905f884f292afee1271e7f529efb"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/verify-platform-pins.py",
+                    "historicalSha256": "e3f8d85ff7744eefc65452c9e70f9989ffa07f900929f1f4bf73f4d184d35874",
+                    "currentSha256": "a3fa1b991e18aa736df8e329ec4a356e1cdd038fdeac778136d07b1d85709234"
+                },
+                {
+                    "path": "references/Hexalith.Platform/nuget.config",
+                    "historicalSha256": "49f1120918c0e33ad8cf543c1c48aef71f11e4a96dc42d92f80beaa0c6079811",
+                    "currentSha256": "eae1b6dcb61e63c93b4146f0903414053f5bad17a6513de07ce63ada3382979c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+                    "historicalSha256": "c76654a9f99ddee50916cd9954eca8888bdc5e7e80d134f6f88f1aa670ef3d33",
+                    "currentSha256": "8a4caa063bc2578380a456caac564225114ec2314fb95228fa684a25e6000626"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs",
+                    "historicalSha256": "e2d7708f6cb79db27c66b214bfa556822ef3c57247916692fc4fb97304926344",
+                    "currentSha256": "c1577076425ab0316261e4e0c0c9e9cd18afa1f3a7e52cfccaeaa3d647553ad4"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs",
+                    "historicalSha256": "0048f924db64cbc4ea3f9b0913a5b5a13abca8e76d41cbc4302b7e5d9fb5c275",
+                    "currentSha256": "701afefa07424c905dab202a368f6100fb6c42f3d4b14e2750ca43c17eacb54c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDaprBindings.cs",
+                    "historicalSha256": "23c0d5c8892d562b59435ee7051aaef60fa2ca7d3231fc84c651e84d0b6afd93",
+                    "currentSha256": "d860b5f140ca605aeb530074b9e388dffd7ffbf94603abdc77addcd03708ee9c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs",
+                    "historicalSha256": "e0e3b89998845bde3ced92b6006864aa14330e0fb90abe150f4b565a1a0c569d",
+                    "currentSha256": "187a544710fbbd4d6074a56229cf9c61cc2e0cfafd73a9f664462df5c58075af"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformLocalProfile.cs",
+                    "historicalSha256": "ffcff69bd5b5ae549a531b45be1223e56c880b01146d881ee22746c3508cedd1",
+                    "currentSha256": "603af12384d3deec61918e852414d8390d9b7836436a997bef8d1509daf70a34"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs",
+                    "historicalSha256": "b5b0b55913fff3ca69c9ec94a23932f7ad7c92ccf29cbd7c922bf07c3eddd36e",
+                    "currentSha256": "4c0d3bf6e898d42cf3d8ba33cecd54070161e4eb4e8b647f65f8b631f251ba6c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/WorksPreviewModel.cs",
+                    "historicalSha256": "959b2f64e006b957e5a128394da57189194299fe021a6589853815b5460025d3",
+                    "currentSha256": "bc4b9a22e7eb1016affc38de00bc63726e07d71bf66e53b289be34fbe9605c9e"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj",
+                    "historicalSha256": "096b91b6ab0878078bde04b749e55e3468a29b42a086f8026008b42665626b0b",
+                    "currentSha256": "e4077a4b32e6b4202442aacd6a0e696ac60c9406c9ca094cc337abe177323bac"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs",
+                    "historicalSha256": "7b9b683d27c01b5d034ce78779e7e03d493f6a98e8440016a03e411f817dacb2",
+                    "currentSha256": "849756cfd3ce2c3caebc5b69d37834ffdadbe06f4efd9edd6acbaade3e4ded4d"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs",
+                    "historicalSha256": "f24a7bc746844d8f889b40951a9a75282611c67f331ece9bab43f72af78e47c1",
+                    "currentSha256": "fcdd36d6fcb846208660c141dd5c7b3f400e6ddc592cade1249eb6387fd55bc5"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs",
+                    "historicalSha256": "62a3a1d16168e598aa66f965e49e47072dae806e6317ee32dc10456dff4961f4",
+                    "currentSha256": "3f2165fb871dd6e7d05be283989bec0073e41575c27de1c07b224fde0cfe933e"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs",
+                    "historicalSha256": "917df6d9e826be341be808a6b1dfb7a2500719bf3a993f011db5af0f9f445910",
+                    "currentSha256": "6eff7b3174a1ee720f362adff45db5472858a8aabb1a003f11a3fb50f76d69b9"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs",
+                    "historicalSha256": "8315df90323b779e1ea9bbc26b94aac180bc535cf2c631e17bc7b719732f6bff",
+                    "currentSha256": "1fb15b995854dea4a8b16668b1041ce9b26d70e52a4a23c9b7ab428eefa781bf"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs",
+                    "historicalSha256": "861f08b4448677b0b698497dd39f7972c99b72a82c2b816ff88430aecd0bca9d",
+                    "currentSha256": "7ea5ad029c6f26803938c25a361d17f6cbc93ec9c0f55746a6c490b769989056"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs",
+                    "historicalSha256": "9734a1b02f69c15695cd1e429a457ecb69721e0aecc236a170e4ae759b6f2890",
+                    "currentSha256": "21ad1838672cabe83eff5d21bcae45179fec4ff8fb15c4392b2176ee9014d93b"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj",
+                    "historicalSha256": "84924dfb1fa82b6864bcdd16cec9301b47e321dc6875b51184f5bcc4d5eadbe2",
+                    "currentSha256": "522d89d598919619ba4e2dd6df5512a996fc6012eebf1767570dd0b436ed3a0c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs",
+                    "historicalSha256": "89a009221cfbae20f7eb4c3b294c69e517150682292cee2d200f5837050454ad",
+                    "currentSha256": "23025e177bb41f02caf0ca906db8cd40dbc8dde23ed2dc040bab3848f27c5013"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs",
+                    "historicalSha256": "8f0846b52bca30217ef43cd9ee4466bcff6b82bc67cb465eb15394348c8b2d8c",
+                    "currentSha256": "0e2f0cd0feff87024abd29afae64ca3fba01714adb48964b22a31baceb1e0aac"
+                },
+                {
+                    "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs",
+                    "historicalSha256": "3397c3e1b4e2a3b19a5a566283ca97c77960df42a84f9e84c490e16a31914eed",
+                    "currentSha256": "af495effe8cd939d71c482811465fae82bfb37f34b12274c7e85b4743c5d3547"
+                },
+                {
+                    "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs",
+                    "historicalSha256": "f0a50fe6f833df3702e9b581a88669ec8bfd21ca27a18e45cfdf2721ef2de75f",
+                    "currentSha256": "1dfe89d2d430aef4e38fb4d6ce5692f91d19c800290411122b81dc8956cd9189"
+                },
+                {
+                    "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs",
+                    "historicalSha256": "e46e43af9e6765806c58a50c517f89c79170cbfc68ab004de42e0f5c5164f9c8",
+                    "currentSha256": "25e51f231ab87d51092cdba2ee1aace33e3619c6beae7eb1a85ea75d6c0ec02c"
+                }
+            ]
+        },
+        "classification": "Historical Platform snapshot differs from the already clean current checkout; not caused or repaired by this refresh. Failure retained as an observation; user accepts historical replay and preservation checks for this refresh only."
+    },
+    "publicationHistoricalReplay": {
+        "classification": "historical-disposable-snapshot-replay-only",
+        "preparationAndReplayCommand": [
+            "python3",
+            "-c",
+            "from pathlib import Path\nimport hashlib, json, os, subprocess, tarfile, tempfile\nroot = Path.cwd()\nreceipt = \"_bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16.json\"\nrecord = json.loads((root / receipt).read_bytes())\nrevision = \"a29daf6b1bb3471dded2196cf17064aa2b632554\"\ndef digest(body):\n    return hashlib.sha256(body).hexdigest()\nwith tarfile.open(root / record[\"retainedArtifactBundle\"][\"path\"]) as archive:\n    expected = json.loads(archive.extractfile(\"platform-inputs-preservation.json\").read())[\"filesSha256\"]\nrestored = []\nwith tempfile.TemporaryDirectory(prefix=\"story117-historical-replay-\") as temporary:\n    workspace = Path(temporary)\n    def link(relative):\n        target = workspace / relative\n        if not target.exists():\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.symlink_to(root / relative)\n    for relative, expected_hash in expected.items():\n        source = root / relative\n        if source.is_file() and digest(source.read_bytes()) == expected_hash:\n            link(relative)\n        else:\n            owned = relative.removeprefix(\"references/Hexalith.Platform/\")\n            command = [\"git\", \"-C\", str(root / \"references/Hexalith.Platform\"), \"show\", revision + \":\" + owned]\n            body = subprocess.check_output(command)\n            if digest(body) != expected_hash:\n                raise SystemExit(\"Historical blob mismatch: \" + relative)\n            target = workspace / relative\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_bytes(body)\n            restored.append({\"path\": relative, \"command\": command, \"sha256\": expected_hash})\n    for relative in [*record[\"protectedWorkspaceFilesSha256\"], *record[\"verificationFilesSha256\"], receipt,\n                     record[\"priorCleanSourceQualification\"][\"path\"], record[\"retainedArtifactBundle\"][\"path\"]]:\n        link(relative)\n    if not all(digest((workspace / path).read_bytes()) == value for path, value in expected.items()):\n        raise SystemExit(\"Disposable snapshot hash mismatch\")\n    command = [\"python3\", \"eng/story117-builds-publication/verify.py\", \"--workspace\", str(workspace)]\n    result = subprocess.run(command, cwd=root, env={**os.environ, \"PYTHONDONTWRITEBYTECODE\": \"1\"}, capture_output=True, text=True)\n    print(json.dumps({\"platformSourceRevision\": revision, \"platformInputsMatched\": len(expected),\n                      \"restoredBlobCount\": len(restored), \"restoredBlobs\": restored,\n                      \"command\": command, \"exitCode\": result.returncode,\n                      \"stdout\": result.stdout, \"stderr\": result.stderr}))\n    raise SystemExit(result.returncode)\n"
+        ],
+        "environment": {
+            "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "exitCode": 0,
+        "stdout": "{\"platformSourceRevision\": \"a29daf6b1bb3471dded2196cf17064aa2b632554\", \"platformInputsMatched\": 4888, \"restoredBlobCount\": 45, \"restoredBlobs\": [{\"path\": \"references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.eventstore-admin.yaml\"], \"sha256\": \"63cbe00ff495c361ff9bf105e7aee37c36b10f2fea9911b8985e3f8b307e3f03\"}, {\"path\": \"references/Hexalith.Platform/DaprComponents/accesscontrol.works.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.works.yaml\"], \"sha256\": \"d2cf2d46ae595217e58973d44e9687202aa3edd7d628c74ee34d01daa426d526\"}, {\"path\": \"references/Hexalith.Platform/DaprComponents/accesscontrol.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.yaml\"], \"sha256\": \"fdab54b01be904bdd27374cf4356e3ff0397a7205735b0e6972b4feed48466c1\"}, {\"path\": \"references/Hexalith.Platform/DaprSelfHostedMtls.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprSelfHostedMtls.cs\"], \"sha256\": \"3c1310995c4d509316ee1780b06229ad2e607082bfabc0e5c8872f1e05285d23\"}, {\"path\": \"references/Hexalith.Platform/Hexalith.Platform.slnx\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:Hexalith.Platform.slnx\"], \"sha256\": \"c99657edd267160acc9be791822c03573323177b719ed1911384c1feba8881bd\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/deferred-work.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/deferred-work.md\"], \"sha256\": \"4fe121e5c13e9fd1d4f6e20849e9156ab39df843ca4e2de446aa34628590e9d6\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/epic-1-context.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/epic-1-context.md\"], \"sha256\": \"a9f048f500efc656f081ea308819d8e8cebab7ba2659ed573d9cdf848fe96e40\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md\"], \"sha256\": \"4cc1b4622914f01670bf1dae8158ca281e8870de865dab96eb375aec5e6c1949\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/sprint-status.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/sprint-status.yaml\"], \"sha256\": \"2d0c7c85dc259481180cd9c65fb327c32706e9ddbfa0c1a01fcd848da2d2d41e\"}, {\"path\": \"references/Hexalith.Platform/apphost.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:apphost.cs\"], \"sha256\": \"2d22552e42b02cbca912cd79c9aae840a5377f2184cc042f65e64d4313c49262\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/README.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/README.md\"], \"sha256\": \"38a85a86d94074088f9d420f28630a5908ce474ed591f123cb93e8db767784a4\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/census-2026-10-08.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/census-2026-10-08.json\"], \"sha256\": \"f285424ced14719eb8a84a1fa983545eadd0f7cbcffe86b8a01230b2fdfe63cc\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/qualify.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/qualify.py\"], \"sha256\": \"273638cfe044ccfd874e9e99fb08e4955b0ef230320cedf0437971e39eacb653\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/replacement-acceptance-packet.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/replacement-acceptance-packet.json\"], \"sha256\": \"3090e45d873ef272bfbc6a7c1a851a18726c0ee1cb4748036267a52944a6b5ee\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/runtime-reference.example.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/runtime-reference.example.json\"], \"sha256\": \"ee679e9859d1d4143c15635a13676490f03fbcbea019bfbd70938088102b6c18\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/test_qualify.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/test_qualify.py\"], \"sha256\": \"83b8078666139b8c989cc3bdf4b0bb6ab746a91c18dfe4a45b3eb9d851ebe024\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/unapplied-reference-artifacts.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/unapplied-reference-artifacts.json\"], \"sha256\": \"7c66e635ee5faece54281ef233d14aa10e1669f5b86088f7647c85a1a6d4602b\"}, {\"path\": \"references/Hexalith.Platform/eng/test-local-dapr-security.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/test-local-dapr-security.py\"], \"sha256\": \"31a958f984d6d738b37262e39cde1e95f5a8febbaf6de92bdd5343cff4117d6a\"}, {\"path\": \"references/Hexalith.Platform/eng/test_verify_platform_pins.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/test_verify_platform_pins.py\"], \"sha256\": \"6f15df25525fe77c891ffd5dd024109d8f494b7ccb183a6b90e7422fde927dbc\"}, {\"path\": \"references/Hexalith.Platform/eng/verify-agents-host.sh\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-agents-host.sh\"], \"sha256\": \"f3f5eb51d0d1e58a4facfa6da0abff49053468b18701c65807867fc57ebc1bf2\"}, {\"path\": \"references/Hexalith.Platform/eng/verify-ext-secrets-1.ps1\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-ext-secrets-1.ps1\"], \"sha256\": \"8665f143dfe4d2934613cc45f1d61b759f5cad3e72b1f0ef578f34db43cfabe1\"}, {\"path\": \"references/Hexalith.Platform/eng/verify-platform-pins.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-platform-pins.py\"], \"sha256\": \"e3f8d85ff7744eefc65452c9e70f9989ffa07f900929f1f4bf73f4d184d35874\"}, {\"path\": \"references/Hexalith.Platform/nuget.config\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:nuget.config\"], \"sha256\": \"49f1120918c0e33ad8cf543c1c48aef71f11e4a96dc42d92f80beaa0c6079811\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj\"], \"sha256\": \"c76654a9f99ddee50916cd9954eca8888bdc5e7e80d134f6f88f1aa670ef3d33\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformAppModel.cs\"], \"sha256\": \"e2d7708f6cb79db27c66b214bfa556822ef3c57247916692fc4fb97304926344\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs\"], \"sha256\": \"0048f924db64cbc4ea3f9b0913a5b5a13abca8e76d41cbc4302b7e5d9fb5c275\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDaprBindings.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformDaprBindings.cs\"], \"sha256\": \"23c0d5c8892d562b59435ee7051aaef60fa2ca7d3231fc84c651e84d0b6afd93\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs\"], \"sha256\": \"e0e3b89998845bde3ced92b6006864aa14330e0fb90abe150f4b565a1a0c569d\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformLocalProfile.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformLocalProfile.cs\"], \"sha256\": \"ffcff69bd5b5ae549a531b45be1223e56c880b01146d881ee22746c3508cedd1\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformServerBindings.cs\"], \"sha256\": \"b5b0b55913fff3ca69c9ec94a23932f7ad7c92ccf29cbd7c922bf07c3eddd36e\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/WorksPreviewModel.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/WorksPreviewModel.cs\"], \"sha256\": \"959b2f64e006b957e5a128394da57189194299fe021a6589853815b5460025d3\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj\"], \"sha256\": \"096b91b6ab0878078bde04b749e55e3468a29b42a086f8026008b42665626b0b\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs\"], \"sha256\": \"7b9b683d27c01b5d034ce78779e7e03d493f6a98e8440016a03e411f817dacb2\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs\"], \"sha256\": \"f24a7bc746844d8f889b40951a9a75282611c67f331ece9bab43f72af78e47c1\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs\"], \"sha256\": \"62a3a1d16168e598aa66f965e49e47072dae806e6317ee32dc10456dff4961f4\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs\"], \"sha256\": \"917df6d9e826be341be808a6b1dfb7a2500719bf3a993f011db5af0f9f445910\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs\"], \"sha256\": \"8315df90323b779e1ea9bbc26b94aac180bc535cf2c631e17bc7b719732f6bff\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs\"], \"sha256\": \"861f08b4448677b0b698497dd39f7972c99b72a82c2b816ff88430aecd0bca9d\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs\"], \"sha256\": \"9734a1b02f69c15695cd1e429a457ecb69721e0aecc236a170e4ae759b6f2890\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj\"], \"sha256\": \"84924dfb1fa82b6864bcdd16cec9301b47e321dc6875b51184f5bcc4d5eadbe2\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs\"], \"sha256\": \"89a009221cfbae20f7eb4c3b294c69e517150682292cee2d200f5837050454ad\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs\"], \"sha256\": \"8f0846b52bca30217ef43cd9ee4466bcff6b82bc67cb465eb15394348c8b2d8c\"}, {\"path\": \"references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs\"], \"sha256\": \"3397c3e1b4e2a3b19a5a566283ca97c77960df42a84f9e84c490e16a31914eed\"}, {\"path\": \"references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs\"], \"sha256\": \"f0a50fe6f833df3702e9b581a88669ec8bfd21ca27a18e45cfdf2721ef2de75f\"}, {\"path\": \"references/Hexalith.Platform/tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs\"], \"sha256\": \"e46e43af9e6765806c58a50c517f89c79170cbfc68ab004de42e0f5c5164f9c8\"}], \"command\": [\"python3\", \"eng/story117-builds-publication/verify.py\", \"--workspace\", \"/tmp/story117-historical-replay-ymdzul9o\"], \"exitCode\": 0, \"stdout\": \"Verified published Builds 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf, both signed package identities, 37 exact synthetic controls and both seed modes. Platform acceptance, staging and Story closure remain open.\\n\", \"stderr\": \"\"}\n",
+        "stderr": "",
+        "replay": {
+            "platformSourceRevision": "a29daf6b1bb3471dded2196cf17064aa2b632554",
+            "platformInputsMatched": 4888,
+            "restoredBlobCount": 45,
+            "restoredBlobs": [
+                {
+                    "path": "references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.eventstore-admin.yaml"
+                    ],
+                    "sha256": "63cbe00ff495c361ff9bf105e7aee37c36b10f2fea9911b8985e3f8b307e3f03"
+                },
+                {
+                    "path": "references/Hexalith.Platform/DaprComponents/accesscontrol.works.yaml",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.works.yaml"
+                    ],
+                    "sha256": "d2cf2d46ae595217e58973d44e9687202aa3edd7d628c74ee34d01daa426d526"
+                },
+                {
+                    "path": "references/Hexalith.Platform/DaprComponents/accesscontrol.yaml",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.yaml"
+                    ],
+                    "sha256": "fdab54b01be904bdd27374cf4356e3ff0397a7205735b0e6972b4feed48466c1"
+                },
+                {
+                    "path": "references/Hexalith.Platform/DaprSelfHostedMtls.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:DaprSelfHostedMtls.cs"
+                    ],
+                    "sha256": "3c1310995c4d509316ee1780b06229ad2e607082bfabc0e5c8872f1e05285d23"
+                },
+                {
+                    "path": "references/Hexalith.Platform/Hexalith.Platform.slnx",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:Hexalith.Platform.slnx"
+                    ],
+                    "sha256": "c99657edd267160acc9be791822c03573323177b719ed1911384c1feba8881bd"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/deferred-work.md",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/deferred-work.md"
+                    ],
+                    "sha256": "4fe121e5c13e9fd1d4f6e20849e9156ab39df843ca4e2de446aa34628590e9d6"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/epic-1-context.md",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/epic-1-context.md"
+                    ],
+                    "sha256": "a9f048f500efc656f081ea308819d8e8cebab7ba2659ed573d9cdf848fe96e40"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md"
+                    ],
+                    "sha256": "4cc1b4622914f01670bf1dae8158ca281e8870de865dab96eb375aec5e6c1949"
+                },
+                {
+                    "path": "references/Hexalith.Platform/_bmad-output/implementation-artifacts/sprint-status.yaml",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/sprint-status.yaml"
+                    ],
+                    "sha256": "2d0c7c85dc259481180cd9c65fb327c32706e9ddbfa0c1a01fcd848da2d2d41e"
+                },
+                {
+                    "path": "references/Hexalith.Platform/apphost.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:apphost.cs"
+                    ],
+                    "sha256": "2d22552e42b02cbca912cd79c9aae840a5377f2184cc042f65e64d4313c49262"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/README.md",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/README.md"
+                    ],
+                    "sha256": "38a85a86d94074088f9d420f28630a5908ce474ed591f123cb93e8db767784a4"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/census-2026-10-08.json",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/census-2026-10-08.json"
+                    ],
+                    "sha256": "f285424ced14719eb8a84a1fa983545eadd0f7cbcffe86b8a01230b2fdfe63cc"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/qualify.py",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/qualify.py"
+                    ],
+                    "sha256": "273638cfe044ccfd874e9e99fb08e4955b0ef230320cedf0437971e39eacb653"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/replacement-acceptance-packet.json",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/replacement-acceptance-packet.json"
+                    ],
+                    "sha256": "3090e45d873ef272bfbc6a7c1a851a18726c0ee1cb4748036267a52944a6b5ee"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/runtime-reference.example.json",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/runtime-reference.example.json"
+                    ],
+                    "sha256": "ee679e9859d1d4143c15635a13676490f03fbcbea019bfbd70938088102b6c18"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/test_qualify.py",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/test_qualify.py"
+                    ],
+                    "sha256": "83b8078666139b8c989cc3bdf4b0bb6ab746a91c18dfe4a45b3eb9d851ebe024"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/ext-secrets-1/unapplied-reference-artifacts.json",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/unapplied-reference-artifacts.json"
+                    ],
+                    "sha256": "7c66e635ee5faece54281ef233d14aa10e1669f5b86088f7647c85a1a6d4602b"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/test-local-dapr-security.py",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/test-local-dapr-security.py"
+                    ],
+                    "sha256": "31a958f984d6d738b37262e39cde1e95f5a8febbaf6de92bdd5343cff4117d6a"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/test_verify_platform_pins.py",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/test_verify_platform_pins.py"
+                    ],
+                    "sha256": "6f15df25525fe77c891ffd5dd024109d8f494b7ccb183a6b90e7422fde927dbc"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/verify-agents-host.sh",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-agents-host.sh"
+                    ],
+                    "sha256": "f3f5eb51d0d1e58a4facfa6da0abff49053468b18701c65807867fc57ebc1bf2"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/verify-ext-secrets-1.ps1",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-ext-secrets-1.ps1"
+                    ],
+                    "sha256": "8665f143dfe4d2934613cc45f1d61b759f5cad3e72b1f0ef578f34db43cfabe1"
+                },
+                {
+                    "path": "references/Hexalith.Platform/eng/verify-platform-pins.py",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-platform-pins.py"
+                    ],
+                    "sha256": "e3f8d85ff7744eefc65452c9e70f9989ffa07f900929f1f4bf73f4d184d35874"
+                },
+                {
+                    "path": "references/Hexalith.Platform/nuget.config",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:nuget.config"
+                    ],
+                    "sha256": "49f1120918c0e33ad8cf543c1c48aef71f11e4a96dc42d92f80beaa0c6079811"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj"
+                    ],
+                    "sha256": "c76654a9f99ddee50916cd9954eca8888bdc5e7e80d134f6f88f1aa670ef3d33"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformAppModel.cs"
+                    ],
+                    "sha256": "e2d7708f6cb79db27c66b214bfa556822ef3c57247916692fc4fb97304926344"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs"
+                    ],
+                    "sha256": "0048f924db64cbc4ea3f9b0913a5b5a13abca8e76d41cbc4302b7e5d9fb5c275"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDaprBindings.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformDaprBindings.cs"
+                    ],
+                    "sha256": "23c0d5c8892d562b59435ee7051aaef60fa2ca7d3231fc84c651e84d0b6afd93"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs"
+                    ],
+                    "sha256": "e0e3b89998845bde3ced92b6006864aa14330e0fb90abe150f4b565a1a0c569d"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformLocalProfile.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformLocalProfile.cs"
+                    ],
+                    "sha256": "ffcff69bd5b5ae549a531b45be1223e56c880b01146d881ee22746c3508cedd1"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformServerBindings.cs"
+                    ],
+                    "sha256": "b5b0b55913fff3ca69c9ec94a23932f7ad7c92ccf29cbd7c922bf07c3eddd36e"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Composition/WorksPreviewModel.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/WorksPreviewModel.cs"
+                    ],
+                    "sha256": "959b2f64e006b957e5a128394da57189194299fe021a6589853815b5460025d3"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj"
+                    ],
+                    "sha256": "096b91b6ab0878078bde04b749e55e3468a29b42a086f8026008b42665626b0b"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs"
+                    ],
+                    "sha256": "7b9b683d27c01b5d034ce78779e7e03d493f6a98e8440016a03e411f817dacb2"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs"
+                    ],
+                    "sha256": "f24a7bc746844d8f889b40951a9a75282611c67f331ece9bab43f72af78e47c1"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs"
+                    ],
+                    "sha256": "62a3a1d16168e598aa66f965e49e47072dae806e6317ee32dc10456dff4961f4"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs"
+                    ],
+                    "sha256": "917df6d9e826be341be808a6b1dfb7a2500719bf3a993f011db5af0f9f445910"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs"
+                    ],
+                    "sha256": "8315df90323b779e1ea9bbc26b94aac180bc535cf2c631e17bc7b719732f6bff"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs"
+                    ],
+                    "sha256": "861f08b4448677b0b698497dd39f7972c99b72a82c2b816ff88430aecd0bca9d"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs"
+                    ],
+                    "sha256": "9734a1b02f69c15695cd1e429a457ecb69721e0aecc236a170e4ae759b6f2890"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj"
+                    ],
+                    "sha256": "84924dfb1fa82b6864bcdd16cec9301b47e321dc6875b51184f5bcc4d5eadbe2"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs"
+                    ],
+                    "sha256": "89a009221cfbae20f7eb4c3b294c69e517150682292cee2d200f5837050454ad"
+                },
+                {
+                    "path": "references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs"
+                    ],
+                    "sha256": "8f0846b52bca30217ef43cd9ee4466bcff6b82bc67cb465eb15394348c8b2d8c"
+                },
+                {
+                    "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs"
+                    ],
+                    "sha256": "3397c3e1b4e2a3b19a5a566283ca97c77960df42a84f9e84c490e16a31914eed"
+                },
+                {
+                    "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs"
+                    ],
+                    "sha256": "f0a50fe6f833df3702e9b581a88669ec8bfd21ca27a18e45cfdf2721ef2de75f"
+                },
+                {
+                    "path": "references/Hexalith.Platform/tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs",
+                    "command": [
+                        "git",
+                        "-C",
+                        "/home/administrator/projects/hexalith/folders/references/Hexalith.Platform",
+                        "show",
+                        "a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs"
+                    ],
+                    "sha256": "e46e43af9e6765806c58a50c517f89c79170cbfc68ab004de42e0f5c5164f9c8"
+                }
+            ],
+            "command": [
+                "python3",
+                "eng/story117-builds-publication/verify.py",
+                "--workspace",
+                "/tmp/story117-historical-replay-ymdzul9o"
+            ],
+            "exitCode": 0,
+            "stdout": "Verified published Builds 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf, both signed package identities, 37 exact synthetic controls and both seed modes. Platform acceptance, staging and Story closure remain open.\n",
+            "stderr": ""
+        },
+        "temporaryWorkspaceDisposed": true,
+        "limits": "Historical captured snapshot only; current-workspace replay still fails. No mutation of receipt, verifier, gitlinks or original checkout, and no current Platform acceptance."
+    },
+    "preservation": {
+        "currentRunBaselineCount": 45,
+        "beforeSha256": {
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+            "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+            "_bmad-output/implementation-artifacts/sprint-status.yaml": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+            "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+            "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "4b8470beda4f19c1293be1c40b4b36914e5148fa0f1a05ab2817d4fe43156cce",
+            "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924",
+            "eng/story117-platform-qualification/configuration.proposed.json": "0df68be75eae271b79533a59f168bc964df56b0de7982a44448b16baca3cc3b5",
+            "eng/story117-platform-qualification/staging-checks.json": "cd351aaf2c63d2493f32f4728af4776925ffefb736da442ff6b2b074bcec7339",
+            "eng/story117-platform-qualification/README.md": "4468d80d246a8b5b5968b9a5fbd2ce7ecf588af89fe6e0a3bdcba47770d7a40d",
+            "eng/story117-platform-qualification/verify.py": "b667eac8131f5c0312ed7e78c7284d756b749175d0f1faf756adbb43cd53a4db",
+            "eng/story117-platform-qualification/test_verify.py": "f42c880468a5a3e4a04a7f948a3ea6eee86e67ec34dd2c119795d7b2b422d0c5",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-qualification-2026-10-16.json": "60becb00027d779bfdb76bc021f1e5e89f7e55063c8fef67f73922942866017e",
+            "_bmad-output/implementation-artifacts/story-1-17-platform-rollout-proposal-2026-10-16.md": "512db77734f6caa939cc115a28e6fa7bda6583d3864c5217d2c0d82419415354",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.json": "0e8ae08d4a720a9a200fdfbbbab1d0c796bea356c04788ba9a169f31b5060aa4",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.tar.gz": "d64c7f23e3fa8f2c78c9b7604a1e100c57823b8cc491c94e9f7c8e88f83bf14b",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.manifest.json": "801abeb2e7bd979d4b687da140b09f601755b8a890aa200f8f2172e5c431e3a5",
+            "references/Hexalith.Platform/docs/implementation/story-1-17-admission-preparation-2026-10-16.json": "f9dcd28a12cb7d9b0cb528424e7cdad4b2927fbd1f8f376ac6304635bf5fa50d",
+            "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "4a5529936a9f4f4f090d0544155388233b44b05aeeb773954e00f7868ca719e1",
+            ".gitmodules": "a58f12852498d0ae2ceee340ce835955c6547a4e7f8f4de0311eae6d122b3183",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16.json": "deeb0cb92fe9356d6f47ab6a996445459df506f398fed95ea2088cdc89c64678"
+        },
+        "afterSha256": {
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+            "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+            "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+            "_bmad-output/implementation-artifacts/sprint-status.yaml": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+            "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+            "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420",
+            "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "4b8470beda4f19c1293be1c40b4b36914e5148fa0f1a05ab2817d4fe43156cce",
+            "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924",
+            "eng/story117-platform-qualification/configuration.proposed.json": "0df68be75eae271b79533a59f168bc964df56b0de7982a44448b16baca3cc3b5",
+            "eng/story117-platform-qualification/staging-checks.json": "cd351aaf2c63d2493f32f4728af4776925ffefb736da442ff6b2b074bcec7339",
+            "eng/story117-platform-qualification/README.md": "4468d80d246a8b5b5968b9a5fbd2ce7ecf588af89fe6e0a3bdcba47770d7a40d",
+            "eng/story117-platform-qualification/verify.py": "b667eac8131f5c0312ed7e78c7284d756b749175d0f1faf756adbb43cd53a4db",
+            "eng/story117-platform-qualification/test_verify.py": "f42c880468a5a3e4a04a7f948a3ea6eee86e67ec34dd2c119795d7b2b422d0c5",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-qualification-2026-10-16.json": "60becb00027d779bfdb76bc021f1e5e89f7e55063c8fef67f73922942866017e",
+            "_bmad-output/implementation-artifacts/story-1-17-platform-rollout-proposal-2026-10-16.md": "512db77734f6caa939cc115a28e6fa7bda6583d3864c5217d2c0d82419415354",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.json": "0e8ae08d4a720a9a200fdfbbbab1d0c796bea356c04788ba9a169f31b5060aa4",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.tar.gz": "d64c7f23e3fa8f2c78c9b7604a1e100c57823b8cc491c94e9f7c8e88f83bf14b",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-platform-admission-2026-10-16.artifacts.manifest.json": "801abeb2e7bd979d4b687da140b09f601755b8a890aa200f8f2172e5c431e3a5",
+            "references/Hexalith.Platform/docs/implementation/story-1-17-admission-preparation-2026-10-16.json": "f9dcd28a12cb7d9b0cb528424e7cdad4b2927fbd1f8f376ac6304635bf5fa50d",
+            "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "4a5529936a9f4f4f090d0544155388233b44b05aeeb773954e00f7868ca719e1",
+            ".gitmodules": "a58f12852498d0ae2ceee340ce835955c6547a4e7f8f4de0311eae6d122b3183",
+            "_bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16.json": "deeb0cb92fe9356d6f47ab6a996445459df506f398fed95ea2088cdc89c64678"
+        },
+        "allCurrentRunBaselineInputsUnchanged": true,
+        "historicalProtectedWorkspaceCount": 42,
+        "historicalProtectedWorkspaceInputsUnchanged": true,
+        "historicalPacketReceiptApprovalCandidateAndTrackerBytesUnchanged": true,
+        "dependenciesAndGitlinksChangedByThisImplementation": false,
+        "sourceStatusCommands": [
+            {
+                "repository": "Folders",
+                "command": [
+                    "git",
+                    "-C",
+                    ".",
+                    "status",
+                    "--porcelain=v1"
+                ],
+                "exitCode": 0,
+                "stdout": " M .gitattributes\n M _bmad-output/implementation-artifacts/spec-1-17-refresh-platform-qualification-proposal.md\n?? eng/story117-platform-qualification-current/\n",
+                "stderr": ""
+            },
+            {
+                "repository": "Projects",
+                "command": [
+                    "git",
+                    "-C",
+                    "references/Hexalith.Projects",
+                    "status",
+                    "--porcelain=v1"
+                ],
+                "exitCode": 0,
+                "stdout": "",
+                "stderr": ""
+            },
+            {
+                "repository": "Platform",
+                "command": [
+                    "git",
+                    "-C",
+                    "references/Hexalith.Platform",
+                    "status",
+                    "--porcelain=v1"
+                ],
+                "exitCode": 0,
+                "stdout": "",
+                "stderr": ""
+            },
+            {
+                "repository": "EventStore",
+                "command": [
+                    "git",
+                    "-C",
+                    "references/Hexalith.EventStore",
+                    "status",
+                    "--porcelain=v1"
+                ],
+                "exitCode": 0,
+                "stdout": "",
+                "stderr": ""
+            },
+            {
+                "repository": "Builds",
+                "command": [
+                    "git",
+                    "-C",
+                    "references/Hexalith.Builds",
+                    "status",
+                    "--porcelain=v1"
+                ],
+                "exitCode": 0,
+                "stdout": "",
+                "stderr": ""
+            }
+        ],
+        "limit": "Current-run preservation is independent of the receipt's older Platform snapshot. The 45 pre-existing snapshot mismatches were retained."
+    },
+    "decision": {
+        "qualification": "HOLD",
+        "productionMode": "V1Only",
+        "t0Utc": null,
+        "activationAuthority": null,
+        "firstInstallConfirmed": false,
+        "acceptedToolVersion": null,
+        "acceptedToolVersionRange": null,
+        "platformAcceptance": null,
+        "stagingChecksExecuted": 0,
+        "stagingChecksRemaining": 14,
+        "allCheckStatuses": {
+            "artifact-provenance": "unexecuted",
+            "first-install-baseline-selection": "unexecuted",
+            "platform-profile-and-isolation": "unexecuted",
+            "attempt-controls": "unexecuted",
+            "readiness": "unexecuted",
+            "authentication-and-authorization-negatives": "unexecuted",
+            "durable-end-state": "unexecuted",
+            "projects-lifecycle": "unexecuted",
+            "projects-permissions": "unexecuted",
+            "projects-file-metadata": "unexecuted",
+            "consumer-attribution": "unexecuted",
+            "route-restart-and-reversal": "unexecuted",
+            "retained-data-recovery": "unexecuted",
+            "verification-and-records": "unexecuted"
+        },
+        "deploymentAuthorized": false,
+        "publicationAuthorized": false,
+        "trackerTransitionAuthorized": false,
+        "story117Open": true,
+        "story117Tracker": "backlog",
+        "migrationScopeChanged": false
+    },
+    "acceptance": {
+        "newCurrentDiagnosticAndSafetyTests": "passed",
+        "historicalPublicationVerifierAgainstCurrentWorkspace": "failed: pre-existing historical Platform snapshot drift; retained observation, not a refresh acceptance gate under the user-approved basis",
+        "historicalPublicationVerifierAgainstDisposableHistoricalSnapshot": "passed: accepted historical publication-preservation evidence for this refresh only",
+        "absentPlatformAcceptanceAndOperationalPrerequisitesRemainUnresolved": "passed",
+        "allAcceptanceCriteriaComplete": true,
+        "historicalProtectedAndCurrentRunInputsUnchanged": "passed: 42 protected files and 45 current-run preservation-baseline inputs unchanged"
+    },
+    "remainingOwnerPrerequisites": {
+        "platform-startup-story-1-8": {
+            "owner": "Platform",
+            "value": null,
+            "requirement": "Qualify current Story 1.8 readiness-aware startup and useful diagnostics for the exact accepted tool/composition; local implementation or fixture success is insufficient."
+        },
+        "platform-tool-story-1-9": {
+            "owner": "Platform with Builds",
+            "value": null,
+            "requirement": "Story 1.9 must accept the exact released tool version, accepted toolVersionRange, .config/dotnet-tools.json pin and coherent Builds catalog gitlink. Builds 4.32.0 publication alone grants none."
+        },
+        "module-intake": {
+            "owner": "Platform with every module owner",
+            "value": null,
+            "requirement": "Complete and accept intake for exact owner releases, released v2 declarations, verified image/package attestations, catalog selections and change-classification chain; dated handoff observations are historical."
+        },
+        "platform-release-and-hosting": {
+            "owner": "Platform with EventStore and Builds",
+            "value": null,
+            "requirement": "Supply clean qualified Platform source, successful exact-revision CI, signed retained application release, composed EventStore image/extensions, profile/provider evidence and supported hosting mechanism."
+        },
+        "operational-entry-and-scope": {
+            "owner": "Administrator with Platform and module owners",
+            "value": null,
+            "requirement": "Confirm target and retained data, approve any material first-install scope change, and supply operators/UTC slots, thresholds, deployed inventory, attributed baseline/census, periodic schedules, reversal, observation and retirement evidence under the unchanged migration scope."
+        }
+    },
+    "limits": [
+        "Local source cleanliness/fingerprints do not attest published or deployed artifacts.",
+        "Historical release success, package version labels and the separate historical replay do not substitute for current Platform acceptance.",
+        "AD-9 contracts are recorded without live enforcement, delivery or image-availability claims.",
+        "Tool pin/range, coherent Builds binding, exact owner releases/attestations, intake, hosting and all operational entry/exit evidence remain unresolved.",
+        "No .NET build or Aspire lifecycle applies to these Python/JSON/Markdown-only changes.",
+        "The pre-existing refresh-spec edit was preserved; its parent workflow owns acceptance audit and closeout."
+    ],
+    "refreshAcceptanceDecision": {
+        "recordedAtUtc": "2026-10-17T09:04:26.649222+00:00",
+        "authority": "User instruction in the current conversation",
+        "instruction": "apply recommended",
+        "basis": "Unchanged historical publication verifier passes against its disposable captured snapshot; 42 protected files and 45 current-run preservation-baseline inputs remain unchanged; current diagnostic and safety tests pass.",
+        "currentCheckoutPublicationFailure": "Retained as an observed pre-existing historical snapshot mismatch; excluded from this refresh acceptance gate by the user decision.",
+        "scope": "Bounded offline proposal refresh only; current Platform qualification remains separate owner work.",
+        "platformAcceptanceGranted": false,
+        "toolOrRangeAccepted": false,
+        "stagingExecutionAuthorized": false,
+        "story117ClosureAuthorized": false,
+        "reviewComplete": true
+    },
+    "reviewVerification": {
+        "recordedAtUtc": "2026-10-17T09:12:50.025634+00:00",
+        "layers": [
+            "blind-hunter",
+            "edge-case-hunter",
+            "verification-gap"
+        ],
+        "individualFindings": 13,
+        "sharedRootPatches": 5,
+        "allFindingsAddressed": true,
+        "commands": [
+            {
+                "label": "current-diagnostic",
+                "command": [
+                    "python3",
+                    "eng/story117-platform-qualification-current/verify.py"
+                ],
+                "environment": {
+                    "PYTHONDONTWRITEBYTECODE": "1"
+                },
+                "expectedExitCode": 0,
+                "exitCode": 0,
+                "stdout": "PASS: packet consistency only; operational qualification remains HOLD; staging checks executed: 0; V1Only; T0 unset; no activation authority.\n",
+                "stderr": ""
+            },
+            {
+                "label": "current-safety-tests",
+                "command": [
+                    "python3",
+                    "-m",
+                    "unittest",
+                    "discover",
+                    "-s",
+                    "eng/story117-platform-qualification-current",
+                    "-p",
+                    "test_*.py",
+                    "-v"
+                ],
+                "environment": {
+                    "PYTHONDONTWRITEBYTECODE": "1"
+                },
+                "expectedExitCode": 0,
+                "exitCode": 0,
+                "stdout": "",
+                "stderr": "test_current_binding_refuses_missing_or_changed_sources_in_disposable_copy (test_verify.CurrentSourceBindingTests.test_current_binding_refuses_missing_or_changed_sources_in_disposable_copy) ... ok\ntest_current_proposal_binds_all_25_real_sources (test_verify.CurrentSourceBindingTests.test_current_proposal_binds_all_25_real_sources) ... ok\ntest_ad9_adoption_evidence_or_alternate_hosting_is_refused (test_verify.PacketMutationTests.test_ad9_adoption_evidence_or_alternate_hosting_is_refused) ... ok\ntest_all_checks_require_owners_procedures_evidence_and_finite_duration (test_verify.PacketMutationTests.test_all_checks_require_owners_procedures_evidence_and_finite_duration) ... ok\ntest_authority_and_clock_claims_rejected (test_verify.PacketMutationTests.test_authority_and_clock_claims_rejected) ... ok\ntest_case_restores_packet_and_sources_even_after_failure (test_verify.PacketMutationTests.test_case_restores_packet_and_sources_even_after_failure) ... ok\ntest_catalog_inconsistency_fails_after_matching_fingerprint (test_verify.PacketMutationTests.test_catalog_inconsistency_fails_after_matching_fingerprint) ... ok\ntest_controlled_proposal_passes_and_cli_reports_only_consistency (test_verify.PacketMutationTests.test_controlled_proposal_passes_and_cli_reports_only_consistency) ... ok\ntest_dependency_pins_and_package_bindings_match_observed_catalog (test_verify.PacketMutationTests.test_dependency_pins_and_package_bindings_match_observed_catalog) ... ok\ntest_each_allowlisted_source_change_or_absence_is_refused (test_verify.PacketMutationTests.test_each_allowlisted_source_change_or_absence_is_refused) ... ok\ntest_every_check_refuses_results_or_execution_claims (test_verify.PacketMutationTests.test_every_check_refuses_results_or_execution_claims) ... ok\ntest_execution_approval_or_any_other_argument_is_refused_before_reads (test_verify.PacketMutationTests.test_execution_approval_or_any_other_argument_is_refused_before_reads) ... ok\ntest_first_install_scope_and_baseline_stay_unconfirmed (test_verify.PacketMutationTests.test_first_install_scope_and_baseline_stay_unconfirmed) ... ok\ntest_internal_source_symlinks_refuse_unallowlisted_target_reads (test_verify.PacketMutationTests.test_internal_source_symlinks_refuse_unallowlisted_target_reads) ... ok\ntest_json_documents_and_nested_fields_have_strict_types (test_verify.PacketMutationTests.test_json_documents_and_nested_fields_have_strict_types) ... ok\ntest_json_rejects_duplicate_keys_nonstandard_numbers_and_bad_encoding (test_verify.PacketMutationTests.test_json_rejects_duplicate_keys_nonstandard_numbers_and_bad_encoding) ... ok\ntest_missing_module_key_preserves_hold_in_cli_failure (test_verify.PacketMutationTests.test_missing_module_key_preserves_hold_in_cli_failure) ... ok\ntest_missing_packet_and_packet_symlinks_are_bounded (test_verify.PacketMutationTests.test_missing_packet_and_packet_symlinks_are_bounded) ... ok\ntest_modules_refuse_unrelated_allowlisted_source_substitution (test_verify.PacketMutationTests.test_modules_refuse_unrelated_allowlisted_source_substitution) ... ok\ntest_projects_operations_remain_read_only (test_verify.PacketMutationTests.test_projects_operations_remain_read_only) ... ok\ntest_published_release_cannot_be_substituted_with_local_source (test_verify.PacketMutationTests.test_published_release_cannot_be_substituted_with_local_source) ... ok\ntest_release_platform_and_source_observations_cannot_gain_acceptance (test_verify.PacketMutationTests.test_release_platform_and_source_observations_cannot_gain_acceptance) ... ok\ntest_removing_any_required_check_is_rejected (test_verify.PacketMutationTests.test_removing_any_required_check_is_rejected) ... ok\ntest_reordered_or_duplicated_checks_are_rejected (test_verify.PacketMutationTests.test_reordered_or_duplicated_checks_are_rejected) ... ok\ntest_reviewed_requirement_text_refuses_contradictions_and_removals (test_verify.PacketMutationTests.test_reviewed_requirement_text_refuses_contradictions_and_removals) ... ok\ntest_route_activation_rejected_in_both_documents_and_module (test_verify.PacketMutationTests.test_route_activation_rejected_in_both_documents_and_module) ... ok\ntest_secret_mappings_cannot_change_names_keys_consumers_or_targets (test_verify.PacketMutationTests.test_secret_mappings_cannot_change_names_keys_consumers_or_targets) ... ok\ntest_secret_or_environment_values_are_refused_without_disclosure (test_verify.PacketMutationTests.test_secret_or_environment_values_are_refused_without_disclosure) ... ok\ntest_secret_source_presence_requires_an_exact_name_value (test_verify.PacketMutationTests.test_secret_source_presence_requires_an_exact_name_value) ... ok\ntest_source_allowlist_cannot_be_removed_extended_or_replaced (test_verify.PacketMutationTests.test_source_allowlist_cannot_be_removed_extended_or_replaced) ... ok\ntest_source_digests_have_strict_types_and_are_checked (test_verify.PacketMutationTests.test_source_digests_have_strict_types_and_are_checked) ... ok\ntest_source_parent_directory_symlink_is_refused (test_verify.PacketMutationTests.test_source_parent_directory_symlink_is_refused) ... ok\ntest_source_symlink_escape_is_refused_without_target_disclosure (test_verify.PacketMutationTests.test_source_symlink_escape_is_refused_without_target_disclosure) ... ok\ntest_special_packet_and_source_inputs_are_refused_before_reads (test_verify.PacketMutationTests.test_special_packet_and_source_inputs_are_refused_before_reads) ... ok\ntest_staging_safeguards_cannot_be_reduced_to_nonempty_placeholders (test_verify.PacketMutationTests.test_staging_safeguards_cannot_be_reduced_to_nonempty_placeholders) ... ok\ntest_stale_full_snapshot_revisions_are_refused_for_every_repository (test_verify.PacketMutationTests.test_stale_full_snapshot_revisions_are_refused_for_every_repository) ... ok\ntest_status_and_qualification_cannot_change_in_either_document (test_verify.PacketMutationTests.test_status_and_qualification_cannot_change_in_either_document) ... ok\ntest_unknown_authority_keys_and_fixture_auth_are_rejected (test_verify.PacketMutationTests.test_unknown_authority_keys_and_fixture_auth_are_rejected) ... ok\ntest_verifier_has_no_subprocess_or_network_imports (test_verify.PacketMutationTests.test_verifier_has_no_subprocess_or_network_imports) ... ok\n\n----------------------------------------------------------------------\nRan 39 tests in 5.762s\n\nOK\n"
+            },
+            {
+                "label": "current-workspace-publication-observation",
+                "command": [
+                    "python3",
+                    "eng/story117-builds-publication/verify.py"
+                ],
+                "environment": {
+                    "PYTHONDONTWRITEBYTECODE": "1"
+                },
+                "expectedExitCode": 1,
+                "exitCode": 1,
+                "stdout": "",
+                "stderr": "Publication evidence verification failed: references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml\n"
+            },
+            {
+                "label": "accepted-historical-publication-replay",
+                "command": [
+                    "python3",
+                    "-c",
+                    "from pathlib import Path\nimport hashlib, json, os, subprocess, tarfile, tempfile\nroot = Path.cwd()\nreceipt = \"_bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16.json\"\nrecord = json.loads((root / receipt).read_bytes())\nrevision = \"a29daf6b1bb3471dded2196cf17064aa2b632554\"\ndef digest(body):\n    return hashlib.sha256(body).hexdigest()\nwith tarfile.open(root / record[\"retainedArtifactBundle\"][\"path\"]) as archive:\n    expected = json.loads(archive.extractfile(\"platform-inputs-preservation.json\").read())[\"filesSha256\"]\nrestored = []\nwith tempfile.TemporaryDirectory(prefix=\"story117-historical-replay-\") as temporary:\n    workspace = Path(temporary)\n    def link(relative):\n        target = workspace / relative\n        if not target.exists():\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.symlink_to(root / relative)\n    for relative, expected_hash in expected.items():\n        source = root / relative\n        if source.is_file() and digest(source.read_bytes()) == expected_hash:\n            link(relative)\n        else:\n            owned = relative.removeprefix(\"references/Hexalith.Platform/\")\n            command = [\"git\", \"-C\", str(root / \"references/Hexalith.Platform\"), \"show\", revision + \":\" + owned]\n            body = subprocess.check_output(command)\n            if digest(body) != expected_hash:\n                raise SystemExit(\"Historical blob mismatch: \" + relative)\n            target = workspace / relative\n            target.parent.mkdir(parents=True, exist_ok=True)\n            target.write_bytes(body)\n            restored.append({\"path\": relative, \"command\": command, \"sha256\": expected_hash})\n    for relative in [*record[\"protectedWorkspaceFilesSha256\"], *record[\"verificationFilesSha256\"], receipt,\n                     record[\"priorCleanSourceQualification\"][\"path\"], record[\"retainedArtifactBundle\"][\"path\"]]:\n        link(relative)\n    if not all(digest((workspace / path).read_bytes()) == value for path, value in expected.items()):\n        raise SystemExit(\"Disposable snapshot hash mismatch\")\n    command = [\"python3\", \"eng/story117-builds-publication/verify.py\", \"--workspace\", str(workspace)]\n    result = subprocess.run(command, cwd=root, env={**os.environ, \"PYTHONDONTWRITEBYTECODE\": \"1\"}, capture_output=True, text=True)\n    print(json.dumps({\"platformSourceRevision\": revision, \"platformInputsMatched\": len(expected),\n                      \"restoredBlobCount\": len(restored), \"restoredBlobs\": restored,\n                      \"command\": command, \"exitCode\": result.returncode,\n                      \"stdout\": result.stdout, \"stderr\": result.stderr}))\n    raise SystemExit(result.returncode)\n"
+                ],
+                "environment": {
+                    "PYTHONDONTWRITEBYTECODE": "1"
+                },
+                "expectedExitCode": 0,
+                "exitCode": 0,
+                "stdout": "{\"platformSourceRevision\": \"a29daf6b1bb3471dded2196cf17064aa2b632554\", \"platformInputsMatched\": 4888, \"restoredBlobCount\": 45, \"restoredBlobs\": [{\"path\": \"references/Hexalith.Platform/DaprComponents/accesscontrol.eventstore-admin.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.eventstore-admin.yaml\"], \"sha256\": \"63cbe00ff495c361ff9bf105e7aee37c36b10f2fea9911b8985e3f8b307e3f03\"}, {\"path\": \"references/Hexalith.Platform/DaprComponents/accesscontrol.works.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.works.yaml\"], \"sha256\": \"d2cf2d46ae595217e58973d44e9687202aa3edd7d628c74ee34d01daa426d526\"}, {\"path\": \"references/Hexalith.Platform/DaprComponents/accesscontrol.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprComponents/accesscontrol.yaml\"], \"sha256\": \"fdab54b01be904bdd27374cf4356e3ff0397a7205735b0e6972b4feed48466c1\"}, {\"path\": \"references/Hexalith.Platform/DaprSelfHostedMtls.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:DaprSelfHostedMtls.cs\"], \"sha256\": \"3c1310995c4d509316ee1780b06229ad2e607082bfabc0e5c8872f1e05285d23\"}, {\"path\": \"references/Hexalith.Platform/Hexalith.Platform.slnx\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:Hexalith.Platform.slnx\"], \"sha256\": \"c99657edd267160acc9be791822c03573323177b719ed1911384c1feba8881bd\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/deferred-work.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/deferred-work.md\"], \"sha256\": \"4fe121e5c13e9fd1d4f6e20849e9156ab39df843ca4e2de446aa34628590e9d6\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/epic-1-context.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/epic-1-context.md\"], \"sha256\": \"a9f048f500efc656f081ea308819d8e8cebab7ba2659ed573d9cdf848fe96e40\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/spec-1-7-ratify-local-dapr-conventions-and-bind-component-names.md\"], \"sha256\": \"4cc1b4622914f01670bf1dae8158ca281e8870de865dab96eb375aec5e6c1949\"}, {\"path\": \"references/Hexalith.Platform/_bmad-output/implementation-artifacts/sprint-status.yaml\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:_bmad-output/implementation-artifacts/sprint-status.yaml\"], \"sha256\": \"2d0c7c85dc259481180cd9c65fb327c32706e9ddbfa0c1a01fcd848da2d2d41e\"}, {\"path\": \"references/Hexalith.Platform/apphost.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:apphost.cs\"], \"sha256\": \"2d22552e42b02cbca912cd79c9aae840a5377f2184cc042f65e64d4313c49262\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/README.md\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/README.md\"], \"sha256\": \"38a85a86d94074088f9d420f28630a5908ce474ed591f123cb93e8db767784a4\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/census-2026-10-08.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/census-2026-10-08.json\"], \"sha256\": \"f285424ced14719eb8a84a1fa983545eadd0f7cbcffe86b8a01230b2fdfe63cc\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/qualify.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/qualify.py\"], \"sha256\": \"273638cfe044ccfd874e9e99fb08e4955b0ef230320cedf0437971e39eacb653\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/replacement-acceptance-packet.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/replacement-acceptance-packet.json\"], \"sha256\": \"3090e45d873ef272bfbc6a7c1a851a18726c0ee1cb4748036267a52944a6b5ee\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/runtime-reference.example.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/runtime-reference.example.json\"], \"sha256\": \"ee679e9859d1d4143c15635a13676490f03fbcbea019bfbd70938088102b6c18\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/test_qualify.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/test_qualify.py\"], \"sha256\": \"83b8078666139b8c989cc3bdf4b0bb6ab746a91c18dfe4a45b3eb9d851ebe024\"}, {\"path\": \"references/Hexalith.Platform/eng/ext-secrets-1/unapplied-reference-artifacts.json\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/ext-secrets-1/unapplied-reference-artifacts.json\"], \"sha256\": \"7c66e635ee5faece54281ef233d14aa10e1669f5b86088f7647c85a1a6d4602b\"}, {\"path\": \"references/Hexalith.Platform/eng/test-local-dapr-security.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/test-local-dapr-security.py\"], \"sha256\": \"31a958f984d6d738b37262e39cde1e95f5a8febbaf6de92bdd5343cff4117d6a\"}, {\"path\": \"references/Hexalith.Platform/eng/test_verify_platform_pins.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/test_verify_platform_pins.py\"], \"sha256\": \"6f15df25525fe77c891ffd5dd024109d8f494b7ccb183a6b90e7422fde927dbc\"}, {\"path\": \"references/Hexalith.Platform/eng/verify-agents-host.sh\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-agents-host.sh\"], \"sha256\": \"f3f5eb51d0d1e58a4facfa6da0abff49053468b18701c65807867fc57ebc1bf2\"}, {\"path\": \"references/Hexalith.Platform/eng/verify-ext-secrets-1.ps1\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-ext-secrets-1.ps1\"], \"sha256\": \"8665f143dfe4d2934613cc45f1d61b759f5cad3e72b1f0ef578f34db43cfabe1\"}, {\"path\": \"references/Hexalith.Platform/eng/verify-platform-pins.py\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:eng/verify-platform-pins.py\"], \"sha256\": \"e3f8d85ff7744eefc65452c9e70f9989ffa07f900929f1f4bf73f4d184d35874\"}, {\"path\": \"references/Hexalith.Platform/nuget.config\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:nuget.config\"], \"sha256\": \"49f1120918c0e33ad8cf543c1c48aef71f11e4a96dc42d92f80beaa0c6079811\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/Hexalith.Platform.Composition.csproj\"], \"sha256\": \"c76654a9f99ddee50916cd9954eca8888bdc5e7e80d134f6f88f1aa670ef3d33\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformAppModel.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformAppModel.cs\"], \"sha256\": \"e2d7708f6cb79db27c66b214bfa556822ef3c57247916692fc4fb97304926344\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformCompositionOptions.cs\"], \"sha256\": \"0048f924db64cbc4ea3f9b0913a5b5a13abca8e76d41cbc4302b7e5d9fb5c275\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDaprBindings.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformDaprBindings.cs\"], \"sha256\": \"23c0d5c8892d562b59435ee7051aaef60fa2ca7d3231fc84c651e84d0b6afd93\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformDeclarationSet.cs\"], \"sha256\": \"e0e3b89998845bde3ced92b6006864aa14330e0fb90abe150f4b565a1a0c569d\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformLocalProfile.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformLocalProfile.cs\"], \"sha256\": \"ffcff69bd5b5ae549a531b45be1223e56c880b01146d881ee22746c3508cedd1\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/PlatformServerBindings.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/PlatformServerBindings.cs\"], \"sha256\": \"b5b0b55913fff3ca69c9ec94a23932f7ad7c92ccf29cbd7c922bf07c3eddd36e\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Composition/WorksPreviewModel.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Composition/WorksPreviewModel.cs\"], \"sha256\": \"959b2f64e006b957e5a128394da57189194299fe021a6589853815b5460025d3\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Custody/Hexalith.Platform.Custody.csproj\"], \"sha256\": \"096b91b6ab0878078bde04b749e55e3468a29b42a086f8026008b42665626b0b\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Enrollment/Program.cs\"], \"sha256\": \"7b9b683d27c01b5d034ce78779e7e03d493f6a98e8440016a03e411f817dacb2\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Executor/Program.cs\"], \"sha256\": \"f24a7bc746844d8f889b40951a9a75282611c67f331ece9bab43f72af78e47c1\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Observer/ContentFreeObserverJournal.cs\"], \"sha256\": \"62a3a1d16168e598aa66f965e49e47072dae806e6317ee32dc10456dff4961f4\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Qualification.Observer/Program.cs\"], \"sha256\": \"917df6d9e826be341be808a6b1dfb7a2500719bf3a993f011db5af0f9f445910\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprCapabilityAdapters.cs\"], \"sha256\": \"8315df90323b779e1ea9bbc26b94aac180bc535cf2c631e17bc7b719732f6bff\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprDecisionAuthorityAdapter.cs\"], \"sha256\": \"861f08b4448677b0b698497dd39f7972c99b72a82c2b816ff88430aecd0bca9d\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/DaprInventoryAuthorityAdapter.cs\"], \"sha256\": \"9734a1b02f69c15695cd1e429a457ecb69721e0aecc236a170e4ae759b6f2890\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/Hexalith.Platform.Secrets.Runtime.csproj\"], \"sha256\": \"84924dfb1fa82b6864bcdd16cec9301b47e321dc6875b51184f5bcc4d5eadbe2\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/SecretsDapr.cs\"], \"sha256\": \"89a009221cfbae20f7eb4c3b294c69e517150682292cee2d200f5837050454ad\"}, {\"path\": \"references/Hexalith.Platform/src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:src/Hexalith.Platform.Secrets.Runtime/SecretsProof.cs\"], \"sha256\": \"8f0846b52bca30217ef43cd9ee4466bcff6b82bc67cb465eb15394348c8b2d8c\"}, {\"path\": \"references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Composition.Tests/PlatformAppModelReviewTests.cs\"], \"sha256\": \"3397c3e1b4e2a3b19a5a566283ca97c77960df42a84f9e84c490e16a31914eed\"}, {\"path\": \"references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Composition.Tests/PlatformDaprBindingsTests.cs\"], \"sha256\": \"f0a50fe6f833df3702e9b581a88669ec8bfd21ca27a18e45cfdf2721ef2de75f\"}, {\"path\": \"references/Hexalith.Platform/tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs\", \"command\": [\"git\", \"-C\", \"/home/administrator/projects/hexalith/folders/references/Hexalith.Platform\", \"show\", \"a29daf6b1bb3471dded2196cf17064aa2b632554:tests/Hexalith.Platform.Secrets.Runtime.Tests/SecretsRuntimeAdapterTests.cs\"], \"sha256\": \"e46e43af9e6765806c58a50c517f89c79170cbfc68ab004de42e0f5c5164f9c8\"}], \"command\": [\"python3\", \"eng/story117-builds-publication/verify.py\", \"--workspace\", \"/tmp/story117-historical-replay-knmaob23\"], \"exitCode\": 0, \"stdout\": \"Verified published Builds 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf, both signed package identities, 37 exact synthetic controls and both seed modes. Platform acceptance, staging and Story closure remain open.\\n\", \"stderr\": \"\"}\n",
+                "stderr": ""
+            },
+            {
+                "label": "whitespace",
+                "command": [
+                    "git",
+                    "diff",
+                    "--check"
+                ],
+                "environment": {
+                    "PYTHONDONTWRITEBYTECODE": "1"
+                },
+                "expectedExitCode": 0,
+                "exitCode": 0,
+                "stdout": "",
+                "stderr": "warning: in the working copy of '_bmad-output/implementation-artifacts/spec-1-17-refresh-platform-qualification-proposal.md', CRLF will be replaced by LF the next time Git touches it\n"
+            }
+        ],
+        "sourceBindingsMatched": 25,
+        "historicalProtectedFilesMatched": 42,
+        "currentRunPreservationInputsMatched": 45,
+        "proposalJsonUnchanged": true,
+        "platformQualification": "HOLD",
+        "story117Tracker": "backlog"
+    },
+    "refreshCompletion": {
+        "recordedAtUtc": "2026-10-17T09:13:54.051313+00:00",
+        "spec": "_bmad-output/implementation-artifacts/spec-1-17-refresh-platform-qualification-proposal.md",
+        "status": "done",
+        "reviewLayersCompleted": 3,
+        "unresolvedFindings": 0,
+        "deferredFindings": 0,
+        "currentPlatformQualification": "HOLD; separate owner work",
+        "story117Tracker": "backlog",
+        "localCommitCreated": false,
+        "commitPolicy": "Frozen task boundaries prohibit staging, committing and pushing."
+    }
+}

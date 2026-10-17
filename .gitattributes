@@ -57,3 +57,7 @@ eng/story117-builds-clean-source/** text eol=lf
 # Preserve signed publication observations and their retained archive bytes.
 _bmad-output/implementation-artifacts/evidence/story-1-17-builds-publication-2026-10-16* -text whitespace=cr-at-eol
 eng/story117-builds-publication/** text eol=lf
+
+# Keep the separate current qualification proposal and its byte-bound receipt stable.
+eng/story117-platform-qualification-current/** text eol=lf
+_bmad-output/implementation-artifacts/evidence/story-1-17-current-qualification-2026-10-17.json text eol=lf
