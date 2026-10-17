@@ -1,4 +1,5 @@
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Authorization;
 
 using Microsoft.AspNetCore.Http;
@@ -19,13 +20,19 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
         HumanAuthorityReceiptClaims? receipt =
             httpContext?.Items[HumanAuthorityReceiptVerifier.VerifiedClaimsItemKey]
                 as HumanAuthorityReceiptClaims;
+        VerifiedQueryCaller? caller = VerifiedQueryCaller.Get(httpContext);
+        bool verifiedRead = caller?.Query.CallerAuthority?.Origin == "delegated-owner-query"
+            && caller.Query.TenantId == request.SafeContext.AuthoritativeTenantId
+            && caller.Query.UserId == request.SafeContext.PrincipalId
+            && caller.Query.AggregateId == request.SafeContext.OperationScope
+            && caller.Query.CallerAuthority.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal);
         bool allowed = request.OperationPolicyClass switch
         {
             "mutation" => receipt is not null
                 && string.Equals(receipt.Tenant, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal)
                 && string.Equals(receipt.Subject, request.SafeContext.PrincipalId, StringComparison.Ordinal)
                 && receipt.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal),
-            "strict_read" or "bounded_diagnostic_read" => httpContext?.User.Identity?.IsAuthenticated == true
+            "strict_read" or "bounded_diagnostic_read" => verifiedRead || httpContext?.User.Identity?.IsAuthenticated == true
                 && httpContext.User.FindAll("eventstore:tenant").Any(claim =>
                     string.Equals(claim.Value, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal))
                 && string.Equals(httpContext.User.FindFirstValue("sub"), request.SafeContext.PrincipalId,

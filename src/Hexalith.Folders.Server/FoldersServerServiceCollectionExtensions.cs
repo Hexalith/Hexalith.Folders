@@ -57,6 +57,7 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainProjectionHandler, FolderDomainProjectionHandler>());
         services.AddFoldersObservability();
         services.AddHttpContextAccessor();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainQueryHandler, Queries.FolderOwnerReadQueryHandler>());
         services.AddOptions<TenantContextOptions>().BindConfiguration(TenantContextOptions.SectionName);
         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
         services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();

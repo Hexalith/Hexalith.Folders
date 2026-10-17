@@ -46,6 +46,8 @@ public sealed class FoldersServerHostCompositionTests
     [Theory]
     [InlineData(FoldersServerModule.ProcessRoute, EventStoreWorkloadOperations.DomainServiceProcess)]
     [InlineData(FoldersServerModule.ProjectRoute, EventStoreWorkloadOperations.DomainServiceProject)]
+    [InlineData("/query", EventStoreWorkloadOperations.DomainServiceQuery)]
+    [InlineData("/admin/operational-index-metadata", EventStoreWorkloadOperations.DomainServiceMetadata)]
     public void ProductionCallbackUsesItsOperationPolicy(string route, string operation)
     {
         WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();

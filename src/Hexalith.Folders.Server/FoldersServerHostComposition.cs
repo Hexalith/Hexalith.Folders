@@ -57,7 +57,8 @@ public static class FoldersServerHostComposition
             });
         builder.Services.AddEventStoreWorkloadPolicies(
             EventStoreWorkloadAuthenticationDefaults.WorkloadScheme,
-            [EventStoreWorkloadOperations.DomainServiceProcess, EventStoreWorkloadOperations.DomainServiceProject]);
+            [EventStoreWorkloadOperations.DomainServiceProcess, EventStoreWorkloadOperations.DomainServiceProject,
+                EventStoreWorkloadOperations.DomainServiceQuery, EventStoreWorkloadOperations.DomainServiceMetadata]);
         builder.Services.AddSingleton<HumanAuthorityReceiptVerifier>();
         builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
         builder.Services.AddSingleton<IEventStoreAuthorizationValidator, VerifiedReceiptEventStoreAuthorizationValidator>();
