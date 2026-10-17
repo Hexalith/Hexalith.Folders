@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "record_id": "FOLDERS-12-1-DURABILITY-CONTINUATION-2026-10-17",
+  "observed_on": "2026-10-17",
+  "status": "acceptance-open: unstable host watch capacity and independent merged-main build blocker",
+  "previous_evidence": {
+    "path": "_bmad-output/implementation-artifacts/evidence/story-12-1-durability-2026-10-17.json",
+    "sha256": "6d6a8ce8c7fbc7b103ac496bc484288ff3f306e8d716ee462752ef664cc7f61a",
+    "bytes_preserved": true
+  },
+  "source": {
+    "spec_baseline_commit": "fa0668670a913d5f2ca95f43d8bba46716e1e1b4",
+    "initial_folders_head": "a907971e6ae38d8fc548b429e772e858780e9cef",
+    "external_merge": "01f9ad73f25786c8e24fddedddd71ce619c3d8b6",
+    "current_main_head": "01f9ad73f25786c8e24fddedddd71ce619c3d8b6",
+    "eventstore_gitlink_and_clean_source_head": "77d9af18a54d92506e310fe5a45021a395e66f60",
+    "owned_code_change": "Acceptance driver only; external owner-read commits/source preserved."
+  },
+  "preservation": {
+    "frozen_intent_normalized_lf_sha256": "058e571d92efd6529a56d4710137481bcd3bf1ff53b2a20e542f12fc699dca59",
+    "frozen_content_equal_to_a907971e": true,
+    "baseline_commit_unchanged": true,
+    "spec_status": "in-progress",
+    "full_live_execution_checkbox": "open",
+    "authority_and_historical_spec": {
+      "_bmad-output/planning-artifacts/planning-story-manifest.yaml": {
+        "sha256": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924",
+        "changed": false
+      },
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": {
+        "sha256": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+        "changed": false
+      },
+      "_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md": {
+        "sha256": "98d53892ca1507c66ed3b6c9e1092d71d4c61e61a5ff374d0c4e8efba072890a",
+        "changed": false
+      }
+    },
+    "initial_prior_binding_audit": "22/22 source files and 6/6 assemblies matched prior evidence",
+    "no_task_staging_commit_branch_dependency_or_submodule_update": true,
+    "active_spec_crlf_line_count": 110,
+    "active_spec_uses_only_crlf": true,
+    "root_gitlinks_and_gitmodules_equal_a907971e": true,
+    "index_empty": true,
+    "binding_verification_before_worktree_removal": {
+      "source_files": 22,
+      "assemblies": 9,
+      "command_and_live_logs": 12,
+      "all_matched": true
+    },
+    "final_checks": [
+      "Original evidence SHA-256 and all authority/historical-spec SHA-256 values match.",
+      "Frozen block and baseline/status compare equal to a907971e after LF normalization; active-spec CRLF retained.",
+      "All root gitlinks/.gitmodules compare equal to a907971e; selected EventStore working tree clean; index empty.",
+      "JSON parsed; scoped changed-test whitespace check and git diff --check passed."
+    ]
+  },
+  "correction": {
+    "path": "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs",
+    "sha256": "71012721bebf267c5d43025875d9eea8783a8ac6c68e2f30b7cd36270f1d4074",
+    "foreign_context_response": {
+      "status": 404,
+      "code": "safe_not_found",
+      "category": "not_found_to_caller"
+    },
+    "source_basis": "TenantAccessAuthorizer: missing local foreign tenant row is UnknownTenant; LayeredFolderAuthorizationService maps it to SafeNotFound; FolderAuthorizationDenialMapper maps SafeNotFound to 404/not_found_to_caller.",
+    "checks": "Preserves metadata-only payload exclusions; checks exact category for the exact-code branch; immediately verifies unchanged retained hash and persisted folder row.",
+    "corrected_live_result": "Not reached; final candidate failed initialization."
+  },
+  "commands": [
+    {
+      "id": "merged-main-build",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "exit_code": 1,
+      "log_path": "/tmp/story12-durability-build-foreign-denial-2026-10-17.log",
+      "log_sha256": "566c02be5da75c8bc35fa0ae7ae80cd4c5a8a367bf7668577a13f5624a8e7f4b",
+      "warnings": 0,
+      "errors": 11,
+      "elapsed": "00:00:51.24",
+      "source_head": "01f9ad73f25786c8e24fddedddd71ce619c3d8b6",
+      "blocker": "External owner-read integration requires missing VerifiedQueryCaller and QueryEnvelope.CallerAuthority; preserved without source or pin repair."
+    },
+    {
+      "id": "denial-mapping",
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.SafeAuthorizationDenialMappingTests",
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "exit_code": 0,
+      "log_path": "/tmp/story12-durability-v1-denial-mapping-2026-10-17.log",
+      "log_sha256": "688d8ece02f2398262af4469695b468e640823b0037b4b2d2b4a3751bb86337a",
+      "summary": {
+        "total": 12,
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "seconds": 0.141
+      },
+      "binding": "Existing prior-record Server-test binary; unchanged v1 mapping source. These tests are a subset of prior source counts."
+    },
+    {
+      "id": "isolated-linked-restore",
+      "command": "dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 0,
+      "log_path": "/tmp/story12-durability-isolated-restore-2026-10-17.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "isolated-linked-build",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 1,
+      "log_path": "/tmp/story12-durability-isolated-build-2026-10-17.log",
+      "log_sha256": "979260bb896da9dee791655b455744074fea18ca0dd5fd11a3d7a83868ed6d1e",
+      "warnings": 0,
+      "errors": 211,
+      "elapsed": "00:00:25.35",
+      "diagnosis": "Linked and canonical dependency aliases shared physical obj/ref assets. Focused target restore with canonical roots repaired this isolated graph; no warning/error suppression or acceptance credit."
+    },
+    {
+      "id": "isolated-canonical-solution-restore",
+      "command": "dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore -p:HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants -p:HexalithMemoriesRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Memories -p:HexalithFrontComposerRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 0,
+      "log_path": "/tmp/story12-durability-isolated-explicit-roots-restore-2026-10-17.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "isolated-canonical-build-after-solution-restore",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore -p:HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants -p:HexalithMemoriesRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Memories -p:HexalithFrontComposerRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 1,
+      "log_path": "/tmp/story12-durability-isolated-explicit-roots-build-2026-10-17.log",
+      "log_sha256": "c63a2241ac06422ad146e7e6c424d80fc44bb17abf706f41840b6fb60422a849",
+      "warnings": 6,
+      "errors": 5,
+      "elapsed": "00:00:43.30",
+      "diagnosis": "Linked and canonical dependency aliases shared physical obj/ref assets. Focused target restore with canonical roots repaired this isolated graph; no warning/error suppression or acceptance credit."
+    },
+    {
+      "id": "isolated-focused-restore",
+      "command": "dotnet restore tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore -p:HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants -p:HexalithMemoriesRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Memories -p:HexalithFrontComposerRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 0,
+      "log_path": "/tmp/story12-durability-isolated-target-restore-2026-10-17.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "isolated-focused-build",
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons -p:HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore -p:HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants -p:HexalithMemoriesRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Memories -p:HexalithFrontComposerRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 0,
+      "log_path": "/tmp/story12-durability-isolated-target-build-2026-10-17.log",
+      "log_sha256": "99f444c0ebcb476921700a7296e39b15251d7a1e1ee017f3acdc03569f2dfb81",
+      "warnings": 0,
+      "errors": 0,
+      "elapsed": "00:00:46.85"
+    },
+    {
+      "id": "changed-test-whitespace",
+      "command": "dotnet format whitespace tests/Hexalith.Folders.AppHost.Tests --folder --include /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs --verify-no-changes --verbosity quiet",
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "exit_code": 0,
+      "log_path": "/tmp/story12-durability-test-whitespace-2026-10-17.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "live_attempts": [
+    {
+      "run_id": "5db70f22d3365880",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput",
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "exit_code": 1,
+      "summary": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "not_run": 0,
+        "seconds": 132.159
+      },
+      "log_path": "/tmp/story12-durability-live-continuation-2026-10-17.log",
+      "log_sha256": "fcd2cb299b624b31a2a8692347a84703122b703cfe048f66f3a1b55da404744a",
+      "full_acceptance_pass": false,
+      "diagnosis": "All six Dapr sidecars failed component-directory watcher creation with ENOSPC before bootstrap/test body.",
+      "observed_milestones": [],
+      "fatal_watcher_app_ids": [
+        "eventstore-5db70f22d3365880",
+        "folders-5db70f22d3365880",
+        "folders-ui-5db70f22d3365880",
+        "folders-workers-5db70f22d3365880",
+        "memories-5db70f22d3365880",
+        "tenants-5db70f22d3365880"
+      ],
+      "binding": "Pre-merge source and binaries bound in previous_evidence, verified 22/22 source files and 6/6 assemblies before execution; no binary rebuild between these attempts. Concurrent merge receives no acceptance credit."
+    },
+    {
+      "run_id": "50e33ff7021f3eab",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput",
+      "working_directory": "/home/administrator/projects/hexalith/folders",
+      "exit_code": 1,
+      "summary": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "not_run": 0,
+        "seconds": 123.568
+      },
+      "log_path": "/tmp/story12-durability-live-capacity-restored-2026-10-17.log",
+      "log_sha256": "8fe58d3ca1f0b3f967963ff3c3aea4ce8cc22d54f489606bd03dc4bd88ded8b3",
+      "full_acceptance_pass": false,
+      "diagnosis": "After an external capacity increase, restart/replay passed. Old foreign-tenant assertion then incorrectly required 403/tenant_access_denied instead of canonical 404/safe_not_found. Later negative rows were not reached.",
+      "observed_milestones": [
+        "PASS tenant-authority: fresh managed tenant, real JWT claims and persisted tenant-access row",
+        "PASS organization-command: authenticated baseline completed through EventStore",
+        "PASS missing-grant-denial: canonical safe failure, no retained folder stream or permission row",
+        "PASS organization-grants: three single-operation grants completed and persisted through sequence 5",
+        "PASS organization-authority: managed tenant, explicit baseline/grants, persisted permission row",
+        "PASS accepted-mutation: persisted folder/event/ACL; events=1; retainedSha256=e38c888fc454501d662661738bb28177a6329e6fe773dcf492a0c8837cb9ad2b",
+        "PASS idempotency: equivalent replay and conflicting intent preserve retained bytes",
+        "PASS process-replacement: resource=folders; before=71755; after=85744",
+        "PASS process-replacement: resource=folders-workers; before=71757; after=86966",
+        "PASS process-replacement: resource=eventstore; before=71599; after=87675",
+        "PASS host-restart: persisted organization/folder authority, actor reconstruction and original retained hashes",
+        "PASS zero-checkpoint-replay: both folds agree; unknown/version-invalid events fail before persisted advancement"
+      ],
+      "fatal_watcher_app_ids": [],
+      "binding": "Pre-merge source and binaries bound in previous_evidence, verified 22/22 source files and 6/6 assemblies before execution; no binary rebuild between these attempts. Concurrent merge receives no acceptance credit."
+    },
+    {
+      "run_id": "ab6c2378a82e85dd",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true UseHexalithProjectReferences=true HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants HexalithMemoriesRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Memories HexalithFrontComposerRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput",
+      "working_directory": "/tmp/folders-story12-durability-a907971e",
+      "exit_code": 1,
+      "summary": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "errors": 0,
+        "not_run": 0,
+        "seconds": 132.038
+      },
+      "log_path": "/tmp/story12-durability-live-isolated-corrected-denial-2026-10-17.log",
+      "log_sha256": "0afd7970d3e341f75472c99cd319c9bc20370f35faa34898ab273a258ad90541",
+      "full_acceptance_pass": false,
+      "diagnosis": "Corrected isolated build passed; all six sidecars failed watchers when host limit regressed externally. No acceptance-body milestone.",
+      "observed_milestones": [],
+      "fatal_watcher_app_ids": [
+        "eventstore-ab6c2378a82e85dd",
+        "folders-ab6c2378a82e85dd",
+        "folders-ui-ab6c2378a82e85dd",
+        "folders-workers-ab6c2378a82e85dd",
+        "memories-ab6c2378a82e85dd",
+        "tenants-ab6c2378a82e85dd"
+      ],
+      "binding": "isolated_validation source/binary bindings in this record"
+    }
+  ],
+  "host_watch_capacity": {
+    "measurement": "Visible inotify wd: entries in same-UID /proc/<pid>/fdinfo files, plus /proc/sys/fs/inotify limits; not a kernel allocation counter.",
+    "observations": [
+      {
+        "phase": "before-first-attempt",
+        "visible_same_user_watch_entries": 1048539,
+        "visible_same_user_instances": 151,
+        "limits": {
+          "max_user_watches": 1048576,
+          "max_user_instances": 8192,
+          "max_queued_events": 65536
+        },
+        "fluentui_mcp_visible_watch_entries": 1045010
+      },
+      {
+        "phase": "after-first; before-capacity-restored-attempt",
+        "visible_same_user_watch_entries": 1079925,
+        "visible_same_user_instances": 152,
+        "limits": {
+          "max_user_watches": 2097152,
+          "max_user_instances": 8192,
+          "max_queued_events": 65536
+        },
+        "fluentui_mcp_visible_watch_entries": 1076396,
+        "observed_at_utc": "2026-10-17T17:54:13.994634+00:00",
+        "tmp_available_bytes": 71756976128,
+        "tmp_available_inodes": 56330945
+      },
+      {
+        "phase": "during-final-isolated-attempt",
+        "visible_same_user_watch_entries": 1109060,
+        "visible_same_user_instances": 151,
+        "limits": {
+          "max_user_watches": 1048576,
+          "max_user_instances": 8192,
+          "max_queued_events": 65536
+        },
+        "fluentui_mcp_visible_watch_entries": 1105531,
+        "observed_at_utc": "2026-10-17T18:04:23.201990+00:00",
+        "tmp_available_bytes": 69560184832,
+        "tmp_available_inodes": 56284856
+      },
+      {
+        "phase": "after-final-cleanup",
+        "visible_same_user_watch_entries": 1109060,
+        "visible_same_user_instances": 151,
+        "limits": {
+          "max_user_watches": 2097152,
+          "max_user_instances": 8192,
+          "max_queued_events": 65536
+        },
+        "fluentui_mcp_visible_watch_entries": 1105531,
+        "observed_at_utc": "2026-10-17T18:06:11.644926+00:00",
+        "tmp_available_bytes": 69186097152,
+        "tmp_available_inodes": 56266358
+      }
+    ],
+    "interpretation": "Host limits changed externally upward, downward during final startup, and upward after failure. Final capacity is unstable and earns no acceptance. /tmp bytes and inodes remained available. Task changed no host limits or shared processes."
+  },
+  "isolated_validation": {
+    "worktree_path": "/tmp/folders-story12-durability-a907971e",
+    "setup_command": "git worktree add --detach /tmp/folders-story12-durability-a907971e a907971e6ae38d8fc548b429e772e858780e9cef",
+    "setup": "Linked only existing root-declared dependency directories for data/config discovery; copied only corrected acceptance test. Canonical source-root properties used in focused restore/build. No branch or submodule initialization/update.",
+    "source_and_binary_bindings": {
+      "isolated_head": "a907971e6ae38d8fc548b429e772e858780e9cef",
+      "source_sha256": {
+        "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs": "2b9e05ea6e86646051fe4bcfdc74f02ba3345a77b932f3aff29d71e22530a763",
+        "src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs": "76ea41e92e628875b13a4dbb9708d68a7ea8e6a17c3d1516eab86be91fdac9d9",
+        "src/Hexalith.Folders.Server/Authentication/VerifiedReceiptEventStoreAuthorizationValidator.cs": "661fa208651c62b3ad12c167c317990f1eec705e1e81e9afddd661c67d15286b",
+        "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "2e2402954c5909cc6373f7bace58d9b35e1bca02c763eeec394d9bbd39f7cb3f",
+        "src/Hexalith.Folders.Server/HistoricalMutationAuthorization.cs": "d2babffb79cd515f82961bc1f54beb3948b1c66ef898183a81796b90b7ec9e8d",
+        "src/Hexalith.Folders.Workers/FoldersWorkersModule.cs": "84655e029e9478fc0da4023c4f4d55a3ff503900791a6408cee1fca4081ed486",
+        "src/Hexalith.Folders.Workers/PermissionProjectionDelivery.cs": "fccf5057a0160edba7b06114f43417c73e77620535c1173bc28e4229b2fbf6d9",
+        "src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs": "8ce1086dea8e5c3b5119e51c74e896fe7640097de41995dc7315d64e36855f80",
+        "src/Hexalith.Folders/Authorization/EventStoreOrganizationEffectivePermissionsReadModel.cs": "30a58310adda6c8bd9cd9a2b0a10f2b00fcdc617e94316a60d2b45153f500173",
+        "src/Hexalith.Folders/Authorization/PermissionProjectionConcurrencyException.cs": "519fe40df2dfa23364217c683990ecfd3235d235dabeeda89659a48ca3c9f6db",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceCollection.cs": "b61d23436cd5aaf0fbacac6ad5c96e05c513e0e9cc5873d877261114a24b35ef",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "1a4a34579dc22f28021f267b0bd6b487dc1672e51e412708cba89cbd9c1a7c2b",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "71012721bebf267c5d43025875d9eea8783a8ac6c68e2f30b7cd36270f1d4074",
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityProcess.cs": "feec2ad4274d1f19b4357bbbe11c1abd9356a49e4a8645797199a5904ce91b8b",
+        "tests/Hexalith.Folders.AppHost.Tests/README.md": "67bc51dd642424d99f72cd424abb960be2fcdb2a3b1960ba39d82c1d316b5db1",
+        "tests/Hexalith.Folders.Server.Tests/FolderGatewayTransportCaptureHandler.cs": "9899cf5113b6cd9007ad91befaae7f7c7782f1e31b126f33802da61aac5e0095",
+        "tests/Hexalith.Folders.Server.Tests/FoldersGatewayTransportTests.cs": "7c2b727acd134497f85fa7e10bd8451944288f93366d7b1fd5d7704a92e384c9",
+        "tests/Hexalith.Folders.Server.Tests/HumanAuthorityReceiptVerifierTests.cs": "171969488028af65328936a13124d94b88a64cbb2c02b724a3b5c5f691f36a20",
+        "tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs": "05b3a0f657ce906a8a8e2ffb3ce7480cc71f8a815c9b1926a8eb5ed9ac37dad8",
+        "tests/Hexalith.Folders.Workers.Tests/PermissionProjectionDeliveryTests.cs": "8f015ae39135cf54eb4ff964efbc21cd4857dd6636dcdb85c30fb1555b59e4bd",
+        "tests/Hexalith.Folders.Workers.Tests/WorkerRouteReadModelStore.cs": "5d035492d49786343a8467312b87594a6aeeee5b77169d40ff2dc053c83be841",
+        "tests/Hexalith.Folders.Workers.Tests/WorkersOrganizationAclRouteTests.cs": "bf40693b6713a5e04be987e0976ec3d4f4f6433a24902b86dd7912a4644348f9"
+      },
+      "binary_sha256": {
+        "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.dll": "c8d07c3fe5a60b21d25fa5e48ac11fa6e000b73b874c71e60be59ab0aae83db4",
+        "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll": "811e39b3bc584a8b123f8e1ea7dc7fb7de78898549134e1877788a1601444d5d",
+        "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll": "ea112bcdd37bf937f0c3acc5ae6f1f7ba75fd9dcb7f0ad55bacb45a7305b3410",
+        "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.EventStore.dll": "91c131a46e83fa2a0023e0eb2d24ceb5a8d20cf80124d89caeeb5cbf346d7eaa",
+        "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll": "a5c8f7ad3592d255a0682fd5f95c9128b1299788bbf2b663d07da171101512ce",
+        "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": "1cb1793d21dd1295dcdc68a50815295481f83eb78fcc44dfb8eca5f90095e959",
+        "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": "d05623e228ad4d98d82288f248665ef31daef0ac5446d3ffbe872d7c817bdaf6",
+        "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll": "17629e99c2f84fccc0edde8ee0b2179f3055d938bbf7b671254544e0918bcecb",
+        "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Server.dll": "eda143d77f9bf6b21974e99fae7cc27ee41430faf5df66a69ea16cd30660c4a1"
+      },
+      "acceptance_test_patch_sha256": "ebf2665f0ca5b2c255fa8c8a9b2590d67fb677932da4bb79bddf4ec181ccc34c",
+      "changed_source_files": [
+        "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs"
+      ]
+    },
+    "dependency_heads": {
+      "references/Hexalith.Tenants": "e667d5391dae306e631dec23acd191863e54130c",
+      "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "references/Hexalith.EventStore": "77d9af18a54d92506e310fe5a45021a395e66f60",
+      "references/Hexalith.FrontComposer": "b102b85b148f21fb26d5742e120c344109df7084",
+      "references/Hexalith.Memories": "f6b60d5a2e9b81d84fddad789c7d9bed40d3a533",
+      "references/Hexalith.Commons": "9e874b1a3c6e7b6ff07b6f40b81d36e4e1403798",
+      "references/Hexalith.Builds": "4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77",
+      "references/Hexalith.PolymorphicSerializations": "98de6e013840ece9f0fa7c68ab7dcdf2bba3b375",
+      "references/Hexalith.Projects": "a8059addf27261c0f2bddd23d2b266ebcfa00660",
+      "references/Hexalith.Platform": "2749ad8abdafc038ded44f6154d7182c2fd71422",
+      "references/Hexalith.McpCli": "b35b0975a234f1f97e2e35e9dad381d0a988f4af"
+    },
+    "all_11_dependency_heads_match_root_gitlinks_and_are_clean": true,
+    "result": "Debug/source build passed with zero warnings/errors; live acceptance failed. Does not establish merged-main build/acceptance.",
+    "worktree_cleanup": "Removed after retaining and verifying all commands/results, source and binary hashes, and the correction in the owning repository. Unlinked all 11 task-created dependency links before removal; shared targets were preserved."
+  },
+  "partial_candidate_isolation": {
+    "run_id": "50e33ff7021f3eab",
+    "sidecars": [
+      {
+        "app_id": "eventstore-50e33ff7021f3eab",
+        "namespace": "folders-durability-50e33ff7021f3eab",
+        "private_component_path": true
+      },
+      {
+        "app_id": "folders-50e33ff7021f3eab",
+        "namespace": "folders-durability-50e33ff7021f3eab",
+        "private_component_path": true
+      },
+      {
+        "app_id": "folders-ui-50e33ff7021f3eab",
+        "namespace": "folders-durability-50e33ff7021f3eab",
+        "private_component_path": true
+      },
+      {
+        "app_id": "folders-workers-50e33ff7021f3eab",
+        "namespace": "folders-durability-50e33ff7021f3eab",
+        "private_component_path": true
+      },
+      {
+        "app_id": "memories-50e33ff7021f3eab",
+        "namespace": "folders-durability-50e33ff7021f3eab",
+        "private_component_path": true
+      },
+      {
+        "app_id": "tenants-50e33ff7021f3eab",
+        "namespace": "folders-durability-50e33ff7021f3eab",
+        "private_component_path": true
+      }
+    ],
+    "private_components_exclude_shared_redis": true,
+    "all_six_hosts_use_task_namespace": true
+  },
+  "acceptance_rows": [
+    {
+      "criterion": "current-pin-compatibility",
+      "status": "pass for preserved pre-merge implementation; merged-main build blocked",
+      "evidence": "Prior 1,437 distinct source checks retained unchanged. The 12 mapping tests rerun here are a subset. External owner-read source was not qualified."
+    },
+    {
+      "criterion": "authorized-mutation-persisted-folds-and-retained-hashes",
+      "status": "open",
+      "evidence": "Failed partial candidate observed real tenant/owner, explicit sequence-5 organization grants, public folder/ACL persistence, metadata-only event and equivalent/conflicting intent with unchanged bytes. No whole matrix passed."
+    },
+    {
+      "criterion": "restart-and-empty-checkpoint-replay",
+      "status": "open",
+      "evidence": "Failed partial candidate newly observed all three changed PIDs, persisted state/hash equality, actor reconstruction, both sequence-zero folds and invalid-event rejection. No full acceptance credit."
+    },
+    {
+      "criterion": "authority-denials-and-unchanged-state",
+      "status": "open",
+      "evidence": "Missing-grant denial/absence passed. Foreign context returned safe 404 but old assertion stopped candidate. Corrected foreign state assertions, malformed evidence and revocation remain unobserved."
+    },
+    {
+      "criterion": "infrastructure-failure-and-unchanged-state",
+      "status": "open",
+      "evidence": "Protected-operation unavailable-store/corrupt-evidence matrix was not reached. Startup ENOSPC is a blocker, not acceptance of safe failures."
+    }
+  ],
+  "cleanup": {
+    "task_redis_containers_remaining": 0,
+    "task_namespace_processes_remaining": 0,
+    "task_component_directories_remaining": [],
+    "folders_apphost_running": false,
+    "unrelated_apphost_preserved": "/home/administrator/projects/hexalith/works/src/Hexalith.Works.AppHost/Hexalith.Works.AppHost.csproj; observed running after attempts, with externally changed process identity.",
+    "shared_redis_flush": false,
+    "host_limits_changed_by_task": false,
+    "unrelated_processes_stopped_by_task": false,
+    "raw_logs_or_credentials_retained_in_repository": false,
+    "disposable_worktree_removed": true,
+    "disposable_worktree_cleanup_command": "git worktree remove --force /tmp/folders-story12-durability-a907971e"
+  },
+  "limitations": [
+    "Every live attempt failed with zero skips; partial milestones do not close delivery.",
+    "Stable watch capacity and the separately owned merged-main build prerequisite remain required.",
+    "No live backend ETag race, broker/operator recovery, v2 exposure or downstream acceptance claimed.",
+    "Raw logs remain temporary; retained outcomes are sanitized."
+  ]
+}

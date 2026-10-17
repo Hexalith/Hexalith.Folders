@@ -167,9 +167,14 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
         using (HttpClient client = _fixture.CreateFoldersClient(foreign))
         using (HttpResponseMessage denied = await client.GetAsync($"/api/v1/folders/{folderId}/acl", TestContext.Current.CancellationToken).ConfigureAwait(true))
         {
-            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(denied, HttpStatusCode.Forbidden, "Foreign tenant protected read").ConfigureAwait(true);
-            await AssertCanonicalDenialAsync(denied, "tenant_access_denied").ConfigureAwait(true);
+            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(denied, HttpStatusCode.NotFound, "Foreign tenant protected read").ConfigureAwait(true);
+            await AssertCanonicalDenialAsync(denied, "safe_not_found").ConfigureAwait(true);
         }
+
+        RetainedHash(await _fixture.ReadStreamAsync(folderId).ConfigureAwait(true)).ShouldBe(retainedHash);
+        JsonSerializer.Serialize((await _fixture.Store.GetAsync<FolderPermissionProjection>("statestore", FolderKey(folderId), TestContext.Current.CancellationToken).ConfigureAwait(true)).Value)
+            .ShouldBe(JsonSerializer.Serialize(folder));
+        _output.WriteLine("PASS foreign-tenant-denial: canonical safe failure and unchanged persisted folder/events");
 
         await AssertMalformedEvidenceAsync(folderId, folder).ConfigureAwait(true);
         await AssertUnavailableStorageAsync(folderId).ConfigureAwait(true);
@@ -315,10 +320,11 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
         else
         {
             new[] { "safe_not_found", "folder_acl_denied", "not_found" }.ShouldContain(code);
-            // The public gateway mapper normalizes an aggregate denial to not_found;
-            // direct layered authorization uses not_found_to_caller before submission.
-            problem.GetProperty("category").GetString().ShouldBe(code == "not_found" ? "not_found" : "not_found_to_caller");
         }
+
+        // The public gateway mapper normalizes an aggregate denial to not_found;
+        // direct layered authorization uses not_found_to_caller before submission.
+        problem.GetProperty("category").GetString().ShouldBe(code == "not_found" ? "not_found" : "not_found_to_caller");
         string text = problem.GetRawText();
         text.ShouldNotContain("FolderCreated");
         text.ShouldNotContain("accessOverrides");

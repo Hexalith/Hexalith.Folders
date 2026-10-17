@@ -145,10 +145,45 @@ acceptance. Supported-replica serialization and EventStore actor fault-injection
 accepted bounded conflict proof; this lane does not claim a live backend ETag race, broker repair or
 downstream Stories 12.2–12.7 acceptance.
 
-The 2026-10-17 full matrix remains open. Earlier isolated candidates observed real tenant and organization
-authority, persisted folder creation, a positive ACL read and equivalent/conflicting intent. The final
-candidate failed initialization with zero skips because shared-host inotify watches were exhausted;
-its six Dapr sidecars could not create their directory watchers. Complete host replacement, replay and
-the remaining negative matrix have no passing live result. See the tracked evidence for exact commands,
-separate candidate outcomes and the concrete host prerequisite. Do not stop unrelated processes or
-change host limits as part of this lane.
+The 2026-10-17 full matrix remains open. The original evidence and its failed candidates are preserved.
+The [continuation record](../../_bmad-output/implementation-artifacts/evidence/story-12-1-durability-2026-10-17-continuation.json)
+adds three zero-skip failures. One candidate reached all three changed-PID host replacements, unchanged
+persisted organization/folder state and retained hashes, actor reconstruction, both zero-checkpoint folds,
+and unknown/version-invalid replay rejection. It then exposed an incorrect test expectation: the foreign
+JWT's absent local tenant context maps to v1 `404 / safe_not_found / not_found_to_caller`. The driver now
+asserts that exact canonical denial and immediately rechecks persisted folder contents and retained hashes.
+Malformed evidence, storage failure and revocation remain unobserved in this continuation.
+
+Two independent prerequisites remain open. Shared-host inotify limits changed externally between
+1,048,576 and 2,097,152; both the first and final attempts lost all six sidecar directory watchers to
+ENOSPC. Available `/tmp` bytes and inodes did not indicate disk exhaustion. The merged current main
+(`01f9ad73f25786c8e24fddedddd71ce619c3d8b6`) also fails its source build with 11 owner-read query API
+errors against the unchanged EventStore pin `77d9af18a54d92506e310fe5a45021a395e66f60`.
+`VerifiedQueryCaller` and `QueryEnvelope.CallerAuthority` belong to that separate integration failure.
+This continuation preserved the separately owned owner-read integration and dependency pins; its owner
+must resolve that build prerequisite. Shared processes and host limits were left untouched. Stable host
+capacity and an owner-resolved current-main build are needed for fresh delivery acceptance.
+
+The corrected test built in a disposable detached checkout at
+`a907971e6ae38d8fc548b429e772e858780e9cef`, with only this acceptance-test correction overlaid.
+Only root-declared dependency directories were linked for component/data discovery. The project graph
+used canonical dependency roots to avoid restoring the same project under both linked and real paths.
+Run from an equivalently prepared disposable checkout with these source roots (adjust the workspace
+prefix when reproducing elsewhere):
+
+```bash
+export UseHexalithProjectReferences=true
+export HexalithCommonsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Commons
+export HexalithEventStoreRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore
+export HexalithTenantsRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Tenants
+export HexalithMemoriesRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.Memories
+export HexalithFrontComposerRoot=/home/administrator/projects/hexalith/folders/references/Hexalith.FrontComposer
+dotnet restore tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q
+dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q
+HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput
+```
+
+The focused restore and build passed with zero warnings/errors; the corrected isolated live run failed
+initialization with zero skips when host capacity regressed. The record binds expanded commands, source
+and assembly SHA-256 values, each failed candidate, and task-owned resource cleanup. An isolated build
+does not establish that merged current main builds, and partial milestones do not close the full matrix.
