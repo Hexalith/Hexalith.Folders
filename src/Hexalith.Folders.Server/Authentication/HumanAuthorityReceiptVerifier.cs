@@ -16,16 +16,20 @@ public sealed class HumanAuthorityReceiptVerifier(
 {
     internal const string VerifiedClaimsItemKey = "Folders:VerifiedHumanAuthorityReceipt";
     private const string SigningKeySetting = "Authentication:HumanAuthorityReceipt:SigningKey";
+    private const string WorkloadSetting = "Authentication:HumanAuthorityReceipt:ExpectedWorkload";
 
     public bool TryEnter(DomainServiceRequest request, out IDisposable? scope)
     {
         ArgumentNullException.ThrowIfNull(request);
         scope = null;
         HttpContext? context = httpContextAccessor.HttpContext;
+        string expectedWorkload = configuration[WorkloadSetting] ?? "eventstore";
         if (context?.User.Identity?.IsAuthenticated != true
+            || string.IsNullOrWhiteSpace(expectedWorkload)
+            || expectedWorkload.Any(static character => char.IsWhiteSpace(character) || char.IsControl(character))
             || !string.Equals(
                 context.User.FindFirstValue(EventStoreWorkloadAuthenticationDefaults.WorkloadClaimType),
-                "eventstore",
+                expectedWorkload,
                 StringComparison.Ordinal))
         {
             return false;

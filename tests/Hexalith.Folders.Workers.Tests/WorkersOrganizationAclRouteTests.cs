@@ -29,6 +29,61 @@ namespace Hexalith.Folders.Workers.Tests;
 public sealed class WorkersOrganizationAclRouteTests
 {
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(bool writeConflict)
+    {
+        WorkerRouteReadModelStore store = new();
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        TaskCompletionSource observed = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        store.ReadObserved = key =>
+        {
+            if (key == "projection:folders:organization-permissions:tenant-a") observed.TrySetResult();
+        };
+        Task<HttpResponseMessage> grant = client.PostAsJsonAsync("/folders/events", Envelope("grant", 2,
+            new OrganizationAclPrincipalGranted("tenant-a", "tenant-a", OrganizationAclPrincipalKind.User,
+                "user-a", "create_folder", "corr", "task", "grant-key", "grant-fingerprint")),
+            TestContext.Current.CancellationToken);
+        await observed.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken).ConfigureAwait(true);
+        store.ReadObserved = null;
+        store.ForcedWriteConflicts = writeConflict ? 1 : 0;
+        using HttpResponseMessage baseline = await client.PostAsJsonAsync("/folders/events", Envelope("baseline", 1,
+            new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")),
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        baseline.StatusCode.ShouldBe(HttpStatusCode.OK);
+        using HttpResponseMessage granted = await grant.ConfigureAwait(true);
+        granted.StatusCode.ShouldBe(HttpStatusCode.OK);
+        OrganizationPermissionProjection persisted = (await store.GetAsync<OrganizationPermissionProjection>(
+            "statestore", "projection:folders:organization-permissions:tenant-a", TestContext.Current.CancellationToken)
+            .ConfigureAwait(true)).Value!;
+        persisted.LastSequence.ShouldBe(2);
+        persisted.Grants.ShouldHaveSingleItem().PrincipalId.ShouldBe("user-a");
+        persisted.RecentMessages!.Count.ShouldBe(2);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing(bool writeConflict)
+    {
+        WorkerRouteReadModelStore store = new() { ForcedWriteConflicts = writeConflict ? int.MaxValue : 0 };
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        using CancellationTokenSource bound = CancellationTokenSource.CreateLinkedTokenSource(TestContext.Current.CancellationToken);
+        bound.CancelAfter(TimeSpan.FromSeconds(5));
+        using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", Envelope("baseline",
+            writeConflict ? 1 : 2, new OrganizationAclBaselineInitialized("tenant-a", "tenant-a", "corr", "task", "key", "fingerprint")),
+            bound.Token).ConfigureAwait(true);
+        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+        (await store.GetAsync<OrganizationPermissionProjection>("statestore",
+            "projection:folders:organization-permissions:tenant-a", TestContext.Current.CancellationToken)
+            .ConfigureAwait(true)).Value.ShouldBeNull();
+    }
+
+    [Theory]
     [InlineData(false, "missing")]
     [InlineData(true, "missing")]
     [InlineData(false, "-1")]

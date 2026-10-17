@@ -16,6 +16,41 @@ namespace Hexalith.Folders.Server.Tests;
 
 public sealed class VerifiedReceiptEventStoreAuthorizationValidatorTests
 {
+    [Theory]
+    [InlineData("POST", "/api/v1/folders", true)]
+    [InlineData("POST", "/process", false)]
+    [InlineData("POST", "/api/v1/unknown", false)]
+    [InlineData("GET", "/api/v1/folders", false)]
+    [InlineData("POST", "/api/v2/folders", false)]
+    public async Task PublicMutationPreflightRequiresKnownRouteAndBoundHuman(string method, string path, bool allowed)
+    {
+        DefaultHttpContext context = new();
+        context.Request.Method = method;
+        context.Request.Path = path;
+        context.User = new ClaimsPrincipal(new ClaimsIdentity(
+            [new Claim("sub", "user-a"), new Claim("eventstore:tenant", "tenant-a"),
+                new Claim("eventstore:permission", "create_folder")], "Bearer"));
+        VerifiedReceiptEventStoreAuthorizationValidator validator = new(new HttpContextAccessor { HttpContext = context });
+        LayeredFolderAuthorizationAllowedContext safe = new("tenant-a", "user-a", "create_folder", null,
+            null, null, null, [])
+        { PrincipalId = "user-a" };
+        (await validator.ValidateAsync(new(safe, "mutation"), TestContext.Current.CancellationToken))
+            .Status.ShouldBe(allowed ? EventStoreAuthorizationValidationStatus.Allowed : EventStoreAuthorizationValidationStatus.Denied);
+        foreach (LayeredFolderAuthorizationAllowedContext wrong in new[]
+        {
+            safe with { AuthoritativeTenantId = "tenant-b" }, safe with { PrincipalId = "user-b" },
+            safe with { ActionToken = "manage_folder_access" },
+        })
+        {
+            (await validator.ValidateAsync(new(wrong, "mutation"), TestContext.Current.CancellationToken))
+                .Status.ShouldBe(EventStoreAuthorizationValidationStatus.Denied);
+        }
+
+        context.User = new ClaimsPrincipal(new ClaimsIdentity(context.User.Claims));
+        (await validator.ValidateAsync(new(safe, "mutation"), TestContext.Current.CancellationToken))
+            .Status.ShouldBe(EventStoreAuthorizationValidationStatus.Denied);
+    }
+
     [Fact]
     public async Task SignedMutationReceiptRequiresMatchingTenantSubjectAndAction()
     {

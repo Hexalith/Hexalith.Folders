@@ -15,6 +15,13 @@ internal static class HistoricalMutationAuthorization
 {
     private const long MaximumRequestBodyBytes = 1_048_576;
 
+    internal static bool IsDirectPublicMutation(HttpContext context)
+        => !Pd10V2CandidateCompatibilitySeam.IsHistoricalDispatch(context)
+            && context.Request.Path.StartsWithSegments("/api/v1", StringComparison.OrdinalIgnoreCase)
+            && Pd10ProtectedOperationCatalog.TryResolveHistorical(context.Request.Method,
+                context.Request.Path.Value ?? string.Empty, out Pd10ProtectedOperationDescriptor? descriptor, out _)
+            && descriptor?.PolicyClass == FolderOperationPolicyClass.Mutation;
+
     public static IApplicationBuilder UseHistoricalMutationAuthorization(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);

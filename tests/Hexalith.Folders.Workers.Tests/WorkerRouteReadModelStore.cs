@@ -9,6 +9,10 @@ internal sealed class WorkerRouteReadModelStore : IReadModelStore, IReadModelCon
     private readonly Lock _lock = new();
     private readonly Dictionary<string, (byte[] Json, int Version)> _values = new(StringComparer.Ordinal);
 
+    public Action<string>? ReadObserved { get; set; }
+
+    public int ForcedWriteConflicts { get; set; }
+
     public void Remove(string key)
     {
         lock (_lock)
@@ -49,6 +53,7 @@ internal sealed class WorkerRouteReadModelStore : IReadModelStore, IReadModelCon
         CancellationToken cancellationToken = default) where TValue : class
     {
         cancellationToken.ThrowIfCancellationRequested();
+        ReadObserved?.Invoke(key);
         lock (_lock)
         {
             return Task.FromResult(_values.TryGetValue(key, out var entry)
@@ -67,6 +72,12 @@ internal sealed class WorkerRouteReadModelStore : IReadModelStore, IReadModelCon
         cancellationToken.ThrowIfCancellationRequested();
         lock (_lock)
         {
+            if (ForcedWriteConflicts > 0)
+            {
+                ForcedWriteConflicts--;
+                return Task.FromResult(false);
+            }
+
             int current = _values.TryGetValue(key, out var entry) ? entry.Version : 0;
             if (etag != (current == 0 ? string.Empty : current.ToString()))
             {

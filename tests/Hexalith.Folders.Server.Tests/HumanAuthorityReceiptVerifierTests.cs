@@ -18,6 +18,34 @@ public sealed class HumanAuthorityReceiptVerifierTests
 {
     private static readonly string SigningKey = Convert.ToBase64String(Enumerable.Repeat((byte)42, 32).ToArray());
 
+    [Theory]
+    [InlineData(null, "eventstore", true)]
+    [InlineData(null, "foreign", false)]
+    [InlineData("eventstore-isolated", "eventstore-isolated", true)]
+    [InlineData("eventstore-isolated", "eventstore", false)]
+    [InlineData("", "eventstore", false)]
+    [InlineData(" ", " ", false)]
+    [InlineData(" eventstore", " eventstore", false)]
+    [InlineData("eventstore ", "eventstore ", false)]
+    [InlineData("event store", "event store", false)]
+    public void ExactConfiguredWorkloadIsRequiredBeforeReceiptVerification(string? expected, string actual, bool allowed)
+    {
+        CommandEnvelope command = Command();
+        string receipt = HumanAuthorityReceiptCodec.Issue(command, "tenant-a", "human-a",
+            ["archive_folder"], SigningKey, DateTimeOffset.UtcNow);
+        DefaultHttpContext context = WorkloadContext(actual);
+        ClaimsPrincipal original = context.User;
+        HumanAuthorityReceiptVerifier verifier = CreateVerifier(context, expected);
+        verifier.TryEnter(new DomainServiceRequest(command, null) { HumanAuthorityReceipt = receipt },
+            out IDisposable? scope).ShouldBe(allowed);
+        scope?.Dispose();
+        context.User.ShouldBeSameAs(original);
+        context.Items.ShouldNotContainKey(HumanAuthorityReceiptVerifier.VerifiedClaimsItemKey);
+        // A configured identity grants no authority with a tampered command/receipt binding.
+        verifier.TryEnter(new DomainServiceRequest(command with { AggregateId = "other" }, null)
+        { HumanAuthorityReceipt = receipt }, out _).ShouldBeFalse();
+    }
+
     [Fact]
     public void VerifiedWorkloadAndBoundReceiptProduceScopedHumanClaims()
     {
@@ -75,19 +103,23 @@ public sealed class HumanAuthorityReceiptVerifierTests
         context.Response.StatusCode.ShouldBe(StatusCodes.Status401Unauthorized);
     }
 
-    private static HumanAuthorityReceiptVerifier CreateVerifier(DefaultHttpContext context)
+    private static HumanAuthorityReceiptVerifier CreateVerifier(DefaultHttpContext context, string? expectedWorkload = null)
     {
         ConfigurationManager configuration = new();
         configuration["Authentication:HumanAuthorityReceipt:SigningKey"] = SigningKey;
+        if (expectedWorkload is not null)
+        {
+            configuration["Authentication:HumanAuthorityReceipt:ExpectedWorkload"] = expectedWorkload;
+        }
         return new HumanAuthorityReceiptVerifier(
             new HttpContextAccessor { HttpContext = context }, configuration, TimeProvider.System);
     }
 
-    private static DefaultHttpContext WorkloadContext()
+    private static DefaultHttpContext WorkloadContext(string workload = "eventstore")
         => new()
         {
             User = new ClaimsPrincipal(new ClaimsIdentity(
-                [new Claim(EventStoreWorkloadAuthenticationDefaults.WorkloadClaimType, "eventstore")],
+                [new Claim(EventStoreWorkloadAuthenticationDefaults.WorkloadClaimType, workload)],
                 "EventStoreWorkload")),
         };
 

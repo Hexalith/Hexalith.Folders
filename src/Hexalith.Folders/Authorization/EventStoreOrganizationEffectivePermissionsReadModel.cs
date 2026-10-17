@@ -187,7 +187,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
 
         if (sequence != (prior?.LastSequence ?? 0) + 1)
         {
-            throw new InvalidOperationException("Organization ACL projection sequence is not contiguous.");
+            throw new PermissionProjectionConcurrencyException("Organization ACL projection sequence is not contiguous.");
         }
 
         List<OrganizationPermissionGrant> grants = [.. prior?.Grants ?? []];
@@ -238,7 +238,7 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
         if (!await store.TrySaveAsync(StoreName, key, next, current.ETag ?? string.Empty,
             cancellationToken).ConfigureAwait(false))
         {
-            throw new InvalidOperationException("Organization ACL projection write conflicted.");
+            throw new PermissionProjectionConcurrencyException("Organization ACL projection write conflicted.");
         }
     }
 

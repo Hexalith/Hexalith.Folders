@@ -211,10 +211,14 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
             return;
         }
 
-        if (sequence != (prior?.LastSequence ?? 0) + 1
-            || prior?.RecentMessages.Any(item => item.MessageId == messageId) == true)
+        if (prior?.RecentMessages.Any(item => item.MessageId == messageId) == true)
         {
-            throw new InvalidOperationException("Folder projection sequence is not contiguous.");
+            throw new InvalidOperationException("Folder projection has conflicting message identity.");
+        }
+
+        if (sequence != (prior?.LastSequence ?? 0) + 1)
+        {
+            throw new PermissionProjectionConcurrencyException("Folder projection sequence is not contiguous.");
         }
 
         bool created = prior?.IsCreated ?? false;
@@ -260,7 +264,7 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
         if (!await store.TrySaveAsync(StoreName, key, next, current.ETag ?? string.Empty,
             cancellationToken).ConfigureAwait(false))
         {
-            throw new InvalidOperationException("Folder projection write conflicted.");
+            throw new PermissionProjectionConcurrencyException("Folder projection write conflicted.");
         }
 
         void SetOverride(FolderAccessPrincipalKind kind, string principalId, string action, bool grant,

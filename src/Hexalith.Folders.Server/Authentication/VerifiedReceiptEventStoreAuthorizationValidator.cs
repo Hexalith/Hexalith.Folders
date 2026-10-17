@@ -21,21 +21,26 @@ public sealed class VerifiedReceiptEventStoreAuthorizationValidator(IHttpContext
                 as HumanAuthorityReceiptClaims;
         bool allowed = request.OperationPolicyClass switch
         {
-            "mutation" => receipt is not null
+            "mutation" => (receipt is not null
                 && string.Equals(receipt.Tenant, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal)
                 && string.Equals(receipt.Subject, request.SafeContext.PrincipalId, StringComparison.Ordinal)
-                && receipt.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal),
-            "strict_read" or "bounded_diagnostic_read" => httpContext?.User.Identity?.IsAuthenticated == true
-                && httpContext.User.FindAll("eventstore:tenant").Any(claim =>
-                    string.Equals(claim.Value, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal))
-                && string.Equals(httpContext.User.FindFirstValue("sub"), request.SafeContext.PrincipalId,
-                    StringComparison.Ordinal)
-                && httpContext.User.FindAll("eventstore:permission").Any(claim =>
-                    string.Equals(claim.Value, request.SafeContext.ActionToken, StringComparison.Ordinal)),
+                && receipt.Permissions.Contains(request.SafeContext.ActionToken, StringComparer.Ordinal))
+                || (httpContext is not null && HistoricalMutationAuthorization.IsDirectPublicMutation(httpContext)
+                    && MatchesValidatedHuman(httpContext, request)),
+            "strict_read" or "bounded_diagnostic_read" => httpContext is not null
+                && MatchesValidatedHuman(httpContext, request),
             _ => false,
         };
         return Task.FromResult(allowed
             ? EventStoreAuthorizationValidationResult.Allowed(null)
             : EventStoreAuthorizationValidationResult.Denied());
     }
+
+    private static bool MatchesValidatedHuman(HttpContext context, EventStoreAuthorizationValidationRequest request)
+        => context.User.Identity?.IsAuthenticated == true
+            && context.User.FindAll("eventstore:tenant").Any(claim =>
+                string.Equals(claim.Value, request.SafeContext.AuthoritativeTenantId, StringComparison.Ordinal))
+            && string.Equals(context.User.FindFirstValue("sub"), request.SafeContext.PrincipalId, StringComparison.Ordinal)
+            && context.User.FindAll("eventstore:permission").Any(claim =>
+                string.Equals(claim.Value, request.SafeContext.ActionToken, StringComparison.Ordinal));
 }
