@@ -3,6 +3,7 @@ using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.ServiceDefaults;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.Client.Registration;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 
@@ -29,6 +30,11 @@ public static class FoldersServerHostComposition
 
         builder.AddServiceDefaults();
         builder.Services.AddFoldersServer();
+        builder.Services.AddTransient<FoldersGatewayHumanBearerHandler>();
+        builder.Services.AddEventStoreGatewayClient()
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri(
+                builder.Configuration["EventStore:Gateway:BaseAddress"] ?? "http://eventstore"))
+            .AddHttpMessageHandler<FoldersGatewayHumanBearerHandler>();
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFolderTenantAccessProjectionStore>();
         builder.Services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();

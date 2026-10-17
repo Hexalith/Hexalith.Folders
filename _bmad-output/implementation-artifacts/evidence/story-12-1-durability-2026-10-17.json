@@ -1,0 +1,813 @@
+{
+  "schema_version": 1,
+  "record_id": "FOLDERS-12-1-DURABILITY-2026-10-17",
+  "observed_on": "2026-10-17",
+  "status": "acceptance-open; final run blocked by shared-host inotify capacity",
+  "source": {
+    "folders_head": "fa0668670a913d5f2ca95f43d8bba46716e1e1b4",
+    "eventstore_gitlink": "77d9af18a54d92506e310fe5a45021a395e66f60",
+    "eventstore_head": "77d9af18a54d92506e310fe5a45021a395e66f60",
+    "eventstore_working_tree": "clean; pin unchanged",
+    "changes": "uncommitted; no staging, commit, remote or dependency update"
+  },
+  "authority": {
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": {
+      "sha256": "cd17a66edd38eb2f14e9566e19c3702a27fe25469646460224c6e33a80b68924",
+      "changed": false
+    },
+    "_bmad-output/implementation-artifacts/sprint-status.yaml": {
+      "sha256": "696337702adc1e8820afb51b770619ba946f74a7aaa29eacac9a62f0086c5f60",
+      "changed": false
+    },
+    "_bmad-output/implementation-artifacts/spec-12-1-eventstore-backed-folder-repository-and-replay.md": {
+      "sha256": "98d53892ca1507c66ed3b6c9e1092d71d4c61e61a5ff374d0c4e8efba072890a",
+      "changed": false
+    }
+  },
+  "commands": [
+    {
+      "command": "dotnet restore tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; exit 0",
+      "log": "/tmp/story12-durability-eventstore-server-restore.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "dotnet build tests/Hexalith.EventStore.Server.Tests/Hexalith.EventStore.Server.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; zero warnings and errors",
+      "log": "/tmp/story12-durability-eventstore-server-build.log",
+      "log_sha256": "6174b2dd0e6be670787d64937933da55a0c8d60f7fc2388aa92ec868eae5297c"
+    },
+    {
+      "command": "dotnet tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.DomainServices.VersionedWireRoundTripTests -class Hexalith.EventStore.Server.Tests.Security.HumanAuthorityReceiptCodecTests -class Hexalith.EventStore.Server.Tests.Controllers.StreamsControllerTests -class Hexalith.EventStore.Server.Tests.DomainServices.DaprDomainServiceInvokerTests -class Hexalith.EventStore.Server.Tests.Actors.AggregateActorInfrastructureFailureTests -class Hexalith.EventStore.Server.Tests.Actors.CommandRecoveryIntegrityTests",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; 246 tests, zero failures or skips",
+      "log": "/tmp/story12-durability-eventstore-server-tests.log",
+      "log_sha256": "9440082c8374790fa129275eec22acd38d316f17c56f5ea9b60eac6e61918637"
+    },
+    {
+      "command": "dotnet restore tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; exit 0",
+      "log": "/tmp/story12-durability-eventstore-client-restore.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "dotnet build tests/Hexalith.EventStore.Client.Tests/Hexalith.EventStore.Client.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; zero warnings and errors",
+      "log": "/tmp/story12-durability-eventstore-client-build.log",
+      "log_sha256": "aa83cbd828664ee47594a3d2a4eebc4105fa5d85c9e4ca9184d18c459244c729"
+    },
+    {
+      "command": "dotnet tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll -class Hexalith.EventStore.Client.Tests.Events.EventPayloadEvolutionRegistryTests",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; 35 tests, zero failures or skips",
+      "log": "/tmp/story12-durability-eventstore-client-tests.log",
+      "log_sha256": "d025ea7e27f8a969ee2e638cea1623b3b7881e1bf7796a0c9797e14f45499989"
+    },
+    {
+      "command": "dotnet restore tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; exit 0",
+      "log": "/tmp/story12-durability-eventstore-domainservice-restore.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "dotnet build tests/Hexalith.EventStore.DomainService.Tests/Hexalith.EventStore.DomainService.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; zero warnings and errors",
+      "log": "/tmp/story12-durability-eventstore-domainservice-build.log",
+      "log_sha256": "feeb0d8ac1ffef17b942c0d5f103a39aba62a2f31ecff11bd2c994431b012dbe"
+    },
+    {
+      "command": "dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.VersionedProjectionDispatchTests -class Hexalith.EventStore.DomainService.Tests.MixedProjectionCatalogTests",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; 12 tests, zero failures or skips; includes synchronous dispatch and capability/catalog checks",
+      "log": "/tmp/story12-durability-eventstore-domainservice-tests.log",
+      "log_sha256": "4e19bf0046bc5856b1773c69ef9e6d8909e4a7150f531582e49955aa5ab093a9"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.FolderEventReplayTests -class Hexalith.Folders.Server.Tests.ProductionProcessWireEventTests -class Hexalith.Folders.Server.Tests.ServerEndpointRegistrationTests -class Hexalith.Folders.Server.Tests.EventStoreOrganizationEffectivePermissionsReadModelTests -class Hexalith.Folders.Server.Tests.HumanAuthorityReceiptVerifierTests -class Hexalith.Folders.Server.Tests.VerifiedReceiptEventStoreAuthorizationValidatorTests -class Hexalith.Folders.Server.Tests.FoldersServerHostCompositionTests -class Hexalith.Folders.Server.Tests.FoldersGatewayTransportTests",
+      "working_directory": "project-root",
+      "result": "pass; 125 tests, zero failures or skips",
+      "log": "/tmp/story12-durability-final-server-tests.log",
+      "log_sha256": "c2c5001469c3385bdbe66b4300a266416340dce1ae5c52f88f28bd43de5a295c"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll -class Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests -class Hexalith.Folders.Workers.Tests.PermissionProjectionDeliveryTests -class Hexalith.Folders.Workers.Tests.FoldersFolderPermissionEventProcessorTests",
+      "working_directory": "project-root",
+      "result": "pass; 29 tests, zero failures or skips; includes out-of-order delivery, CAS retry, deadline exhaustion, cancellation and unchanged malformed rows",
+      "log": "/tmp/story12-durability-final-workers-tests.log",
+      "log_sha256": "2b03261ae84bf03d05cac75ca36863a4b37dd64ca22fbe4f0a2336befd8e2b92"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "working_directory": "project-root",
+      "result": "pass; 998 tests, zero failures or skips; includes the selected 125-test lane",
+      "log": "/tmp/story12-durability-full-server-tests.log",
+      "log_sha256": "8179af84d3ccd414011002744002205b706944451d76fa3b109fa7a3585e265d"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "working_directory": "project-root",
+      "result": "pass; 146 tests, zero failures or skips; includes the selected 29-test lane",
+      "log": "/tmp/story12-durability-full-workers-tests.log",
+      "log_sha256": "6910ae6c6531d4a80c6a5250a8e23e8d688f022ce690ca0b74e95a540d623139"
+    },
+    {
+      "command": "dotnet tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -method Hexalith.EventStore.DomainService.Tests.VersionedProjectionDispatchTests.DispatchAsync_RenamedV1EventReachesNamedHandlerWithCurrentPayload",
+      "working_directory": "references/Hexalith.EventStore",
+      "result": "pass; 1 test, zero failures or skips; a separate rerun of a test already included in the 12-test lane",
+      "log": "/tmp/story12-durability-eventstore-async-tests.log",
+      "log_sha256": "103a698efec0f35b81adf84a724acee68c1cf8ee35210dd489eb124f41c082e2"
+    },
+    {
+      "command": "dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "working_directory": "project-root",
+      "result": "pass; exit 0",
+      "log": "/tmp/story12-durability-restore.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "project-root",
+      "result": "pass; exit 0",
+      "log": "/tmp/story12-durability-final-solution-build.log",
+      "log_sha256": "454157b50f240d78e53252e0e0c5bdc9bb001458dd8f5c0eebd02ab8b80543b9"
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:BuildProjectReferences=false -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "working_directory": "project-root",
+      "result": "pass; zero warnings and errors; fixture-only rebuild on the already built source graph",
+      "log": "/tmp/story12-durability-finished-state-build.log",
+      "log_sha256": "2b961f1b8eb1720b532f9205a60afbff45d03c4473c05075280fb07d5113a22d"
+    },
+    {
+      "command": "dotnet format whitespace Hexalith.Folders.slnx --no-restore --verify-no-changes --include src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs src/Hexalith.Folders.Server/Authentication/VerifiedReceiptEventStoreAuthorizationValidator.cs src/Hexalith.Folders.Server/FoldersServerHostComposition.cs src/Hexalith.Folders.Server/HistoricalMutationAuthorization.cs src/Hexalith.Folders.Workers/FoldersWorkersModule.cs src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs src/Hexalith.Folders/Authorization/EventStoreOrganizationEffectivePermissionsReadModel.cs tests/Hexalith.Folders.Server.Tests/HumanAuthorityReceiptVerifierTests.cs tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs tests/Hexalith.Folders.Workers.Tests/WorkerRouteReadModelStore.cs tests/Hexalith.Folders.Workers.Tests/WorkersOrganizationAclRouteTests.cs src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs src/Hexalith.Folders.Workers/PermissionProjectionDelivery.cs src/Hexalith.Folders/Authorization/PermissionProjectionConcurrencyException.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceCollection.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityProcess.cs tests/Hexalith.Folders.Server.Tests/FolderGatewayTransportCaptureHandler.cs tests/Hexalith.Folders.Server.Tests/FoldersGatewayTransportTests.cs tests/Hexalith.Folders.Workers.Tests/PermissionProjectionDeliveryTests.cs --verbosity quiet",
+      "working_directory": "project-root",
+      "result": "pass; exit 0",
+      "log": "/tmp/story12-durability-final-format.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput",
+      "working_directory": "project-root",
+      "result": "failed; exit 1; total 1, failed 1, skipped 0; concrete Dapr watcher ENOSPC before bootstrap",
+      "log": "/tmp/story12-durability-live-finished-state.log",
+      "log_sha256": "be8d4e5d908a2fa6757acdb91580f7a967b1acb113183679108d9ddf17ccb647"
+    },
+    {
+      "command": "git diff --check",
+      "working_directory": "project-root",
+      "result": "pass; exit 0; existing CRLF normalization warning only",
+      "log": "/tmp/story12-durability-final-diff-check.log",
+      "log_sha256": "e6378bd81d79fbdb3c476d9c6303606d65c20843b472b3380819ebe098cc9bcc"
+    }
+  ],
+  "acceptance_rows": [
+    {
+      "criterion": "current-pin-compatibility",
+      "status": "pass",
+      "evidence": "293 distinct EventStore checks; named async rerun passes and is included. Full Folders regressions pass 998 Server and 146 Workers checks. Subsets are not counted twice."
+    },
+    {
+      "criterion": "authorized-mutation-persisted-folds-and-retained-hashes",
+      "status": "open",
+      "prior_isolated_observations": "Fresh managed tenant/owner and real JWT bindings, organization baseline plus three single-operation grants at sequence 5, public folder 202, persisted created/active folder contents, positive ACL 200, one metadata-only retained FolderCreated event, equivalent 202/conflicting 409 with retained bytes unchanged. These are partial observations from failed candidates; no single complete live test passed.",
+      "final_run": "Blocked during Dapr sidecar initialization before any tenant or business command."
+    },
+    {
+      "criterion": "restart-and-empty-checkpoint-replay",
+      "status": "open",
+      "evidence": "Exporter-bound prior candidate stopped the first Folders project (observed Finished). Complete three-host replacement, changed PIDs, reconstruction, unchanged organization/folder hashes across restart and zero-checkpoint replay are not observed. Final corrected project-state wait compiles; final run blocked before lifecycle."
+    },
+    {
+      "criterion": "authority-denials-and-unchanged-state",
+      "status": "open",
+      "evidence": "Prior isolated candidates observed canonical missing-create-grant 404 with absent folder stream/row. Foreign-tenant, revoked-grant and malformed-derived-row live checks were not reached."
+    },
+    {
+      "criterion": "infrastructure-failure-and-unchanged-state",
+      "status": "open",
+      "evidence": "Live unavailable storage, canonical timeout/corrupt-evidence response and unchanged persisted end-state matrix were not reached. Source regressions pass; they do not replace these live rows."
+    }
+  ],
+  "superseded_diagnostics": [
+    {
+      "log": "/tmp/story12-durability-live.log",
+      "log_sha256": "32118931ccae9e015fcf1c20eedaa63a7466936275cc9dbc2657d4459b9b4ee0",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Harness Dapr component lifecycle registration missing; repaired.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-corrected.log",
+      "log_sha256": "0d49578a3a1b8bf11a9edf12fcdfee3af18614d073668e71858d06cea57920ba",
+      "summary": {
+        "total": 0,
+        "errors": null,
+        "failed": null,
+        "skipped": null
+      },
+      "diagnosis": "Cancelled diagnostic, zero executed tests; not acceptance.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-final.log",
+      "log_sha256": "d9ae7449f3f036a273cc3aea7f0a5cb7417280d34f1743e2f0476280d94a946c",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Harness sidecar resource name mismatch; repaired to SDK -cli resource.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-discovered.log",
+      "log_sha256": "74ab9a5730b92f2a0762a04a2ef320807e74c4545872f25d58597f9d68c596e1",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Harness guessed a missing Keycloak credential parameter; repaired to resource parameter discovery.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-authorized.log",
+      "log_sha256": "0b7fb6e78998dc9ed377c0b6d599f51ee02172c39c0facaf77adce8063d01479",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Outbound-only Dapr readiness was insufficient; repaired to bounded full health; timeout is not an external blocker.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-full-health.log",
+      "log_sha256": "907abbd7552f3f7ca3bafecb357a90ef64e802c7e320175daaf8975cc435d8b0",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Unnecessary foreign-user attribute mutation failed; replaced by retained real foreign-tenant token.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-fresh-tenant.log",
+      "log_sha256": "9a473a50348aeb88c725c48732af8e52e667d0da7d2be9aa8eb172197ac5b75a",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "IdP discarded unmanaged custom profile attributes; repaired using managed profile registration and JWT claim assertions.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-profile.log",
+      "log_sha256": "7776bd161a351dbe86e8312ab50fb39436b754b7b0f01d3edf7fb97fc8d02c62",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Uppercase fixture tracing IDs failed canonical v1 envelope validation; repaired to lowercase production grammar.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-canonical.log",
+      "log_sha256": "fc8c540ab671f5934d603d9a325b0830783d156d5a98abc6dcc60ac2067ee721",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Concurrent authenticated organization callbacks yielded one 500/InvalidOperationException and one 200; bounded permission-delivery repair independently covered by deterministic route tests.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests"
+    },
+    {
+      "log": "/tmp/story12-durability-live-delivery.log",
+      "log_sha256": "a55a760ea42a3784ddcce00b5579aa311abc1c7671fdb964eac0aed258e3a986",
+      "summary": {
+        "total": 0,
+        "errors": null,
+        "failed": null,
+        "skipped": null
+      },
+      "diagnosis": "Cancelled after isolation audit; NAMESPACE isolates actors but mDNS requires unique app IDs. Zero completed tests.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-isolated.log",
+      "log_sha256": "bf4e8b258555207badc26bea7e9f8e026182d047c42c8c07657e156117024c7d",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Unique-app-ID bootstrap failed HTTP 500; immediate cleanup missed final service diagnostics.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-isolated-diagnostic.log",
+      "log_sha256": "dc56bb4b9143cdada20194747e75d0b2b0681ea6b7a0f9c89479ac519677bba1",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Bounded failure-log flush established Tenants /process 401 caller-conflict: signed azp differed from generated Dapr caller. Real disposable client identity, allow-lists and receipt expected identity mapped together.",
+      "acceptance_credit": false,
+      "isolation_limitation": "All runs before live-isolated lack complete mDNS app-ID isolation; later failed runs are also non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-isolated-caller.log",
+      "log_sha256": "4ae9b81967b92d1268452fd69d50762a915396112b1cdd0edddd8b618b0ebb27",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Fully isolated real identity bootstrap and persisted sequence-2 organization baseline passed; v1 preflight exposed receipt-before-gateway defect, repaired with known-route bound human preflight and authenticated SDK gateway transport.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-public-path.log",
+      "log_sha256": "a0aaefdc6a9403480dac6660b65da99d2149a9e81692ee513a03c5a47bb15623",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Real public bearer reached EventStore; existing gateway normalized missing grant to canonical not_found; corrected fixture assertion while retaining 404/nondisclosure/absence gates.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-canonical-denial.log",
+      "log_sha256": "0e00bb6eba95b205d338d282617a7a794d89ffa061673a07fc3e21a463991ae9",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Canonical missing-grant denial and stream/row absence passed; two-operation grant fixture payload rejected by trusted single-operation adapter. Fixture now sends separate grant/revoke commands.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-single-operation.log",
+      "log_sha256": "c88d8c0e635587e230d5091a2fdcf1d7e112f5c9b5ca13745ccd6df34325b34b",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Two single-operation grants reached organization retained sequence 4; second completion failed after EventsStored when internal callbacks hit consumer rate limit 429. Driver now submits commands one second apart and polls at 500 ms; limiter unchanged.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-paced.log",
+      "log_sha256": "497aa743e96dbcb79f3e8d779a14f099340ffeee4278818200bbcdf3d3a99d69",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Public create returned 202 and persisted the folder; positive ACL correctly denied without the read_metadata grant. Fixture now grants create_folder, read_metadata and manage_folder_access separately.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; superseded failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-read-grant.log",
+      "log_sha256": "e877746ef18acbbb5a6ae0189792597e0e0debab3a8168a58a32967b803b0850",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Fully isolated public mutation, persisted organization/folder rows, positive ACL, metadata-only retained event, equivalent retry and conflicting intent passed. Restart failed in the DCP process-stop phase after the application logged shutdown; no restart/replay credit.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; superseded failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-canonical-lifecycle.log",
+      "log_sha256": "2e029714ff9fc0bbdf730cf4d5777e65d9964a907a2b8230083890bcb48fc1bf",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "Canonical stop reproduced DCP timed-out process termination. A task-owned shutdown dump identifies Host.DisposeAsync -> TracerProviderSdk.Dispose -> BatchExportThreadWorker.Shutdown, with OTLP log/metric/trace exporters retrying failed transmission. Fixture-only exporter deadlines were added.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; superseded failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    },
+    {
+      "log": "/tmp/story12-durability-live-exporter-timeout.log",
+      "log_sha256": "babcaa889306379e0f5e8cb41b4983a21aca0576810d4d1a14c7c5205c3a761d",
+      "summary": {
+        "total": 1,
+        "errors": 0,
+        "failed": 1,
+        "skipped": 0
+      },
+      "diagnosis": "1000 ms exporter bounds allowed the Folders process to exit. Exact-target aspire describe observed Project state Finished; the fixture incorrectly waited for container state Exited and timed out. Project wait repaired to Finished; no completed restart credit.",
+      "acceptance_credit": false,
+      "isolation_limitation": "Complete app-ID, actor namespace, private store/broker and real JWT caller/audience isolation; superseded failed scenario remains non-acceptance.",
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput"
+    }
+  ],
+  "limitations": [
+    "Passing source checks do not close deployed acceptance.",
+    "All pre-app-ID-isolation observations are non-acceptance diagnostics.",
+    "No live backend ETag race, broker/operator recovery or Stories 12.2-12.7 acceptance is claimed.",
+    "Raw logs remain temporary; retained evidence contains no credentials, dashboard login URLs or protected payloads.",
+    "The final candidate failed before bootstrap; prior isolated partial milestones are separate observations, not a complete passing live matrix. Three-host PID replacement and all later matrix assertions remain unobserved."
+  ],
+  "distinct_source_checks": {
+    "eventstore": 293,
+    "folders_server": 998,
+    "folders_workers": 146,
+    "total": 1437,
+    "counting": "Selected Folders lanes and the named async rerun are subsets, not additional distinct tests."
+  },
+  "isolation_reference": "https://raw.githubusercontent.com/dapr/components-contrib/v1.18.0/nameresolution/mdns/mdns.go",
+  "lifecycle_diagnosis": {
+    "aspire_host_version": "13.6.1+3751e615ad660621f2a7aa4c390ef48e08a0eed8",
+    "dapr_version": "1.18.7",
+    "canonical_commands": {
+      "stop": "stop",
+      "start": "start",
+      "restart": "restart"
+    },
+    "legacy_alias_was_not_root_cause": true,
+    "stop_failure": "OTLP retry/export disposal exceeded the DCP process-stop deadline.",
+    "shutdown_method_chain": [
+      "Microsoft.Extensions.Hosting.Internal.Host.DisposeAsync",
+      "OpenTelemetry.Trace.TracerProviderSdk.Dispose",
+      "OpenTelemetry.Internal.BatchExportThreadWorker.Shutdown",
+      "OpenTelemetry.Exporter.OpenTelemetryProtocol.Implementation.Transmission.OtlpExporterRetryTransmissionHandler.OnSubmitRequestFailure"
+    ],
+    "diagnostic_commands": [
+      "dotnet-dump collect -p 78407 --type Mini -o /tmp/story12-durability-shutdown.dmp",
+      "dotnet-dump analyze /tmp/story12-durability-shutdown.dmp -c 'clrstack -all' -c exit",
+      "aspire describe folders --apphost /home/administrator/projects/hexalith/folders/src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --format Json --non-interactive"
+    ],
+    "observed_after_timeout_setting": {
+      "resource": "folders-pqupkpdb",
+      "resource_type": "Project",
+      "state": "Finished"
+    },
+    "fixture_only_settings": {
+      "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+      "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000",
+      "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000",
+      "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000"
+    },
+    "production_exporter_defaults_changed": false,
+    "raw_memory_dump_retained_in_repository": false,
+    "diagnostic_memory_dump_cleanup": "Task-owned raw dump deleted after extracting method-only diagnosis; no dump or stack body is checked in."
+  },
+  "final_candidate": {
+    "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput",
+    "working_directory": "project-root",
+    "log": "/tmp/story12-durability-live-finished-state.log",
+    "log_sha256": "be8d4e5d908a2fa6757acdb91580f7a967b1acb113183679108d9ddf17ccb647",
+    "run_id": "10870349145ad7a9",
+    "result": "failed initialization; exit 1",
+    "summary": {
+      "total": 1,
+      "errors": 0,
+      "failed": 1,
+      "skipped": 0,
+      "not_run": 0,
+      "seconds": 132.959
+    },
+    "full_acceptance_pass": false,
+    "startup_fatal_app_ids": [
+      "eventstore-10870349145ad7a9",
+      "folders-10870349145ad7a9",
+      "folders-ui-10870349145ad7a9",
+      "folders-workers-10870349145ad7a9",
+      "memories-10870349145ad7a9",
+      "tenants-10870349145ad7a9"
+    ],
+    "exact_dependency_failure": "Dapr 1.18.7: failed to create watcher: failed to add target /tmp/folders-durability-blqlzgsu.uua: no space left on device",
+    "host_prerequisite": {
+      "kind": "inotify watch capacity",
+      "limits": {
+        "max_user_instances": 8192,
+        "max_user_watches": 1048576,
+        "max_queued_events": 65536
+      },
+      "same_user_visible_watch_entries": 1048526,
+      "same_user_visible_watch_instances": 172,
+      "watch_entries_by_executable": {
+        "dbus-daemon": 5,
+        "node": 5,
+        "fluentui-mcp": 1044384,
+        "agy": 992,
+        "firefox": 19,
+        "2.1.301": 21,
+        "2.1.302": 9,
+        "codex": 2497,
+        "Hexalith.FrontComposer.AppHost": 153,
+        "Aspire.Dashboard": 1,
+        "Counter.Web": 64,
+        "daprd": 9,
+        "Hexalith.Tenants.Sample": 20,
+        "Hexalith.EventStore.Admin.Server.Host": 20,
+        "Hexalith.Tenants": 26,
+        "Hexalith.Parties": 140,
+        "Hexalith.FrontComposer.UI": 41,
+        "Hexalith.Tenants.UI": 85,
+        "Hexalith.EventStore.Admin.UI": 35
+      },
+      "tmp_available_bytes": 78267846656,
+      "tmp_available_inodes": 56282965,
+      "ownership": "Largest consumers are shared Codex/MCP fluentui-mcp processes across multiple repositories, without the task namespace. No unrelated process was stopped and no host sysctl was changed."
+    },
+    "acceptance_body_reached": false,
+    "later_matrix_rows": "unobserved; remain open"
+  },
+  "prior_isolated_partial_observation": {
+    "run_id": "bb0d60adcb87a0be",
+    "log": "/tmp/story12-durability-live-exporter-timeout.log",
+    "log_sha256": "babcaa889306379e0f5e8cb41b4983a21aca0576810d4d1a14c7c5205c3a761d",
+    "full_acceptance_pass": false,
+    "retained_folder_event_count": 1,
+    "retained_folder_sha256": "a41c3a143a7e621fa0543a177a7a986fa7f2f61e06bdc7952420c1152578e607",
+    "observed_milestones": [
+      "PASS tenant-authority: fresh managed tenant, real JWT claims and persisted tenant-access row",
+      "PASS organization-command: authenticated baseline completed through EventStore",
+      "PASS missing-grant-denial: canonical safe failure, no retained folder stream or permission row",
+      "PASS organization-grants: three single-operation grants completed and persisted through sequence 5",
+      "PASS organization-authority: managed tenant, explicit baseline/grants, persisted permission row",
+      "PASS accepted-mutation: persisted folder/event/ACL; events=1; retainedSha256=a41c3a143a7e621fa0543a177a7a986fa7f2f61e06bdc7952420c1152578e607",
+      "PASS idempotency: equivalent replay and conflicting intent preserve retained bytes"
+    ],
+    "isolation_capture": {
+      "sidecars": [
+        {
+          "app_id": "eventstore-bb0d60adcb87a0be",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "private_component_path": true
+        },
+        {
+          "app_id": "folders-bb0d60adcb87a0be",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "private_component_path": true
+        },
+        {
+          "app_id": "folders-ui-bb0d60adcb87a0be",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "private_component_path": true
+        },
+        {
+          "app_id": "folders-workers-bb0d60adcb87a0be",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "private_component_path": true
+        },
+        {
+          "app_id": "memories-bb0d60adcb87a0be",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "private_component_path": true
+        },
+        {
+          "app_id": "tenants-bb0d60adcb87a0be",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "private_component_path": true
+        }
+      ],
+      "hosts": [
+        {
+          "host": "Hexalith.Folders.EventStore",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "config": {
+            "EventStore__DomainServices__Registrations__*|counter|v1__AppId": "unhosted-sample-bb0d60adcb87a0be",
+            "Authentication__WorkloadIssuer__ClientId": "eventstore-bb0d60adcb87a0be",
+            "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+            "EventStore__DomainServices__Registrations__*|greeting|v1__AppId": "unhosted-sample-bb0d60adcb87a0be",
+            "EventStore__DomainServices__Registrations__system|global-administrators|v1__AppId": "tenants-bb0d60adcb87a0be",
+            "Authentication__WorkloadIssuer__Workload": "eventstore-bb0d60adcb87a0be",
+            "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000",
+            "EventStore__DomainServices__Registrations__*|folders|v1__AppId": "folders-bb0d60adcb87a0be",
+            "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000",
+            "EventStore__DomainServices__Registrations__system|tenants|v1__AppId": "tenants-bb0d60adcb87a0be"
+          },
+          "app_channel_token_present": false
+        },
+        {
+          "host": "Hexalith.Folders.Server",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "config": {
+            "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000",
+            "EventStore__DomainService__AppId": "folders-bb0d60adcb87a0be",
+            "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000",
+            "Memories__BaseAddress": "http://localhost:35373",
+            "Authentication__Workload__Audience": "folders-bb0d60adcb87a0be",
+            "Authentication__HumanAuthorityReceipt__ExpectedWorkload": "eventstore-bb0d60adcb87a0be",
+            "Authentication__Workload__AllowedCallers__0": "eventstore-bb0d60adcb87a0be",
+            "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000"
+          },
+          "app_channel_token_present": true
+        },
+        {
+          "host": "Hexalith.Folders.UI",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "config": {
+            "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000"
+          },
+          "app_channel_token_present": false
+        },
+        {
+          "host": "Hexalith.Folders.Workers",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "config": {
+            "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000"
+          },
+          "app_channel_token_present": true
+        },
+        {
+          "host": "Hexalith.Memories.Server",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "config": {
+            "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+            "EventStoreIntegration__CommandGateway__BaseAddress": "http://localhost:40355"
+          },
+          "app_channel_token_present": false
+        },
+        {
+          "host": "Hexalith.Tenants",
+          "namespace": "folders-durability-bb0d60adcb87a0be",
+          "config": {
+            "Tenants__BootstrapGlobalAdminEnabled": "false",
+            "Authentication__Workload__Audience": "tenants-bb0d60adcb87a0be",
+            "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT": "1000",
+            "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT": "1000",
+            "Authentication__Workload__AllowedCallers__0": "eventstore-bb0d60adcb87a0be",
+            "EventStore__DomainService__AppId": "tenants-bb0d60adcb87a0be"
+          },
+          "app_channel_token_present": false
+        }
+      ],
+      "components": [
+        {
+          "all_scopes_unique": true,
+          "scopes": [
+            "eventstore-bb0d60adcb87a0be",
+            "folders-bb0d60adcb87a0be",
+            "folders-ui-bb0d60adcb87a0be",
+            "folders-workers-bb0d60adcb87a0be",
+            "memories-bb0d60adcb87a0be",
+            "tenants-bb0d60adcb87a0be"
+          ],
+          "acl_app_ids": [
+            "eventstore-bb0d60adcb87a0be",
+            "folders-bb0d60adcb87a0be",
+            "folders-workers-bb0d60adcb87a0be",
+            "memories-bb0d60adcb87a0be",
+            "tenants-bb0d60adcb87a0be"
+          ],
+          "shared_redis_address_present": false,
+          "redis_addresses": [
+            "127.0.0.1:55374"
+          ],
+          "acl_namespaces": [
+            "folders-durability-bb0d60adcb87a0be"
+          ],
+          "resiliency_app_ids": [
+            "eventstore-bb0d60adcb87a0be"
+          ]
+        }
+      ]
+    },
+    "interpretation": "The capture belongs to this prior failed candidate, not the final ENOSPC candidate. The only subsequent harness change selects the observed project Finished state. No production code changed between these candidates."
+  },
+  "implementation_file_sha256": {
+    "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs": "2b9e05ea6e86646051fe4bcfdc74f02ba3345a77b932f3aff29d71e22530a763",
+    "src/Hexalith.Folders.Server/Authentication/HumanAuthorityReceiptVerifier.cs": "76ea41e92e628875b13a4dbb9708d68a7ea8e6a17c3d1516eab86be91fdac9d9",
+    "src/Hexalith.Folders.Server/Authentication/VerifiedReceiptEventStoreAuthorizationValidator.cs": "661fa208651c62b3ad12c167c317990f1eec705e1e81e9afddd661c67d15286b",
+    "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs": "2e2402954c5909cc6373f7bace58d9b35e1bca02c763eeec394d9bbd39f7cb3f",
+    "src/Hexalith.Folders.Server/HistoricalMutationAuthorization.cs": "d2babffb79cd515f82961bc1f54beb3948b1c66ef898183a81796b90b7ec9e8d",
+    "src/Hexalith.Folders.Workers/FoldersWorkersModule.cs": "84655e029e9478fc0da4023c4f4d55a3ff503900791a6408cee1fca4081ed486",
+    "src/Hexalith.Folders.Workers/PermissionProjectionDelivery.cs": "fccf5057a0160edba7b06114f43417c73e77620535c1173bc28e4229b2fbf6d9",
+    "src/Hexalith.Folders/Authorization/EventStoreFolderEffectivePermissionsReadModel.cs": "8ce1086dea8e5c3b5119e51c74e896fe7640097de41995dc7315d64e36855f80",
+    "src/Hexalith.Folders/Authorization/EventStoreOrganizationEffectivePermissionsReadModel.cs": "30a58310adda6c8bd9cd9a2b0a10f2b00fcdc617e94316a60d2b45153f500173",
+    "src/Hexalith.Folders/Authorization/PermissionProjectionConcurrencyException.cs": "519fe40df2dfa23364217c683990ecfd3235d235dabeeda89659a48ca3c9f6db",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceCollection.cs": "b61d23436cd5aaf0fbacac6ad5c96e05c513e0e9cc5873d877261114a24b35ef",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs": "1a4a34579dc22f28021f267b0bd6b487dc1672e51e412708cba89cbd9c1a7c2b",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceTests.cs": "a6ffe80169d035e2ff85416f86e13e5a3c2a3f62bdd8ff47a241e40c16a1ba71",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityProcess.cs": "feec2ad4274d1f19b4357bbbe11c1abd9356a49e4a8645797199a5904ce91b8b",
+    "tests/Hexalith.Folders.AppHost.Tests/README.md": "67bc51dd642424d99f72cd424abb960be2fcdb2a3b1960ba39d82c1d316b5db1",
+    "tests/Hexalith.Folders.Server.Tests/FolderGatewayTransportCaptureHandler.cs": "9899cf5113b6cd9007ad91befaae7f7c7782f1e31b126f33802da61aac5e0095",
+    "tests/Hexalith.Folders.Server.Tests/FoldersGatewayTransportTests.cs": "7c2b727acd134497f85fa7e10bd8451944288f93366d7b1fd5d7704a92e384c9",
+    "tests/Hexalith.Folders.Server.Tests/HumanAuthorityReceiptVerifierTests.cs": "171969488028af65328936a13124d94b88a64cbb2c02b724a3b5c5f691f36a20",
+    "tests/Hexalith.Folders.Server.Tests/VerifiedReceiptEventStoreAuthorizationValidatorTests.cs": "05b3a0f657ce906a8a8e2ffb3ce7480cc71f8a815c9b1926a8eb5ed9ac37dad8",
+    "tests/Hexalith.Folders.Workers.Tests/PermissionProjectionDeliveryTests.cs": "8f015ae39135cf54eb4ff964efbc21cd4857dd6636dcdb85c30fb1555b59e4bd",
+    "tests/Hexalith.Folders.Workers.Tests/WorkerRouteReadModelStore.cs": "5d035492d49786343a8467312b87594a6aeeee5b77169d40ff2dc053c83be841",
+    "tests/Hexalith.Folders.Workers.Tests/WorkersOrganizationAclRouteTests.cs": "bf40693b6713a5e04be987e0976ec3d4f4f6433a24902b86dd7912a4644348f9"
+  },
+  "binary_sha256": {
+    "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.dll": "c5a096e1a37a508ca122ac185b3103d80837619d1667590dc07b7ebf0dc3cff2",
+    "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.Server.dll": "ba12d52705730f94c0b1d54ab4d7085f34913ceeb7b0236c0169d39a0906da29",
+    "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.Workers.dll": "80499c37d9179e892ac2f499e95570cf74f4998a923c3ecddf5201bc8d98780d",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll": "03312fb9da8a870def44d45037b90a40ee96f90861fcc8086eee3f194f31cfe2",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll": "39dc69f43a1a3dab0326b02ca0bf835a629c976d3306ab47540af9cfe3b05764",
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll": "312f9c0b4ecf7be85090fb5a16e9b6c74cdd1aa2172f5441c680488560bc5e6f"
+  },
+  "cleanup": {
+    "owned_redis_containers_remaining": 0,
+    "folders_apphost_running": false,
+    "unrelated_apphosts_preserved": [
+      {
+        "apphost_path": "/home/administrator/projects/hexalith/parties/src/Hexalith.Parties.AppHost/Hexalith.Parties.AppHost.csproj",
+        "status": "running"
+      },
+      {
+        "apphost_path": "/home/administrator/projects/hexalith/tenants/src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj",
+        "status": "running"
+      },
+      {
+        "apphost_path": "/home/administrator/projects/hexalith/frontcomposer/src/Hexalith.FrontComposer.AppHost/Hexalith.FrontComposer.AppHost.csproj",
+        "status": "running"
+      }
+    ],
+    "shared_redis_clear_or_flush_performed": false,
+    "global_host_limits_changed": false,
+    "unrelated_processes_stopped": false,
+    "owned_namespaced_processes_remaining": 0
+  }
+}

@@ -186,8 +186,11 @@ public static partial class FoldersWorkersModule
         {
             try
             {
-                await organizationProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
-                await folderPermissionProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+                await PermissionProjectionDelivery.ApplyAsync(async token =>
+                {
+                    await organizationProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
+                    await folderPermissionProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
+                }, cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
