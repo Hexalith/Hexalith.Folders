@@ -1,5 +1,6 @@
 using Hexalith.Folders.Authorization;
 namespace Hexalith.Folders.Server.Tests;
+
 internal sealed class FolderOwnerReadHeads : IOrganizationStreamSequenceReader
 {
     public Dictionary<string, long> Values { get; } = new(StringComparer.Ordinal);

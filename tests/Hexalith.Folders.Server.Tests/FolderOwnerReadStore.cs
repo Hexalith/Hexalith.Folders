@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Hexalith.EventStore.Client.Projections;
 namespace Hexalith.Folders.Server.Tests;
+
 internal sealed class FolderOwnerReadStore : IReadModelStore
 {
     private readonly Dictionary<string, (byte[] Json, int Version)> values = new(StringComparer.Ordinal);

@@ -19,15 +19,25 @@ namespace Hexalith.Folders.Server.Tests;
 public sealed class FolderOwnerReadQueryHandlerTests
 {
     [Theory]
-    [InlineData("allowed")] [InlineData("revoked")] [InlineData("missing-permission")]
-    [InlineData("stale")] [InlineData("unavailable")] [InlineData("tenant-stale")]
+    [InlineData("allowed")]
+    [InlineData("revoked")]
+    [InlineData("missing-permission")]
+    [InlineData("stale")]
+    [InlineData("unavailable")]
+    [InlineData("tenant-stale")]
     public async Task DispatcherReauthorizesDelegatedActorAgainstCurrentLayeredOwnerEvidence(string state)
     {
         CancellationToken token = TestContext.Current.CancellationToken;
         var clock = new FixedUtcClock(new DateTimeOffset(2026, 10, 17, 9, 0, 0, TimeSpan.Zero));
         var tenants = new InMemoryFolderTenantAccessProjectionStore();
-        var tenant = new FolderTenantAccessProjection { TenantId = "tenant-a", Enabled = true, Watermark = 1,
-            ProjectionWatermark = "tenant-a:1", LastEventTimestamp = clock.UtcNow };
+        var tenant = new FolderTenantAccessProjection
+        {
+            TenantId = "tenant-a",
+            Enabled = true,
+            Watermark = 1,
+            ProjectionWatermark = "tenant-a:1",
+            LastEventTimestamp = clock.UtcNow
+        };
         tenant.Principals["actor"] = new("actor", "TenantOwner"); await tenants.SaveAsync(tenant, token);
         var store = new FolderOwnerReadStore(); var heads = new FolderOwnerReadHeads();
         var organization = new EventStoreOrganizationEffectivePermissionsReadModel(store, clock, heads);
