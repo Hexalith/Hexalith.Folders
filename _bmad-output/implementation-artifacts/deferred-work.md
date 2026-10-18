@@ -2963,3 +2963,51 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-1-17-builds-synthetic-acceptance-pins.md`
   summary: Reconcile the existing Folders release-workflow exact upload-artifact pin contract and investigate its blocking-test CI job.
   evidence: Folders CI 38925205004 fails the release conformance assertion (actual cf430e030ddbb5b0abf93d22962f4752f3646cd9, expected 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a); release workflow and test blobs are unchanged from pre-handoff 6dee230850842dddfea81e81700e13bd0cb65367. The earlier baseline CI also fails, and the main blocking-test job remains failed with empty job-log retrieval. Builds publication/source qualification is separate; preserve the upstream action selection and existing assertions until this maintenance is investigated. See the publication bundle folders-ci-observation.json and retained query logs.
+
+## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-18, chunk 1a)
+
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: `/query` non-input failures all map to 404 safe-denial; no endpoint-level status test (unverified medium).
+  evidence: FoldersDomainServiceEndpoints.cs:1972-1976; settle by reading DomainQueryDispatcher failure reasons.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Reserved/tenant-id AggregateId on non-CreateFolder commands and fold exceptions escaping FolderDomainProcessor as 500 (unverified medium).
+  evidence: FoldersDomainServiceRequestHandler.cs:2498-2511, FolderDomainProcessor.cs:112-130; probe with reserved-id commands.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Projection folds skip rejection identity checks and unmapped legacy rejection types make streams unreadable (unverified).
+  evidence: FolderEventReplay.cs:1522-1540,1620-1678.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: ACL commands, /query and /admin/operational-index-metadata absent from OpenAPI v2 (unverified).
+  evidence: confirm with Contract Spine owner whether DomainService-internal routes are in scope.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: `/process` and `/project` workload authorization and receipt check are skipped when `HumanAuthorityReceiptVerifier` is not registered (non-production composition only; `FoldersServerHostComposition` always registers it).
+  evidence: FoldersDomainServiceEndpoints.cs:113,153; FoldersDomainServiceRequestHandler.cs:23,35. Making it mandatory breaks 5 handler unit-test constructions and all `AddFoldersServer()` test hosts; add a hosting startup assertion instead.
+
+## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-18, chunk 1b)
+
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: AppHost receipt-key/idempotency-digest/app-channel wiring has no non-live test; only the skipped-by-default durability lane covers it.
+  evidence: AppHost/Program.cs:34-76,108-109; add an `AspireTopologyTests` assertion.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Permanent projection sequence gap after a dead-lettered event may wedge the derived permission row (unverified medium).
+  evidence: EventStore{Folder,Organization}EffectivePermissionsReadModel.cs + Workers PermissionProjectionDelivery.cs; test dead-letter of sequence N then delivery of N+1.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Rejection classifier command sets are literals not tied to the command inventory; unknown types throw on every delivery.
+  evidence: FoldersFolderPermissionEventProcessor.cs, FoldersOrganizationAclEventProcessor.cs; add inventory-parity test.
+
+## Deferred from: code review of spec-12-1-eventstore-backed-folder-repository-and-replay.md (2026-10-18, chunk 2 tests)
+
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Wall-clock-dependent tests (permission catch-up timing, Workers concurrent-delivery 1 s budget) may flake on loaded CI.
+  evidence: EventStoreOrganizationEffectivePermissionsReadModelTests.cs, WorkersOrganizationAclRouteTests.cs; inject fake TimeProvider/budget or soak 50x.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Tenant-access projection retry exhaustion (persistent conflict) is untested; revocation drop risk unverified.
+  evidence: EventStoreFolderTenantAccessProjectionStoreTests.cs:55-89.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Callback authorization is asserted as endpoint metadata only; add 401/403 request tests for /process, /project, /query, /admin; strengthen the archive-principal accepted row.
+  evidence: FoldersServerHostCompositionTests.cs, ServerEndpointRegistrationTests.cs, ArchiveFolderProcessWiringTests.cs.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: Test data uses OrganizationId == ManagedTenantId everywhere; tenant/organization swap bugs are undetectable; stray org-a seeds remain.
+  evidence: GoldenLifecycleParityTests.cs, FolderCommandFactory defaults.
+- source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
+  summary: AppHost durability acceptance is a single opt-in Fact; split phases, pin per-path denial codes.
+  evidence: FolderDurabilityAcceptanceTests.cs.

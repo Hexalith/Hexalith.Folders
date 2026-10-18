@@ -22,6 +22,7 @@ using Hexalith.Folders.Server.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Routing;
 
 namespace Hexalith.Folders.Server;
@@ -137,8 +138,10 @@ public static class FoldersDomainServiceEndpoints
             {
                 throw;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                services.GetService<ILoggerFactory>()?.CreateLogger("Hexalith.Folders.Server.Project")
+                    .LogWarning("Folders projection unreadable: {ExceptionType}.", exception.GetType().Name);
                 return Results.Problem(
                     statusCode: StatusCodes.Status422UnprocessableEntity,
                     extensions: new Dictionary<string, object?>

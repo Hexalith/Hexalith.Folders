@@ -37,7 +37,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: '2026-05-12T07:11:18+02:00'
-last_updated: '2026-10-14'
+last_updated: '2026-10-18'
 closure_update: '2026-08-24 (Story 10.6 planning/NFR traceability blocker reconciled
   to the authoritative 73-row PRD/epics inventory; focused NFR gate 16/16 and complete
   Contracts.Tests 284/284 green; Story 10.6 closed without runtime or wire changes.)'
@@ -257,7 +257,7 @@ development_status:
   epic-11-retrospective: optional
 
   epic-12: in-progress
-  12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: review
+  12-1-eventstore-backed-folder-repository-retire-noop-and-implemen: done
   # needs eventstore 
   12-2-durable-projections-and-task-completion-pipeline: backlog
   12-3-durable-workspace-file-content-store-and-content-read-source: backlog

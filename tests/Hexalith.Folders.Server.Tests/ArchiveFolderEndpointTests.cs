@@ -100,6 +100,69 @@ public sealed class ArchiveFolderEndpointTests
         }
     }
 
+    [Theory]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    public async Task ArchiveFolderEndpointShouldReportReplayFromGatewayExecutionIdentity(
+        bool hasPayload,
+        bool expectedReplay)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            ResponseFactory = request => new SubmitCommandResponse(
+                request.CorrelationId!,
+                hasPayload ? JsonSerializer.SerializeToElement(new { idempotentReplay = false }) : null,
+                MessageId: "original-execution-id"),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+            using JsonDocument document = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            document.RootElement.GetProperty("idempotentReplay").GetBoolean().ShouldBe(expectedReplay);
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
+    [Fact]
+    public async Task ArchiveFolderEndpointShouldMapPersistedProviderOutcomeToCanonicalProblem()
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            Response = new SubmitCommandResponse(
+                "correlation-a",
+                JsonSerializer.SerializeToElement(new { status = "accepted", failureCode = "UnknownProviderOutcome", idempotentReplay = false })),
+        };
+        WebApplication app = await StartAppAsync(gateway, "tenant-a", "principal-a").ConfigureAwait(true);
+        try
+        {
+            using HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
+            using HttpRequestMessage request = CreateValidArchiveRequest();
+
+            HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+            ((int)response.StatusCode).ShouldBe(503);
+            using JsonDocument problem = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken).ConfigureAwait(true));
+            problem.RootElement.GetProperty("code").GetString().ShouldBe("unknown_provider_outcome");
+        }
+        finally
+        {
+            await app.StopAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            await app.DisposeAsync().ConfigureAwait(true);
+        }
+    }
+
     [Fact]
     public async Task ArchiveFolderEndpointShouldSurfaceIdempotentReplayFromGatewayPayload()
     {
@@ -671,6 +734,8 @@ public sealed class ArchiveFolderEndpointTests
 
         public SubmitCommandResponse? Response { get; init; }
 
+        public Func<SubmitCommandRequest, SubmitCommandResponse>? ResponseFactory { get; init; }
+
         public Exception? Exception { get; init; }
 
         public Task<SubmitCommandResponse> SubmitCommandAsync(
@@ -683,7 +748,7 @@ public sealed class ArchiveFolderEndpointTests
                 throw Exception;
             }
 
-            return Task.FromResult(Response ?? new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
+            return Task.FromResult(ResponseFactory?.Invoke(request) ?? Response ?? new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
         }
 
         public Task<EventStoreQueryResult> SubmitQueryAsync(
