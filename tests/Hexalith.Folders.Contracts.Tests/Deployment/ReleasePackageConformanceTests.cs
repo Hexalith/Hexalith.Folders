@@ -147,7 +147,7 @@ public sealed partial class ReleasePackageConformanceTests
         foreach (YamlMappingNode evidenceStep in steps[4..])
         {
             evidenceStep.GetReleaseScalar("if").ShouldBe("${{ always() && failure() }}");
-            evidenceStep.GetReleaseScalar("uses").ShouldBe("actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a");
+            evidenceStep.GetReleaseScalar("uses").ShouldBe("actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9");
             evidenceStep.GetReleaseMapping("with").GetReleaseScalar("retention-days").ShouldBe("7");
             evidenceStep.GetReleaseMapping("with").GetReleaseScalar("if-no-files-found").ShouldBe("ignore");
         }

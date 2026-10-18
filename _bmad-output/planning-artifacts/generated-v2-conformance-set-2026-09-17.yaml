@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 04dedb16ce1f9a47878a7e3199b857c97072d6d07b3dca222ba276e03b63e6e3
+candidate_set_sha256: a0675c315bf1ed64415b15691a75d538da0f12101f2c487730c77f1615557c41
 artifact_count: 229
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -50,8 +50,8 @@ artifacts:
     sha256: 62cc54742272e147c49a98f38b94d7acb1cf21abeff8eee0a2aabb1969f9e4a8
   - path: "docs/contract/pd10-v2-consumer-discovery.md"
     kind: file
-    bytes: 27028
-    sha256: c7996d52309ffd7d40da30d1b758cd6900ab8af4665d2259d8c05b463e3e05a5
+    bytes: 30544
+    sha256: ce61a93dcd9ef801805907daa9a27046f1520bdc3c205c5ccab0d4f359760362
   - path: "docs/contract/sdk-generation-and-idempotency-helpers.md"
     kind: file
     bytes: 6928

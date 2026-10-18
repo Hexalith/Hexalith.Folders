@@ -1,0 +1,109 @@
+{
+  "captured_at_utc": "2026-10-18T12:12:14.450429+00:00",
+  "mode": "read-only",
+  "queries": [
+    {
+      "id": "cluster-identity",
+      "command": [
+        "kubectl",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "namespace",
+        "kube-system",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-18T12:12:13.720180+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "f443be1414e0d22a7744c7d125f7236b6e91a7cd8e618c61ee7c20a6bcad8d43",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kube_system_uid": "b5860674-1d1e-4a3b-b413-e1bb3b9a4557",
+      "matches_retained_target": true
+    },
+    {
+      "id": "workloads-routing",
+      "command": [
+        "kubectl",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "deployment,statefulset,daemonset,job,cronjob,pod,service,ingress",
+        "--all-namespaces",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-18T12:12:13.720819+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "0cf361539988b4a05b5c049d96c87b1060167ab987dd48064c3b46bd6f6b21b8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "item_count": 290,
+      "counts_by_kind": {
+        "Deployment": 42,
+        "StatefulSet": 8,
+        "DaemonSet": 5,
+        "Job": 44,
+        "CronJob": 3,
+        "Pod": 117,
+        "Service": 65,
+        "Ingress": 6
+      },
+      "folders_projects_references": []
+    },
+    {
+      "id": "persistent-volume-references",
+      "command": [
+        "kubectl",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "persistentvolume,persistentvolumeclaim",
+        "--all-namespaces",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-18T12:12:13.721301+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "019c31d7141aa4a44eced720c0909534576a60da6045929e64f0f4130273e556",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "item_count": 59,
+      "counts_by_kind": {
+        "PersistentVolume": 30,
+        "PersistentVolumeClaim": 29
+      },
+      "folders_projects_references": []
+    },
+    {
+      "id": "environment-namespaces",
+      "command": [
+        "kubectl",
+        "--context",
+        "jpiquot@local",
+        "--request-timeout=15s",
+        "get",
+        "namespace",
+        "-o",
+        "json"
+      ],
+      "started_at_utc": "2026-10-18T12:12:13.722036+00:00",
+      "exit_code": 0,
+      "stdout_sha256": "10fd3944fea411282fca601c249f7b10db39411ad08f77d4ecf271a084db81c0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "item_count": 24,
+      "proposed_environment_presence": {
+        "hexalith-staging": false,
+        "hexalith-staging-data": false,
+        "hexalith-production": false,
+        "hexalith-production-data": false
+      }
+    }
+  ],
+  "limits": [
+    "One named context only; matches identify returned object references, not application payload or domain-data absence.",
+    "No secrets, ConfigMaps, logs, database/stream/backup contents, writes or data mutations were queried.",
+    "Target-owner retained-data disposition remains required before the conditional first-install branch executes."
+  ]
+}

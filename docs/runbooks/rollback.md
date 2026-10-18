@@ -8,6 +8,8 @@ Give operators a step-by-step revert procedure for a bad release - both the publ
 
 ## Preconditions
 
+For Story 1.17, first apply the [October 18 target/data branch decision](../../_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md). The known-good-version and existing-v1 restoration procedures below apply when that baseline exists. First installation uses the failure procedure at the end of this runbook; never invent a prior release to satisfy these preconditions.
+
 - The acting principal is authorized to operate the deployment environment; tenant authority comes from authenticated context, never from a query parameter.
 - The target known-good version is identified by its immutable release tag and digest (recorded outside the sanitized repository artifacts).
 - A rollback is a deployment-config change only; it must not mutate folder state, locks, idempotency records, or provider repositories.
@@ -103,3 +105,17 @@ The cited GitHub deployment statuses belong to package Release jobs, and the ins
 ## 2026-10-15 package-audit correction
 
 The [SignalR fix result](../../_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md#addendum-2026-10-15-signalr-audit-build-fixed) supersedes the preceding default Folders build failure: the exact required Release/package command passes with auditing enabled and zero warnings/errors after the central Common `10.0.13` dependency fix. This resolves no production execution-record field. The actual production subject/prior artifacts, measured operational evidence and exact-artifact reversal remain pending; preserve `V1Only`, T0 unset and the original deadline/incident rules.
+
+## 2026-10-18 current execution hold
+
+The [resumed migration recheck](../../_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md#addendum-2026-10-18-resumed-migration-gates-and-package-handoff) supersedes the earlier passing package-build status: both current solution builds need owner-query APIs absent from released EventStore `3.124.0`. The current Projects inventory also includes verified delegated folder-read refreshes; the direct-adapter probe does not qualify that path. Rehearse the final composed path only after a compatible release/catalog and exact Folders/Projects artifacts pass their gates.
+
+Local durable-host acceptance and Platform's recorded tool acceptance fill no measured execution-record field above. Establish the production target, retained data and existing consumers, or obtain the required owner decision for a material first-install scope change. Keep `V1Only`, T0 unset, the seven-day coexistence limit and incident/expiry ordering. No production rehearsal, migration, retirement, closure or tracker transition occurred.
+
+## Story 1.17 accepted first-install failure procedure (2026-10-18)
+
+Jerome accepted the conditional first-install recommendation. The [decision](../../_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md) supersedes earlier statements that the scope choice itself still needs approval. Target/consumer coverage, retained-data disposition, exact release/staging qualification and operational entry records remain required. The fresh scoped Kubernetes inventory is not empty-data evidence.
+
+For a verified first installation with no retained domain data requiring migration, close user ingress, set the promotion stop and use the qualified executor to remove only candidate application workloads. Retain all persistent data, environment-layer/shared infrastructure and diagnostics. Do not invoke a nonexistent v1 restore or claim removal reverses writes or external effects.
+
+If retained data exists, require compatibility evidence or the named approved recovery procedure plus a usable post-lock recovery point before the attempt. Unknown data disposition blocks the attempt. Reopen only after the applicable recovery and smoke/verification gates pass. If an existing v1 installation is found, use the original exact-artifact migration procedure, T0/24-hour/168-hour limits and ordinary-versus-incident ordering above. This plan changes no live route, starts no clock and performs no removal or recovery.

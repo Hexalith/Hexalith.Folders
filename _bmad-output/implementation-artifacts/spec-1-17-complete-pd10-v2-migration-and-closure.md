@@ -1,5 +1,5 @@
 ---
-title: 'Complete Story 1.17 PD10 v2 migration and closure'
+title: 'Complete Story 1.17 PD10 v2 rollout and closure'
 type: 'feature'
 created: '2026-09-25'
 status: 'in-progress'
@@ -15,27 +15,31 @@ context:
 
 ## Intent
 
-**Problem:** Story 1.17 has a tested, 222-artifact PD10 v2 candidate, but deployed Projects still uses v1. There is no released v2 package pair or migration evidence, so the story remains open.
+**Problem:** Story 1.17 has a current PD10 v2 candidate and a retained released package pair, but current full package builds and hosted rollout evidence are incomplete. An existing Projects v1 deployment has not been established on the designated target; target coverage and retained-data disposition remain required.
 
-**Approach:** Finish the accepted seven-day Projects coexistence plan: establish packages and consumer readiness, make route use observable, rehearse reversal, execute after entry checks, then prove retirement and close the story.
+**Approach:** Qualify exact releases and the target/data branch, then execute the conditionally accepted first installation through staging, production verification, observation and recovery. A discovered existing v1 installation uses the original seven-day Projects coexistence migration and its retirement gates.
 
 **Scope decision (2026-09-26):** Full migration includes publication, deployments, observation, v1 retirement, and gated closure.
 
+**Scope amendment (2026-10-18):** Jerome instructed `apply recommended` after the first-install recommendation and its target/data condition. The [current decision](story-1-17-first-install-decision-2026-10-18.md) accepts first installation conditionally, preserves the existing-v1 migration fallback, and supplies no data-absence, deployment or operational acceptance.
+
 ## Boundaries & Constraints
 
-**Always:** Preserve historical v1 and signed OQ3/A6b/A8 evidence. Keep `V1Only` until every entry check passes. Bind results to exact revisions and rerun changed-byte checks. Use metadata-only, version- and consumer-attributed telemetry. T0 is the earlier of v2 becoming routable or its first production request; deploy Projects within 24 hours, then observe 24 hours of ordinary traffic and all periodic calls before retiring v1 by T0+168 hours. Restore v1 on rollback triggers.
+**Always:** Preserve historical v1 and signed OQ3/A6b/A8 evidence. Keep `V1Only` until every entry check passes. Bind results to exact revisions and rerun changed-byte checks. Use metadata-only, version- and consumer-attributed telemetry. First installation needs verified target/data disposition, staging, exact hosted artifacts, smoke/observation and the applicable workload-removal or retained-data recovery proof; on failure close ingress, stop promotion and retain data/shared objects. For an existing-v1 migration, T0 is the earlier of v2 becoming routable or its first production request; deploy Projects within 24 hours, then observe 24 hours of ordinary traffic and all periodic calls before retiring v1 by T0+168 hours. Restore v1 on that branch's rollback triggers. Record real first-install activation separately; it supplies no fictional coexistence clock or v1 retirement.
 
-**Never:** Infer approval from historical digests; claim absent traffic from source search; expose v2 or retire v1 before its gate; extend the window silently; claim rollback undoes mutations; start another story; or edit `sprint-status.yaml` without its authorized transition.
+**Never:** Infer approval from historical digests; treat a scoped inventory nonmatch as empty-data or global-absence proof; expose v2 or retire v1 before its gate; extend the migration window silently; delete data or claim workload removal/rollback undoes mutations; start another story; or edit `sprint-status.yaml` without its authorized transition.
 
 ## I/O & Edge-Case Matrix
 
 | Scenario | Input / State | Expected Output / Behavior | Error Handling |
 |----------|---------------|---------------------------|----------------|
 | Hold | Default host configuration | v1 works; v2 is unrouted | Invalid mode fails startup |
-| Coexistence | All entry evidence accepted | v1 and v2 work; attributed counts and errors are visible | Failed smoke or threshold triggers rollback |
+| First installation | Target/data branch verified and all exact-release entry checks pass | Install through staging-qualified Platform attempt; verify, observe and record actual activation | Close ingress, stop promotion, remove candidate workloads and retain data/shared objects on failure |
+| Unknown or retained data | No existing workload, but data disposition is unknown or retained data exists | Unknown blocks execution; retained data needs compatibility or named recovery and a usable post-lock recovery point | Never synthesize empty-data proof or delete data |
+| Existing-v1 coexistence | Existing installation and all migration entry evidence accepted | v1 and v2 work; attributed counts and errors are visible | Failed smoke or threshold triggers migration rollback |
 | Projects migration | Exact released v2 client and contract | Lifecycle, permissions, and metadata reads succeed; denial and unavailable remain distinct | No silent deserialization fallback |
-| Retirement | Exit evidence complete before deadline | External v1 gets canonical 404; Projects v2 calls continue | Missing consumer or schedule evidence blocks retirement |
-| Expiry or incident | Deadline or disclosure regression | Stop exception; restore verified v1 path | Record metadata-only outcome and seek new decision |
+| Existing-v1 retirement | Migration exit evidence complete before deadline | External v1 gets canonical 404; Projects v2 calls continue | Missing consumer or schedule evidence blocks retirement |
+| Existing-v1 expiry or incident | Migration deadline or disclosure regression | Stop exception; restore verified v1 path | Record metadata-only outcome and seek new decision |
 
 </frozen-after-approval>
 
@@ -58,14 +62,16 @@ context:
 - [ ] `tools/release-packages.json`, `.github/workflows/release.yml`, package tests -- verify Client/Contracts identity and hashes through the existing release lane; record the exact package pair and Projects build artifact.
 - [ ] `docs/contract/pd10-v2-consumer-discovery.md`, `_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md`, `docs/runbooks/rollback.md` -- complete discovery, baseline, thresholds, reversal, mutation disposition, UTC schedule, owners, and deadline; correct superseded status.
 - [x] `_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md` -- rerun A6b, Section 9, parity, focused and package-profile checks on final bytes; append exact evidence without rewriting history.
-- [ ] `_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md`, `_bmad-output/planning-artifacts/planning-story-manifest.yaml`, `_bmad-output/implementation-artifacts/sprint-status.yaml` -- record gated deployment and observation evidence, verify v1 retirement, then obtain the closure decision and authorized tracker delta.
+- [ ] `_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md`, `_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md`, `_bmad-output/planning-artifacts/planning-story-manifest.yaml`, `_bmad-output/implementation-artifacts/sprint-status.yaml` -- verify target/data disposition and record applicable first-install or existing-v1 migration deployment, observation and recovery evidence; verify v1 retirement only for the migration branch, then obtain the closure decision and authorized tracker delta.
 
 **Acceptance Criteria:**
 - Given any failed entry check, when execution is evaluated, then `V1Only` stays active and T0 has not started.
 - Given the released package pair, when Projects builds and exercises each inventoried call, then its typed outcomes match the v2 contract and the deployment artifact is identified by exact revision.
-- Given the coexistence window, when monitoring runs, then each decision uses attributed traffic, baseline thresholds, and a recorded UTC clock.
-- Given complete exit evidence, when v1 is retired, then Projects remains functional on v2 and no deployed v1 consumer remains.
-- Given any missing exit evidence or rollback trigger, when the window ends, then the safe v1 path is restored and Story 1.17 remains open pending a new decision.
+- Given verified first-install target/data disposition and all common gates, when the exact release is installed, then staging, production verification, observation and applicable recovery evidence are retained without a fabricated v1 baseline, coexistence clock or retirement claim.
+- Given unknown data disposition, when execution is evaluated, then it remains on HOLD; retained data requires compatibility or named recovery and a usable post-lock recovery point.
+- Given an existing-v1 coexistence window, when monitoring runs, then each decision uses attributed traffic, baseline thresholds, and a recorded UTC clock.
+- Given complete existing-v1 migration exit evidence, when v1 is retired, then Projects remains functional on v2 and no deployed v1 consumer remains.
+- Given a first-install failure, when recovery runs, then ingress closes, promotion stops, candidate application workloads are removed by the qualified executor and data/shared objects are retained; a migration expiry or rollback trigger instead restores the verified v1 path under its original ordering.
 
 ## Implementation Notes
 
@@ -104,7 +110,7 @@ context:
 ## Verification
 
 **Commands:**
-- `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1` -- package-profile build passes.
+- `dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1` -- the current October 18 recheck fails on owner-query APIs absent from EventStore `3.124.0`; see the dated result below.
 - `pwsh tests/tools/run-contract-parity-ci-gates.ps1 -NoRestore` -- all twelve categories pass.
 - `pwsh tests/tools/run-governance-completeness-gates.ps1 -SkipRestoreBuild` -- current-input provenance passes.
 - Run the affected Folders and Projects test projects individually, then reproduce the conformance manifest twice to exact bytes.
@@ -132,3 +138,16 @@ The user requested fixing the reported build failure. The [bounded fix spec](spe
 The [current readiness addendum](story-1-17-current-candidate-technical-readiness-2026-09-24.md#addendum-2026-10-16-committed-input-recheck-and-operational-hold) and [structured local record](evidence/story-1-17-resume-2026-10-16.json) bind clean Folders `1030c50e39b54a30ef554f10662bea2225f17ed3`, Projects `42c8e7bc3a58d78e7c6ea4273711d697e81175e7` and Builds `ed9fa691b1c9307220f8e05dab3f175b72ff75b4` before these evidence-only edits. Both default Release/package CI-solution builds pass with auditing enabled and zero warnings/errors. Projects adapters pass 39/39 against the cached released Client/Contracts `1.2.1` pair; their runtime DLLs match those archives. Folders startup/authorization passes 29/29, routing/golden 114/114, conformance/package/NFR/runbooks 50/50, governance 23/23 + 7/7 + 3/3 and parity 12/12 categories. The unchanged 229-artifact candidate reproduces twice; 20 current bindings and 29 historical/control hashes match. No candidate, current provenance or dependency edit was necessary.
 
 The separately prepared [October 16 Platform proposal](story-1-17-platform-rollout-proposal-2026-10-16.md) is inert first-install preparation for the observed target, not acceptance of a change to this spec's frozen migration premise. Its thirteen diagnostic mutation tests pass; all fourteen staging checks remain unexecuted. The actual production subject/consumer scope, owner decision for any material first-install change, qualified retained Platform release/hosting/delegation, exact deployed artifacts and measured operational entry/exit evidence remain unresolved. No new remote discovery, publication, staging execution, deployment, route change, T0, observation, reversal, retirement or closure occurred. Keep this spec `in-progress`, `V1Only`, T0 unset, the original baseline/frozen scope and tracker `backlog`; unchecked tasks remain incomplete.
+
+
+## 2026-10-18 resumed implementation result
+
+The [current readiness addendum](story-1-17-current-candidate-technical-readiness-2026-09-24.md#addendum-2026-10-18-resumed-migration-gates-and-package-handoff) and [local record](evidence/story-1-17-resume-2026-10-18.json) bind Folders `14e70652d27dcfdf8e47638266dc97bfc11b9c64` and its synchronized dependency revisions. Corrected the release-conformance test's stale immutable upload-artifact expectation, expanded discovery for Projects' verified delegated refresh, and corrected current migration/runbook summaries. Resealed only discovery's current candidate row and the conformance manifest's current provenance digest; all 229 artifacts, twenty current bindings, two regenerations and 29 protected hashes match.
+
+The exact default Folders/Projects Release/package builds fail with 11/two compiler errors on owner-query APIs absent from EventStore `3.124.0`. A compatible release and owning catalog adoption are required before renewed full package verification; no dependency or authentication change was made. Explicit Debug/source builds with auditing enabled pass; focused host/authorization/owner-query/gateway tests pass 64/64 and routing/golden tests 114/114. Fresh Release conformance/package/NFR/runbook tests pass 50/50 and governance 23/23 + 7/7 + 3/3. The unchanged direct Projects adapters pass an isolated package probe 39/39, with released `1.2.1` archive/runtime identity verified; the new delegated adapter and full Projects composition remain outside that probe. The parity command's 12/12 cached Release-output replay supplies no current full-package parity claim.
+
+Platform's recorded Stories 1.8/1.9 and accepted tool `4.33.0` supersede their older pending status. Intake, composed releases, hosted identity/delegation and operational entry remain open. The separate qualification packet is preserved and refuses changed inputs. A bounded local Platform AppHost baseline was started, described and stopped; waiting resources supply no staging/production acceptance. No new remote discovery, publication, deployment, production activation, observation, rehearsal, retirement or closure occurred. The actual target/consumer/retained-data scope remains unresolved; no first-install decision is inferred. Keep this spec `in-progress`, `V1Only`, T0 unset, the original frozen scope/baseline, seven-day cap and tracker `backlog`. Unchecked tasks remain incomplete.
+
+## 2026-10-18 owner-authorized rollout scope amendment
+
+Jerome instructed `apply recommended` after the conditional first-install recommendation. The current frozen intent and applicable-branch acceptance criteria now reflect [that decision](story-1-17-first-install-decision-2026-10-18.md), as expressly authorized human renegotiation. The original baseline and all dated implementation/approval evidence remain intact. First installation no longer waits for another scope approval; target/data checks and common gates remain execution requirements. An existing v1 installation retains its original migration clocks, retirement and restoration rules. No runtime, package version, deployment, activation authority or tracker transition is changed by this amendment.

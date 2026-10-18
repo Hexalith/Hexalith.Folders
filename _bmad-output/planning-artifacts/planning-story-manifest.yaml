@@ -75,7 +75,7 @@ provenance:
 - path: tests/Hexalith.Folders.Contracts.Tests/OpenApi/GovernanceCompletenessGateTests.cs
   sha256: 0d2558f147bb1c51e395cb00fc5157e881c32c1afd721b998e631f398588f5b8
 - path: _bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml
-  sha256: 5c9dbdda1687e2a70da5869022fbde77a16d96d485d558a5744240d39191fbab
+  sha256: 5ee96bb31ce2a9c0386182676c31304835cfcbacb0a2ef516623605f05929ab2
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml
   sha256: 4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d
 - path: _bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml
