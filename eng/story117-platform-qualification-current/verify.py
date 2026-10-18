@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 
 PACKET = Path(__file__).resolve().parent
 WORKSPACE = PACKET.parent.parent
+PLATFORM_SOURCE = "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md"
 SOURCES = (
     "src/Hexalith.Folders.Server/FoldersApiRouting.cs",
     "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs",
@@ -35,7 +36,13 @@ SOURCES = (
     "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAuthenticationOptions.cs",
     "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/WorkloadAssertionIssuerOptions.cs",
     "references/Hexalith.Builds/Props/Directory.Packages.props",
-    "references/Hexalith.Platform/_bmad-output/planning-artifacts/architecture/architecture-platform-2026-09-27/ARCHITECTURE-SPINE.md",
+    PLATFORM_SOURCE,
+    "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/EventStoreWorkloadAuthenticationExtensions.cs",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/ConfigureWorkloadJwtBearerOptions.cs",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtWorkloadAssertionIssuer.cs",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationContract.cs",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.ServiceDefaults/Authentication/JwtBearerAuthenticationOptions.cs",
 )
 CHECKS = (
     "artifact-provenance", "first-install-baseline-selection",
@@ -51,8 +58,14 @@ MODULE_KEYS = {
         "Folders:Authentication:MetadataAddress", "Folders:Authentication:Audience",
         "Folders:Authentication:ValidIssuer", "Folders:Authentication:RequireHttpsMetadata",
         "Authentication:JwtBearer:Authority", "Authentication:JwtBearer:Issuer",
+        "Authentication:WorkloadJwtBearer:Authority", "Authentication:WorkloadJwtBearer:Issuer",
+        "Authentication:WorkloadJwtBearer:Audience", "Authentication:WorkloadJwtBearer:ValidAudiences",
+        "Authentication:WorkloadJwtBearer:AllowedAlgorithms", "Authentication:WorkloadJwtBearer:SigningKey",
+        "Authentication:WorkloadJwtBearer:RequireHttpsMetadata", "Authentication:WorkloadJwtBearer:AllowInsecureSymmetricKey",
         "Authentication:Workload:Audience", "Authentication:Workload:AllowedCallers:0",
-        "Authentication:HumanAuthorityReceipt:SigningKey", "APP_API_TOKEN",
+        "Authentication:HumanAuthorityReceipt:SigningKey",
+        "Authentication:HumanAuthorityReceipt:ExpectedWorkload",
+        "EventStore:Gateway:BaseAddress", "APP_API_TOKEN",
     ),
     "folders-workers": ("Folders:Workers:PubSubName", "APP_API_TOKEN"),
     "folders-ui": (
@@ -64,6 +77,7 @@ MODULE_KEYS = {
     "eventstore-inputs": (
         "EventStore:Publisher:TopicOverrides:folders",
         "Authentication:WorkloadIssuer:ClientId", "Authentication:WorkloadIssuer:ClientSecret",
+        "Authentication:WorkloadIssuer:EnableResourceBindingRequests",
         "Authentication:HumanAuthorityReceipt:SigningKey",
         "EventStore:IdempotencyAdmission:Enabled", "EventStore:IdempotencyAdmission:DigestKeySource",
         "EventStore:IdempotencyAdmission:ActiveDigestKeyVersion",
@@ -118,20 +132,26 @@ SECRET_MAPPINGS = {
 REQUIREMENT_FIELDS = (
     "installationProposal", "acceptedEnvelope", "runtimeConstraints",
     "admissionPrerequisites", "platformBindings",
+    "moduleConfiguration", "authenticationRequirements", "catalogCoherenceObservation",
 )
-REQUIREMENTS_SHA256 = "86ebbb6a3a532c91f3bbda64779d428201f56492e1cd24f850a797d46758702c"
-STAGING_SHA256 = "8a8c40abbbd234ef64dbd2e714bbd170fb374bebd62c04acbfb8f8856088408c"
+REQUIREMENTS_SHA256 = "bbc0f0da5c1fe6cd60b214255d2d45f6daec9bff4d1d18a13f89b7d7193fb3b2"
+STAGING_SHA256 = "41fa739fba71cdb11dc2c43dade625aa799e0cfb4c204a1f2fd6d307f33f20b1"
 FIXED_VALUES = {
     ("folders-server", "Folders:ApiRouting:Mode"): "V1Only",
     ("folders-server", "Folders:Authentication:RequireHttpsMetadata"): True,
     ("folders-server", "Authentication:Workload:Audience"): "folders",
     ("folders-server", "Authentication:Workload:AllowedCallers:0"): "eventstore",
+    ("folders-server", "Authentication:HumanAuthorityReceipt:ExpectedWorkload"): "eventstore",
+    ("folders-server", "EventStore:Gateway:BaseAddress"): "http://eventstore",
+    ("folders-server", "Authentication:WorkloadJwtBearer:RequireHttpsMetadata"): True,
+    ("folders-server", "Authentication:WorkloadJwtBearer:AllowInsecureSymmetricKey"): False,
     ("folders-workers", "Folders:Workers:PubSubName"): "folders-workers-pubsub",
     ("folders-ui", "Folders:Authentication:Mode"): "oidc",
     ("folders-ui", "Folders:Authentication:RequireHttpsMetadata"): True,
     ("eventstore-inputs", "EventStore:Publisher:TopicOverrides:folders"): "folders.events",
     ("eventstore-inputs", "EventStore:IdempotencyAdmission:Enabled"): True,
     ("eventstore-inputs", "EventStore:IdempotencyAdmission:DigestKeySource"): "DaprSecret",
+    ("eventstore-inputs", "Authentication:WorkloadIssuer:EnableResourceBindingRequests"): False,
 }
 BINDINGS = (
     "release-and-hosting", "profile", "namespaces-and-network", "read-model", "broker",
@@ -155,10 +175,10 @@ CATALOG_BINDINGS = {
     "frontcomposer": ("HexalithFrontComposerVersion", "Hexalith.FrontComposer.Contracts"),
 }
 SNAPSHOTS = {
-    "Folders": "d06799dd70334366dddaee6ace6b9a472f78c93e",
+    "Folders": "65f34e7c4b2bd41805aaa1c3b8d87ee3b65363f1",
     "Projects": "a8059addf27261c0f2bddd23d2b266ebcfa00660",
-    "Platform": "b54dc5f2e8fe070db9a0ca3a72ad495b380d2b5e",
-    "EventStore": "77d9af18a54d92506e310fe5a45021a395e66f60",
+    "Platform": "2749ad8abdafc038ded44f6154d7182c2fd71422",
+    "EventStore": "269b20d58236f07228bc2afd54807b94bd96f37b",
     "Builds": "4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77",
 }
 PUBLISHED_BUILDS = {
@@ -308,7 +328,7 @@ def validate_admission(config):
     runtime = config["runtimeConstraints"]
     keys(runtime, ("source", "owner", "adoptionEvidence", "canonicalHosting",
                    "supportingPrimitives", *RUNTIME_TEXT), "runtimeConstraints")
-    exact(runtime["source"], SOURCES[-1], "runtimeConstraints.source")
+    exact(runtime["source"], PLATFORM_SOURCE, "runtimeConstraints.source")
     nonempty(runtime["owner"], "runtimeConstraints.owner")
     exact(runtime["adoptionEvidence"], None, "runtimeConstraints.adoptionEvidence")
     exact(runtime["canonicalHosting"], ["Hexalith.EventStore.Aspire",
@@ -330,6 +350,7 @@ def validate_packet(packet_dir=PACKET, source_root=WORKSPACE):
         "moduleConfiguration", "platformBindings", "secretReferences", "dependencies",
         "projectsReadOnlyOperations", "publishedBuildsObservation", "admissionPrerequisites",
         "runtimeConstraints",
+        "authenticationRequirements", "catalogCoherenceObservation",
     ), "configuration")
     keys(plan, ("schema", "status", "qualification", "productionControl", "executionScope", "evidencePolicy", "checks"), "staging")
     exact(config["schema"], "story117-platform-qualification-current.configuration.v1", "configuration schema")

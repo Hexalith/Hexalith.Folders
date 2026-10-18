@@ -16,7 +16,8 @@
             "owner": "Platform publication owner with Builds and module owners",
             "maxDurationSeconds": 1200,
             "preconditions": [
-                "Separately authorized owners have supplied the exact release tuple and acceptance prerequisites; no preceding check or execution authority is assumed."
+                "Separately authorized owners have supplied the exact release tuple and acceptance prerequisites; no preceding check or execution authority is assumed.",
+                "Platform must resolve the recorded Builds gitlink mismatch (83850cc62e7855ca64dee70e33f2e5c9bab1bc7c versus direct 4f53d9f37c5b86cfd43fbcc8fa5dd4df19b84c77); local source snapshots, Story 12.1 completion and Builds publication grant no acceptance."
             ],
             "procedure": [
                 "Resolve immutable Folders Server/Workers/UI and Projects artifacts plus exact Client/Contracts content identities, composed EventStore extensions, retained application package, catalog, check-suite and profile digests.",
@@ -131,16 +132,24 @@
             "owner": "Platform identity owner with EventStore, Folders and Projects",
             "maxDurationSeconds": 1200,
             "preconditions": [
-                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none.",
+                "Bind the actual EventStore gateway address, dedicated workload JWT contract or absent-section fallback, receipt signing secret and expected eventstore workload; resource-bound requests need separately qualified authority enrollment and grants. EnableResourceBindingRequests defaults false and enabling it alone grants nothing."
             ],
             "procedure": [
                 "Qualify real environment OIDC and confidential UI/workload client integration with actor, audience, originating surface and scoped token exchange; resolve Projects missing client auth handler before success cases.",
                 "Test missing/expired/wrong-issuer/wrong-audience tokens, cross-tenant/permission denials, spoofed actor/client attribution, direct app-channel access, bad workload assertion and missing/altered/expired command-bound human receipt.",
-                "Test every client surface directly and through a cross-module hop; agent/service origins never gain UI-only authority. No fixture auth or raw user-token forwarding serves as qualification."
+                "Test every client surface directly and through a cross-module hop; agent/service origins never gain UI-only authority. No fixture auth or raw user-token forwarding serves as qualification.",
+                "Verify authenticated direct public mutations alone relay a nonempty parsed Bearer through FoldersGatewayHumanBearerHandler to the gateway for command-bound human receipt issuance; unauthenticated, non-mutation and missing/malformed bearer cases fail before submission. This scoped submission does not qualify general raw-token downstream delegation.",
+                "Verify Process, Project, Query and Metadata workload policies independently. Bind Authentication:WorkloadJwtBearer, falling back to Authentication:JwtBearer only when the dedicated section is absent; partial dedicated settings fail closed without inheriting public issuer or signing credentials.",
+                "Verify Authentication:HumanAuthorityReceipt:ExpectedWorkload defaults to eventstore and reject absent/mismatched authenticated workload, blank/control/whitespace workload configuration and missing/altered/expired/command-mismatched receipts. Resource-binding requests stay disabled until the actual authority authorization_details profile, scoped credentials and grants are qualified.",
+                "Within this check's existing 1200-second limit, execute the finite four-by-four Process/Project/Query/Metadata matrix: each correctly scoped operation is the matching positive, and all twelve off-diagonal operation-token/endpoint pairs must reject before protected effects. Each case has a 30-second deadline; abort on timeout or unexpected authorization.",
+                "Within the same remaining deadline, test Query and Metadata separately with mismatched resource-binding digest, target owner/domain, tenant and authenticated caller/workload; each of the eight mismatched cases must reject without protected reads, metadata disclosure or effects. A valid operation claim alone cannot authorize a mismatched resource binding. Bind exact request/authority profile and expected denials externally; no enrollment is supplied by this plan."
             ],
             "requiredEvidence": [
                 "Distinct authentication, authorization and availability outcomes with safe status/category/trace metadata; no tokens, claims dumps, credentials or payload bodies.",
-                "Own-audience validation, app-channel token protection and workload-plus-human-receipt proofs; staging-to-production negative matrix and no identity-administration grants to application clients."
+                "Own-audience validation, app-channel token protection and workload-plus-human-receipt proofs; staging-to-production negative matrix and no identity-administration grants to application clients.",
+                "Exact effective gateway and workload-contract configuration identities, guarded bearer-submission negative outcomes, four workload-policy outcomes and receipt/workload binding results; owner-signed resource-binding authority enrollment/grants remain separate. No credentials or token bodies in evidence.",
+                "A finite 16-cell operation/endpoint result matrix with twelve off-diagonal denials plus eight Query/Metadata resource-binding denials, per-case <=30-second durations, exact-release identity and zero protected effects; safe metadata only, within the existing 1200-second check bound."
             ],
             "status": "unexecuted",
             "result": null,
@@ -154,7 +163,8 @@
             "owner": "Folders and EventStore owners with staging executor",
             "maxDurationSeconds": 1200,
             "preconditions": [
-                "All preceding checks have external, accepted exact-artifact evidence; this packet records none."
+                "All preceding checks have external, accepted exact-artifact evidence; this packet records none.",
+                "Story 12.1 has complete local authenticated durability evidence; it does not replace this unexecuted exact-release deployed staging check."
             ],
             "procedure": [
                 "Use staging-only synthetic scoped writes admitted through the composed EventStore host, then verify persisted aggregate state/events and read-model contents.",

@@ -298,6 +298,115 @@ class PacketMutationTests(DisposablePacket):
                 self.edit(CONFIG, change)
                 self.rejected("configuration requirements: reviewed content changed")
 
+    def test_post_12_1_settings_require_exact_defaults_and_unresolved_credentials(self):
+        cases = (
+            ("folders-server", "EventStore:Gateway:BaseAddress", "http://unreviewed-gateway"),
+            ("folders-server", "Authentication:HumanAuthorityReceipt:ExpectedWorkload", "projects"),
+            ("folders-server", "Authentication:HumanAuthorityReceipt:ExpectedWorkload", ""),
+            ("folders-server", "Authentication:WorkloadJwtBearer:Authority", "unaccepted-authority"),
+            ("folders-server", "Authentication:WorkloadJwtBearer:Issuer", "unaccepted-issuer"),
+            ("eventstore-inputs", "Authentication:WorkloadIssuer:EnableResourceBindingRequests", True),
+            ("eventstore-inputs", "Authentication:WorkloadIssuer:EnableResourceBindingRequests", 0),
+        )
+        for module, key, value in cases:
+            with self.subTest(module=module, key=key, value=value), self.case():
+                self.edit(CONFIG, lambda d: d["moduleConfiguration"][module]["values"].update({key: value}))
+                self.rejected(key)
+        for module, key, _ in cases:
+            with self.subTest(missing=key), self.case():
+                self.edit(CONFIG, lambda d: d["moduleConfiguration"][module]["values"].pop(key))
+                self.rejected("required keys differ")
+
+    def test_authentication_semantics_cannot_claim_fallback_delegation_or_enrollment(self):
+        mutations = (
+            lambda a: a["gatewaySubmission"].update(requiresAuthenticatedPrincipal=False),
+            lambda a: a["gatewaySubmission"].update(requiresDirectPublicMutation=False),
+            lambda a: a["gatewaySubmission"].update(requiresNonemptyBearer=False),
+            lambda a: a["gatewaySubmission"].update(source=verify.SOURCES[0]),
+            lambda a: a["gatewaySubmission"].update(generalDelegationEstablished=True),
+            lambda a: a["workloadPolicies"].remove("DomainServiceQuery"),
+            lambda a: a["workloadPolicies"].remove("DomainServiceMetadata"),
+            lambda a: a["workloadJwtContract"].update(fallbackOnlyWhenDedicatedSectionAbsent=False),
+            lambda a: a["workloadJwtContract"].update(partialDedicatedContractFailsClosed=False),
+            lambda a: a["workloadJwtContract"].update(section="Authentication:JwtBearer"),
+            lambda a: a["humanReceipt"].update(defaultExpectedWorkload="projects"),
+            lambda a: a["humanReceipt"].update(requiresAuthenticatedMatchingWorkload=False),
+            lambda a: a["humanReceipt"].update(requiresCommandBoundSignedReceipt=False),
+            lambda a: a["resourceBindingRequests"].update(default=True),
+            lambda a: a["resourceBindingRequests"].update(enablingCreatesGrant=True),
+            lambda a: a["resourceBindingRequests"].update(authorityEnrollmentEvidence="invented-enrollment"),
+        )
+        for index, change in enumerate(mutations):
+            with self.subTest(index=index), self.case():
+                self.edit(CONFIG, lambda d: change(d["authenticationRequirements"]))
+                self.rejected("configuration requirements: reviewed content changed")
+
+    def test_complete_dedicated_jwt_inventory_refuses_unreviewed_or_weakened_values(self):
+        for suffix, value in (
+            ("Audience", "folders"), ("ValidAudiences", ["folders"]),
+            ("ValidAudiences", []), ("AllowedAlgorithms", ["RS256"]),
+            ("AllowedAlgorithms", ["HS256"]), ("AllowedAlgorithms", []),
+            ("SigningKey", "PRIVATE-UNREVIEWED-KEY"),
+            ("RequireHttpsMetadata", False), ("RequireHttpsMetadata", 1),
+            ("AllowInsecureSymmetricKey", True), ("AllowInsecureSymmetricKey", 0),
+        ):
+            key = "Authentication:WorkloadJwtBearer:" + suffix
+            with self.subTest(key=key, value=value), self.case():
+                self.edit(CONFIG, lambda d: d["moduleConfiguration"]["folders-server"]["values"].update({key: value}))
+                code, output, errors = self.cli()
+                self.assertEqual(1, code)
+                self.assertIn(key, errors)
+                self.assertNotIn("PRIVATE-UNREVIEWED-KEY", output + errors)
+        for suffix in ("Audience", "ValidAudiences", "AllowedAlgorithms", "SigningKey",
+                       "RequireHttpsMetadata", "AllowInsecureSymmetricKey"):
+            with self.subTest(missing=suffix), self.case():
+                self.edit(CONFIG, lambda d: d["moduleConfiguration"]["folders-server"]["values"].pop(
+                    "Authentication:WorkloadJwtBearer:" + suffix))
+                self.rejected("required keys differ")
+
+    def test_cross_operation_and_resource_binding_negatives_cannot_be_removed(self):
+        plan = json.loads(self.packet_bodies[PLAN])
+        for index in (-2, -1):
+            self.assertIn("1200-second" if index == -2 else "resource-binding", plan["checks"][5]["procedure"][index])
+            with self.subTest(index=index), self.case():
+                self.edit(PLAN, lambda d: d["checks"][5]["procedure"].pop(index))
+                self.rejected("staging safeguards: reviewed content changed")
+
+    def test_catalog_mismatch_stays_an_observation_without_acceptance(self):
+        for field, value in (
+            ("directBuildsRevision", "0" * 40),
+            ("platformBuildsGitlinkRevision", verify.SNAPSHOTS["Builds"]),
+            ("matches", True), ("acceptanceEvidence", "invented-acceptance"),
+            ("platformStartupStoryStatus", "done"), ("platformToolStoryStatus", "done"),
+        ):
+            with self.subTest(field=field), self.case():
+                self.edit(CONFIG, lambda d: d["catalogCoherenceObservation"].update({field: value}))
+                self.rejected("configuration requirements: reviewed content changed")
+
+    def test_module_boundaries_cannot_weaken_authentication_requirements(self):
+        for module in ("folders-server", "eventstore-inputs"):
+            with self.subTest(module=module), self.case():
+                self.edit(CONFIG, lambda d: d["moduleConfiguration"][module].update(
+                    boundary="Any bearer or resource-binding flag grants full downstream authority."))
+                self.rejected("configuration requirements: reviewed content changed")
+
+    def test_new_bearer_source_binding_cannot_be_omitted_or_substituted(self):
+        relative = "src/Hexalith.Folders.Server/Authentication/FoldersGatewayHumanBearerHandler.cs"
+        self.assertEqual(relative, verify.SOURCES[25])
+        for missing in (False, True):
+            with self.subTest(missing=missing), self.case():
+                if missing:
+                    self.edit(CONFIG, lambda d: d["sourceInputs"].pop(relative))
+                    self.rejected("sourceInputs: required keys differ")
+                else:
+                    sentinel = b"PRIVATE-SOURCE-CONTENT-MUST-NOT-BE-DISCLOSED"
+                    (self.sources / relative).write_bytes(sentinel)
+                    code, output, errors = self.cli()
+                    self.assertEqual(1, code)
+                    self.assertIn("source changed: " + relative, errors)
+                    self.assertNotIn(sentinel.decode(), output + errors)
+                    self.assertNotIn(str(self.sources), output + errors)
+
     def test_staging_safeguards_cannot_be_reduced_to_nonempty_placeholders(self):
         for index in range(14):
             for field, value in (("owner", "anyone"), ("preconditions", ["none"]),
@@ -548,9 +657,9 @@ class PacketMutationTests(DisposablePacket):
 class CurrentSourceBindingTests(unittest.TestCase):
     """Real checkout binding is a separate gate from synthetic safety mutations."""
 
-    def test_current_proposal_binds_all_25_real_sources(self):
+    def test_current_proposal_binds_all_31_real_sources(self):
         config = json.loads((DIRECTORY / CONFIG).read_bytes())
-        self.assertEqual(25, len(verify.SOURCES))
+        self.assertEqual(31, len(verify.SOURCES))
         self.assertEqual(set(verify.SOURCES), set(config["sourceInputs"]))
         for relative in verify.SOURCES:
             with self.subTest(relative=relative):
@@ -584,7 +693,7 @@ class CurrentSourceBindingTests(unittest.TestCase):
                             self.assertNotIn(str(root), str(raised.exception))
                         finally:
                             path.write_bytes(original)
-            self.assertEqual(25, len(config["sourceInputs"]))
+            self.assertEqual(31, len(config["sourceInputs"]))
 
 
 if __name__ == "__main__":

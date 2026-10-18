@@ -13,7 +13,7 @@ story_closure_claimed: false
 governance_status: candidate-awaiting-a6b
 production_routed: false
 hash_algorithm: SHA-256
-candidate_set_sha256: 96a770727188dbabe3d912579ddc2ac16e042e242270f1c1d921e4c677033c7e
+candidate_set_sha256: 04dedb16ce1f9a47878a7e3199b857c97072d6d07b3dca222ba276e03b63e6e3
 artifact_count: 229
 artifacts:
   - path: ".github/workflows/ci.yml"
@@ -362,20 +362,20 @@ artifacts:
     sha256: 3c451a5145ed3e6a8b26940dbd5d2a657101a8262ac3a1a75577d1a1319e61f8
   - path: "src/Hexalith.Folders.Server/FoldersDomainServiceEndpoints.cs"
     kind: file
-    bytes: 279735
-    sha256: db1ff02d6907f0eb9dc9af9bb107f160942da99382c3356cb87fac76bbf61e2a
+    bytes: 282212
+    sha256: 316b10261a8fec1a6dddfe5a606e44fb40592dcf4728a60ae179920873dc7481
   - path: "src/Hexalith.Folders.Server/FoldersRequestJsonElementConverter.cs"
     kind: file
     bytes: 1592
     sha256: d9aea2b77cbb1f885b54d05aac6f3e783c06ed2e818488c5ee054e633de47774
   - path: "src/Hexalith.Folders.Server/FoldersServerHostComposition.cs"
     kind: file
-    bytes: 6782
-    sha256: 5f7a2725ecc97d50001c83453dd568ebb7635024e301be8d0e4557dbde766fc5
+    bytes: 7317
+    sha256: 75784c67efbf1be8fa5ebc270659afc09c020def941f2a21a9cc6f9499fb5676
   - path: "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs"
     kind: file
-    bytes: 10418
-    sha256: c9df0eaff73e1805fee358ef3ad452f6f6754a45a900621c5e2c6858f655e431
+    bytes: 10542
+    sha256: eca4e60e65bce1ee6fafae4fece6a7ec7d75e59ec70bc6f44a2e4649eaa5c72c
   - path: "src/Hexalith.Folders.Server/Pd10HistoricalRouteRetirement.cs"
     kind: file
     bytes: 2051
