@@ -187,3 +187,20 @@ The focused restore and build passed with zero warnings/errors; the corrected is
 initialization with zero skips when host capacity regressed. The record binds expanded commands, source
 and assembly SHA-256 values, each failed candidate, and task-owned resource cleanup. An isolated build
 does not establish that merged current main builds, and partial milestones do not close the full matrix.
+
+The [2026-10-18 current-main continuation](../../_bmad-output/implementation-artifacts/evidence/story-12-1-durability-2026-10-18-continuation.json)
+reconfirmed the separate owner-read query API build failure: focused source restore passed, while the
+AppHost-test build ended with 11 errors against the unchanged EventStore pin. Only 33 of 1,048,576
+same-user inotify watches were free before a live launch. No current-main acceptance assembly or full
+matrix result was produced. Keep delivery acceptance open until the source build and task-owned sidecars
+can run, then rerun the exact opted-in class above with zero failures and zero skips.
+
+The [2026-10-18 completion record](../../_bmad-output/implementation-artifacts/evidence/story-12-1-durability-2026-10-18-complete.json)
+binds current Folders `main` source and the qualified EventStore query-authority revision. A user namespace
+alone did not provide stable inotify capacity: a later run lost all six Dapr watchers. The passing run used
+a dedicated real UID with a private home and a private mount namespace for Aspire's executable NuGet tool.
+The record contains the exact setup, launch, failure and cleanup commands. Do not count a run that fails
+fixture initialization. The complete class passed 1/1 with zero failures/skips under the dedicated UID;
+persisted state, restart, replay, denial and private-storage failure rows all ran. The private home,
+Redis container, topology and copied components were removed. The host-wide watch limit and unrelated
+processes were unchanged.

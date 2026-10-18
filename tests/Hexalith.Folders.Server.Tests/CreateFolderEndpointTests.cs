@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
@@ -75,6 +76,32 @@ public sealed class CreateFolderEndpointTests
         second.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         gateway.Requests.Count.ShouldBe(2);
         gateway.Requests[0].AggregateId.ShouldBe(gateway.Requests[1].AggregateId);
+    }
+
+    [Theory]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    public async Task CreateFolderShouldReportCompletedReplayFromGatewayExecutionIdentity(
+        bool completed,
+        bool expectedReplay)
+    {
+        RecordingEventStoreGatewayClient gateway = new()
+        {
+            ResponseFactory = request => new SubmitCommandResponse(
+                request.CorrelationId!,
+                completed ? JsonSerializer.SerializeToElement(new { idempotentReplay = false }) : null,
+                MessageId: "original-execution-id"),
+        };
+        await using WebApplication app = BuildApp(gateway);
+        await app.StartAsync(TestContext.Current.CancellationToken);
+
+        using HttpClient client = app.GetTestClient();
+        using HttpResponseMessage response = await client.SendAsync(CreateValidRequest(), TestContext.Current.CancellationToken);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        JsonElement body = await response.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken);
+        body.GetProperty("idempotentReplay").GetBoolean().ShouldBe(expectedReplay);
+        gateway.Requests.ShouldHaveSingleItem().MessageId.ShouldNotBe("original-execution-id");
     }
 
     [Theory]
@@ -239,12 +266,15 @@ public sealed class CreateFolderEndpointTests
     {
         public List<SubmitCommandRequest> Requests { get; } = [];
 
+        public Func<SubmitCommandRequest, SubmitCommandResponse>? ResponseFactory { get; init; }
+
         public Task<SubmitCommandResponse> SubmitCommandAsync(
             SubmitCommandRequest request,
             CancellationToken cancellationToken = default)
         {
             Requests.Add(request);
-            return Task.FromResult(new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
+            return Task.FromResult(ResponseFactory?.Invoke(request)
+                ?? new SubmitCommandResponse(request.CorrelationId ?? request.MessageId));
         }
 
         public Task<EventStoreQueryResult> SubmitQueryAsync(

@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "record_id": "story-12-1-current-main-complete-2026-10-18",
+  "observed_on": "2026-10-18",
+  "status": "complete reviewed current-checkout authenticated durability class pass",
+  "source": {
+    "folders_branch": "main",
+    "folders_head": "539662120f5be2fefefae2576890f1047e1fcd01",
+    "folders_worktree_change": "Root-declared EventStore gitlink, Folders create/archive replay-response mapping, acceptance fixture/tests, focused regressions, and documentation/evidence changed after HEAD; no source commit was created.",
+    "eventstore_gitlink_before": "77d9af18a54d92506e310fe5a45021a395e66f60",
+    "eventstore_worktree_head_after": "269b20d58236f07228bc2afd54807b94bd96f37b",
+    "eventstore_query_authority_source_commit": "db23b193549f4554a6fdbf54b6a8f2e13b815510",
+    "other_root_declared_gitlinks_changed": false,
+    "acceptance_test_sha256": "47bff8020b055a1481713b3ed01896f7a42b82f7f556cced6981e74602201b54",
+    "fixture_sha256": "3f2f59c6cae80af23e8b9535bf91563ff1c1110f670e6fa10b0425f54529f8b9",
+    "acceptance_assembly_sha256": "7e9a208cdaa3f87207fe0e296d79d44d01b852165364d6bac4a1c44518e3432f",
+    "folders_endpoint_sha256": "cc73c21640175db1f56e9c88f975646019b8d2b7ba4c80d6a185c30a6ba92d5a"
+  },
+  "previous_evidence_sha256": {
+    "story-12-1-durability-2026-10-17.json": "6d6a8ce8c7fbc7b103ac496bc484288ff3f306e8d716ee462752ef664cc7f61a",
+    "story-12-1-durability-2026-10-17-continuation.json": "c90be5fe741fc83a4b0f304ed07f89a1845eba55fc1fe8ba98da6d996945b402",
+    "story-12-1-durability-2026-10-18-continuation.json": "b7f4cceb077623d73edf37456a1b82d7bfbe9781ad9c514968df1eeddb37836a"
+  },
+  "diagnosis": {
+    "owner_read_build": "Folders merge used VerifiedQueryCaller, QueryEnvelope.CallerAuthority and QueryCallerAuthorityBinding from EventStore commit db23b193, absent at the original gitlink. Selected EventStore main 269b20d5 includes the exact verified digest/workload flow and an additional query paging correction. No permissive fallback was added.",
+    "watcher_capacity": "The host UID initially had 1,048,543 visible watches under max_user_watches=1,048,576; fluentui-mcp held most. A first unshare -Ur run passed, but a later reviewed run had six Dapr watcher ENOSPC failures, disproving stable capacity. Final runner used real UID 201234 with a private home and mount namespace; all six sidecars started and completed under that distinct watch quota. The shared sysctl and unrelated processes were untouched.",
+    "cached_replay_response": "EventStore returns the original execution message ID and original result payload for an exact terminal idempotency replay. The cached first response has idempotentReplay=false, so Folders create/archive now classify a completed replay by a non-null result and a returned original execution ID distinct from the submitted ID. Pending responses with no result remain false; backend conflict and authorization checks are unchanged."
+  },
+  "commands": [
+    {
+      "command": "git -C references/Hexalith.EventStore fetch origin main --no-tags",
+      "result": "exit 0; fetched root-declared EventStore candidate 269b20d58236f07228bc2afd54807b94bd96f37b"
+    },
+    {
+      "command": "dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "result": "exit 0"
+    },
+    {
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "result": "exit 0; 0 warnings, 0 errors; 158.50 seconds"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "result": "exit 0; 1,006 passed, 0 failed, 0 skipped"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "result": "exit 0; 146 passed, 0 failed, 0 skipped"
+    },
+    {
+      "command": "dotnet references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.QueryAuthorityCorrectionTests",
+      "result": "exit 0; 8 passed, 0 failed, 0 skipped; test project restored and rebuilt from selected Debug/source revision"
+    },
+    {
+      "command": "dotnet references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll -class Hexalith.EventStore.DomainService.Tests.DomainServiceTrustBoundaryTests",
+      "result": "exit 0; 76 passed, 0 failed, 0 skipped"
+    },
+    {
+      "command": "dotnet references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Controllers.BoundOwnerQueryAuthorityTests",
+      "result": "exit 0; 9 passed, 0 failed, 0 skipped; test project restored and rebuilt from selected Debug/source revision"
+    },
+    {
+      "command": "dotnet references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.Tests.dll -class Hexalith.EventStore.Server.Tests.Controllers.BoundOwnerQueryControllerTests",
+      "result": "exit 0; 1 passed, 0 failed, 0 skipped"
+    },
+    {
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true unshare -Ur -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput",
+      "result": "exit 0; 1 passed, 0 failed, 0 skipped, 0 not run; 150.727 seconds",
+      "log_path": "/tmp/story12-current-main-live-2026-10-18.log",
+      "log_sha256": "e98f200406f631d5890c75e1b50e76c6316ae4e41315a86c3c4b65b8a4f60078"
+    },
+    {
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "result": "final source build exit 0; 0 warnings, 0 errors; 245.54 seconds"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll -class Hexalith.Folders.Server.Tests.CreateFolderEndpointTests",
+      "result": "exit 0; 12 passed, 0 failed, 0 skipped"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll > /tmp/story12-server-final-2026-10-18.log 2>&1",
+      "result": "exit 0; 1,008 passed, 0 failed, 0 skipped; log SHA-256 b0f0def2a8a7db214197f479f95612a9335a4d39f7683e20e71e25ee6f58648d"
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll > /tmp/story12-workers-final-2026-10-18.log 2>&1",
+      "result": "exit 0; 147 passed, 0 failed, 0 skipped; log SHA-256 158329f833c510ed85460e40761f72779b83a79f28e01bcbe80185285b63982e"
+    },
+    {
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true unshare -Ur -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput > /tmp/story12-current-main-live-reviewed-2026-10-18.log 2>&1",
+      "result": "exit 1; 1 failed, 0 skipped at equivalent replay flag; log SHA-256 be5bc3e891947d0e804bb70eec68ed563c767ca4e1c859735da978bc53197ae2"
+    },
+    {
+      "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true unshare -Ur -- dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput > /tmp/story12-current-main-live-final-2026-10-18.log 2>&1",
+      "result": "exit 1; 1 failed, 0 skipped during fixture initialization; six Dapr watcher ENOSPC errors; log SHA-256 9414bfad4e2fd1dffe9da7ca85821f622415c35dcebd3bed5e396dfd4d399891"
+    },
+    {
+      "command": "sudo -n setpriv --reuid=65534 --regid=65534 --groups=1000,1001 env HOME=/home/administrator PATH=\"$PATH\" HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput > /tmp/story12-current-main-live-isolated-2026-10-18.log 2>&1",
+      "result": "exit 1; 1 failed, 0 skipped during fixture initialization because original user-secret file is mode 600; log SHA-256 200eb2432bf6c5d9ed261cee595872db3ebde3a60994140fb81e62ff9ae45605"
+    },
+    {
+      "command": "sudo -n setpriv --reuid=201234 --regid=201234 --groups=1000,1001 env HOME=\"$runner_home\" DOTNET_CLI_HOME=\"$runner_home\" NUGET_PACKAGES=/home/administrator/.nuget/packages PATH=\"$PATH\" HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput > /tmp/story12-current-main-live-uid-2026-10-18.log 2>&1",
+      "result": "exit 1; 1 failed, 0 skipped during fixture initialization because Aspire dcp in shared NuGet cache lacks execute permission for this UID; log SHA-256 593085f9064f58b50fe7825d620d4e4582349a67746bdd6c61edf66a11561f3e"
+    },
+    {
+      "command": "runner_home=$(mktemp -d /tmp/story12-runner-XXXXXX); cp -a /home/administrator/.microsoft \"$runner_home/\"; mkdir -p \"$runner_home/.dapr/bin\" \"$runner_home/.aspnet\"; cp -a /home/administrator/.dapr/config.yaml /home/administrator/.dapr/components \"$runner_home/.dapr/\"; ln -s /home/administrator/.dapr/bin/daprd \"$runner_home/.dapr/bin/daprd\"; sudo -n cp -a /home/administrator/.nuget/packages/aspire.hosting.orchestration.linux-x64/13.6.1/tools \"$runner_home/dcp-tools\"; sudo -n chown -R 201234:201234 \"$runner_home\"; chmod 700 \"$runner_home\"",
+      "result": "exit 0; private home /tmp/story12-runner-MLlSNw, owner 201234, mode 700; secret contents never printed or stored in repository"
+    },
+    {
+      "command": "sudo -n unshare -m --propagation private sh -c 'mount --bind \"$1/dcp-tools\" /home/administrator/.nuget/packages/aspire.hosting.orchestration.linux-x64/13.6.1/tools && exec setpriv --reuid=201234 --regid=201234 --groups=1000,1001 env HOME=\"$1\" DOTNET_CLI_HOME=\"$1\" NUGET_PACKAGES=/home/administrator/.nuget/packages PATH=\"$2\" HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.FolderDurabilityAcceptanceTests -showLiveOutput' sh \"$runner_home\" \"$PATH\" > /tmp/story12-current-main-live-uid-mount-2026-10-18.log 2>&1",
+      "result": "exit 0; 1 passed, 0 failed, 0 skipped, 0 not run; 156.008 seconds",
+      "log_path": "/tmp/story12-current-main-live-uid-mount-2026-10-18.log",
+      "log_sha256": "ba1656ee7a482e82b69dbafeb2c7a4f9d58edd75f0ecd961891e0adbe34784df"
+    }
+  ],
+  "full_acceptance": {
+    "run_id": "8cffd0661b8eb474",
+    "fresh_managed_tenant_and_authenticated_owner": true,
+    "organization_sequence_after_grants": 5,
+    "folder_retained_events": 1,
+    "folder_retained_sha256": "055863940d3b7ceb7c41a6b2053456a83f5d4df5eaf63e8897b7d91f54869cb6",
+    "metadata_only_event_and_matching_persisted_folder_acl": true,
+    "equivalent_and_conflicting_intents_preserve_retained_bytes": true,
+    "changed_process_ids": {
+      "folders": [
+        67120,
+        84991
+      ],
+      "folders-workers": [
+        67121,
+        86701
+      ],
+      "eventstore": [
+        67003,
+        87903
+      ]
+    },
+    "persisted_organization_folder_and_retained_hashes_equal_after_restart": true,
+    "empty_checkpoint_replay_both_folds_and_invalid_event_rejection": true,
+    "missing_revoked_and_foreign_tenant_denials_leave_state_unchanged": true,
+    "malformed_evidence_and_paused_private_storage_fail_safely": true,
+    "summary": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not_run": 0
+    },
+    "organization_retained_sha256": "db244105a9dd602fe0f7f76ca0c7809169ad81123c95e39c330fcdc46574c000",
+    "initial_replay_flag_false_and_equivalent_post_restart_flags_true": true
+  },
+  "separate_broad_dependency_test_result": {
+    "command": "dotnet references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.dll",
+    "result": "993 passed, 1 failed, 0 skipped; DomainModuleAuthoringGuardrailTests.TenantsDomainService_DoesNotReferenceGeneratedApiHostOrDeclarePerMessageControllers requires EventStore's nested references/Hexalith.Tenants checkout, which the workspace baseline forbids initializing. The focused query authority and trust-boundary classes above passed. This unrelated environmental failure is not counted as acceptance.",
+    "log_path": "/tmp/story12-eventstore-domainservice-2026-10-18.log"
+  },
+  "cleanup": {
+    "task_redis_containers_remaining": 0,
+    "task_component_directories_remaining": 0,
+    "task_namespace_processes_remaining": 0,
+    "disposable_eventstore_candidate_worktree_removed": true,
+    "shared_watch_limit_changed": false,
+    "unrelated_processes_stopped": false,
+    "shared_redis_flushed": false,
+    "host_watch_limit_after": 1048576,
+    "same_uid_visible_watch_entries_after": 1013521,
+    "raw_logs_or_credentials_retained_in_repository": false,
+    "private_runner_home_removed": true,
+    "runner_uid_processes_remaining": 0,
+    "runner_uid": 201234,
+    "private_mount_namespace_ended": true,
+    "shared_nuget_cache_content_or_modes_changed": false,
+    "runner_home_cleanup_command": "sudo -n python3: validate /tmp/story12-runner-MLlSNw as the task-owned runner home, shutil.rmtree(runner_home), and unlink /tmp/story12-runner-home-path",
+    "runner_home_cleanup_result": "exit 0; runner_home_removed True",
+    "post_run_inspection_command": "ps -eo uid=; docker ps -a --format '{{.Names}}'; find /tmp -maxdepth 1 -type d -name 'folders-durability-*'; cat /proc/sys/fs/inotify/max_user_watches",
+    "post_run_inspection_result": "UID 201234 processes 0; folders-durability Docker containers 0; component directories 0; max_user_watches 1048576"
+  },
+  "review": {
+    "result": "three independent review lenses triaged; actionable Story 12.1 findings patched and reverified; owner-read findings from separate Story 6.1 merge deferred in deferred-work.md",
+    "findings_patched": [
+      "public create replay flag",
+      "organization and folder replay comparison",
+      "organization retained hash in output",
+      "exact metadata event field allowlists",
+      "fixture independent disposal attempts",
+      "folder projection CAS retry regression"
+    ]
+  }
+}

@@ -63,6 +63,33 @@ public sealed class WorkersOrganizationAclRouteTests
         persisted.RecentMessages!.Count.ShouldBe(2);
     }
 
+    [Fact]
+    public async Task FolderCallbackRetriesOneWriteConflictAndPersistsSequenceOne()
+    {
+        WorkerRouteReadModelStore store = new() { ForcedWriteConflicts = 1 };
+        WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
+        await using var cleanup = app.ConfigureAwait(false);
+        using HttpClient client = AuthenticatedClient(app);
+        byte[] retainedCreate = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory,
+            "event-evolution", "folder-created-valid-unstamped-v1.json"));
+        EventStoreDomainEventEnvelope created = new("folder-conflict-message", "folder-a", "tenant-a",
+            typeof(FolderCreated).FullName!, 1, DateTimeOffset.UtcNow, "correlation-a", "json", retainedCreate)
+        {
+            Domain = "folders",
+            MetadataVersion = 1,
+        };
+
+        using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", created,
+            TestContext.Current.CancellationToken).ConfigureAwait(true);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        store.ForcedWriteConflicts.ShouldBe(0);
+        FolderPermissionProjection persisted = (await store.GetAsync<FolderPermissionProjection>("statestore",
+            "projection:folders:folder-permissions:tenant-a:folder-a", TestContext.Current.CancellationToken)
+            .ConfigureAwait(true)).Value!;
+        persisted.IsCreated.ShouldBeTrue();
+        persisted.LastSequence.ShouldBe(1);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]

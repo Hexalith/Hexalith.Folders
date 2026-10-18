@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -279,48 +280,99 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
     {
+        ExceptionDispatchInfo? firstFailure = null;
+        void Record(Exception exception) => firstFailure ??= ExceptionDispatchInfo.Capture(exception);
+
         try
         {
             _dapr?.Dispose();
-            if (_app is not null)
+        }
+        catch (Exception exception)
+        {
+            Record(exception);
+        }
+        finally
+        {
+            _dapr = null;
+        }
+
+        if (_app is not null)
+        {
+            try
             {
                 // Flush terminal resource diagnostics, including failed callbacks after EventsStored.
                 await Task.Delay(TimeSpan.FromSeconds(1), CancellationToken.None).ConfigureAwait(false);
                 await _app.DisposeAsync().ConfigureAwait(false);
-                _app = null;
             }
-
-            if (_builder is not null)
+            catch (Exception exception)
             {
-                await _builder.DisposeAsync().ConfigureAwait(false);
-                _builder = null;
-            }
-        }
-        finally
-        {
-            try
-            {
-                if (_redisName is not null)
-                {
-                    // rm --force also handles a dependency left paused by a failed assertion.
-                    _ = await FolderDurabilityProcess.RunAsync("docker", "rm", "--force", "--volumes", _redisName).ConfigureAwait(false);
-                    _redisName = null;
-                }
+                Record(exception);
             }
             finally
             {
-                foreach ((string name, string? value) in _environment)
-                {
-                    Environment.SetEnvironmentVariable(name, value);
-                }
-
-                _environment.Clear();
-                if (Directory.Exists(_temporaryDirectory))
-                {
-                    Directory.Delete(_temporaryDirectory, recursive: true);
-                }
+                _app = null;
             }
         }
+
+        if (_builder is not null)
+        {
+            try
+            {
+                await _builder.DisposeAsync().ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                Record(exception);
+            }
+            finally
+            {
+                _builder = null;
+            }
+        }
+
+        if (_redisName is not null)
+        {
+            try
+            {
+                // rm --force also handles a dependency left paused by a failed assertion.
+                _ = await FolderDurabilityProcess.RunAsync("docker", "rm", "--force", "--volumes", _redisName).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                Record(exception);
+            }
+            finally
+            {
+                _redisName = null;
+            }
+        }
+
+        foreach ((string name, string? value) in _environment)
+        {
+            try
+            {
+                Environment.SetEnvironmentVariable(name, value);
+            }
+            catch (Exception exception)
+            {
+                Record(exception);
+            }
+        }
+
+        _environment.Clear();
+        try
+        {
+            if (Directory.Exists(_temporaryDirectory))
+            {
+                Directory.Delete(_temporaryDirectory, recursive: true);
+            }
+        }
+        catch (Exception exception)
+        {
+            Record(exception);
+        }
+
+        firstFailure?.Throw();
     }
 
     private async Task StartAsync()

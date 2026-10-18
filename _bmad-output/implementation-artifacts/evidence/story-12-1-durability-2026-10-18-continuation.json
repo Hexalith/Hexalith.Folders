@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "record_id": "story-12-1-durability-current-main-2026-10-18",
+  "observed_on": "2026-10-18",
+  "status": "blocked; no full acceptance pass",
+  "source": {
+    "folders_head": "539662120f5be2fefefae2576890f1047e1fcd01",
+    "eventstore_gitlink_and_head": "77d9af18a54d92506e310fe5a45021a395e66f60",
+    "fixture_sha256": "1a4a34579dc22f28021f267b0bd6b487dc1672e51e412708cba89cbd9c1a7c2b",
+    "acceptance_test_sha256": "71012721bebf267c5d43025875d9eea8783a8ac6c68e2f30b7cd36270f1d4074"
+  },
+  "previous_evidence": {
+    "original": "story-12-1-durability-2026-10-17.json",
+    "original_sha256": "6d6a8ce8c7fbc7b103ac496bc484288ff3f306e8d716ee462752ef664cc7f61a",
+    "continuation": "story-12-1-durability-2026-10-17-continuation.json",
+    "continuation_sha256": "c90be5fe741fc83a4b0f304ed07f89a1845eba55fc1fe8ba98da6d996945b402"
+  },
+  "commands": [
+    {
+      "command": "dotnet restore tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:NuGetAudit=false -m:1 -nr:false -v:q",
+      "exit_code": 0,
+      "result": "Focused current-main source restore passed."
+    },
+    {
+      "command": "dotnet build tests/Hexalith.Folders.AppHost.Tests/Hexalith.Folders.AppHost.Tests.csproj -c Debug --no-restore -p:UseHexalithProjectReferences=true -m:1 -nr:false -p:UseSharedCompilation=false -v:q",
+      "exit_code": 1,
+      "result": "Zero warnings and 11 errors in separately merged owner-read Server code: VerifiedQueryCaller is absent and QueryEnvelope.CallerAuthority is absent from the selected EventStore source. Repeated once; the second diagnostic log's SHA-256 is b8a27747626d4cfdce4136c4a0ae93c7aac1ea1f32be70bc5afa1f93cd01b139."
+    }
+  ],
+  "host_watch_capacity": {
+    "max_user_watches": 1048576,
+    "same_user_visible_watch_entries": 1048543,
+    "headroom": 33,
+    "measurement": "Counted inotify wd entries in readable /proc/*/fdinfo files before a live launch. This is a shared-host prerequisite, not task-owned state."
+  },
+  "live_execution": {
+    "attempted": false,
+    "reason": "The current-main test assembly could not be built; watch headroom was also insufficient for the six disposable Dapr sidecars. Running a stale binary would not establish source-bound acceptance.",
+    "passing_full_matrix_runs": 0,
+    "new_acceptance_milestones": []
+  },
+  "acceptance_rows": {
+    "current_pin_compatibility": "Previously passed at the unchanged EventStore gitlink in the original record; current-main integration build remains failed.",
+    "authorized_mutation_restart_replay": "Open: earlier candidates observed partial milestones, but no single full matrix passed at this source revision.",
+    "denied_authority_and_dependency_failure": "Open: malformed-evidence, unavailable-storage and revocation rows remain unobserved on the complete live path.",
+    "final_evidence": "Blocked; do not close Story 12.1 delivery acceptance."
+  },
+  "preservation": "No dependency pin, shared process, global watch limit, historical evidence, manifest, sprint status or task-external runtime resource was changed."
+}

@@ -1610,12 +1610,16 @@ public static class FoldersDomainServiceEndpoints
                 taskId: taskId);
         }
 
+        // A terminal idempotency replay returns the original execution message id and
+        // its original result payload. Keep this request's id to distinguish that
+        // replay from the first execution without trusting the cached payload's flag.
+        string submissionMessageId = GenerateCanonicalMessageId();
         SubmitCommandResponse submitted;
         try
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: GenerateCanonicalMessageId(),
+                    MessageId: submissionMessageId,
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1674,7 +1678,10 @@ public static class FoldersDomainServiceEndpoints
                 acceptedCorrelationId,
                 taskId,
                 "accepted",
-                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)
+                    || (submitted.ResultPayload is not null
+                        && !string.IsNullOrWhiteSpace(submitted.MessageId)
+                        && !string.Equals(submitted.MessageId, submissionMessageId, StringComparison.Ordinal))),
             ResponseJsonOptions,
             statusCode: StatusCodes.Status202Accepted);
     }
@@ -1770,12 +1777,13 @@ public static class FoldersDomainServiceEndpoints
             body.ParentFolderId,
             body.FolderMetadata);
 
+        string submissionMessageId = GenerateCanonicalMessageId();
         SubmitCommandResponse submitted;
         try
         {
             submitted = await gateway.SubmitCommandAsync(
                 new SubmitCommandRequest(
-                    MessageId: GenerateCanonicalMessageId(),
+                    MessageId: submissionMessageId,
                     Tenant: envelope.TenantId,
                     Domain: FoldersServerModule.DomainName,
                     AggregateId: folderId,
@@ -1828,7 +1836,10 @@ public static class FoldersDomainServiceEndpoints
                 acceptedCorrelationId,
                 taskId,
                 "accepted",
-                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)),
+                IdempotentReplay: IsIdempotentReplay(submitted.ResultPayload)
+                    || (submitted.ResultPayload is not null
+                        && !string.IsNullOrWhiteSpace(submitted.MessageId)
+                        && !string.Equals(submitted.MessageId, submissionMessageId, StringComparison.Ordinal))),
             ResponseJsonOptions,
             statusCode: StatusCodes.Status202Accepted);
     }

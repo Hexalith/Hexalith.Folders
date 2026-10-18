@@ -2944,6 +2944,22 @@ Follow-up to the `spec-1-17-platform-admission-prerequisite.md` packaged-tool re
 
 Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequisite: actual release 4.32.0 at abdfca89ed82f388b54664825a8a79fed73e7ccf is now published and verified. The complete release qualification passes with source validation and required controls; both downloaded signed tools match the publisher payload proof, all 37 exact synthetic acceptance controls pass, and both actual-package seed modes pass. See evidence/story-1-17-builds-publication-2026-10-16.json and eng/story117-builds-publication/verify.py. This resolves released-archive availability and verification only. Real Platform acceptance, exact tool pin/range and coherent gitlink, owner declarations/attestations/intake, deployment/staging and activation remain open and separately authorized. V1Only, unset T0, historical approvals and the Story tracker are unchanged.
 
+- source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
+  summary: Configure and test the separately merged Story 6.1 signed owner-read route through the production Folders host.
+  evidence: Review BH2/BH6/VG1 found no AppHost `BoundOwnerQuery:AllowedQueries` configuration and no signed production `/query` test. Direct handler and EventStore binding tests pass, but the external owner-read feature remains unproven end to end; Story 12.1 durability acceptance does not use this route.
+
+- source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
+  summary: Validate malformed delegated owner query shape before deriving a stale or unavailable outcome.
+  evidence: Review BH4 found that the separately merged handler authorizes before checking payload, entity ID and paging, so an authenticated bound malformed query can return a stale/unavailable outcome. It remains fail closed and is outside the durability matrix.
+
+- source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
+  summary: Map the owner-read `/query` endpoint's SDK `InvalidPage` result to HTTP 400.
+  evidence: Review EC1 found the separately merged endpoint maps only `InvalidEnvelope` and `InvalidCursor` to 400, while the selected SDK also returns `InvalidPage`; a client pagination error currently becomes a nondisclosing 404.
+
+- source_spec: `spec-12-1-current-pin-durable-repository-acceptance.md`
+  summary: Reject unsupported operational-index source-guard versions on the separately merged metadata route.
+  evidence: Review EC2 found the route calls the old `AdminOperationalIndexMetadata.Create` overload and ignores `Request.ProjectionSourceGuardVersion`, so unsupported capability requests can receive a successful response.
+
 - source_spec: `spec-1-17-builds-synthetic-acceptance-pins.md`
   summary: Reconcile the existing Folders release-workflow exact upload-artifact pin contract and investigate its blocking-test CI job.
   evidence: Folders CI 38925205004 fails the release conformance assertion (actual cf430e030ddbb5b0abf93d22962f4752f3646cd9, expected 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a); release workflow and test blobs are unchanged from pre-handoff 6dee230850842dddfea81e81700e13bd0cb65367. The earlier baseline CI also fails, and the main blocking-test job remains failed with empty job-log retrieval. Builds publication/source qualification is separate; preserve the upstream action selection and existing assertions until this maintenance is investigated. See the publication bundle folders-ci-observation.json and retained query logs.

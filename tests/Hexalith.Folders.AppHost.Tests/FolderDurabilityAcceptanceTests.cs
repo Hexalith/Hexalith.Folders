@@ -5,6 +5,8 @@ using System.Text.Json;
 
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 
@@ -58,13 +60,15 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
         organization.Grants.ShouldContain(item => item.PrincipalId == _fixture.PrincipalId && item.Action == "create_folder");
         StreamReadPage organizationStream = await _fixture.ReadStreamAsync(_fixture.TenantId).ConfigureAwait(true);
         string organizationHash = RetainedHash(organizationStream);
-        _output.WriteLine("PASS organization-authority: managed tenant, explicit baseline/grants, persisted permission row");
+        _output.WriteLine($"PASS organization-authority: managed tenant, explicit baseline/grants, persisted permission row; retainedSha256={organizationHash}");
 
         string key = FolderDurabilityAcceptanceFixture.NewId();
         string folderId = _fixture.CreatedFolderId(key);
         using (HttpResponseMessage created = await _fixture.MutateAsync("/api/v1/folders", CreatePayload("durability-acceptance"), key).ConfigureAwait(true))
         {
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(created, HttpStatusCode.Accepted, "Public folder creation").ConfigureAwait(true);
+            (await created.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true))
+                .GetProperty("idempotentReplay").GetBoolean().ShouldBeFalse();
         }
 
         FolderPermissionProjection folder = await WaitForFolderAsync(folderId).ConfigureAwait(true);
@@ -85,6 +89,8 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
         using (HttpResponseMessage equivalent = await _fixture.MutateAsync("/api/v1/folders", CreatePayload("durability-acceptance"), key).ConfigureAwait(true))
         {
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(equivalent, HttpStatusCode.Accepted, "Equivalent intent replay").ConfigureAwait(true);
+            (await equivalent.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true))
+                .GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
         }
 
         using (HttpResponseMessage conflicting = await _fixture.MutateAsync("/api/v1/folders", CreatePayload("different-intent"), key).ConfigureAwait(true))
@@ -112,6 +118,8 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
         using (HttpResponseMessage replayAfterRestart = await _fixture.MutateAsync("/api/v1/folders", CreatePayload("durability-acceptance"), key).ConfigureAwait(true))
         {
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(replayAfterRestart, HttpStatusCode.Accepted, "Durable idempotency after host restart").ConfigureAwait(true);
+            (await replayAfterRestart.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true))
+                .GetProperty("idempotentReplay").GetBoolean().ShouldBeTrue();
         }
 
         _output.WriteLine("PASS host-restart: persisted organization/folder authority, actor reconstruction and original retained hashes");
@@ -127,6 +135,14 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
             replay.State.GetProperty("organizationId").GetString().ShouldBe(restarted.OrganizationId);
             replay.State.GetProperty("isCreated").GetBoolean().ShouldBe(restarted.IsCreated);
             replay.State.GetProperty("lifecycleState").GetInt32().ShouldBe(0);
+            using JsonDocument retained = JsonDocument.Parse(stream.Events[0].Payload);
+            foreach (string metadata in new[] { nameof(FolderCreated.DisplayName), nameof(FolderCreated.Description), nameof(FolderCreated.PathLabel) })
+            {
+                replay.State.GetProperty(JsonNamingPolicy.CamelCase.ConvertName(metadata)).GetString()
+                    .ShouldBe(retained.RootElement.GetProperty(metadata).GetString());
+            }
+
+            JsonElement.DeepEquals(replay.State.GetProperty("tags"), retained.RootElement.GetProperty(nameof(FolderCreated.Tags))).ShouldBeTrue();
         }
 
         using (HttpResponseMessage projected = await _fixture.ProjectAsync(_fixture.TenantId, ToProjectionEvents(organizationStream)).ConfigureAwait(true))
@@ -135,14 +151,21 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
             ProjectionResponse replay = (await projected.Content.ReadFromJsonAsync<ProjectionResponse>(TestContext.Current.CancellationToken).ConfigureAwait(true))!;
             replay.ProjectionType.ShouldBe("organization-provider-binding");
             replay.State.GetProperty("IsInitialized").GetBoolean().ShouldBe(organization.IsInitialized);
-            replay.State.GetProperty("Grants").GetArrayLength().ShouldBe(organization.Grants.Count);
-            foreach (JsonElement grant in replay.State.GetProperty("Grants").EnumerateArray())
+            OrganizationPermissionGrant[] replayedGrants = replay.State.GetProperty("Grants").EnumerateArray()
+                .Select(grant =>
+                {
+                    grant.GetProperty("ManagedTenantId").GetString().ShouldBe(organization.TenantId);
+                    grant.GetProperty("OrganizationId").GetString().ShouldBe(organization.OrganizationId);
+                    return new OrganizationPermissionGrant(
+                        (OrganizationAclPrincipalKind)grant.GetProperty("PrincipalKind").GetInt32(),
+                        grant.GetProperty("PrincipalId").GetString()!, grant.GetProperty("Action").GetString()!);
+                }).ToArray();
+            organization.Grants.Distinct().Count().ShouldBe(organization.Grants.Count);
+            replayedGrants.Length.ShouldBe(organization.Grants.Count);
+            replayedGrants.Distinct().Count().ShouldBe(replayedGrants.Length);
+            foreach (OrganizationPermissionGrant grant in organization.Grants)
             {
-                grant.GetProperty("ManagedTenantId").GetString().ShouldBe(organization.TenantId);
-                grant.GetProperty("OrganizationId").GetString().ShouldBe(organization.OrganizationId);
-                string? principal = grant.GetProperty("PrincipalId").GetString();
-                string? action = grant.GetProperty("Action").GetString();
-                organization.Grants.ShouldContain(item => item.PrincipalId == principal && item.Action == action);
+                replayedGrants.ShouldContain(grant);
             }
         }
 
@@ -358,7 +381,31 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
     {
         foreach (StreamReadEvent item in page.Events)
         {
+            string[] allowed = item.EventTypeName switch
+            {
+                var type when type == typeof(FolderCreated).FullName =>
+                    [nameof(FolderCreated.ManagedTenantId), nameof(FolderCreated.OrganizationId), nameof(FolderCreated.FolderId),
+                        nameof(FolderCreated.DisplayName), nameof(FolderCreated.Description), nameof(FolderCreated.PathLabel),
+                        nameof(FolderCreated.Tags), nameof(FolderCreated.LifecycleState), nameof(FolderCreated.RepositoryBindingState),
+                        nameof(FolderCreated.ActorPrincipalId), nameof(FolderCreated.CorrelationId), nameof(FolderCreated.TaskId),
+                        nameof(FolderCreated.IdempotencyKey), nameof(FolderCreated.IdempotencyFingerprint), nameof(FolderCreated.OccurredAt)],
+                var type when type == typeof(OrganizationAclBaselineInitialized).FullName =>
+                    [nameof(OrganizationAclBaselineInitialized.ManagedTenantId), nameof(OrganizationAclBaselineInitialized.OrganizationId),
+                        nameof(OrganizationAclBaselineInitialized.CorrelationId), nameof(OrganizationAclBaselineInitialized.TaskId),
+                        nameof(OrganizationAclBaselineInitialized.IdempotencyKey), nameof(OrganizationAclBaselineInitialized.IdempotencyFingerprint)],
+                var type when type == typeof(OrganizationAclPrincipalGranted).FullName
+                    || type == typeof(OrganizationAclPrincipalRevoked).FullName =>
+                    [nameof(OrganizationAclPrincipalGranted.ManagedTenantId), nameof(OrganizationAclPrincipalGranted.OrganizationId),
+                        nameof(OrganizationAclPrincipalGranted.PrincipalKind), nameof(OrganizationAclPrincipalGranted.PrincipalId),
+                        nameof(OrganizationAclPrincipalGranted.Action), nameof(OrganizationAclPrincipalGranted.CorrelationId),
+                        nameof(OrganizationAclPrincipalGranted.TaskId), nameof(OrganizationAclPrincipalGranted.IdempotencyKey),
+                        nameof(OrganizationAclPrincipalGranted.IdempotencyFingerprint)],
+                _ => throw new InvalidOperationException("Unexpected retained event type in durability acceptance."),
+            };
             using JsonDocument document = JsonDocument.Parse(item.Payload);
+            document.RootElement.ValueKind.ShouldBe(JsonValueKind.Object);
+            document.RootElement.EnumerateObject().Select(property => property.Name).Order(StringComparer.Ordinal)
+                .SequenceEqual(allowed.Order(StringComparer.Ordinal)).ShouldBeTrue();
             foreach (string forbidden in new[] { "contentBytes", "inlineContent", "access_token", "client_secret", "password", "humanAuthorityReceipt" })
             {
                 document.RootElement.GetRawText().ShouldNotContain(forbidden, Case.Insensitive);
