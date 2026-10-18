@@ -105,5 +105,11 @@
     "One named context only; matches identify returned object references, not application payload or domain-data absence.",
     "No secrets, ConfigMaps, logs, database/stream/backup contents, writes or data mutations were queried.",
     "Target-owner retained-data disposition remains required before the conditional first-install branch executes."
-  ]
+  ],
+  "matching_rule": {
+    "input": "Each complete returned workload/routing or PV/PVC object, including metadata, specs, images and reference fields.",
+    "algorithm": "json.dumps(object).lower(); match when literal substring folders or projects occurs anywhere; retain only kind, namespace and name for matches.",
+    "negative_meaning": "No matching identifying text in returned objects at capture time; no proof of domain-data absence, opaque-image identity, external callers or global absence."
+  },
+  "retained_domain_data_disposition": "unknown"
 }

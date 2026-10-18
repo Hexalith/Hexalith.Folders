@@ -1,0 +1,218 @@
+{
+  "record_id": "story-1-17-first-install-application-2026-10-18",
+  "recorded_at_utc": "2026-10-18T12:27:58.958623+00:00",
+  "owner_decision": {
+    "decision_maker": "Jerome",
+    "instruction": "apply recommended",
+    "scope": "Conditional first installation after target/consumer/data checks; original existing-v1 migration fallback preserved. No operational acceptance inferred."
+  },
+  "initial_baseline": {
+    "head": "14e70652d27dcfdf8e47638266dc97bfc11b9c64",
+    "preexisting_changes": {
+      "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "69f534611a6dfa7ce89d340ef4fecf30daac355c62a31631b8127c6ceb922b9d",
+      "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": "7ae468fd1bcb9ad648424a70c8a755d42e977ebf7a57b808912a12950ba33eaf",
+      "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": "4c3502d1f5bc8d9c643c9e6ae101be1e3f2db24ebb219bec69a397ca75bdcc8a",
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "774ca3223f499c33554623a49541a80e63026efb805eba8ad26e91fb7d63bef4",
+      "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "8add4f46f0e8d1716b64b9ff27ffd61f87df0fa2086c2350d104ed2fa2454874",
+      "docs/contract/pd10-v2-consumer-discovery.md": "429482dacdd275833b13558a174f7177b646b60b042b51fe0296d22bcbdcc947",
+      "docs/runbooks/rollback.md": "bd08746f1f3f82a312c125edc10a5c0ba7c241683732b961cf1887e6f81a624a",
+      "tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs": "26443ef73d294a1185afc07b4303ec97706a5e762ad6bb0716b7c16e77efca6f",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-18.json": "82afd9eb9d7c10ddffaf09c2f91d11198dd95997557ad1833685c142fae551fc",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-18.logs.tar.gz": "b9adbecd73536d8d06bc0092711eebc955b24efb318f606489494d6b25f6b094"
+    },
+    "preexisting_changes_representation": "Captured worktree bytes at task start, before authorized document amendments."
+  },
+  "concurrent_recording": {
+    "commit": "0ffb6e6ae0b8125fae2da57a701dc47033ff611b",
+    "performed_by_this_task": false,
+    "description": "Concurrent /pushall recorded in-progress plan changes and advanced root gitlinks; preserved, reviewed directly and not treated as new runtime acceptance."
+  },
+  "head_at_capture": "0ffb6e6ae0b8125fae2da57a701dc47033ff611b",
+  "current_artifact_sha256": {
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "aaf5bfdee1e9c2782b94a6eafb436158ea3b3d44e95dafc33eee1fb12c8c9c86",
+    "_bmad-output/implementation-artifacts/spec-1-17-apply-approved-first-install-decision.md": "939846c09772a13726567fb3ed0758b588f52f9f925a187f3dfc46a1f9b7331d",
+    "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42",
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": "14542fd17a1f84fabbd5795800a1c557b9ea780d47ab9715051d4c4f6db0712e",
+    "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": "149a17efb75558c071a60234eacb058b0eec9222d74820e693cd76aed90eba38",
+    "docs/contract/pd10-v2-consumer-discovery.md": "b2e41c5ad9b57f66a7c7a1d3d7764cec54cf668470f1cfd3886263a83d248b59",
+    "docs/runbooks/rollback.md": "85979ed7565532e18b01540c6b9e7e49669d3784c3f74dced9b2df1898c0240a",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-first-install-target-2026-10-18.json": "d0dcf2c903318f5ebe892a03b85ba63f30f3df672161afd2e1206904c2c7bf8b",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-eventstore-release-prerequisite-2026-10-18.json": "d00c8c90ebff55d55a9082a40c6f24d7e9adb1501b2fcdaae54e97887a49d4c7"
+  },
+  "validation": [
+    {
+      "id": "document-conformance",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Contracts.Tests/bin/Release/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.OpenApi.Pd10ConformanceSetTests",
+        "-class",
+        "Hexalith.Folders.Contracts.Tests.Deployment.AdrRunbookDocsConformanceTests"
+      ],
+      "started_at_utc": "2026-10-18T12:25:53.415630+00:00",
+      "finished_at_utc": "2026-10-18T12:25:54.159695+00:00",
+      "exit_code": 0,
+      "stdout_stderr_sha256": "58812475c3de1625609128221b9571dddd1fc7e48e1525783fbae9f2880bf6db",
+      "summaries": [
+        "Total: 13, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.487s"
+      ]
+    },
+    {
+      "id": "governance",
+      "command": [
+        "pwsh",
+        "tests/tools/run-governance-completeness-gates.ps1",
+        "-SkipRestoreBuild"
+      ],
+      "started_at_utc": "2026-10-18T12:25:53.416185+00:00",
+      "finished_at_utc": "2026-10-18T12:25:58.699276+00:00",
+      "exit_code": 0,
+      "stdout_stderr_sha256": "329e4080baf236f4464a47a92ab0adb200981423ed9e54addecb6d9554af08f4",
+      "summaries": [
+        "Total: 23, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.905s",
+        "Total: 7, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.749s",
+        "Total: 3, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.231s"
+      ]
+    }
+  ],
+  "validation_limit": "Current document/data checks use the existing prior-turn Release Contracts assembly; no runtime code changed in this task. This supplies no renewed service integration or full package build evidence. Original command-output hashes are observations; full raw logs are not bundled.",
+  "candidate": {
+    "raw_sha256": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "candidate_set_sha256": "ae899e94cde62868688871e6f23a5b5bfd316af387e3138596f96be7247171d9",
+    "verified_artifacts": 229,
+    "verified_current_provenance_bindings": 20,
+    "identical_generations": 2,
+    "only_changed_artifact_row": [
+      "docs/contract/pd10-v2-consumer-discovery.md"
+    ],
+    "historical_manifest_lifecycle_and_control_fields_unchanged": true
+  },
+  "preservation": {
+    "unchanged_preexisting_paths": [
+      "tests/Hexalith.Folders.Contracts.Tests/Deployment/ReleasePackageConformanceTests.cs",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-18.json",
+      "_bmad-output/implementation-artifacts/evidence/story-1-17-resume-2026-10-18.logs.tar.gz"
+    ],
+    "intentionally_amended_preexisting_paths": [
+      "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md",
+      "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md",
+      "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md",
+      "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml",
+      "_bmad-output/planning-artifacts/planning-story-manifest.yaml",
+      "docs/contract/pd10-v2-consumer-discovery.md",
+      "docs/runbooks/rollback.md"
+    ],
+    "protected_file_sha256": {
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10.md": "2d18fe6b5622dca59fd51cfdd08237afb3b56a65502f4ba679e56676e7b71375",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-APPROVAL-2026-09-21.yaml": "471fb9d2d4ecf1dc837928787a24cb2c810334ef54920795ff10105d340ad972",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2-PD3.md": "81322318ebc4d212f298945e1837a20c5cb85718bcab6d4f95ab74adfa1a9435",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6-PD10.md": "0beefd843152b0c92fccfe8378fc3861b9dbba75188b6c9b7dc27c5567f8b355",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A3-PD4.md": "a618f96afdd37df285fa5349517c331f8f9a7bfe7b8e1abb9fa71f90bd34839e",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A1-PD1-OQ11.md": "a4b9e9041cc9a35c9aff5c0b4e00e404ba2abe1e89efa0fd80a2adf47c3bd2cd",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A4-PD5.md": "114f78d614943f60e6984398f041ef08485754177f5c53bada367c18e73b22ce",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-2026-09-21.md": "6cc4f7cd02b00a15eaf5e54be5c4dc63f1bc8ace5dc41c30382a1cc1a057da57",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-21.yaml": "e2f39055fbefb3e951e107e3bd1c5da48715e9a85caaf6e94669c78e419e0558",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-PROTOCOL-APPROVAL-2026-09-20.yaml": "fe803cfa6a8b4c005a229e5ed4096ffa60148964ecab0598c62e3c14b8ff3750",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-21.yaml": "e5ee5d4f5eea4515d36fad11016dccb9a53fa5dd034e4ccf2e603b46a01dacab",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A2B-PD6.md": "0779bd12007dbdbca55428939c0420b642f53028452f0c34c031b09c6aded257",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7-C6-PD11.md": "b63af6f9793ada826428714f9042d7f99159d626303692884d97ddb7078e6b3f",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-PREPARATION-2026-09-21.yaml": "95d7dc0dc385cab7a5fcc8e17778e46ac8c771f554f022b448a6a2be2d2b3e40",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE.md": "886a486e4abe17e8c84f3d380ad465f98ef35564387342f16f7df77cf44cbfca",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A5-C9-PD8.md": "fcf1277876d155cbf128703f289eacb7601490e504f61874be92293a141ba489",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A7B-C3.md": "1bd514dc073c728a290f94de4384534d4e9bd843b208c119f52644d6fe07bed1",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-APPROVAL-2026-09-23.yaml": "45ad4fc46f7e74aacae3a9c90d1ec535d97fb5ff615d513c1d588aed16df52be",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/STORY-1-17-EXECUTION-AUTHORIZATION-PREPARATION-2026-09-23.yaml": "4b3cf91f1ea7b7febd66848ece317fd2e9260518773fa383f5a3ed82637c0443",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-21.yaml": "b2ef53e1bf753da1711c19a0ceaf2a5af411dab0409e64a878068a81c7fbb08c",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-PREPARATION-2026-09-22.yaml": "3cda21f0d87bec3d13833bc215c4306e6bf714a1a235cb021a705035e8da794d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-APPROVAL-2026-09-22.yaml": "57bf08ed993338f4c44e6efafb4f529cd108aa5809c73c33264cb2cb0b5a4390",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A6B-OQ3-PD10-CORRECTIVE-APPROVAL-2026-09-22.yaml": "4f2429e49056b2d8364253abf603fa7172147b27cfd8e3aa76a8953fb798640d",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-FREEZE-PREPARATION-2026-09-20.yaml": "05c7d590783e0507399c74fc96aa760fa994b0aa10acd9e24d2ad3addd70d973",
+      "_bmad-output/planning-artifacts/authority-relock/2026-09-17/A8-CORRECTIVE-RELOCK-SECTION9-EVIDENCE-2026-09-22.yaml": "4524ca625c9fc5fbaf3739259ad35a0a06f0f58fe0318069becaea411388b492",
+      "_bmad-output/planning-artifacts/planning-authority-relock-approval-register.yaml": "2551bdecb3b07a3920ff5f76c27fa52e5c95834fe0da6207a4227cd6a4b031ff",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml": "0227b4f59e9d22b76b6f5bd851f39438a294efd3e15caa016c565194ae459082",
+      "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml": "3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2",
+      "docs/contract/authorization-matrix.md": "d5daa48323c3a117cb3e700b3ef3876ef29566bd6c4fa81a3edeec4d94c4d420"
+    },
+    "protected_files_verified": 29,
+    "prior_readiness_prefix_preserved": true,
+    "historical_proposal_and_both_packets_unchanged": true,
+    "original_migration_baseline_preserved": true,
+    "previous_frozen_intent_sha256": "e9babd86c7cf3d230b8bbf7739e22475feb8fc4798b4ac1a8cc070f1d71e5d2b",
+    "amended_frozen_intent_sha256": "e49624d17ab0abd3fb1fbe8e3f6f5e3c0119cc726509af714eaecf31b625f194",
+    "frozen_intent_change_authority": "Jerome apply recommended, current decision note"
+  },
+  "dependency_tuple": {
+    "earlier_tested": {
+      "references/Hexalith.Projects": "3faac93ac718b16629923ac824e9f463759c5c17",
+      "references/Hexalith.Builds": "4629ff2d3bd66376b29a553663c241d3a7b87853",
+      "references/Hexalith.EventStore": "47e234ccb535a71e7dd4a039fd0e2281083083ae",
+      "references/Hexalith.Platform": "2cc03cdee1261fa256546992e28b111a11f3faf8"
+    },
+    "selected_at_capture": {
+      "references/Hexalith.Tenants": "2d733caf0c989d3531d82bd9e27d40fef12fc1f4",
+      "references/Hexalith.AI.Tools": "3f194e17174994d308ec84af9ee2b5aa68674d0d",
+      "references/Hexalith.EventStore": "84bb115a0ced2497ca4315644a677b273cb44edf",
+      "references/Hexalith.FrontComposer": "1f8c7b2b4424b6232121a7cc567f7129e46577d3",
+      "references/Hexalith.Memories": "64e09a1f3c15e78d500511ff2948d674158da446",
+      "references/Hexalith.Commons": "9e874b1a3c6e7b6ff07b6f40b81d36e4e1403798",
+      "references/Hexalith.Builds": "4629ff2d3bd66376b29a553663c241d3a7b87853",
+      "references/Hexalith.PolymorphicSerializations": "98de6e013840ece9f0fa7c68ab7dcdf2bba3b375",
+      "references/Hexalith.Projects": "3faac93ac718b16629923ac824e9f463759c5c17",
+      "references/Hexalith.Platform": "2cc03cdee1261fa256546992e28b111a11f3faf8",
+      "references/Hexalith.McpCli": "2afb33d3beb0fa8d4c50bde48121c390ce0d8e95"
+    },
+    "new_runtime_acceptance_claimed": false
+  },
+  "review": {
+    "layers": [
+      "blind-hunter"
+    ],
+    "findings": 10,
+    "triage_path": "_bmad-output/implementation-artifacts/spec-1-17-apply-approved-first-install-decision.md",
+    "followup": "Document fixes verified; final recovery-point wording clarified by parent; final receipt checked independently by parent."
+  },
+  "controls": {
+    "production_change_performed": false,
+    "release_dispatch_performed": false,
+    "catalog_changed": false,
+    "runtime_route_configuration_changed": false,
+    "T0": null,
+    "activation_authority": null,
+    "tracker": "backlog",
+    "rollout_spec_status": "in-progress",
+    "bounded_plan_application_status": "done",
+    "retained_domain_data_disposition": "unknown",
+    "remaining": "Compatible release/catalog, retained-data disposition, exact hosted/staging/identity and operational entry evidence."
+  },
+  "current_artifact_sha256_representation": "Captured worktree bytes; retained as historical observation. For a clean Git checkout use git_normalized_artifact_sha256.",
+  "git_normalized_artifact_sha256": {
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "aaf5bfdee1e9c2782b94a6eafb436158ea3b3d44e95dafc33eee1fb12c8c9c86",
+    "_bmad-output/implementation-artifacts/spec-1-17-apply-approved-first-install-decision.md": "939846c09772a13726567fb3ed0758b588f52f9f925a187f3dfc46a1f9b7331d",
+    "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": "f658c26f4939e2c6ef3217c30cde96e5fda17c985623338be4191957c1809d42",
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": "e0d0d4671588cbab3fcae5b15848684f7c54786e09af0a479e9674b8766c7f0d",
+    "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": "149a17efb75558c071a60234eacb058b0eec9222d74820e693cd76aed90eba38",
+    "docs/contract/pd10-v2-consumer-discovery.md": "b2e41c5ad9b57f66a7c7a1d3d7764cec54cf668470f1cfd3886263a83d248b59",
+    "docs/runbooks/rollback.md": "85979ed7565532e18b01540c6b9e7e49669d3784c3f74dced9b2df1898c0240a",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "ba04ee232dcf74da85127af481336c8a17539cf7b0a17e4b1e95bba7aab84837",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-first-install-target-2026-10-18.json": "d0dcf2c903318f5ebe892a03b85ba63f30f3df672161afd2e1206904c2c7bf8b",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-eventstore-release-prerequisite-2026-10-18.json": "d00c8c90ebff55d55a9082a40c6f24d7e9adb1501b2fcdaae54e97887a49d4c7"
+  },
+  "git_blob_object_ids": {
+    "_bmad-output/implementation-artifacts/spec-1-17-complete-pd10-v2-migration-and-closure.md": "e1a37a24515397df592e6cb6dccd88cb573f044c",
+    "_bmad-output/implementation-artifacts/spec-1-17-apply-approved-first-install-decision.md": "eb995ca420740ba2f49101e2dad396d2890965e5",
+    "_bmad-output/implementation-artifacts/story-1-17-first-install-decision-2026-10-18.md": "fcf8cd0873d8b2591bad928e5ed9c3a61f1fc3ab",
+    "_bmad-output/implementation-artifacts/story-1-17-current-candidate-technical-readiness-2026-09-24.md": "53450806650602912d14fdb6a48602e6d615c474",
+    "_bmad-output/implementation-artifacts/story-1-17-projects-v1-to-v2-migration-approval-package-2026-09-24.md": "db72fb1bf65b1ee5903cacf98c0ccb7a3c7361b8",
+    "docs/contract/pd10-v2-consumer-discovery.md": "f41529aca411f4fc8aa07bd62a37c743a7d59c96",
+    "docs/runbooks/rollback.md": "d4e758adde8f3788b9ca764ed1373e27063fbf46",
+    "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml": "2cafc10d87bf7a3fa312191aa149a0df7058ce2f",
+    "_bmad-output/planning-artifacts/planning-story-manifest.yaml": "ddf667fd815f583b7f316a266a43221128d4a07b",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-first-install-target-2026-10-18.json": "ce9788fa1cdf97cef1210bcd53ae5faa813e5db7",
+    "_bmad-output/implementation-artifacts/evidence/story-1-17-eventstore-release-prerequisite-2026-10-18.json": "da25478eb4bd0af512461cc81840cb905eaa1fec"
+  },
+  "git_normalized_verification_note": "Verified against staged Git blob bytes before recording. Line-ending normalization does not modify the historical captured worktree hashes or infer renewed operational acceptance."
+}

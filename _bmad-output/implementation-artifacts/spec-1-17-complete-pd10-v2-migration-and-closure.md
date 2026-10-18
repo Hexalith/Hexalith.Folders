@@ -35,7 +35,7 @@ context:
 |----------|---------------|---------------------------|----------------|
 | Hold | Default host configuration | v1 works; v2 is unrouted | Invalid mode fails startup |
 | First installation | Target/data branch verified and all exact-release entry checks pass | Install through staging-qualified Platform attempt; verify, observe and record actual activation | Close ingress, stop promotion, remove candidate workloads and retain data/shared objects on failure |
-| Unknown or retained data | No existing workload, but data disposition is unknown or retained data exists | Unknown blocks execution; retained data needs compatibility or named recovery and a usable post-lock recovery point | Never synthesize empty-data proof or delete data |
+| Unknown or retained data | No existing workload, but data disposition is unknown or retained data exists | Unknown blocks execution; retained data needs a usable post-lock recovery point and either compatibility evidence or named approved recovery | Never synthesize empty-data proof or delete data |
 | Existing-v1 coexistence | Existing installation and all migration entry evidence accepted | v1 and v2 work; attributed counts and errors are visible | Failed smoke or threshold triggers migration rollback |
 | Projects migration | Exact released v2 client and contract | Lifecycle, permissions, and metadata reads succeed; denial and unavailable remain distinct | No silent deserialization fallback |
 | Existing-v1 retirement | Migration exit evidence complete before deadline | External v1 gets canonical 404; Projects v2 calls continue | Missing consumer or schedule evidence blocks retirement |
@@ -68,7 +68,7 @@ context:
 - Given any failed entry check, when execution is evaluated, then `V1Only` stays active and T0 has not started.
 - Given the released package pair, when Projects builds and exercises each inventoried call, then its typed outcomes match the v2 contract and the deployment artifact is identified by exact revision.
 - Given verified first-install target/data disposition and all common gates, when the exact release is installed, then staging, production verification, observation and applicable recovery evidence are retained without a fabricated v1 baseline, coexistence clock or retirement claim.
-- Given unknown data disposition, when execution is evaluated, then it remains on HOLD; retained data requires compatibility or named recovery and a usable post-lock recovery point.
+- Given unknown data disposition, when execution is evaluated, then it remains on HOLD; retained data requires a usable post-lock recovery point and either compatibility evidence or named approved recovery.
 - Given an existing-v1 coexistence window, when monitoring runs, then each decision uses attributed traffic, baseline thresholds, and a recorded UTC clock.
 - Given complete existing-v1 migration exit evidence, when v1 is retired, then Projects remains functional on v2 and no deployed v1 consumer remains.
 - Given a first-install failure, when recovery runs, then ingress closes, promotion stops, candidate application workloads are removed by the qualified executor and data/shared objects are retained; a migration expiry or rollback trigger instead restores the verified v1 path under its original ordering.

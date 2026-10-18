@@ -1,0 +1,236 @@
+{
+  "observed_at_utc": "2026-10-18T12:17:07.399454+00:00",
+  "scope": "Read-only package/release discovery; only this temporary JSON was written. No workflow dispatch, approval, repository/ref mutation, submodule init/update, resource change or messages to people.",
+  "package_prerequisite": {
+    "satisfied": false,
+    "reason": "No package newer than 3.124.0 is listed; 3.124.0 archive DLL/XML payloads lack the required authority symbols.",
+    "source_introducing_required_apis": "db23b193549f4554a6fdbf54b6a8f2e13b815510",
+    "current_remote_main": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+    "source_comparison": {
+      "status": "ahead",
+      "ahead_by": 22,
+      "behind_by": 0
+    }
+  },
+  "nuget": [
+    {
+      "package": "hexalith.eventstore.contracts",
+      "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.contracts/index.json",
+      "latest_listed_version": "3.124.0",
+      "versions_newer_than_3_124_0": [],
+      "package_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.contracts/3.124.0/hexalith.eventstore.contracts.3.124.0.nupkg",
+      "package_sha256": "3eba6febc7ee3bf06a25b46c5cd770ce869f1a631e4a93683f7f15ab97ecb635",
+      "repository_commit": "0737c0befce5338e294a789092a0e223e8264a04",
+      "symbol_hits": {
+        "CallerAuthority": [],
+        "QueryCallerAuthority": []
+      }
+    },
+    {
+      "package": "hexalith.eventstore.domainservice",
+      "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.domainservice/index.json",
+      "latest_listed_version": "3.124.0",
+      "versions_newer_than_3_124_0": [],
+      "package_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.domainservice/3.124.0/hexalith.eventstore.domainservice.3.124.0.nupkg",
+      "package_sha256": "b189a3f54b62e583044450acbf53a62f65ab6e524e6ce13f968d0fe71b32c741",
+      "repository_commit": "0737c0befce5338e294a789092a0e223e8264a04",
+      "symbol_hits": {
+        "VerifiedQueryCaller": [],
+        "DelegatedOwnerQueryClient": []
+      }
+    },
+    {
+      "package": "hexalith.eventstore.servicedefaults",
+      "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.servicedefaults/index.json",
+      "latest_listed_version": "3.124.0",
+      "versions_newer_than_3_124_0": [],
+      "package_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.servicedefaults/3.124.0/hexalith.eventstore.servicedefaults.3.124.0.nupkg",
+      "package_sha256": "9729128546171703d22b50ab8ba6722dfb00b9d2960172a469ee48882dcb37d5",
+      "repository_commit": "0737c0befce5338e294a789092a0e223e8264a04",
+      "symbol_hits": {
+        "QueryCallerAuthorityBinding": []
+      }
+    },
+    {
+      "package": "hexalith.eventstore.server",
+      "index_url": "https://api.nuget.org/v3-flatcontainer/hexalith.eventstore.server/index.json",
+      "latest_listed_version": "3.124.0",
+      "versions_newer_than_3_124_0": []
+    }
+  ],
+  "latest_release": {
+    "tag_name": "v3.124.0",
+    "published_at": "2026-10-16T18:39:44Z",
+    "html_url": "https://github.com/Hexalith/Hexalith.EventStore/releases/tag/v3.124.0",
+    "target_commitish": "main"
+  },
+  "latest_release_tag_commit": "0737c0befce5338e294a789092a0e223e8264a04",
+  "local_owner_repos": {
+    "Hexalith.EventStore": {
+      "head": "84bb115a0ced2497ca4315644a677b273cb44edf",
+      "status": "## main...origin/main",
+      "origin": "https://github.com/Hexalith/Hexalith.EventStore.git"
+    },
+    "Hexalith.Builds": {
+      "head": "4629ff2d3bd66376b29a553663c241d3a7b87853",
+      "status": "## main...origin/main",
+      "origin": "https://github.com/Hexalith/Hexalith.Builds.git"
+    },
+    "Hexalith.Projects": {
+      "head": "3faac93ac718b16629923ac824e9f463759c5c17",
+      "status": "## main...origin/main",
+      "origin": "https://github.com/Hexalith/Hexalith.Projects.git"
+    }
+  },
+  "required_source_push_runs": [
+    {
+      "workflow": "ci.yml",
+      "id": 39126568766,
+      "head_sha": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39126568766",
+      "created_at": "2026-10-18T12:15:59Z"
+    },
+    {
+      "workflow": "p1r-qualification.yml",
+      "id": 39126568544,
+      "head_sha": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+      "event": "push",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39126568544",
+      "created_at": "2026-10-18T12:15:59Z"
+    },
+    {
+      "workflow": "commitlint.yml",
+      "id": 39126568793,
+      "head_sha": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39126568793",
+      "created_at": "2026-10-18T12:15:59Z"
+    }
+  ],
+  "all_required_push_proofs_successful": false,
+  "release_workflow": {
+    "path": ".github/workflows/release.yml",
+    "blob_sha": "bcac3a6effb32ebce682ae2012adddc3aebca125",
+    "html_url": "https://github.com/Hexalith/Hexalith.EventStore/blob/f43b121c6c7539487b1f38b3c28508e3ab6264cc/.github/workflows/release.yml",
+    "identical_to_local_inspected_workflow": true,
+    "trigger": "workflow_dispatch, no inputs, ref main",
+    "publication_enabled": true,
+    "trusted_publishing_user_configured": true,
+    "environment": "production",
+    "required_reviewers": [
+      "jpiquot"
+    ],
+    "allowed_deployment_branches": [
+      "main"
+    ],
+    "recent_runs": [
+      {
+        "id": 39125856437,
+        "head_sha": "39b366bca3dbe508b4cf3c5afa69db1ddadb6dd2",
+        "status": "completed",
+        "conclusion": "failure",
+        "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39125856437",
+        "created_at": "2026-10-18T12:05:28Z"
+      },
+      {
+        "id": 38947533852,
+        "head_sha": "0737c0befce5338e294a789092a0e223e8264a04",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/38947533852",
+        "created_at": "2026-10-16T18:27:51Z"
+      }
+    ],
+    "latest_failure_observed": {
+      "run_id": 39125856437,
+      "head_sha": "39b366bca3dbe508b4cf3c5afa69db1ddadb6dd2",
+      "exact_error": "No successful push ci.yml run exists for the exact current main SHA.",
+      "command": "gh run view 39125856437 --repo Hexalith/Hexalith.EventStore --log-failed"
+    },
+    "prepared_dispatch_command_not_executed": "gh workflow run release.yml --repo Hexalith/Hexalith.EventStore --ref main",
+    "pre_dispatch_requirement": "Re-resolve live main and require successful exact-SHA push ci.yml, p1r-qualification.yml and commitlint.yml; any main advance invalidates the captured proof.",
+    "post_dispatch_requirement": "Configured production reviewer approves the publish job; Semantic Release chooses actual version and publishes 14 packages plus EventStore container. Re-query packages, verify APIs and nuspec revision before adoption."
+  },
+  "catalog_adoption": {
+    "owner": "Hexalith.Builds",
+    "authority_path": "Props/Directory.Packages.props",
+    "property": "HexalithEventStoreVersion",
+    "selected_version": "3.124.0",
+    "family": "hexalith-eventstore",
+    "audit_path": "Tools/package-version-audit.json",
+    "instructions": [
+      "README.md:188",
+      "README.md:331",
+      "Tools/README.md:193",
+      "Tools/README.md:220",
+      "Tools/README.md:258"
+    ],
+    "required_sequence": [
+      "After actual publication, make reviewed family-aligned version selection in Builds catalog; preserve UTF-8 BOM and CRLF.",
+      "Commit reviewed source declarations before feed audit generation; audit refuses dirty source claims.",
+      "Preserve prior audit, refresh hexalith-eventstore family, validate committed catalog and audit.",
+      "Review relevant embedded tool snapshots, platform manifests/schema and qualification fixtures with owning maintainers; catalog/version evidence alone grants no Platform acceptance.",
+      "Adopt approved Builds revision through authorized root-declared gitlinks only; keep Folders and Projects central-package wrappers version-free.",
+      "Repeat both current-source package Release builds and exact current Folders package/hosted entry checks before installation."
+    ],
+    "commands": [
+      "pwsh -NoProfile -File Tools/validate-central-package-versions.ps1",
+      "pwsh -NoProfile -File Tools/test-authoritative-package-catalog.ps1",
+      "pwsh -NoProfile -File Tools/audit-central-package-versions.ps1 -PriorAuditPath <saved-prior-audit.json> -Family hexalith-eventstore -OutputPath Tools/package-version-audit.json",
+      "pwsh -NoProfile -File Tools/validate-package-version-audit.ps1",
+      "pwsh -NoProfile -File Tools/validate-platform-version-catalog.ps1",
+      "pwsh -NoProfile -File Tools/test-platform-version-catalog.ps1",
+      "pwsh -NoProfile -File Tools/validate-consumer-package-authority.ps1 -RepositoryRoot <Folders-or-Projects-root> -CatalogPath Props/Directory.Packages.props",
+      "pwsh -NoProfile -File Tools/validate-package-version-exceptions.ps1 -InventoryPath Tools/package-version-exceptions.json -CatalogPath Props/Directory.Packages.props"
+    ],
+    "followup_builds": [
+      {
+        "cwd": "Folders root",
+        "command": "dotnet build Hexalith.Folders.CI.slnx --configuration Release -p:UseNuGetDeps=true -warnaserror -m:1"
+      },
+      {
+        "cwd": "Projects root",
+        "command": "dotnet build Hexalith.Projects.CI.slnx --configuration Release -p:UseHexalithProjectReferences=false -m:1 -warnaserror"
+      }
+    ]
+  },
+  "platform_side_actions": "No Azure or Kubernetes change is needed to publish this prerequisite. Actual installation remains separately gated by target/data disposition and release/hosted entry checks; this discovery supplies no deployment or acceptance evidence.",
+  "latest_gate_check": {
+    "observed_at_utc": "2026-10-18T12:27:23.423365+00:00",
+    "live_main": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+    "proofs": [
+      {
+        "workflow": "ci.yml",
+        "id": 39126568766,
+        "head_sha": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+        "status": "in_progress",
+        "conclusion": null,
+        "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39126568766"
+      },
+      {
+        "workflow": "p1r-qualification.yml",
+        "id": 39126568544,
+        "head_sha": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39126568544"
+      },
+      {
+        "workflow": "commitlint.yml",
+        "id": 39126568793,
+        "head_sha": "f43b121c6c7539487b1f38b3c28508e3ab6264cc",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/Hexalith/Hexalith.EventStore/actions/runs/39126568793"
+      }
+    ],
+    "all_required_successful": false
+  }
+}
