@@ -9,10 +9,11 @@ import json
 from pathlib import Path
 
 
-OUTPUT_PATH = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
+OUTPUT_PATH = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml"
+PRIOR_CONFORMANCE_PATH = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml"
 BASELINE_COMMIT = "3f1056d998ac4688f36eb869c516812c1a4ddb71"
 MATRIX_PATH = "docs/contract/authorization-matrix.md"
-HISTORICAL_V1_PATH = "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml"
+HISTORICAL_V1_PATH = "src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml"
 STORY_OWNED_PATHS_PATH = "scripts/pd10-v2-story-owned-paths.txt"
 
 
@@ -31,6 +32,9 @@ def candidate_paths(root: Path, output: Path) -> list[str]:
         raise RuntimeError("The story-owned candidate path allowlist must be unique and ordinally sorted.")
 
     resolved_output = output.resolve()
+    for historical_input in (HISTORICAL_V1_PATH, PRIOR_CONFORMANCE_PATH):
+        if (root / historical_input).resolve() == resolved_output:
+            raise RuntimeError("The conformance-set output must not alias immutable historical evidence.")
     for relative_path in paths:
         candidate = root / relative_path
         if candidate.resolve() == resolved_output:
@@ -73,7 +77,10 @@ def main() -> int:
         "schema_version: '1.0.0'",
         "evidence_id: PD10-V2-CONFORMANCE-SET",
         "candidate_version: '2.0.0'",
-        "generated_for_date: '2026-09-17'",
+        "generated_for_date: '2026-10-18'",
+        "source_identity_qualification: pending-after-approved-v1-addition",
+        f"prior_conformance_set_path: {PRIOR_CONFORMANCE_PATH}",
+        f"prior_conformance_set_sha256: {hashlib.sha256((root / PRIOR_CONFORMANCE_PATH).read_bytes()).hexdigest()}",
         f"baseline_commit: {json.dumps(arguments.baseline_commit)}",
         f"historical_v1_path: {HISTORICAL_V1_PATH}",
         f"historical_v1_sha256: {historical_v1_digest}",

@@ -372,12 +372,16 @@ public static partial class FolderCommandValidator
     internal static string ExternalRepositoryRefFingerprint(BindRepository command)
     {
         ArgumentNullException.ThrowIfNull(command);
+        return ExternalRepositoryRefFingerprint(command.ManagedTenantId, command.ProviderBindingRef, command.ExternalRepositoryRef);
+    }
 
+    internal static string ExternalRepositoryRefFingerprint(string tenantId, string bindingRef, string externalRef)
+    {
         using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
         AppendField(hash, "external-repository-ref-v1");
-        AppendField(hash, command.ManagedTenantId);
-        AppendField(hash, command.ProviderBindingRef);
-        AppendField(hash, command.ExternalRepositoryRef);
+        AppendField(hash, tenantId);
+        AppendField(hash, bindingRef);
+        AppendField(hash, externalRef);
 
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }

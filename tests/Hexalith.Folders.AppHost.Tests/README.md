@@ -1,5 +1,18 @@
 # Hexalith.Folders.AppHost.Tests
 
+Story 12.2 review-three preparation now resolves the exact source-bound repository target and
+observes repository identity, branch policy and contents permission through the existing Forgejo
+HTTP binding observation. Generic authenticated-user/version readiness cannot establish preparation.
+The disposable-provider acceptance temporarily removes its observer's repository access, requires preparation
+denial with no prepared source event, restores the repository in `finally`, and resumes the real
+prepare/lock/clean-release workflow. Private provider context stays outside retained events and evidence.
+
+The SDK's captured-owner identity handoff still rejects histories over 10,000 positions. The default
+capacity regression proves ordinary growth to 10,001 and records the production dispatcher failure
+and the specific public coordinator argument rejection; that expected-blocker test is not acceptance
+of rebuild beyond the boundary. Story 12.2 remains open pending the
+[bounded owner-identity prerequisite](../../_bmad-output/implementation-artifacts/proposal-12-2-sdk-bounded-owner-identity.md).
+
 Tier-3 Aspire integration harness. It boots the full Folders `AppHost` topology through
 `DistributedApplicationTestingBuilder` and proves the cross-process publish/subscribe wiring comes up together:
 
@@ -204,3 +217,80 @@ fixture initialization. The complete class passed 1/1 with zero failures/skips u
 persisted state, restart, replay, denial and private-storage failure rows all ran. The private home,
 Redis container, topology and copied components were removed. The host-wide watch limit and unrelated
 processes were unchanged.
+
+## Story 12.2 operational projection acceptance
+
+Build Debug with the source graph, then run the isolated real-authority scenario:
+
+```bash
+dotnet restore Hexalith.Folders.slnx -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false
+dotnet build Hexalith.Folders.slnx -c Debug --no-restore -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false -m:1
+HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput
+```
+
+The scenario owns a fresh managed tenant, private Redis state and a disposable supported Forgejo 16.0.3
+HTTPS remote. It creates its private provider credential, scopes the Dapr secret component to Folders,
+and supplies private CA trust to the real provider client. Docker must have the configured Forgejo image
+available. Provider status comes from authenticated remote observations; startup health supplies no
+provider-success evidence. No provider credentials or protected payloads belong in evidence files.
+
+Public commands configure and bind the remote, prepare and lock a metadata workspace, then explicitly
+release it cleanly. Host profiles keep repository/ref locators private. Retained bindings contain opaque
+policy/profile references and an exact configuration digest; private resolution requires a current source
+head and a matching immutable profile snapshot. Changing a private target under an existing reference
+fails closed. The fixture checks locator sentinels are absent from retained binding and projection bytes.
+The v1 task-status query supplies `?folderId=...` as a target hint and retains its
+`read_task_status` identity claim; the existing folder `read_metadata` grant supplies folder authority.
+Missing scope fails closed before task lookup. Provider configuration retains rejection positions and
+is rebuilt from its complete source prefix. Existing legacy projection responses remain compatible;
+operational rebuild also runs through the SDK-owned selective named mapper.
+
+The selective mapper is qualified with the paired local EventStore source edits at the unchanged
+`84bb115a0ced2497ca4315644a677b273cb44edf` HEAD/gitlink. The published package does not yet expose
+that API. Release/package consumption requires a separately authorized coordinated SDK release and
+consumer pin update; this lane does not change CI, package pins or publication.
+
+The checks require stored lifecycle/lock/workspace/cleanup/task/commit metadata, changed host PIDs,
+retained terminal `ready`, equivalent release replay and denial of a later non-replay write. The ordinary
+write lane starts two additional actual Workers with distinct PIDs and a shared fresh fixture-owned
+derived-state prefix. Authenticated deliveries overlap at every original retained source position and
+both processes must acknowledge exact selected-generation convergence. Their sidecars deny automatic
+pubsub subscriptions through [Dapr subscriptionScopes](https://docs.dapr.io/developing-applications/building-blocks/pubsub/pubsub-scopes/),
+keeping that namespace fresh until explicit delivery. Production source, actor state, and SDK receipts
+remain intact. This lane is separate from production-state restart and complete-source rebuild.
+
+The interruption lane seals a private SDK streamed generation before promotion, replaces the real
+Folders, Workers and EventStore process identities, then resumes the same SDK session and verifies
+authenticated ordinary replay. Component tests additionally cover install, commit, compaction and
+receipt faults. Missing or damaged derived history requires complete current source rebuild; isolated
+redelivery cannot restore history already acknowledged by the retained operational journal.
+
+Live acceptance inspects actual Redis TTLs of SDK-selected lifecycle, workspace and task rows after
+ordinary writes and after complete-source rebuild, requiring the configured 400-day TTL. Timestamp
+mutation checks prove full-row integrity failure and are separate from retention evidence. Component
+tests use a controlled clock to prove validity immediately before 400 days and expiry at the boundary.
+Authenticated positive control/read polling uses a shared 75-second retry deadline for HTTP 503/429;
+event/command-status polling has a 90-second total deadline. Mutations retry HTTP 429 and only explicit
+retryable admission or precondition-evidence 503 responses. Every retry preserves the original body
+bytes, method, idempotency key, task and correlation. For mutations, business/provider outcomes,
+authorization failures and permanent errors remain immediate failures. Deliberate unavailable/corrupt-state
+assertions bypass retries. A timeout cannot count as acceptance; production rate/admission settings remain unchanged.
+Each SDK shared rebuild action retains its exact serialized body, identity and headers while resuming
+`Retryable` outcomes, or `Indeterminate` with `projection_handler_failure`, under that same 75-second total deadline,
+including HTTP retries and pauses. `Failed`, other indeterminate reasons and malformed outcomes stop
+immediately. Only `Completed`/`AlreadyCompleted` advances the fixture; exhaustion reports the last reason
+and fails the lane. The live source-head timeout and prior deterministic SDK defect remain failed
+diagnostic attempts; bounded resume does not replace the final persisted-view/source-hash assertions.
+Positive folder workflow transitions first observe allowed, nonstale public permission evidence and
+matching retained-source, ACL and operational checkpoint watermarks. Preparation also requires the
+public workspace state `ready` after `WorkspacePrepared` before lock submission. These read-only barriers expose subscriber
+lag; they do not retry nonretryable `folder_acl_stale` mutation decisions or repair a command interrupted
+after persistence. Attempt 11's post-persistence authority throttle remains a failed diagnostic incident.
+Repeated empty-checkpoint rebuilds, unsupported versions, corrupt evidence,
+foreign tenants and unavailable storage preserve retained source hashes. Only task-owned derived state
+is erased or corrupted; retained events and legal-hold/cleanup ownership remain unchanged. Acceptance
+composition filters the Forgejo HTTP transport category so final evidence excludes private target URLs;
+this does not qualify general production confidentiality/redaction, which remains Story 12.7. Opted-in
+initialization failure is a failure, and a positive acceptance run requires zero skips. The exact verified
+commands and boundaries are recorded in
+[`story-12-2-durability.json`](../../_bmad-output/implementation-artifacts/evidence/story-12-2-durability.json).

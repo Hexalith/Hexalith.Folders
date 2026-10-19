@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "currentPayloads": [
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.BranchRefPolicyConfigured",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.ExistingRepositoryBindingRequested",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderAccessGranted",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderAccessRevoked",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderArchived",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderCreated",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderWorkspaceLifecycleEventRecorded",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.ProviderOutcomeUnknown",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.RepositoryBindingFailed",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.RepositoryBindingRequested",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.RepositoryBound",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceCommitFailed",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceCommitOutcomeUnknown",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceCommitSucceeded",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceFileMutationAccepted",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceLockAcquired",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceLockReleased",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspacePreparationRequested",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Server.DuplicateWorkspaceLockRejected",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Server.FolderCommandRejected",
+      "payloadVersion": 1
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Server.WorkspaceTransitionInvalidRejected",
+      "payloadVersion": 1
+    }
+  ],
+  "historicalPayloadGenerations": [],
+  "applicableUpcasterChains": [],
+  "missingVersionRegistry": [
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.BranchRefPolicyConfigured",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.ExistingRepositoryBindingRequested",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderAccessGranted",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderAccessRevoked",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderArchived",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderCreated",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.FolderWorkspaceLifecycleEventRecorded",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.ProviderOutcomeUnknown",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.RepositoryBindingFailed",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.RepositoryBindingRequested",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.RepositoryBound",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceCommitFailed",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceCommitOutcomeUnknown",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceCommitSucceeded",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceFileMutationAccepted",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceLockAcquired",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspaceLockReleased",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Aggregates.Folder.WorkspacePreparationRequested",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Server.DuplicateWorkspaceLockRejected",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Server.FolderCommandRejected",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    },
+    {
+      "eventTypeName": "Hexalith.Folders.Server.WorkspaceTransitionInvalidRejected",
+      "readAsVersion": 1,
+      "status": "closed-legacy-v1"
+    }
+  ],
+  "reason": "All retained Folders operational payload types currently declare version 1. No historical generation or upcaster chain exists; the empty historical set is explicit."
+}

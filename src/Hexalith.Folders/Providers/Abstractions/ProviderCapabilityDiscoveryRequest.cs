@@ -11,4 +11,8 @@ public sealed record ProviderCapabilityDiscoveryRequest(
     ProviderTargetEvidence TargetEvidence,
     IReadOnlyList<ProviderCredentialMode> CredentialModeRequirements,
     ProviderAuthorizationEvidenceSnapshot AuthorizationEvidence,
-    string CorrelationId);
+    string CorrelationId)
+{
+    /// <summary>Private, authorized bound-target observation context; never public capability evidence.</summary>
+    internal ProviderRepositoryBindingTargetResolutionRequest? RepositoryTarget { get; init; }
+}

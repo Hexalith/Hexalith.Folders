@@ -8,4 +8,6 @@ public sealed record TaskStatusQuery(
     string? PrincipalId,
     EventStoreClaimTransformEvidence ClaimTransformEvidence,
     string? CorrelationId,
-    IReadOnlyDictionary<string, string?> ClientControlledTenantValues);
+    IReadOnlyDictionary<string, string?> ClientControlledTenantValues,
+    string? FolderId = null,
+    IReadOnlyDictionary<string, string?>? ClientControlledPrincipalValues = null);

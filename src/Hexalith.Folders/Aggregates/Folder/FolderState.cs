@@ -64,6 +64,25 @@ public sealed record FolderState(
     long AccessSequence,
     IReadOnlyDictionary<string, string> IdempotencyFingerprints)
 {
+    /// <summary>Gets the source operation for the most recent retained commit outcome.</summary>
+    public string? WorkspaceCommitOperationId { get; init; }
+
+    /// <summary>Gets terminal task results retained independently of later workspace transitions.</summary>
+    public IReadOnlyDictionary<string, FolderTaskClosure> TaskClosures { get; init; }
+        = FrozenDictionary<string, FolderTaskClosure>.Empty;
+
+    /// <summary>Tests source-folded terminal authority for a task and workspace binding.</summary>
+    public bool IsTaskClosed(string workspaceId, string taskId)
+        => TaskClosures.ContainsKey(TaskBindingKey(workspaceId, taskId));
+
+    /// <summary>Encodes component boundaries without delimiter collisions.</summary>
+    public static string TaskBindingKey(string workspaceId, string taskId)
+    {
+        ArgumentNullException.ThrowIfNull(workspaceId);
+        ArgumentNullException.ThrowIfNull(taskId);
+        return $"{workspaceId.Length}:{workspaceId}{taskId.Length}:{taskId}";
+    }
+
     public static FolderState Empty { get; } = new(
         IsCreated: false,
         ManagedTenantId: null,

@@ -10,7 +10,7 @@ public sealed class Pd10V2GeneratorTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
     private static readonly string GeneratorPath = Path.Combine(RepositoryRoot, "scripts", "generate-pd10-v2-contract.py");
-    private static readonly string SourcePath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string SourcePath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "baselines", "hexalith.folders.v1.pd10.yaml");
     private static readonly string MatrixPath = Path.Combine(RepositoryRoot, "docs", "contract", "authorization-matrix.md");
     private static readonly string CandidatePath = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string RuntimeCatalogGeneratorPath = Path.Combine(RepositoryRoot, "scripts", "generate-pd10-v2-runtime-catalog.py");

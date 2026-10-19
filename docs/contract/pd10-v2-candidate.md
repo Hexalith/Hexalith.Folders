@@ -38,13 +38,21 @@ task-to-folder binding only after fresh parent authorization.
 ## Reproduce the candidate
 
 ```text
-python3 scripts/generate-pd10-v2-contract.py --source src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml --matrix docs/contract/authorization-matrix.md --output src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
+python3 scripts/generate-pd10-v2-contract.py --source src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml --matrix docs/contract/authorization-matrix.md --output src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml
 dotnet msbuild src/Hexalith.Folders.Client/Hexalith.Folders.Client.csproj /t:GenerateHexalithFoldersIdempotencyHelpers /p:Configuration=Debug
 dotnet run --project tests/tools/parity-oracle-generator/Hexalith.Folders.ParityOracleGenerator.csproj -- --repository-root . --contract src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml --output tests/fixtures/parity-contract.yaml
 python3 scripts/generate-pd10-v2-conformance-set.py --repository-root .
 ```
 
-The last command writes `_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml`.
+The historical v1 generator input is retained byte-for-byte in `openapi/baselines/hexalith.folders.v1.pd10.yaml`.
+The active v1 contract has the separately approved Story 12.2 optional task folder hint; it does not
+change the disabled v2 candidate or qualify its current runtime source. The original dated conformance
+manifest and previous approvals retain their original hashes.
+
+The last command writes `_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml`.
+This current-source inventory explicitly records pending requalification and binds the immutable original
+`_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml` by hash. It supplies no new
+v2 qualification, approval, release authority or production exposure.
 The manifest binds each candidate path to its raw-byte SHA-256 and binds the ordered path/digest inventory to a
 candidate-set SHA-256. It deliberately excludes the historical v1 spine, OQ3 approval record, lifecycle status,
 and deployment/release configuration because Story 1.17 must leave those unchanged.

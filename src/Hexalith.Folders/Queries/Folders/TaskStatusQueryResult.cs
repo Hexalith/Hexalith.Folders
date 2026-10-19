@@ -13,4 +13,8 @@ public sealed record TaskStatusQueryResult(
     WorkspaceStatusRetryAfter? RetryAfter,
     FolderLifecycleFreshness Freshness,
     string? CorrelationId,
-    TenantAccessAuthorizationResult? AuthorizationDenial);
+    TenantAccessAuthorizationResult? AuthorizationDenial)
+{
+    /// <summary>Gets a denied current folder authorization decision.</summary>
+    public LayeredFolderAuthorizationResult? FolderAuthorizationDenial { get; init; }
+}

@@ -18,6 +18,7 @@ namespace Hexalith.Folders.Aggregates.Organization;
 /// <param name="PayloadTenantId">Optional client-asserted payload tenant id (comparison input only).</param>
 /// <param name="ClientControlledTenantValues">Client-asserted tenant signals (comparison inputs only).</param>
 /// <param name="ClientControlledPrincipalValues">Client-asserted principal signals (comparison inputs only).</param>
+/// <param name="CapabilityProfileRef">Optional reference to a tenant-owned host-configured target profile.</param>
 public sealed record ConfigureProviderBindingServiceRequest(
     string? AuthoritativeTenantId,
     string PrincipalId,
@@ -30,4 +31,5 @@ public sealed record ConfigureProviderBindingServiceRequest(
     string IdempotencyKey,
     string? PayloadTenantId,
     IReadOnlyDictionary<string, string?> ClientControlledTenantValues,
-    IReadOnlyDictionary<string, string?> ClientControlledPrincipalValues);
+    IReadOnlyDictionary<string, string?> ClientControlledPrincipalValues,
+    string? CapabilityProfileRef = null);

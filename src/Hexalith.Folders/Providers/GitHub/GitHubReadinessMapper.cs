@@ -33,6 +33,16 @@ internal static class GitHubReadinessMapper
                 failureCategory: permissions.SupportsFileMutation ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
             Operation(ProviderOperationCatalog.CommitSupport, permissions.SupportsCommit),
             Operation(ProviderOperationCatalog.StatusQuery, permissions.SupportsStatus),
+            ProviderCapabilityOperationRow.WithDetails(
+                ProviderOperationCatalog.WorkspacePreparation,
+                permissions.SupportsMetadata && permissions.SupportsRepositoryBinding
+                    ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["preparation_scope"] = "authorized_bound_repository_metadata",
+                },
+                failureCategory: permissions.SupportsMetadata && permissions.SupportsRepositoryBinding
+                    ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
             ProviderCapabilityOperationRow.Unsupported(ProviderOperationCatalog.CleanupExpiration),
         ];
     }

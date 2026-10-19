@@ -37,14 +37,14 @@ internal sealed class DaprProviderCredentialSecretStoreClient(DaprClient daprCli
         {
             throw;
         }
-        catch (DaprApiException ex) when (IsPermissionDenied(ex))
+        catch (Exception ex) when ((ex is DaprException or DaprApiException) && IsPermissionDenied(ex))
         {
             // A Dapr secret-scope denial (defaultAccess: deny / not in allowedSecrets) surfaces as a
             // gRPC PermissionDenied status. Report it as a distinct denied outcome so the resolver maps
             // it to ProviderPermissionInsufficient instead of a transient/retryable unavailable error.
             return ProviderCredentialSecretLookupResult.Denied();
         }
-        catch (DaprApiException)
+        catch (Exception ex) when (ex is DaprException or DaprApiException)
         {
             return ProviderCredentialSecretLookupResult.Unavailable(TimeSpan.FromSeconds(30));
         }

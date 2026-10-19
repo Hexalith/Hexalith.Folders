@@ -13,6 +13,7 @@ using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.FolderAccess;
@@ -99,10 +100,6 @@ public static class FoldersDomainServiceEndpoints
                 ? Results.BadRequest(result) : Results.NotFound(QueryResult.Failure("safe-denial"));
         }).RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
             EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceQuery));
-        endpoints.MapPost("/admin/operational-index-metadata", (AdminOperationalIndexMetadata.Request request, DiscoveryResult discovery, IEnumerable<IDomainQueryHandler> handlers) =>
-            Results.Ok(AdminOperationalIndexMetadata.Create(discovery, request.Domains, handlers)))
-            .RequireAuthorization(EventStoreWorkloadAuthenticationDefaults.OperationPolicy(
-                EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, EventStoreWorkloadOperations.DomainServiceMetadata));
 
         RouteHandlerBuilder processEndpoint = endpoints.MapPost(FoldersServerModule.ProcessRoute, async (
             DomainServiceRequest request,
@@ -118,7 +115,7 @@ public static class FoldersDomainServiceEndpoints
                 EventStoreWorkloadOperations.DomainServiceProcess));
         }
 
-        RouteHandlerBuilder projectEndpoint = endpoints.MapPost(FoldersServerModule.ProjectRoute, (
+        RouteHandlerBuilder projectEndpoint = endpoints.MapPost(FoldersServerModule.ProjectRoute, async (
             ProjectionRequest request,
             IServiceProvider services,
             CancellationToken cancellationToken) =>
@@ -132,11 +129,55 @@ public static class FoldersDomainServiceEndpoints
 
                 ProjectionResponse? projection = DomainProjectionDispatcher.Project(
                     services, request, cancellationToken);
+                if (projection is not null && projection.ProjectionType == "folder-state"
+                    && services.GetService<HumanAuthorityReceiptVerifier>() is not null)
+                {
+                    long sourceHead = await services.GetRequiredService<Hexalith.Folders.Authorization.IOrganizationStreamSequenceReader>()
+                        .GetCurrentSequenceAsync(request.TenantId, request.AggregateId, cancellationToken).ConfigureAwait(false);
+                    if (sourceHead != request.Events.LongLength)
+                    {
+                        throw new InvalidOperationException("Incomplete operational rebuild source.");
+                    }
+                    if (request.Events.Length > 0)
+                    {
+                        var persisted = await OperationalStatusRebuild.ExecuteAsync(services, request,
+                            GenerateCanonicalMessageId(), cancellationToken).ConfigureAwait(false);
+                        if (!persisted.IsSuccess)
+                        {
+                            return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
+                                extensions: new Dictionary<string, object?> { ["category"] = "projection_unavailable" });
+                        }
+                    }
+                }
+                if (projection?.ProjectionType == "organization-provider-binding"
+                    && ProviderBindingActorId.IsReserved(request.AggregateId) && request.Events.Length > 0
+                    && services.GetService<HumanAuthorityReceiptVerifier>() is not null)
+                {
+                    await services.GetRequiredService<Hexalith.Folders.Queries.ProviderReadiness.EventStoreProviderReadinessBindingReadModel>()
+                        .RebuildAsync(request.TenantId, request.AggregateId, FolderEventReplay.FoldOrganization(request),
+                            request.Events.Select(item => new FolderProjectionMessage(item.SequenceNumber, item.MessageId ?? throw new InvalidOperationException("Provider source message identity is missing."),
+                                Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                                    [.. System.Text.Encoding.UTF8.GetBytes(item.EventTypeName + ":" + (item.StoredPayloadVersion ?? 1) + ":"), .. item.Payload])))).ToArray(),
+                            request.Events.Where(item => item.EventTypeName == typeof(ProviderBindingConfigured).FullName)
+                                .Select(item => Hexalith.Folders.Queries.ProviderReadiness.ProviderBindingConfigurationEvidence.Create(
+                                    item.SequenceNumber, Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(
+                                        [.. System.Text.Encoding.UTF8.GetBytes(item.EventTypeName + ":" + (item.StoredPayloadVersion ?? 1) + ":"), .. item.Payload])),
+                                    JsonSerializer.Deserialize<ProviderBindingConfigured>(item.Payload,
+                                        Hexalith.EventStore.Contracts.Serialization.EventStorePayloadSerialization.Options)
+                                        ?? throw new InvalidOperationException("Provider configuration source is unreadable."))).ToArray(),
+                            cancellationToken).ConfigureAwait(false);
+                }
                 return projection is null ? Results.NotFound() : Results.Ok(projection);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
                 throw;
+            }
+            catch (Exception exception) when (exception is OperationalStatusUnavailableException or PermissionProjectionConcurrencyException
+                || exception is not (InvalidOperationException or ArgumentException or JsonException or Hexalith.EventStore.Client.Events.EventPayloadEvolutionException))
+            {
+                return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
+                    extensions: new Dictionary<string, object?> { ["category"] = "projection_unavailable" });
             }
             catch (Exception exception)
             {
@@ -589,6 +630,7 @@ public static class FoldersDomainServiceEndpoints
 
         endpoints.MapGet("/api/v1/tasks/{taskId}/status", async (
             string taskId,
+            string? folderId,
             HttpContext httpContext,
             TaskStatusQueryHandler handler,
             ITenantContextAccessor tenantContext,
@@ -601,7 +643,7 @@ public static class FoldersDomainServiceEndpoints
                 httpContext,
                 correlationId,
                 null,
-                [taskId],
+                string.IsNullOrWhiteSpace(folderId) ? [taskId] : [taskId, folderId],
                 requireEventuallyConsistent: true);
             if (envelopeFailure is not null)
             {
@@ -615,7 +657,9 @@ public static class FoldersDomainServiceEndpoints
                     tenantContext.PrincipalId,
                     claimTransformEvidence.GetEvidence(TaskStatusQueryHandler.ActionToken),
                     correlationId,
-                    ClientTenantIds(httpContext)),
+                    ClientTenantIds(httpContext),
+                    folderId,
+                    ClientPrincipalIds(httpContext)),
                 cancellationToken).ConfigureAwait(false);
 
             return ToHttpResult(httpContext, result, correlationId);
@@ -5411,6 +5455,24 @@ public static class FoldersDomainServiceEndpoints
 
     private static IResult ToHttpResult(HttpContext httpContext, TaskStatusQueryResult result, string? correlationId)
     {
+        if (result.FolderAuthorizationDenial is { } folderDenial)
+        {
+            result = result with
+            {
+                Code = folderDenial.Decision.OutcomeCode switch
+                {
+                    LayeredAuthorizationOutcomeCodes.AuthenticationDenied => TaskStatusQueryResultCode.AuthenticationRequired,
+                    LayeredAuthorizationOutcomeCodes.SafeNotFound or LayeredAuthorizationOutcomeCodes.FolderAclDenied => TaskStatusQueryResultCode.NotFoundSafe,
+                    LayeredAuthorizationOutcomeCodes.TenantProjectionUnavailable
+                        or LayeredAuthorizationOutcomeCodes.TenantProjectionStale
+                        or LayeredAuthorizationOutcomeCodes.FolderAclUnavailable
+                        or LayeredAuthorizationOutcomeCodes.FolderAclStale => TaskStatusQueryResultCode.ReadModelUnavailable,
+                    _ when folderDenial.Decision.Retryable => TaskStatusQueryResultCode.ReadModelUnavailable,
+                    _ => TaskStatusQueryResultCode.AuthorizationDenied,
+                }
+            };
+        }
+
         if (result.AuthorizationDenial is not null)
         {
             return TenantAccessDenialToProblem(result.AuthorizationDenial, correlationId);
@@ -5484,7 +5546,7 @@ public static class FoldersDomainServiceEndpoints
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
-                    retryable: true,
+                    retryable: result.FolderAuthorizationDenial?.Decision.Retryable ?? true,
                     correlationId: correlationId,
                     taskId: null);
 

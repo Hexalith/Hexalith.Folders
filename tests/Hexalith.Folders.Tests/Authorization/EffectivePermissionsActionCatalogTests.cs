@@ -22,6 +22,7 @@ public sealed class EffectivePermissionsActionCatalogTests
             "lock_workspace",
             "read_workspace_lock",
             "read_workspace_status",
+            "read_task_status",
             "read_workspace_cleanup_status",
             "archive_folder",
             "read_branch_ref_policy",

@@ -10,4 +10,5 @@ internal sealed record ForgejoPermissionEvidence(
     bool SupportsMetadata,
     bool SupportsPagination,
     bool SupportsContentsApi,
-    string RequiredScopePosture);
+    string RequiredScopePosture,
+    bool SupportsWorkspacePreparation = false);

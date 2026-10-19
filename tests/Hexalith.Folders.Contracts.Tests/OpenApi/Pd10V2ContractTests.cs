@@ -10,10 +10,10 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 public sealed class Pd10V2ContractTests
 {
     private static readonly string RepositoryRoot = FindRepositoryRoot();
-    private static readonly string V1Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+    private static readonly string V1Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "baselines", "hexalith.folders.v1.pd10.yaml");
     private static readonly string V2Path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v2.yaml");
     private static readonly string PreviousSpinePath = Path.Combine(RepositoryRoot, "tests", "fixtures", "previous-spine.yaml");
-    private static readonly string ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "planning-artifacts", "generated-v2-conformance-set-2026-09-17.yaml");
+    private static readonly string ConformanceSetPath = Path.Combine(RepositoryRoot, "_bmad-output", "implementation-artifacts", "evidence", "story-12-2-v2-source-requalification-pending.yaml");
 
     [Fact]
     public void V2PublishesExactly49ProtectedOperationsWithClosedPreObservationOutcomes()
@@ -273,7 +273,7 @@ public sealed class Pd10V2ContractTests
         Scalar(manifest, "story_closure_claimed").ShouldBe("false");
 
         string historicalV1Path = Scalar(manifest, "historical_v1_path");
-        historicalV1Path.ShouldBe("src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v1.yaml");
+        historicalV1Path.ShouldBe("src/Hexalith.Folders.Contracts/openapi/baselines/hexalith.folders.v1.pd10.yaml");
         string historicalV1Hash = Scalar(manifest, "historical_v1_sha256");
         historicalV1Hash.ShouldBe("3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2");
         historicalV1Hash.ShouldBe(Hash(Path.Combine(RepositoryRoot, historicalV1Path)));

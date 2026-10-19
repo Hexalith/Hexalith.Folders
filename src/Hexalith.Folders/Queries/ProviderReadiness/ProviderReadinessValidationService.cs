@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
@@ -121,9 +122,20 @@ public sealed partial class ProviderReadinessValidationService(
         }
 
         string providerBindingRef = request.ProviderBindingRef!.Trim();
-        OrganizationProviderBinding? binding = await _bindingReader.GetAsync(
-            new ProviderReadinessBindingReadRequest(managedTenantId, providerBindingRef, correlationId),
-            cancellationToken).ConfigureAwait(false);
+        OrganizationProviderBinding? binding;
+        try
+        {
+            binding = await _bindingReader.GetAsync(
+                new ProviderReadinessBindingReadRequest(managedTenantId, providerBindingRef, correlationId),
+                cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception failure) when (failure is not OperationCanceledException)
+        {
+            return Result(ProviderReadinessResultCode.ReadModelUnavailable, Degraded,
+                ProviderFailureCategory.ProviderUnavailable, "provider_binding_authority_unavailable", true,
+                null, "retry_later", correlationId, null, null, null, null,
+                Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: true));
+        }
 
         if (binding is null)
         {
@@ -192,7 +204,8 @@ public sealed partial class ProviderReadinessValidationService(
             binding,
             tenantAccess,
             principalId,
-            correlationId);
+            correlationId) with
+        { RepositoryTarget = RepositoryTarget(binding, request, tenantAccess, principalId, correlationId) };
 
         ProviderCapabilityDiscoveryResult discovery = await _discoveryService.DiscoverCapabilitiesAsync(
             discoveryRequest,
@@ -247,6 +260,23 @@ public sealed partial class ProviderReadinessValidationService(
             Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: retryable));
     }
 
+    private static ProviderRepositoryBindingTargetResolutionRequest? RepositoryTarget(OrganizationProviderBinding binding,
+        ProviderReadinessValidationRequest request, TenantAccessAuthorizationResult authority, string principalId, string correlationId)
+    {
+        if (request.RequestedCapability != ProviderReadinessRequestedCapability.WorkspacePreparation
+            || string.IsNullOrWhiteSpace(request.BoundFolderId)
+            || string.IsNullOrWhiteSpace(request.BoundRepositoryBindingId)
+            || string.IsNullOrWhiteSpace(request.BoundBranchRefPolicyRef)
+            || !binding.NamingPolicy.Metadata.TryGetValue("external_repository_ref", out string? externalRef)
+            || string.IsNullOrWhiteSpace(externalRef)
+            || request.BoundBranchRefPolicyRef != binding.BranchPolicy.PolicyRef
+            || request.BoundExternalRepositoryRefFingerprint != FolderCommandValidator.ExternalRepositoryRefFingerprint(
+                binding.ManagedTenantId, binding.ProviderBindingRef, externalRef)) return null;
+        return new(binding.ManagedTenantId, binding.OrganizationId, binding.ProviderBindingRef,
+            request.BoundRepositoryBindingId, externalRef, request.BoundExternalRepositoryRefFingerprint,
+            request.BoundBranchRefPolicyRef, AuthorizationFingerprint(binding, authority, principalId), correlationId);
+    }
+
     private static ProviderCapabilityDiscoveryRequest BuildDiscoveryRequest(
         OrganizationProviderBinding binding,
         TenantAccessAuthorizationResult tenantAccess,
@@ -272,6 +302,7 @@ public sealed partial class ProviderReadinessValidationService(
     {
         Dictionary<string, string> metadata = new(StringComparer.Ordinal)
         {
+            ["operation_scope"] = "readiness",
             ["binding_status"] = SafeToken(binding.ConfiguredStatus),
             ["credential_mode"] = CredentialModes(binding)[0].ToString().ToLowerInvariant(),
             ["naming_policy_fingerprint"] = PolicyFingerprint(binding.NamingPolicy),
@@ -664,7 +695,6 @@ public sealed partial class ProviderReadinessValidationService(
     private static void AddAllowedTargetMetadata(Dictionary<string, string> metadata, OrganizationProviderBinding binding)
     {
         AddAllowedTargetMetadata(metadata, binding, "safe_target_fingerprint");
-        AddAllowedTargetMetadata(metadata, binding, "operation_scope");
 
         if (string.Equals(binding.ProviderKind, "forgejo", StringComparison.Ordinal))
         {

@@ -153,6 +153,16 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                 request);
         }
 
+        ProviderRepositoryResolvedTarget? boundTarget = null;
+        if (request.RepositoryTarget is { } targetRequest)
+        {
+            ProviderRepositoryTargetResolutionResult resolution = await _targetResolver.ResolveBindingAsync(targetRequest,
+                cancellationToken).ConfigureAwait(false);
+            if (resolution.Target is not { } target || !IsForgejoRepositoryTargetValid(target))
+                return Failure(resolution.FailureCategory, resolution.ReasonCode, request);
+            boundTarget = target;
+        }
+
         ForgejoCredentialResolutionResult credentialResult = await _credentialResolver.ResolveAsync(
             new ForgejoCredentialResolutionRequest(
                 request.ManagedTenantId,
@@ -229,7 +239,7 @@ public sealed partial class ForgejoProvider : IGitProvider, ICanonicalProviderAd
                         ForgejoProviderConstants.ApiSurfaceVersion,
                         supportedVersion.Version,
                         safeTargetEvidence.Metadata["safe_target_fingerprint"],
-                        request.CorrelationId),
+                        request.CorrelationId, boundTarget),
                     cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)

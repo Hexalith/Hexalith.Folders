@@ -552,7 +552,8 @@ public sealed partial class FolderDomainProcessor(
             {
                 ["eventstore_envelope_tenant"] = envelope.TenantId,
             },
-            ClientControlledPrincipalValues: principalValues);
+            ClientControlledPrincipalValues: principalValues,
+            CapabilityProfileRef: payload.CapabilityProfileRef);
 
         OrganizationProviderBindingResult result;
         try

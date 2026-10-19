@@ -1,0 +1,123 @@
+{
+  "checked_at_utc": "2026-10-18T23:43:28.588963+00:00",
+  "source_stage": "review-three-corrections-qualified-sdk-owner-history-prerequisite-open",
+  "source_stage_sha256_canonical": "526fd223fc7e6df98be0fd1624076680755bf8329198cf489f04a24c60134acb",
+  "source_files_verified": 130,
+  "test_assemblies_verified": 7,
+  "sdk_copies_verified": 17,
+  "component_passed": 3908,
+  "existing_optional_skips": 2,
+  "live": {
+    "summary": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "duration_seconds": 311.385,
+    "assembly_sha256": "e516c34e35a86bcb6afe1b2814c53d787ff3ae4c7aaff0d67e0363a19566e832",
+    "log_path": "/tmp/story12-2-round3-verification/live.log",
+    "log_sha256": "bd70ea745f4bdc8b6932c24fa21992270f24b16dbf13fe1b1b75f3378522b120",
+    "xml_path": "/tmp/story12-2-round3-verification/live.xml",
+    "xml_sha256": "ed01de2a6621efe3cf568dc0bb1f920fbf2505fc3fc81af4dec6674396439cce"
+  },
+  "privacy_counts": {
+    "private_ref_sentinel": 0,
+    "private_target_keys": 0,
+    "jwt_shapes": 0
+  },
+  "ttl_observations": [
+    [
+      "ordinary writes",
+      "34559996",
+      "34560000"
+    ],
+    [
+      "ordinary writes",
+      "34559996",
+      "34560000"
+    ],
+    [
+      "ordinary writes",
+      "34559996",
+      "34560000"
+    ],
+    [
+      "complete-source rebuild",
+      "34559999",
+      "34560000"
+    ],
+    [
+      "complete-source rebuild",
+      "34559999",
+      "34560000"
+    ],
+    [
+      "complete-source rebuild",
+      "34559999",
+      "34560000"
+    ]
+  ],
+  "proof_pids": [
+    "87989",
+    "87990"
+  ],
+  "process_replacements": [
+    [
+      "folders",
+      "24342",
+      "37034"
+    ],
+    [
+      "folders-workers",
+      "25432",
+      "38042"
+    ],
+    [
+      "folders-workers-replica",
+      "26312",
+      "38541"
+    ],
+    [
+      "eventstore",
+      "27765",
+      "39293"
+    ],
+    [
+      "folders",
+      "37034",
+      "49548"
+    ],
+    [
+      "folders-workers",
+      "38042",
+      "50770"
+    ],
+    [
+      "folders-workers-replica",
+      "38541",
+      "51506"
+    ],
+    [
+      "eventstore",
+      "39293",
+      "52642"
+    ]
+  ],
+  "cleanup": {
+    "dedicated_uid_processes": 0,
+    "fixture_containers": 0,
+    "private_runner_retained": true
+  },
+  "four_historical_stages_preserved": true,
+  "frozen_intent_preserved": true,
+  "root_index_preserved": true,
+  "sdk_four_sources_identical_to_keep": true,
+  "full_acceptance": false,
+  "open_sdk_prerequisite": "Exact production rebuild above10000 remains unavailable; generic bounded captured-identity handoff proposal is not approved.",
+  "next": "Owner scope decision; no step04/05 transition or completion claim.",
+  "evidence_path": "_bmad-output/implementation-artifacts/evidence/story-12-2-durability.json",
+  "evidence_sha256": "05ed4ad70493505215e054c9573fdd19767d11f290b87422cca62339e4b4172d",
+  "approved_scope_source": "proposal-12-2-acceptance-prerequisites.md: SDK-owned selective named projection transport; additional bounded identity storage/checkpoint handoff is proposed separately."
+}

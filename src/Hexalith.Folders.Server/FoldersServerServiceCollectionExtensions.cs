@@ -4,7 +4,9 @@ using Hexalith.EventStore.DomainService;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
@@ -54,6 +56,17 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddKnownEventPayload<ProviderBindingConfigured>();
         services.AddEventStoreGatewayClient();
         services.TryAddSingleton<FolderEventReplay>();
+        services.TryAddSingleton<OperationalStatusProjectionWriter>();
+        services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
+        services.TryAddSingleton<DomainProjectionCatalogRegistry>();
+        services.AddOptions<Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions>()
+            .BindConfiguration("EventStore:ProjectionDispatch");
+        services.AddOptions<DomainProjectionIdentityOptions>().BindConfiguration("EventStore:DomainService")
+            .PostConfigure(static options =>
+            {
+                if (string.IsNullOrWhiteSpace(options.AppId)) options.AppId = "folders";
+            });
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IAsyncDomainProjectionHandler, OperationalStatusProjectionHandler>());
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainProjectionHandler, FolderDomainProjectionHandler>());
         services.AddFoldersObservability();
         services.AddHttpContextAccessor();
@@ -98,6 +111,9 @@ public static class FoldersServerServiceCollectionExtensions
         services.TryAddScoped<IWorkspaceFileContextSource, UnavailableWorkspaceFileContextSource>();
         services.TryAddScoped<WorkspaceFileContextQueryHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IDomainProcessor, FolderDomainProcessor>());
+        // Enroll the existing bespoke processor in the SDK's domain capability lookup.
+        services.TryAddKeyedScoped<IDomainProcessor>(FoldersServerModule.DomainName, static (provider, _) =>
+            provider.GetServices<IDomainProcessor>().OfType<FolderDomainProcessor>().Single());
         services.TryAddScoped<FoldersDomainServiceRequestHandler>();
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, FoldersAuthSchemeValidator>());
 

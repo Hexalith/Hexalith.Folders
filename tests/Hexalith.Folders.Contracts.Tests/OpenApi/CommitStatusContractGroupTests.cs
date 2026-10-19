@@ -33,6 +33,22 @@ public sealed class CommitStatusContractGroupTests
     ];
 
     [Fact]
+    public void CurrentV1TaskStatusDocumentsOnlyAnOptionalFolderTargetHint()
+    {
+        YamlMappingNode root = LoadYamlMapping(OpenApiPath);
+        Operation operation = EnumerateOperations(root).Single(o => o.OperationId == "GetTaskStatus");
+        YamlMappingNode hint = EnumerateParameters(operation.PathItem, operation.Node)
+            .Single(parameter => GetOptionalScalar(parameter, "name") == "folderId");
+        GetOptionalScalar(hint, "in").ShouldBe("query");
+        GetOptionalScalar(hint, "required").ShouldBe("false");
+        string description = GetOptionalScalar(hint, "description")!;
+        description.ShouldContain("read_task_status");
+        description.ShouldContain("read_metadata");
+        description.ShouldContain("grants no authority");
+        operation.Path.ShouldBe("/api/v1/tasks/{taskId}/status");
+    }
+
+    [Fact]
     public void CommitStatusOperations_MatchStoryAllowListAndResolveRefs()
     {
         YamlMappingNode root = LoadYamlMapping(OpenApiPath);
@@ -150,7 +166,7 @@ public sealed class CommitStatusContractGroupTests
 
             if (operation.OperationId == "GetTaskStatus")
             {
-                categories.ShouldNotContain("folder_acl_denied", "GetTaskStatus path is tenant+task scoped and has no folder ACL layer; declaring folder_acl_denied would leak the task-belongs-to-some-folder relation.");
+                categories.ShouldNotContain("folder_acl_denied", "GetTaskStatus retains its v1 error categories while independently authorizing the optional folder hint; denials must not disclose task membership.");
             }
         }
 

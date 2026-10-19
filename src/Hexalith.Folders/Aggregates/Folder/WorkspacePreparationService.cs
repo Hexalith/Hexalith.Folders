@@ -109,7 +109,13 @@ public sealed class WorkspacePreparationService(
                 ProviderReadinessRequestedCapability.WorkspacePreparation,
                 command.CorrelationId,
                 request.ClaimTransformEvidence,
-                clientTenantValues),
+                clientTenantValues)
+            {
+                BoundFolderId = state.FolderId,
+                BoundRepositoryBindingId = state.RepositoryBindingId,
+                BoundExternalRepositoryRefFingerprint = state.ExternalRepositoryRefFingerprint,
+                BoundBranchRefPolicyRef = state.BranchRefPolicyRef,
+            },
             cancellationToken).ConfigureAwait(false);
 
         if (!IsReady(readiness))
@@ -141,15 +147,24 @@ public sealed class WorkspacePreparationService(
             return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
+        // Requested remains an intent on replay. Only this successfully observed metadata
+        // readiness gate records the existing outcome that makes the workspace lockable.
+        // This outcome does not claim repository content has been cloned or materialized.
+        IReadOnlyList<IFolderEvent> preparedEvents = [.. aggregateResult.Events,
+            new FolderWorkspaceLifecycleEventRecorded(command.ManagedTenantId, command.OrganizationId,
+                command.FolderId, command.WorkspaceId, FolderWorkspaceLifecycleEvent.WorkspacePrepared,
+                DirtyResolution: null, OperationId: command.WorkspaceId, command.CorrelationId,
+                command.TaskId, command.IdempotencyKey, validation.IdempotencyFingerprint!,
+                _timeProvider.GetUtcNow(), command.ActorPrincipalId)];
         FolderAppendOutcome outcome = _repository.AppendIfFingerprintAbsent(
             streamName,
             command.IdempotencyKey,
             validation.IdempotencyFingerprint!,
-            aggregateResult.Events);
+            preparedEvents);
 
         return outcome switch
         {
-            FolderAppendOutcome.Appended => aggregateResult,
+            FolderAppendOutcome.Appended => aggregateResult with { Events = preparedEvents },
             FolderAppendOutcome.FingerprintMatched => FolderResult.Rejected(command, FolderResultCode.IdempotentReplay),
             FolderAppendOutcome.FingerprintConflict => FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict),
             FolderAppendOutcome.AppendConflict => ResolveAppendConflict(streamName, command),

@@ -2,6 +2,8 @@ using Dapr.Client;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Observability;
+using Hexalith.EventStore.Client.Registration;
+using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
@@ -90,6 +92,41 @@ public static class FoldersServiceCollectionExtensions
         // This query reads IFolderRepository, which is request-scoped in the EventStore host.
         services.TryAddScoped<ListFolderAclEntriesQueryHandler>();
 
+        return services;
+    }
+
+    /// <summary>Replaces process-local operational readers with EventStore-backed metadata views.</summary>
+    public static IServiceCollection AddFoldersOperationalStatusPersistence(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        services.AddFoldersTenantAccess();
+        services.AddEventStoreReadModelStore();
+        services.TryAddSingleton<OperationalStatusProjectionWriter>();
+        services.TryAddSingleton<EventStoreOperationalStatusReadModel>();
+        services.RemoveAll<IFolderLifecycleStatusReadModel>();
+        services.AddSingleton<IFolderLifecycleStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
+        services.RemoveAll<IWorkspaceLockStatusReadModel>();
+        services.AddSingleton<IWorkspaceLockStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
+        services.RemoveAll<IWorkspaceStatusReadModel>();
+        services.AddSingleton<IWorkspaceStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
+        services.RemoveAll<IWorkspaceCleanupStatusReadModel>();
+        services.AddSingleton<IWorkspaceCleanupStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
+        services.RemoveAll<ITaskStatusReadModel>();
+        services.AddSingleton<ITaskStatusReadModel>(static sp => sp.GetRequiredService<EventStoreOperationalStatusReadModel>());
+        return services;
+    }
+
+    /// <summary>Uses current EventStore-derived provider configuration and its approved target policies.</summary>
+    public static IServiceCollection AddFoldersProviderBindingPersistence(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        services.AddEventStoreReadModelStore();
+        services.TryAddSingleton<EventStoreProviderReadinessBindingReadModel>();
+        services.TryAddSingleton<ConfiguredProviderReadinessBindingReader>();
+        services.RemoveAll<IProviderReadinessBindingReader>();
+        services.AddSingleton<IProviderReadinessBindingReader>(static sp => sp.GetRequiredService<ConfiguredProviderReadinessBindingReader>());
+        services.RemoveAll<IProviderRepositoryTargetResolver>();
+        services.AddSingleton<IProviderRepositoryTargetResolver, ConfiguredProviderRepositoryTargetResolver>();
         return services;
     }
 

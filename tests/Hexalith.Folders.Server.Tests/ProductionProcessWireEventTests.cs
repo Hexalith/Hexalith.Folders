@@ -8,6 +8,8 @@ using Hexalith.EventStore.Contracts.Events;
 using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Serialization;
+using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
@@ -20,6 +22,7 @@ using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Testing;
+using Hexalith.Folders.Tests.OperationalStatus;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -73,7 +76,15 @@ public sealed class ProductionProcessWireEventTests
         builder.Configuration["Authentication:JwtBearer:SigningKey"] = workloadKey;
         builder.Configuration["Authentication:HumanAuthorityReceipt:SigningKey"] = receiptKey;
         builder.Services.AddFoldersServerTestDefaults();
+        InMemoryReadModelStore operationalStore = new();
+        builder.Services.AddSingleton<IReadModelStore>(operationalStore);
+        builder.Services.AddSingleton<IReadModelBatchStore>(operationalStore);
+        builder.Services.AddSingleton<IReadModelPendingBatchRecoveryStore>(operationalStore);
         builder.Services.AddFoldersServer();
+        builder.Services.AddFoldersProviderBindingPersistence();
+        OperationalStatusSequenceReader sourceHead = new();
+        builder.Services.RemoveAll<IOrganizationStreamSequenceReader>();
+        builder.Services.AddSingleton<IOrganizationStreamSequenceReader>(sourceHead);
         builder.Services.AddAuthentication().AddEventStoreWorkloadScheme(
             EventStoreWorkloadAuthenticationDefaults.WorkloadScheme, "Authentication:Workload",
             static (options, _) =>
@@ -136,8 +147,8 @@ public sealed class ProductionProcessWireEventTests
 
             ProjectionEventDto retained = new(typeof(FolderCreated).FullName!,
                 File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "event-evolution",
-                    "folder-created-valid-unstamped-v1.json")), "json", 1, now, "correlation-a")
-            { MetadataVersion = 1 };
+                    "folder-created-valid-unstamped-v1.json")), "json", 1, now, "correlation-a", "retained-message-a")
+            { MetadataVersion = 1, GlobalPosition = 1 };
             ProjectionRequest project = new("tenant-a", "folders", "folder-a", [retained]);
             client.DefaultRequestHeaders.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
             (await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute, project,
@@ -163,6 +174,15 @@ public sealed class ProductionProcessWireEventTests
                 });
             client.DefaultRequestHeaders.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
             client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, projectAssertion);
+            sourceHead.Head = 2;
+            foreach (ProjectionEventDto[] truncated in new[] { new[] { retained }, Array.Empty<ProjectionEventDto>() })
+            {
+                using HttpResponseMessage incomplete = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
+                    project with { Events = truncated }, TestContext.Current.CancellationToken);
+                incomplete.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+                operationalStore.Count.ShouldBe(0);
+            }
+            sourceHead.Head = 1;
             using HttpResponseMessage projected = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
                 project, TestContext.Current.CancellationToken);
             projected.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -177,6 +197,31 @@ public sealed class ProductionProcessWireEventTests
                 rejected.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
                 (await rejected.Content.ReadAsStringAsync(TestContext.Current.CancellationToken)).ShouldNotContain(unknown);
             }
+
+            ProviderBindingConfigured provider = new("tenant-a", "tenant-a", "protected-binding", "forgejo",
+                "reference-a", OrganizationProviderBindingPolicy.Empty, OrganizationProviderBindingPolicy.Empty,
+                "correlation-a", "task-a", "key-provider", "pending", "configured", now);
+            provider = provider with
+            {
+                IdempotencyFingerprint = OrganizationProviderBindingCommandValidator.Validate(new(
+                provider.ManagedTenantId, provider.OrganizationId, OrganizationAclPrincipalKind.User, "user-a",
+                provider.ProviderBindingRef, provider.ProviderKind, provider.CredentialReferenceId, provider.NamingPolicy,
+                provider.BranchPolicy, provider.CorrelationId, provider.TaskId, provider.IdempotencyKey, now, null)).IdempotencyFingerprint
+            };
+            string providerActor = ProviderBindingActorId.Create(provider.ProviderBindingRef);
+            ProjectionRequest providerPrefix = new("tenant-a", "folders", providerActor,
+                [new ProjectionEventDto(typeof(ProviderBindingConfigured).FullName!,
+                    JsonSerializer.SerializeToUtf8Bytes(provider, EventStorePayloadSerialization.Options), "json", 1,
+                    now, provider.CorrelationId, "provider-message-1") { MetadataVersion = 1, GlobalPosition = 2 }]);
+            sourceHead.Head = 2;
+            using HttpResponseMessage concurrentProvider = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
+                providerPrefix, TestContext.Current.CancellationToken);
+            concurrentProvider.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            using JsonDocument unavailable = JsonDocument.Parse(await concurrentProvider.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+            unavailable.RootElement.GetProperty("category").GetString().ShouldBe("projection_unavailable");
+            (await operationalStore.GetAsync<ProviderBindingProjection>("statestore",
+                EventStoreProviderReadinessBindingReadModel.Key("tenant-a", providerActor), TestContext.Current.CancellationToken))
+                .Value.ShouldBeNull();
         }
         finally
         {

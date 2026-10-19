@@ -254,9 +254,18 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             _ => throw new InvalidOperationException("Unsupported folder snapshot shape."),
         };
 
+        // Older snapshots cannot prove closures for any workspace already visited. Require a
+        // complete source replay before accepting another mutation against that legacy anchor.
+        if (snapshot is JsonElement legacy && !string.IsNullOrWhiteSpace(state.WorkspaceId)
+            && !legacy.TryGetProperty("taskClosures", out _) && !legacy.TryGetProperty("TaskClosures", out _))
+            throw new InvalidOperationException("Legacy workspace snapshot requires complete source replay for task closure authority.");
+
         if (state.Tags is null
             || state.AccessOverrides is null
             || state.IdempotencyFingerprints is null
+            || state.TaskClosures is null
+            || state.TaskClosures.Any(item => item.Value is null
+                || item.Key != FolderState.TaskBindingKey(item.Value.WorkspaceId, item.Value.TaskId))
             || state.IsCreated
                 && (state.ManagedTenantId is null || state.FolderId is null)
             || state.OrganizationId is not null

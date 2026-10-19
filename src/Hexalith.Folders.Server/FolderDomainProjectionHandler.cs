@@ -12,7 +12,9 @@ namespace Hexalith.Folders.Server;
 public sealed class FolderDomainProjectionHandler : IDomainProjectionHandler
 {
     private static readonly PropertyInfo[] FolderStateProperties = typeof(FolderState).GetProperties(BindingFlags.Instance | BindingFlags.Public)
-        .Where(static property => property.Name != nameof(FolderState.AccessOverrides))
+        .Where(static property => property.Name != nameof(FolderState.AccessOverrides)
+            && property.Name != nameof(FolderState.TaskClosures)
+            && property.Name != nameof(FolderState.WorkspaceCommitOperationId))
         .ToArray();
 
     /// <inheritdoc/>

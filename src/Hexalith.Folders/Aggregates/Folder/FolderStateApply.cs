@@ -302,11 +302,21 @@ public static class FolderStateApply
             throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
-        return WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
+        FolderState next = WithWorkspaceTransition(state, recorded, transition, recorded.WorkspaceId, recorded.OperationId) with
         {
             WorkspaceActorPrincipalId = recorded.ActorPrincipalId ?? state.WorkspaceActorPrincipalId,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, recorded),
         };
+
+        return transition.NextState == FolderWorkspaceLifecycleState.Committed
+            ? CloseTask(next with
+            {
+                WorkspaceCommitOutcomeCategory = "success",
+                WorkspaceCommitReconciliationRequired = false,
+                WorkspaceCommitFailureCategory = null
+            },
+                recorded.WorkspaceId, recorded.TaskId, "committed", recorded.OperationId, recorded.CorrelationId, recorded.OccurredAt)
+            : next;
     }
 
     private static FolderState ApplyWorkspaceLockAcquired(FolderState state, WorkspaceLockAcquired acquired)
@@ -343,7 +353,7 @@ public static class FolderStateApply
             throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
-        return WithWorkspaceTransition(state, released, transition, released.WorkspaceId, released.LockId) with
+        FolderState next = WithWorkspaceTransition(state, released, transition, released.WorkspaceId, released.LockId) with
         {
             WorkspaceLockId = null,
             WorkspaceLockIntent = null,
@@ -355,6 +365,11 @@ public static class FolderStateApply
             WorkspaceLockRetryEligibilityBasis = null,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, released),
         };
+
+        return state.WorkspaceLifecycleState == FolderWorkspaceLifecycleState.Locked
+            ? CloseTask(next, released.WorkspaceId, released.HolderTaskId, "ready", released.LockId,
+                released.CorrelationId, released.OccurredAt)
+            : next;
     }
 
     private static FolderState ApplyWorkspaceFileMutationAccepted(FolderState state, WorkspaceFileMutationAccepted accepted)
@@ -383,8 +398,9 @@ public static class FolderStateApply
             throw new InvalidOperationException("Invalid retained folder workspace transition.");
         }
 
-        return WithWorkspaceTransition(state, succeeded, transition, succeeded.WorkspaceId, succeeded.OperationId) with
+        FolderState next = WithWorkspaceTransition(state, succeeded, transition, succeeded.WorkspaceId, succeeded.OperationId) with
         {
+            WorkspaceCommitOperationId = succeeded.OperationId,
             WorkspaceCommitReference = succeeded.CommitReference,
             WorkspaceCommitFailureCategory = null,
             WorkspaceCommitOutcomeCategory = succeeded.ProviderOutcomeCategory,
@@ -396,6 +412,18 @@ public static class FolderStateApply
             WorkspaceCommitReconciliationRequired = false,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, succeeded),
         };
+
+        return CloseTask(next, succeeded.WorkspaceId, succeeded.TaskId, "committed", succeeded.OperationId,
+            succeeded.CorrelationId, succeeded.OccurredAt);
+    }
+
+    private static FolderState CloseTask(FolderState state, string workspaceId, string taskId,
+        string terminalState, string operationId, string correlationId, DateTimeOffset occurredAt)
+    {
+        Dictionary<string, FolderTaskClosure> closures = new(state.TaskClosures, StringComparer.Ordinal);
+        closures.TryAdd(FolderState.TaskBindingKey(workspaceId, taskId),
+            new(workspaceId, taskId, terminalState, operationId, correlationId, occurredAt));
+        return state with { TaskClosures = closures.ToFrozenDictionary(StringComparer.Ordinal) };
     }
 
     private static FolderState ApplyWorkspaceCommitFailed(FolderState state, WorkspaceCommitFailed failed)
@@ -410,6 +438,7 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, failed, transition, failed.WorkspaceId, failed.OperationId) with
         {
+            WorkspaceCommitOperationId = failed.OperationId,
             WorkspaceCommitReference = null,
             WorkspaceCommitFailureCategory = failed.FailureCategory,
             WorkspaceCommitOutcomeCategory = failed.ProviderOutcomeCategory,
@@ -435,6 +464,7 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, unknown, transition, unknown.WorkspaceId, unknown.OperationId) with
         {
+            WorkspaceCommitOperationId = unknown.OperationId,
             WorkspaceCommitReference = null,
             WorkspaceCommitFailureCategory = null,
             WorkspaceCommitOutcomeCategory = unknown.ProviderOutcomeCategory,
@@ -451,7 +481,8 @@ public static class FolderStateApply
     private static FolderState ApplyWorkspacePreparationRequested(
         FolderState state,
         WorkspacePreparationRequested requested)
-        => state with
+    {
+        FolderState next = state with
         {
             WorkspaceId = requested.WorkspaceId,
             WorkspacePolicyRef = requested.WorkspacePolicyRef,
@@ -462,6 +493,22 @@ public static class FolderStateApply
             WorkspaceLifecycleUpdatedAt = requested.OccurredAt,
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, requested),
         };
+        // Commit evidence belongs to the previous workspace, whose projection and task
+        // closure remain retained independently. A new binding has no provider outcome.
+        return state.WorkspaceId == requested.WorkspaceId ? next : next with
+        {
+            WorkspaceCommitOperationId = null,
+            WorkspaceCommitReference = null,
+            WorkspaceCommitFailureCategory = null,
+            WorkspaceCommitOutcomeCategory = null,
+            WorkspaceCommitAuthorMetadataReference = null,
+            WorkspaceCommitBranchRefTarget = null,
+            WorkspaceCommitMessageClassification = null,
+            WorkspaceCommitChangedPathMetadataDigest = null,
+            WorkspaceCommitReconciliationReference = null,
+            WorkspaceCommitReconciliationRequired = false,
+        };
+    }
 
     private static FolderState WithWorkspaceTransition(
         FolderState state,

@@ -283,7 +283,7 @@ public sealed class WorkspaceStatusEndpointTests
         using HttpClient client = app.GetTestClient();
         string[] uris =
         [
-            "/api/v1/tasks/task-a/status",
+            "/api/v1/tasks/task-a/status?folderId=folder-a",
             "/api/v1/folders/folder-a/workspaces/workspace-a/commits/workspace_status_operation/evidence",
             "/api/v1/folders/folder-a/workspaces/workspace-a/commits/workspace_status_operation/provider-outcome",
             "/api/v1/folders/folder-a/workspaces/workspace-a/reconciliation/reconciliation-a/status",
@@ -411,7 +411,7 @@ public sealed class WorkspaceStatusEndpointTests
         await app.StartAsync(TestContext.Current.CancellationToken);
 
         using HttpClient client = app.GetTestClient();
-        using HttpRequestMessage request = CreateEvidenceRequest("/api/v1/tasks/task-a/status");
+        using HttpRequestMessage request = CreateEvidenceRequest("/api/v1/tasks/task-a/status?folderId=folder-a");
 
         using HttpResponseMessage response = await client.SendAsync(request, TestContext.Current.CancellationToken);
         string json = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
@@ -428,11 +428,45 @@ public sealed class WorkspaceStatusEndpointTests
         root.GetProperty("freshness").GetProperty("readConsistency").GetString().ShouldBe("eventually_consistent");
     }
 
+    [Theory]
+    [InlineData("unauthenticated", 401, "authentication_failure", false)]
+    [InlineData("denied", 404, "not_found", false)]
+    [InlineData("stale", 503, "read_model_unavailable", false)]
+    [InlineData("unavailable", 503, "read_model_unavailable", true)]
+    [InlineData("validator", 403, "tenant_access_denied", false)]
+    public async Task TaskFolderDenialsUseOnlyActiveV1CanonicalErrorCategories(string scenario, int status, string category, bool retryable)
+    {
+        CountingTaskStatusReadModel tasks = new(TaskStatusReadModel("failed"));
+        await using WebApplication app = BuildApp(StatusReadModel(), tasks,
+            tenantId: scenario == "unauthenticated" ? null : "tenant-a",
+            principalId: scenario == "unauthenticated" ? null : "user-a",
+            folderEvidence: scenario switch
+            {
+                "denied" => FolderPermissionEvidenceStatus.Denied,
+                "stale" => FolderPermissionEvidenceStatus.Stale,
+                "unavailable" => FolderPermissionEvidenceStatus.Unavailable,
+                _ => null
+            }, denyValidator: scenario == "validator");
+        await app.StartAsync(TestContext.Current.CancellationToken);
+        using var client = app.GetTestClient();
+        using var response = await client.SendAsync(CreateEvidenceRequest("/api/v1/tasks/task-a/status?folderId=folder-a"), TestContext.Current.CancellationToken);
+        using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        ((int)response.StatusCode).ShouldBe(status);
+        body.RootElement.GetProperty("category").GetString().ShouldBe(category);
+        body.RootElement.GetProperty("retryable").GetBoolean().ShouldBe(retryable);
+        if (status == 503)
+        {
+            body.RootElement.GetProperty("code").GetString().ShouldBe("read_model_unavailable");
+        }
+        tasks.Calls.ShouldBe(0);
+    }
+
     private static WebApplication BuildApp(
         IWorkspaceStatusReadModel statusReadModel,
         ITaskStatusReadModel? taskStatusReadModel = null,
         string? tenantId = "tenant-a",
-        string? principalId = "user-a")
+        string? principalId = "user-a",
+        FolderPermissionEvidenceStatus? folderEvidence = null, bool denyValidator = false)
     {
         WebApplicationBuilder builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
@@ -462,6 +496,16 @@ public sealed class WorkspaceStatusEndpointTests
         builder.Services.RemoveAll<ITaskStatusReadModel>();
         builder.Services.AddSingleton(taskStatusReadModel ?? TaskStatusReadModel("failed"));
 
+        if (folderEvidence is { } status)
+        {
+            builder.Services.RemoveAll<IFolderPermissionEvidenceProvider>();
+            builder.Services.AddSingleton<IFolderPermissionEvidenceProvider>(new OperationalStatusPermissionEvidence(status));
+        }
+        if (denyValidator)
+        {
+            builder.Services.RemoveAll<IEventStoreAuthorizationValidator>();
+            builder.Services.AddSingleton<IEventStoreAuthorizationValidator, OperationalStatusDeniedValidator>();
+        }
         WebApplication app = builder.Build();
         app.MapFoldersServerEndpoints();
         return app;
@@ -513,6 +557,7 @@ public sealed class WorkspaceStatusEndpointTests
             EvidenceRows:
             [
                 new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), "read_workspace_status", Sequence: 1, EffectiveAt: Now),
+                new(EffectivePermissionEvidenceSource.OrganizationBaselineGrant, EffectivePermissionPrincipal.User("user-a"), "read_metadata", Sequence: 1, EffectiveAt: Now),
             ],
             Freshness: new EffectivePermissionsFreshness(
                 ReadConsistency: "read_your_writes",
@@ -546,7 +591,8 @@ public sealed class WorkspaceStatusEndpointTests
             RetryEligibility: snapshot.RetryEligibility,
             RetryAfter: snapshot.RetryAfter,
             Freshness: snapshot.Freshness with { ReadConsistency = "eventually_consistent" },
-            EvidenceScope: snapshot.EvidenceScope with { ActionToken = TaskStatusQueryHandler.ActionToken }));
+            EvidenceScope: snapshot.EvidenceScope with { ActionToken = TaskStatusQueryHandler.ActionToken },
+            FolderId: snapshot.FolderId));
         return readModel;
     }
 

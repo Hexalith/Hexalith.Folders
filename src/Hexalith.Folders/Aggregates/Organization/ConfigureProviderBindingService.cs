@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 
@@ -11,7 +13,8 @@ namespace Hexalith.Folders.Aggregates.Organization;
 public sealed class ConfigureProviderBindingService(
     LayeredFolderAuthorizationService authorizationService,
     IOrganizationProviderBindingRepository repository,
-    TimeProvider? timeProvider = null)
+    TimeProvider? timeProvider = null,
+    IOptions<FoldersProviderBindingOptions>? bindingOptions = null)
 {
     /// <summary>Action token authorizing provider-binding configuration.</summary>
     public const string ActionToken = "configure_provider_binding";
@@ -77,6 +80,15 @@ public sealed class ConfigureProviderBindingService(
                 request.IdempotencyKey);
         }
 
+        ProviderBindingProfile? profile = null;
+        if (!string.IsNullOrWhiteSpace(request.CapabilityProfileRef)
+            && (bindingOptions?.Value.Profiles.TryGetValue(request.CapabilityProfileRef, out profile) != true
+                || profile is null || profile.ManagedTenantId != allowed.AuthoritativeTenantId
+                || profile.ProviderKind != request.ProviderKind))
+            return OrganizationProviderBindingResult.Rejected(OrganizationProviderBindingResultCode.InvalidPolicy,
+                allowed.AuthoritativeTenantId, allowed.OrganizationId, request.CorrelationId,
+                request.TaskId, request.IdempotencyKey);
+
         ConfigureProviderBinding command = new(
             allowed.AuthoritativeTenantId,
             allowed.OrganizationId,
@@ -85,8 +97,14 @@ public sealed class ConfigureProviderBindingService(
             request.ProviderBindingRef,
             request.ProviderKind,
             request.CredentialReferenceId,
-            OrganizationProviderBindingPolicy.Empty,
-            OrganizationProviderBindingPolicy.Empty,
+            profile is null ? OrganizationProviderBindingPolicy.Empty : new OrganizationProviderBindingPolicy(
+                profile.NamingPolicy.PolicyRef, new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    [ProviderBindingProfileFingerprint.ProfileRefKey] = request.CapabilityProfileRef!,
+                    [ProviderBindingProfileFingerprint.FingerprintKey] = ProviderBindingProfileFingerprint.Compute(request.CapabilityProfileRef!, profile),
+                }),
+            profile is null ? OrganizationProviderBindingPolicy.Empty : new OrganizationProviderBindingPolicy(
+                profile.BranchPolicy.PolicyRef, new Dictionary<string, string>(StringComparer.Ordinal)),
             request.CorrelationId,
             request.TaskId,
             request.IdempotencyKey,

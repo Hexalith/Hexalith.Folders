@@ -17,9 +17,16 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
 {
     private static readonly DateTimeOffset Now = new(2026, 5, 24, 6, 0, 0, TimeSpan.Zero);
 
-    [Fact]
-    public async Task ValidateAsyncShouldBuildForgejoDiscoveryFromAuthorizedBindingMetadata()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("existing_repository_binding")]
+    public async Task ValidateAsyncShouldBuildForgejoDiscoveryFromAuthorizedBindingMetadata(string? policyScope)
     {
+        OrganizationProviderBinding binding = Binding();
+        Dictionary<string, string> metadata = new(binding.BranchPolicy.Metadata, StringComparer.Ordinal);
+        if (policyScope is null) metadata.Remove("operation_scope");
+        else metadata["operation_scope"] = policyScope;
+        binding = binding with { BranchPolicy = binding.BranchPolicy with { Metadata = metadata } };
         InMemoryProviderCapabilityEvidenceStore capabilityEvidence = new();
         RecordingProviderReadinessEvidenceStore readinessStore = new();
         RecordingForgejoApiClient apiClient = RecordingForgejoApiClient.Success();
@@ -31,7 +38,7 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
             timeProvider: new ForgejoFixedTimeProvider(Now));
         RecordingProviderCapabilityResolver resolver = new(provider);
         ProviderReadinessValidationService service = Service(
-            new RecordingProviderReadinessBindingReader(Binding()),
+            new RecordingProviderReadinessBindingReader(binding),
             readinessStore,
             resolver,
             capabilityEvidence);

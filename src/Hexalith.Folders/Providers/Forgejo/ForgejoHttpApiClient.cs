@@ -105,6 +105,17 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
                     return ForgejoReadinessResult.Failure(ForgejoApiFailureCondition.VersionIncompatible);
                 }
 
+                if (request.BoundTarget is { } boundTarget)
+                {
+                    ForgejoRepositoryBindingResult observed = await ValidateRepositoryBindingAsync(new(
+                        request.ManagedTenantId, request.OrganizationId, request.ProviderBindingRef, "readiness-observation",
+                        boundTarget, request.CredentialMode, request.ApiSurfaceVersion, request.SupportedSnapshotVersion,
+                        request.SafeTargetFingerprint, request.CorrelationId, "read-only-observation"), cancellationToken).ConfigureAwait(false);
+                    if (!observed.IsSuccess)
+                        return ForgejoReadinessResult.Failure(observed.FailureCondition ?? ForgejoApiFailureCondition.MalformedResponse,
+                            observed.RetryAfter);
+                }
+
                 return ForgejoReadinessResult.Success(
                     new ForgejoVersionEvidence(
                         productVersion,
@@ -122,7 +133,8 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
                         SupportsMetadata: true,
                         SupportsPagination: true,
                         SupportsContentsApi: true,
-                        RequiredScopePosture: "repository_contents_status_scope"),
+                        RequiredScopePosture: "repository_contents_status_scope",
+                        SupportsWorkspacePreparation: request.BoundTarget is not null),
                     new ForgejoRateLimitEvidence(
                         "bounded",
                         Retryable: true,
@@ -549,7 +561,9 @@ internal sealed partial class ForgejoHttpApiClient : IForgejoApiClient
                     && version.ValueKind == JsonValueKind.String
                         ? version.GetString()
                         : null;
-                return string.Equals(productVersion, expectedSnapshotVersion, StringComparison.Ordinal)
+                return productVersion is not null
+                    && ForgejoSupportedVersionCatalog.TryFind(productVersion, out ForgejoSupportedVersionEntry observedVersion)
+                    && string.Equals(observedVersion.Version, expectedSnapshotVersion, StringComparison.Ordinal)
                     ? null
                     : ForgejoApiFailureCondition.VersionIncompatible;
             }

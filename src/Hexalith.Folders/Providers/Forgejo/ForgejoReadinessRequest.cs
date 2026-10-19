@@ -10,4 +10,5 @@ internal sealed record ForgejoReadinessRequest(
     string ApiSurfaceVersion,
     string SupportedSnapshotVersion,
     string SafeTargetFingerprint,
-    string CorrelationId);
+    string CorrelationId,
+    ProviderRepositoryResolvedTarget? BoundTarget = null);

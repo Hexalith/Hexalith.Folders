@@ -10,6 +10,7 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Projections.FolderList;
 using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Tests.OperationalStatus;
 using Hexalith.Folders.Workers;
 using Hexalith.Folders.Workers.SemanticIndexing;
 
@@ -21,6 +22,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Shouldly;
 using Xunit;
+
+using InMemoryReadModelStoreDouble = Hexalith.EventStore.Testing.Fakes.InMemoryReadModelStore;
 
 namespace Hexalith.Folders.Workers.Tests;
 
@@ -81,14 +84,14 @@ public sealed class SemanticIndexingEndpointE2ETests
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
                     FoldersSemanticIndexingDefaults.DomainEventsRoute,
-                    Envelope("message-index-a", 2, mutation),
+                    Envelope("message-index-a", 8, mutation),
                     TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             (await host.Store.GetAsync<FolderPermissionProjection>("statestore",
                 "projection:folders:folder-permissions:tenant-a:folder-a", TestContext.Current.CancellationToken))
-                .Value!.LastSequence.ShouldBe(2);
+                .Value!.LastSequence.ShouldBe(8);
             host.Policy.Evaluated.ShouldHaveSingleItem().Status.ShouldBe(SemanticIndexingBridgeStatus.Stale);
             host.Materializer.Requests.ShouldHaveSingleItem().Identity.ManagedTenantId.ShouldBe("tenant-a");
             SemanticIndexingRequest request = host.Port.Requests.ShouldHaveSingleItem();
@@ -121,14 +124,14 @@ public sealed class SemanticIndexingEndpointE2ETests
             HttpResponseMessage response = await host.Client
                 .PostAsJsonAsync(
                     FoldersSemanticIndexingDefaults.DomainEventsRoute,
-                    Envelope("message-denied-a", 2, mutation),
+                    Envelope("message-denied-a", 8, mutation),
                     TestContext.Current.CancellationToken)
                 .ConfigureAwait(true);
 
             response.StatusCode.ShouldBe(HttpStatusCode.OK);
             (await host.Store.GetAsync<FolderPermissionProjection>("statestore",
                 "projection:folders:folder-permissions:tenant-a:folder-a", TestContext.Current.CancellationToken))
-                .Value!.LastSequence.ShouldBe(2);
+                .Value!.LastSequence.ShouldBe(8);
             host.Policy.Evaluated.ShouldHaveSingleItem();
             host.Materializer.Requests.ShouldBeEmpty();
             host.Port.Requests.ShouldBeEmpty();
@@ -309,11 +312,13 @@ public sealed class SemanticIndexingEndpointE2ETests
 
         HttpClient client = new() { BaseAddress = new Uri(app.Urls.First()) };
         client.DefaultRequestHeaders.Add(DaprAppChannelToken.HeaderName, "test-sidecar-token");
-        FolderCreated created = new("tenant-a", "tenant-a", "folder-a", "Folder", null, null, [],
-            FolderLifecycleState.Active, FolderRepositoryBindingState.Unbound, "principal-a", "corr", "task",
-            "create-key", "create-fingerprint", DateTimeOffset.UtcNow);
-        (await client.PostAsJsonAsync(FoldersSemanticIndexingDefaults.DomainEventsRoute,
-            Envelope("created", 1, created), TestContext.Current.CancellationToken).ConfigureAwait(true)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        IReadOnlyList<IFolderEvent> prefix = OperationalStatusTestData.LockedPrefix(OccurredAt);
+        for (int index = 0; index < prefix.Count; index++)
+        {
+            (await client.PostAsJsonAsync(FoldersSemanticIndexingDefaults.DomainEventsRoute,
+                Envelope("prefix-" + index, index + 1, prefix[index]), TestContext.Current.CancellationToken).ConfigureAwait(true))
+                .StatusCode.ShouldBe(HttpStatusCode.OK);
+        }
 
         return new WorkerSemanticIndexingHost(
             app,
@@ -326,17 +331,18 @@ public sealed class SemanticIndexingEndpointE2ETests
     }
 
     private static EventStoreDomainEventEnvelope Envelope<TEvent>(string messageId, long sequenceNumber, TEvent @event)
+        where TEvent : IFolderEvent
         => new(
             messageId,
             "folder-a",
             "tenant-a",
-            typeof(TEvent).FullName!,
+            @event.GetType().FullName!,
             sequenceNumber,
-            OccurredAt,
-            $"correlation-{sequenceNumber}",
+            @event.OccurredAt,
+            @event.CorrelationId,
             "json",
-            JsonSerializer.SerializeToUtf8Bytes(@event))
-        { Domain = "folders", MetadataVersion = 1 };
+            JsonSerializer.SerializeToUtf8Bytes(@event, @event.GetType()))
+        { Domain = "folders", MetadataVersion = 1, GlobalPosition = sequenceNumber };
 
     private static WorkspaceFileMutationAccepted Mutation()
         => new(
@@ -467,74 +473,4 @@ public sealed class SemanticIndexingEndpointE2ETests
         }
     }
 
-    private sealed class InMemoryReadModelStoreDouble : IReadModelStore
-    {
-        private readonly Dictionary<string, Entry> _entries = new(StringComparer.Ordinal);
-        private long _etagSequence;
-
-        public Task<ReadModelEntry<TValue>> GetAsync<TValue>(
-            string storeName,
-            string key,
-            CancellationToken cancellationToken = default)
-            where TValue : class
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(storeName);
-            ArgumentException.ThrowIfNullOrWhiteSpace(key);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return _entries.TryGetValue(Compose(storeName, key), out Entry? entry)
-                ? Task.FromResult(new ReadModelEntry<TValue>((TValue)entry.Value, entry.ETag))
-                : Task.FromResult(new ReadModelEntry<TValue>(null, null));
-        }
-
-        public Task SaveAsync<TValue>(
-            string storeName,
-            string key,
-            TValue value,
-            CancellationToken cancellationToken = default)
-            where TValue : class
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(storeName);
-            ArgumentException.ThrowIfNullOrWhiteSpace(key);
-            ArgumentNullException.ThrowIfNull(value);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            _entries[Compose(storeName, key)] = new Entry(value, NextETag());
-            return Task.CompletedTask;
-        }
-
-        public Task<bool> TrySaveAsync<TValue>(
-            string storeName,
-            string key,
-            TValue value,
-            string etag,
-            CancellationToken cancellationToken = default)
-            where TValue : class
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(storeName);
-            ArgumentException.ThrowIfNullOrWhiteSpace(key);
-            ArgumentNullException.ThrowIfNull(value);
-            ArgumentNullException.ThrowIfNull(etag);
-            cancellationToken.ThrowIfCancellationRequested();
-
-            string composite = Compose(storeName, key);
-            bool exists = _entries.TryGetValue(composite, out Entry? current);
-            bool matches = exists
-                ? string.Equals(current!.ETag, etag, StringComparison.Ordinal)
-                : etag.Length == 0;
-            if (!matches)
-            {
-                return Task.FromResult(false);
-            }
-
-            _entries[composite] = new Entry(value, NextETag());
-            return Task.FromResult(true);
-        }
-
-        private static string Compose(string storeName, string key) => $"{storeName}:{key}";
-
-        private string NextETag() => Interlocked.Increment(ref _etagSequence).ToString(System.Globalization.CultureInfo.InvariantCulture);
-
-        private sealed record Entry(object Value, string ETag);
-    }
 }

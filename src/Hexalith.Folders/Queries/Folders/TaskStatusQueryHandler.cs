@@ -10,7 +10,8 @@ public sealed class TaskStatusQueryHandler(
     TenantAccessAuthorizer tenantAccessAuthorizer,
     ITaskStatusReadModel readModel,
     IUtcClock clock,
-    ILogger<TaskStatusQueryHandler>? logger = null)
+    ILogger<TaskStatusQueryHandler>? logger = null,
+    LayeredFolderAuthorizationService? folderAuthorization = null)
 {
     public const string ActionToken = "read_task_status";
     private const string EventuallyConsistent = "eventually_consistent";
@@ -120,6 +121,25 @@ public sealed class TaskStatusQueryHandler(
             return SafeResult(MapTenantAccess(tenantAccess), deniedFreshness, query, tenantAccess);
         }
 
+        // A task address cannot establish folder authority. No task row is observed until the
+        // caller supplies a valid target and every current folder authorization layer allows it.
+        if (string.IsNullOrWhiteSpace(query.FolderId) || folderAuthorization is null)
+            return SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable,
+                deniedFreshness with { ReasonCode = "task_folder_authority_unavailable" }, query, null);
+        if (!IsCanonicalIdentifier(query.FolderId))
+            return SafeResult(TaskStatusQueryResultCode.NotFoundSafe, deniedFreshness, query, null);
+
+        LayeredFolderAuthorizationResult folder = await folderAuthorization.AuthorizeAsync(
+            new LayeredFolderAuthorizationContext(query.AuthoritativeTenantId, query.PrincipalId,
+                "actor_present", ActionToken, LayeredFolderOperationPolicy.StrictRead(),
+                query.ClaimTransformEvidence, query.FolderId, query.CorrelationId, query.TaskId,
+                query.ClientControlledTenantValues, query.ClientControlledPrincipalValues),
+            cancellationToken).ConfigureAwait(false);
+        if (!folder.IsAllowed || folder.AllowedContext is null)
+            return SafeResult(TaskStatusQueryResultCode.ReadModelUnavailable, deniedFreshness, query, null)
+                with
+            { FolderAuthorizationDenial = folder };
+
         TaskStatusReadModelResult readModelResult;
         try
         {
@@ -130,7 +150,11 @@ public sealed class TaskStatusQueryHandler(
                     query.PrincipalId,
                     ActionToken,
                     query.CorrelationId,
-                    EventuallyConsistent),
+                    EventuallyConsistent)
+                {
+                    AuthorizedFolderId = query.FolderId,
+                    AuthorizationWatermark = folder.AllowedContext.FreshnessWatermark,
+                },
                 cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -172,6 +196,7 @@ public sealed class TaskStatusQueryHandler(
         if (!IsContractShapedSnapshot(snapshot, out string? malformedReason)
             || !Matches(snapshot.ManagedTenantId, tenantAccess.TenantId)
             || !Matches(snapshot.TaskId, query.TaskId)
+            || !Matches(snapshot.FolderId, query.FolderId)
             || snapshot.Freshness.Stale
             || !Matches(snapshot.EvidenceScope.ManagedTenantId, tenantAccess.TenantId)
             || (HasValue(snapshot.EvidenceScope.ActionToken) && !Matches(snapshot.EvidenceScope.ActionToken, ActionToken))

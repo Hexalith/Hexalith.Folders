@@ -126,7 +126,7 @@ public sealed class Pd10V2CandidateContractTests
     [Fact]
     public void HistoricalV1SpineRemainsByteStable()
     {
-        string path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "hexalith.folders.v1.yaml");
+        string path = Path.Combine(RepositoryRoot, "src", "Hexalith.Folders.Contracts", "openapi", "baselines", "hexalith.folders.v1.pd10.yaml");
         Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant()
             .ShouldBe("3c3c668071cfaad3e6318626c03051039d00771a4d1afe29ab49df28f71ae4e2");
     }

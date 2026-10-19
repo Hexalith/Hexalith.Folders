@@ -84,6 +84,16 @@ internal static class ForgejoReadinessMapper
                     ["evidence"] = "version_and_exact_rest_ref",
                 },
                 failureCategory: permissions.SupportsStatus ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
+            ProviderCapabilityOperationRow.WithDetails(
+                ProviderOperationCatalog.WorkspacePreparation,
+                permissions.SupportsWorkspacePreparation
+                    ? ProviderOperationSupport.Supported : ProviderOperationSupport.Unavailable,
+                constraints: new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    ["preparation_scope"] = "authorized_bound_repository_metadata",
+                },
+                failureCategory: permissions.SupportsWorkspacePreparation
+                    ? null : ProviderFailureCategory.ProviderPermissionInsufficient),
             ProviderCapabilityOperationRow.Unsupported(ProviderOperationCatalog.CleanupExpiration),
         ];
     }

@@ -108,6 +108,25 @@ public sealed class FolderEventReplayTests
     }
 
     [Fact]
+    public void LegacyWorkspaceSnapshotCannotBypassSourceFoldedTaskClosureAuthority()
+    {
+        DateTimeOffset sourceTime = Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.Now;
+        IFolderEvent[] history = [.. Hexalith.Folders.Tests.OperationalStatus.OperationalStatusTestData.CleanReleasedPrefix(sourceTime)];
+        FolderState snapshot = FolderState.Empty.Apply(history, FolderStreamName.Create("tenant-a", "folder-a"));
+        snapshot.TaskClosures.Values.ShouldHaveSingleItem().TerminalState.ShouldBe("ready");
+        System.Text.Json.Nodes.JsonObject legacy = JsonSerializer.SerializeToNode(snapshot)!.AsObject();
+        legacy.Remove(nameof(FolderState.TaskClosures));
+        legacy.Remove("taskClosures");
+        DomainServiceCurrentState persisted = new(JsonSerializer.SerializeToElement(legacy), [], 1, 1);
+        Should.Throw<InvalidOperationException>(() => Replay().FoldFolder(persisted, "tenant-a", "folder-a"));
+        DomainServiceCurrentState current = new(JsonSerializer.SerializeToElement(snapshot), [], history.Length, history.Length);
+        FolderState recovered = Replay().FoldFolder(current, "tenant-a", "folder-a");
+        recovered.WorkspaceId.ShouldBe("workspace-a");
+        recovered.IsTaskClosed("workspace-a", "task-a").ShouldBeTrue();
+        recovered.TaskClosures.Values.ShouldHaveSingleItem().ShouldBe(snapshot.TaskClosures.Values.Single());
+    }
+
+    [Fact]
     public void ProductionDecisionShouldNotWriteOutsideActor()
     {
         FolderEventReplay replay = Replay();

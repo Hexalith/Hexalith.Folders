@@ -80,6 +80,10 @@ public static partial class FoldersWorkersModule
 
         services.AddDaprClient();
         services.AddFoldersSemanticIndexingBridge();
+        services.AddFoldersOperationalStatusPersistence();
+        services.AddFoldersProviderBindingPersistence();
+        services.TryAddTransient<FoldersProviderBindingEventProcessor>();
+        services.TryAddTransient<FoldersOperationalStatusEventProcessor>();
 
         // The fail-closed policy evaluator gates indexing on tenant-access and folder ACL/action freshness, so the
         // authorization projections must be resolvable even when this registration is used standalone.
@@ -181,15 +185,22 @@ public static partial class FoldersWorkersModule
             FoldersSemanticIndexingEventProcessor processor,
             FoldersOrganizationAclEventProcessor organizationProcessor,
             FoldersFolderPermissionEventProcessor folderPermissionProcessor,
+            FoldersOperationalStatusEventProcessor operationalStatusProcessor,
+            FoldersProviderBindingEventProcessor providerBindingProcessor,
             ILoggerFactory loggerFactory,
             CancellationToken cancellationToken) =>
         {
+            string stage = "permission_projection";
             try
             {
                 await PermissionProjectionDelivery.ApplyAsync(async token =>
                 {
+                    stage = "permission_projection";
+                    await providerBindingProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
                     await organizationProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
                     await folderPermissionProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
+                    stage = "operational_status";
+                    await operationalStatusProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
                 }, cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -199,7 +210,7 @@ public static partial class FoldersWorkersModule
             catch (Exception failure)
             {
                 PermissionProjectionFailure(loggerFactory.CreateLogger(typeof(FoldersWorkersModule)),
-                    "permission_projection_failed", "permission_projection",
+                    "permission_projection_failed", stage,
                     failure.GetType().FullName ?? failure.GetType().Name);
                 return Results.Problem(statusCode: StatusCodes.Status500InternalServerError);
             }

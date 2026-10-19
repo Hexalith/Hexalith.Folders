@@ -12,9 +12,25 @@ namespace Hexalith.Folders.Contracts.Tests.OpenApi;
 
 public sealed class Pd10ConformanceSetTests
 {
-    private const string ManifestPath = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
+    private const string ManifestPath = "_bmad-output/implementation-artifacts/evidence/story-12-2-v2-source-requalification-pending.yaml";
     private const string StoryOwnedPathsPath = "scripts/pd10-v2-story-owned-paths.txt";
     private static readonly string RepositoryRoot = FindRepositoryRoot();
+
+    [Fact]
+    public void CurrentSourceInventoryPreservesHistoricalEvidenceAndRequiresRequalification()
+    {
+        const string previous = "_bmad-output/planning-artifacts/generated-v2-conformance-set-2026-09-17.yaml";
+        const string previousHash = "6289c143af409f72e53aff555310d37faa25da0bb852488fe9a2f5ab7196a286";
+        Sha256(Path.Combine(RepositoryRoot, previous)).ShouldBe(previousHash);
+        YamlMappingNode current = Load(Path.Combine(RepositoryRoot, ManifestPath));
+        Scalar(current, "prior_conformance_set_path").ShouldBe(previous);
+        Scalar(current, "prior_conformance_set_sha256").ShouldBe(previousHash);
+        Scalar(current, "source_identity_qualification").ShouldBe("pending-after-approved-v1-addition");
+        Scalar(current, "approval_status").ShouldBe("pending-a6b");
+        Scalar(current, "production_exposure").ShouldBe("disabled");
+        Sha256(Path.Combine(RepositoryRoot, "src/Hexalith.Folders.Contracts/openapi/hexalith.folders.v2.yaml"))
+            .ShouldBe("ee9c7bddd0428d3809555c591af0b0bd760b0c88e336720e569c7d7b259807b0");
+    }
 
     [Fact]
     public void ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest()

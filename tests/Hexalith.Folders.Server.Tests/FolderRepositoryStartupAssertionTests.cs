@@ -65,7 +65,7 @@ public sealed class FolderRepositoryStartupAssertionTests
             builder.Services.RemoveAll<IFolderRepository>();
             if (memoryFallback)
             {
-                builder.Services.AddSingleton<IFolderRepository, InMemoryFolderRepository>();
+                builder.Services.AddSingleton<IFolderRepository>(static _ => new InMemoryFolderRepository());
             }
         }
         else if (repository == "binding")

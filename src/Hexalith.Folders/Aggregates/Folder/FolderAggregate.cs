@@ -327,6 +327,11 @@ public static class FolderAggregate
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
+        if (state.IsTaskClosed(command.WorkspaceId, command.TaskId))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
         if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
             || !string.Equals(state.RepositoryBindingId, command.RepositoryBindingId, StringComparison.Ordinal)
             || !string.Equals(state.BranchRefPolicyRef, command.BranchRefPolicyRef, StringComparison.Ordinal)
@@ -390,6 +395,11 @@ public static class FolderAggregate
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
                 ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.IsTaskClosed(command.WorkspaceId, command.TaskId))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
         }
 
         if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
@@ -464,6 +474,11 @@ public static class FolderAggregate
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
                 ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.IsTaskClosed(command.WorkspaceId, command.TaskId))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
         }
 
         if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
@@ -569,6 +584,11 @@ public static class FolderAggregate
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
         }
 
+        if (state.IsTaskClosed(command.WorkspaceId, command.TaskId))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
         if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound
             || string.IsNullOrWhiteSpace(state.WorkspaceId)
             || !string.Equals(state.WorkspaceId, command.WorkspaceId, StringComparison.Ordinal))
@@ -660,6 +680,11 @@ public static class FolderAggregate
             return string.Equals(priorFingerprint, validation.IdempotencyFingerprint, StringComparison.Ordinal)
                 ? FolderResult.Rejected(command, FolderResultCode.IdempotentReplay)
                 : FolderResult.Rejected(command, FolderResultCode.IdempotencyConflict);
+        }
+
+        if (state.IsTaskClosed(command.WorkspaceId, command.TaskId))
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
         }
 
         if (state.RepositoryBindingState != FolderRepositoryBindingState.Bound

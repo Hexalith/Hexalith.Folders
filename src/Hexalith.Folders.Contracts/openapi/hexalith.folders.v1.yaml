@@ -3885,6 +3885,12 @@ paths:
           description: Opaque task identifier. It is an addressable resource reference, not tenant authority.
           schema:
             $ref: "#/components/schemas/OpaqueIdentifier"
+        - name: folderId
+          in: query
+          required: false
+          description: Optional target hint. The original read_task_status identity claim and current read_metadata folder grant are required before task lookup. Missing scope fails closed with 503; the hint grants no authority.
+          schema:
+            $ref: "#/components/schemas/OpaqueIdentifier"
         - $ref: "#/components/parameters/CorrelationId"
         - $ref: "#/components/parameters/Freshness"
       responses:

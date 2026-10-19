@@ -7,6 +7,8 @@ using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Tests.Aggregates.Organization;
 
+using Microsoft.Extensions.Options;
+
 using Shouldly;
 using Xunit;
 
@@ -80,6 +82,32 @@ public sealed class FinalAclReauthorizationTests
         permissions.Requests.Count.ShouldBe(2);
         permissions.Requests.ShouldAllBe(item => item.OperationScope == "organization_baseline"
             && item.ActionToken == ConfigureProviderBindingService.ActionToken);
+    }
+
+    [Theory]
+    [InlineData("tenant-b", "github")]
+    [InlineData("tenant-a", "forgejo")]
+    public async Task ProviderBindingRejectsForeignTenantAndWrongProviderProfilesBeforeConfigurationAppend(string tenantId, string providerKind)
+    {
+        RecordingOrganizationProviderBindingRepository repository = new();
+        FinalAclRevokingPermissions permissions = new(allowedCalls: 2);
+        ConfigureProviderBindingService service = new(AuthorizationService(permissions), repository,
+            new FinalAclFixedTimeProvider(Now), Options.Create(new FoldersProviderBindingOptions
+            {
+                Profiles = new Dictionary<string, ProviderBindingProfile>
+                {
+                    ["known-profile"] = new() { ManagedTenantId = tenantId, ProviderKind = providerKind },
+                },
+            }));
+        var request = new ConfigureProviderBindingServiceRequest("tenant-a", "principal-a",
+            EventStoreClaimTransformEvidence.Allowed("tenant-a", "principal-a", [ConfigureProviderBindingService.ActionToken]),
+            "binding-a", "github", "credential-a", "correlation-a", "task-a", "profile-key", null,
+            new Dictionary<string, string?>(), new Dictionary<string, string?>())
+        { CapabilityProfileRef = "known-profile" };
+        var result = await service.ConfigureAsync(request, TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(OrganizationProviderBindingResultCode.InvalidPolicy);
+        repository.EventsAppended.ShouldBe(0);
+        repository.StreamNamesConstructed.ShouldBe(0);
     }
 
     [Fact]

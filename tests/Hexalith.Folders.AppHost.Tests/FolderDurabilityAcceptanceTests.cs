@@ -260,7 +260,8 @@ public sealed class FolderDurabilityAcceptanceTests(FolderDurabilityAcceptanceFi
             using HttpResponseMessage response = await client.GetAsync($"/api/v1/folders/{folderId}/acl", TestContext.Current.CancellationToken).ConfigureAwait(true);
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.ServiceUnavailable, "Unavailable dependency protected read").ConfigureAwait(true);
             await AssertCanonicalUnavailableAsync(response).ConfigureAwait(true);
-            using HttpResponseMessage mutation = await _fixture.MutateAsync("/api/v1/folders", CreatePayload("unavailable-dependency"), failedKey).ConfigureAwait(true);
+            using HttpResponseMessage mutation = await _fixture.MutateAsync("/api/v1/folders", CreatePayload("unavailable-dependency"), failedKey,
+                retryTransientFailures: false).ConfigureAwait(true);
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(mutation, HttpStatusCode.ServiceUnavailable, "Unavailable dependency mutation").ConfigureAwait(true);
             await AssertCanonicalUnavailableAsync(mutation).ConfigureAwait(true);
         }

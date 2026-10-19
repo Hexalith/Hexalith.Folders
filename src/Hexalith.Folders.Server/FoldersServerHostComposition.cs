@@ -1,3 +1,4 @@
+using Hexalith.EventStore.DomainService;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Server.Authentication;
@@ -30,6 +31,10 @@ public static class FoldersServerHostComposition
 
         builder.AddServiceDefaults();
         builder.Services.AddFoldersServer();
+        builder.Services.AddFoldersOperationalStatusPersistence();
+        builder.Services.AddOptions<FoldersProviderBindingOptions>().BindConfiguration(FoldersProviderBindingOptions.SectionName);
+        builder.Services.AddFoldersDaprProviderCredentialResolution();
+        builder.Services.AddFoldersProviderBindingPersistence();
         builder.Services.AddTransient<FoldersGatewayHumanBearerHandler>();
         builder.Services.AddEventStoreGatewayClient()
             .ConfigureHttpClient(client => client.BaseAddress = new Uri(
@@ -37,7 +42,6 @@ public static class FoldersServerHostComposition
             .AddHttpMessageHandler<FoldersGatewayHumanBearerHandler>();
         builder.Services.RemoveAll<IFolderTenantAccessProjectionStore>();
         builder.Services.AddSingleton<IFolderTenantAccessProjectionStore, EventStoreFolderTenantAccessProjectionStore>();
-        builder.Services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         builder.Services.RemoveAll<IEffectivePermissionsReadModel>();
         builder.Services.AddSingleton<EventStoreOrganizationEffectivePermissionsReadModel>();
         builder.Services.AddSingleton<EventStoreFolderEffectivePermissionsReadModel>();
@@ -131,6 +135,8 @@ public static class FoldersServerHostComposition
         app.UseAuthorization();
         app.MapSubscribeHandler();
         app.MapFoldersServerEndpoints();
+        app.MapEventStoreDomainProjectionEndpoints();
+        app.MapEventStoreDomainProjectionMetadataEndpoint();
 
         return app;
     }

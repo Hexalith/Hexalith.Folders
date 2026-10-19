@@ -123,10 +123,13 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
         EffectivePermissionsReadModelSnapshot snapshot)
     {
         EffectivePermissionPrincipal principal = EffectivePermissionPrincipal.User(request.PrincipalId);
+        // The additive v1 task hint retains its task claim while inspecting the folder under
+        // the existing metadata-read grant. A task identifier never supplies folder authority.
+        string folderAction = request.ActionToken == "read_task_status" ? "read_metadata" : request.ActionToken;
         bool granted = false;
 
         foreach (EffectivePermissionEvidenceRow row in snapshot.EvidenceRows
-            .Where(row => row.Principal == principal && string.Equals(row.Action, request.ActionToken, StringComparison.Ordinal))
+            .Where(row => row.Principal == principal && string.Equals(row.Action, folderAction, StringComparison.Ordinal))
             .OrderBy(static row => row.Sequence)
             .ThenBy(static row => row.EffectiveAt)
             .ThenBy(static row => row.Source == EffectivePermissionEvidenceSource.FolderOverrideRevoke ? 1 : 0))

@@ -12,6 +12,45 @@ namespace Hexalith.Folders.Tests.Providers.Forgejo;
 [Collection(ForgejoNativeOperationGateCollection.Name)]
 public sealed class ForgejoHttpApiClientTests
 {
+    [Theory]
+    [InlineData("available", true)]
+    [InlineData("deleted", false)]
+    [InlineData("denied", false)]
+    [InlineData("wrong-target", false)]
+    [InlineData("missing-permission", false)]
+    public async Task PreparationRequiresObservationOfExactBoundRepositoryAndContentsPermission(string scenario, bool ready)
+    {
+        HttpResponseMessage repository = scenario switch
+        {
+            "deleted" => new(HttpStatusCode.NotFound),
+            "denied" => new(HttpStatusCode.Forbidden),
+            "wrong-target" => JsonResponse(HttpStatusCode.OK,
+                """{"id":42,"name":"different-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+            "missing-permission" => JsonResponse(HttpStatusCode.OK,
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":false,"admin":true}}"""),
+            _ => JsonResponse(HttpStatusCode.OK,
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+        };
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, """{"id":7,"login":"forgejo-user"}"""),
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""),
+            JsonResponse(HttpStatusCode.OK, """{"version":"16.0.3"}"""), repository,
+            JsonResponse(HttpStatusCode.OK, """{"name":"main","protected":false}"""));
+        await using ForgejoHttpApiClient client = CreateClient(handler);
+        var result = await client.GetReadinessAsync(new("tenant-a", "organization-a", "binding-a",
+            ProviderCredentialMode.UserDelegatedReference, ForgejoProviderConstants.ApiSurfaceVersion,
+            "16.0.3", "safe-target", "correlation-a", Target() with { RequireProtectedRef = false }), TestContext.Current.CancellationToken);
+        result.IsSuccess.ShouldBe(ready);
+        if (ready)
+        {
+            result.Permissions!.SupportsWorkspacePreparation.ShouldBeTrue();
+            ForgejoReadinessMapper.ToOperationRows(result.Permissions).Single(row => row.OperationId == ProviderOperationCatalog.WorkspacePreparation)
+                .Support.ShouldBe(ProviderOperationSupport.Supported);
+        }
+        handler.Requests[3].Uri.AbsolutePath.ShouldBe("/api/v1/repos/forgejo-owner/forgejo-repository");
+        handler.Requests.ShouldAllBe(request => request.Method == HttpMethod.Get);
+    }
+
     [Fact]
     public async Task CreateRepositoryDispatchesOneExactMutationAndReturnsCanonicalIdentity()
     {
@@ -273,6 +312,31 @@ public sealed class ForgejoHttpApiClientTests
             "https://forgejo.example.test/api/v1/repos/forgejo-owner/forgejo-repository/branches/release%2F1.0",
             "https://forgejo.example.test/api/v1/repos/forgejo-owner/forgejo-repository/branch_protections/release%2F%2A",
         ]);
+    }
+
+    [Theory]
+    [InlineData("16.0.3+gitea-1.22.0", true)]
+    [InlineData("15.0.7+gitea-1.22.0", false)]
+    [InlineData("16.0.3+unrecognized", false)]
+    public async Task BindingVersionPreflightUsesTheExistingSupportedReleaseNormalization(string version, bool accepted)
+    {
+        RecordingHttpMessageHandler handler = new(
+            JsonResponse(HttpStatusCode.OK, JsonSerializer.Serialize(new { version })),
+            JsonResponse(HttpStatusCode.OK,
+                """{"id":42,"name":"forgejo-repository","owner":{"login":"forgejo-owner"},"private":true,"internal":false,"default_branch":"main","permissions":{"pull":true,"admin":true}}"""),
+            JsonResponse(HttpStatusCode.OK, """{"name":"main","protected":false}"""));
+        ForgejoHttpApiClient client = CreateClient(handler);
+
+        ForgejoRepositoryBindingResult result = await client.ValidateRepositoryBindingAsync(
+            BindingRequest(Target() with { RequireProtectedRef = false }), TestContext.Current.CancellationToken).ConfigureAwait(true);
+
+        result.IsSuccess.ShouldBe(accepted);
+        if (accepted) handler.Requests.Count.ShouldBe(3);
+        else
+        {
+            result.FailureCondition.ShouldBe(ForgejoApiFailureCondition.VersionIncompatible);
+            handler.Requests.ShouldHaveSingleItem().Uri.AbsolutePath.ShouldBe("/api/v1/version");
+        }
     }
 
     [Theory]

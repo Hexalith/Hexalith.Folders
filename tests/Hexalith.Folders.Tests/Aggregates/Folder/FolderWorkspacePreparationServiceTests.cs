@@ -68,7 +68,7 @@ public sealed class FolderWorkspacePreparationServiceTests
     }
 
     [Fact]
-    public async Task ReadyRequestShouldValidateWorkspacePreparationReadinessThenAppendIntentOnly()
+    public async Task ReadyMetadataPreparationAppendsIntentAndConfirmedExistingOutcome()
     {
         RecordingFolderRepository repository = ConfiguredPreparingRepository();
         RecordingWorkspaceReadinessValidator readiness = new(ReadinessReady());
@@ -79,7 +79,15 @@ public sealed class FolderWorkspacePreparationServiceTests
         result.Code.ShouldBe(FolderResultCode.Accepted);
         repository.IdempotencyLookups.ShouldBe(0);
         repository.AppendsAttempted.ShouldBe(1);
-        repository.LastAppendedEvents.ShouldHaveSingleItem().ShouldBeOfType<WorkspacePreparationRequested>();
+        repository.LastAppendedEvents.Count.ShouldBe(2);
+        repository.LastAppendedEvents[0].ShouldBeOfType<WorkspacePreparationRequested>();
+        FolderWorkspaceLifecycleEventRecorded outcome = repository.LastAppendedEvents[1].ShouldBeOfType<FolderWorkspaceLifecycleEventRecorded>();
+        outcome.WorkspaceLifecycleEvent.ShouldBe(FolderWorkspaceLifecycleEvent.WorkspacePrepared);
+        outcome.DirtyResolution.ShouldBeNull();
+        outcome.TaskId.ShouldBe("task-a");
+        outcome.WorkspaceId.ShouldBe("workspace-a");
+        outcome.ActorPrincipalId.ShouldBe("user-a");
+        result.Events.ShouldBe(repository.LastAppendedEvents);
         readiness.Calls.ShouldBe(1);
         readiness.LastRequest.ShouldNotBeNull().RequestedCapability.ShouldBe(ProviderReadinessRequestedCapability.WorkspacePreparation);
         readiness.LastRequest.ProviderBindingRef.ShouldBe("provider-binding-a");

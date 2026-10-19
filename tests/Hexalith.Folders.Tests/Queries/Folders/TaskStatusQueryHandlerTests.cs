@@ -15,6 +15,46 @@ public sealed class TaskStatusQueryHandlerTests
     private static readonly DateTimeOffset Now = FolderLifecycleStatusTestSupport.Now;
 
     [Theory]
+    [InlineData("read_task_status", "read_metadata", true)]
+    [InlineData("read_metadata", "read_metadata", false)]
+    [InlineData("read_task_status", "read_workspace_status", false)]
+    public async Task TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant(
+        string identityClaim, string folderGrant, bool allowed)
+    {
+        CountingTenantAccessProjectionStore tenantStore = new(
+            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        CountingTaskStatusReadModel taskModel = new(TaskStatusReadModelResult.Available(Snapshot()));
+        InMemoryEffectivePermissionsReadModel permissions = new();
+        permissions.Save(new EffectivePermissionsReadModelSnapshot(
+            "tenant-a", "organization-a", "folder-a", EffectivePermissionsFolderLifecycleState.Active,
+            [new EffectivePermissionEvidenceRow(EffectivePermissionEvidenceSource.FolderOverrideGrant,
+                EffectivePermissionPrincipal.User("user-a"), folderGrant, 1, Now.AddSeconds(-1))],
+            new EffectivePermissionsFreshness("read_your_writes", Now,
+                FolderLifecycleStatusTestSupport.AuthorizationWatermark, Stale: false, ReasonCode: null),
+            RevocationFreshnessEstablished: true, TaskScope: null));
+        RecordingEventStoreAuthorizationValidator validator = new(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1"));
+        TaskStatusQueryHandler handler = new(
+            new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
+            taskModel, new FixedUtcClock(Now), folderAuthorization: new LayeredFolderAuthorizationService(
+                new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
+                new EffectivePermissionsFolderPermissionEvidenceProvider(permissions, new FixedUtcClock(Now)),
+                validator, new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1")),
+                new FixedUtcClock(Now)));
+
+        TaskStatusQueryResult result = await handler.HandleAsync(Query(claimTransformEvidence:
+            EventStoreClaimTransformEvidence.Allowed("tenant-a", "user-a", [identityClaim])),
+            TestContext.Current.CancellationToken).ConfigureAwait(false);
+
+        (result.Code == TaskStatusQueryResultCode.Allowed).ShouldBe(allowed);
+        taskModel.Requests.ShouldBe(allowed ? 1 : 0);
+        if (allowed)
+        {
+            validator.Requests.ShouldHaveSingleItem().SafeContext.ActionToken.ShouldBe("read_task_status");
+            result.TaskId.ShouldBe("task-a");
+        }
+    }
+
+    [Theory]
     [InlineData("failed", "failed", "failed_operation", true, "failed_operation")]
     [InlineData("unknown_provider_outcome", "unknown_provider_outcome", "unknown_provider_outcome", false, "unknown_provider_outcome")]
     [InlineData("reconciliation_required", "reconciliation_required", "reconciliation_required", false, "reconciliation_required")]
@@ -38,6 +78,18 @@ public sealed class TaskStatusQueryHandlerTests
         result.RetryEligibility.ReasonCode.ShouldBe(retryReason);
         result.Freshness.ReadConsistency.ShouldBe("eventually_consistent");
         result.CorrelationId.ShouldBe("corr-a");
+    }
+
+    [Fact]
+    public async Task MissingFolderScopeShouldFailBeforeProtectedTaskLookup()
+    {
+        CountingTenantAccessProjectionStore tenantStore = new(
+            FolderLifecycleStatusTestSupport.TenantProjection(principals: ["user-a"]));
+        CountingTaskStatusReadModel readModel = new(TaskStatusReadModelResult.Available(Snapshot()));
+        TaskStatusQueryResult result = await Handler(tenantStore, readModel).HandleAsync(
+            Query() with { FolderId = null }, TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(TaskStatusQueryResultCode.ReadModelUnavailable);
+        readModel.Requests.ShouldBe(0);
     }
 
     [Fact]
@@ -235,7 +287,13 @@ public sealed class TaskStatusQueryHandlerTests
         => new(
             new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
             readModel,
-            new FixedUtcClock(Now));
+            new FixedUtcClock(Now),
+            folderAuthorization: new LayeredFolderAuthorizationService(
+                new TenantAccessAuthorizer(tenantStore, new FixedUtcClock(Now), new TenantAccessOptions()),
+                new RecordingFolderPermissionEvidenceProvider(FolderPermissionEvidenceResult.Allowed(FolderLifecycleStatusTestSupport.AuthorizationWatermark)),
+                new RecordingEventStoreAuthorizationValidator(EventStoreAuthorizationValidationResult.Allowed("validator_watermark_v1")),
+                new RecordingDaprPolicyEvidenceProvider(DaprPolicyEvidenceResult.Allowed("folders", "dapr_policy_v1")),
+                new FixedUtcClock(Now)));
 
     private static TaskStatusQuery Query(
         string taskId = "task-a",
@@ -250,7 +308,8 @@ public sealed class TaskStatusQueryHandlerTests
             principalId,
             claimTransformEvidence ?? EventStoreClaimTransformEvidence.Allowed(tenantId, principalId, [TaskStatusQueryHandler.ActionToken]),
             correlationId,
-            clientTenantValues ?? new Dictionary<string, string?>(StringComparer.Ordinal));
+            clientTenantValues ?? new Dictionary<string, string?>(StringComparer.Ordinal),
+            FolderId: "folder-a");
 
     private static TaskStatusReadModelSnapshot Snapshot(
         string currentState = "failed",
@@ -268,7 +327,8 @@ public sealed class TaskStatusQueryHandlerTests
             RetryEligibility: new WorkspaceStatusRetryEligibility(retryEligible, retryReason),
             RetryAfter: null,
             Freshness: FolderLifecycleStatusTestSupport.Freshness(),
-            EvidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(actionToken: TaskStatusQueryHandler.ActionToken));
+            EvidenceScope: FolderLifecycleStatusTestSupport.EvidenceScope(actionToken: TaskStatusQueryHandler.ActionToken),
+            FolderId: "folder-a");
 
     private static TaskStatusReadModelSnapshot MalformedSnapshot(string malformedField)
     {

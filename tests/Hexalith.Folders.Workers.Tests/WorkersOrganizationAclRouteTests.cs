@@ -12,6 +12,8 @@ using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Projections.OperationalStatus;
+using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Workers;
 
 using Microsoft.AspNetCore.Builder;
@@ -63,10 +65,12 @@ public sealed class WorkersOrganizationAclRouteTests
         persisted.RecentMessages!.Count.ShouldBe(2);
     }
 
-    [Fact]
-    public async Task FolderCallbackRetriesOneWriteConflictAndPersistsSequenceOne()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment(bool operationalUnavailable)
     {
-        WorkerRouteReadModelStore store = new() { ForcedWriteConflicts = 1 };
+        WorkerRouteReadModelStore store = new() { ForcedWriteConflicts = 1, FailOperationalBatch = operationalUnavailable };
         WebApplication app = await StartMaintenanceHostAsync(store, store).ConfigureAwait(true);
         await using var cleanup = app.ConfigureAwait(false);
         using HttpClient client = AuthenticatedClient(app);
@@ -77,17 +81,35 @@ public sealed class WorkersOrganizationAclRouteTests
         {
             Domain = "folders",
             MetadataVersion = 1,
+            GlobalPosition = 1,
         };
 
         using HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", created,
             TestContext.Current.CancellationToken).ConfigureAwait(true);
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(operationalUnavailable ? HttpStatusCode.InternalServerError : HttpStatusCode.OK);
         store.ForcedWriteConflicts.ShouldBe(0);
         FolderPermissionProjection persisted = (await store.GetAsync<FolderPermissionProjection>("statestore",
             "projection:folders:folder-permissions:tenant-a:folder-a", TestContext.Current.CancellationToken)
             .ConfigureAwait(true)).Value!;
         persisted.IsCreated.ShouldBeTrue();
         persisted.LastSequence.ShouldBe(1);
+        var coordinator = new SharedProjectionEpochCoordinator(store, store);
+        var checkpoint = await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), TestContext.Current.CancellationToken);
+        if (operationalUnavailable)
+        {
+            checkpoint.Value.ShouldBeNull();
+            store.FailOperationalBatch = false;
+            using HttpResponseMessage retry = await client.PostAsJsonAsync("/folders/events", created, TestContext.Current.CancellationToken);
+            retry.StatusCode.ShouldBe(HttpStatusCode.OK);
+            checkpoint = await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+                OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), TestContext.Current.CancellationToken);
+        }
+        checkpoint.IsAvailable.ShouldBeTrue();
+        checkpoint.Value!.Sequence.ShouldBe(1);
+        var lifecycle = await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(OperationalStatusGeneration.Scope("tenant-a"),
+            OperationalStatusKeys.Lifecycle("tenant-a", "folder-a"), TestContext.Current.CancellationToken);
+        lifecycle.Value.ShouldNotBeNull().FolderId.ShouldBe("folder-a");
     }
 
     [Theory]
@@ -477,6 +499,7 @@ public sealed class WorkersOrganizationAclRouteTests
             {
                 Domain = "folders",
                 MetadataVersion = 1,
+                GlobalPosition = 1,
             };
             (await client.PostAsJsonAsync("/folders/events", folderEnvelope,
                 TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -571,6 +594,7 @@ public sealed class WorkersOrganizationAclRouteTests
                 "credential-a", OrganizationProviderBindingPolicy.Empty,
                 OrganizationProviderBindingPolicy.Empty, "correlation-a", "task-a", "key-binding",
                 "fingerprint-binding", "configured", DateTimeOffset.UtcNow);
+            binding = WithRetainedFingerprint(binding);
             EventStoreDomainEventEnvelope bindingEnvelope = new("message-binding-a", ProviderBindingActorId.Create("binding-a"),
                 "tenant-a", typeof(ProviderBindingConfigured).FullName!, 1, DateTimeOffset.UtcNow,
                 "correlation-a", "json", JsonSerializer.SerializeToUtf8Bytes(binding,
@@ -581,7 +605,7 @@ public sealed class WorkersOrganizationAclRouteTests
             };
             (await client.PostAsJsonAsync("/folders/events", bindingEnvelope,
                 TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
-            ProviderBindingConfigured tenantReference = binding with { ProviderBindingRef = "tenant-a" };
+            ProviderBindingConfigured tenantReference = WithRetainedFingerprint(binding with { ProviderBindingRef = "tenant-a" });
             EventStoreDomainEventEnvelope tenantReferenceEnvelope = bindingEnvelope with
             {
                 MessageId = "message-binding-tenant",
@@ -656,6 +680,8 @@ public sealed class WorkersOrganizationAclRouteTests
                 MessageId = "message-folder-grant",
                 EventTypeName = typeof(FolderAccessGranted).FullName!,
                 SequenceNumber = 2,
+                GlobalPosition = 2,
+                Timestamp = folderGrant.OccurredAt,
                 Payload = JsonSerializer.SerializeToUtf8Bytes(folderGrant, EventStorePayloadSerialization.Options),
             };
             (await client.PostAsJsonAsync("/folders/events", grantEnvelope,
@@ -668,6 +694,8 @@ public sealed class WorkersOrganizationAclRouteTests
                 MessageId = "message-folder-revoke",
                 EventTypeName = typeof(FolderAccessRevoked).FullName!,
                 SequenceNumber = 3,
+                GlobalPosition = 3,
+                Timestamp = folderRevoke.OccurredAt,
                 Payload = JsonSerializer.SerializeToUtf8Bytes(folderRevoke, EventStorePayloadSerialization.Options),
             }, TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
             FolderPermissionProjection revokedFolder = (await store.GetAsync<FolderPermissionProjection>(
@@ -690,6 +718,7 @@ public sealed class WorkersOrganizationAclRouteTests
                     MessageId = "message-rejection-" + i,
                     EventTypeName = rejectionNames[i],
                     SequenceNumber = i + 4,
+                    GlobalPosition = i + 4,
                     Payload = bytes,
                 }, TestContext.Current.CancellationToken)).StatusCode.ShouldBe(HttpStatusCode.OK);
                 File.ReadAllBytes(path).ShouldBe(bytes);
@@ -714,5 +743,15 @@ public sealed class WorkersOrganizationAclRouteTests
         {
             Domain = "folders",
             MetadataVersion = 1,
+            GlobalPosition = sequence,
+        };
+
+    private static ProviderBindingConfigured WithRetainedFingerprint(ProviderBindingConfigured value)
+        => value with
+        {
+            IdempotencyFingerprint = OrganizationProviderBindingCommandValidator.Validate(new(
+            value.ManagedTenantId, value.OrganizationId, OrganizationAclPrincipalKind.User, "user-a", value.ProviderBindingRef,
+            value.ProviderKind, value.CredentialReferenceId, value.NamingPolicy, value.BranchPolicy, value.CorrelationId,
+            value.TaskId, value.IdempotencyKey, value.OccurredAt, null)).IdempotencyFingerprint
         };
 }
