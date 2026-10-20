@@ -64,6 +64,19 @@ public static partial class WorkspacePathPolicyValidator
         return $"pathmeta_{Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant()}";
     }
 
+    /// <summary>Hashes only the exact validated workspace/path mutation address; this never allocates a File identity or establishes authority.</summary>
+    internal static string ComputeMutationTargetDigest(string workspaceId, PathMetadata metadata)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(workspaceId);
+        ArgumentNullException.ThrowIfNull(metadata);
+        using IncrementalHash hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        AppendField(hash, "workspace_id");
+        AppendField(hash, workspaceId);
+        AppendField(hash, "normalized_path");
+        AppendField(hash, metadata.NormalizedPath);
+        return Convert.ToHexStringLower(hash.GetHashAndReset());
+    }
+
     internal static string CanonicalPathMetadataFingerprint(PathMetadata metadata)
     {
         ArgumentNullException.ThrowIfNull(metadata);

@@ -524,6 +524,9 @@ public static partial class FolderCommandValidator
         AppendField(hash, command.TaskId);
         AppendField(hash, command.WorkspaceId);
 
+        if (command.OwnerFileId is not null && command.FileOperationKind != "add") AppendField(hash, command.OwnerFileId);
+        if (command.ProjectFileReferenceId is not null) AppendField(hash, command.ProjectFileReferenceId);
+
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
 
@@ -613,6 +616,10 @@ public static partial class FolderCommandValidator
         {
             return false;
         }
+
+        if (command.OwnerFileId is not null && !FolderFileIdentityState.IsCanonical(command.OwnerFileId)
+            || command.ProjectFileReferenceId is not null && (!FolderFileIdentityState.IsProjectReference(command.ProjectFileReferenceId)
+                || command.OwnerFileId is null)) return false;
 
         return command.FileOperationKind switch
         {

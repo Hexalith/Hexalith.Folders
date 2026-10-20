@@ -60,7 +60,7 @@ public sealed class FolderOwnerReadQueryHandlerTests
             context.User = new ClaimsPrincipal(new ClaimsIdentity([
                 new Claim(EventStoreWorkloadAuthenticationDefaults.WorkloadClaimType, "eventstore"),
                 new Claim(EventStoreWorkloadAuthenticationDefaults.OperationClaimType, EventStoreWorkloadOperations.DomainServiceQuery),
-                new Claim(QueryCallerAuthorityBinding.DigestClaim, QueryCallerAuthorityBinding.Bind(sent)[QueryCallerAuthorityBinding.DigestClaim])], "workload"));
+                .. QueryCallerAuthorityBinding.Bind(sent).Select(pair => new Claim(pair.Key, pair.Value))], "workload"));
             return await DomainQueryDispatcher.ExecuteAsync(services, sent, token).ConfigureAwait(false);
         }
         (await DispatchAsync(query)).Success.ShouldBeTrue();

@@ -12,6 +12,77 @@ public sealed class FolderWorkspaceFileMutationServiceTests
     private static readonly DateTimeOffset Now = new(2026, 5, 27, 22, 0, 0, TimeSpan.Zero);
 
     [Fact]
+    public async Task RetainedIdentityHistoryLimitRejectsNewIncarnationBeforeContentOrAppend()
+    {
+        var repository = LockedRepository();
+        var stream = FolderStreamName.Create("tenant-a", "folder-a");
+        var state = repository.Load(stream);
+        var history = Enumerable.Range(0, 10000).ToDictionary(index => "retained-" + index,
+            index => new FolderFileIdentity("retained-" + index, null, "descriptive", false), StringComparer.Ordinal);
+        repository.Seed(stream, state with { FileIdentities = history });
+        var content = new RecordingContentStore();
+        var service = Service(repository, new RecordingPathPolicyEvidenceProvider(), content);
+        var result = await service.MutateAsync(Request(), TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(FolderResultCode.StateTransitionInvalid);
+        result.Events.ShouldBeEmpty(); content.Requests.ShouldBeEmpty(); repository.AppendsAttempted.ShouldBe(0);
+        repository.Load(stream).FileIdentities.Count.ShouldBe(10000);
+    }
+
+    [Fact]
+    public async Task RevokedFolderPermissionDuringReferenceBindingPreventsContentAndAppend()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingContentStore content = new();
+        SequencedFolderPermissionEvidenceProvider permissions = new(
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
+            FolderPermissionEvidenceResult.Allowed("folder-a:7", organizationId: "tenant-a"),
+            FolderPermissionEvidenceResult.FromStatus(FolderPermissionEvidenceStatus.Denied, "folder-a:8"));
+        var binding = new RecordingFileReferenceBindingAuthority();
+        WorkspaceFileMutationService service = Service(repository, new RecordingPathPolicyEvidenceProvider(), content,
+            folderPermissionEvidenceProvider: permissions, bindingAuthority: binding);
+        FolderResult result = await service.MutateAsync(Request() with { ProjectFileReferenceId = "reference-1" },
+            TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(FolderResultCode.FolderAclDenied);
+        result.Events.ShouldBeEmpty(); content.Requests.ShouldBeEmpty(); repository.AppendsAttempted.ShouldBe(0);
+        permissions.Calls.ShouldBe(3);
+        binding.Requests.Count.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task GenericFolderWriteCannotBindAProjectsOwnedReferenceWithoutIndependentAuthority()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore content = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, content);
+        var request = Request() with { ProjectFileReferenceId = "référence-1" };
+        FolderResult result = await service.MutateAsync(request, TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(FolderResultCode.PolicyEvidenceUnavailable);
+        result.Events.ShouldBeEmpty();
+        repository.AppendsAttempted.ShouldBe(0);
+        content.Requests.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task OwnerAllocatesFreshFileIdentityAndIdempotentReplayPreservesItsPersistedIncarnation()
+    {
+        RecordingFolderRepository repository = LockedRepository();
+        RecordingPathPolicyEvidenceProvider evidence = new();
+        RecordingContentStore content = new();
+        WorkspaceFileMutationService service = Service(repository, evidence, content);
+        var request = Request() with { OwnerFileId = "untrusted-caller-id" };
+        FolderResult result = await service.MutateAsync(request, TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        var accepted = result.Events.ShouldHaveSingleItem().ShouldBeOfType<WorkspaceFileMutationAccepted>();
+        accepted.OwnerFileId.ShouldNotBeNullOrWhiteSpace();
+        accepted.OwnerFileId.ShouldNotBe("untrusted-caller-id");
+        accepted.ProjectFileReferenceId.ShouldBeNull();
+        var replay = await service.MutateAsync(request, TestContext.Current.CancellationToken);
+        replay.Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        replay.Events.ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task MissingAuthenticationShouldDenyBeforePathPolicyAndFolderObservation()
     {
         RecordingFolderRepository repository = new();
@@ -440,14 +511,15 @@ public sealed class FolderWorkspaceFileMutationServiceTests
         IWorkspacePathPolicyEvidenceProvider evidence,
         IWorkspaceFileContentStore? contentStore = null,
         IWorkspaceFileDeleteOperationStore? deleteOperationStore = null,
-        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null)
+        IFolderPermissionEvidenceProvider? folderPermissionEvidenceProvider = null,
+        IFolderFileReferenceBindingAuthority? bindingAuthority = null)
         => new(
             AuthorizationService(folderPermissionEvidenceProvider),
             repository,
             evidence,
             new FixedTimeProvider(Now),
             contentStore ?? new RecordingContentStore(),
-            deleteOperationStore ?? new RecordingDeleteOperationStore());
+            deleteOperationStore ?? new RecordingDeleteOperationStore(), bindingAuthority);
 
     private static WorkspaceFileMutationRequest Request(
         string? authoritativeTenantId = "tenant-a",

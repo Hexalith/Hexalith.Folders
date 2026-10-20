@@ -64,6 +64,10 @@ public sealed record FolderState(
     long AccessSequence,
     IReadOnlyDictionary<string, string> IdempotencyFingerprints)
 {
+    /// <summary>Gets explicit owner File incarnations folded from native mutation events.</summary>
+    public IReadOnlyDictionary<string, FolderFileIdentity> FileIdentities { get; init; }
+        = FrozenDictionary<string, FolderFileIdentity>.Empty;
+
     /// <summary>Gets the source operation for the most recent retained commit outcome.</summary>
     public string? WorkspaceCommitOperationId { get; init; }
 

@@ -115,7 +115,13 @@ public sealed class EffectivePermissionsFolderPermissionEvidenceProvider(
         return FolderPermissionEvidenceResult.Allowed(
             snapshot.Freshness.ProjectionWatermark,
             stale ? "bounded_stale" : "fresh",
-            snapshot.OrganizationId);
+            snapshot.OrganizationId) with
+        {
+            ResourceVersion = stale ? null : snapshot.ResourceVersion,
+            PermissionVersion = stale ? null : snapshot.PermissionVersion,
+            LastVerifiedAt = stale ? null : snapshot.LastVerifiedAt,
+            NativeTenantRevision = stale ? null : snapshot.NativeTenantRevision,
+        };
     }
 
     private static bool HasActionGrant(

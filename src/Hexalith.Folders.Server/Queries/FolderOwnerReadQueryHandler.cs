@@ -19,7 +19,7 @@ public sealed class FolderOwnerReadQueryHandler(LayeredFolderAuthorizationServic
         VerifiedQueryCaller? caller = VerifiedQueryCaller.Get(accessor.HttpContext);
         if (caller is null || !ReferenceEquals(caller.Query, query) || query.CallerAuthority?.Origin != "delegated-owner-query")
             return QueryResult.Failure("safe-denial");
-        LayeredFolderAuthorizationResult result = await authorization.AuthorizeAsync(new(
+        LayeredFolderAuthorizationResult result = await authorization.AuthorizeCurrentMetadataReadAsync(new(
             query.TenantId, query.UserId, "actor_present", "read_metadata", LayeredFolderOperationPolicy.StrictRead(),
             EventStoreClaimTransformEvidence.Allowed(query.TenantId, query.UserId, query.CallerAuthority.Permissions),
             query.AggregateId, query.CorrelationId, null, null, null), cancellationToken).ConfigureAwait(false);
@@ -36,8 +36,32 @@ public sealed class FolderOwnerReadQueryHandler(LayeredFolderAuthorizationServic
                 || query.EntityId != query.AggregateId || query.Paging is not null) return QueryResult.Failure(QueryAdapterFailureReason.InvalidEnvelope);
         }
         catch (JsonException) { return QueryResult.Failure(QueryAdapterFailureReason.InvalidEnvelope); }
-        return Success(FolderOwnerReadOutcome.Allowed);
+        LayeredFolderAuthorizationResult final = await authorization.AuthorizeCurrentMetadataReadAsync(new(
+            query.TenantId, query.UserId, "actor_present", "read_metadata", LayeredFolderOperationPolicy.StrictRead(),
+            EventStoreClaimTransformEvidence.Allowed(query.TenantId, query.UserId, query.CallerAuthority.Permissions),
+            query.AggregateId, query.CorrelationId, null, null, null), cancellationToken).ConfigureAwait(false);
+        if (!final.IsAllowed) return final.Decision.Retryable ? Success(FolderOwnerReadOutcome.Unavailable) : QueryResult.Failure("safe-denial");
+        if (!SameRevisions(result.AllowedContext, final.AllowedContext)) return Success(FolderOwnerReadOutcome.Unavailable);
+        FolderOwnerReadEvidence? evidence = FolderOwnerQueryBinding.IsVerified(query, accessor)
+            ? Evidence(final.AllowedContext, (accessor.HttpContext?.RequestServices.GetService(typeof(TimeProvider)) as TimeProvider ?? TimeProvider.System).GetUtcNow())
+            : null;
+        return QueryResult.FromPayload(JsonSerializer.SerializeToElement(new FolderOwnerReadResult(FolderOwnerReadOutcome.Allowed)
+            { Evidence = evidence }, JsonSerializerOptions.Web), FolderOwnerReadQuery.QueryType);
     }
+
+    /// <summary>Compares exact native revision observations, including a revoke/regrant that ends Allowed.</summary>
+    internal static bool SameRevisions(LayeredFolderAuthorizationAllowedContext? first, LayeredFolderAuthorizationAllowedContext? final)
+        => first is not null && final is not null && first.AuthoritativeTenantId == final.AuthoritativeTenantId
+            && first.PrincipalId == final.PrincipalId && first.OperationScope == final.OperationScope
+            && first.FreshnessWatermark == final.FreshnessWatermark && first.ResourceVersion == final.ResourceVersion
+            && first.PermissionVersion == final.PermissionVersion && first.NativeTenantRevision == final.NativeTenantRevision;
+
+    /// <summary>Never substitutes local Tenant age or a preauthorization receipt for native current authority.</summary>
+    internal static FolderOwnerReadEvidence? Evidence(LayeredFolderAuthorizationAllowedContext? context, DateTimeOffset authorizedAt)
+        => context is { ResourceVersion: not null, PermissionVersion: not null, NativeTenantRevision: not null, LastVerifiedAt: not null }
+            ? new(JsonSerializer.Serialize(new[] { context.PermissionVersion, context.NativeTenantRevision }),
+                context.ResourceVersion, context.ResourceVersion, context.LastVerifiedAt.Value, authorizedAt)
+            : null;
 
     private static QueryResult Success(FolderOwnerReadOutcome outcome)
         => QueryResult.FromPayload(JsonSerializer.SerializeToElement(new FolderOwnerReadResult(outcome), JsonSerializerOptions.Web), FolderOwnerReadQuery.QueryType);

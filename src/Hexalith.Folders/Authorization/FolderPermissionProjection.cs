@@ -21,4 +21,9 @@ public sealed record FolderPermissionProjection(
     [property: JsonRequired] bool IsArchived,
     DateTimeOffset ProjectedAt,
     IReadOnlyList<FolderPermissionOverrideEntry> Overrides,
-    IReadOnlyList<FolderProjectionMessage> RecentMessages);
+    IReadOnlyList<FolderProjectionMessage> RecentMessages)
+{
+    /// <summary>Gets event-derived identity lineage used only by the projection writer; narrow readers use the isolated identity row.</summary>
+    public IReadOnlyDictionary<string, Hexalith.Folders.Aggregates.Folder.FolderFileIdentity> FileIdentities { get; init; }
+        = System.Collections.Frozen.FrozenDictionary<string, Hexalith.Folders.Aggregates.Folder.FolderFileIdentity>.Empty;
+}

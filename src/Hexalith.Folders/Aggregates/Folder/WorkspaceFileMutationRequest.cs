@@ -23,4 +23,11 @@ public sealed record WorkspaceFileMutationRequest(
     string IdempotencyKey,
     string? PayloadTenantId,
     IReadOnlyDictionary<string, string?> ClientControlledTenantValues,
-    IReadOnlyDictionary<string, string?> ClientControlledPrincipalValues);
+    IReadOnlyDictionary<string, string?> ClientControlledPrincipalValues)
+{
+    /// <summary>Gets the explicit owner File identity; add operations allocate it at the owner boundary.</summary>
+    public string? OwnerFileId { get; init; }
+
+    /// <summary>Gets the explicit Projects-owned reference bound by this owner operation.</summary>
+    public string? ProjectFileReferenceId { get; init; }
+}
