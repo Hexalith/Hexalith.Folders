@@ -1272,7 +1272,12 @@ public sealed partial class FolderDomainProcessor(
             {
                 ["eventstore_envelope_tenant"] = envelope.TenantId,
             },
-            ClientControlledPrincipalValues: principalValues);
+            ClientControlledPrincipalValues: principalValues)
+        {
+            OwnerFileId = payload.OwnerFileId,
+            ProjectFileReferenceId = payload.ProjectFileReferenceId,
+        };
+
 
         FolderResult result;
         try
@@ -1729,7 +1734,11 @@ public sealed partial class FolderDomainProcessor(
         string? MediaType,
         string? TransportEvidenceKind,
         long? ObservedByteLength,
-        string? TaskId);
+        string? TaskId)
+    {
+        public string? OwnerFileId { get; init; }
+        public string? ProjectFileReferenceId { get; init; }
+    }
 
     private sealed record CommitWorkspacePayload(
         [property: JsonRequired] string? RequestSchemaVersion,

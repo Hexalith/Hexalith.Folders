@@ -384,6 +384,7 @@ public static class FolderStateApply
 
         return WithWorkspaceTransition(state, accepted, transition, accepted.WorkspaceId, accepted.OperationId) with
         {
+            FileIdentities = FolderFileIdentityState.Apply(state.FileIdentities, accepted),
             IdempotencyFingerprints = RecordIdempotency(state.IdempotencyFingerprints, accepted),
         };
     }

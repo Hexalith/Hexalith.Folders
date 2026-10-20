@@ -571,6 +571,12 @@ public static class FolderAggregate
             return FolderResult.Rejected(command, FolderResultCode.FolderNotFound);
         }
 
+        if (state.ManagedTenantId != command.ManagedTenantId || state.OrganizationId != command.OrganizationId
+            || state.FolderId != command.FolderId)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.TenantMismatch);
+        }
+
         FolderResultCode activeMutationGuard = FolderActiveMutationGuard.Evaluate(state, FolderActiveMutationCategory.Workspace);
         if (activeMutationGuard != FolderResultCode.Accepted)
         {
@@ -648,7 +654,21 @@ public static class FolderAggregate
             command.TaskId,
             command.IdempotencyKey,
             validation.IdempotencyFingerprint!,
-            occurredAt);
+            occurredAt)
+        {
+            OwnerFileId = command.OwnerFileId,
+            ProjectFileReferenceId = command.ProjectFileReferenceId,
+            MutationTargetDigest = WorkspacePathPolicyValidator.ComputeMutationTargetDigest(command.WorkspaceId, command.PathMetadata),
+        };
+        try
+        {
+            _ = FolderFileIdentityState.Apply(state.FileIdentities, accepted);
+        }
+        catch (InvalidOperationException)
+        {
+            return FolderResult.Rejected(command, FolderResultCode.StateTransitionInvalid);
+        }
+
 
         return FolderResult.Accepted(command, [accepted]);
     }

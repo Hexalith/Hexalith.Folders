@@ -8,7 +8,8 @@ public sealed class WorkspaceFileMutationService(
     IWorkspacePathPolicyEvidenceProvider pathPolicyEvidenceProvider,
     TimeProvider? timeProvider = null,
     IWorkspaceFileContentStore? contentStore = null,
-    IWorkspaceFileDeleteOperationStore? deleteOperationStore = null)
+    IWorkspaceFileDeleteOperationStore? deleteOperationStore = null,
+    IFolderFileReferenceBindingAuthority? fileReferenceBindingAuthority = null)
 {
     public const string ActionToken = "mutate_files";
 
@@ -96,7 +97,14 @@ public sealed class WorkspaceFileMutationService(
             request.IdempotencyKey,
             request.PayloadTenantId,
             clientTenantValues,
-            request.ClientControlledPrincipalValues);
+            request.ClientControlledPrincipalValues)
+        {
+            OwnerFileId = request.FileOperationKind == "add"
+                ? Hexalith.Commons.UniqueIds.UniqueIdHelper.GenerateSortableUniqueStringId()
+                : request.OwnerFileId,
+            ProjectFileReferenceId = request.ProjectFileReferenceId,
+        };
+
 
         FolderCommandValidationResult validation = FolderCommandValidator.Validate(command);
         if (!validation.IsAccepted)
@@ -143,6 +151,25 @@ public sealed class WorkspaceFileMutationService(
         if (!finalAuthorization.IsAllowed)
         {
             return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
+        }
+
+        // Projects owns this namespace. A native File mutation establishes the owner incarnation,
+        // but a supplied Projects reference still requires independent current Projects authority.
+        if (command.ProjectFileReferenceId is not null
+            && (!state.FileIdentities.TryGetValue(command.OwnerFileId!, out FolderFileIdentity? existingFile)
+                || existingFile.ProjectFileReferenceId != command.ProjectFileReferenceId))
+        {
+            if (fileReferenceBindingAuthority is null || !await fileReferenceBindingAuthority.AuthorizeAsync(
+                new(command.ManagedTenantId, command.FolderId, command.OwnerFileId!, command.ProjectFileReferenceId,
+                    existingFile?.NativeMutationId), cancellationToken).ConfigureAwait(false))
+                return FolderResult.Rejected(command, FolderResultCode.PolicyEvidenceUnavailable);
+
+            // Binding authority awaits another owner. Refresh Folder permission after that I/O
+            // before staging content or appending a native mapping event.
+            finalAuthorization = await _authorizationService.ReauthorizeTaskMutationAsync(
+                authorizationContext, cancellationToken).ConfigureAwait(false);
+            if (!finalAuthorization.IsAllowed)
+                return FolderResult.Rejected(command, MapAuthorization(finalAuthorization.Decision.OutcomeCode));
         }
 
         if (command.FileOperationKind is "add" or "change")

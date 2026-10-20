@@ -17,6 +17,16 @@ public sealed class LayeredFolderAuthorizationService(
         CancellationToken cancellationToken = default)
         => AuthorizeCoreAsync(context, includeFolderAcl: true, cancellationToken);
 
+    /// <summary>Evaluates strict metadata authority without reusing an ambient preauthorization receipt.</summary>
+    public async Task<LayeredFolderAuthorizationResult> AuthorizeCurrentMetadataReadAsync(
+        LayeredFolderAuthorizationContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        using IDisposable suppression = PreauthorizedRequestContext.SuppressReuse();
+        return await AuthorizeCoreAsync(context with { OperationPolicy = LayeredFolderOperationPolicy.StrictRead() },
+            includeFolderAcl: true, cancellationToken).ConfigureAwait(false);
+    }
+
     /// <summary>Runs the complete authorization stack for an operation that has no existing folder ACL scope.</summary>
     internal Task<LayeredFolderAuthorizationResult> AuthorizeTenantScopedAsync(
         LayeredFolderAuthorizationContext context,
@@ -164,6 +174,7 @@ public sealed class LayeredFolderAuthorizationService(
         string? folderWatermark = tenantAccess.ProjectionWatermark;
         string folderFreshnessClass = MapFreshness(tenantAccess.FreshnessStatus);
         string? organizationId = null;
+        FolderPermissionEvidenceResult? nativeFolderEvidence = null;
         if (includeFolderAcl)
         {
             evaluatedLayers.Add(AuthorizationLayer.FolderAcl);
@@ -212,6 +223,7 @@ public sealed class LayeredFolderAuthorizationService(
                     folderEvidence.Retryable);
             }
 
+            nativeFolderEvidence = folderEvidence;
             folderWatermark = folderEvidence.FreshnessWatermark ?? tenantAccess.ProjectionWatermark;
             folderFreshnessClass = folderEvidence.FreshnessClass;
             organizationId = folderEvidence.OrganizationId;
@@ -301,6 +313,10 @@ public sealed class LayeredFolderAuthorizationService(
         {
             FreshnessWatermark = finalWatermark,
             OrganizationId = organizationId,
+            ResourceVersion = nativeFolderEvidence?.ResourceVersion,
+            PermissionVersion = nativeFolderEvidence?.PermissionVersion,
+            LastVerifiedAt = nativeFolderEvidence?.LastVerifiedAt,
+            NativeTenantRevision = nativeFolderEvidence?.NativeTenantRevision,
         };
 
         LayeredFolderAuthorizationDecisionSnapshot decision = Snapshot(

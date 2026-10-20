@@ -138,7 +138,14 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
             rows, freshness,
             RevocationFreshnessEstablished: baseline.Snapshot?.RevocationFreshnessEstablished
                 ?? baseline.Status == EffectivePermissionsReadModelStatus.NotFound,
-            TaskScope: null);
+            TaskScope: null)
+        {
+            ResourceVersion = folder.LastSequence.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            PermissionVersion = baseline.Snapshot?.PermissionVersion is { } organizationRevision
+                ? System.Text.Json.JsonSerializer.Serialize(new[] { folder.LastSequence.ToString(System.Globalization.CultureInfo.InvariantCulture), organizationRevision })
+                : null,
+            LastVerifiedAt = clock.UtcNow,
+        };
         return freshness.Stale
             ? EffectivePermissionsReadModelResult.Stale(snapshot)
             : EffectivePermissionsReadModelResult.Available(snapshot);
@@ -260,7 +267,33 @@ public sealed class EventStoreFolderEffectivePermissionsReadModel(
         }
 
         FolderPermissionProjection next = new(tenantId, tenantId, folderId, sequence, created, archived,
-            clock.UtcNow, overrides, recent);
+            clock.UtcNow, overrides, recent)
+        {
+            FileIdentities = @event is WorkspaceFileMutationAccepted mutation
+                ? FolderFileIdentityState.Apply(prior?.FileIdentities ?? System.Collections.Frozen.FrozenDictionary<string, FolderFileIdentity>.Empty, mutation)
+                : prior?.FileIdentities ?? System.Collections.Frozen.FrozenDictionary<string, FolderFileIdentity>.Empty,
+        };
+        // Persist the isolated row first. Readers require this row and the independently current
+        // permission/source position to agree; an interrupted pair is unavailable, never repaired by a query.
+        string identityKey = FolderFileIdentityReadModel.Key(tenantId, folderId);
+        ReadModelEntry<FolderFileIdentityReadModel> identityEntry = await store.GetAsync<FolderFileIdentityReadModel>(
+            StoreName, identityKey, cancellationToken).ConfigureAwait(false);
+        var identities = next.FileIdentities.Values.OrderBy(item => item.OwnerFileId, StringComparer.Ordinal)
+            .Select(item => new FolderFileIdentityMetadata(item.OwnerFileId, item.ProjectFileReferenceId, item.Active)).ToArray();
+        if (identityEntry.Value is { } existingIdentity && existingIdentity.LastSequence == sequence)
+        {
+            if (existingIdentity.TenantId != tenantId || existingIdentity.FolderId != folderId
+                || !existingIdentity.Files.SequenceEqual(identities))
+                throw new InvalidOperationException("Conflicting File identity projection.");
+        }
+        else if (identityEntry.Value is { } futureIdentity && futureIdentity.LastSequence > sequence
+            || !await store.TrySaveAsync(StoreName, identityKey,
+                new FolderFileIdentityReadModel(tenantId, folderId, sequence, next.ProjectedAt, identities),
+                identityEntry.ETag ?? string.Empty, cancellationToken).ConfigureAwait(false))
+        {
+            throw new PermissionProjectionConcurrencyException("File identity projection write conflicted.");
+        }
+
         if (!await store.TrySaveAsync(StoreName, key, next, current.ETag ?? string.Empty,
             cancellationToken).ConfigureAwait(false))
         {

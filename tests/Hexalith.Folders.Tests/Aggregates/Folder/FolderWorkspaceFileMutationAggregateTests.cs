@@ -11,6 +11,187 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
 {
     private static readonly DateTimeOffset Now = new(2026, 5, 27, 21, 0, 0, TimeSpan.Zero);
 
+    [Theory]
+    [InlineData("add")]
+    [InlineData("change")]
+    [InlineData("remove")]
+    public void UnboundMutationOfSameTargetInvalidatesPriorIdentityDespiteDescriptiveChanges(string kind)
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "old-file" };
+        var added = FolderAggregate.Handle(locked, original, Now);
+        var prior = added.Events.Single().ShouldBeOfType<WorkspaceFileMutationAccepted>();
+        FolderState state = locked.Apply(added.Events, stream);
+        var command = Mutation(operationId: "replacement", idempotencyKey: "replacement", fileOperationKind: kind,
+            transportOperation: kind == "remove" ? "metadataOnlyRemoval" : "PutFileInline",
+            contentHashReference: kind == "remove" ? null : "hashref-a", byteLength: kind == "remove" ? null : 12);
+        command = command with { PathMetadata = command.PathMetadata with { DisplayName = "changed label", PathPolicyClass = "public_document" } };
+        var result = FolderAggregate.Handle(state, command, Now.AddSeconds(1));
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        var accepted = result.Events.Single().ShouldBeOfType<WorkspaceFileMutationAccepted>();
+        accepted.PathMetadataDigest.ShouldNotBe(prior.PathMetadataDigest);
+        accepted.MutationTargetDigest.ShouldBe(prior.MutationTargetDigest);
+        state.Apply(result.Events, stream).FileIdentities["old-file"].Active.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ExplicitChangeRetainsIdentityAtSameTargetDespiteDescriptiveChanges()
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "file" };
+        FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
+        var command = Mutation(operationId: "change", idempotencyKey: "change", fileOperationKind: "change") with
+        { OwnerFileId = "file", PathMetadata = original.PathMetadata with { DisplayName = "new label", PathPolicyClass = "public_document" } };
+        var result = FolderAggregate.Handle(state, command, Now.AddSeconds(1));
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        var updated = state.Apply(result.Events, stream).FileIdentities["file"];
+        updated.Active.ShouldBeTrue();
+        updated.PathMetadataDigest.ShouldNotBe(state.FileIdentities["file"].PathMetadataDigest);
+        updated.MutationTargetDigest.ShouldBe(state.FileIdentities["file"].MutationTargetDigest);
+    }
+
+    [Fact]
+    public void LegacyMutationWithoutExactTargetCannotEstablishOrPreserveActiveIdentity()
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var added = FolderAggregate.Handle(locked, Mutation() with { OwnerFileId = "file" }, Now);
+        FolderState state = locked.Apply(added.Events, stream);
+        var legacy = added.Events.Single().ShouldBeOfType<WorkspaceFileMutationAccepted>() with
+        { OwnerFileId = "legacy-file", IdempotencyKey = "legacy", MutationTargetDigest = null };
+        var folded = FolderFileIdentityState.Apply(state.FileIdentities, legacy);
+        folded.Count.ShouldBe(2); folded.Values.ShouldAllBe(item => !item.Active);
+        var duplicateReference = legacy with { OwnerFileId = "third-file", ProjectFileReferenceId = "reserved-ref" };
+        var reserved = new Dictionary<string, FolderFileIdentity>(folded) { ["reserved"] = new("reserved", "reserved-ref", "descriptive", false) };
+        Should.Throw<InvalidOperationException>(() => FolderFileIdentityState.Apply(reserved, duplicateReference));
+    }
+
+    [Theory]
+    [InlineData("change")]
+    [InlineData("remove")]
+    public void RetainedHistoryBoundStillPermitsExistingIncarnationLifecycle(string kind)
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "file" };
+        FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
+        var history = Enumerable.Range(0, 9999).ToDictionary(index => "retained-" + index,
+            index => new FolderFileIdentity("retained-" + index, null, "descriptive", false), StringComparer.Ordinal);
+        history.Add("file", state.FileIdentities["file"]); state = state with { FileIdentities = history };
+        var command = Mutation(operationId: "existing", idempotencyKey: "existing", fileOperationKind: kind,
+            transportOperation: kind == "remove" ? "metadataOnlyRemoval" : "PutFileInline",
+            contentHashReference: kind == "remove" ? null : "hashref-a", byteLength: kind == "remove" ? null : 12)
+            with { OwnerFileId = "file" };
+        var result = FolderAggregate.Handle(state, command, Now.AddSeconds(1));
+        result.Code.ShouldBe(FolderResultCode.Accepted);
+        var updated = state.Apply(result.Events, stream);
+        updated.FileIdentities.Count.ShouldBe(10000);
+        updated.FileIdentities["file"].Active.ShouldBe(kind == "change");
+    }
+
+    [Fact]
+    public void MutationTargetDistinguishesWorkspaceAndPathWithoutStoringEitherAddress()
+    {
+        var metadata = Mutation().PathMetadata;
+        string digest = WorkspacePathPolicyValidator.ComputeMutationTargetDigest("workspace-a", metadata);
+        digest.ShouldNotBe(WorkspacePathPolicyValidator.ComputeMutationTargetDigest("workspace-b", metadata));
+        digest.ShouldNotBe(WorkspacePathPolicyValidator.ComputeMutationTargetDigest("workspace-a", metadata with { NormalizedPath = "docs/other.md" }));
+        digest.ShouldNotContain("workspace"); digest.ShouldNotContain("docs");
+    }
+
+    [Fact]
+    public void LateBindingCannotTransferATombstonedProjectsReferenceToAnotherIncarnation()
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "old-file", ProjectFileReferenceId = "référence-1" };
+        FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
+        var replacement = Mutation(operationId: "replacement", idempotencyKey: "replacement") with { OwnerFileId = "new-file" };
+        state = state.Apply(FolderAggregate.Handle(state, replacement, Now.AddSeconds(1)).Events, stream);
+        state.FileIdentities["old-file"].Active.ShouldBeFalse();
+        var binding = Mutation(operationId: "binding", idempotencyKey: "binding", fileOperationKind: "change")
+            with { OwnerFileId = "new-file", ProjectFileReferenceId = "référence-1" };
+        FolderAggregate.Handle(state, binding, Now.AddSeconds(2)).Code.ShouldBe(FolderResultCode.StateTransitionInvalid);
+    }
+
+    [Fact]
+    public void ExplicitOwnerFileBindingPersistsAcrossDeclaredChangeAndReplay()
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var add = Mutation() with { OwnerFileId = "owner-file-a" };
+        var added = FolderAggregate.Handle(locked, add, Now);
+        FolderState state = locked.Apply(added.Events, stream);
+        state.FileIdentities["owner-file-a"].ProjectFileReferenceId.ShouldBeNull();
+        var bind = Mutation(operationId: "binding", idempotencyKey: "binding", fileOperationKind: "change")
+            with { OwnerFileId = "owner-file-a", ProjectFileReferenceId = "projects-ref" };
+        var changed = FolderAggregate.Handle(state, bind, Now.AddSeconds(1));
+        changed.Code.ShouldBe(FolderResultCode.Accepted);
+        state = state.Apply(changed.Events, stream);
+        state.FileIdentities["owner-file-a"].ProjectFileReferenceId.ShouldBe("projects-ref");
+        state.FileIdentities["owner-file-a"].Active.ShouldBeTrue();
+        FolderAggregate.Handle(state, bind, Now.AddSeconds(2)).Code.ShouldBe(FolderResultCode.IdempotentReplay);
+        locked.Apply([.. added.Events, .. changed.Events], stream).FileIdentities.ShouldBe(state.FileIdentities);
+        var serialized = JsonSerializer.Serialize(state.FileIdentities.Values);
+        serialized.ShouldNotContain("docs/readme.md");
+    }
+
+    [Fact]
+    public void ReplacementInvalidatesOldBindingAndCannotReuseTheOwnerIdentity()
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "old-file", ProjectFileReferenceId = "projects-ref" };
+        FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
+        var replacement = Mutation(operationId: "replacement", idempotencyKey: "replacement")
+            with { OwnerFileId = "new-file", ProjectFileReferenceId = "replacement-projects-ref" };
+        var added = FolderAggregate.Handle(state, replacement, Now.AddSeconds(1));
+        added.Code.ShouldBe(FolderResultCode.Accepted);
+        state = state.Apply(added.Events, stream);
+        state.FileIdentities["old-file"].Active.ShouldBeFalse();
+        state.FileIdentities["new-file"].Active.ShouldBeTrue();
+        var reused = Mutation(operationId: "reuse", idempotencyKey: "reuse")
+            with { OwnerFileId = "old-file", ProjectFileReferenceId = "projects-ref" };
+        FolderAggregate.Handle(state, reused, Now.AddSeconds(2)).Code.ShouldBe(FolderResultCode.StateTransitionInvalid);
+    }
+
+    [Theory]
+    [InlineData("parent")]
+    [InlineData("tenant")]
+    [InlineData("path")]
+    [InlineData("reference")]
+    public void NativeFileMutationRejectsForeignParentTenantPathOrBinding(string change)
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "file", ProjectFileReferenceId = "projects-ref" };
+        FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
+        var command = Mutation(operationId: "change", idempotencyKey: "change", fileOperationKind: "change")
+            with { OwnerFileId = "file", ProjectFileReferenceId = "projects-ref" };
+        command = change switch
+        {
+            "parent" => command with { FolderId = "other-folder" },
+            "tenant" => command with { ManagedTenantId = "other-tenant", OrganizationId = "other-tenant" },
+            "path" => command with { PathMetadata = command.PathMetadata with { NormalizedPath = "docs/other.md" } },
+            _ => command with { ProjectFileReferenceId = "other-ref" },
+        };
+        FolderAggregate.Handle(state, command, Now.AddSeconds(1)).Events.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void UndeclaredLegacyChangeInvalidatesRatherThanInferringContinuity()
+    {
+        FolderStreamName stream = FolderStreamName.Create("tenant-a", "folder-a");
+        FolderState locked = LockedState(stream);
+        var original = Mutation() with { OwnerFileId = "file", ProjectFileReferenceId = "projects-ref" };
+        FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
+        var legacy = Mutation(operationId: "legacy", idempotencyKey: "legacy", fileOperationKind: "change");
+        var changed = FolderAggregate.Handle(state, legacy, Now.AddSeconds(1));
+        state.Apply(changed.Events, stream).FileIdentities["file"].Active.ShouldBeFalse();
+    }
+
     [Fact]
     public void FirstAcceptedMutationShouldStageChangesWithoutRawPathEvidence()
     {

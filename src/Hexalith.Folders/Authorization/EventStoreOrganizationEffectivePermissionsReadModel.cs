@@ -117,7 +117,12 @@ public sealed class EventStoreOrganizationEffectivePermissionsReadModel(
                 projection.LastSequence, projection.ProjectedAt)).ToArray();
         EffectivePermissionsReadModelSnapshot snapshot = new(request.ManagedTenantId,
             projection.OrganizationId, Scope, EffectivePermissionsFolderLifecycleState.Active, rows,
-            freshness, RevocationFreshnessEstablished: true, TaskScope: null);
+            freshness, RevocationFreshnessEstablished: true, TaskScope: null)
+        {
+            ResourceVersion = projection.LastSequence.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            PermissionVersion = projection.LastSequence.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            LastVerifiedAt = clock.UtcNow,
+        };
         return authoritativeSequence == projection.LastSequence
             ? EffectivePermissionsReadModelResult.Available(snapshot)
             : EffectivePermissionsReadModelResult.Stale(snapshot);

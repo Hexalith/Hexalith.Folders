@@ -23,6 +23,12 @@ public sealed record MutateWorkspaceFile(
     IReadOnlyDictionary<string, string?>? ClientControlledTenantIds = null,
     IReadOnlyDictionary<string, string?>? ClientControlledPrincipalIds = null) : IFolderCommand
 {
+    /// <summary>Gets the explicit owner File identity; add operations allocate it at the owner boundary.</summary>
+    public string? OwnerFileId { get; init; }
+
+    /// <summary>Gets the explicit Projects-owned reference bound by this owner operation.</summary>
+    public string? ProjectFileReferenceId { get; init; }
+
     public const string CommandTypeName = "Hexalith.Folders.Commands.MutateFiles";
 
     public string CommandType => CommandTypeName;

@@ -124,6 +124,9 @@ internal sealed class RecordingFolderRepository : IFolderRepository
     public void Seed(FolderStreamName streamName, IReadOnlyList<IFolderEvent> events)
         => _states[streamName.Value] = FolderState.Empty.Apply(events, streamName);
 
+    public void Seed(FolderStreamName streamName, FolderState state)
+        => _states[streamName.Value] = state;
+
     public void RecordIdempotency(string managedTenantId, string folderId, string idempotencyKey, string fingerprint)
     {
         FolderStreamName streamName = FolderStreamName.Create(managedTenantId, folderId);
