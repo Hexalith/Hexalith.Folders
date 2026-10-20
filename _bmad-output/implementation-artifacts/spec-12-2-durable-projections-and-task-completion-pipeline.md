@@ -27,6 +27,8 @@ context:
 
 **Approved prerequisite exceptions (2026-10-18):** The owner authorized the bounded provider binding/readiness, additive v1 task folder hint, and minimal SDK projection-mapping qualification/consumption described in [the prerequisite proposal](proposal-12-2-acceptance-prerequisites.md). These exceptions permit the required minimal SDK dependency scope; public v2 remains disabled.
 
+**Approved SDK recovery prerequisites (2026-10-20):** The user approved [source-deadline expiry and pending scratch-fence recovery](proposal-12-2-sdk-expiry-and-scratch-recovery.md) for separate EventStore-owned implementation, qualification, and local source consumption here. These two capabilities extend the minimal SDK exception only as described in that proposal. No package or submodule pin update, publication, deployment, commit, push or public v2 exposure is authorized. The separate bounded owner-identity prerequisite retains its existing disposition.
+
 **Never:** Write Dapr/domain storage directly, invent provider/cleanup success, or replace retained event bytes. Exclude bodies and credentials. Keep transition evidence, diagnostics and search projections with Epics 4/6/10; content, provider commit execution, idempotency admission, confidentiality and destructive cleanup remain with 12.3–12.7/4.22. No deployment or public v2 exposure. Dependency changes are limited to the approved minimal SDK capability.
 
 **Decisions (2026-10-20, Jerome; review round 4):**
@@ -208,6 +210,8 @@ context:
   - **Known-bad state avoided.** Every command rebuilt the whole tenant in the awaited path, leaving 503s, stuck Building epochs and blocked deliveries. Idle entities returned a retryable 503 forever. Unknown references silently created bindings that could never resolve a repository.
   - **Re-derivation basis (Jerome, 2026-10-20).** Start from the committed HEAD `b49b0b206238056b3aa3c963edc44b1b6fc0f5cc` as the KEEP reference, without a physical revert. Rewrite only the parts built on the superseded design (Folders-driven rebuild in `/project`, `OperationalStatusRebuild.cs`, the live-head check, Workers stage ordering). Apply the round-four patches in place. Edge-30 is resolved by deleting that code.
   - **KEEP.** Every invariant from earlier change-log entries. The deterministic six-concern fold and original event bytes and identities. Bounded checkpoints and SDK logical evidence. Earliest closure and per-binding source authority. Rejection-only prefixes. Provider semantic fingerprints and source-bound repair. Real bound-target readiness. The task folder hint and canonical denials. The named SDK discovery and mapper. All five evidence stages and the parent qualification record. Task 36 stays open, blocked on the approved EventStore owner-identity work. No SDK protocol, schema, limit, pin, publication or public v2 change.
+
+- 2026-10-20 SDK expiry/recovery approval: the user responded “I approve” to the concrete prerequisite proposal. Record the two bounded capabilities as approved EventStore-owned work and qualify their local source consumption afterward. Historical diagnostics remain unchanged; full story acceptance stays open for the existing remaining gates.
 
 ## Review Triage Log
 

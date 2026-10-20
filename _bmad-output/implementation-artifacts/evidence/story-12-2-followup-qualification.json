@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "story": "12.2",
+  "recorded_at_utc": "2026-10-20T07:18:36.361427+00:00",
+  "scope": "Focused revalidation of existing retention/capacity acceptance and diagnostics; prerequisite handoff only; no production, test, SDK, dependency or historical-evidence change.",
+  "folders_head": "92fe7b40b144a52145ce2c696c9987b3d8d92740",
+  "eventstore_head": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+  "full_acceptance": false,
+  "commands": [
+    {
+      "command": "dotnet tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll -class Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests -result-xml /tmp/story12-2-followup-retention.xml",
+      "exit_code": 0,
+      "result": {
+        "total": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "seconds": 0.53,
+      "run_start_utc": "2026-10-20T07:15:56.7318680+00:00",
+      "run_finish_utc": "2026-10-20T07:15:57.2616988+00:00",
+      "retained_xml": {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-followup-retention.xml",
+        "sha256": "c4c96c25663ae96131127f3521dd667250c7a2d258f5f3a2a0611be1df26b905"
+      },
+      "executed_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync(minutes: 5, expected: Available)",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync(minutes: 6, expected: Unavailable)",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.BoundaryExpiresViewsEvidenceAndPositionRowsWithoutRefreshingTerminalMetadataAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.HostAheadTerminalExpiryRetainsItsOriginalPositionEvidenceUntilTheSameBoundaryAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.PhysicalExpiryOfBothViewAndEvidenceIsMissingWhileSurvivingEvidenceIsUnavailableAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.DomainHostAheadOfPersistenceClockCanCloseAndRebuildATaskAsync"
+      ]
+    },
+    {
+      "command": "dotnet tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll -class Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests -result-xml /tmp/story12-2-followup-capacity.xml",
+      "exit_code": 0,
+      "result": {
+        "total": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "seconds": 6.5,
+      "run_start_utc": "2026-10-20T07:15:56.7321622+00:00",
+      "run_finish_utc": "2026-10-20T07:16:03.2315742+00:00",
+      "retained_xml": {
+        "path": "_bmad-output/implementation-artifacts/evidence/story-12-2-followup-capacity.xml",
+        "sha256": "fa053e8ce8afc24b0bcc6904d3e6b097fbfdc7262135fe0acbe8bb00c3cd2859"
+      },
+      "executed_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.MalformedHolderAndSuccessRejectionCannotAdvanceCheckpointOrViews",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.RejectionOnlyPrefixPublishesNoViewsThenCreationConvergesWithCompleteReplay",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteCurrentSourceConditionallyRepairsCorruptCheckpointAndKeepsCommandKeysOutOfStorage",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.RebuildCannotReplaceValidEarlierPrefixWhenTailEventIsIdentical",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync"
+      ]
+    }
+  ],
+  "component_summary": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0
+  },
+  "source_sha256": {
+    "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs": "f09f06d17fe128efd0ec36d1c71f32faa1073de1cc2033eb1cf211cda021c425",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs": "80634b83014269b77a52f5af15b9c4e98b7de6d19a024a5a558b18fc555e4ef7",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs": "75fee05200c44e1a53fefc27db797e2095d5a7b28e30e8e83ba2b4e5e5e4fd45",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs": "f3ac2fa2095ca178c78001a16a3161aabd015c4b83b210ee8cfb36ac48280439",
+    "tests/shared/OperationalStatus/OperationalStatusTestStore.cs": "ea9e6cbb2c17c67ec2c2c2be887571c5ecbbf7548203be090a2845deb77ad58d",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ReadModelBatchOperation.cs": "54e74e7bccd2bf91ec0ac22f645c43c5593cdd1a05d8899652efc9d6b0eb5f42",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionMutation.cs": "3be3e7803549ed69450cfbc45cd3ac173f3ab9e1efa7d8cb8490f85422c2df4b",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ReadModelBatchProtocol.cs": "b00c7f3eadbc6ba937cb3ea68689b09d76aa02596d3d0a82749e5c7650305305",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelBatchStateAccessor.cs": "63f1793b4ce197ee8151e3db60af1e8e109766d46b02c0908d323bae769c02b9",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs": "cc6b43f970a7983e91bb1ebd0d84e34b3467971ed99954ff23ee79e66e41ba6c",
+    "references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DomainSharedProjectionRebuildDispatcher.cs": "8dbca53971ab87346eb16e3625c7914babf82a48915b932e2ecec72780eb2538"
+  },
+  "assembly_sha256": {
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll": "9b6ac8496ec2246e2d69294015cb5604e7e40d352bda441d5abe758b288375bc",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.dll": "a2ebbb7d9e87ec9ccf1348d3bc341fa59a47d3f1ef894cbfdddddcb8a72c177b",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll": "96e03f08d4a493875e9d6cd6dba55b93ffa45f6c7538c05c4dca004494d86fe9",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll": "c86ba310a46e8aab67790ba44813be3f4a20781dae3b715e941a719b3d7c87d5",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll": "3fc84b5ebe84556196dc95a381ab9a919286c10a5ae79caba6d959c9c316632d"
+  },
+  "unchanged_prior_evidence_sha256": {
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-durability.json": "1c40ef590e1945a330ccda05633555e7f2aaee4a8ec2e5c99f8b17c958892a32",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-parent-qualification.json": "1803371431c3e0c4e0a8668977414fc42a7e4af29275119aeb74f9cb7f24f607",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-round-four-parent-qualification.json": "24372c03360b91fb4a54d5e04839764260068246a5ee77b0928ffc8bfa829e5e"
+  },
+  "diagnostic_disposition": [
+    {
+      "test": "OperationalStatusRetentionTests.DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync",
+      "observed": "The SDK commits a staged one-day relative TTL after the source deadline; fresh Folders planning omits expired rows.",
+      "acceptance": "open; missing SDK absolute source-deadline persistence/recovery capability"
+    },
+    {
+      "test": "OperationalStatusCapacityTests.DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync",
+      "observed": "Repeated Accumulate and Abort remain Accumulating/Indeterminate/projection_handler_failure; the durable epoch is Building and no new checkpoint is selected.",
+      "acceptance": "open; missing SDK pending scratch-fence reconciliation"
+    },
+    {
+      "test": "OperationalStatusCapacityTests.TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues",
+      "observed": "The 10,000-position rebuild and ordinary growth to 10,001 pass; the complete 10,001 production rebuild fails and the public captured-identity call rejects capturedEventDigests.",
+      "acceptance": "Task 36 open; approved separate EventStore-owned bounded owner-identity work required"
+    }
+  ],
+  "handoff": "_bmad-output/implementation-artifacts/proposal-12-2-sdk-expiry-and-scratch-recovery.md",
+  "existing_open_gates": [
+    "SM4 acknowledgement p95 31,330.090 ms against 1,000 ms across nine successful requests including retries in stage six",
+    "Release/package contract gate: published EventStore 3.125.1 lacks the two selective mapper APIs",
+    "Recorded -NoRestore contract follow-up: three historical PD10 inventory/generator failures; frozen artifact bytes preserved",
+    "Coordinated SDK qualification/consumption, current-source inventory qualification and independent review"
+  ],
+  "broad_and_live_validation": "Not repeated: existing source and binaries are unchanged; prior exact-source qualification remains in the preserved six-stage evidence.",
+  "disposition": "Keep story in progress and unchecked acceptance rows open. Obtain separate EventStore owner decisions/implementation and qualify consumption before re-running affected Folders acceptance.",
+  "eventstore_gitlink": "d4d05f871991ec2af305267f59dcefeae3f127ed"
+}
