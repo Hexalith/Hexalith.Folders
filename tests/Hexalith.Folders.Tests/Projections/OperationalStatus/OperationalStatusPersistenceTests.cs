@@ -83,7 +83,7 @@ public sealed class OperationalStatusPersistenceTests
         }
 
         (await writer.ApplyAsync("tenant-a", "folder-a", "delivery-a", source, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeFalse();
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "restore-source", source, 1,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "restore-source", source, 1,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         System.Text.Json.JsonSerializer.Serialize(store.Snapshot<System.Text.Json.Nodes.JsonObject>("statestore", receiptKey)).ShouldBe(originalReceipt);
         store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!.Sequence.ShouldBe(1);
@@ -104,7 +104,7 @@ public sealed class OperationalStatusPersistenceTests
         var task = store.Snapshot<TaskStatusReadModelSnapshot>("statestore", taskKey)!;
         var row = await store.TryReadEtagAsync("statestore", workspaceKey, TestContext.Current.CancellationToken);
         (await store.TryEraseAsync("statestore", workspaceKey, row.Etag, TestContext.Current.CancellationToken)).ShouldBeTrue();
-        (await writer.ApplyAsync("tenant-a", "folder-a", "missing-workspace", [source[^1]], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeFalse();
+        await Should.ThrowAsync<OperationalStatusUnavailableException>(() => writer.ApplyAsync("tenant-a", "folder-a", "missing-workspace", [source[^1]], TestContext.Current.CancellationToken));
         store.SeedRaw("statestore", workspaceKey, workspace);
         store.SeedRaw("statestore", taskKey, task with { TerminalState = "ready" });
         await Should.ThrowAsync<OperationalStatusUnavailableException>(() => writer.ApplyAsync("tenant-a", "folder-a", "corrupt-task", [source[^1]], TestContext.Current.CancellationToken));
@@ -133,8 +133,8 @@ public sealed class OperationalStatusPersistenceTests
 
         OperationalStatusTestStore empty = new();
         var operations = await new OperationalStatusProjectionWriter(empty, empty, empty).PrepareRebuildAsync("tenant-a", "folder-a", source, source.Length, TestContext.Current.CancellationToken);
-        operations.Where(static operation => operation.TimeToLive is not null).ShouldAllBe(static operation => operation.TimeToLive == OperationalStatusKeys.Retention);
-        var rebuilt = await OperationalStatusRebuildFixture.RebuildAsync(empty, "tenant-a", "folder-a", "rebuild", source, source.Length, TestContext.Current.CancellationToken);
+        operations.Where(static operation => operation.TimeToLive is not null).ShouldAllBe(static operation => operation.TimeToLive > TimeSpan.Zero && operation.TimeToLive <= OperationalStatusKeys.Retention);
+        var rebuilt = await NamedOperationalStatusRebuildFixture.RebuildAsync(empty, "tenant-a", "folder-a", "rebuild", source, source.Length, TestContext.Current.CancellationToken);
         rebuilt.IsSuccess.ShouldBeTrue();
         JsonSerializer.Serialize(empty.Snapshot<TaskStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a")))
             .ShouldBe(JsonSerializer.Serialize(task));
@@ -189,7 +189,7 @@ public sealed class OperationalStatusPersistenceTests
         (await reader.GetAsync(workspace, TestContext.Current.CancellationToken)).Status.ShouldBe(WorkspaceStatusReadModelStatus.Unavailable);
         (await reader.GetAsync(task with { TaskId = "absent-task" }, TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.NotFound);
         (await reader.GetAsync(workspace with { WorkspaceId = "absent-workspace" }, TestContext.Current.CancellationToken)).Status.ShouldBe(WorkspaceStatusReadModelStatus.NotFound);
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await reader.GetAsync(task, TestContext.Current.CancellationToken)).Snapshot!.TerminalState.ShouldBe("committed");
         (await reader.GetAsync(workspace, TestContext.Current.CancellationToken)).Status.ShouldBe(WorkspaceStatusReadModelStatus.Available);
     }
@@ -217,7 +217,7 @@ public sealed class OperationalStatusPersistenceTests
             TestContext.Current.CancellationToken)).ShouldBeTrue();
         (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Unavailable);
 
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Snapshot!.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Archived);
     }
 
@@ -292,7 +292,7 @@ public sealed class OperationalStatusPersistenceTests
 
         (await reader.GetAsync(request, TestContext.Current.CancellationToken)).Status.ShouldBe(WorkspaceStatusReadModelStatus.Unavailable);
 
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await reader.GetAsync(request, TestContext.Current.CancellationToken)).Snapshot!.CurrentState.ShouldBe("locked");
     }
 
@@ -367,7 +367,7 @@ public sealed class OperationalStatusPersistenceTests
             if (rebuild == 0)
                 (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Unavailable);
 
-            (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "rebuild-" + rebuild, events, events.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+            (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "rebuild-" + rebuild, events, events.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
             store.Snapshot<FolderLifecycleStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, lifecycleKey).ShouldNotBeNull();
             store.Snapshot<OperationalStatusCheckpoint>(OperationalStatusKeys.StoreName, checkpointKey)!.Sequence.ShouldBe(1);
             (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Available);
@@ -400,7 +400,7 @@ public sealed class OperationalStatusPersistenceTests
         clock.UtcNow = OperationalStatusTestData.Now + OperationalStatusKeys.Retention - TimeSpan.FromTicks(1);
         (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Available);
         clock.UtcNow += TimeSpan.FromTicks(1);
-        (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(FolderLifecycleStatusReadModelStatus.Unavailable);
+        (await reader.GetAsync(LifecycleRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(FolderLifecycleStatusReadModelStatus.NotFound);
         clock.UtcNow = OperationalStatusTestData.Now.AddSeconds(1);
         var original = store.Snapshot<FolderLifecycleStatusReadModelSnapshot>(OperationalStatusKeys.StoreName, OperationalStatusKeys.Lifecycle("tenant-a", "folder-a"))!;
         store.SeedRaw(OperationalStatusKeys.StoreName, OperationalStatusKeys.Lifecycle("tenant-a", "folder-a"), original with { ManagedTenantId = "tenant-b" });

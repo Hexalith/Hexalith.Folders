@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "story": "12.2",
+  "recorded_at_utc": "2026-10-20T03:43:56.314802+00:00",
+  "scope": "Independent parent diff and verification-evidence audit of the round-four implementation; workflow acceptance/review transition remains pending",
+  "folders_head": "b49b0b206238056b3aa3c963edc44b1b6fc0f5cc",
+  "eventstore_head": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+  "evidence_file": "story-12-2-durability.json",
+  "evidence_file_sha256": "1c40ef590e1945a330ccda05633555e7f2aaee4a8ec2e5c99f8b17c958892a32",
+  "evidence_stage_id": "review-four-workers-named-rebuild-and-source-time-retention",
+  "full_acceptance": false,
+  "pre_audit_record_diffs": {
+    "/tmp/story12-2-parent-audit-ygg58rxn/baseline.diff": "d5237e8b0e7c3db3ce9fdaa8b22b6817390939c776b82d49f2d9806726418d64",
+    "/tmp/story12-2-parent-audit-ygg58rxn/round-four.diff": "ecc2f6b3b160cdd3a87723bc6f7d3b13a2318dee12bbfc2db2597feb9ec9a30a"
+  },
+  "verified_hash_counts": {
+    "source": 136,
+    "assembly": 62,
+    "logs": 39
+  },
+  "additional_artifact_references_verified": 28,
+  "five_historical_stages_canonically_unchanged": true,
+  "source_assembly_log_and_xml_mismatches": [],
+  "component_summary": {
+    "passed": 4193,
+    "failed": 0,
+    "skipped": 2,
+    "skip_note": "Two unchanged opt-in Domain Forgejo operator/alpine lanes; no opted-in live skips."
+  },
+  "live": {
+    "command": "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests -showLiveOutput -result-xml /tmp/story12-2-round4-live-final.xml",
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0,
+    "seconds": 299.439,
+    "log": {
+      "path": "/tmp/story12-2-round4-live-final.log",
+      "sha256": "da09b3976b7ca8a70b8b18e496b1309fca603994bc77471e6967414ae5249170"
+    },
+    "xml": {
+      "path": "/tmp/story12-2-round4-live-final.xml",
+      "sha256": "e66f4e8459276d813bcbc3f0627e7849602a08a083aeabded0a4ab33879df32d"
+    },
+    "performance": [
+      {
+        "operation": "command_acknowledgement",
+        "sample_count": 9,
+        "p50_ms": 251.065,
+        "p95_ms": 31330.09,
+        "budget_p95_ms": 1000.0,
+        "over_budget": true
+      },
+      {
+        "operation": "workers_operational_delivery",
+        "sample_count": 26,
+        "p50_ms": 119.751,
+        "p95_ms": 452.781,
+        "budget_p95_ms": 1000.0,
+        "over_budget": false
+      },
+      {
+        "operation": "status_read",
+        "sample_count": 12,
+        "p50_ms": 30.082,
+        "p95_ms": 45.861,
+        "budget_p95_ms": 500.0,
+        "over_budget": false
+      }
+    ],
+    "performance_scope": "Small disposable local real-Dapr qualification, not production load qualification; command timer excludes deliberate one-second driver pacing and includes request retries; Workers timer includes the authenticated callback, conservatively including its other stages; status timer includes the public authorized read."
+  },
+  "matrix_audit": [
+    {
+      "scenario": "Delivery/replay",
+      "disposition": "qualified for exercised histories; unrestricted owner-history qualification remains open",
+      "executed_passing_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.ExactDuplicatesCannotAdvanceCheckpointAndDifferentBytesCannotReplaceThem",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.IndependentWritersForTheSameDeliveryConvergeWithoutDoubleAdvance"
+      ]
+    },
+    {
+      "scenario": "Task closure",
+      "disposition": "qualified for source-confirmed commit folding and real provider clean release",
+      "executed_passing_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.CleanExplicitReleaseClosesTaskAndDeniesNewWorkAfterEquivalentReplay",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.CommitTerminalEvidenceSurvivesLaterWorkspaceReleaseWithoutInventingCleanup",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures"
+      ]
+    },
+    {
+      "scenario": "Conflict/crash",
+      "disposition": "open: interrupted retained scratch Accumulate cannot retry or Abort out of Building",
+      "executed_passing_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.ForeignIdentityAndCorruptCheckpointFailBeforeCandidates"
+      ],
+      "diagnostic_not_acceptance": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync"
+      ]
+    },
+    {
+      "scenario": "Denial/storage",
+      "disposition": "qualified for exercised authority, corruption and unavailable-store cases",
+      "executed_passing_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.TaskLookupRequiresCurrentFolderAuthorityBeforeStoreObservation",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.TaskLookupCannotObserveTaskBoundToAnotherFolder",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.ReadersDistinguishMissingLaggingUnavailableCorruptAndExpiredEvidence",
+        "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures"
+      ]
+    },
+    {
+      "scenario": "Retention",
+      "disposition": "open: SDK sealed relative TTL can install values after their source deadline",
+      "executed_passing_tests": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.BoundaryExpiresViewsEvidenceAndPositionRowsWithoutRefreshingTerminalMetadataAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.PhysicalExpiryOfBothViewAndEvidenceIsMissingWhileSurvivingEvidenceIsUnavailableAsync",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.HostAheadTerminalExpiryRetainsItsOriginalPositionEvidenceUntilTheSameBoundaryAsync"
+      ],
+      "diagnostic_not_acceptance": [
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync"
+      ]
+    }
+  ],
+  "open_acceptance": [
+    "SDK production complete rebuild after ordinary growth beyond 10,000 retained positions, including duplicate identity proof and further growth",
+    "Independent review disposition",
+    "SM4 command acknowledgement p95 exceeds1,000ms in final disposable real-Dapr observation:31,330.090ms across9 successful requests, including retries",
+    "SDK absolute source-deadline expiry across sealed staging, compaction and recovery",
+    "SDK interrupted retained scratch-batch retry/Abort reconciliation that clears Building without publishing partial rows"
+  ],
+  "contract_gate": {
+    "required_command": "pwsh -File tests/tools/run-contract-spine-gates.ps1",
+    "exit_code": 1,
+    "result": "Release/package build blocked: published EventStore3.125.1 lacks MapEventStoreDomainProjectionEndpoints and MapEventStoreDomainProjectionMetadataEndpoint (FoldersServerHostComposition.cs:138-139).",
+    "log": {
+      "path": "/tmp/story12-2-round4-contract-gate.log",
+      "sha256": "f9bff740d2865874184a7b080418a2bf8a35f7e6b0d27f3c9ce564544821719e"
+    },
+    "runtime_followup": {
+      "command": "pwsh -File tests/tools/run-contract-spine-gates.ps1 -NoRestore",
+      "exit_code": 1,
+      "contracts": {
+        "total": 146,
+        "passed": 143,
+        "failed": 3,
+        "skipped": 0
+      },
+      "client_generation": {
+        "total": 36,
+        "passed": 36,
+        "failed": 0,
+        "skipped": 0
+      },
+      "result": "Three historical PD10 inventory/generator checks fail against changed current source. Frozen v1 baseline, candidate and dated manifest remain byte-for-byte preserved; no approval/exposure authority changed.",
+      "log": {
+        "path": "/tmp/story12-2-round4-contract-runtime.log",
+        "sha256": "cb241cc0c90ad47d7199f36308a7ba3d2cc78e3e7cc3c920b4c703226a7144db"
+      }
+    },
+    "source_graph_restored_after_gate": true
+  },
+  "sdk_worktree_clean": true,
+  "cleanup": {
+    "aspire_sessions": {
+      "path": "/tmp/story12-2-round4-final-sessions.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    "containers": {
+      "path": "/tmp/story12-2-round4-final-containers.txt",
+      "sha256": "b7d04fc519a4307c847431133454f35decbec4d1b198d1915589af36ec983460"
+    },
+    "result": "No active Aspire sessions or fixture-owned Redis/provider containers; private temporary fixture directory removed."
+  },
+  "disposition": "Keep spec and sprint story in-progress; complete SDK prerequisites and coordinated package/source-inventory qualification before workflow acceptance and independent review. No commit, push, dependency update or exposure performed."
+}

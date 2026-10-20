@@ -78,14 +78,16 @@ Persist domain evidence separately from reader authority. Both OpenAPI versions 
 
 ## Verification
 
-**Readiness recheck (2026-10-14):** Folders revision `ea1e9ac9745ad86aac7f2bf6ea84ee3741fea0ed`; EventStore HEAD/root gitlink `6394d0500e6e277b8975cb397c9f0389f9a16929`.
+**Readiness recheck (2026-10-19; supersedes 2026-10-14):** Folders `b49b0b206238056b3aa3c963edc44b1b6fc0f5cc`; EventStore root gitlink `84bb115a0ced2497ca4315644a677b273cb44edf` (uncommitted working HEAD `d4d05f871991ec2af305267f59dcefeae3f127ed`).
 
-- Stories 12.2 and 4.22 remain backlog/open, corroborated by current in-memory readers and unguarded C6. Story 11.15's shared deployed verification lane also remains backlog/open. Story 12.1 implementation/review is complete; retain its historical persisted-state/restart evidence. Its latest runtime attempt records `timeout 60s aspire start --non-interactive --apphost src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj --format Json` exiting 124; this run did not repeat startup.
-- The 2026-10-11 EventStore decision replaces the unissued URI acceptance record for Story 12.1 only. `story-12-1-eventstore-6-6-acceptance-2026-10-11.yaml` accepts source/SDK compatibility, excluding deployed completion. The latest `story-12-1-eventstore-consumer-compatibility-2026-10-14.yaml` binds `173ad7f4e56a72f44621c7d3d7be86a5ec19dc03`; no evolution compatibility acceptance for the current gitlink was found. Story 1.17 package-readiness evidence does not establish that acceptance.
-- `rg -n 'IWorkspaceTransitionEvidenceReadModel|InMemoryTaskStatusReadModel' src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs src/Hexalith.Folders.Server src/Hexalith.Folders.Workers` — exit 0; only core in-memory registrations at lines 84/88.
-- `rg -n 'LockLeaseBecameStale|stagedRecoveryStartedAt|stagedCleanupNotBefore|stagedByTaskId' src/Hexalith.Folders/Aggregates/Folder src/Hexalith.Folders.Server` — exit 1; no matches.
+- Story 12.1 is `done` (closed `65f34e7c`); retain its persisted-state/restart evidence.
+- Story 12.2 is `in-progress` (spec `review_loop_iteration: 3`). Its operational-status code is on main (`EventStoreOperationalStatusReadModel.cs`, `Projections/OperationalStatus/`, landed in `0fa612f1`), but the story has not closed, and `story-12-2-v2-source-requalification-pending.yaml` remains pending. 4.18 must not consume it as accepted yet.
+- Story 4.22 is `backlog` and has no spec. Story 11.15 is `backlog`.
+- EventStore: `story-1-17-eventstore-release-prerequisite-2026-10-18.json` records read-only discovery of `v3.124.0` and an undispatched release workflow, not an evolution-compatibility acceptance for the current gitlink. The 12.1 consumer-compatibility records (through 2026-10-17) are scoped to Story 12.1.
+- `rg -n 'IWorkspaceTransitionEvidenceReadModel|InMemoryTaskStatusReadModel' src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs src/Hexalith.Folders.Server src/Hexalith.Folders.Workers` — exit 0; transition evidence is still only the core in-memory `TryAdd` at line 86.
+- `rg -n 'LockLeaseBecameStale|stagedRecoveryStartedAt|stagedCleanupNotBefore|stagedByTaskId' src/Hexalith.Folders/Aggregates/Folder src/Hexalith.Folders.Server` — exit 1; the guarded C6 events are absent.
 
-Outcome: prerequisites remain unmet; frozen intent unchanged, draft/backlog retained, no component or production implementation started. No build/runtime tests ran; read-only prerequisite checks cannot prove deployed acceptance.
+Outcome: the prerequisites are still unmet (12.2 not closed; 4.22 not started). The frozen intent is unchanged, the spec stays draft/backlog, and no implementation was started. No build or runtime tests ran.
 
 - `dotnet build Hexalith.Folders.slnx -c Debug` — build after prerequisite acceptance.
 - Build/run relevant core, Server, Client and integration projects individually; use built xUnit v3 assemblies with `-class` for focused execution. Require persisted end-state in the real lane.

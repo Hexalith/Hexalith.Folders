@@ -1,5 +1,5 @@
 using System.Text.Json;
-
+using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
@@ -7,7 +7,7 @@ using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Providers.Forgejo;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Testing.Providers;
-
+using Hexalith.Folders.Tests.Providers.GitHub;
 using Shouldly;
 using Xunit;
 
@@ -61,6 +61,37 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
         string attemptJson = JsonSerializer.Serialize(capabilityEvidence.Attempts);
         attemptJson.ShouldNotContain("https://forgejo.example.test", Case.Sensitive);
         readinessStore.LastStored.ShouldNotBeNull().DiagnosticJson.ShouldNotContain("https://forgejo.example.test", Case.Sensitive);
+    }
+
+    [Fact]
+    public async Task BoundWorkspaceScopeReachesForgejoTargetResolutionAndActualReadinessRequestAsync()
+    {
+        var binding = Binding() with
+        {
+            NamingPolicy = new("target-policy", new Dictionary<string, string> { ["external_repository_ref"] = "opaque-repository" }),
+        };
+        var target = new ProviderRepositoryResolvedTarget("owner", "repository", ProviderRepositoryVisibility.Private,
+            "main", "main", false, true, false, null, false);
+        var targetResolver = RecordingProviderRepositoryTargetResolver.Success(target);
+        var api = RecordingForgejoApiClient.Success(supportsWorkspacePreparation: true);
+        ForgejoProvider provider = new(RecordingForgejoCredentialResolver.Success("fixture-token"), new RecordingForgejoApiClientFactory(api),
+            targetResolver, new UnconfiguredProviderOperationSourceResolver(), timeProvider: new ForgejoFixedTimeProvider(Now));
+        var service = Service(new RecordingProviderReadinessBindingReader(binding), new RecordingProviderReadinessEvidenceStore(),
+            new RecordingProviderCapabilityResolver(provider), new InMemoryProviderCapabilityEvidenceStore());
+        var result = await service.ValidateAsync(Request() with
+        {
+            RequestedCapability = ProviderReadinessRequestedCapability.WorkspacePreparation,
+            BoundFolderId = "folder-a",
+            BoundRepositoryBindingId = "repository-binding",
+            BoundBranchRefPolicyRef = binding.BranchPolicy.PolicyRef,
+            BoundExternalRepositoryRefFingerprint = FolderCommandValidator.ExternalRepositoryRefFingerprint("tenant-a", "binding-a", "opaque-repository"),
+        }, TestContext.Current.CancellationToken);
+        result.Status.ShouldBe("ready", result.ReasonCode);
+        targetResolver.BindingCalls.ShouldBe(1);
+        targetResolver.LastBindingRequest.ShouldNotBeNull().RepositoryBindingId.ShouldBe("repository-binding");
+        targetResolver.LastBindingRequest.ExternalRepositoryRef.ShouldBe("opaque-repository");
+        targetResolver.LastBindingRequest.AuthorizationEvidenceFingerprint.ShouldNotBeNullOrWhiteSpace();
+        api.LastRequest.ShouldNotBeNull().BoundTarget.ShouldBeSameAs(target);
     }
 
     private static ProviderReadinessValidationService Service(
@@ -203,7 +234,7 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
 
         public ForgejoReadinessRequest? LastRequest { get; private set; }
 
-        public static RecordingForgejoApiClient Success()
+        public static RecordingForgejoApiClient Success(bool supportsWorkspacePreparation = false)
             => new(ForgejoReadinessResult.Success(
                 new ForgejoVersionEvidence(
                     "16.0.3",
@@ -221,7 +252,8 @@ public sealed class ForgejoProviderReadinessValidationServiceTests
                     SupportsMetadata: true,
                     SupportsPagination: true,
                     SupportsContentsApi: true,
-                    RequiredScopePosture: "repository_contents_status_scope"),
+                    RequiredScopePosture: "repository_contents_status_scope",
+                    SupportsWorkspacePreparation: supportsWorkspacePreparation),
                 new ForgejoRateLimitEvidence(
                     "bounded",
                     Retryable: true,

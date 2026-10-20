@@ -1,3 +1,4 @@
+using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
@@ -6,9 +7,8 @@ using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Tests.Aggregates.Organization;
-
+using Hexalith.Folders.Tests.OperationalStatus;
 using Microsoft.Extensions.Options;
-
 using Shouldly;
 using Xunit;
 
@@ -84,10 +84,45 @@ public sealed class FinalAclReauthorizationTests
             && item.ActionToken == ConfigureProviderBindingService.ActionToken);
     }
 
+    [Fact]
+    public async Task AcceptedHostProfileSurvivesSourceProjectionAndSuppliesReadinessPoliciesAsync()
+    {
+        ProviderBindingProfile profile = new()
+        {
+            ManagedTenantId = "tenant-a",
+            ProviderKind = "github",
+            NamingPolicy = new("repository-policy", new Dictionary<string, string> { ["repository_owner"] = "private-owner" }),
+            BranchPolicy = new("branch-policy", new Dictionary<string, string> { ["selected_ref"] = "private-ref" }),
+        };
+        var options = Options.Create(new FoldersProviderBindingOptions
+        { Profiles = new Dictionary<string, ProviderBindingProfile> { ["known-profile"] = profile } });
+        RecordingOrganizationProviderBindingRepository repository = new();
+        ConfigureProviderBindingService service = new(AuthorizationService(new FinalAclRevokingPermissions(2)), repository,
+            new FinalAclFixedTimeProvider(Now), options);
+        var request = new ConfigureProviderBindingServiceRequest("tenant-a", "principal-a",
+            EventStoreClaimTransformEvidence.Allowed("tenant-a", "principal-a", [ConfigureProviderBindingService.ActionToken]),
+            "binding-a", "github", "credential-a", "correlation-a", "task-a", "profile-key", null,
+            new Dictionary<string, string?>(), new Dictionary<string, string?>())
+        { CapabilityProfileRef = "known-profile" };
+        var result = await service.ConfigureAsync(request, TestContext.Current.CancellationToken);
+        result.Code.ShouldBe(OrganizationProviderBindingResultCode.Accepted);
+        var configured = result.Events.ShouldHaveSingleItem().ShouldBeOfType<ProviderBindingConfigured>();
+        configured.NamingPolicy.Metadata.ShouldNotContainKey("repository_owner");
+        var source = new EventStoreProviderReadinessBindingReadModel(new InMemoryReadModelStore(), new OperationalStatusSequenceReader { Head = 1 });
+        await source.ApplyAsync("tenant-a", ProviderBindingActorId.Create("binding-a"), "source-1", 1, "source-digest", configured,
+            TestContext.Current.CancellationToken);
+        var consumed = await new ConfiguredProviderReadinessBindingReader(source, options).GetAsync(new("tenant-a", "binding-a", "corr"), TestContext.Current.CancellationToken);
+        consumed.ShouldNotBeNull().NamingPolicy.PolicyRef.ShouldBe(profile.NamingPolicy.PolicyRef);
+        consumed.NamingPolicy.Metadata["repository_owner"].ShouldBe("private-owner");
+        consumed.BranchPolicy.PolicyRef.ShouldBe(profile.BranchPolicy.PolicyRef);
+        consumed.BranchPolicy.Metadata["selected_ref"].ShouldBe("private-ref");
+    }
+
     [Theory]
-    [InlineData("tenant-b", "github")]
-    [InlineData("tenant-a", "forgejo")]
-    public async Task ProviderBindingRejectsForeignTenantAndWrongProviderProfilesBeforeConfigurationAppend(string tenantId, string providerKind)
+    [InlineData("tenant-b", "github", "known-profile")]
+    [InlineData("tenant-a", "forgejo", "known-profile")]
+    [InlineData("tenant-a", "github", "unknown-profile")]
+    public async Task ProviderBindingRejectsUnknownForeignTenantAndWrongProviderProfilesBeforeConfigurationAppendAsync(string tenantId, string providerKind, string profileRef)
     {
         RecordingOrganizationProviderBindingRepository repository = new();
         FinalAclRevokingPermissions permissions = new(allowedCalls: 2);
@@ -103,7 +138,7 @@ public sealed class FinalAclReauthorizationTests
             EventStoreClaimTransformEvidence.Allowed("tenant-a", "principal-a", [ConfigureProviderBindingService.ActionToken]),
             "binding-a", "github", "credential-a", "correlation-a", "task-a", "profile-key", null,
             new Dictionary<string, string?>(), new Dictionary<string, string?>())
-        { CapabilityProfileRef = "known-profile" };
+        { CapabilityProfileRef = profileRef };
         var result = await service.ConfigureAsync(request, TestContext.Current.CancellationToken);
         result.Code.ShouldBe(OrganizationProviderBindingResultCode.InvalidPolicy);
         repository.EventsAppended.ShouldBe(0);

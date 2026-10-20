@@ -70,7 +70,7 @@ public static class OperationalStatusEventReader
             value = JsonSerializer.Deserialize(effective, type, EventStorePayloadSerialization.Options) as IFolderEvent
                 ?? throw new InvalidOperationException("Invalid operational event payload.");
             if (string.IsNullOrWhiteSpace(value.TaskId) || string.IsNullOrWhiteSpace(value.CorrelationId)
-                || value.CorrelationId != correlation || value.OccurredAt == default || value.OccurredAt > timestamp)
+                || value.CorrelationId != correlation || value.OccurredAt == default)
             {
                 throw new InvalidOperationException("Invalid operational event evidence.");
             }

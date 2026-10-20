@@ -5,14 +5,12 @@ using System.Text.Json.Nodes;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
-using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 
 namespace Hexalith.Folders.Server;
 
 /// <summary>Named SDK operational projection with side-effect-free complete-prefix rebuild planning.</summary>
-public sealed class OperationalStatusProjectionHandler(OperationalStatusProjectionWriter writer,
-    IOrganizationStreamSequenceReader sequenceReader)
+public sealed class OperationalStatusProjectionHandler(OperationalStatusProjectionWriter writer)
     : IAsyncDomainSharedProjectionStreamingRebuildHandler
 {
     /// <inheritdoc/>
@@ -55,9 +53,11 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(operationId);
         OperationalStatusEvent[] events = Read(request);
+        // The SDK verifies original global positions against the sealed capture before invoking us.
+        // Domain folding verifies the contiguous 1..N owner prefix, independently of later appends.
+        long capturedSequence = events.LongLength;
         return new(OperationalStatusKeys.StoreName, await writer.PrepareRebuildAsync(request.TenantId,
-            request.AggregateId, events,
-            await sequenceReader.GetCurrentSequenceAsync(request.TenantId, request.AggregateId, cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false));
+            request.AggregateId, events, capturedSequence, cancellationToken).ConfigureAwait(false));
     }
     /// <inheritdoc/>
     public string RebuildStoreName => OperationalStatusKeys.StoreName;

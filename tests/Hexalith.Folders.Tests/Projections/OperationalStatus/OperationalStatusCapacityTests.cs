@@ -31,7 +31,7 @@ public sealed class OperationalStatusCapacityTests
             sources.Add(Rejection(sources[0], sources.Count + 1));
         OperationalStatusTestStore store = new();
         OperationalStatusProjectionWriter writer = new(store, store, store);
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "large-rebuild", sources, 10_000,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "large-rebuild", sources, 10_000,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         OperationalStatusCheckpoint checkpoint = store.Snapshot<OperationalStatusCheckpoint>("statestore",
             OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!;
@@ -58,7 +58,7 @@ public sealed class OperationalStatusCapacityTests
         (await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, 10_001, TestContext.Current.CancellationToken))
             .Count.ShouldBeGreaterThan(10_000);
         // Acceptance remains open: the production SDK captured-identity handoff rejects this lawful history.
-        var blocked = await Should.ThrowAsync<InvalidOperationException>(() => OperationalStatusRebuildFixture.RebuildAsync(
+        var blocked = await Should.ThrowAsync<InvalidOperationException>(() => NamedOperationalStatusRebuildFixture.RebuildAsync(
             store, "tenant-a", "folder-a", "above-sdk-identity-boundary", sources, 10_001, TestContext.Current.CancellationToken));
         blocked.Message.ShouldContain("projection_handler_failure");
         var identityBoundary = await Should.ThrowAsync<ArgumentException>(() => new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store)
@@ -66,6 +66,57 @@ public sealed class OperationalStatusCapacityTests
                 TestContext.Current.CancellationToken, new byte[10_001 * 32]));
         identityBoundary.Message.ShouldContain("Captured event identities must cover the complete owner history");
         identityBoundary.ParamName.ShouldBe("capturedEventDigests");
+    }
+
+    [Fact]
+    public async Task NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync()
+    {
+        OperationalStatusTestStore store = new();
+        var sources = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()]);
+        var failure = await Should.ThrowAsync<InvalidOperationException>(() => NamedOperationalStatusRebuildFixture.RebuildAsync(store,
+            "tenant-a", "folder-a", "pre-dispatch-failure", sources, 1, TestContext.Current.CancellationToken,
+            afterBegin: () => store.BatchFaultHook = (phase, _, _) =>
+            {
+                if (phase == Hexalith.EventStore.Client.Projections.ReadModelBatchPhase.BeforeDispatch)
+                {
+                    store.BatchFaultHook = null;
+                    throw new IOException("injected pre-dispatch batch failure");
+                }
+                return Task.CompletedTask;
+            }, retryPartial: false));
+        failure.Message.ShouldContain("Abort=Aborted:Completed");
+        var coordinator = new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store);
+        (await coordinator.GetStatusAsync(OperationalStatusGeneration.Scope("tenant-a"), TestContext.Current.CancellationToken))
+            .IsBuilding.ShouldBeFalse();
+        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), TestContext.Current.CancellationToken)).Value.ShouldBeNull();
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "healthy-named", sources,
+            1, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync()
+    {
+        OperationalStatusTestStore store = new();
+        var sources = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()]);
+        var failure = await Should.ThrowAsync<InvalidOperationException>(() => NamedOperationalStatusRebuildFixture.RebuildAsync(store,
+            "tenant-a", "folder-a", "immediate-abort", sources, 1, TestContext.Current.CancellationToken,
+            afterBegin: () => store.BatchFaultHook = (phase, _, _) =>
+            {
+                if (phase == Hexalith.EventStore.Client.Projections.ReadModelBatchPhase.BeforeCommit)
+                {
+                    store.BatchFaultHook = null;
+                    throw new IOException("injected private scratch batch failure");
+                }
+                return Task.CompletedTask;
+            }));
+        failure.Message.ShouldContain("Accumulate:Accumulating:Indeterminate:projection_handler_failure");
+        failure.Message.ShouldContain("Abort=Accumulating:Indeterminate:projection_handler_failure");
+        var coordinator = new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store);
+        (await coordinator.GetStatusAsync(OperationalStatusGeneration.Scope("tenant-a"), TestContext.Current.CancellationToken))
+            .IsBuilding.ShouldBeTrue();
+        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), TestContext.Current.CancellationToken)).Value.ShouldBeNull();
     }
 
     [Fact]
@@ -81,7 +132,7 @@ public sealed class OperationalStatusCapacityTests
         store.Snapshot<FolderLifecycleStatusReadModelSnapshot>("statestore", OperationalStatusKeys.Lifecycle("tenant-a", "folder-a")).ShouldBeNull();
         (await writer.ApplyAsync("tenant-a", "folder-a", "creation", [creation], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         var live = store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!;
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "complete", [rejected, creation], 2, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "complete", [rejected, creation], 2, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         JsonSerializer.Serialize(store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))).ShouldBe(JsonSerializer.Serialize(live));
     }
 
@@ -135,7 +186,7 @@ public sealed class OperationalStatusCapacityTests
         OperationalStatusCheckpoint original = store.Snapshot<OperationalStatusCheckpoint>("statestore", key)!;
         store.SeedRaw("statestore", key, original with { State = original.State with { WorkspaceLifecycleState = (FolderWorkspaceLifecycleState)999 } });
         await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "corrupt", [source[^1]], TestContext.Current.CancellationToken));
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-corrupt", source,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-corrupt", source,
             source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         JsonSerializer.Serialize(store.Snapshot<OperationalStatusCheckpoint>("statestore", key)).ShouldBe(JsonSerializer.Serialize(original));
         string serialized = JsonSerializer.Serialize(original);

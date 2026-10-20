@@ -1,26 +1,25 @@
 using Dapr;
+using Hexalith.EventStore.Client.Registration;
+using Hexalith.EventStore.Client.Subscriptions;
+using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Contracts;
-using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Projections.SemanticIndexing;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Workers.RepositoryProvisioning;
 using Hexalith.Folders.Workers.SemanticIndexing;
 using Hexalith.Folders.Workers.Tenants.TenantEventHandlers;
-using Hexalith.EventStore.Client.Registration;
-using Hexalith.EventStore.Client.Subscriptions;
-using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Tenants.Client.Registration;
 using Hexalith.Tenants.Contracts.Events;
-
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -190,17 +189,16 @@ public static partial class FoldersWorkersModule
             ILoggerFactory loggerFactory,
             CancellationToken cancellationToken) =>
         {
-            string stage = "permission_projection";
+            string stage = "provider_binding";
             try
             {
                 await PermissionProjectionDelivery.ApplyAsync(async token =>
                 {
-                    stage = "permission_projection";
                     await providerBindingProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
+                    stage = "organization_acl";
                     await organizationProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
+                    stage = "folder_permission";
                     await folderPermissionProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
-                    stage = "operational_status";
-                    await operationalStatusProcessor.ProcessAsync(envelope, token).ConfigureAwait(false);
                 }, cancellationToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -210,14 +208,45 @@ public static partial class FoldersWorkersModule
             catch (Exception failure)
             {
                 PermissionProjectionFailure(loggerFactory.CreateLogger(typeof(FoldersWorkersModule)),
-                    "permission_projection_failed", stage,
+                    stage + "_failed", stage,
                     failure.GetType().FullName ?? failure.GetType().Name);
                 return Results.Problem(statusCode: StatusCodes.Status500InternalServerError);
             }
 
-            FoldersSemanticIndexingEventProcessingResult result = await processor
-                .ProcessAsync(envelope, cancellationToken)
-                .ConfigureAwait(false);
+            bool operationalFailed = false;
+            try
+            {
+                await operationalStatusProcessor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception failure)
+            {
+                operationalFailed = true;
+                PermissionProjectionFailure(loggerFactory.CreateLogger(typeof(FoldersWorkersModule)),
+                    "operational_status_failed", "operational_status",
+                    failure.GetType().FullName ?? failure.GetType().Name);
+            }
+
+            FoldersSemanticIndexingEventProcessingResult result;
+            try
+            {
+                result = await processor.ProcessAsync(envelope, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception failure)
+            {
+                PermissionProjectionFailure(loggerFactory.CreateLogger(typeof(FoldersWorkersModule)),
+                    "semantic_indexing_failed", "semantic_indexing",
+                    failure.GetType().FullName ?? failure.GetType().Name);
+                return Results.Problem(statusCode: StatusCodes.Status500InternalServerError);
+            }
+            if (operationalFailed) return Results.Problem(statusCode: StatusCodes.Status500InternalServerError);
             return result switch
             {
                 FoldersSemanticIndexingEventProcessingResult.Processed => Results.Ok(),
@@ -242,7 +271,7 @@ public static partial class FoldersWorkersModule
     [LoggerMessage(
         EventId = 1201,
         Level = LogLevel.Warning,
-        Message = "Folder permission projection failed category={Category} stage={Stage} failure_type={FailureType}")]
+        Message = "Folder event delivery failed category={Category} stage={Stage} failure_type={FailureType}")]
     private static partial void PermissionProjectionFailure(ILogger logger, string category, string stage, string failureType);
 
     private static IServiceCollection AddFoldersTenantEventProjection(this IServiceCollection services)

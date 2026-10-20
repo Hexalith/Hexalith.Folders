@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.Contracts.Commands;
@@ -17,14 +16,12 @@ using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
-using Hexalith.Folders.Testing;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Server.Authorization;
-
+using Hexalith.Folders.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
 using Shouldly;
 using Xunit;
 
@@ -1189,6 +1186,11 @@ public sealed class ArchiveFolderProcessWiringTests
         builder.Configuration["urls"] = "http://127.0.0.1:0";
         builder.Services.AddFoldersServerTestDefaults();
         builder.Services.AddFoldersServer();
+        builder.Services.Configure<FoldersProviderBindingOptions>(options => options.Profiles["profile-a"] = new()
+        {
+            ManagedTenantId = "tenant-a",
+            ProviderKind = "github",
+        });
         builder.Services.RemoveAll<IEventStoreGatewayClient>();
         builder.Services.AddSingleton<IEventStoreGatewayClient>(gateway);
         builder.Services.RemoveAll<ITenantContextAccessor>();

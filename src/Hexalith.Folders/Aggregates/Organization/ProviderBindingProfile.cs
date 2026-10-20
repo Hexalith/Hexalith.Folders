@@ -8,7 +8,7 @@ public sealed class ProviderBindingProfile
     /// <summary>Gets or sets the provider family that may consume the profile.</summary>
     public string ProviderKind { get; set; } = string.Empty;
     /// <summary>Gets or sets the exact repository target policy.</summary>
-    public OrganizationProviderBindingPolicy NamingPolicy { get; set; } = OrganizationProviderBindingPolicy.Empty;
+    public OrganizationProviderBindingPolicy NamingPolicy { get; set; } = new(null, new Dictionary<string, string>(StringComparer.Ordinal));
     /// <summary>Gets or sets the exact branch/ref policy.</summary>
-    public OrganizationProviderBindingPolicy BranchPolicy { get; set; } = OrganizationProviderBindingPolicy.Empty;
+    public OrganizationProviderBindingPolicy BranchPolicy { get; set; } = new(null, new Dictionary<string, string>(StringComparer.Ordinal));
 }

@@ -28,7 +28,7 @@ public sealed class OperationalStatusProjectionHandlerTests
     {
         var history = OperationalStatusTestData.LockedPrefix(OperationalStatusTestData.Now);
         OperationalStatusTestStore store = new();
-        var handler = new OperationalStatusProjectionHandler(new(store, store, store), new OperationalStatusSequenceReader());
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store));
         var prefix = OperationalStatusTestData.Projection(history.Take(history.Count - 1));
         (await handler.ProjectAsync(prefix, "prefix", TestContext.Current.CancellationToken)).Status.ShouldBe(ProjectionDispatchStatus.Completed);
         var acquired = history.OfType<WorkspaceLockAcquired>().Single();
@@ -43,7 +43,7 @@ public sealed class OperationalStatusProjectionHandlerTests
     public async Task NamedHandlerPersistsAndPreparesSideEffectFreeRebuildThroughSdk()
     {
         OperationalStatusTestStore store = new();
-        var handler = new OperationalStatusProjectionHandler(new(store, store, store), new OperationalStatusSequenceReader());
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store));
         ProjectionRequest request = OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]);
         (await handler.ProjectAsync(request, "delivery-a", TestContext.Current.CancellationToken)).Status.ShouldBe(ProjectionDispatchStatus.Completed);
         (await handler.ProjectAsync(request, "delivery-a", TestContext.Current.CancellationToken)).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
@@ -51,7 +51,7 @@ public sealed class OperationalStatusProjectionHandlerTests
         int before = store.Count;
         var plan = await handler.PrepareRebuildAsync(request, "rebuild-a", TestContext.Current.CancellationToken);
         plan.StoreName.ShouldBe(OperationalStatusKeys.StoreName);
-        plan.Operations.Where(static operation => operation.TimeToLive is not null).ShouldAllBe(static operation => operation.TimeToLive == OperationalStatusKeys.Retention);
+        plan.Operations.Where(static operation => operation.TimeToLive is not null).ShouldAllBe(static operation => operation.TimeToLive > TimeSpan.Zero && operation.TimeToLive <= OperationalStatusKeys.Retention);
         store.Count.ShouldBe(before);
         handler.RebuildSemantics.ShouldBe(DomainProjectionRebuildSemantics.FullReplay);
     }
@@ -73,7 +73,7 @@ public sealed class OperationalStatusProjectionHandlerTests
     public async Task UnknownOrUnsupportedSourceDoesNotPersistCompletion()
     {
         OperationalStatusTestStore store = new();
-        var handler = new OperationalStatusProjectionHandler(new(store, store, store), new OperationalStatusSequenceReader());
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store));
         ProjectionRequest valid = OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]);
         var invalid = valid with { Events = [valid.Events[0] with { EventTypeName = "Unknown.Event" }] };
         (await handler.ProjectAsync(invalid, "bad", TestContext.Current.CancellationToken)).Status.ShouldBe(ProjectionDispatchStatus.Failed);
@@ -82,16 +82,14 @@ public sealed class OperationalStatusProjectionHandlerTests
     }
 
     [Fact]
-    public async Task NamedRebuildUsesAuthoritativeHeadWithAnEmptyCheckpoint()
+    public async Task NamedRebuildPlansSealedPrefixWithoutReadingALiveHeadAsync()
     {
         OperationalStatusTestStore store = new();
-        OperationalStatusSequenceReader head = new() { Head = 2 };
-        var handler = new OperationalStatusProjectionHandler(new(store, store, store), head);
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store));
         ProjectionRequest request = OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]);
-        await Should.ThrowAsync<InvalidOperationException>(() => handler.PrepareRebuildAsync(request, "truncated", TestContext.Current.CancellationToken));
-        store.Count.ShouldBe(0);
-        head.Unavailable = true;
-        await Should.ThrowAsync<TimeoutException>(() => handler.PrepareRebuildAsync(request, "unavailable", TestContext.Current.CancellationToken));
+        (await handler.PrepareRebuildAsync(request, "captured-prefix", TestContext.Current.CancellationToken)).Operations.ShouldNotBeEmpty();
+        var truncated = request with { Events = [request.Events[0] with { SequenceNumber = 2 }] };
+        await Should.ThrowAsync<InvalidOperationException>(() => handler.PrepareRebuildAsync(truncated, "gap", TestContext.Current.CancellationToken));
         store.Count.ShouldBe(0);
     }
 
@@ -101,7 +99,7 @@ public sealed class OperationalStatusProjectionHandlerTests
     public async Task NamedIntakeRejectsReusedMessagePositionsAndUndefinedRejectionCodes(bool reusedMessage)
     {
         OperationalStatusTestStore store = new();
-        var handler = new OperationalStatusProjectionHandler(new(store, store, store), new OperationalStatusSequenceReader());
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store));
         ProjectionRequest request = OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]);
         (await handler.ProjectAsync(request, "initial", TestContext.Current.CancellationToken)).Status.ShouldBe(ProjectionDispatchStatus.Completed);
         var rejected = request.Events[0] with

@@ -200,6 +200,13 @@ public sealed class FolderEventReplay(EventPayloadEvolutionRegistry evolution)
             {
                 ValidateRejection(item.EventTypeName, item.StoredPayloadVersion,
                     item.MetadataVersion, item.SerializationFormat, item.Payload);
+                using JsonDocument rejection = JsonDocument.Parse(item.Payload);
+                JsonElement root = rejection.RootElement;
+                if (!root.TryGetProperty("Code", out JsonElement code) && !root.TryGetProperty("code", out code)
+                    || code.ValueKind != JsonValueKind.String
+                    || !Enum.TryParse(code.GetString(), out FolderResultCode resultCode) || !Enum.IsDefined(resultCode)
+                    || resultCode == FolderResultCode.Accepted)
+                    throw new InvalidOperationException("Provider configuration rejection is invalid.");
                 continue;
             }
             IOrganizationEvent value = ReadEffective<IOrganizationEvent>(item.EventTypeName,

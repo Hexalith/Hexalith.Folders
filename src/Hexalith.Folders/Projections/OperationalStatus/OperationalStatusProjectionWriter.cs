@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Text.Json;
-
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.Folders;
 
 namespace Hexalith.Folders.Projections.OperationalStatus;
@@ -12,13 +12,15 @@ public sealed class OperationalStatusProjectionWriter
 {
     private static readonly JsonSerializerOptions WireJson = new(JsonSerializerDefaults.Web);
     private readonly SharedProjectionEpochCoordinator _coordinator;
+    private readonly IUtcClock _clock;
 
     /// <summary>Creates a writer using the platform's recoverable batch and generation services.</summary>
     public OperationalStatusProjectionWriter(IReadModelStore store, IReadModelBatchStore batches,
-        IReadModelPendingBatchRecoveryStore recovery)
+        IReadModelPendingBatchRecoveryStore recovery, IUtcClock? clock = null)
     {
         ArgumentNullException.ThrowIfNull(recovery);
         _coordinator = new(store, batches);
+        _clock = clock ?? new SystemUtcClock();
     }
 
     /// <summary>Persists each source delivery before permitting acknowledgment.</summary>
@@ -47,6 +49,19 @@ public sealed class OperationalStatusProjectionWriter
             if (verified.Digest != item.Digest || verified.MessageId != item.MessageId || verified.Sequence != item.Sequence)
                 throw new InvalidOperationException("Operational source identity conflict.");
             if (source.GlobalPosition <= 0) throw new InvalidOperationException("Original operational source position is missing.");
+            if (Expired(SourceTime(item, item.Timestamp)))
+            {
+                try
+                {
+                    var retained = await _coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
+                        OperationalStatusKeys.Checkpoint(tenantId, folderId), cancellationToken).ConfigureAwait(false);
+                    if (retained.IsAvailable && !retained.IsStale && !retained.IsDegraded
+                        && retained.Value is { } anchor && OperationalStatusFold.Valid(anchor, tenantId, folderId)
+                        && anchor.Sequence >= source.SequenceNumber)
+                        continue; // C3-expired replay must not refresh rows, receipts, or SDK writer metadata.
+                }
+                catch (InvalidOperationException exception) when (exception.Message == "The shared projection has no epoch state.") { }
+            }
             SharedProjectionLease lease = await _coordinator.RegisterWriterAsync(scope,
                 OperationalStatusGeneration.WriterId, cancellationToken).ConfigureAwait(false);
             // Resume retained SDK preparations before reading any fresh fold/CAS evidence.
@@ -107,24 +122,27 @@ public sealed class OperationalStatusProjectionWriter
             OperationalStatusKeys.Message(tenantId, folderId, source.MessageId), cancellationToken).ConfigureAwait(false)).Value;
         if (source.Sequence <= (current?.Sequence ?? 0))
         {
+            if (Expired(SourceTime(source, source.Timestamp))) return [];
             if (receipt is null || message != receipt || receipt.EventDigest != source.Digest
                 || receipt.MessageId != source.MessageId || receipt.Sequence != source.Sequence || !receipt.Valid())
                 throw new InvalidOperationException("Operational source identity conflict.");
             // A replay after view loss never acknowledges missing or damaged required views.
             await RequireCurrentViewsAsync(scope, generation, current!, receipt.RequiredViews, cancellationToken).ConfigureAwait(false);
-            return [Write(OperationalStatusKeys.Receipt(tenantId, folderId, source.Sequence), receipt)];
+            return [];
         }
         if (receipt is not null || message is not null) throw new InvalidOperationException("Operational message identity is reused.");
         if (source.Event is null && current is not null)
             await RequireCurrentViewsAsync(scope, generation, current, null, cancellationToken).ConfigureAwait(false);
         OperationalStatusFoldResult next = OperationalStatusFold.Apply(tenantId, folderId, current, [source], bounded: true);
         List<ReadModelBatchOperation> operations = [];
-        if (next.Lifecycle is not null) operations.Add(Write(OperationalStatusKeys.Lifecycle(tenantId, folderId), next.Lifecycle, view: true));
+        if (next.Lifecycle is not null) AddView(OperationalStatusKeys.Lifecycle(tenantId, folderId),
+            next.Lifecycle, next.Checkpoint.Sequence, next.Checkpoint.SourceDigest, next.Lifecycle.Freshness.ObservedAt, operations);
         foreach ((string workspaceId, OperationalWorkspaceStatus workspace) in next.Workspaces)
             AddView(OperationalStatusKeys.Workspace(tenantId, folderId, workspaceId), workspace, workspace.Sequence,
-                workspace.SourceDigest, operations);
+                workspace.SourceDigest, workspace.Workspace.Freshness.ObservedAt, operations);
         foreach ((string taskId, TaskStatusReadModelSnapshot proposed) in next.Tasks)
         {
+            if (Expired(proposed.Freshness.ObservedAt)) continue;
             string key = OperationalStatusKeys.Task(tenantId, folderId, taskId);
             TaskStatusReadModelSnapshot task = proposed;
             OperationalStatusViewEvidence? evidence = (await ReadAsync<OperationalStatusViewEvidence>(scope, generation,
@@ -135,12 +153,12 @@ public sealed class OperationalStatusProjectionWriter
             if (prior?.TerminalState is "ready" or "committed") task = prior;
             long position = long.Parse(task.Freshness.ProjectionWatermark!, CultureInfo.InvariantCulture);
             string prefix = position == source.Sequence ? next.Checkpoint.SourceDigest : evidence!.SourceDigest;
-            AddView(key, task, position, prefix, operations);
+            AddView(key, task, position, prefix, task.Freshness.ObservedAt, operations);
         }
         OperationalStatusReceipt original = OperationalStatusReceipt.Create(source.Sequence, source.MessageId, source.Digest, next.Checkpoint.SourceDigest,
             next.RequiredViews[source.Sequence]);
-        operations.Add(Write(OperationalStatusKeys.Receipt(tenantId, folderId, source.Sequence), original));
-        operations.Add(Write(OperationalStatusKeys.Message(tenantId, folderId, source.MessageId), original));
+        AddRetained(OperationalStatusKeys.Receipt(tenantId, folderId, source.Sequence), original, SourceTime(source, next.Checkpoint.ObservedAt), operations);
+        AddRetained(OperationalStatusKeys.Message(tenantId, folderId, source.MessageId), original, SourceTime(source, next.Checkpoint.ObservedAt), operations);
         operations.Add(Write(OperationalStatusKeys.Checkpoint(tenantId, folderId), OperationalStatusCompaction.Compact(next.Checkpoint)));
         return operations;
     }
@@ -151,7 +169,8 @@ public sealed class OperationalStatusProjectionWriter
         if (!checkpoint.State.IsCreated) return;
         FolderLifecycleStatusReadModelSnapshot? lifecycle = (await ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope, generation,
             OperationalStatusKeys.Lifecycle(checkpoint.ManagedTenantId, checkpoint.FolderId), cancellationToken).ConfigureAwait(false)).Value;
-        if (lifecycle is null || !OperationalStatusFold.MatchesLifecycle(checkpoint, lifecycle))
+        if (lifecycle is null && !Expired(checkpoint.ObservedAt)
+            || lifecycle is not null && !OperationalStatusFold.MatchesLifecycle(checkpoint, lifecycle))
             throw new OperationalStatusUnavailableException();
         string? originalWorkspace = requiredViews?.WorkspaceId;
         string? originalTask = requiredViews?.TaskId;
@@ -166,6 +185,7 @@ public sealed class OperationalStatusProjectionWriter
             var value = (await ReadAsync<System.Text.Json.Nodes.JsonObject>(scope, generation, key, cancellationToken).ConfigureAwait(false)).Value;
             var proof = (await ReadAsync<OperationalStatusViewEvidence>(scope, generation,
                 OperationalStatusKeys.Evidence(key), cancellationToken).ConfigureAwait(false)).Value;
+            if (value is null && proof is null) continue; // Paired C3 expiry is safe absence.
             string? actual = value is null ? null : key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, checkpoint.State.WorkspaceTaskId ?? "")
                 || originalTask is not null && key == OperationalStatusKeys.Task(checkpoint.ManagedTenantId, checkpoint.FolderId, originalTask)
                 ? OperationalStatusIntegrity.Digest(value.Deserialize<TaskStatusReadModelSnapshot>(WireJson))
@@ -210,42 +230,69 @@ public sealed class OperationalStatusProjectionWriter
                 || current.EventDigests[current.Sequence] != digest || current.SourceDigest != retainedPrefix))
             throw new InvalidOperationException("Operational rebuild contradicts a valid retained source anchor.");
         List<ReadModelBatchOperation> operations = [];
-        if (next.Lifecycle is not null) operations.Add(Write(OperationalStatusKeys.Lifecycle(tenantId, folderId), next.Lifecycle, view: true));
+        if (next.Lifecycle is not null) AddView(OperationalStatusKeys.Lifecycle(tenantId, folderId),
+            next.Lifecycle, next.Checkpoint.Sequence, next.Checkpoint.SourceDigest, next.Lifecycle.Freshness.ObservedAt, operations);
         foreach ((string id, OperationalWorkspaceStatus value) in next.Workspaces.OrderBy(static item => item.Key, StringComparer.Ordinal))
-            AddView(OperationalStatusKeys.Workspace(tenantId, folderId, id), value, value.Sequence, value.SourceDigest, operations);
+            AddView(OperationalStatusKeys.Workspace(tenantId, folderId, id), value, value.Sequence, value.SourceDigest,
+                value.Workspace.Freshness.ObservedAt, operations);
         Dictionary<long, string> prefixes = [];
         string prefix = OperationalStatusKeys.Digest(tenantId, folderId);
+        DateTimeOffset observed = DateTimeOffset.UnixEpoch;
         foreach (OperationalStatusEvent item in events.DistinctBy(static item => item.Sequence))
         {
+            observed = item.Timestamp > observed ? item.Timestamp : observed;
             prefix = OperationalStatusKeys.Digest(prefix, item.Digest);
             prefixes[item.Sequence] = prefix;
             OperationalStatusReceipt receipt = OperationalStatusReceipt.Create(item.Sequence, item.MessageId, item.Digest, prefix, next.RequiredViews[item.Sequence]);
-            operations.Add(Write(OperationalStatusKeys.Receipt(tenantId, folderId, item.Sequence), receipt));
-            operations.Add(Write(OperationalStatusKeys.Message(tenantId, folderId, item.MessageId), receipt));
+            AddRetained(OperationalStatusKeys.Receipt(tenantId, folderId, item.Sequence), receipt, SourceTime(item, observed), operations);
+            AddRetained(OperationalStatusKeys.Message(tenantId, folderId, item.MessageId), receipt, SourceTime(item, observed), operations);
         }
         foreach ((string id, TaskStatusReadModelSnapshot task) in next.Tasks.OrderBy(static item => item.Key, StringComparer.Ordinal))
         {
             long position = long.Parse(task.Freshness.ProjectionWatermark!, CultureInfo.InvariantCulture);
-            AddView(OperationalStatusKeys.Task(tenantId, folderId, id), task, position, prefixes[position], operations);
+            AddView(OperationalStatusKeys.Task(tenantId, folderId, id), task, position, prefixes[position],
+                task.Freshness.ObservedAt, operations);
         }
         operations.Add(Write(OperationalStatusKeys.Checkpoint(tenantId, folderId), OperationalStatusCompaction.Compact(next.Checkpoint)));
         return operations;
     }
 
-    private Task<ReadModelEntry<T>> ReadAsync<T>(SharedProjectionScope scope, long generation, string key,
+    private async Task<ReadModelEntry<T>> ReadAsync<T>(SharedProjectionScope scope, long generation, string key,
         CancellationToken cancellationToken) where T : class
-        => _coordinator.ReadGenerationAsync<T>(scope, generation, key, cancellationToken);
-
-    private static ReadModelBatchOperation Write<T>(string key, T value, bool view = false) where T : class
-        => ReadModelBatchOperation.Write(key, value, ReadModelBatchConcurrency.LastWrite,
-            view ? OperationalStatusKeys.Retention : null);
-
-    private static void AddView<T>(string key, T value, long position, string digest,
-        List<ReadModelBatchOperation> operations) where T : class
     {
-        operations.Add(Write(key, value, view: true));
-        operations.Add(Write(OperationalStatusKeys.Evidence(key),
-            new OperationalStatusViewEvidence(position, digest, OperationalStatusIntegrity.Digest(value))));
+        try { return await _coordinator.ReadGenerationAsync<T>(scope, generation, key, cancellationToken).ConfigureAwait(false); }
+        catch (SharedProjectionReadUnavailableException exception) when (IsMissingValue(exception) && !key.Contains(":checkpoint:", StringComparison.Ordinal))
+        {
+            return new(null, null);
+        }
     }
 
+    private static bool IsMissingValue(SharedProjectionReadUnavailableException exception)
+        => exception.InnerException is InvalidOperationException
+        { Message: "A selected copy-on-write value is missing." or "An inherited copy-on-write value is missing." };
+
+    // A position's identity evidence must survive every view stamped from that original event.
+    private static DateTimeOffset SourceTime(OperationalStatusEvent source, DateTimeOffset observed)
+        => source.Event?.OccurredAt is { } occurred && occurred > observed ? occurred : observed;
+
+    private bool Expired(DateTimeOffset observedAt) => _clock.UtcNow - observedAt >= OperationalStatusKeys.Retention;
+
+    private static ReadModelBatchOperation Write<T>(string key, T value) where T : class
+        => ReadModelBatchOperation.Write(key, value, ReadModelBatchConcurrency.LastWrite);
+
+    private void AddRetained<T>(string key, T value, DateTimeOffset observedAt,
+        List<ReadModelBatchOperation> operations) where T : class
+    {
+        TimeSpan remaining = observedAt + OperationalStatusKeys.Retention - _clock.UtcNow;
+        if (remaining > TimeSpan.Zero)
+            operations.Add(ReadModelBatchOperation.Write(key, value, ReadModelBatchConcurrency.LastWrite, remaining));
+    }
+
+    private void AddView<T>(string key, T value, long position, string digest, DateTimeOffset observedAt,
+        List<ReadModelBatchOperation> operations) where T : class
+    {
+        AddRetained(key, value, observedAt, operations);
+        AddRetained(OperationalStatusKeys.Evidence(key),
+            new OperationalStatusViewEvidence(position, digest, OperationalStatusIntegrity.Digest(value)), observedAt, operations);
+    }
 }

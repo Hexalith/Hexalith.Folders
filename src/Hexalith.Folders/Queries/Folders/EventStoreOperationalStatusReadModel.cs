@@ -14,6 +14,9 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
     IOrganizationStreamSequenceReader sequenceReader) : IFolderLifecycleStatusReadModel, IWorkspaceLockStatusReadModel,
     IWorkspaceStatusReadModel, IWorkspaceCleanupStatusReadModel, ITaskStatusReadModel
 {
+    private static readonly JsonSerializerOptions WireJson = new(JsonSerializerDefaults.Web);
+    private static readonly TimeSpan ClockSkewTolerance = TimeSpan.FromMinutes(5);
+
     /// <inheritdoc/>
     public async Task<FolderLifecycleStatusReadModelResult> GetAsync(FolderLifecycleStatusReadModelRequest request,
         CancellationToken cancellationToken = default)
@@ -231,7 +234,7 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         string checkpointKey = OperationalStatusKeys.Checkpoint(tenantId, folderId);
         string evidenceKey = OperationalStatusKeys.Evidence(key);
         SharedProjectionReadResult<IReadOnlyDictionary<string, JsonObject?>> first;
-        try { first = await coordinator.ReadManyAsync<JsonObject>(scope, [key, checkpointKey, evidenceKey], cancellationToken).ConfigureAwait(false); }
+        try { first = await ReadSelectedAsync(scope, [key, checkpointKey, evidenceKey], checkpointKey, cancellationToken).ConfigureAwait(false); }
         catch (InvalidOperationException exception) when (exception.Message == "The shared projection has no epoch state.")
         {
             long emptyHead = await sequenceReader.GetCurrentSequenceAsync(tenantId, folderId, cancellationToken).ConfigureAwait(false);
@@ -239,17 +242,17 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
         }
         if (!first.IsAvailable || first.IsStale || first.IsDegraded || first.Value is null)
             throw new OperationalStatusUnavailableException();
-        OperationalStatusViewEvidence? evidence = first.Value[evidenceKey]?.Deserialize<OperationalStatusViewEvidence>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        OperationalStatusViewEvidence? evidence = first.Value[evidenceKey]?.Deserialize<OperationalStatusViewEvidence>(WireJson);
         string? receiptKey = evidence is null ? null : OperationalStatusKeys.Receipt(tenantId, folderId, evidence.Sequence);
-        var selected = receiptKey is null ? first : await coordinator.ReadManyAsync<JsonObject>(
-            scope, [key, checkpointKey, evidenceKey, receiptKey], cancellationToken).ConfigureAwait(false);
+        var selected = receiptKey is null ? first : await ReadSelectedAsync(
+            scope, [key, checkpointKey, evidenceKey, receiptKey], checkpointKey, cancellationToken).ConfigureAwait(false);
         if (!selected.IsAvailable || selected.IsStale || selected.IsDegraded || selected.Value is null
             || selected.Generation != first.Generation)
             throw new OperationalStatusUnavailableException();
-        T? row = selected.Value[key]?.Deserialize<T>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        OperationalStatusCheckpoint? anchor = selected.Value[checkpointKey]?.Deserialize<OperationalStatusCheckpoint>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        evidence = selected.Value[evidenceKey]?.Deserialize<OperationalStatusViewEvidence>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        OperationalStatusReceipt? receipt = receiptKey is null ? null : selected.Value[receiptKey]?.Deserialize<OperationalStatusReceipt>(new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        T? row = selected.Value[key]?.Deserialize<T>(WireJson);
+        OperationalStatusCheckpoint? anchor = selected.Value[checkpointKey]?.Deserialize<OperationalStatusCheckpoint>(WireJson);
+        evidence = selected.Value[evidenceKey]?.Deserialize<OperationalStatusViewEvidence>(WireJson);
+        OperationalStatusReceipt? receipt = receiptKey is null ? null : selected.Value[receiptKey]?.Deserialize<OperationalStatusReceipt>(WireJson);
         if (row is not null && !identity(row)) throw new InvalidOperationException("Foreign operational view.");
         long head = await sequenceReader.GetCurrentSequenceAsync(tenantId, folderId, cancellationToken).ConfigureAwait(false);
         if (anchor is not { } checkpoint)
@@ -258,14 +261,12 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
             return (null, absent with { Stale = head > 0, ReasonCode = head > 0 ? "projection_stale" : null }, head > 0 ? "stale" : "missing");
         }
         if (!OperationalStatusFold.Valid(checkpoint, tenantId, folderId)
-            || head < checkpoint.Sequence || checkpoint.ObservedAt > clock.UtcNow)
+            || head < checkpoint.Sequence || checkpoint.ObservedAt - clock.UtcNow > ClockSkewTolerance)
             throw new InvalidOperationException("Operational checkpoint is invalid.");
-        if (head > checkpoint.Sequence)
-            return (null, absent with { Stale = true, ReasonCode = "projection_stale" }, "stale");
         if (row is null)
         {
-            if (requireView && checkpoint.State.IsCreated || evidence is not null
-                || requireKnownView?.Invoke(checkpoint) == true)
+            if (evidence is not null || requireView && checkpoint.State.IsCreated
+                && clock.UtcNow - checkpoint.ObservedAt < OperationalStatusKeys.Retention)
                 throw new InvalidOperationException("Known operational view is missing.");
             return (null, absent, "missing");
         }
@@ -277,9 +278,49 @@ public sealed class EventStoreOperationalStatusReadModel(SharedProjectionEpochCo
                 ? !OperationalStatusFold.MatchesLifecycle(checkpoint, (FolderLifecycleStatusReadModelSnapshot)(object)row)
                 : evidence is null || receipt is null || !receipt.Valid() || evidence.Sequence != sequence || receipt.Sequence != sequence
                     || evidence.SourceDigest != receipt.SourceDigest || evidence.ValueDigest != OperationalStatusIntegrity.Digest(row))
-            || freshness.ObservedAt > clock.UtcNow
-            || clock.UtcNow - freshness.ObservedAt >= OperationalStatusKeys.Retention)
-            throw new InvalidOperationException("Operational view is invalid or expired.");
+            || freshness.ObservedAt - clock.UtcNow > ClockSkewTolerance)
+            throw new InvalidOperationException("Operational view is invalid.");
+        if (clock.UtcNow - freshness.ObservedAt >= OperationalStatusKeys.Retention)
+            return (null, freshness, "missing");
+        if (head > checkpoint.Sequence)
+            return (null, absent with { Stale = true, ReasonCode = "projection_stale" }, "stale");
         return (row, freshness, "available");
     }
+
+    private async Task<SharedProjectionReadResult<IReadOnlyDictionary<string, JsonObject?>>> ReadSelectedAsync(
+        SharedProjectionScope scope, string[] keys, string checkpointKey, CancellationToken cancellationToken)
+    {
+        try { return await coordinator.ReadManyAsync<JsonObject>(scope, keys, cancellationToken).ConfigureAwait(false); }
+        catch (SharedProjectionReadUnavailableException exception) when (exception.InnerException is InvalidOperationException
+        { Message: "A selected copy-on-write value is missing." or "An inherited copy-on-write value is missing." })
+        {
+            // The SDK retains copy-on-write pointers after physical TTL expiry. Read the same selected
+            // generation, preserving checkpoint and full-row evidence checks and rejecting promotion races.
+            var before = await coordinator.ReadManyAsync<JsonObject>(scope, [checkpointKey], cancellationToken).ConfigureAwait(false);
+            if (!before.IsAvailable || before.IsStale || before.IsDegraded || before.Value is null)
+                throw new OperationalStatusUnavailableException();
+            Dictionary<string, JsonObject?> values = new(StringComparer.Ordinal);
+            foreach (string key in keys)
+            {
+                try
+                {
+                    values[key] = (await coordinator.ReadGenerationAsync<JsonObject>(scope, before.Generation,
+                        key, cancellationToken).ConfigureAwait(false)).Value;
+                }
+                catch (SharedProjectionReadUnavailableException missing) when (key != checkpointKey
+                    && missing.InnerException is InvalidOperationException
+                    { Message: "A selected copy-on-write value is missing." or "An inherited copy-on-write value is missing." })
+                {
+                    values[key] = null;
+                }
+            }
+            var after = await coordinator.ReadManyAsync<JsonObject>(scope, [checkpointKey], cancellationToken).ConfigureAwait(false);
+            if (!after.IsAvailable || after.IsStale || after.IsDegraded || after.Value is null
+                || after.Generation != before.Generation
+                || before.Value[checkpointKey]?.ToJsonString() != after.Value[checkpointKey]?.ToJsonString())
+                throw new OperationalStatusUnavailableException();
+            return new(values, before.Generation, false, true);
+        }
+    }
+
 }

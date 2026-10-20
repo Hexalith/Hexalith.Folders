@@ -37,7 +37,7 @@ public sealed class OperationalStatusReviewThreeTests
         store.SeedRaw("statestore", messageKey, damaged);
         await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "corrupt-binding",
             [source[1]], TestContext.Current.CancellationToken));
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-binding", source, source.Length,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-binding", source, source.Length,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         store.Snapshot<OperationalStatusReceipt>("statestore", receiptKey).ShouldBe(original);
         (await writer.ApplyAsync("tenant-a", "folder-a", "duplicate-retry", [source[1]], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
@@ -98,7 +98,7 @@ public sealed class OperationalStatusReviewThreeTests
         catch (OperationalStatusUnavailableException) { }
         store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!
             .Sequence.ShouldBe(source.Length);
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await writer.ApplyAsync("tenant-a", "folder-a", "retry", [rejection], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
     }
@@ -118,9 +118,8 @@ public sealed class OperationalStatusReviewThreeTests
         string key = OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a");
         var row = await store.TryReadEtagAsync("statestore", key, TestContext.Current.CancellationToken);
         (await store.TryEraseAsync("statestore", key, row.Etag, TestContext.Current.CancellationToken)).ShouldBeTrue();
-        (await writer.ApplyAsync("tenant-a", "folder-a", "historical-duplicate", [source[originalPosition]], TestContext.Current.CancellationToken))
-            .IsSuccess.ShouldBeFalse();
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length,
+        await Should.ThrowAsync<OperationalStatusUnavailableException>(() => writer.ApplyAsync("tenant-a", "folder-a", "historical-duplicate", [source[originalPosition]], TestContext.Current.CancellationToken));
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await writer.ApplyAsync("tenant-a", "folder-a", "duplicate-retry", [source[originalPosition]], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
     }
@@ -134,11 +133,11 @@ public sealed class OperationalStatusReviewThreeTests
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         string inherited = store.PhysicalKey(OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"));
         var other = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b")]);
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-b", "other-owner", other, 1,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-b", "other-owner", other, 1,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         var row = await store.Inner.TryReadEtagAsync("statestore", inherited, TestContext.Current.CancellationToken);
         (await store.Inner.TryEraseAsync("statestore", inherited, row.Etag, TestContext.Current.CancellationToken)).ShouldBeTrue();
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-inherited", source, 1,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-inherited", source, 1,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "duplicate", source,
             TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();

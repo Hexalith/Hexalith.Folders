@@ -1,4 +1,5 @@
-using Hexalith.EventStore.Aspire;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -8,27 +9,22 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-
 using Aspire.Hosting;
 using Aspire.Hosting.ApplicationModel;
 using Aspire.Hosting.Testing;
-
 using CommunityToolkit.Aspire.Hosting.Dapr;
-
 using Dapr.Client;
-
+using Hexalith.EventStore.Aspire;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.Contracts.Streams;
 using Hexalith.EventStore.DomainService;
-using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Authorization;
-
+using Hexalith.Folders.Projections.OperationalStatus;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.JsonWebTokens;
-
 using Xunit;
 
 namespace Hexalith.Folders.AppHost.Tests;
@@ -40,6 +36,8 @@ namespace Hexalith.Folders.AppHost.Tests;
 public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web);
+    internal ConcurrentBag<double> CommandAcknowledgementMilliseconds { get; } = [];
+    internal ConcurrentBag<double> OperationalDeliveryMilliseconds { get; } = [];
     private readonly Dictionary<string, string?> _environment = new(StringComparer.Ordinal);
     private readonly string _runId = Convert.ToHexString(RandomNumberGenerator.GetBytes(8)).ToLowerInvariant();
     private readonly string _temporaryDirectory = Path.Combine(Path.GetTempPath(), "folders-durability-" + Path.GetRandomFileName());
@@ -51,6 +49,9 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     internal Task SetProviderRepositoryAvailableAsync(bool available, CancellationToken cancellationToken)
         => (_provider ?? throw new InvalidOperationException("The disposable provider is unavailable."))
             .SetRepositoryAccessAsync(available, cancellationToken);
+    internal Task<(int Status, bool CanRead)> ObserveProviderRepositoryAccessAsync(CancellationToken cancellationToken)
+        => (_provider ?? throw new InvalidOperationException("The disposable provider is unavailable."))
+            .ObserveRepositoryAccessAsync(cancellationToken);
     private string? _redisName;
     private string _redisAddress = string.Empty;
     private string _humanToken = string.Empty;
@@ -135,9 +136,12 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
         request.Headers.Add("Idempotency-Key", key);
         request.Headers.Add("X-Correlation-Id", NewId());
         request.Headers.Add("X-Hexalith-Task-Id", taskId ?? NewId());
-        return retryTransientFailures
+        long started = Stopwatch.GetTimestamp();
+        HttpResponseMessage response = retryTransientFailures
             ? await FolderDurabilityHttp.SendAsync(client, request, false, TestContext.Current.CancellationToken).ConfigureAwait(false)
             : await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(false);
+        if (response.StatusCode == HttpStatusCode.Accepted) CommandAcknowledgementMilliseconds.Add(Stopwatch.GetElapsedTime(started).TotalMilliseconds);
+        return response;
     }
 
     /// <summary>Submits an organization command through the authenticated public EventStore gateway.</summary>
@@ -190,6 +194,17 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
     /// <summary>Reads complete retained bytes, bounding retries for authenticated gateway throttling/unavailability.</summary>
     public Task<StreamReadPage> ReadStreamAsync(string aggregateId)
         => ReadStreamWithDeadlineAsync(aggregateId, TestContext.Current.CancellationToken);
+
+    internal async Task<CommandStatusQueryResponse?> ObserveCommandStatusAsync(string correlationId, CancellationToken cancellationToken)
+    {
+        using HttpClient client = App.CreateHttpClient("eventstore", "http");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _humanToken);
+        using HttpRequestMessage request = new(HttpMethod.Get, "/api/v1/commands/status/" + correlationId);
+        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, cancellationToken).ConfigureAwait(false);
+        if (response.StatusCode == HttpStatusCode.NotFound) return null;
+        await RequireStatusAsync(response, HttpStatusCode.OK, "Authenticated diagnostic command status").ConfigureAwait(false);
+        return await response.Content.ReadFromJsonAsync<CommandStatusQueryResponse>(Json, cancellationToken).ConfigureAwait(false);
+    }
 
     /// <summary>Reads a complete retained prefix within both the caller's deadline and a bounded retry deadline.</summary>
     public async Task<StreamReadPage> ReadStreamWithDeadlineAsync(string aggregateId, CancellationToken cancellationToken)
@@ -276,15 +291,26 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
                 throw new InvalidOperationException("SDK shared " + body.Action + " did not complete: " + result.ReasonCode);
             return result;
         }
-        await StepAsync(new(1, DomainSharedProjectionRebuildAction.Begin, identity, CaptureInventoryFingerprint: capture,
-            SourceHighWatermarks: new Dictionary<string, long> { [aggregateId] = events[^1].GlobalPosition })).ConfigureAwait(false);
-        var accumulated = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Accumulate, identity,
-            AggregateOrdinal: 0, AggregateId: aggregateId, Events: events)).ConfigureAwait(false);
-        await StepAsync(new(1, DomainSharedProjectionRebuildAction.Finalize, identity,
-            ExpectedAggregateCount: 1, ExpectedInventoryFingerprint: accumulated.InventoryFingerprint)).ConfigureAwait(false);
-        var staged = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Stage, identity)).ConfigureAwait(false);
-        var final = stopAfterStage ? staged : await StepAsync(new(1, DomainSharedProjectionRebuildAction.Commit, identity)).ConfigureAwait(false);
-        return new HttpResponseMessage(HttpStatusCode.OK) { Content = JsonContent.Create(final) };
+        try
+        {
+            await StepAsync(new(1, DomainSharedProjectionRebuildAction.Begin, identity, CaptureInventoryFingerprint: capture,
+                SourceHighWatermarks: new Dictionary<string, long> { [aggregateId] = events[^1].GlobalPosition })).ConfigureAwait(false);
+            var accumulated = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Accumulate, identity,
+                AggregateOrdinal: 0, AggregateId: aggregateId, Events: events)).ConfigureAwait(false);
+            await StepAsync(new(1, DomainSharedProjectionRebuildAction.Finalize, identity,
+                ExpectedAggregateCount: 1, ExpectedInventoryFingerprint: accumulated.InventoryFingerprint)).ConfigureAwait(false);
+            var staged = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Stage, identity)).ConfigureAwait(false);
+            var final = stopAfterStage ? staged : await StepAsync(new(1, DomainSharedProjectionRebuildAction.Commit, identity)).ConfigureAwait(false);
+            if (!stopAfterStage)
+                await StepAsync(new(1, DomainSharedProjectionRebuildAction.Verify, identity)).ConfigureAwait(false);
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = JsonContent.Create(final) };
+        }
+        catch
+        {
+            // A failed private generation is aborted through the same authenticated SDK transport.
+            await StepAsync(new(1, DomainSharedProjectionRebuildAction.Abort, identity)).ConfigureAwait(false);
+            throw;
+        }
     }
 
     /// <summary>Redelivers an actual retained event to the task-owned authenticated worker callback.</summary>
@@ -306,7 +332,10 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
             GlobalPosition = source.GlobalPosition,
             UserId = source.UserId,
         };
-        return await client.PostAsJsonAsync("/folders/events", envelope, TestContext.Current.CancellationToken).ConfigureAwait(false);
+        long started = Stopwatch.GetTimestamp();
+        HttpResponseMessage response = await client.PostAsJsonAsync("/folders/events", envelope, TestContext.Current.CancellationToken).ConfigureAwait(false);
+        if (response.IsSuccessStatusCode) OperationalDeliveryMilliseconds.Add(Stopwatch.GetElapsedTime(started).TotalMilliseconds);
+        return response;
     }
 
     /// <summary>Restarts the domain hosts while retaining the same identity provider, broker and state store.</summary>

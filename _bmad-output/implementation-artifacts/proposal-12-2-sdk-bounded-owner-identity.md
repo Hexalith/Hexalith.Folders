@@ -1,6 +1,7 @@
 ---
 title: Story 12.2 bounded owner-identity prerequisite
-status: proposed-not-approved
+status: approved-routed-to-eventstore
+approved: 2026-10-19
 created: 2026-10-19
 parent_spec: spec-12-2-durable-projections-and-task-completion-pipeline.md
 ---
@@ -22,3 +23,11 @@ Qualification must cover ordinary growth beyond 10,000, complete current-source 
 # Current disposition
 
 This proposal records no new approval and authorizes no SDK protocol/schema/public-surface changes, publication, dependency update, deployment, commit or push. Independently authorized Story 12.2 corrections proceed. Story 12.2 acceptance remains open until this generic prerequisite is approved, implemented and qualified.
+
+# Approval (2026-10-19)
+
+Jerome approved this generic prerequisite as separate EventStore-owned work, decided in the Story 12.2 `bmad-build` session. It follows the ratified one-story-per-repository model. The SDK capability is designed, implemented and qualified in an EventStore repository story and session, not from a Folders session. The EventStore owner selects any API, protocol or storage-schema change explicitly, within the constraints above.
+
+Story 12.2 Task 36 and full Story 12.2 acceptance stay open until that work lands, is released or otherwise qualified for consumption, and Folders requalifies against it. This approval authorizes no Folders-side workaround, no domain history cap, no publication, no dependency or pin update and no push.
+
+Separately, the four minimal-mapper SDK changes consumed by Story 12.2 exist only as the unpushed local EventStore commit `d4d05f871991ec2af305267f59dcefeae3f127ed`. On 2026-10-19 that branch was 1 commit ahead of and 20 behind `origin/main`, and the root gitlink still recorded `84bb115a0ced2497ca4315644a677b273cb44edf`. Rebasing, releasing and pinning those changes remains separately authorized work.

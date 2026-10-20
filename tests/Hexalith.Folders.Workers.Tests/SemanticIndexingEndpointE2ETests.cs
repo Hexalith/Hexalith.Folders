@@ -2,27 +2,23 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
-using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.FolderList;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Tests.OperationalStatus;
 using Hexalith.Folders.Workers;
 using Hexalith.Folders.Workers.SemanticIndexing;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
 using Shouldly;
 using Xunit;
-
 using InMemoryReadModelStoreDouble = Hexalith.EventStore.Testing.Fakes.InMemoryReadModelStore;
 
 namespace Hexalith.Folders.Workers.Tests;
@@ -110,6 +106,29 @@ public sealed class SemanticIndexingEndpointE2ETests
         {
             await host.DisposeAsync().ConfigureAwait(true);
         }
+    }
+
+    [Fact]
+    public async Task OperationalFailureStillIndexesAndRedeliveryDoesNotRepeatIndexingAsync()
+    {
+        WorkerSemanticIndexingHost host = await StartSemanticIndexingHostAsync().ConfigureAwait(true);
+        try
+        {
+            host.Store.BatchFaultHook = static (_, _, _) => throw new IOException("operational persistence unavailable");
+            var envelope = Envelope("operational-failure", 8, Mutation());
+            using HttpResponseMessage failed = await host.Client.PostAsJsonAsync(FoldersSemanticIndexingDefaults.DomainEventsRoute,
+                envelope, TestContext.Current.CancellationToken);
+            failed.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
+            host.Port.Requests.ShouldHaveSingleItem();
+            (await host.Bridge.GetFileVersionAsync(SemanticIndexingFileVersionIdentity.From(Mutation()), TestContext.Current.CancellationToken))!
+                .Status.ShouldBe(SemanticIndexingBridgeStatus.Indexed);
+            host.Store.BatchFaultHook = null;
+            using HttpResponseMessage retry = await host.Client.PostAsJsonAsync(FoldersSemanticIndexingDefaults.DomainEventsRoute,
+                envelope, TestContext.Current.CancellationToken);
+            retry.StatusCode.ShouldBe(HttpStatusCode.OK);
+            host.Port.Requests.ShouldHaveSingleItem();
+        }
+        finally { await host.DisposeAsync().ConfigureAwait(true); }
     }
 
     [Fact]

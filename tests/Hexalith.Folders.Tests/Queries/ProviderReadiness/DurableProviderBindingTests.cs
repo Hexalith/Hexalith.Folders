@@ -1,11 +1,11 @@
+using System.Text.Json;
 using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.ProviderReadiness;
-
 using Hexalith.Folders.Tests.OperationalStatus;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
 using Shouldly;
 using Xunit;
 
@@ -136,13 +136,54 @@ public sealed class DurableProviderBindingTests
             messages, [ProviderBindingConfigurationEvidence.Create(2, "digest-2", Configured())], TestContext.Current.CancellationToken);
         (await new EventStoreProviderReadinessBindingReadModel(store, head).GetAsync(
             new("tenant-a", "binding-a", "corr-a"), TestContext.Current.CancellationToken)).ShouldNotBeNull();
-        await Should.ThrowAsync<InvalidOperationException>(() => reader.RebuildAsync("tenant-a", actor,
+        await Should.ThrowAsync<PermissionProjectionConcurrencyException>(() => reader.RebuildAsync("tenant-a", actor,
             OrganizationState.Empty.Apply([Configured()]), [messages[0], messages[1], messages[2] with { PayloadDigest = "different" }],
             [ProviderBindingConfigurationEvidence.Create(2, "digest-2", Configured())],
             TestContext.Current.CancellationToken));
         head.Head = 4;
         await Should.ThrowAsync<PermissionProjectionConcurrencyException>(() => reader.RebuildAsync("tenant-a", actor,
             OrganizationState.Empty.Apply([Configured()]), messages, [ProviderBindingConfigurationEvidence.Create(2, "digest-2", Configured())], TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData("valid", true)]
+    [InlineData("foreign-tenant", false)]
+    [InlineData("missing-authority", false)]
+    [InlineData("wrong-repository", false)]
+    [InlineData("wrong-policy", false)]
+    public async Task ConfiguredTargetResolverUsesExactCurrentBindingAndRejectsMismatchedAuthorityAsync(string scenario, bool success)
+    {
+        var configured = WithFingerprint(Configured() with
+        {
+            NamingPolicy = new("target-policy", new Dictionary<string, string>
+            {
+                ["external_repository_ref"] = "opaque-repository",
+                ["repository_owner"] = "owner",
+                ["repository_name"] = "repository",
+                ["repository_visibility"] = "private",
+            }),
+            BranchPolicy = new("branch-policy", new Dictionary<string, string>
+            {
+                ["default_branch"] = "main",
+                ["selected_ref"] = "main",
+                ["require_protected_ref"] = "false",
+            }),
+        });
+        var source = new EventStoreProviderReadinessBindingReadModel(new InMemoryReadModelStore(), new OperationalStatusSequenceReader { Head = 1 });
+        await source.ApplyAsync("tenant-a", ProviderBindingActorId.Create("binding-a"), "source", 1, "digest", configured, TestContext.Current.CancellationToken);
+        ConfiguredProviderRepositoryTargetResolver resolver = new(source);
+        var request = new ProviderRepositoryBindingTargetResolutionRequest(scenario == "foreign-tenant" ? "tenant-b" : "tenant-a", "tenant-a",
+            "binding-a", "repository-binding", scenario == "wrong-repository" ? "different" : "opaque-repository", "fingerprint",
+            scenario == "wrong-policy" ? "different-policy" : "branch-policy", scenario == "missing-authority" ? "" : "authz", "corr");
+        var result = await resolver.ResolveBindingAsync(request, TestContext.Current.CancellationToken);
+        (result.Target is not null).ShouldBe(success);
+        if (success)
+        {
+            result.Target!.Owner.ShouldBe("owner");
+            result.Target.RepositoryName.ShouldBe("repository");
+            result.Target.SelectedRef.ShouldBe("main");
+            result.Target.RequireContentsPermission.ShouldBeTrue();
+        }
     }
 
     private static ProviderBindingConfigured WithFingerprint(ProviderBindingConfigured value)

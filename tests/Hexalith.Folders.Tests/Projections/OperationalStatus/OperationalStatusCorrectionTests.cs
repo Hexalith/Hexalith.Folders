@@ -68,7 +68,7 @@ public sealed class OperationalStatusCorrectionTests
         {
             store.SeedRaw("statestore", key, value);
             (await reader.GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.Unavailable);
-            (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-" + repair++, sources, sources.Length,
+            (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair-" + repair++, sources, sources.Length,
                 TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
             JsonSerializer.Serialize(store.Snapshot<TaskStatusReadModelSnapshot>("statestore", key)).ShouldBe(JsonSerializer.Serialize(original));
             (await reader.GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.Available);
@@ -159,7 +159,7 @@ public sealed class OperationalStatusCorrectionTests
             (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "live-" + item.Sequence,
                 [item], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await Reader(store, sources.Length).GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Snapshot!.LastOperationId.ShouldBe("lock-a");
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "rebuild", sources,
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "rebuild", sources,
             sources.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         store.Snapshot<TaskStatusReadModelSnapshot>("statestore", OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a"))!.LastOperationId.ShouldBe("lock-a");
     }
@@ -191,7 +191,7 @@ public sealed class OperationalStatusCorrectionTests
             (await reader.GetAsync(new WorkspaceCleanupStatusReadModelRequest("tenant-a", "folder-a", "workspace-a", "reader", "read_workspace_cleanup_status",
                 "task-a", "corr", "authority", "read_your_writes"), TestContext.Current.CancellationToken)).Status.ShouldBe(WorkspaceCleanupStatusReadModelStatus.Unavailable);
         }
-        (await OperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "repair", source, source.Length, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         JsonSerializer.Serialize(store.Snapshot<OperationalWorkspaceStatus>("statestore", key)).ShouldBe(JsonSerializer.Serialize(original));
     }
 

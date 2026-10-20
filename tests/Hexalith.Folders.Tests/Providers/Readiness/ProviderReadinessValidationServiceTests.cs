@@ -680,6 +680,23 @@ public sealed class ProviderReadinessValidationServiceTests
         readinessStore.LastStored.DiagnosticJson.ShouldNotContain(token, Case.Sensitive);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BindingReaderFailureDistinguishesHostProfileDriftFromUnavailableAuthorityAsync(bool drift)
+    {
+        RecordingProviderReadinessBindingReader reader = new(null)
+        { Failure = drift ? new ProviderBindingProfileDriftException() : new IOException("store failure") };
+        var service = Service(reader, new RecordingProviderReadinessEvidenceStore(),
+            RecordingProviderCapabilityAuthorizer.Allowed("authz"), new RecordingProviderCapabilityResolver(FakeGitProvider.WithOperationRows()),
+            new RecordingProviderCapabilityEvidenceStore());
+        var result = await service.ValidateAsync(Request(), TestContext.Current.CancellationToken);
+        result.FailureCategory.ShouldBe(drift ? ProviderFailureCategory.ProviderConfigurationMissing : ProviderFailureCategory.ProviderUnavailable);
+        result.Retryable.ShouldBe(!drift);
+        result.RemediationCategory.ShouldBe(drift ? "fix_provider_configuration" : "retry_later");
+        if (!drift) result.ReasonCode.ShouldBe("provider_binding_authority_unavailable");
+    }
+
     private static ProviderReadinessValidationService Service(
         IProviderReadinessBindingReader bindingReader,
         IProviderReadinessEvidenceStore readinessStore,
@@ -773,6 +790,7 @@ public sealed class ProviderReadinessValidationServiceTests
     private sealed class RecordingProviderReadinessBindingReader(OrganizationProviderBinding? binding) : IProviderReadinessBindingReader
     {
         public int Calls { get; private set; }
+        public Exception? Failure { get; set; }
 
         public ProviderReadinessBindingReadRequest? LastRequest { get; private set; }
 
@@ -783,6 +801,7 @@ public sealed class ProviderReadinessValidationServiceTests
             cancellationToken.ThrowIfCancellationRequested();
             Calls++;
             LastRequest = request;
+            if (Failure is not null) throw Failure;
             return Task.FromResult(binding);
         }
     }

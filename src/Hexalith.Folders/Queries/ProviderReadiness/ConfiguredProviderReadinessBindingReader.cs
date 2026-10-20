@@ -1,6 +1,6 @@
+using System.Collections.Frozen;
 using Hexalith.Folders.Aggregates.Organization;
 using Microsoft.Extensions.Options;
-using System.Collections.Frozen;
 
 namespace Hexalith.Folders.Queries.ProviderReadiness;
 
@@ -18,7 +18,7 @@ internal sealed class ConfiguredProviderReadinessBindingReader(
             return binding;
         if (!binding.NamingPolicy.Metadata.TryGetValue(ProviderBindingProfileFingerprint.FingerprintKey, out string? fingerprint)
             || !options.Value.Profiles.TryGetValue(profileRef, out ProviderBindingProfile? configured))
-            throw new InvalidOperationException("Private provider profile no longer matches retained binding authority.");
+            throw new ProviderBindingProfileDriftException();
         ProviderBindingProfile profile = new()
         {
             ManagedTenantId = configured.ManagedTenantId,
@@ -32,7 +32,7 @@ internal sealed class ConfiguredProviderReadinessBindingReader(
             || profile.NamingPolicy.PolicyRef != binding.NamingPolicy.PolicyRef
             || profile.BranchPolicy.PolicyRef != binding.BranchPolicy.PolicyRef
             || ProviderBindingProfileFingerprint.Compute(profileRef, profile) != fingerprint)
-            throw new InvalidOperationException("Private provider profile no longer matches retained binding authority.");
+            throw new ProviderBindingProfileDriftException();
         // This enriched context is never written to the source projection or returned by the public query.
         return binding with { NamingPolicy = profile.NamingPolicy, BranchPolicy = profile.BranchPolicy };
     }

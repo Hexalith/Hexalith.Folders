@@ -3,12 +3,13 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-
-using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Hexalith.Folders.Queries.ProviderReadiness;
 
@@ -17,7 +18,8 @@ public sealed partial class ProviderReadinessValidationService(
     IProviderReadinessBindingReader bindingReader,
     ProviderCapabilityDiscoveryService discoveryService,
     IProviderReadinessEvidenceStore evidenceStore,
-    IUtcClock clock)
+    IUtcClock clock,
+    ILogger<ProviderReadinessValidationService>? logger = null)
 {
     public const string ReadActionToken = "provider_readiness_read";
 
@@ -42,6 +44,10 @@ public sealed partial class ProviderReadinessValidationService(
     private readonly ProviderCapabilityDiscoveryService _discoveryService = discoveryService ?? throw new ArgumentNullException(nameof(discoveryService));
     private readonly IProviderReadinessEvidenceStore _evidenceStore = evidenceStore ?? throw new ArgumentNullException(nameof(evidenceStore));
     private readonly IUtcClock _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+
+    [LoggerMessage(EventId = 1204, Level = LogLevel.Warning,
+        Message = "Provider binding private profile no longer matches retained authority.")]
+    private static partial void ProfileDrift(ILogger logger);
 
     public async Task<ProviderReadinessValidationResult> ValidateAsync(
         ProviderReadinessValidationRequest request,
@@ -128,6 +134,14 @@ public sealed partial class ProviderReadinessValidationService(
             binding = await _bindingReader.GetAsync(
                 new ProviderReadinessBindingReadRequest(managedTenantId, providerBindingRef, correlationId),
                 cancellationToken).ConfigureAwait(false);
+        }
+        catch (ProviderBindingProfileDriftException)
+        {
+            ProfileDrift(logger ?? NullLogger<ProviderReadinessValidationService>.Instance);
+            return Result(ProviderReadinessResultCode.Allowed, Failed,
+                ProviderFailureCategory.ProviderConfigurationMissing, "provider_configuration_missing", false,
+                null, "fix_provider_configuration", correlationId, null, null, null, null,
+                Freshness(correlationId, tenantAccess.ProjectionWatermark, stale: false));
         }
         catch (Exception failure) when (failure is not OperationCanceledException)
         {

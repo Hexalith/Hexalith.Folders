@@ -245,9 +245,11 @@ Missing scope fails closed before task lookup. Provider configuration retains re
 is rebuilt from its complete source prefix. Existing legacy projection responses remain compatible;
 operational rebuild also runs through the SDK-owned selective named mapper.
 
-The selective mapper is qualified with the paired local EventStore source edits at the unchanged
-`84bb115a0ced2497ca4315644a677b273cb44edf` HEAD/gitlink. The published package does not yet expose
-that API. Release/package consumption requires a separately authorized coordinated SDK release and
+Stage-five historical qualification passed 3,908 component cases and one real-provider scenario
+with zero live failures/skips in 311.385 seconds. The selective mapper is in local unpushed EventStore
+commit `d4d05f871991ec2af305267f59dcefeae3f127ed`; the Folders gitlink remains
+`84bb115a0ced2497ca4315644a677b273cb44edf`. These are distinct source revisions.
+The published package does not yet expose that API. Release/package consumption requires a separately authorized coordinated SDK release and
 consumer pin update; this lane does not change CI, package pins or publication.
 
 The checks require stored lifecycle/lock/workspace/cleanup/task/commit metadata, changed host PIDs,
@@ -294,3 +296,25 @@ this does not qualify general production confidentiality/redaction, which remain
 initialization failure is a failure, and a positive acceptance run requires zero skips. The exact verified
 commands and boundaries are recorded in
 [`story-12-2-durability.json`](../../_bmad-output/implementation-artifacts/evidence/story-12-2-durability.json).
+
+## Story 12.2 round-four qualification
+
+Workers is the sole live operational-status writer. The per-command legacy `/project` route returns
+its existing body without operational writes or shared rebuild sessions. Bootstrap and repair use the
+SDK-owned named `/project/rebuild/shared/v1` transport with Begin/Abort/Verify and a sealed source capture.
+The fixture records successful command-acknowledgement, Workers callback, and public status-read
+wall-clock p50/p95 with sample counts. The SM4 p95 comparisons are 1,000 ms for acknowledgement and
+500 ms for status; Workers uses the 1,000 ms delivery comparison as an operational diagnostic.
+Over-budget observations remain open findings rather than changing the implementation or budgets.
+The command samples exclude the fixture's intentional one-second pacing delay; retries during a request
+are included. These disposable-topology observations do not qualify a production capacity envelope.
+
+Stage six records 4,193 final-source component passes (two existing optional Domain skips) and
+a strict real-provider live pass (1/1, zero failures/skips, 299.439 seconds). Revocation is observed
+with the same leased credential before requiring HTTP 403 and retained permission rejection.
+The final p95 acknowledgement observation is 31,330.090 ms across nine successful requests, including
+request retries, above the 1,000 ms SM4 budget; it remains open. Workers callback p95 is 452.781 ms
+(26 samples) and status-read p95 is 45.861 ms (12 samples). Full acceptance also remains open for
+SDK owner history beyond 10,000 positions, source-deadline expiry after delayed staging/recovery, and
+retry/Abort reconciliation of an interrupted retained scratch batch. These diagnostics do not change
+the SDK protocol or qualify the still-blocked Release/package consumption lane.

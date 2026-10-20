@@ -1,30 +1,28 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 using Hexalith.Commons.UniqueIds;
+using Hexalith.EventStore.Client.Discovery;
 using Hexalith.EventStore.Client.Gateway;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Projections;
-using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.Contracts.Queries;
-using Hexalith.EventStore.Client.Discovery;
-using Hexalith.Folders.Contracts;
+using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
+using Hexalith.Folders.Contracts;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Queries.FolderAccess;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Server.Authentication;
-
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Routing;
 
 namespace Hexalith.Folders.Server;
 
@@ -129,26 +127,6 @@ public static class FoldersDomainServiceEndpoints
 
                 ProjectionResponse? projection = DomainProjectionDispatcher.Project(
                     services, request, cancellationToken);
-                if (projection is not null && projection.ProjectionType == "folder-state"
-                    && services.GetService<HumanAuthorityReceiptVerifier>() is not null)
-                {
-                    long sourceHead = await services.GetRequiredService<Hexalith.Folders.Authorization.IOrganizationStreamSequenceReader>()
-                        .GetCurrentSequenceAsync(request.TenantId, request.AggregateId, cancellationToken).ConfigureAwait(false);
-                    if (sourceHead != request.Events.LongLength)
-                    {
-                        throw new InvalidOperationException("Incomplete operational rebuild source.");
-                    }
-                    if (request.Events.Length > 0)
-                    {
-                        var persisted = await OperationalStatusRebuild.ExecuteAsync(services, request,
-                            GenerateCanonicalMessageId(), cancellationToken).ConfigureAwait(false);
-                        if (!persisted.IsSuccess)
-                        {
-                            return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
-                                extensions: new Dictionary<string, object?> { ["category"] = "projection_unavailable" });
-                        }
-                    }
-                }
                 if (projection?.ProjectionType == "organization-provider-binding"
                     && ProviderBindingActorId.IsReserved(request.AggregateId) && request.Events.Length > 0
                     && services.GetService<HumanAuthorityReceiptVerifier>() is not null)
@@ -174,8 +152,11 @@ public static class FoldersDomainServiceEndpoints
                 throw;
             }
             catch (Exception exception) when (exception is OperationalStatusUnavailableException or PermissionProjectionConcurrencyException
-                || exception is not (InvalidOperationException or ArgumentException or JsonException or Hexalith.EventStore.Client.Events.EventPayloadEvolutionException))
+                || exception is not (InvalidOperationException or ArgumentException or JsonException or Hexalith.EventStore.Client.Events.EventPayloadEvolutionException)
+                    && exception.GetType().FullName != "Hexalith.EventStore.DomainService.ProjectionDispatchValidationException")
             {
+                services.GetService<ILoggerFactory>()?.CreateLogger("Hexalith.Folders.Server.Project")
+                    .LogWarning("Folders projection unavailable: {ExceptionType}.", exception.GetType().Name);
                 return Results.Problem(statusCode: StatusCodes.Status503ServiceUnavailable,
                     extensions: new Dictionary<string, object?> { ["category"] = "projection_unavailable" });
             }
@@ -5546,7 +5527,7 @@ public static class FoldersDomainServiceEndpoints
                     StatusCodes.Status503ServiceUnavailable,
                     category: "read_model_unavailable",
                     code: "read_model_unavailable",
-                    retryable: result.FolderAuthorizationDenial?.Decision.Retryable ?? true,
+                    retryable: result.FolderAuthorizationDenial?.Decision.Retryable ?? false,
                     correlationId: correlationId,
                     taskId: null);
 

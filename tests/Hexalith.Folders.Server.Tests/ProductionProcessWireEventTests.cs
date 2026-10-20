@@ -2,34 +2,31 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Commands;
 using Hexalith.EventStore.Contracts.Events;
-using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Projections;
+using Hexalith.EventStore.Contracts.Results;
 using Hexalith.EventStore.Contracts.Serialization;
-using Hexalith.EventStore.Client.Projections;
-using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.EventStore.Testing.Fakes;
 using Hexalith.Folders.Aggregates.Folder;
 using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
-using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Observability;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Providers.Abstractions;
 using Hexalith.Folders.Queries.ProviderReadiness;
-using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
 using Hexalith.Folders.Testing;
+using Hexalith.Folders.Testing.Providers;
 using Hexalith.Folders.Tests.OperationalStatus;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-
 using Shouldly;
 using Xunit;
 
@@ -175,13 +172,31 @@ public sealed class ProductionProcessWireEventTests
             client.DefaultRequestHeaders.Remove(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName);
             client.DefaultRequestHeaders.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, projectAssertion);
             sourceHead.Head = 2;
-            foreach (ProjectionEventDto[] truncated in new[] { new[] { retained }, Array.Empty<ProjectionEventDto>() })
+            // EventStore's per-command legacy callback folds its supplied prefix without starting
+            // operational persistence, even when a concurrent append has advanced the live head.
+            operationalStore.BatchFaultHook = static (_, _, _) => throw new IOException("operational writes forbidden on legacy route");
+            using (HttpResponseMessage legacy = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
+                project, TestContext.Current.CancellationToken))
             {
-                using HttpResponseMessage incomplete = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
-                    project with { Events = truncated }, TestContext.Current.CancellationToken);
-                incomplete.StatusCode.ShouldBe(HttpStatusCode.UnprocessableEntity);
+                legacy.StatusCode.ShouldBe(HttpStatusCode.OK);
                 operationalStore.Count.ShouldBe(0);
             }
+            var otherEvent = JsonSerializer.Deserialize<FolderCreated>(retained.Payload, EventStorePayloadSerialization.Options)! with { FolderId = "folder-b" };
+            var otherFolder = project with
+            {
+                AggregateId = "folder-b",
+                Events = [retained with
+            { Payload = JsonSerializer.SerializeToUtf8Bytes(otherEvent, EventStorePayloadSerialization.Options), MessageId = "retained-message-b" }]
+            };
+            HttpResponseMessage[] independent = await Task.WhenAll(
+                client.PostAsJsonAsync(FoldersServerModule.ProjectRoute, project, TestContext.Current.CancellationToken),
+                client.PostAsJsonAsync(FoldersServerModule.ProjectRoute, otherFolder, TestContext.Current.CancellationToken));
+            foreach (HttpResponseMessage response in independent)
+            {
+                using (response) response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            }
+            operationalStore.Count.ShouldBe(0);
+            operationalStore.BatchFaultHook = null;
             sourceHead.Head = 1;
             using HttpResponseMessage projected = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,
                 project, TestContext.Current.CancellationToken);
@@ -190,6 +205,7 @@ public sealed class ProductionProcessWireEventTests
                 TestContext.Current.CancellationToken))!;
             rebuilt.State.GetProperty("isCreated").GetBoolean().ShouldBeTrue();
             rebuilt.State.GetProperty("displayName").GetString().ShouldBe("Folder A");
+            operationalStore.Count.ShouldBe(0);
             foreach (string unknown in new[] { "Unregistered.Namespace.FolderCreated", "FolderCreated" })
             {
                 using HttpResponseMessage rejected = await client.PostAsJsonAsync(FoldersServerModule.ProjectRoute,

@@ -391,3 +391,24 @@ Rerun the gate after any change to the provider abstractions, the GitHub or Forg
 sources, or `ForgejoSupportedVersionCatalog`. The static gate runs in the `contract-spine` CI lane and through
 the baseline CI Contracts.Tests filter; it is not promoted to a new top-level `ci.yml` lane, to
 `release.yml`, or to scheduled workflows.
+
+## Host-configured provider binding profiles
+
+A v1 `capabilityProfileRef` must name a profile in `Folders:ProviderBindings:Profiles:<ref>`.
+The profile must match the authoritative `ManagedTenantId` and `ProviderKind`. Unknown references,
+foreign tenants and mismatched provider kinds are rejected as invalid policy before any binding event
+is appended. Configure profiles in each host that accepts provider configuration, including test hosts.
+Each profile has independent `NamingPolicy` and `BranchPolicy` objects and their `PolicyRef`/`Metadata`.
+For example, an owner-controlled profile can use synthetic configuration keys:
+
+```text
+Folders:ProviderBindings:Profiles:profile-001:ManagedTenantId = tenant-001
+Folders:ProviderBindings:Profiles:profile-001:ProviderKind = forgejo
+Folders:ProviderBindings:Profiles:profile-001:NamingPolicy:PolicyRef = target-policy-001
+Folders:ProviderBindings:Profiles:profile-001:BranchPolicy:PolicyRef = branch-policy-001
+```
+
+Private target metadata remains in host configuration; retained binding events carry the profile reference
+and semantic fingerprint. Removing or changing a bound profile produces non-retryable
+`fix_provider_configuration` remediation. Restore the matching authorized profile rather than retrying
+provider effects. Storage or source-authority failures retain retryable `provider_binding_authority_unavailable`.

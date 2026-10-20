@@ -11,6 +11,7 @@ internal sealed class OperationalProviderFixture(string directory, string runId)
 {
     private string? _container;
     private string? _administrativeCredential;
+    private string? _observerCredential;
     internal string BaseUrl { get; private set; } = string.Empty;
     internal string TrustFile => Path.Combine(directory, "provider-ca-bundle.pem");
     internal string SecretFile => Path.Combine(directory, "provider-credentials.json");
@@ -88,6 +89,7 @@ internal sealed class OperationalProviderFixture(string directory, string runId)
         credential = await FolderDurabilityProcess.RunAsync("docker", "exec", "--user", "git", _container,
             "forgejo", "--config", "/data/gitea/conf/app.ini", "admin", "user", "generate-access-token",
             "--username", Observer, "--token-name", "operational-observation", "--scopes", "all", "--raw").ConfigureAwait(false);
+        _observerCredential = credential;
         using HttpResponseMessage granted = await client.PutAsJsonAsync($"api/v1/repos/{Owner}/{Repository}/collaborators/{Observer}",
             new { permission = "read" }, deadline.Token).ConfigureAwait(false);
         granted.EnsureSuccessStatusCode();
@@ -107,6 +109,35 @@ internal sealed class OperationalProviderFixture(string directory, string runId)
             _container = null;
         }
         _administrativeCredential = null;
+        _observerCredential = null;
+    }
+
+    /// <summary>Observes the exact bound target using the same credential leased to Folders.</summary>
+    internal async Task<(int Status, bool CanRead)> ObserveRepositoryAccessAsync(CancellationToken cancellationToken)
+    {
+        string credential = _observerCredential ?? throw new InvalidOperationException("The disposable provider is unavailable.");
+        using X509Certificate2 root = X509CertificateLoader.LoadCertificateFromFile(Path.Combine(directory, "provider-tls", "certificate.pem"));
+        using HttpClientHandler handler = new();
+        handler.ServerCertificateCustomValidationCallback = (_, server, _, errors) =>
+        {
+            if (server is null || (errors & System.Net.Security.SslPolicyErrors.RemoteCertificateNameMismatch) != 0) return false;
+            using X509Chain chain = new();
+            chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+            chain.ChainPolicy.CustomTrustStore.Add(root);
+            chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+            return chain.Build(server);
+        };
+        using HttpClient client = new(handler) { BaseAddress = new Uri(BaseUrl), Timeout = TimeSpan.FromSeconds(15) };
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", credential);
+        using HttpResponseMessage response = await client.GetAsync($"api/v1/repos/{Owner}/{Repository}", cancellationToken).ConfigureAwait(false);
+        bool canRead = false;
+        if (response.IsSuccessStatusCode)
+        {
+            JsonElement repository = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken).ConfigureAwait(false);
+            canRead = repository.TryGetProperty("permissions", out JsonElement permissions)
+                && permissions.TryGetProperty("pull", out JsonElement pull) && pull.ValueKind == JsonValueKind.True;
+        }
+        return ((int)response.StatusCode, canRead);
     }
 
     /// <summary>Changes only the observer's access to the exact fixture-owned repository.</summary>

@@ -1,16 +1,17 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
-
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.ServiceDefaults.Authentication;
+using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Projections.TenantAccess;
+using Hexalith.Folders.Providers.Abstractions;
+using Hexalith.Folders.Queries.ProviderReadiness;
 using Hexalith.Folders.Server;
 using Hexalith.Folders.Server.Authentication;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -23,9 +24,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-
 using Shouldly;
-
 using Xunit;
 
 namespace Hexalith.Folders.Server.Tests;
@@ -51,6 +50,30 @@ public sealed class FoldersServerHostCompositionTests
             .Get(EventStoreWorkloadAuthenticationDefaults.WorkloadScheme);
         workload.Audience.ShouldBe("folders");
         workload.AllowedCallers.ShouldBe(["eventstore"]);
+    }
+
+    [Fact]
+    public void ProductionHostBindsIndependentPrivateProfilesAndConfiguredProviderServices()
+    {
+        WebApplicationBuilder builder = FoldersProductionTestHost.CreateBuilder();
+        foreach (string profile in new[] { "first", "second" })
+        {
+            string prefix = "Folders:ProviderBindings:Profiles:" + profile + ":";
+            builder.Configuration[prefix + "ManagedTenantId"] = "tenant-" + profile;
+            builder.Configuration[prefix + "ProviderKind"] = "forgejo";
+            builder.Configuration[prefix + "NamingPolicy:Metadata:repository_owner"] = profile;
+            builder.Configuration[prefix + "BranchPolicy:Metadata:selected_ref"] = "ref-" + profile;
+        }
+        using WebApplication app = builder.Build();
+        var options = app.Services.GetRequiredService<IOptions<FoldersProviderBindingOptions>>().Value;
+        options.Profiles["first"].NamingPolicy.Metadata["repository_owner"].ShouldBe("first");
+        options.Profiles["second"].NamingPolicy.Metadata["repository_owner"].ShouldBe("second");
+        options.Profiles["first"].BranchPolicy.Metadata["selected_ref"].ShouldBe("ref-first");
+        options.Profiles["first"].NamingPolicy.ShouldNotBeSameAs(options.Profiles["second"].NamingPolicy);
+        options.Profiles["first"].BranchPolicy.ShouldNotBeSameAs(options.Profiles["second"].BranchPolicy);
+        OrganizationProviderBindingPolicy.Empty.Metadata.ShouldBeEmpty();
+        app.Services.GetRequiredService<IProviderReadinessBindingReader>().ShouldBeOfType<ConfiguredProviderReadinessBindingReader>();
+        app.Services.GetRequiredService<IProviderRepositoryTargetResolver>().ShouldBeOfType<ConfiguredProviderRepositoryTargetResolver>();
     }
 
     [Fact]

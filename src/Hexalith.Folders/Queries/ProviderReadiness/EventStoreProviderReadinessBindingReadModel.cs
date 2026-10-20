@@ -105,7 +105,7 @@ public sealed class EventStoreProviderReadinessBindingReadModel(
                 && (current.LastSequence > next.LastSequence || current.Messages.Any(item =>
                 next.Messages[(int)item.Sequence - 1] != item))
                 )
-                throw new InvalidOperationException("Provider configuration rebuild conflicts with retained source.");
+                throw new PermissionProjectionConcurrencyException("Provider configuration rebuild conflicts with retained source.");
         }
         if (!await store.TrySaveAsync(StoreName, key, next, prior.ETag ?? string.Empty, cancellationToken).ConfigureAwait(false))
             throw new PermissionProjectionConcurrencyException("Provider configuration rebuild conflicted.");

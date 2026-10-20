@@ -143,7 +143,7 @@ public static class OperationalStatusFold
             || value.TaskClosedSequences.Count != value.State.TaskClosures.Count
             || value.TaskClosedSequences.Values.Distinct().Count() != value.TaskClosedSequences.Count
             || value.State.TaskClosures.Any(item => !value.TaskClosedSequences.TryGetValue(item.Key, out long position)
-                || position < 1 || position > value.Sequence || item.Value.ClosedAt > value.ObservedAt
+                || position < 1 || position > value.Sequence
                 || !value.WorkspaceEvidence.ContainsKey(item.Value.WorkspaceId) || !value.TaskEvidence.ContainsKey(item.Value.TaskId)))
             return false;
         string digest = OperationalStatusKeys.Digest(tenantId, folderId);

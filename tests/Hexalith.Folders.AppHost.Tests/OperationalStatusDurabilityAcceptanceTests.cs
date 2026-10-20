@@ -1,23 +1,22 @@
-using System.Text.Json.Nodes;
-using Hexalith.Folders.Authorization;
-using Hexalith.Folders.Aggregates.Organization;
-using Hexalith.Folders.Queries.ProviderReadiness;
 using System.Buffers.Binary;
-using System.Text;
-using Hexalith.EventStore.Contracts.Serialization;
-using Hexalith.Folders.Aggregates.Folder;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
-
+using System.Text.Json.Nodes;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Projections;
-using Hexalith.EventStore.DomainService;
+using Hexalith.EventStore.Contracts.Serialization;
 using Hexalith.EventStore.Contracts.Streams;
+using Hexalith.EventStore.DomainService;
+using Hexalith.Folders.Aggregates.Folder;
+using Hexalith.Folders.Aggregates.Organization;
+using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.Folders;
-
+using Hexalith.Folders.Queries.ProviderReadiness;
 using Shouldly;
 using Xunit;
 
@@ -28,6 +27,8 @@ namespace Hexalith.Folders.AppHost.Tests;
 public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityAcceptanceFixture fixture, ITestOutputHelper output)
     : IClassFixture<FolderDurabilityAcceptanceFixture>
 {
+    private readonly List<double> _statusReadMilliseconds = [];
+
     /// <summary>Checks real persistence, process replacement, two consumers and repeated empty-checkpoint rebuild.</summary>
     [Fact]
     public async Task RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures()
@@ -87,7 +88,7 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
                 entry.Present.ShouldBeTrue();
                 (await eraser.TryEraseAsync("statestore", target, entry.Etag, TestContext.Current.CancellationToken)).ShouldBeTrue();
             }
-            using HttpResponseMessage rebuilt = await fixture.ProjectAsync(folder, replay);
+            using HttpResponseMessage rebuilt = await fixture.NamedProjectAsync(folder, replay, FolderDurabilityAcceptanceFixture.NewId());
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(rebuilt, HttpStatusCode.OK, "Repeated zero-checkpoint rebuild");
             (await WaitForCheckpointAsync(checkpointKey)).SourceDigest.ShouldBe(checkpoint.SourceDigest);
             JsonSerializer.Serialize((await fixture.Store.GetAsync<FolderLifecycleStatusReadModelSnapshot>(
@@ -95,8 +96,8 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
         }
         output.WriteLine("PASS rebuild: two complete empty-checkpoint rebuilds preserve views and retained bytes");
 
-        // These invoke the same writer in the distinct Folders and Workers processes.
-        HttpResponseMessage[] concurrent = await Task.WhenAll(fixture.ProjectAsync(folder, replay),
+        // The SDK owns named rebuild sessions; Workers owns live delivery in a distinct process.
+        HttpResponseMessage[] concurrent = await Task.WhenAll(fixture.NamedProjectAsync(folder, replay, FolderDurabilityAcceptanceFixture.NewId()),
             fixture.DeliverRetainedFolderEventAsync(folder, stream.Events.Single()));
         try
         {
@@ -155,6 +156,11 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
         (await WaitForCheckpointAsync(checkpointKey)).SourceDigest.ShouldBe(checkpoint.SourceDigest);
         Hash(await fixture.ReadStreamAsync(folder)).ShouldBe(retainedHash);
         output.WriteLine("PASS safe-failure: unsupported version, corrupt view, foreign tenant and unavailable store preserve source/checkpoint");
+        for (int sample = 0; sample < 10; sample++)
+            await RequireLifecycleAsync(folder, HttpStatusCode.OK);
+        ReportLatency("command_acknowledgement", fixture.CommandAcknowledgementMilliseconds, 1000);
+        ReportLatency("workers_operational_delivery", fixture.OperationalDeliveryMilliseconds, 1000);
+        ReportLatency("status_read", _statusReadMilliseconds, 500);
 
     }
 
@@ -251,8 +257,27 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
         await fixture.SetProviderRepositoryAvailableAsync(false, TestContext.Current.CancellationToken).ConfigureAwait(true);
         try
         {
+            var observedAccess = await fixture.ObserveProviderRepositoryAccessAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+            output.WriteLine($"Bound-target revocation observation: HTTP {observedAccess.Status}; pull={observedAccess.CanRead}");
             using HttpResponseMessage denied = await fixture.MutateAsync($"/api/v1/folders/{folder}/workspaces/{workspace}/preparation",
                 preparation, FolderDurabilityAcceptanceFixture.NewId(), taskId: task).ConfigureAwait(true);
+            if (denied.StatusCode == HttpStatusCode.Accepted)
+            {
+                JsonElement accepted = await denied.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true);
+                string correlation = accepted.GetProperty("correlationId").GetString()!;
+                var status = await fixture.ObserveCommandStatusAsync(correlation, TestContext.Current.CancellationToken).ConfigureAwait(true);
+                output.WriteLine($"Unexpected preparation admission: replay={accepted.GetProperty("idempotentReplay")}; command={status?.Status ?? "missing"}; failure={status?.FailureReason ?? "none"}; rejection={status?.RejectionEventType ?? "none"}; committed={status?.CommittedEventSequence}; events={status?.EventCount}; retryable={status?.Retryable}");
+                var observedSource = await fixture.ReadStreamAsync(folder).ConfigureAwait(true);
+                foreach (var diagnosticEvent in observedSource.Events.TakeLast(4))
+                {
+                    using JsonDocument payload = JsonDocument.Parse(diagnosticEvent.Payload);
+                    bool diagnosticHasCode = payload.RootElement.TryGetProperty("Code", out JsonElement code)
+                        || payload.RootElement.TryGetProperty("code", out code);
+                    output.WriteLine($"Unexpected preparation retained event: type={diagnosticEvent.EventTypeName}; code={(diagnosticHasCode ? code.GetString() : "none")}");
+                }
+                observedAccess = await fixture.ObserveProviderRepositoryAccessAsync(TestContext.Current.CancellationToken).ConfigureAwait(true);
+                output.WriteLine($"Bound-target post-command observation: HTTP {observedAccess.Status}; pull={observedAccess.CanRead}");
+            }
             await FolderDurabilityAcceptanceFixture.RequireStatusAsync(denied, HttpStatusCode.Forbidden,
                 "Missing bound repository preparation denial").ConfigureAwait(true);
             JsonElement denial = await denied.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(true);
@@ -606,10 +631,12 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
     {
         using HttpClient client = fixture.CreateFoldersClient();
         using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folder}/lifecycle-status");
+        long started = Stopwatch.GetTimestamp();
         using HttpResponseMessage response = expected == HttpStatusCode.OK
             ? await FolderDurabilityHttp.SendAsync(client, request, true, TestContext.Current.CancellationToken).ConfigureAwait(true)
             : await client.SendAsync(request, TestContext.Current.CancellationToken).ConfigureAwait(true);
         await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, expected, "Public operational lifecycle read").ConfigureAwait(true);
+        if (expected == HttpStatusCode.OK) _statusReadMilliseconds.Add(Stopwatch.GetElapsedTime(started).TotalMilliseconds);
     }
 
     private async Task WaitForLifecycleRecoveryAsync(string folder)
@@ -620,6 +647,15 @@ public sealed class OperationalStatusDurabilityAcceptanceTests(FolderDurabilityA
         using HttpRequestMessage request = new(HttpMethod.Get, $"/api/v1/folders/{folder}/lifecycle-status");
         using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true, deadline.Token).ConfigureAwait(true);
         await FolderDurabilityAcceptanceFixture.RequireStatusAsync(response, HttpStatusCode.OK, "Recovered public operational lifecycle read").ConfigureAwait(true);
+    }
+
+    private void ReportLatency(string operation, IEnumerable<double> samples, double budget)
+    {
+        double[] values = samples.Order().ToArray();
+        values.ShouldNotBeEmpty();
+        double p50 = values[(int)Math.Ceiling(values.Length * 0.50) - 1];
+        double p95 = values[(int)Math.Ceiling(values.Length * 0.95) - 1];
+        output.WriteLine($"PERFORMANCE {operation}: count={values.Length} p50_ms={p50:F3} p95_ms={p95:F3} budget_p95_ms={budget:F0} over_budget={p95 > budget}");
     }
 
     private static string Hash(StreamReadPage stream)

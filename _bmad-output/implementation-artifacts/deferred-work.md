@@ -3011,3 +3011,9 @@ Follow-up to the Story 1.17 Builds packaged-seed publication/acceptance prerequi
 - source_spec: `spec-12-1-eventstore-backed-folder-repository-and-replay.md`
   summary: AppHost durability acceptance is a single opt-in Fact; split phases, pin per-path denial codes.
   evidence: FolderDurabilityAcceptanceTests.cs.
+- source_spec: `spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: The disabled v2 candidate's task-binding check sends no folder authority to the durable task-status reader, so v2 GetTaskStatus always fails closed once v2 is routed.
+  evidence: Pd10V2CandidateCompatibilitySeam.cs:591-598 omits AuthorizedFolderId/AuthorizationWatermark, and EventStoreOperationalStatusReadModel.cs:167-169 returns task_folder_authority_unavailable without them. Reachable only with Folders:ApiRouting Coexistence/V2Only (default V1Only). The seam is hash-bound in the v2 candidate set, so pass the folder authority during v2 requalification (Story 1.17 / A6b). Story 12.2's intent excludes public v2 exposure (review round 4, blind-1).
+- source_spec: `spec-12-2-durable-projections-and-task-completion-pipeline.md`
+  summary: Durable workspace views report a fixed status-only cleanup value and an unavailable provider reference until cleanup eligibility and provider-reference projection are owned.
+  evidence: OperationalStatusFold.cs:268-278 always emits status_only/cleanup_status_only/(false, cleanup_not_applicable), provref_unavailable and (null, unavailable). This is fail-safe and never claims eligibility, but it drops the per-state reason codes of the old in-memory mapping (InMemoryFolderRepository.cs:609-618). Eligibility rules (terminal closure, seven-day window, legal hold) belong to Story 4.22/FR30 (review round 4, blind-16).

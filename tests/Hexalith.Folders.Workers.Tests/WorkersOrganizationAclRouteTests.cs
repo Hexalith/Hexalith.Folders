@@ -1,10 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text;
-using System.Security.Cryptography;
-
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Subscriptions;
 using Hexalith.EventStore.Contracts.Serialization;
@@ -15,14 +14,11 @@ using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.OperationalStatus;
 using Hexalith.Folders.Queries.Folders;
 using Hexalith.Folders.Workers;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-
 using NSubstitute;
-
 using Shouldly;
 using Xunit;
 
@@ -414,8 +410,8 @@ public sealed class WorkersOrganizationAclRouteTests
             entry.Exception.ShouldBeNull();
             entry.Fields.Keys.Order(StringComparer.Ordinal).ShouldBe(new[]
                 { "Category", "Stage", "FailureType", "{OriginalFormat}" }.Order(StringComparer.Ordinal));
-            entry.Fields["Category"].ShouldBe("permission_projection_failed");
-            entry.Fields["Stage"].ShouldBe("permission_projection");
+            entry.Fields["Category"].ShouldBe("organization_acl_failed");
+            entry.Fields["Stage"].ShouldBe("organization_acl");
             entry.Fields["FailureType"].ShouldBe(typeof(InvalidOperationException).FullName);
             string body = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
             foreach (string protectedValue in new[] { protectedTenant, protectedMessage, protectedPayload,

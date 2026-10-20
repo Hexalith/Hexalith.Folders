@@ -80,3 +80,31 @@ git submodule update --init --checkout references/Hexalith.AI.Tools references/H
 ```
 
 Do not initialize nested submodules for this lane.
+
+## Durable operational status expiry and repair
+
+Lifecycle, workspace, lock, cleanup and task metadata expires at its original source event time plus
+400 days. Live delivery and rebuild write only the remaining TTL for views, their integrity evidence,
+and source-position/message receipts; terminal rewrites do not restart retention. The bounded metadata
+checkpoint has no TTL. Clock-derived freshness permits five minutes of reader clock lag without changing
+original source timestamps. A view at the inclusive 400-day boundary, or a view whose row and integrity
+evidence have both expired, returns the existing safe v1 not-found outcome without retry. Surviving
+integrity evidence with a missing row remains canonical unavailable and requires repair. Source-folded
+task closure authority remains independent of these rebuildable rows, so expiry cannot reopen a task.
+
+Workers performs ordinary operational delivery. The legacy `/project` command callback does not rebuild
+operational status. Use the authorized SDK named `/project/rebuild/shared/v1` transport to bootstrap
+history from before enablement or repair a folder stalled by a missing/dead-lettered source delivery.
+That transport owns Begin, Abort, Verify and sealed-source catch-up; abort failed private generations
+through the same SDK session rather than leaving a tenant rebuilding. Until repair completes, the folder
+honestly reports `projection_stale`. This operator repair guidance adds no public UI repair action,
+audit erasure, destructive cleanup or new retention authority. Cleanup eligibility/status details beyond
+the fail-safe `status_only` view remain with Stories 12.3–12.7 and 4.22.
+
+The current SDK stores relative TTL in sealed batch/staging manifests. A private generation prepared
+before the source deadline and installed or recovered much later can therefore retain its old relative
+TTL after that deadline. Ordinary planning skips expired rows and readers still return safe not-found,
+but delayed physical-retention enforcement remains unqualified. This is an open EventStore prerequisite
+for absolute source-expiry enforcement during staging/recovery; operators must not treat the immediate
+write/read checks as completion of the full retention requirement. No manifest or SDK protocol is changed
+by Story 12.2's Folders corrections.
