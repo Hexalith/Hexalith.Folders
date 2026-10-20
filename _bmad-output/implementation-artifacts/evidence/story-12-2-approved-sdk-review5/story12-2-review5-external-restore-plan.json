@@ -1,0 +1,37 @@
+{
+  "work": "/tmp/story12-2-review5-external-merge-plan-a9sniidj",
+  "files": [
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelStore.OwnerProof.cs",
+      "baseline_exists": true,
+      "merge_exit": 0,
+      "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/0/restore-result",
+      "preserve_whole_current_on_conflict": false,
+      "current_sha256": "14d8fff7a9a84bf2d8580cbf4147059859656804149ca51baab68acbd8a33c57"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ReadModelBatchProtocol.cs",
+      "baseline_exists": true,
+      "merge_exit": 0,
+      "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/1/restore-result",
+      "preserve_whole_current_on_conflict": false,
+      "current_sha256": "1d1f7200e4dda895598d9659a7cdd6ad0512a44d5b1c537b9d6f8ea483359d87"
+    },
+    {
+      "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ReadModelBatchRecoveryAnchor.cs",
+      "baseline_exists": true,
+      "merge_exit": 1,
+      "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/2/restore-result",
+      "preserve_whole_current_on_conflict": true,
+      "current_sha256": "564c030f60f03c87f2c7d011c80b0798e2fa31abf4fb8f1e2d754f5aae5fb91f"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+      "baseline_exists": true,
+      "merge_exit": 0,
+      "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/3/restore-result",
+      "preserve_whole_current_on_conflict": false,
+      "current_sha256": "0ececd50ad1f2fa53ada33fb65466eda6390251a120ccad4183b5e5a886e2bea"
+    }
+  ]
+}

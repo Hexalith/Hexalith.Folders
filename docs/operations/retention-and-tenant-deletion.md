@@ -101,17 +101,10 @@ honestly reports `projection_stale`. This operator repair guidance adds no publi
 audit erasure, destructive cleanup or new retention authority. Cleanup eligibility/status details beyond
 the fail-safe `status_only` view remain with Stories 12.3–12.7 and 4.22.
 
-The approved EventStore source-expiry capability records the absolute deadline in each retained
-operation and shared mutation. Folders supplies that deadline instead of a relative TTL. SDK staging,
-compaction and recovery preserve it; values already past the deadline are omitted or conditionally
-removed, and the non-expiring checkpoint is retained. Versioned deadline metadata also bounds reads
-through provider TTL rounding. Existing relative-TTL manifests retain their original semantics; this
-capability does not invent source deadlines for old manifests that never recorded one.
-
-The SDK also recovers retained private scratch batches before retrying or advancing an epoch phase,
-and reconciles private keys before named-session cleanup. Use the same named action/Abort transport.
-Legacy prepared scratch can be compensated only when the original matching envelopes and unchanged
-fence prove its bounded shape; committed or insufficient legacy evidence stays unavailable for owner
-resolution. Do not erase SDK metadata or force the epoch open. This local source qualification does not
-authorize a deployment, package publication or dependency pin change; the supported Redis profile
-remains resumable. Consumer qualification is recorded in the Story 12.2 evidence.
+The current SDK stores relative TTL in sealed batch/staging manifests. A private generation prepared
+before the source deadline and installed or recovered much later can therefore retain its old relative
+TTL after that deadline. Ordinary planning skips expired rows and readers still return safe not-found,
+but delayed physical-retention enforcement remains unqualified. This is an open EventStore prerequisite
+for absolute source-expiry enforcement during staging/recovery; operators must not treat the immediate
+write/read checks as completion of the full retention requirement. No manifest or SDK protocol is changed
+by Story 12.2's Folders corrections.

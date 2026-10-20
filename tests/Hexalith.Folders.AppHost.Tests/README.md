@@ -318,19 +318,3 @@ request retries, above the 1,000 ms SM4 budget; it remains open. Workers callbac
 SDK owner history beyond 10,000 positions, source-deadline expiry after delayed staging/recovery, and
 retry/Abort reconciliation of an interrupted retained scratch batch. These diagnostics do not change
 the SDK protocol or qualify the still-blocked Release/package consumption lane.
-
-
-## Approved SDK expiry and scratch-recovery consumption
-
-The 2026-10-20 approved EventStore follow-up adds immutable `ExpiresAtUtc` operations. Folders now
-supplies each row's original source time plus 400 days, preserving that deadline through named
-staging and recovery. The bounded checkpoint remains non-expiring. New consumer regressions require
-physical absence after a delayed staged commit and prove same-action retry or Abort of an interrupted
-scratch batch, followed by a fresh named rebuild. The SDK's separate real-Dapr qualification covers
-remaining physical TTL, inclusive reads, expired-row deletion and replaced client/store/coordinator
-instances. Legacy relative-TTL manifests keep their original semantics; no missing historical deadline
-is inferred.
-
-Source consumption does not publish packages or alter the recorded submodule pin. Histories above
-10,000 positions, package/PD10 requalification, acknowledgement performance and independent review
-retain their existing acceptance dispositions. Earlier stages above remain evidence for their exact source.

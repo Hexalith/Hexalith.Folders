@@ -73,3 +73,9 @@ change to approved intent, exclusions, original baselines, dependency pins or re
 
 
 Review-four source and consumer clock corrections are locally qualified in [Stage10](evidence/story-12-2-approved-sdk-source-qualification-review4/qualification.json); independent approved-scope review follows. Prior stages remain historical evidence; whole-story identity/package/performance gates remain open.
+
+
+Review5 reopens the approved prerequisites for bounded retry/validation/cleanup corrections. Stage10 is
+historical exact-source qualification; concurrent user merges are preserved and current integrated source
+will be qualified separately. Existing approval, separate identity ownership and release/Git boundaries
+are unchanged; no renewed approval is needed for these corrections within the frozen intent.

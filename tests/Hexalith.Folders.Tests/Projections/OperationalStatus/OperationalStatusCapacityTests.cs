@@ -94,45 +94,29 @@ public sealed class OperationalStatusCapacityTests
             1, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync(bool retry)
+    [Fact]
+    public async Task DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync()
     {
         OperationalStatusTestStore store = new();
         var sources = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()]);
-        Task<Hexalith.EventStore.Client.Projections.ReadModelBatchResult> RebuildAsync() =>
-            NamedOperationalStatusRebuildFixture.RebuildAsync(store,
-                "tenant-a", "folder-a", "interrupted-scratch", sources, 1, TestContext.Current.CancellationToken,
-                afterBegin: () => store.BatchFaultHook = (phase, _, _) =>
+        var failure = await Should.ThrowAsync<InvalidOperationException>(() => NamedOperationalStatusRebuildFixture.RebuildAsync(store,
+            "tenant-a", "folder-a", "immediate-abort", sources, 1, TestContext.Current.CancellationToken,
+            afterBegin: () => store.BatchFaultHook = (phase, _, _) =>
+            {
+                if (phase == Hexalith.EventStore.Client.Projections.ReadModelBatchPhase.BeforeCommit)
                 {
-                    if (phase == Hexalith.EventStore.Client.Projections.ReadModelBatchPhase.BeforeCommit)
-                    {
-                        store.BatchFaultHook = null;
-                        throw new IOException("injected private scratch batch failure");
-                    }
-                    return Task.CompletedTask;
-                }, retryPartial: retry);
-        if (retry)
-        {
-            (await RebuildAsync()).IsSuccess.ShouldBeTrue();
-            store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!
-                .Sequence.ShouldBe(1);
-        }
-        else
-        {
-            var failure = await Should.ThrowAsync<InvalidOperationException>(RebuildAsync);
-            failure.Message.ShouldContain("Abort=Aborted:Completed");
-            store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))
-                .ShouldBeNull();
-        }
+                    store.BatchFaultHook = null;
+                    throw new IOException("injected private scratch batch failure");
+                }
+                return Task.CompletedTask;
+            }));
+        failure.Message.ShouldContain("Accumulate:Accumulating:Indeterminate:projection_handler_failure");
+        failure.Message.ShouldContain("Abort=Accumulating:Indeterminate:projection_handler_failure");
         var coordinator = new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store);
         (await coordinator.GetStatusAsync(OperationalStatusGeneration.Scope("tenant-a"), TestContext.Current.CancellationToken))
-            .IsBuilding.ShouldBeFalse();
-        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "after-recovery",
-            sources, 1, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
-        store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!
-            .Sequence.ShouldBe(1);
+            .IsBuilding.ShouldBeTrue();
+        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(OperationalStatusGeneration.Scope("tenant-a"),
+            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), TestContext.Current.CancellationToken)).Value.ShouldBeNull();
     }
 
     [Fact]

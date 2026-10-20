@@ -116,7 +116,7 @@ context:
 - [x] Round-four command path (replace, do not patch): remove the operational branch from legacy `/project` in `FoldersDomainServiceEndpoints.cs` and delete `OperationalStatusRebuild.cs` with its fixture. `/project` returns the legacy response regardless of operational state. Workers live delivery is the only live writer; rebuild and repair run only through the SDK-driven named `/project/rebuild/shared/v1` transport, which owns session Begin/Abort/Verify. Move tests that relied on `/project` repair to that transport.
 - [x] Round-four named rebuild: in `OperationalStatusProjectionHandler.cs`, validate each partition history as a contiguous 1..N prefix bound to the SDK-sealed capture. Never compare it with a live head; appends after capture reach the new generation through SDK catch-up.
 - [x] Round-four Workers: in `FoldersWorkersModule.cs`, run the operational stage after the permission/provider chain, outside the one-second deadline. Run semantic indexing even when the operational stage fails, then return 500 so the delivery retries. Indexing stays idempotent on redelivery. Label and log each stage by its own name.
-- [x] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
+- [ ] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
 - [x] Round-four clock skew: remove the `OccurredAt > Timestamp` rejection in `OperationalStatusEventReader.cs:73`. Allow one fixed five-minute tolerance constant for stamp-versus-local-clock checks in the reader.
 - [x] Round-four provider fixes:
   - `ProviderBindingProfile.cs`: initialize fresh empty policies so bound profiles never share or mutate `OrganizationProviderBindingPolicy.Empty`.
@@ -126,12 +126,12 @@ context:
   - `/project` 503 branch: log the exception type, and classify `ProjectionDispatchValidationException` with the 422 branch.
   - Missing folder hint (`FoldersDomainServiceEndpoints.cs:5544-5550`): report `retryable:false`.
 - [x] Round-four profile decision wiring: configure a `profile-a` test profile for the tenant and provider in the `ArchiveFolderProcessWiringTests` host so its three ConfigureProviderBinding tests pass unchanged in intent. Document the required `Folders:ProviderBindings:Profiles:<ref>` section, and the rejection of unknown references, in `docs/operations/provider-integration-and-testing.md`. Document the expired-status not-found outcome and the named rebuild for bootstrap and stalled folders in `docs/operations/retention-and-tenant-deletion.md`.
-- [x] Round-four tests:
+- [ ] Round-four tests:
   - [x] Accepted profile path: service output consumed through `ConfiguredProviderReadinessBindingReader`.
   - [x] Two bound profiles stay isolated and `Empty` stays empty.
   - [x] Forgejo bound-target plumbing and `ConfiguredProviderRepositoryTargetResolver` mapping/rejections.
   - [x] `/project` returns the legacy body and writes no operational rows.
-  - [x] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
+  - [ ] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
   - [x] Workers route persists the binding projection, and its bytes equal the provider `/project` rebuild.
   - [x] A throwing readiness reader yields `provider_binding_authority_unavailable`.
   - [x] Production-host registration and options binding for the configured provider reader/resolver.
@@ -480,7 +480,7 @@ Folders. Scope approval is unchanged. >10000 capture identity, package/PD10, all
 latencies and whole-story review remain open; no release/Git/pin/dependency work is authorized.
 
 
-## Current Stage10 approved SDK source and clock qualification — 2026-10-20
+## Historical Stage10 approved SDK source and clock qualification — 2026-10-20
 
 [Stage10 qualification](evidence/story-12-2-approved-sdk-source-qualification-review4/qualification.json) binds 1,663
 consumer source/config inputs and 62 assembly/PDB files. Serialized
@@ -509,3 +509,18 @@ attribution: command_acknowledgement p95=4784.157ms against1000ms, workers_opera
 Independent approved-scope review is pending at seal. Whole Story12.2 remains in-progress for the already
 approved separately owned >10,000 identity capability and its consumer qualification, package/PD10,
 performance acceptance and whole-story review. Approval and Git/release/pin boundaries are unchanged.
+
+
+## Approved SDK review5 follow-up
+
+Independent scope review identified retained competing-owner CAS retry nonconvergence, lawful legacy
+retirement size refusal, original scope/proof/pointer validation gaps, missing historical owner inventory
+being treated as cleanup success, dependency cancellation misclassification and a late transport-fragment
+coverage gap. Owner loop5 addresses the eight roots without changing frozen intent or approval. All14
+Folders source/test/docs files, including the passing root/Server/manual clock fix, are positively preserved
+for parent restoration after SDK handoff. All ten canonical stages and prior sealed packets stay exact.
+Another session merged source changes during review; they are preserved, including external SDK authority/
+selection and Folders file-identity/query changes. Current merged source differs from historical Stage10,
+so it needs fresh source/PE/PDB/component/full live qualification. Do not reuse old counts as current results.
+Already-approved separately owned >10000 identity consumption, package/PD10, performance and whole-story
+review remain open. No Git/release/pin/dependency/content/performance redesign is authorized.

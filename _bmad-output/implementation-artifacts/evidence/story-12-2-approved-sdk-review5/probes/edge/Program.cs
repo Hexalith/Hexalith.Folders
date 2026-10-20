@@ -1,0 +1,11 @@
+using System.Text.Json.Nodes;
+using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Testing.Fakes;
+var store = new InMemoryReadModelStore();
+var scope = new SharedProjectionScope("statestore", "tenant", "widget", "index", ["writer"]);
+var coordinator = new SharedProjectionEpochCoordinator(store, store);
+await coordinator.RegisterWriterAsync(scope,"writer");
+await coordinator.BeginAsync(scope,"op","inv",new Dictionary<string,long>());
+store.BatchFaultHook=async (phase,ord,_)=>{ if(phase==ReadModelBatchPhase.AfterInstallOperation && ord==0){store.BatchFaultHook=null;Console.WriteLine("parallel other owner = "+await coordinator.TryWriteScratchAsync(scope,"op","other-private",new JsonObject{["count"]=2},"other-scratch-id",ReadModelBatchConcurrency.CreateOnly));}};
+for(int i=0;i<4;i++)Console.WriteLine("attempt "+i+" = "+await coordinator.TryWriteScratchAsync(scope,"op","private",new JsonObject{["count"]=1},"stable-scratch-id",ReadModelBatchConcurrency.CreateOnly));
+Console.WriteLine("private = "+(await store.GetAsync<JsonObject>(scope.StoreName,"private")).Value);

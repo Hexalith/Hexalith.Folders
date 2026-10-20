@@ -1,0 +1,74 @@
+{
+  "recorded_at_utc": "2026-10-20T15:02:50.458048+00:00",
+  "status": "diagnostic only; not acceptance",
+  "commands": [
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/edge-review5-repro/edge.csproj",
+        "-p:NuGetAudit=false"
+      ],
+      "exit_code": 0,
+      "log": "story12-2-review5-edge-repro.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/review5-blind-probes/repro.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "exit_code": 0,
+      "log": "story12-2-review5-blind-repro.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/story12-2-review5-parent-probes/parent.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "exit_code": 0,
+      "log": "story12-2-review5-parent-repro3.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/story12-2-review5-historical-probe/historical.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "exit_code": 0,
+      "log": "story12-2-review5-historical-probe.log"
+    },
+    {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "/tmp/story12-2-review5-cancellation-probe/cancel.csproj",
+        "--verbosity",
+        "quiet"
+      ],
+      "exit_code": 0,
+      "log": "story12-2-review5-cancellation-probe.log"
+    }
+  ],
+  "earlier_attempts": [
+    "parent-repro.log is initial control before adding valid terminal time and restoring original foreign batch profile.",
+    "parent-repro2.log is empty: dotnet host aborted with exit134 before diagnostic output. Exact reason unclassified; subsequent unchanged-source run exited0.",
+    "Warnings in standalone helper compilation are retained and not final repository build results."
+  ],
+  "source_provenance": "SDK/consumer binaries referenced by temporary projects originate from Stage10/SDKreview4 groups. External merges changed current sources during the review; this diagnostic is not qualification of integrated current source. Preserved helper sources and positive snapshot retain all inputs; fresh SDKreview5 and consumer qualification are required.",
+  "external_changes_preserved": true,
+  "positive_preservation": "/tmp/story12-2-sdk-review5-keep-79zyj2r0",
+  "git_mutations": false
+}

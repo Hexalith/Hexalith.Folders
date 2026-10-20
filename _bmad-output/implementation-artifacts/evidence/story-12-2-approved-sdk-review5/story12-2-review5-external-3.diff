@@ -1,0 +1,14 @@
+diff --git a/tmp/story12-2-approved-sdk-review5-mmf1kc3q/new/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs b/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+index ef964996..a9153066 100644
+--- a/tmp/story12-2-approved-sdk-review5-mmf1kc3q/new/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
++++ b/home/administrator/projects/hexalith/folders/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs
+@@ -74,6 +74,9 @@ public static class FoldersServerServiceCollectionExtensions
+         services.AddFoldersObservability();
+         services.AddHttpContextAccessor();
+         services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainQueryHandler, Queries.FolderOwnerReadQueryHandler>());
++        services.TryAddSingleton<Queries.FolderFileOwnerReadQueryHandler>();
++        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainQueryHandler, Queries.FolderFileOwnerReadQueryHandler>());
++        services.TryAddEnumerable(ServiceDescriptor.Singleton<IDomainQueryHandler, Queries.FolderFileReferenceReadQueryHandler>());
+         services.AddOptions<TenantContextOptions>().BindConfiguration(TenantContextOptions.SectionName);
+         services.TryAddSingleton<ITenantContextAccessor, HttpContextTenantContextAccessor>();
+         services.TryAddSingleton<IEventStoreClaimTransformEvidenceAccessor, HttpContextEventStoreClaimTransformEvidenceAccessor>();

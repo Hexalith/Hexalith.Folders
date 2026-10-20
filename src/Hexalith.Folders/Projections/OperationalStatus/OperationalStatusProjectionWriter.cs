@@ -19,13 +19,7 @@ public sealed class OperationalStatusProjectionWriter
         IReadModelPendingBatchRecoveryStore recovery, IUtcClock? clock = null)
     {
         ArgumentNullException.ThrowIfNull(recovery);
-        _clock = clock ?? new SystemUtcClock();
-        _coordinator = new(store, batches, new OperationalStatusTimeProvider(_clock));
-    }
-
-    internal OperationalStatusProjectionWriter(SharedProjectionEpochCoordinator coordinator, IUtcClock? clock)
-    {
-        _coordinator = coordinator ?? throw new ArgumentNullException(nameof(coordinator));
+        _coordinator = new(store, batches);
         _clock = clock ?? new SystemUtcClock();
     }
 
@@ -289,9 +283,9 @@ public sealed class OperationalStatusProjectionWriter
     private void AddRetained<T>(string key, T value, DateTimeOffset observedAt,
         List<ReadModelBatchOperation> operations) where T : class
     {
-        DateTimeOffset deadline = observedAt + OperationalStatusKeys.Retention;
-        if (deadline > _clock.UtcNow)
-            operations.Add(ReadModelBatchOperation.WriteExpiring(key, value, ReadModelBatchConcurrency.LastWrite, deadline));
+        TimeSpan remaining = observedAt + OperationalStatusKeys.Retention - _clock.UtcNow;
+        if (remaining > TimeSpan.Zero)
+            operations.Add(ReadModelBatchOperation.Write(key, value, ReadModelBatchConcurrency.LastWrite, remaining));
     }
 
     private void AddView<T>(string key, T value, long position, string digest, DateTimeOffset observedAt,

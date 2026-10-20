@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "story": "12.2",
-  "status": "Stage10: approved SDK review-four corrections and Folders clock/source adoption locally qualified; independent scope review pending. Whole Story12.2 remains in progress.",
+  "status": "SDK review5: loop5 corrections in progress over preserved incoming merged source; Stage10 is historical qualification.",
   "full_acceptance": false,
   "source": {
     "folders_head": "c22b13137202f7bf8c60b80c095a69748435bd6e",
@@ -9776,5 +9776,12 @@
       "retained metadata guidance"
     ],
     "corrections_source_qualification": "story-12-2-approved-sdk-source-qualification-review4/qualification.json"
+  },
+  "approved_sdk_review5": {
+    "status": "implementation-loop5",
+    "record": "_bmad-output/implementation-artifacts/review-12-2-approved-sdk-round5-20261020.json",
+    "preserved_source": "/tmp/story12-2-sdk-review5-keep-79zyj2r0",
+    "historical_stages_preserved": 10,
+    "external_merge_preserved": true
   }
 }

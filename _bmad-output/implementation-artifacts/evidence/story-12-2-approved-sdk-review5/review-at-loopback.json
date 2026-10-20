@@ -1,0 +1,216 @@
+{
+  "recorded_at_utc": "2026-10-20T14:53:39.879412+00:00",
+  "diff": {
+    "diff_file": "/tmp/story12-2-approved-sdk-review5-mmf1kc3q/approved-sdk-and-consumer.diff",
+    "bytes": 101350897,
+    "sha256": "2a6d50f848efa3041b2818fb1aadbc1703d2d179ff81d26dd865bff34e011602",
+    "files": 1281,
+    "root_consumer_baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "sdk_owner_baseline": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+    "scratch": "/tmp/story12-2-approved-sdk-review5-mmf1kc3q"
+  },
+  "all_layers_final_before_triage": true,
+  "raw_reports": {
+    "blind": "- `kB = 101,350,897 / 1,000 = 101,350.897; N = min(floor(sqrt(101,350.897) + 1), 10) = min(319, 10) = 10`.\n\n- `ReadModelBatchTerminalFence.cs:61` limits legacy retirement fences to 16,384 bytes despite repeating the permitted scope inside both anchors. A validated scope with escaped components produces 56,025 bytes, so recovery cannot seal its fence. Derive the bound from accepted inputs or reduce repeated scope material. Preserved probes: `/tmp/review5-blind-probes/Program.cs`; run `dotnet run --project /tmp/review5-blind-probes/repro.csproj --verbosity quiet`.\n\n- `ReadModelPendingBatchRecovery.cs:62` seals a terminal fence using the caller\u2019s scope before validating the original scope when the terminal marker lacks an anchor. The probe supplied another tenant and observed two auxiliary writes under that tenant before recovery returned unresolved. Validate the original boundary before any write.\n\n- `ReadModelBatchParticipantProof.cs:37` accepts malformed concurrency evidence in `MatchesAnchorAsync`. The probe returned `True` for `ConcurrencyMode=999` and `ExpectedETagDigest=\"malformed\"`. Apply the validation already present in `ReadAsync` before allowing auxiliary proof writes or anchor recovery.\n\n- `ReadModelPendingBatchRecovery.cs:109` bypasses the canonical compensation-key check in terminal legacy recovery. The probe supplied `ScratchCompensationKey=\"unrelated-key\"` with matching terminal anchors; recovery returned resolved and deleted the private envelopes. Require `ReadModelBatchKeys.ScratchCompensationKey(marker.ScopeHash)` before reading or mutating anything.\n\n- `OperationalStatusProjectionWriter.cs:18` aligns the manually constructed coordinator with the supplied `IUtcClock`, while the supplied batch store retains its independent clock. The probe used the existing optional clock argument with default store options: a model fresh under that clock was omitted, yet execution returned `Completed`. Make clock alignment explicit and enforce it; the new registration test masks this case by separately configuring both clocks.\n\n- `ReadModelBatchProtocol.cs:985` leaves a prepared transaction marker behind when preflight encounters a foreign envelope. The probe repeatedly returned `Indeterminate/foreign-envelope` without attempting a transaction. Consider settling proven CreateOnly conflicts through the existing compensation path; otherwise document and test this persistent pending disposition. Whether refusal is intentionally required here remains unresolved.\n\n- `DomainSharedProjectionRebuildDispatcher.cs:2859` silently skips already-cleaned owners whose retirement inventory is missing. This appears inconsistent with the guide\u2019s stated fail-closed behavior for historical missing inventories. Add a historical-session regression showing that repeated Abort cannot claim verified scratch cleanup while an undiscoverable late owner remains; return an explicit unavailable disposition where proof is insufficient.\n\n- `DomainSharedProjectionRebuildDispatcher.cs:2855` restarts retirement reconciliation at owner zero on every invocation, with further scans of every chunk and up to sixteen fragments per transport part. By inspection, cancellation can repeatedly prevent reaching later owners. Qualify request-sized recovery at supported capacity and preserve bounded progress if the scan cannot finish.\n\n- `SharedProjectionEpochCoordinator.PromotedCleanup.cs:22` obtains the configured maintenance timeout only when `_batches` is directly a `DaprReadModelStore`. Decorators and the in-memory implementation silently receive thirty seconds regardless of their configured reconciliation timeout. Pass the budget explicitly or expose it through a supported abstraction, and cover a decorated batch store.\n\n- `SharedProjectionEpochCoordinator.PromotedCleanup.cs:30` labels every `OperationCanceledException` as budget expiry. A dependency can throw cancellation before the maintenance budget expires, producing misleading diagnostics. Use the budget token\u2019s cancellation state when recording `\"budget-expired\"` and test dependency cancellation separately.",
+    "edge": "[\n  {\n    \"location\": \"references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.ScratchRecovery.cs:46-54\",\n    \"trigger_condition\": \"A competing scratch batch advances the fence before this retained batch installs it.\",\n    \"guard_snippet\": \"while (marker?.Status == ReadModelBatchMarkerStatus.Aborted) { batchScope = batchScope with { BatchId = RetainedLegacyScratchBatchId(batchScope) }; marker = await ReadMarkerAsync(batchScope, token); }\",\n    \"potential_consequence\": \"The compensated identity remains permanently Aborted; subsequent Accumulate retries cannot write the missing scratch.\"\n  }\n]",
+    "verification": "### Late transport fragments are unverified after terminal owner cleanup\n\n- **Changed surface:** `ReconcileRetiredPartitionOwnersAsync` discovers original transport batches through retained owner inventory at `references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DomainSharedProjectionRebuildDispatcher.cs:2872`.\n- **Impacted consumer or site:** repeated named `Abort` invokes this reconciliation after the session is already `Aborted` at `references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DomainSharedProjectionRebuildDispatcher.cs:2960`.\n- **Existing test evidence:** `Regression gap`. The late-orphan test reinstalls only a partition chunk at `references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/DomainPartitionedSharedProjectionRebuildTests.ReviewFour.cs:46`. The live counterpart also reinstalls only a chunk. `PausedNearLimitTransportFragmentCannotLandAfterAbort` resumes a writer paused before `inner.ExecuteAsync`, then checks logical absence (`DomainPartitionedSharedProjectionRebuildTests.cs:485`, helper at `:1933`). `NearLimitHighEntropyPartsReplayAndAbortReclaimPrivateTransport` checks ordinary cleanup and repeated Abort without reinstating transport data (`DomainPartitionedSharedProjectionRebuildTests.cs:517`). Repository-wide searches for `TransportFragmentKey`, `TransportPartKey`, `DomainSharedProjectionScratchRetirement`, and dispatcher/Abort references found these relevant tests; none of the tests I read exercises a fragment physically arriving after terminal cleanup.\n- **Missing verification:** after accepting a streamed owner and completing Abort cleanup, reinstate an authenticated original transport-fragment envelope, replace the coordinator, repeat named Abort, and assert physical absence plus preservation of the Open epoch bytes.\n- **Demonstration:** remove the transport loop at `DomainSharedProjectionRebuildDispatcher.cs:2872`. The checked tests still clean their original transport normally or replay only chunks. A fragment arriving after its accepted owner\u2019s cleanup flags advance would remain undiscovered.\n- **Consequence:** repeated Abort can report `AlreadyCompleted` while private transport payload remains physically stored.\n- **Disposition:** `patch` \u2014 extend `NamedAbortReconcilesLateOriginalChunkAfterTerminalCleanupFlagsAdvance` with a streamed-owner transport-fragment case using retained `TransportPartCount`."
+  },
+  "findings": [
+    {
+      "id": "R5-B1",
+      "claim": "Legacy terminal fence shrinks legal escaped scope capacity",
+      "location": "ReadModelBatchTerminalFence.cs:61",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "Parent reran the preserved probe: six independently validated 512-byte escaped scope components produce a 56025-byte canonical legacy two-anchor fence; SealAsync returns false at the 16384-byte v1 cap. This is the fence bound, distinct from fixed R4-B4 compensation-payload capacity."
+    },
+    {
+      "id": "R5-B2",
+      "claim": "Logical-key terminal recovery writes proof before original scope validation",
+      "location": "ReadModelPendingBatchRecovery.cs:62",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Parent reran a terminal receipt without an anchor under a different caller tenant. Recovery returns unresolved but first writes two retirement fence/index keys derived from that caller tenant. The original discovered scope hash must be checked before auxiliary writes, as it already is for exact-marker discovery."
+    },
+    {
+      "id": "R5-B3",
+      "claim": "Anchor matching accepts malformed participant concurrency proof",
+      "location": "ReadModelBatchParticipantProof.cs:37",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Parent first reproduced MatchesAnchorAsync true for mode999 and malformed ETag digest, then supplied a fully valid Completed terminal time/anchor/count: public recovery resolves true with that malformed proof. ReadAsync already rejects the same fields; anchor matching must share that validation before auxiliary mutation or compaction."
+    },
+    {
+      "id": "R5-B4",
+      "claim": "Terminal legacy recovery accepts a noncanonical compensation key",
+      "location": "ReadModelPendingBatchRecovery.cs:109",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Parent rerun supplies an unrelated compensation key with otherwise matching terminal legacy anchors. Recovery resolves and deletes both original private envelopes. The terminal branch lacks the canonical ScratchCompensationKey(scopeHash) guard already required by original compensation; apply it before mutation."
+    },
+    {
+      "id": "R5-B5",
+      "claim": "Manual business clock must silently reconfigure an independently supplied batch store",
+      "location": "Folders OperationalStatusProjectionWriter.cs:18",
+      "verdict": "false",
+      "route": "reject",
+      "evidence": "The probe plans under a 2020 IUtcClock and externally executes the plan using an explicitly default System-clock store, for which the absolute2021 deadline is expired. Completion while omitting that expired candidate is the SDK contract. The SDK guide at lines85-87 explicitly requires one clock for options and coordinator; the corrected writer does use its supplied clock, while an opaque independently supplied store cannot be reconfigured by it. The six regressions intentionally satisfy that documented precondition. No ignored configured clock remains at this location."
+    },
+    {
+      "id": "R5-B6",
+      "claim": "Transaction foreign-envelope refusal permanently poisons its own Prepared receipt",
+      "location": "ReadModelBatchProtocol.cs:985",
+      "verdict": "false",
+      "route": "reject",
+      "evidence": "Parent reproduced Indeterminate while a different batch remains Prepared, then settled that foreign batch with its original Resumable profile and retried the unchanged transaction: Completed. The foreign envelope does not prove an eventual CreateOnly conflict because its owner can still Abort. Refusal preserves the foreign immutable decision; it is not permanent poisoning. The first parent control accidentally changed the foreign batch profile and was Indeterminate; the corrected same-profile control is retained separately."
+    },
+    {
+      "id": "R5-B7",
+      "claim": "Terminal owner cleanup skips missing original retirement inventory",
+      "location": "DomainSharedProjectionRebuildDispatcher.cs:2859",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "Parent drove real production named Begin/Accumulate/Abort using the existing compiled test handler, removed only the retired owner inventory to model unavailable historical evidence, and restored captured original scratch. A replaced coordinator repeated Abort and returned AlreadyCompleted while physical scratch remained. Open bytes stayed intact, but missing proof was silently treated as verified cleanup instead of explicit unavailable/refusal."
+    },
+    {
+      "id": "R5-B8",
+      "claim": "Cancelled retirement scans require durable bounded-progress cursors",
+      "location": "DomainSharedProjectionRebuildDispatcher.cs:2855",
+      "verdict": "false",
+      "route": "reject",
+      "evidence": "The cited scan is finite under validated owner/chunk/part/fragment counts and propagates caller cancellation instead of returning successful cleanup. A caller cancelling every attempt can prevent work in any cooperative operation; no noncancelled request livelock or fixed request deadline was demonstrated. A sufficiently-lived later call revisits every owner, which is necessary because a late installer can land behind any earlier cursor. Capacity/latency redesign is separately excluded by frozen intent; no incorrect terminal success under the cited cancellation condition was established."
+    },
+    {
+      "id": "R5-B9",
+      "claim": "Decorated stores must inherit the batch ambiguous-dispatch timeout as maintenance budget",
+      "location": "SharedProjectionEpochCoordinator.PromotedCleanup.cs:22",
+      "verdict": "false",
+      "route": "reject",
+      "evidence": "ReadModelBatchOptions.ReconciliationTimeout explicitly governs durable reconciliation after ambiguous batch dispatch; the generic batch interface exposes no maintenance budget. The scheduler has its own bounded thirty-second fallback and reuses the Dapr timeout where available. Its constructor does not promise to inspect options hidden by decorators or the fake. No unbounded task or violated per-batch timeout occurs at this location; adding a new generic budget surface is not required for the established guarantee."
+    },
+    {
+      "id": "R5-B10",
+      "claim": "Dependency cancellation is mislabeled as maintenance budget expiry",
+      "location": "SharedProjectionEpochCoordinator.PromotedCleanup.cs:30",
+      "verdict": "low",
+      "route": "patch",
+      "evidence": "Parent injected dependency OperationCanceledException through the real promoted-maintenance read seam. The failure counter emits budget-expired after197ms with a30000ms maintenance budget. This directly misclassifies a common dependency cancellation; derive the existing closed reason tag from actual maintenance-token cancellation and retain the foreground retry disposition."
+    },
+    {
+      "id": "R5-E1",
+      "claim": "A competing owner CAS permanently poisons retained scratch retries",
+      "location": "SharedProjectionEpochCoordinator.ScratchRecovery.cs:46-54",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "Parent independently ran the public coordinator interleaving: A pauses after installing private ordinal0, B writes a different owner/key/batch successfully and advances the shared fence ETag, then A compensates and returns false. Three unchanged A retries also return false with its scratch absent. ScratchBatchIdentityAsync only handles legacy Aborted markers with compensation proof, so a newly retained Aborted deterministic identity never converges."
+    },
+    {
+      "id": "R5-V1",
+      "claim": "Late accepted transport-fragment cleanup lacks an executed regression",
+      "location": "DomainSharedProjectionRebuildDispatcher.cs:2872",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Pre-verified regression gap accepted from the filed source/test searches: existing late terminal-owner tests restore only chunks; near-limit fragment tests either run normal cleanup or resume a live writer before absence. Removing the new terminal transport discovery loop survives those assertions. Add an accepted streamed-owner late original transport-fragment case after terminal flags with replacement coordinator, physical absence and exact Open preservation."
+    }
+  ],
+  "groups": [
+    {
+      "id": "R5-G1",
+      "members": [
+        "R5-B1"
+      ],
+      "route": "bad_spec"
+    },
+    {
+      "id": "R5-G2",
+      "members": [
+        "R5-B2"
+      ],
+      "route": "patch"
+    },
+    {
+      "id": "R5-G3",
+      "members": [
+        "R5-B3"
+      ],
+      "route": "patch"
+    },
+    {
+      "id": "R5-G4",
+      "members": [
+        "R5-B4"
+      ],
+      "route": "patch"
+    },
+    {
+      "id": "R5-G5",
+      "members": [
+        "R5-B7"
+      ],
+      "route": "bad_spec"
+    },
+    {
+      "id": "R5-G6",
+      "members": [
+        "R5-B10"
+      ],
+      "route": "patch"
+    },
+    {
+      "id": "R5-G7",
+      "members": [
+        "R5-E1"
+      ],
+      "route": "bad_spec"
+    },
+    {
+      "id": "R5-G8",
+      "members": [
+        "R5-V1"
+      ],
+      "route": "patch"
+    }
+  ],
+  "notes": "Every individual verdict recorded before grouping. No unchanged exact location+claim matched an earlier row; no carried verdict. Parent probes are diagnostics, not acceptance. All source/evidence remains at Stage10 until subsequent explicit loopback.",
+  "positive_preservation": "/tmp/story12-2-sdk-review5-keep-79zyj2r0",
+  "owner_review_loop_iteration": 5,
+  "external_merge_preserved": {
+    "work": "/tmp/story12-2-review5-external-merge-plan-a9sniidj",
+    "files": [
+      {
+        "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelStore.OwnerProof.cs",
+        "baseline_exists": true,
+        "merge_exit": 0,
+        "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/0/restore-result",
+        "preserve_whole_current_on_conflict": false,
+        "current_sha256": "14d8fff7a9a84bf2d8580cbf4147059859656804149ca51baab68acbd8a33c57"
+      },
+      {
+        "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ReadModelBatchProtocol.cs",
+        "baseline_exists": true,
+        "merge_exit": 0,
+        "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/1/restore-result",
+        "preserve_whole_current_on_conflict": false,
+        "current_sha256": "1d1f7200e4dda895598d9659a7cdd6ad0512a44d5b1c537b9d6f8ea483359d87"
+      },
+      {
+        "path": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/ReadModelBatchRecoveryAnchor.cs",
+        "baseline_exists": true,
+        "merge_exit": 0,
+        "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/2/restore-result",
+        "preserve_whole_current_on_conflict": true,
+        "current_sha256": "564c030f60f03c87f2c7d011c80b0798e2fa31abf4fb8f1e2d754f5aae5fb91f",
+        "resolution": "Preserved incoming single-owner boundary guard; removed only this story's legacy-compensation/expiry additions during ordinary restore. Final positive snapshot retains both."
+      },
+      {
+        "path": "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+        "baseline_exists": true,
+        "merge_exit": 0,
+        "plan": "/tmp/story12-2-review5-external-merge-plan-a9sniidj/3/restore-result",
+        "preserve_whole_current_on_conflict": false,
+        "current_sha256": "0ececd50ad1f2fa53ada33fb65466eda6390251a120ccad4183b5e5a886e2bea"
+      }
+    ]
+  },
+  "external_source_audit": "/tmp/story12-2-review5-concurrent-recording-source-audit.json"
+}

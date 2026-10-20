@@ -1,0 +1,13 @@
+diff --git a/tmp/story12-2-approved-sdk-review5-mmf1kc3q/new/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelStore.OwnerProof.cs b/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelStore.OwnerProof.cs
+index 314e30a0..75cc99c9 100644
+--- a/tmp/story12-2-approved-sdk-review5-mmf1kc3q/new/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelStore.OwnerProof.cs
++++ b/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/DaprReadModelStore.OwnerProof.cs
+@@ -23,7 +23,7 @@ public sealed partial class DaprReadModelStore : IReadModelOwnerProofStore
+         try
+         {
+             reads++;
+-            RawStateEntry model = await accessor.ReadAsync(identity.ActorId + ":" + binding.SelectionSuffix, cancellationToken).ConfigureAwait(false);
++            RawStateEntry model = await accessor.ReadAsync(binding.SelectionKey?.Invoke(request) ?? identity.ActorId + ":" + binding.SelectionSuffix, cancellationToken).ConfigureAwait(false);
+             bytes += model.Value.Length;
+             if (!model.Exists) return new(null, "delivery_rebuild_required", reads, bytes);
+             if (model.Value.Length > 22_016 || ReadModelBatchEnvelope.IsEnvelope(model.Value.Span))
