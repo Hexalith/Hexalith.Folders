@@ -1,3 +1,4 @@
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
@@ -14,14 +15,15 @@ namespace Hexalith.Folders.Tests.Projections.OperationalStatus;
 internal static class NamedOperationalStatusRebuildFixture
 {
     public static async Task<ReadModelBatchResult> RebuildAsync(OperationalStatusTestStore store, string tenantId,
-        string folderId, string operationId, IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken token, Action? afterBegin = null, bool retryPartial = true)
+        string folderId, string operationId, IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken token, Action? afterBegin = null, bool retryPartial = true, IUtcClock? clock = null)
     {
         ServiceCollection services = new();
         services.AddSingleton<IReadModelStore>(store);
         services.AddSingleton<IReadModelBatchStore>(store);
         services.AddSingleton<IReadModelBatchStagingStore>(store);
         services.AddSingleton<IReadModelPendingBatchRecoveryStore>(store);
-        services.AddSingleton(new SharedProjectionEpochCoordinator(store, store));
+        services.AddSingleton(new SharedProjectionEpochCoordinator(store, store, store.BatchOptions.TimeProvider));
+        if (clock is not null) services.AddSingleton<IUtcClock>(clock);
         services.AddSingleton<IOrganizationStreamSequenceReader>(new OperationalStatusSequenceReader { Head = sourceHead });
         services.AddSingleton<OperationalStatusProjectionWriter>();
         services.AddSingleton<IAsyncDomainProjectionHandler, OperationalStatusProjectionHandler>();

@@ -20,7 +20,8 @@ public sealed class OperationalStatusRetentionTests
         OperationalStatusProjectionWriter writer = new(store, store, store, clock);
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken);
         operations.Where(item => item.Key != OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))
-            .ShouldAllBe(item => item.TimeToLive == TimeSpan.FromDays(1));
+            .ShouldAllBe(item => item.TimeToLive == null
+                && item.ExpiresAtUtc == OperationalStatusTestData.Now + OperationalStatusKeys.Retention);
         operations.Single(item => item.Key == OperationalStatusKeys.Checkpoint("tenant-a", "folder-a")).TimeToLive.ShouldBeNull();
         (await writer.ApplyAsync("tenant-a", "folder-a", "initial", sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         var reader = Reader(store, clock, sources.Length);
@@ -94,8 +95,9 @@ public sealed class OperationalStatusRetentionTests
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, sources.Length, TestContext.Current.CancellationToken);
         var task = operations.Single(item => item.Key == OperationalStatusKeys.Task("tenant-a", "folder-a", "task-a"));
         var receipt = operations.Single(item => item.Key == OperationalStatusKeys.Receipt("tenant-a", "folder-a", sources.Length));
-        task.TimeToLive.ShouldBe(TimeSpan.FromMinutes(1));
-        receipt.TimeToLive.ShouldBe(task.TimeToLive);
+        task.ExpiresAtUtc.ShouldBe(clock.UtcNow.AddMinutes(1));
+        receipt.ExpiresAtUtc.ShouldBe(task.ExpiresAtUtc);
+        task.TimeToLive.ShouldBeNull();
         (await writer.ApplyAsync("tenant-a", "folder-a", "almost-expired", sources, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
         (await Reader(store, clock, sources.Length).GetAsync(TaskRequest(), TestContext.Current.CancellationToken)).Status.ShouldBe(TaskStatusReadModelStatus.Available);
         clock.UtcNow += TimeSpan.FromMinutes(1);
@@ -103,26 +105,36 @@ public sealed class OperationalStatusRetentionTests
     }
 
     [Fact]
-    public async Task DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync()
+    public async Task StagedSdkManifestCannotInstallRowsAfterTheirOriginalSourceDeadlineAsync()
     {
         OperationalStatusTestStore store = new();
         OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddDays(399) };
+        store.BatchOptions.TimeProvider = clock;
         var sources = OperationalStatusTestData.Sources([OperationalStatusTestData.Created()]);
         var writer = new OperationalStatusProjectionWriter(store, store, store, clock);
         var operations = await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, 1, TestContext.Current.CancellationToken);
-        ReadModelBatch staged = new(new("statestore", "tenant-a", "folders", "folder-a", "operational-status", "delayed-ttl-diagnostic"), operations)
+        ReadModelBatch staged = new(new("statestore", "tenant-a", "folders", "folder-a", "operational-status", "delayed-source-deadline"), operations)
         { RetainManifestForRecovery = true };
         (await store.Inner.StageAsync(staged, TestContext.Current.CancellationToken)).Status.ShouldBe(ReadModelBatchStagingStatus.Prepared);
         clock.UtcNow = OperationalStatusTestData.Now.AddDays(401);
-        // Fresh domain planning correctly omits expired values. SDK recovery reuses the sealed
-        // relative TTL, demonstrating the separate missing absolute-deadline capability.
+        // The retained manifest keeps the source deadline even when the domain cannot re-plan it.
         (await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, 1, TestContext.Current.CancellationToken))
             .ShouldHaveSingleItem().Key.ShouldBe(OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"));
         (await store.Inner.CommitAsync(staged, TestContext.Current.CancellationToken)).Status.ShouldBe(ReadModelBatchStagingStatus.Committed);
-        store.Inner.Snapshot<FolderLifecycleStatusReadModelSnapshot>("statestore", OperationalStatusKeys.Lifecycle("tenant-a", "folder-a"))
-            .ShouldNotBeNull();
-        staged.Operations.Single(item => item.Key == OperationalStatusKeys.Lifecycle("tenant-a", "folder-a"))
-            .TimeToLive.ShouldBe(TimeSpan.FromDays(1));
+        string lifecycle = OperationalStatusKeys.Lifecycle("tenant-a", "folder-a");
+        foreach (string expired in new[] { lifecycle, OperationalStatusKeys.Evidence(lifecycle),
+            OperationalStatusKeys.Receipt("tenant-a", "folder-a", 1),
+            OperationalStatusKeys.Message("tenant-a", "folder-a", sources[0].MessageId) })
+        {
+            store.Inner.SnapshotRaw("statestore", expired).ShouldBeNull();
+        }
+        staged.Operations.Single(item => item.Key == lifecycle).ExpiresAtUtc
+            .ShouldBe(OperationalStatusTestData.Now + OperationalStatusKeys.Retention);
+        store.Inner.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))
+            .ShouldNotBeNull().Sequence.ShouldBe(1);
+        (await store.Inner.CommitAsync(staged, TestContext.Current.CancellationToken)).Status
+            .ShouldBe(ReadModelBatchStagingStatus.Committed);
+        store.Inner.SnapshotRaw("statestore", lifecycle).ShouldBeNull();
     }
 
     private static EventStoreOperationalStatusReadModel Reader(OperationalStatusTestStore store, OperationalStatusClock clock, long head)

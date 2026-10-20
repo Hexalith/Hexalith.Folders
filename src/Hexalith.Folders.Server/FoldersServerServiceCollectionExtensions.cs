@@ -1,3 +1,4 @@
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Client.Registration;
 using Hexalith.EventStore.Client.Handlers;
 using Hexalith.EventStore.DomainService;
@@ -7,6 +8,7 @@ using Hexalith.Folders.Aggregates.Organization;
 using Hexalith.Folders.Authorization;
 using Hexalith.Folders.Projections.SemanticIndexing;
 using Hexalith.Folders.Projections.OperationalStatus;
+using Hexalith.Folders.Projections.TenantAccess;
 using Hexalith.Folders.Queries.ContextSearch;
 using Hexalith.Folders.Queries.FileContext;
 using Hexalith.Folders.Server.Authentication;
@@ -56,7 +58,8 @@ public static class FoldersServerServiceCollectionExtensions
         services.AddKnownEventPayload<ProviderBindingConfigured>();
         services.AddEventStoreGatewayClient();
         services.TryAddSingleton<FolderEventReplay>();
-        services.TryAddSingleton<OperationalStatusProjectionWriter>();
+        services.TryAddSingleton(static sp => new OperationalStatusProjectionWriter(
+            sp.GetRequiredService<SharedProjectionEpochCoordinator>(), sp.GetService<IUtcClock>()));
         services.AddHttpClient<IOrganizationStreamSequenceReader, DaprOrganizationStreamSequenceReader>();
         services.TryAddSingleton<DomainProjectionCatalogRegistry>();
         services.AddOptions<Hexalith.EventStore.Client.Projections.ProjectionDispatchOptions>()

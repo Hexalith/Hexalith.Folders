@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 
 using Hexalith.EventStore.Client.Events;
+using Hexalith.EventStore.Client.Projections;
 using Hexalith.EventStore.Contracts.Projections;
 using Hexalith.EventStore.DomainService;
 using Hexalith.EventStore.Testing.Fakes;
@@ -51,9 +52,41 @@ public sealed class OperationalStatusProjectionHandlerTests
         int before = store.Count;
         var plan = await handler.PrepareRebuildAsync(request, "rebuild-a", TestContext.Current.CancellationToken);
         plan.StoreName.ShouldBe(OperationalStatusKeys.StoreName);
-        plan.Operations.Where(static operation => operation.TimeToLive is not null).ShouldAllBe(static operation => operation.TimeToLive > TimeSpan.Zero && operation.TimeToLive <= OperationalStatusKeys.Retention);
+        plan.Operations.Where(operation => operation.Key != OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))
+            .ShouldAllBe(operation => operation.TimeToLive == null
+                && operation.ExpiresAtUtc == OperationalStatusTestData.Now + OperationalStatusKeys.Retention);
         store.Count.ShouldBe(before);
         handler.RebuildSemantics.ShouldBe(DomainProjectionRebuildSemantics.FullReplay);
+    }
+
+    [Fact]
+    public async Task NamedPartitionRoundTripKeepsSourceDeadlineAfterPlanningAndCommitAreDelayedAsync()
+    {
+        OperationalStatusTestStore store = new();
+        OperationalStatusClock clock = new() { UtcNow = OperationalStatusTestData.Now.AddDays(399) };
+        store.BatchOptions.TimeProvider = clock;
+        var handler = new OperationalStatusProjectionHandler(new(store, store, store, clock));
+        ProjectionRequest request = OperationalStatusTestData.Projection([OperationalStatusTestData.Created()]);
+        var identity = new DomainSharedProjectionRebuildIdentity("tenant-a", "folders",
+            OperationalStatusKeys.ProjectionType, "retained-partition", "catalog");
+        var chunks = await handler.PreparePartitionChunksAsync(identity, request, TestContext.Current.CancellationToken);
+        clock.UtcNow = OperationalStatusTestData.Now.AddDays(401);
+        var cursor = new OperationalStatusPartitionCursor(chunks);
+        List<ReadModelBatchOperation> operations = [];
+        await foreach (var operation in handler.StreamFinalizedOperationsAsync(identity, cursor, TestContext.Current.CancellationToken))
+            operations.Add(operation);
+        string checkpoint = OperationalStatusKeys.Checkpoint("tenant-a", "folder-a");
+        operations.Where(operation => operation.Key != checkpoint).ShouldNotBeEmpty();
+        operations.Where(operation => operation.Key != checkpoint)
+            .ShouldAllBe(operation => operation.ExpiresAtUtc == OperationalStatusTestData.Now + OperationalStatusKeys.Retention
+                && operation.TimeToLive == null);
+        operations.Single(operation => operation.Key == checkpoint).ExpiresAtUtc.ShouldBeNull();
+        var batch = new ReadModelBatch(new("statestore", "tenant-a", "folders", "folder-a",
+            OperationalStatusKeys.ProjectionType, "delayed-partition"), operations);
+        (await store.Inner.ExecuteAsync(batch, TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+        foreach (var operation in operations.Where(operation => operation.Key != checkpoint))
+            store.Inner.SnapshotRaw("statestore", operation.Key).ShouldBeNull();
+        store.Inner.Snapshot<OperationalStatusCheckpoint>("statestore", checkpoint).ShouldNotBeNull().Sequence.ShouldBe(1);
     }
 
     [Fact]
