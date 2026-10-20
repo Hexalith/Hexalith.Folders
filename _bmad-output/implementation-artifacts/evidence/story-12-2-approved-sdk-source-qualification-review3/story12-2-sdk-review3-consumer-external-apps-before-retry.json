@@ -1,0 +1,24 @@
+[
+  {
+    "command": [
+      "aspire",
+      "ps",
+      "--format",
+      "Json"
+    ],
+    "exit_code": 0,
+    "stdout": "[\n  {\n    \"appHostPath\": \"/home/administrator/projects/hexalith/platform/apphost.cs.csproj\",\n    \"appHostPid\": 2545438,\n    \"status\": \"running\",\n    \"sdkVersion\": \"13.6.1\",\n    \"cliPid\": null,\n    \"dashboardUrl\": null\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "ps",
+      "--format",
+      "{{.Names}}"
+    ],
+    "exit_code": 0,
+    "stdout": "dapr-scheduler-mtls-qqtwvwzu\ndapr-placement-mtls-hdwwahta\ndapr-sentry-augvqmem\nworks-sdk415-dbf15d7c2a884bac9af067dd189357c6\np1r-isolation-b4c2992e6cb94b52808f33fefdc0a3ac-sdk\np1r-isolation-b4c2992e6cb94b52808f33fefdc0a3ac-daemon\ndapr_placement\ndapr_scheduler\ndapr_redis\ndapr_zipkin\n",
+    "stderr": ""
+  }
+]

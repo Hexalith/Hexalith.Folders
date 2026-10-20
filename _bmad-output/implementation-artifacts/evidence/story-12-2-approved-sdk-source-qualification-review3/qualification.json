@@ -1,0 +1,235 @@
+{
+  "schema": "hexalith-folders-approved-sdk-source-qualification/v1",
+  "recorded_at_utc": "2026-10-20T12:47:49.553912+00:00",
+  "status": "Approved SDK review-three corrections and Folders source adoption locally qualified; pending independent review. Whole Story12.2 remains in progress.",
+  "full_acceptance": false,
+  "approval": "User approved proposal-12-2-sdk-expiry-and-scratch-recovery.md with I approve on 2026-10-20; no Git, publication, pin or deployment authorization.",
+  "sdk_packet": "../../../../references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review3/qualification.json",
+  "sdk_results": {
+    "final_runs": {
+      "client-focused": {
+        "total": 294,
+        "passed": 294,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "client-full": {
+        "total": 1816,
+        "passed": 1814,
+        "failed": 0,
+        "skipped": 2,
+        "errors": 0,
+        "not-run": 0
+      },
+      "domain-focused": {
+        "total": 64,
+        "passed": 64,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "domain-full": {
+        "total": 1059,
+        "passed": 1059,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-review3": {
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-expiry-scratch": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-read-model-batch": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-shared-epoch": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    "unique_live_cases": 56,
+    "child_workers": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "distinct_exited_owner_recovery_pairs": 6
+    },
+    "required_live_skips": 0,
+    "independent_audit": "story12-2-sdk-review3-independent-audit.json",
+    "independent_raw_worker_audit": "story12-2-sdk-review3-independent-worker-audit.json",
+    "note": "All final required cases have zero skips; prior failed and interrupted attempts remain in the SDK diagnostics. Counts are taken from final XML rather than inherited from earlier packets."
+  },
+  "consumer_results": {
+    "components_passed": 4195,
+    "existing_optional_domain_skips": 2,
+    "failures": 0,
+    "results": "story12-2-sdk-review3-consumer-final-components.json",
+    "live_passed": 1,
+    "live_failed": 0,
+    "live_skipped": 0,
+    "live_seconds": 337.824,
+    "live_xml": "story12-2-sdk-review3-consumer-live.xml",
+    "live_log": "story12-2-sdk-review3-consumer-live.log",
+    "earlier_failed_live_attempts": "diagnostics/consumer-live",
+    "earlier_failed_live_count": 2,
+    "earlier_failed_live_note": "Attempt1 passed physical-retention, SDK process recovery and provider pipeline milestones, then failed during second EventStore restart: DCP process-stop timeout. Attempt2 timed out waiting WorkspaceLockReleased: Lock completed, Release domain evaluation succeeded, then terminal Rejected at EventsStored with redacted DaprApiException amid native actor429 authority/archive errors. Exact persistence-error cause and delayed-shutdown cause remain unclassified. Failed XML/logs, command timeline and zero-drift source/binary audits are retained. The unchanged-binary final pass does not erase or classify either failure as a flake."
+  },
+  "consumer_source": {
+    "inventory": "story12-2-sdk-review3-consumer-final-source.json",
+    "files": 1661,
+    "assembly_files": 62,
+    "pdb_inspection": "story12-2-sdk-review3-consumer-pdb-source-inspection.json",
+    "pdb_audit": "story12-2-sdk-review3-consumer-pdb-audit.json",
+    "mismatches": 0,
+    "after_live_audit": "story12-2-sdk-review3-consumer-after-live-audit.json",
+    "note": "All captured source and binary hashes remained unchanged through component and live runs. SDK and consumer dependency binary groups are recorded separately."
+  },
+  "builds": [
+    {
+      "id": "restore",
+      "command": [
+        "dotnet",
+        "restore",
+        "Hexalith.Folders.slnx",
+        "-p:Configuration=Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false"
+      ],
+      "exit_code": 0,
+      "seconds": 2.317681312561035,
+      "log": "/tmp/story12-2-sdk-review3-consumer-restore.log"
+    },
+    {
+      "id": "build",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.slnx",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "--no-restore",
+        "-m:1"
+      ],
+      "exit_code": 0,
+      "seconds": 32.65825867652893,
+      "log": "/tmp/story12-2-sdk-review3-consumer-build.log"
+    }
+  ],
+  "checks": {
+    "format_and_analyzer_source_carry": "story12-2-sdk-review3-consumer-format-carry.json",
+    "retained_qualification": "../story-12-2-approved-sdk-source-qualification-20261020/qualification.json",
+    "note": "The seven included C# files match the previous format/analyzer-qualified bytes. The new serialized source build completed with zero warnings/errors."
+  },
+  "live_command": {
+    "command": [
+      "dotnet",
+      "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "-class",
+      "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+      "-showLiveOutput",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review3-consumer-live.xml"
+    ],
+    "environment": {
+      "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+    },
+    "exit_code": 0
+  },
+  "package_gate": {
+    "command": [
+      "pwsh",
+      "-File",
+      "tests/tools/run-contract-spine-gates.ps1"
+    ],
+    "exit_code": 1,
+    "blocker": "CS0117: published EventStore3.125.1 ReadModelBatchOperation lacks WriteExpiring",
+    "log": "../story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-contract-gate.log",
+    "retained_for_unchanged_api_and_candidate": "WriteExpiring API and frozen package/PD10 candidate inventory are unchanged; this packet does not claim package publication or requalification."
+  },
+  "contract_fallback": {
+    "command": [
+      "pwsh",
+      "-File",
+      "tests/tools/run-contract-spine-gates.ps1",
+      "-NoRestore"
+    ],
+    "exit_code": 1,
+    "contract_total": 146,
+    "contract_passed": 143,
+    "contract_failed": 3,
+    "client_passed": 36,
+    "failures": [
+      "Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority",
+      "Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest",
+      "Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte"
+    ],
+    "log": "../story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-contract-runtime.log",
+    "note": "Historical frozen candidate inventory/generator evidence is preserved; no release requalification or package update is claimed.",
+    "retained_for_unchanged_api_and_candidate": "WriteExpiring API and frozen package/PD10 candidate inventory are unchanged; this packet does not claim package publication or requalification."
+  },
+  "performance": "performance.json",
+  "cleanup": "cleanup.json",
+  "historical_evidence": {
+    "all_six_stages_preserved": true,
+    "pre_review_diagnostics": "../story-12-2-approved-sdk-work-in-progress.json",
+    "sdk_historical_packet_unchanged": true,
+    "notes": [
+      "Initial rebuilt rows had no TTL; the serialized partition conversion was fixed and its RED/GREEN proof is retained in pre-review diagnostics.",
+      "The second pre-review Folders live run timed out awaiting WorkspaceLockAcquired before release; destroyed command state prevents terminal classification. The later current-source live pass does not erase that failed attempt."
+    ],
+    "all_eight_prior_stages_preserved": true,
+    "previous_consumer_packets_unchanged": true,
+    "historical_packet_audit": "story12-2-review3-historical-packet-audit.json"
+  },
+  "remaining_story_acceptance": [
+    "SDK owner-identity capability beyond10000, qualified consumption and Task36 rerun",
+    "Release/package and frozen PD10 source-inventory requalification",
+    "SM4 acknowledgement p95:4654.709ms versus1000ms on this run; earlier observations preserved",
+    "Independent review pending for approved SDK/consumer scope at packet seal; whole-story review remains separate",
+    "Latency observation remains open: workers_operational_delivery p95=1222.518ms versus1000.0ms on this run; concurrent other-workspace activity is recorded without causal attribution",
+    "Latency observation remains open: status_read p95=639.668ms versus500.0ms on this run; concurrent other-workspace activity is recorded without causal attribution"
+  ],
+  "boundaries": [
+    "Redis production profile is Resumable; forced TransactionQualified partial-write/refusal is diagnostic only.",
+    "SDK pending owner-scratch recovery crosses exited OS processes; sidecar replacement during that interruption is not claimed.",
+    "No source events, legal-hold/content-cleanup authority, public v2, dependency versions, recorded gitlink, Git history/index, package release or deployment changed."
+  ],
+  "evidence_retention": {
+    "attributes": ".gitattributes",
+    "rule": "* -text",
+    "manifest": "SHA256SUMS"
+  },
+  "sdk_packet_sha256_manifest": "9a6dcfe3aadff56e58668550960832aa7458f6b4f71b235c1c57f5c7a55c3aa9",
+  "heads": {
+    "root": "eed43a86c94b49e030b233beb37fe6128456f649",
+    "sdk": "b1237244f1ef15fcb5c3889c9787ad4ff9b3711b",
+    "recorded_sdk_gitlink": "160000 commit d4d05f871991ec2af305267f59dcefeae3f127ed\treferences/Hexalith.EventStore"
+  }
+}

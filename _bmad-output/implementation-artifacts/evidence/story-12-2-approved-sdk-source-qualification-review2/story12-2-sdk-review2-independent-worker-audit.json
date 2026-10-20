@@ -1,0 +1,49 @@
+{
+  "child_invocations": 12,
+  "distinct_recovery_end_states": [
+    {
+      "pid": 3513856,
+      "epoch_phase": 0,
+      "active_generation": 0,
+      "session_phase": 4,
+      "private_absent": true
+    },
+    {
+      "pid": 3515219,
+      "epoch_phase": 0,
+      "active_generation": 0,
+      "session_phase": 4,
+      "private_absent": true
+    },
+    {
+      "pid": 3515650,
+      "epoch_phase": 0,
+      "active_generation": 1,
+      "session_phase": 4,
+      "private_absent": true
+    },
+    {
+      "pid": 3516238,
+      "epoch_phase": 0,
+      "active_generation": 0,
+      "session_phase": 4,
+      "private_absent": true
+    },
+    {
+      "pid": 3517251,
+      "epoch_phase": 0,
+      "active_generation": 1,
+      "session_phase": 4,
+      "private_absent": true
+    },
+    {
+      "pid": 3514937,
+      "epoch_phase": 0,
+      "active_generation": 1,
+      "session_phase": 4,
+      "private_absent": true
+    }
+  ],
+  "zero_required_skips": true,
+  "raw_decoding_verified": true
+}

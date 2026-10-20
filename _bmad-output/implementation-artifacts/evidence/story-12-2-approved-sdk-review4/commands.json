@@ -1,0 +1,82 @@
+[
+  {
+    "probe": "b1",
+    "command": [
+      "dotnet",
+      "/tmp/story12-2-review4-parent-probes/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+      "b1"
+    ],
+    "exit_code": 0,
+    "stdout": "result=Completed; own-envelope-remains=True; logical-visible=False; raw-bytes=221\n",
+    "stderr": ""
+  },
+  {
+    "probe": "b3",
+    "command": [
+      "dotnet",
+      "/tmp/story12-2-review4-parent-probes/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+      "b3"
+    ],
+    "exit_code": 0,
+    "stdout": "helper-stage=Prepared\nhelper-abort=Aborted\ndelayed=installer exited\norphan=True; retirement-anchors=0; recovered=False; reason=invalid-recovery-evidence\n",
+    "stderr": ""
+  },
+  {
+    "probe": "b4",
+    "command": [
+      "dotnet",
+      "/tmp/story12-2-review4-parent-probes/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+      "b4"
+    ],
+    "exit_code": 0,
+    "stdout": "original-manifest-bytes=801760\nstage=Prepared\nresolved=False; reason=legacy-scratch-evidence-too-large; private-remains=True\n",
+    "stderr": ""
+  },
+  {
+    "probe": "b5",
+    "command": [
+      "dotnet",
+      "/tmp/story12-2-review4-parent-probes/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+      "b5"
+    ],
+    "exit_code": 0,
+    "stdout": "writer-configured-clock=2040-01-01T00:00:00.0000000+00:00; coordinator-clock=2026-10-20T13:10:54.4972941+00:00; shares-clock=False\nproper-expired-read-available=True\nwriter-expired-read-error=Hexalith.EventStore.Client.Projections.SharedProjectionReadUnavailableException: The shared projection read is unavailable.\n ---> System.InvalidOperationException: A selected copy-on-write value is missing.\n   --- End of inner exception stack trace ---\n   at Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator.ReadGenerationAsync[TValue](SharedProjectionScope scope, Int64 generation, String logicalKey, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs:line 2873\n   at Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator.ReadAsync[TValue](SharedProjectionScope scope, String logicalKey, CancellationToken cancellationToken) in /home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs:line 2479\n   at Program.<Main>$(String[] args) in /tmp/story12-2-review4-parent-probes/Program.cs:line 85\n",
+    "stderr": ""
+  },
+  {
+    "probe": "b6",
+    "command": [
+      "dotnet",
+      "/tmp/story12-2-review4-parent-probes/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+      "b6"
+    ],
+    "exit_code": 0,
+    "stdout": "fake-write=Completed\ndapr-write=Completed\nfake-value=False; fake-etag-present=True; dapr-value=False; dapr-etag-present=False\n",
+    "stderr": ""
+  },
+  {
+    "probe": "b9",
+    "command": [
+      "dotnet",
+      "/tmp/story12-2-review4-parent-probes/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.dll",
+      "b9"
+    ],
+    "exit_code": 0,
+    "stdout": "cleanup-wait-returned-success=True; remaining-cleanup-pages=1; status-degraded=False; status-building=False\n",
+    "stderr": ""
+  },
+  {
+    "probe": "b2-e1-e2",
+    "command": [
+      "dotnet",
+      "run",
+      "--no-build",
+      "--project",
+      "/tmp/review4-completed-orphan-repro/repro.csproj",
+      "-v:q"
+    ],
+    "exit_code": 0,
+    "stdout": "Helper => Completed\nErase scratch => True\nMarker after cleanup => False\nDelayed => installer exited\nPrivate raw => {\"$hxrmb\":1,\"cand\":\"eyJjb3VudCI6MX0=\",\"del\":false,\"fp\":\"v1:MpVJt7Rj8RsupgQRItrWxRJ_k9tGHGIKBn3azbfRpT0\",\"ord\":0,\"prev\":null,\"scope\":\"ZOHBDZzQmkP0YkFKIv-eD3Yr1svcVyX6y5OoWY0z4XQ\"}\nRecovery => False / invalid-recovery-evidence\n",
+    "stderr": ""
+  }
+]

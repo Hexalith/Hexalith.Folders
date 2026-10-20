@@ -1,0 +1,33 @@
+{
+  "observations": [
+    {
+      "command": [
+        "aspire",
+        "ps",
+        "--format",
+        "Json"
+      ],
+      "exit_code": 0,
+      "stdout": "[]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "ps",
+        "--format",
+        "{{.Names}}"
+      ],
+      "exit_code": 0,
+      "stdout": "works-sdk415-5641646347184769b7c8056d1331cee1\np1r-isolation-9f58d2d0a94d49d080d3d28f62d6390b-sdk\np1r-isolation-9f58d2d0a94d49d080d3d28f62d6390b-daemon\ndapr_placement\ndapr_scheduler\ndapr_redis\ndapr_zipkin\n",
+      "stderr": ""
+    }
+  ],
+  "fixture_run_ids": [
+    "d76ad7af0ec3fcff"
+  ],
+  "fixture_redis_and_provider_containers_absent": true,
+  "successful_test_fixture_disposal": true,
+  "unrelated_running_applications_preserved": true,
+  "note": "Other workspace applications started during this qualification. Inventory is retained; exact fixture Redis/provider names are absent and final test including teardown passes. Cleanup does not assert an empty machine or ownership of unrelated CLI AppHosts."
+}

@@ -1,0 +1,26 @@
+using System.Text.Json.Nodes;
+using Hexalith.EventStore.Client.Projections;
+using Hexalith.EventStore.Testing.Fakes;
+var store=new InMemoryReadModelStore();
+var scope=new SharedProjectionScope("statestore","tenant","widget","index",["writer"]);
+var c=new SharedProjectionEpochCoordinator(store,store);
+await c.RegisterWriterAsync(scope,"writer");
+await c.BeginAsync(scope,"legacy","inventory",new Dictionary<string,long>());
+var entry=await store.GetAsync<SharedProjectionEpochState>(scope.StoreName,scope.StateKey);
+var batch=new ReadModelBatch(new(scope.StoreName,scope.TenantId,scope.Domain,scope.Family,scope.Family,"scratch"),[ReadModelBatchOperation.Write("private",new JsonObject{["count"]=1},ReadModelBatchConcurrency.CreateOnly),ReadModelBatchOperation.Write(scope.StateKey,entry.Value!,ReadModelBatchConcurrency.Match(entry.ETag!))]);
+var paused=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+int installs=0;
+store.BatchFaultHook=async(phase,ordinal,token)=>{if(phase==ReadModelBatchPhase.BeforeInstallOperation && ordinal==0 && Interlocked.Increment(ref installs)==1){paused.SetResult();await release.Task;} if(phase==ReadModelBatchPhase.BeforeCommit)throw new IOException("stop B");};
+var a=store.ExecuteAsync(batch);
+await paused.Task;
+try{await store.ExecuteAsync(batch);}catch(Exception ex){Console.WriteLine("B: "+ex.Message);}
+store.BatchFaultHook=null;
+Console.WriteLine("reconcile retry: "+await c.TryWriteScratchAsync(scope,"legacy","private",new JsonObject{["count"]=1},"scratch",ReadModelBatchConcurrency.CreateOnly));
+Console.WriteLine("marker before abort: "+(store.SnapshotRaw(scope.StoreName,batch.Scope.ComputeMarkerKey())!=null));
+await c.AbortAsync(scope,"legacy",(_,_,_)=>Task.FromResult<IReadOnlyList<ReadModelBatchOperation>>([]));
+release.SetResult();
+Console.WriteLine("A result: "+await a);
+Console.WriteLine("private raw: "+System.Text.Encoding.UTF8.GetString(store.SnapshotRaw(scope.StoreName,"private")??[]));
+Console.WriteLine("marker exists: "+(store.SnapshotRaw(scope.StoreName,batch.Scope.ComputeMarkerKey())!=null));
+Console.WriteLine("recovery: "+await store.RecoverPendingAsync(batch.Scope,"private"));

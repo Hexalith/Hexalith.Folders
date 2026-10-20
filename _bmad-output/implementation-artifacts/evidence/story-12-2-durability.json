@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "story": "12.2",
-  "status": "Stage7 source qualification preserved; independent SDK review2 found additional recovery/compensation defects. Owner implementation loop2 in progress; full acceptance remains open.",
+  "status": "Stage10: approved SDK review-four corrections and Folders clock/source adoption locally qualified; independent scope review pending. Whole Story12.2 remains in progress.",
   "full_acceptance": false,
   "source": {
     "folders_head": "c22b13137202f7bf8c60b80c095a69748435bd6e",
@@ -9342,14 +9342,264 @@
         "526fd223fc7e6df98be0fd1624076680755bf8329198cf489f04a24c60134acb",
         "8d3d4de3bc9ef4863e6f7ad17d519bfb32d9309120f03c3b6dea17652a6b026d"
       ]
+    },
+    {
+      "stage": 8,
+      "name": "Approved SDK review-two corrections and Folders source qualification",
+      "date": "2026-10-20",
+      "full_acceptance": false,
+      "qualification": "story-12-2-approved-sdk-source-qualification-review2/qualification.json",
+      "consumer_component_passed": 4195,
+      "consumer_existing_optional_skips": 2,
+      "live": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 306.591
+      },
+      "sdk": {
+        "client_passed": 1756,
+        "client_optional_skips": 2,
+        "domain_default_parallel": {
+          "passed": 1056,
+          "failed": 1,
+          "skipped": 0
+        },
+        "domain_serial_same_binary": {
+          "passed": 1057,
+          "failed": 0,
+          "skipped": 0
+        },
+        "unique_live_cases": 51,
+        "expiry_scratch_unique_case_union": 37,
+        "final_child_workers_passed": 12,
+        "required_live_skips": 0,
+        "independent_audit": "story12-2-sdk-review2-independent-audit.json",
+        "independent_raw_worker_audit": "story12-2-sdk-review2-independent-worker-audit.json",
+        "note": "Failed parallel Domain and initial live34/37 attempts remain in SDK packet; same-binary serialized Domain and affected final live9/9 qualify recorded union, not a nonexistent single all37 pass."
+      },
+      "acknowledgement_p95_ms": 4359.855,
+      "acknowledgement_budget_ms": 1000,
+      "independent_review": "pending for approved SDK/consumer scope; whole-story review separate",
+      "earlier_stages_canonical_sha256": [
+        "93113fe7ba7b07f208ccdfea6aa2da966d5a6e715c529fe226b82cf82456b059",
+        "e808551718fa106d4469e0fdf3f3c4336efb7a5866bfcc15303e8a6022376a2e",
+        "d00d469c2656b9eef5cc6431a1bdeb483912c0782cb1eb72b76e592cf3409c70",
+        "78d22e9a760a5fda7a15a71228a48c8d5b65e419e14737b549c017d420af6ab8",
+        "526fd223fc7e6df98be0fd1624076680755bf8329198cf489f04a24c60134acb",
+        "8d3d4de3bc9ef4863e6f7ad17d519bfb32d9309120f03c3b6dea17652a6b026d",
+        "5b3c1b642b2a3273054c2ef8df0f7019226793b05cde0c280ba96e49424d1fbb"
+      ]
+    },
+    {
+      "stage": 9,
+      "name": "Approved SDK review-three corrections and Folders source qualification",
+      "date": "2026-10-20",
+      "full_acceptance": false,
+      "qualification": "story-12-2-approved-sdk-source-qualification-review3/qualification.json",
+      "consumer_component_passed": 4195,
+      "consumer_existing_optional_skips": 2,
+      "live": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 337.824
+      },
+      "sdk": {
+        "final_runs": {
+          "client-focused": {
+            "total": 294,
+            "passed": 294,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "client-full": {
+            "total": 1816,
+            "passed": 1814,
+            "failed": 0,
+            "skipped": 2,
+            "errors": 0,
+            "not-run": 0
+          },
+          "domain-focused": {
+            "total": 64,
+            "passed": 64,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "domain-full": {
+            "total": 1059,
+            "passed": 1059,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-review3": {
+            "total": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-expiry-scratch": {
+            "total": 42,
+            "passed": 42,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-read-model-batch": {
+            "total": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-shared-epoch": {
+            "total": 8,
+            "passed": 8,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          }
+        },
+        "unique_live_cases": 56,
+        "child_workers": {
+          "passed": 12,
+          "failed": 0,
+          "skipped": 0,
+          "distinct_exited_owner_recovery_pairs": 6
+        },
+        "required_live_skips": 0,
+        "independent_audit": "story12-2-sdk-review3-independent-audit.json",
+        "independent_raw_worker_audit": "story12-2-sdk-review3-independent-worker-audit.json",
+        "note": "All final required cases have zero skips; prior failed and interrupted attempts remain in the SDK diagnostics. Counts are taken from final XML rather than inherited from earlier packets."
+      },
+      "acknowledgement_p95_ms": 4654.709,
+      "acknowledgement_budget_ms": 1000,
+      "independent_review": "pending for approved SDK/consumer scope; whole-story review separate",
+      "earlier_stages_canonical_sha256": [
+        "93113fe7ba7b07f208ccdfea6aa2da966d5a6e715c529fe226b82cf82456b059",
+        "e808551718fa106d4469e0fdf3f3c4336efb7a5866bfcc15303e8a6022376a2e",
+        "d00d469c2656b9eef5cc6431a1bdeb483912c0782cb1eb72b76e592cf3409c70",
+        "78d22e9a760a5fda7a15a71228a48c8d5b65e419e14737b549c017d420af6ab8",
+        "526fd223fc7e6df98be0fd1624076680755bf8329198cf489f04a24c60134acb",
+        "8d3d4de3bc9ef4863e6f7ad17d519bfb32d9309120f03c3b6dea17652a6b026d",
+        "5b3c1b642b2a3273054c2ef8df0f7019226793b05cde0c280ba96e49424d1fbb",
+        "92e0bad6617037743b28aeb105c5c9da715eae13ee7df9cfb6a247450d1a8f38"
+      ]
+    },
+    {
+      "stage": 10,
+      "name": "Approved SDK review-four corrections and Folders clock/source qualification",
+      "date": "2026-10-20",
+      "full_acceptance": false,
+      "qualification": "story-12-2-approved-sdk-source-qualification-review4/qualification.json",
+      "consumer_component_passed": 4201,
+      "consumer_existing_optional_skips": 2,
+      "live": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 334.315
+      },
+      "sdk": {
+        "final_runs": {
+          "client-focused": {
+            "total": 516,
+            "passed": 516,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "client-full": {
+            "total": 1830,
+            "passed": 1828,
+            "failed": 0,
+            "skipped": 2,
+            "errors": 0,
+            "not-run": 0
+          },
+          "domain-full": {
+            "total": 1061,
+            "passed": 1061,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-expiry-scratch": {
+            "total": 52,
+            "passed": 52,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-read-model-batch": {
+            "total": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-shared-epoch": {
+            "total": 8,
+            "passed": 8,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          }
+        },
+        "unique_live_cases": 66,
+        "child_workers": {
+          "passed": 20,
+          "distinct_pids": 20,
+          "distinct_exited_owner_recovery_pairs": 10,
+          "production_named_pairs": 6,
+          "primitive_late_installer_pairs": 4
+        },
+        "required_live_skips": 0,
+        "independent_audit": "story12-2-sdk-review4-independent-audit.json",
+        "independent_raw_worker_audit": "story12-2-sdk-review4-independent-worker-audit.json",
+        "note": "All final required cases have zero skips; prior failed and interrupted attempts remain in the SDK diagnostics. Counts are taken from final XML rather than inherited from earlier packets."
+      },
+      "acknowledgement_p95_ms": 4784.157,
+      "acknowledgement_budget_ms": 1000,
+      "independent_review": "pending for approved SDK/consumer scope; whole-story review separate",
+      "earlier_stages_canonical_sha256": [
+        "93113fe7ba7b07f208ccdfea6aa2da966d5a6e715c529fe226b82cf82456b059",
+        "e808551718fa106d4469e0fdf3f3c4336efb7a5866bfcc15303e8a6022376a2e",
+        "d00d469c2656b9eef5cc6431a1bdeb483912c0782cb1eb72b76e592cf3409c70",
+        "78d22e9a760a5fda7a15a71228a48c8d5b65e419e14737b549c017d420af6ab8",
+        "526fd223fc7e6df98be0fd1624076680755bf8329198cf489f04a24c60134acb",
+        "8d3d4de3bc9ef4863e6f7ad17d519bfb32d9309120f03c3b6dea17652a6b026d",
+        "5b3c1b642b2a3273054c2ef8df0f7019226793b05cde0c280ba96e49424d1fbb",
+        "92e0bad6617037743b28aeb105c5c9da715eae13ee7df9cfb6a247450d1a8f38",
+        "f2c817366c914a01e35bbef0e50e5f338fed2062eb3a1bdf06d884b3f32165fd"
+      ]
     }
   ],
   "open_acceptance": [
     "SDK production complete rebuild after ordinary growth beyond 10,000 retained positions, including duplicate identity proof and further growth",
     "Independent review disposition for the approved SDK/consumer delta and whole-story review",
-    "SM4 acknowledgement p95 exceeds1000ms:31600.244ms on stage7; prior31330.090ms stage6 observation remains retained",
+    "SM4 acknowledgement p95 exceeds1000ms:4654.709 ms on Stage9; prior observations remain retained",
     "Coordinated package qualification and frozen PD10 source-inventory/generator requalification",
-    "SDK review2 recovery/compensation corrections, complete qualification and independent review"
+    "Stage9 latency observation: workers_operational_delivery p95=1222.518ms versus1000.0ms; cause unclassified",
+    "Stage9 latency observation: status_read p95=639.668ms versus500.0ms; cause unclassified",
+    "Stage10 latency observation: command_acknowledgement p95=4784.157ms versus1000.0ms; cause unclassified"
   ],
   "approved_next_scope": {
     "decision": "Jerome selected Approve the bounded prerequisites on 2026-10-18",
@@ -9497,6 +9747,34 @@
     "route": "bad_spec",
     "owner_review_loop_iteration": 2,
     "positive_preservation": "/tmp/story12-2-sdk-review2-keep-qjhea386",
-    "historical_stage7_preserved": true
+    "historical_stage7_preserved": true,
+    "corrections_source_qualification": "story-12-2-approved-sdk-source-qualification-review2/qualification.json"
+  },
+  "review_approved_sdk_round3": {
+    "record": "../review-12-2-approved-sdk-round3-20261020.json",
+    "route": "bad_spec",
+    "owner_review_loop_iteration": 3,
+    "positive_preservation": "/tmp/story12-2-sdk-review3-keep-psxmr1jc",
+    "historical_stage8_preserved": true,
+    "corrections_source_qualification": "story-12-2-approved-sdk-source-qualification-review3/qualification.json"
+  },
+  "approved_sdk_review4": {
+    "status": "source-qualified-awaiting-independent-review",
+    "record": "_bmad-output/implementation-artifacts/review-12-2-approved-sdk-round4-20261020.json",
+    "preserved_source": "/tmp/story12-2-sdk-review4-keep-111x6kq_",
+    "historical_stages_preserved": 9,
+    "open": [
+      "independent approved-scope review"
+    ],
+    "qualified_corrections": [
+      "own expired envelope settlement",
+      "Completed and Aborted late-installer proof",
+      "legacy recovery proof capacity",
+      "Folders configured deadline clock",
+      "maintenance failure diagnostics",
+      "fake ETag parity",
+      "retained metadata guidance"
+    ],
+    "corrections_source_qualification": "story-12-2-approved-sdk-source-qualification-review4/qualification.json"
   }
 }

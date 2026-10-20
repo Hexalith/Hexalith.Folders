@@ -1,0 +1,35 @@
+{
+  "exit_code": 1,
+  "result": {
+    "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+    "id": "62c5f02b-9b01-400d-b802-7b1d6a1dd6ec",
+    "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "run-date": "2026-10-20",
+    "run-time": "12:32:55",
+    "start-rtf": "2026-10-20T12:32:55.0863986+00:00",
+    "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+    "target-framework": ".NETCoreApp,Version=v10.0",
+    "errors": "0",
+    "failed": "1",
+    "finish-rtf": "2026-10-20T12:36:49.5747869+00:00",
+    "not-run": "0",
+    "passed": "0",
+    "skipped": "0",
+    "time": "234.501",
+    "time-rtf": "00:03:54.5010000",
+    "total": "1"
+  },
+  "message": "System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+  "stack": "   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.WaitForEventAsync[T](String folder) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 589\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 330\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 44\n--- End of stack trace from previous location ---",
+  "passed_milestones": "PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source\nProvider readiness: status=ready; category=none; reason=success\nBound-target revocation observation: HTTP 404; pull=False\nPASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately\n",
+  "diagnosis": "WaitForEventAsync<WorkspaceLockReleased> timed out90s at line330. LockWorkspace had Completed. ReleaseWorkspaceLock domain evaluation returned Success/EventCount1, then DaprApiException at EventsStored and terminal summary Status=Rejected. Related archive/index/activity calls have native429 IdempotencyAdmissionActor.ValidateAuthorityAsync errors and later admission attempts unavailable. Persistence error itself is redacted; exact causal mechanism is not proved. Fixture removed raw command/state on teardown; no retained Released event accepted.",
+  "correlation": "01m5cmxwb9mqzy3zdyaehgtgt7",
+  "source_binary_drift": 0,
+  "runtime_test_changes": false,
+  "hashes": {
+    "story12-2-sdk-review3-consumer-live.log": "5b690c8ddd531ad01aed44f4fa7516a343c3e9e89a9dce040c4bbf9897b5aa30",
+    "story12-2-sdk-review3-consumer-after-live-audit.json": "347c54831b88d7dca823ec5ec03f2bbdef84cae1f35b5a096933e0b8f3601543",
+    "story12-2-sdk-review3-consumer-live.xml": "ccb46204b3e83bad0ff60d7540011026bc7024fc4988316c0a7a8fd67cdb22bd",
+    "story12-2-sdk-review3-consumer-live-release-failure-timeline.json": "ddb7868b6a7a16a35cb9e2af11a5f2249bfb503c9425c387d8284bc2a0131bbf"
+  }
+}

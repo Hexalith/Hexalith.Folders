@@ -1,0 +1,35 @@
+{
+  "observations": [
+    {
+      "command": [
+        "aspire",
+        "ps",
+        "--format",
+        "Json"
+      ],
+      "exit_code": 0,
+      "stdout": "[\n  {\n    \"appHostPath\": \"/home/administrator/projects/hexalith/platform/apphost.cs.csproj\",\n    \"appHostPid\": 3146846,\n    \"status\": \"running\",\n    \"sdkVersion\": \"13.6.1\",\n    \"cliPid\": null,\n    \"dashboardUrl\": null\n  },\n  {\n    \"appHostPath\": \"/home/administrator/.local/share/hexalith-builds/g4-workspaces/4e6371d42e84ac10b33eb3ae43cbcd58/apphost/Hexalith.Builds.Module.AppHost.csproj\",\n    \"appHostPid\": 3153959,\n    \"status\": \"running\",\n    \"sdkVersion\": \"13.6.1\",\n    \"cliPid\": null,\n    \"dashboardUrl\": null\n  },\n  {\n    \"appHostPath\": \"/home/administrator/projects/hexalith/tenants/src/Hexalith.Tenants.AppHost/Hexalith.Tenants.AppHost.csproj\",\n    \"appHostPid\": 3257388,\n    \"status\": \"running\",\n    \"sdkVersion\": \"13.6.1\",\n    \"cliPid\": 3252114,\n    \"dashboardUrl\": \"https://localhost:39841/login\",\n    \"logFilePath\": \"/home/administrator/.aspire/logs/cli_20261020T124532825_detach-child_70d09ffdbce245f6841804c225b14ef9.log\"\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "docker",
+        "ps",
+        "--format",
+        "{{.Names}}"
+      ],
+      "exit_code": 0,
+      "stdout": "dapr-scheduler-mtls-betctqgn\ndapr-placement-mtls-yebxjnuq\ndapr-sentry-bhddbhrq\nworks-sdk415-002dea02def44f0fbd8a712bead5dd54\nsecurity-hxwnhads\ntunnel-proxy-82328374-abb0-4baa-96db-716d8f62daef\nmemories-vectors-sstfqqvz\nmemories-graphs-sppnnxnb\ndapr-placement-mtls-yfpjvjud\ndapr-scheduler-mtls-sqmtegex\nmemories-graph-ympqtsxd\ndapr-sentry-yerccddy\nmemories-vectors-qbwxkjqv\nhexalith-g4-4e6371d42e84ac10b33eb3ae43cbcd58-redis\np1r-isolation-b4c2992e6cb94b52808f33fefdc0a3ac-sdk\np1r-isolation-b4c2992e6cb94b52808f33fefdc0a3ac-daemon\ndapr_placement\ndapr_scheduler\ndapr_redis\ndapr_zipkin\n",
+      "stderr": ""
+    }
+  ],
+  "fixture_run_ids": [
+    "57d87d24e89800f6",
+    "9ffad2f040e09b90",
+    "be458dc984dbba83"
+  ],
+  "fixture_redis_and_provider_containers_absent": true,
+  "successful_test_fixture_disposal": true,
+  "unrelated_running_applications_preserved": true,
+  "note": "Other workspace applications started during this qualification. Inventory is retained; exact fixture Redis/provider names are absent and final test including teardown passes. Cleanup does not assert an empty machine or ownership of unrelated CLI AppHosts."
+}

@@ -1,0 +1,167 @@
+{
+  "records": [
+    {
+      "id": "red",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+        "-result-xml",
+        "/tmp/story12-2-review4-clock-red.xml"
+      ],
+      "exit_code": 1,
+      "xml": "/tmp/story12-2-review4-clock-red.xml",
+      "log": "/tmp/story12-2-review4-clock-red.log",
+      "result": {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "ba082808-1210-43e0-b3fa-b8f537b64575",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "14:18:18",
+        "start-rtf": "2026-10-20T14:18:18.5929946+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "6",
+        "finish-rtf": "2026-10-20T14:18:19.5137601+00:00",
+        "not-run": "0",
+        "passed": "0",
+        "skipped": "0",
+        "time": "0.921",
+        "time-rtf": "00:00:00.9210000",
+        "total": "6"
+      }
+    },
+    {
+      "id": "green",
+      "command": [
+        "dotnet",
+        "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "-class",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+        "-class",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+        "-class",
+        "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+        "-result-xml",
+        "/tmp/story12-2-review4-clock-green.xml"
+      ],
+      "exit_code": 0,
+      "xml": "/tmp/story12-2-review4-clock-green.xml",
+      "log": "/tmp/story12-2-review4-clock-green.log",
+      "result": {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "67b6a5a9-8f41-4f2e-90c3-432129bf686e",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "14:19:05",
+        "start-rtf": "2026-10-20T14:19:05.7783302+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-20T14:19:17.4862281+00:00",
+        "not-run": "0",
+        "passed": "21",
+        "skipped": "0",
+        "time": "11.710",
+        "time-rtf": "00:00:11.7100000",
+        "total": "21"
+      }
+    }
+  ],
+  "source_correction": "Four product files only: original public four-arg manual constructor uses IUtcClock adapter; internal configured-coordinator constructor; root/Server factories use registered SDK coordinator. Two test files add six actual-path selected/inherited cases and optional named fixture clock.",
+  "diagnostics": [
+    {
+      "log": "/tmp/story12-2-review4-clock-red-build.log",
+      "command": [
+        "dotnet",
+        "build",
+        "Hexalith.Folders.slnx",
+        "-c",
+        "Debug",
+        "-p:UseHexalithProjectReferences=true",
+        "-p:UseNuGetDeps=false",
+        "--no-restore",
+        "-m:1"
+      ],
+      "exit_code": 1,
+      "result": "New test helper missing ConfigureAwait on three awaits. Fixed test scaffolding before RED execution; this compiler failure is not the behavior regression."
+    },
+    {
+      "log": "/tmp/story12-2-review4-clock-red-build2.log",
+      "exit_code": 0,
+      "result": "Focused test-project build: zero warnings/errors."
+    },
+    {
+      "log": "/tmp/story12-2-review4-clock-green-build.log",
+      "exit_code": 0,
+      "result": "Focused test-project build after four product changes: zero warnings/errors."
+    }
+  ],
+  "draft_manifest": [
+    {
+      "path": "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+      "draft_sha256": "4ba213a389327ef44a1e37b48c76dab7105af3917bf98931164d81b7ff4f4b06",
+      "expected_before_apply_sha256": "210c5b2902d8a711e2f66bec5f089b725a937370d012744b96a890b4048d93cb",
+      "expected_before_apply": "unchanged-current-file-or-absent"
+    },
+    {
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "draft_sha256": "d4ff2c6485e40817740603843ff168ffd57641c643f8a8ec1052e9d8c85ceb77",
+      "expected_before_apply_sha256": "0a9a4be04c4828c0f8a044ec212721423f0ffee599a1e93528f92bd20c9229cf",
+      "expected_before_apply": "after-nine-file-positive-restoration"
+    },
+    {
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs",
+      "draft_sha256": "2f0f69053e2f87a09a7d65c72754c7f3f88cb80c31c838d3c801b6be601c8776",
+      "expected_before_apply_sha256": null,
+      "expected_before_apply": "unchanged-current-file-or-absent"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+      "draft_sha256": "0f8f64ad44bc86d92753cdb4d58428b416b758a43792e693dd123896c1980416",
+      "expected_before_apply_sha256": "ad1f6e169fd7e093da4caeb96336c2386ebd9ff8496b339b709f091448c0f797",
+      "expected_before_apply": "unchanged-current-file-or-absent"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "draft_sha256": "26dba029d601a3624774276bd4096df8c5b548c62adc593ec6d78be3b75a1beb",
+      "expected_before_apply_sha256": "f3ac2fa2095ca178c78001a16a3161aabd015c4b83b210ee8cfb36ac48280439",
+      "expected_before_apply": "unchanged-current-file-or-absent"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs",
+      "draft_sha256": "e2cd9460b4cb49dc831fef7c1626db7760013a5bcf847d6bf515c6da241d7b19",
+      "expected_before_apply_sha256": null,
+      "expected_before_apply": "unchanged-current-file-or-absent"
+    }
+  ],
+  "current_source": [
+    {
+      "path": "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+      "sha256": "4ba213a389327ef44a1e37b48c76dab7105af3917bf98931164d81b7ff4f4b06"
+    },
+    {
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "sha256": "d4ff2c6485e40817740603843ff168ffd57641c643f8a8ec1052e9d8c85ceb77"
+    },
+    {
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs",
+      "sha256": "2f0f69053e2f87a09a7d65c72754c7f3f88cb80c31c838d3c801b6be601c8776"
+    },
+    {
+      "path": "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+      "sha256": "0f8f64ad44bc86d92753cdb4d58428b416b758a43792e693dd123896c1980416"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "sha256": "26dba029d601a3624774276bd4096df8c5b548c62adc593ec6d78be3b75a1beb"
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs",
+      "sha256": "bebc63d3b213ac1e71c5778712237561265a4fa8c2ebaaeb35d882cc63052027"
+    }
+  ]
+}

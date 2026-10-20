@@ -1,0 +1,41 @@
+{
+  "include_files": [
+    {
+      "path": "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "sha256": "55872a5e04072f36c8047aee8c97247c55521ddcc1edb8ed985be079a89105d3",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "sha256": "0a9a4be04c4828c0f8a044ec212721423f0ffee599a1e93528f92bd20c9229cf",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+      "sha256": "75c992694785fa4c7f988c40f9215efa8ba0a52e0a0c12eb031d4e168006fd58",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+      "sha256": "2b5af2145df80aea351ecfb194b31f0966c308297f596ad092142207155f153b",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "sha256": "6d286b5ffa4117ad11a335ce3a38204ab0a18c285d84d841521ba4e80394db3d",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+      "sha256": "49d9ad473a20cf5b59193838700d7565a46df5466b7349e5db0a25eb169d3a0f",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/shared/OperationalStatus/OperationalStatusClock.cs",
+      "sha256": "47acf3bb5ab6425488220158b42eaf9dfc3bb8fc44aa6b163521f83469f631b3",
+      "matches_previous_qualified_source": true
+    }
+  ],
+  "retained_qualification": "story-12-2-approved-sdk-source-qualification-20261020/qualification.json",
+  "note": "All seven included C# files match the exact previous format/analyzer-qualified source; current source build is recorded separately."
+}

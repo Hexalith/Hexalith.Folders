@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-20",
+  "scope": "Approved SDK prerequisites and Folders source adoption; whole-story review remains separate",
+  "diff": {
+    "diff_file": "/tmp/story12-2-approved-sdk-review3-ai6tpsm_/approved-sdk-and-consumer.diff",
+    "bytes": 38107385,
+    "sha256": "73889cdbcb2259bb46caa0b548dc47cd17106948ebac5c4981afcd32f64d5960",
+    "files": 462,
+    "root_consumer_baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "sdk_owner_baseline": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+    "scratch": "/tmp/story12-2-approved-sdk-review3-ai6tpsm_"
+  },
+  "layers": {
+    "blind": "10 findings, floor10",
+    "edge": "2 findings",
+    "verification": "No verification gaps found"
+  },
+  "findings": [
+    {
+      "id": "B1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Delayed legacy installer creates markerless scratch",
+      "location": "SharedProjectionEpochCoordinator.ScratchRecovery.cs:26",
+      "evidence": "Parent independently reran the paused-before-operation0 probe: after compensation, marker reclamation and Abort, the old installer leaves an old envelope without its marker; RecoverPendingAsync returns invalid-recovery-evidence."
+    },
+    {
+      "id": "B2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Optimistic transaction recovery falsely reports settlement",
+      "location": "ReadModelPendingBatchRecovery.cs:123-125",
+      "evidence": "Parent reran the supported TransactionQualified component probe: recovery reports IsResolved/WasRecovered true while the exact marker stays Prepared; ReclaimScratchReceiptAsync then throws permanently. This does not claim Redis transaction qualification."
+    },
+    {
+      "id": "B3",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Absent marker hides a retained external manifest",
+      "location": "SharedProjectionEpochCoordinator.cs:1575",
+      "evidence": "Parent reran the canonical external-manifest crash-state probe: exact-marker recovery says resolved and ReclaimScratchReceiptAsync leaves the payload-bearing deterministic manifest. Prepare writes external manifest before marker, so this two-RPC state is reachable."
+    },
+    {
+      "id": "B4",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Ordinary conditional saves cannot replace logically expired physical wrappers",
+      "location": "DaprReadModelStore.cs:62; InMemoryReadModelStore.cs:129",
+      "evidence": "Parent reproduced GetAsync returning null followed by ReadModelWritePolicy.UpdateAsync exhausting three retries against retained expired bytes. Both stores still enforce physical create-only in ordinary TrySaveAsync; their batch CreateOnly path already distinguishes logical expiry and physical CAS."
+    },
+    {
+      "id": "B5",
+      "verdict": "medium",
+      "route": "patch",
+      "claim": "Production DI registration ignores the configured coordinator clock",
+      "location": "Registration/ReadModelStoreServiceCollectionExtensions.cs:69",
+      "evidence": "Parent resolved the default production registration with a configured clock: the registered options/store use that instance but reflection confirms the coordinator uses System. The factory still calls the original two-argument constructor, while the three-argument constructor already exists."
+    },
+    {
+      "id": "B6",
+      "verdict": "medium",
+      "route": "patch",
+      "claim": "Bulk final-wrapper reads add N sequential RPCs",
+      "location": "DaprReadModelStore.cs:112",
+      "evidence": "The bulk response already contains each final wrapper and ETag. The new IsExpiring branch calls ResolveVisibleAsync per item, whose first step is a new physical accessor read; N final retained rows therefore add N sequential network reads. Direct final decoding can reuse the existing wrapper resolver without new public surface."
+    },
+    {
+      "id": "B7",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Unbounded promoted cleanup blocks later Begin calls",
+      "location": "SharedProjectionEpochCoordinator.PromotedCleanup.cs:21-22",
+      "evidence": "Parent reproduced the existing promoted-cleanup fault seam with a first request that honors its cancellation token: background receives CanBeCanceled=false, two Begin callers cancel, and the shared cleanup task remains pending. Later healthy work stays behind that uncancellable task until an external release. The new wait makes this a singleton liveness regression."
+    },
+    {
+      "id": "B8",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Expired conditional candidates bypass their immutable CAS precondition",
+      "location": "ReadModelBatchProtocol.cs:518;886",
+      "evidence": "Parent reproduced an already-expired Match(stale-etag) alongside a non-expiring checkpoint receiving Completed. The unchanged operation contract binds concurrency into durable identity and frozen intent preserves CAS. Expiry may omit the candidate; it must not silently discard an unproven conditional guard. An already installed original envelope remains proof of its earlier successful guard."
+    },
+    {
+      "id": "B9",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Omitted expired unconditional writes still block on foreign envelopes",
+      "location": "ReadModelBatchProtocol.cs:518;650;987",
+      "evidence": "Parent reproduced expired LastWrite targeting a foreign Prepared envelope: Execute commits its own checkpoint, returns Indeterminate/compaction-race and leaves the checkpoint wrapped. Installation omits this operation, but staging/compaction still wait for unrelated work. Settlement must not help or mutate foreign state."
+    },
+    {
+      "id": "B10",
+      "verdict": "medium",
+      "route": "patch",
+      "claim": "Missing mixed-version reader/writer rollout guidance",
+      "location": "docs/guides/named-projection-authoring.md",
+      "evidence": "The baseline reader returns raw bytes when a reserved envelope version is unsupported; ordinary DTO deserialization can silently produce default-valued fields from the new v3 wrapper. Current guide documents SDK readers but not the required compatible-reader-before-deadline-writer order or rollback constraint. A direct guide correction suffices; deployment/publication remains excluded."
+    },
+    {
+      "id": "E1",
+      "verdict": "high",
+      "route": "patch",
+      "claim": "Failed marker CAS reread accepts a replacement fingerprint",
+      "location": "ReadModelBatchProtocol.cs:590-594",
+      "evidence": "Parent reran the exact interleaving: a retained replacement completes and Abort opens the epoch between old commit read/CAS; the failed-CAS reread accepts its Completed marker, old compaction overwrites Open with Building, and the result is Indeterminate/compaction-race. The reread needs the same existing fingerprint guard as the initial read."
+    },
+    {
+      "id": "E2",
+      "verdict": "high",
+      "route": "patch",
+      "claim": "Delayed legacy CAS can undo completed Abort",
+      "location": "ReadModelBatchProtocol.cs:590-594",
+      "evidence": "The separately filed claim is confirmed by the same parent reproduction: exact fence preservation is false and final phase Building. Verdict rendered individually before grouping with E1, which has the identical failed-CAS fingerprint root cause."
+    }
+  ],
+  "groups": [
+    [
+      "B1"
+    ],
+    [
+      "B2"
+    ],
+    [
+      "B3"
+    ],
+    [
+      "B4"
+    ],
+    [
+      "B5"
+    ],
+    [
+      "B6"
+    ],
+    [
+      "B7"
+    ],
+    [
+      "B8"
+    ],
+    [
+      "B9"
+    ],
+    [
+      "B10"
+    ],
+    [
+      "E1",
+      "E2"
+    ]
+  ],
+  "route": "bad_spec",
+  "new_owner_review_loop_iteration": 3,
+  "deferrals": [],
+  "note": "Individual verdicts precede grouping. No same-location/same-claim still-true carried row exists; all claims are new interleavings or different outcomes. Five trivial patches are retained as requirements during the higher-precedence bad-spec re-derivation."
+}

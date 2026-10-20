@@ -1,0 +1,538 @@
+{
+  "manifest_artifacts": 315,
+  "manifest_sha256": "424ea4d67c400ca5e8f4012034126c33cef6beff43dab9189f3fd9d059be2750",
+  "source": [
+    {
+      "inventory": "source-freeze.json",
+      "files": 3838,
+      "mismatches": []
+    },
+    {
+      "inventory": "source-final.json",
+      "files": 3838,
+      "mismatches": []
+    }
+  ],
+  "commands": [
+    {
+      "id": "client-focused",
+      "exit_code": 0,
+      "counts": {
+        "total": 516,
+        "passed": 516,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    {
+      "id": "client-full",
+      "exit_code": 0,
+      "counts": {
+        "total": 1830,
+        "passed": 1828,
+        "failed": 0,
+        "skipped": 2,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    {
+      "id": "domain-full",
+      "exit_code": 0,
+      "counts": {
+        "total": 1061,
+        "passed": 1061,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    {
+      "id": "live-expiry-scratch",
+      "exit_code": 0,
+      "counts": {
+        "total": 52,
+        "passed": 52,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    {
+      "id": "live-read-model-batch",
+      "exit_code": 0,
+      "counts": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    {
+      "id": "live-shared-epoch",
+      "exit_code": 0,
+      "counts": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    }
+  ],
+  "unique_live_cases": 66,
+  "binary_groups": [
+    {
+      "group": "client-focused-binary-group.json",
+      "files": 34,
+      "current_drift": []
+    },
+    {
+      "group": "client-full-binary-group.json",
+      "files": 34,
+      "current_drift": []
+    },
+    {
+      "group": "domain-full-binary-group.json",
+      "files": 21,
+      "current_drift": []
+    },
+    {
+      "group": "live-expiry-scratch-binary-group.json",
+      "files": 60,
+      "current_drift": []
+    },
+    {
+      "group": "live-read-model-batch-binary-group.json",
+      "files": 60,
+      "current_drift": []
+    },
+    {
+      "group": "live-shared-epoch-binary-group.json",
+      "files": 60,
+      "current_drift": []
+    }
+  ],
+  "pdb": [
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "sha256": "3fe314117c3f5104f5f5390633a630a9f6aec7a7658c7382f3a97f74436c3e80",
+      "checked_sources": 2,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+      "sha256": "b422d96d5954bf02cdd6f7491f4d1d68e4028b03e6525ddba5970a86c2a2cbf7",
+      "checked_sources": 111,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.TestContracts.pdb",
+      "sha256": "9e7e7e2b441529e59b3bf8011c8b6e5d31e1498d076c96e1e1e0f8013baa4225",
+      "checked_sources": 6,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.Tests.pdb",
+      "sha256": "96d4dec35c022e8fee4997c231b9b6c72f35c9503a6c6f7568580afdc69cf466",
+      "checked_sources": 182,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "sha256": "86a31b5f9a83d91e0cd6270e858eb9192eaa37ca6430bc5de6e845d48fd16433",
+      "checked_sources": 276,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "sha256": "c1abcb726b90f13fb9bb9fae12eb4b16de4eab413e857f3d8ebff81991c5d9bf",
+      "checked_sources": 304,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "sha256": "88a45ae5a838478f63124be0dab6de5cc89e90e44c686a8adcd1185816b46047",
+      "checked_sources": 180,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+      "sha256": "352a8383e10828499d47552d0b2f117235db7cd5fefb5a08b5aaa9fcaa4ba608",
+      "checked_sources": 122,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+      "sha256": "b7f99fa65c4139cade39cf2e046d0467ca1319f039704497ad7c73bfd50c76ce",
+      "checked_sources": 606,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "sha256": "b771460c8ca36019d2b86a5d9d2542d4e41fbb348cea9f94feb33d8ac28c0f1d",
+      "checked_sources": 40,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+      "sha256": "36c5526b1f8df66c9d3a7231aa388e50897484d590487d3da45f7ce98d396c7c",
+      "checked_sources": 40,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Client.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.pdb",
+      "sha256": "ac4dca181248a97812c84e9f04e2fec9762e9ec73f2c3723147d8e2722a3d078",
+      "checked_sources": 1,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "sha256": "3fe314117c3f5104f5f5390633a630a9f6aec7a7658c7382f3a97f74436c3e80",
+      "checked_sources": 2,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "sha256": "86a31b5f9a83d91e0cd6270e858eb9192eaa37ca6430bc5de6e845d48fd16433",
+      "checked_sources": 276,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "sha256": "c1abcb726b90f13fb9bb9fae12eb4b16de4eab413e857f3d8ebff81991c5d9bf",
+      "checked_sources": 304,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.Tests.pdb",
+      "sha256": "85971c7b9ec32b01a17af2b2a7de9492f33e1b9a60b553ba6735e998ce33f93e",
+      "checked_sources": 106,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "sha256": "88a45ae5a838478f63124be0dab6de5cc89e90e44c686a8adcd1185816b46047",
+      "checked_sources": 180,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+      "sha256": "b7f99fa65c4139cade39cf2e046d0467ca1319f039704497ad7c73bfd50c76ce",
+      "checked_sources": 606,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "sha256": "b771460c8ca36019d2b86a5d9d2542d4e41fbb348cea9f94feb33d8ac28c0f1d",
+      "checked_sources": 40,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.DomainService.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.DomainService.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+      "sha256": "36c5526b1f8df66c9d3a7231aa388e50897484d590487d3da45f7ce98d396c7c",
+      "checked_sources": 40,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.Commons.UniqueIds.pdb",
+      "sha256": "2dfa8391c733b96e487b72f2c31eb35708ec7b4092ba2cdbbe470fdcf4fbb101",
+      "checked_sources": 2,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Admin.Abstractions.pdb",
+      "sha256": "aad6d421e6f72b3cd7d053124e0f127d56e5a261b1275cc499fb2ebfa8e241f4",
+      "checked_sources": 111,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.pdb",
+      "sha256": "86a31b5f9a83d91e0cd6270e858eb9192eaa37ca6430bc5de6e845d48fd16433",
+      "checked_sources": 276,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.pdb",
+      "sha256": "6a7794aed9ce4ab093a3a107c086cac4e59c3c4a834a25dc4436de4d85f29275",
+      "checked_sources": 304,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.pdb",
+      "sha256": "88a45ae5a838478f63124be0dab6de5cc89e90e44c686a8adcd1185816b46047",
+      "checked_sources": 180,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Gateway.pdb",
+      "sha256": "2f1ef04e3b7600fb70dca2f7ca929c1a54f46077d6a48e1a10f5b8720c3976cd",
+      "checked_sources": 122,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Sample.Contracts.pdb",
+      "sha256": "da3737bda4574a350dff8a12be2d6f422abc10249b4c579757379344363965bb",
+      "checked_sources": 5,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Sample.pdb",
+      "sha256": "2990cfe0fc428db60e0d7bd11c2518c744b26c8385dbfa7a6610630448851b09",
+      "checked_sources": 16,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.LiveSidecar.Tests.pdb",
+      "sha256": "7baaf1dfe5ce21c2d723308fe83c18bc64dc4a88b8d297cd14ce7d5c128754d1",
+      "checked_sources": 134,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Server.pdb",
+      "sha256": "d3d17bea7a293ce3d631cafd93cae3366e51062eaca53270065a29ec2c2a7075",
+      "checked_sources": 606,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.ServiceDefaults.pdb",
+      "sha256": "b771460c8ca36019d2b86a5d9d2542d4e41fbb348cea9f94feb33d8ac28c0f1d",
+      "checked_sources": 40,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.Integration.pdb",
+      "sha256": "ffe928761fa9e7ad6518a555a805fb7e3fa8fb10fad605fc6efea31ce8281390",
+      "checked_sources": 17,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.Testing.pdb",
+      "sha256": "753ece557a013cadcc1b2f6837a18f0f2d147522b81028392b8817f62ffc48c2",
+      "checked_sources": 40,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.EventStore.pdb",
+      "sha256": "bc98f95f2fc646daed1756281635d2cfc5656a125c77c57edae003b7d35729c7",
+      "checked_sources": 1,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.McpCli.Abstractions.pdb",
+      "sha256": "e00c1da5108e9c4bb002e64531c31813b9d1d8de3eac953b1bc28ef3c4cb2841",
+      "checked_sources": 7,
+      "mismatches": 0,
+      "missing_sources": []
+    },
+    {
+      "record": "pdb-Hexalith.EventStore.Server.LiveSidecar.Tests.json",
+      "pdb": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/tests/Hexalith.EventStore.Server.LiveSidecar.Tests/bin/Debug/net10.0/Hexalith.Tenants.Contracts.pdb",
+      "sha256": "e743cdb0c4244b1129a934ea5345c392a140f508baa04015a5cd45675a12a5ec",
+      "checked_sources": 59,
+      "mismatches": 0,
+      "missing_sources": []
+    }
+  ],
+  "independent_pdb_inspection": "story12-2-sdk-review4-independent-pdb-inspection.json",
+  "qualification": {
+    "schema_version": 1,
+    "status": "ready-for-parent-independent-review",
+    "sealed_utc": "2026-10-20T14:10:53.574111+00:00",
+    "scope": "Approved source expiry and interrupted private scratch recovery, all review-four SDK corrections",
+    "original_sdk_baseline": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+    "effective_sdk_head": "b1237244f1ef15fcb5c3889c9787ad4ff9b3711b",
+    "results": {
+      "client-build": {
+        "build_exit_code": 0
+      },
+      "client-focused": {
+        "total": 516,
+        "passed": 516,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "client-full": {
+        "total": 1830,
+        "passed": 1828,
+        "failed": 0,
+        "skipped": 2,
+        "errors": 0,
+        "not-run": 0
+      },
+      "domain-build": {
+        "build_exit_code": 0
+      },
+      "domain-full": {
+        "total": 1061,
+        "passed": 1061,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-build": {
+        "build_exit_code": 0
+      },
+      "live-expiry-scratch": {
+        "total": 52,
+        "passed": 52,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-read-model-batch": {
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "live-shared-epoch": {
+        "total": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      }
+    },
+    "source_inputs": 3838,
+    "unique_live_cases": 66,
+    "worker_invocations": 20,
+    "distinct_worker_pids": 20,
+    "exited_worker_pairs": 10,
+    "production_named_pairs": 6,
+    "primitive_late_installer_pairs": 4,
+    "commands": "commands.json",
+    "source_freeze": "source-freeze.json",
+    "source_final": "source-final.json",
+    "source_drift": "source-drift.json",
+    "pdb": "pdb-commands.json",
+    "pe": "pe-commands.json",
+    "api": "public-api-xml-audit.json",
+    "workers": "process-workers.json",
+    "raw_persistence": "raw-persistence-observations.json",
+    "cleanup": "cleanup-summary.json",
+    "historical": "historical-packets-unchanged.json",
+    "spec": {
+      "path": "_bmad-output/implementation-artifacts/spec-folders-12-2-expiry-and-scratch-recovery.md",
+      "sha256": "16ed4475c77c0a2d8b1eb212e1648bc812017db648c3ccade0cbe0a647a0aade",
+      "snapshot": "owner-spec-at-handoff.md",
+      "status": "in-progress"
+    },
+    "notes": [
+      "Two existing optional Client skips are not acceptance. Every required live/child case executed without skipping.",
+      "Production Redis remains Resumable; forced transactions are unsupported diagnostic evidence.",
+      "The first passing pre-cleanup source group and all failed/interrupted diagnostic groups are retained separately.",
+      "Persistent payload-free tenant metadata and repeated named Abort recovery trigger are documented; OffboardTenantAsync does not enumerate these records.",
+      "Parent Folders adoption/clock qualification, independent review, package/PD10, >10000 identities and performance remain open."
+    ]
+  },
+  "independently_mapped_matrix": [
+    {
+      "row": "Source deadline",
+      "executed_passing_cases": 4
+    },
+    {
+      "row": "Compatibility",
+      "executed_passing_cases": 4
+    },
+    {
+      "row": "Shared generations",
+      "executed_passing_cases": 3
+    },
+    {
+      "row": "Scratch retry/abort",
+      "executed_passing_cases": 22
+    },
+    {
+      "row": "Fences/races",
+      "executed_passing_cases": 8
+    },
+    {
+      "row": "Real persistence",
+      "executed_passing_cases": 2
+    }
+  ]
+}

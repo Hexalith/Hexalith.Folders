@@ -116,7 +116,7 @@ context:
 - [x] Round-four command path (replace, do not patch): remove the operational branch from legacy `/project` in `FoldersDomainServiceEndpoints.cs` and delete `OperationalStatusRebuild.cs` with its fixture. `/project` returns the legacy response regardless of operational state. Workers live delivery is the only live writer; rebuild and repair run only through the SDK-driven named `/project/rebuild/shared/v1` transport, which owns session Begin/Abort/Verify. Move tests that relied on `/project` repair to that transport.
 - [x] Round-four named rebuild: in `OperationalStatusProjectionHandler.cs`, validate each partition history as a contiguous 1..N prefix bound to the SDK-sealed capture. Never compare it with a live head; appends after capture reach the new generation through SDK catch-up.
 - [x] Round-four Workers: in `FoldersWorkersModule.cs`, run the operational stage after the permission/provider chain, outside the one-second deadline. Run semantic indexing even when the operational stage fails, then return 500 so the delivery retries. Indexing stays idempotent on redelivery. Label and log each stage by its own name.
-- [ ] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
+- [x] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
 - [x] Round-four clock skew: remove the `OccurredAt > Timestamp` rejection in `OperationalStatusEventReader.cs:73`. Allow one fixed five-minute tolerance constant for stamp-versus-local-clock checks in the reader.
 - [x] Round-four provider fixes:
   - `ProviderBindingProfile.cs`: initialize fresh empty policies so bound profiles never share or mutate `OrganizationProviderBindingPolicy.Empty`.
@@ -126,16 +126,16 @@ context:
   - `/project` 503 branch: log the exception type, and classify `ProjectionDispatchValidationException` with the 422 branch.
   - Missing folder hint (`FoldersDomainServiceEndpoints.cs:5544-5550`): report `retryable:false`.
 - [x] Round-four profile decision wiring: configure a `profile-a` test profile for the tenant and provider in the `ArchiveFolderProcessWiringTests` host so its three ConfigureProviderBinding tests pass unchanged in intent. Document the required `Folders:ProviderBindings:Profiles:<ref>` section, and the rejection of unknown references, in `docs/operations/provider-integration-and-testing.md`. Document the expired-status not-found outcome and the named rebuild for bootstrap and stalled folders in `docs/operations/retention-and-tenant-deletion.md`.
-- [ ] Round-four tests:
+- [x] Round-four tests:
   - [x] Accepted profile path: service output consumed through `ConfiguredProviderReadinessBindingReader`.
   - [x] Two bound profiles stay isolated and `Empty` stays empty.
   - [x] Forgejo bound-target plumbing and `ConfiguredProviderRepositoryTargetResolver` mapping/rejections.
   - [x] `/project` returns the legacy body and writes no operational rows.
-  - [ ] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
+  - [x] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
   - [x] Workers route persists the binding projection, and its bytes equal the provider `/project` rebuild.
   - [x] A throwing readiness reader yields `provider_binding_authority_unavailable`.
   - [x] Production-host registration and options binding for the configured provider reader/resolver.
-  - [x] Retention: boundary, all-expired, evidence-only and duplicate-after-retention.
+  - [ ] Retention: boundary, all-expired, evidence-only and duplicate-after-retention.
   - [x] Clock skew within and beyond tolerance.
   - [x] Indexing still runs after an operational failure.
 - [x] Round-four performance: use one static `JsonSerializerOptions` in `EventStoreOperationalStatusReadModel.cs`. In the opted-in real-Dapr acceptance, record p50/p95 for the command acknowledgement, the Workers operational delivery and the status read against SM4. If over budget, record it as an open finding; do not redesign.
@@ -347,7 +347,7 @@ Round four: operational status has one live writer (Workers) and one rebuild pat
 - `dotnet test --project tests/Hexalith.Folders.IntegrationTests --no-build` must pass, including the three `ArchiveFolderProcessWiringTests.ConfigureProviderBinding*` tests that failed in round four. Run `pwsh -File tests/tools/run-contract-spine-gates.ps1` and the docs conformance tests after the docs edits; v1 contract bytes stay unchanged.
 - Run opted-in AppHost acceptance with zero failures/skips; assert stored contents, checkpoints, changed PIDs and replica convergence. Record blockers separately from passing evidence.
 
-## Approved SDK prerequisite source qualification — 2026-10-20
+## Historical Stage7 approved SDK source qualification — 2026-10-20
 
 The approved immutable source-deadline and pending owner-scratch capabilities are implemented in the
 EventStore owner repository and consumed through `WriteExpiring` in Folders. The named partition
@@ -355,7 +355,7 @@ round trip preserves the absolute deadline; the bounded checkpoint stays non-exp
 regressions now require physical absence of expired rows, and named scratch retry/Abort permits a fresh
 rebuild. Historical failed diagnostics and all six earlier evidence stages remain unchanged.
 
-[Current source qualification](evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json)
+[Stage7 source qualification](evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json)
 binds 1,406 consumer source/config files, 62 assembly/PDB files, 4,195 component passes (two existing
 optional Domain skips) and a full opted-in Aspire/Dapr/provider pass: 1/1, zero skips, 295.344 seconds.
 The SDK packet independently records 1,736 Client passes (two existing optional skips), 1,005
@@ -363,7 +363,7 @@ DomainService passes, 36 live outer cases and four distinct-process child runs, 
 without skips. Parent audits found zero source/binary/PDB mismatches. Independent review of this
 approved SDK/consumer delta is pending at this qualification seal.
 
-The current acknowledgement p95 is 31,600.244 ms across nine successful requests, including retries,
+The Stage7 acknowledgement p95 is 31,600.244 ms across nine successful requests, including retries,
 against SM4's 1,000 ms target. Workers p95 is 348.094 ms (26 samples); status p95 is 50.824 ms
 (12 samples). The acknowledgement finding remains open, including the prior stage-six observation.
 The Release/package gate fails CS0117 because EventStore 3.125.1 lacks `WriteExpiring`; its
@@ -379,3 +379,133 @@ Prepared/no-envelope Abort, cleanup self-recovery and expired-prefix compensatio
 legacy validation/retry defects. The Stage7 pass remains exact-source history; owner review loop2
 re-derives the SDK from amended nonfrozen requirements before Folders consumption is restored and
 requalified. Frozen intent, all historical evidence, Task36 and the separate open gates are unchanged.
+
+
+## Historical Stage8 approved SDK source qualification — 2026-10-20
+
+Review-two SDK corrections now settle original Prepared/no-envelope scratch, resume deterministic own
+cleanup, preserve expired-prefix compensation and validate legacy epochs/retries. The immutable
+source deadline and Folders named partition conversion remain unchanged.
+
+[Stage8 qualification](evidence/story-12-2-approved-sdk-source-qualification-review2/qualification.json)
+binds 1,661 consumer source/config files and 62 assembly/PDB files. A serialized
+Debug/source build completed with zero warnings/errors; 4,195 components passed with two existing
+optional Domain skips. The full opted-in Aspire/Dapr/provider durability test passed 1/1 with zero skips
+in 306.591 seconds. All ten inspected SDK runtime PDBs match current
+sources; all captured source/assembly hashes stayed unchanged through final execution.
+
+SDK qualification records 1,756 Client passes with two optional skips and 1,057 Domain passes in a
+serialized same-binary full run. Its failed parallel Domain run remains preserved. 51 unique required
+live cases are qualified across exact recorded groups; the expiry/scratch 37-case union retains the
+initial 34/37 attempt and affected final 9/9 rerun, rather than claiming one all 37 pass. Twelve final
+child invocations cover six distinct exited-owner/recovery PID pairs, including Prepared/no-envelope
+cuts. Parent independently verified 171 SDK packet artifacts, 3,751 final source/config hashes and the
+six decoded Open/Aborted/private-cleaned worker end states.
+
+Current acknowledgement p95 is 4359.855 ms against 1,000 ms; Workers p95 is
+368.766 ms and status p95 is 60.804 ms. The acknowledgement finding remains
+open. Package/PD10 failures are retained against the unchanged WriteExpiring API and frozen candidate;
+no package/pin change or requalification was authorized. All seven prior canonical stages and sealed
+historical packets remain unchanged. Independent review of this approved scope is pending at packet
+seal; whole Story 12.2 remains in-progress for the separately owned >10,000 identity capability,
+package/PD10 requalification, SM4 and whole-story review.
+
+
+Independent approved-scope review three reopened the SDK prerequisite rows after Stage8. Parent
+reproduced an old commit-CAS worker undoing Abort, a late installer leaving markerless scratch,
+false-resolved Prepared transaction recovery, orphan external manifests, ordinary save/expiry and
+omitted-key settlement defects. DI clock and bounded-cleanup/bulk-read corrections are included in
+owner loop3. Stage8 remains exact-source passing test history rather than completed acceptance;
+its packet and all earlier canonical stages stay unchanged. Folders source/test/docs were positively
+preserved then restored only until the new SDK handoff. Whole-story open gates remain unchanged.
+
+
+## Historical Stage9 approved SDK source qualification — 2026-10-20
+
+Review-three corrections preserve delayed legacy-worker fences, settle supported transaction conflicts,
+reclaim interrupted external manifests and preserve conditional guards across expiry. Production clock
+registration, bulk final-value reads and bounded promoted maintenance are covered. The SDK owner records
+its internal terminal-marker identity decision; payload-free fencing metadata remains distinct from
+private payload cleanup. Folders continues to use the supported immutable source-deadline API.
+
+[Stage9 qualification](evidence/story-12-2-approved-sdk-source-qualification-review3/qualification.json)
+binds 1,661 consumer source/config files and
+62 assembly/PDB files. Serialized Debug/source build completed with
+zero warnings/errors. 4,195 consumer components passed with two
+existing optional Domain skips. Full opted-in Aspire/Dapr/provider acceptance passed 1/1 with zero skips
+in 337.824 seconds. SDK runtime PDBs match current source and captured
+source/binary inventories remained unchanged through final consumer execution.
+
+The first consumer live attempt failed during its second EventStore restart after DCP timed out
+stopping the process. The second timed out waiting WorkspaceLockReleased: Lock completed, while
+Release's successful domain evaluation was followed by terminal Rejected at EventsStored with a
+redacted DaprApiException amid actor429 authority/archive errors. Both complete failed XML/logs,
+the command timeline and zero-drift source/binary audits remain in the packet. The final pass uses
+the same binaries, assertions and limits. Exact persistence-error and delayed-shutdown causes remain
+unclassified; the rerun does not erase those failures. Other workspaces' applications are preserved,
+with fixture-owned cleanup recorded separately.
+
+The final SDK packet records 1,814 Client passes with 2 optional skips,
+1,059 serialized Domain passes with zero skips, 56 unique required
+live cases and 12 passing child invocations across
+6 distinct exited-owner/recovery process pairs.
+Parent independently checked 381 packet artifacts, final source hashes,
+binary/PDB groups and raw worker end-state. Failed and interrupted earlier attempts remain evidence.
+
+Current acknowledgement p95 is 4654.709 ms against 1,000 ms; Workers p95 is
+1222.518 ms against 1,000 ms and status p95 is 639.668 ms against 500 ms.
+All three observations exceed their budgets. Performance acceptance remains open
+with prior observations retained. Package/PD10 gates retain their earlier failures against the unchanged
+API and frozen candidate. All eight previous canonical stages and sealed packets remain unchanged.
+Independent approved-scope review is pending at packet seal. Whole Story12.2 remains in-progress for
+the separately owned >10,000 identity capability, package/PD10 requalification, SM4 and whole-story review.
+
+
+## Approved SDK review4 follow-up
+
+Stage9 stays historical exact-source local qualification, including Client1814/Domain1059/56 SDK live
+cases and Folders4195/full live337.824s, plus its two preserved failed consumer live attempts. The
+independent scoped review verified expired own-envelope settlement, late Completed/Aborted installers,
+legacy compensation capacity and silent maintenance failure defects. SDK owner loop4 re-derives only
+owned source from its positive76-file snapshot; all nine canonical stages and prior packets remain.
+Parent must restore the nine consumer files after SDK qualification and correct the actual
+OperationalStatusProjectionWriter registration/construction so its coordinator uses the configured
+deadline clock coherently with the store and writer. Preserve existing constructors/callers where
+possible; use the minimum SDK/domain DI seam, no consumer storage protocol. Add real service-registration
+coverage exercising expired selected/inherited COW state, inclusive absence and a normal subsequent
+delivery/rebuild; reflection alone is not acceptance. Requalify affected consumer components and opted-in
+full real-Dapr fixture against final source/PE/PDB hashes, preserving failed attempts and performance
+observations honestly. Parent owns this consumer correction; the SDK implementation child must not edit
+Folders. Scope approval is unchanged. >10000 capture identity, package/PD10, all three latest over-budget
+latencies and whole-story review remain open; no release/Git/pin/dependency work is authorized.
+
+
+## Current Stage10 approved SDK source and clock qualification — 2026-10-20
+
+[Stage10 qualification](evidence/story-12-2-approved-sdk-source-qualification-review4/qualification.json) binds 1,663
+consumer source/config inputs and 62 assembly/PDB files. Serialized
+Debug/source restore/build passes with zero warnings/errors. All twelve owned C# files pass whitespace
+and analyzer checks. 4,201 consumer cases pass, with two unchanged
+optional Domain skips; the full opted-in Aspire/Dapr/provider acceptance passes 1/1 with zero skips in
+334.315 seconds. Captured source/binary hashes and runtime PDB documents
+match final execution. Six actual root/Server/manual construction x selected/inherited clock regressions
+first failed against the old product at pre-deadline duplicate delivery, then passed after correction.
+The writer now uses the SDK registered coordinator in DI and the supplied IUtcClock for manual construction.
+Tests include inclusive absence, expired-source named rebuild, ordinary delivery and further named growth.
+No public constructor or consumer storage protocol was added.
+
+The SDK packet has 1,828 Client passes plus two unchanged optional skips, 1,061 serialized Domain passes,
+66 unique required live cases and 20 passing distinct-PID child invocations: six production named
+pending-owner/recovery pairs and four primitive late-installer/recovery pairs. The latter prove a fresh
+epoch cycle; separately executed production named tests prove late accepted-owner cleanup after terminal
+cleanup flags, ordinary delivery and a fresh named rebuild. Parent independently verified 315 artifacts,
+3,838 source inputs, XML/binary groups, 31 PDBs and decoded raw worker states. Repeated named Abort is
+the production late-scratch reconciliation trigger. Bounded payload-free fencing metadata follows the
+SDK guide's retention/legal-hold, restore and drained-writer purge rules.
+
+All nine prior canonical stages and sealed packets remain unchanged, including earlier failed consumer
+live attempts and their unclassified causes. Current latency observations are retained without causal
+attribution: command_acknowledgement p95=4784.157ms against1000ms, workers_operational_delivery p95=601.608ms against1000ms, status_read p95=120.761ms against500ms.
+Independent approved-scope review is pending at seal. Whole Story12.2 remains in-progress for the already
+approved separately owned >10,000 identity capability and its consumer qualification, package/PD10,
+performance acceptance and whole-story review. Approval and Git/release/pin boundaries are unchanged.

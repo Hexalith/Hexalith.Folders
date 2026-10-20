@@ -1,0 +1,227 @@
+{
+  "date": "2026-10-20",
+  "scope": "Approved SDK prerequisites and Folders source adoption; whole-story review remains separate",
+  "diff": {
+    "diff_file": "/tmp/story12-2-approved-sdk-review4-lnjrdmw4/approved-sdk-and-consumer.diff",
+    "bytes": 74893141,
+    "sha256": "6d5d5b596f2bd58539420edad40102a7aa5090e6d8cb252bd6a03123e27909f9",
+    "files": 907,
+    "root_consumer_baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "sdk_owner_baseline": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+    "scratch": "/tmp/story12-2-approved-sdk-review4-lnjrdmw4"
+  },
+  "layers": {
+    "blind": "10 findings, floor10",
+    "edge": "2 findings",
+    "verification": "No verification gaps found"
+  },
+  "findings": [
+    {
+      "id": "B1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Expired unconditional compaction accepts its own undeleted envelope",
+      "location": "ReadModelBatchProtocol.cs:1256",
+      "evidence": "Parent probe b1 returns Completed with its own 221-byte envelope still physically present after every conditional delete is refused. IsCompacted treats IsOmittedExpired as sufficient even after installation; logical reads hide the payload and no TTL removes that envelope."
+    },
+    {
+      "id": "B2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Completed retained scratch receipt is reclaimed without durable late-installer recovery proof",
+      "location": "SharedProjectionEpochCoordinator.cs:1598-1600",
+      "evidence": "Parent independently reran the edge reproduction: helper completes, private row and Completed receipt are reclaimed, Abort opens, then a paused installer persists its envelope and exits before its post-check. The orphan remains and RecoverPendingAsync returns invalid-recovery-evidence. This is a new Completed-retained path, not the fixed legacy-Aborted claim from R3-B1."
+    },
+    {
+      "id": "B3",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Retained Aborted retirement records have no participant proof for a late installer",
+      "location": "ReadModelBatchProtocol.cs:1295",
+      "evidence": "Parent b3 stages the retained original with a helper, aborts and reclaims it, then resumes the delayed physical installation and exits before its post-check. The surviving retirement has zero anchors, private bytes remain, and exact recovery returns invalid-recovery-evidence. A retirement decision alone cannot authorize restoration."
+    },
+    {
+      "id": "B4",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Legacy compensation proof shrinks the supported original manifest capacity",
+      "location": "ReadModelLegacyScratchRecovery.cs:66-68",
+      "evidence": "Parent b4 stages a valid two-key legacy scratch batch whose original canonical manifest is 801760 bytes, below the unchanged 1048576 limit. Recovery refuses it as legacy-scratch-evidence-too-large because already base64-encoded envelopes are encoded again into proof under the original manifest byte limit; scratch remains."
+    },
+    {
+      "id": "B5",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Folders manually constructed coordinator ignores the configured deadline clock",
+      "location": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs:22",
+      "evidence": "Parent b5 resolves the writer through AddFoldersOperationalStatusPersistence with an injected IUtcClock and a store using the same TimeProvider. Its internal coordinator still uses System. After an abandoned COW replacement and expiry, the correctly configured coordinator returns available absence; the actual writer coordinator throws selected copy-on-write value is missing. This differs from fixed SDK registration R3-B5; parent owns the consumer correction."
+    },
+    {
+      "id": "B6",
+      "verdict": "medium",
+      "route": "patch",
+      "claim": "In-memory conditional ETag probe disagrees with logical expiry visibility",
+      "location": "InMemoryReadModelStore.cs:TryReadEtagAsync",
+      "evidence": "Parent b6 completes identical deadline batches and advances exactly to expiry. Both GetAsync values are absent, but fake TryReadEtagAsync returns Present=true while Dapr returns false. The interface requires the probe to mirror store visibility, so coordinated erasure tests take different branches. Reusing the existing shared resolver is a direct internal correction."
+    },
+    {
+      "id": "B7",
+      "verdict": "low",
+      "route": "patch",
+      "claim": "Retained fencing metadata lacks operator lifecycle and offboarding guidance",
+      "location": "docs/guides/named-projection-authoring.md:116-125",
+      "evidence": "Terminal fences persist exact scope including tenant identity, and legacy Aborted markers intentionally remain after receipt reclamation; the guide currently describes only original manifests/receipts. OffboardTenantAsync does not enumerate or delete these new fences. A direct guide correction must state this retained-data inventory, safe retention/removal prerequisites and offboarding limitation; no new discovery service or automatic fence TTL is needed."
+    },
+    {
+      "id": "B8",
+      "verdict": "false",
+      "route": "reject",
+      "claim": "Installer marker checks unnecessarily apply to all ordinary resumable operations",
+      "location": "ReadModelBatchProtocol.cs:606",
+      "evidence": "Private retirement reads already use MayHavePrivateFence, which limits them to retained work or the eligible two-operation legacy shape. The remaining before/after marker reads also protect generic public Stage/Abort races: AbortStagedAsync can move any Prepared batch to Aborted while an installer awaits persistence. Lack of a private fence does not make that installer decision immutable. No measured attribution to the open latency failures establishes the claimed budget regression."
+    },
+    {
+      "id": "B9",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Background promoted cleanup failures disappear without an operational signal",
+      "location": "SharedProjectionEpochCoordinator.PromotedCleanup.cs:26",
+      "evidence": "Parent b9 injects a maintenance read failure after real streamed promotion. WaitForPromotedCleanupAsync returns successfully, one durable cleanup page remains, and GetStatusAsync reports neither building nor degraded. The new catch-all emits no event/log/metric; without another foreground phase request retained cleanup can stay invisible. Preserve the bounded cancellation/gate behavior while surfacing failure and retry disposition."
+    },
+    {
+      "id": "B10",
+      "verdict": "false",
+      "route": "reject",
+      "claim": "Completed staged retries must report the same historical result as Execute after supersession",
+      "location": "ReadModelBatchProtocol.cs:CommitStagedAsync/RunStageAsync",
+      "evidence": "The public staging contract explicitly commits and verifies its durable visible result, and VerifyAsync reads both marker and operation evidence. A newer unexpired writer means that candidate is no longer the current visible result, so operation-unverified is truthful. Both Completed branches are byte-for-byte the same in SDK baseline d4d05; Execute historical receipt semantics do not establish a staging contract violation or a newly introduced failure."
+    },
+    {
+      "id": "E1",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "A retained installer exits after Completed receipt reclamation and recreates private scratch",
+      "location": "SharedProjectionEpochCoordinator.cs:1598-1600",
+      "evidence": "Individually verified by the parent rerun before grouping: Completed marker is absent, delayed installer persists its original envelope then exits, and exact recovery refuses invalid-recovery-evidence. The physical orphan survives successful cleanup and Abort."
+    },
+    {
+      "id": "E2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "claim": "Completed reclamation violates the claimed recoverability of an interrupted stale private write",
+      "location": "SharedProjectionEpochCoordinator.cs:1598-1600",
+      "evidence": "Individually verified by the same parent execution before grouping: no retirement proof remains for this Completed retained identity, so the persisted late own envelope cannot be reconciled. The current legacy-only terminal proof does not cover this claim."
+    }
+  ],
+  "individual_verdicts_complete": true,
+  "groups_not_yet_assigned": false,
+  "diagnostics": "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-review4",
+  "notes": [
+    "All layers returned final reports before triage.",
+    "No unchanged same-location/same-claim row qualified for carried disposition.",
+    "Probe build mistakes and analyzer warnings are diagnostic history, not acceptance builds. No SDK/consumer source was changed during probes."
+  ],
+  "groups": [
+    {
+      "id": "G1",
+      "members": [
+        "B1"
+      ],
+      "verdict": "medium",
+      "route": "bad_spec",
+      "root_cause": "Own installed expired envelope is accepted as omitted after failed compaction"
+    },
+    {
+      "id": "G2",
+      "members": [
+        "B2",
+        "E1",
+        "E2"
+      ],
+      "verdict": "medium",
+      "route": "bad_spec",
+      "root_cause": "Completed retained evidence is destroyed before late-installer recovery remains durable"
+    },
+    {
+      "id": "G3",
+      "members": [
+        "B3"
+      ],
+      "verdict": "medium",
+      "route": "bad_spec",
+      "root_cause": "Retained Aborted retirement discards original participant proof"
+    },
+    {
+      "id": "G4",
+      "members": [
+        "B4"
+      ],
+      "verdict": "medium",
+      "route": "bad_spec",
+      "root_cause": "Compensation storage bound is incorrectly equated with original canonical manifest bound"
+    },
+    {
+      "id": "G5",
+      "members": [
+        "B5"
+      ],
+      "verdict": "medium",
+      "route": "bad_spec",
+      "root_cause": "Folders coordinator clock is separately constructed from writer/store deadline clock"
+    },
+    {
+      "id": "G6",
+      "members": [
+        "B9"
+      ],
+      "verdict": "medium",
+      "route": "bad_spec",
+      "root_cause": "Background maintenance silently consumes failures while retaining durable work"
+    },
+    {
+      "id": "G7",
+      "members": [
+        "B6"
+      ],
+      "verdict": "medium",
+      "route": "patch",
+      "root_cause": "Fake ETag probe bypasses its shared visibility resolver"
+    },
+    {
+      "id": "G8",
+      "members": [
+        "B7"
+      ],
+      "verdict": "low",
+      "route": "patch",
+      "root_cause": "Guide omits deliberately retained fencing metadata lifecycle"
+    }
+  ],
+  "rejected": [
+    "B8",
+    "B10"
+  ],
+  "loopback": "bad_spec has precedence; two direct patch groups survive as explicit requirements; no defer or new approval required",
+  "positive_preservation": "/tmp/story12-2-sdk-review4-keep-111x6kq_",
+  "owner_review_loop_iteration": 4,
+  "raw_reports": {
+    "blind": "- Finding floor: 74,893,141 bytes \u00f7 1,000 = 74,893.141 kB; N = min(floor(\u221a74,893.141 + 1), 10) = 10.\n- In `ReadModelBatchProtocol.cs:1256`, `IsCompacted` accepts every expired unconditional operation through `IsOmittedExpired`, even when its own envelope remains after a failed conditional delete. Subsequent verification also skips that envelope. Require removal of an already-installed own envelope before reporting completion; otherwise its payload can survive indefinitely without TTL.\n- In `SharedProjectionEpochCoordinator.cs:1599`, completed retained scratch markers are erased without preserving retirement evidence. A delayed original installer can recreate a scratch envelope after recovery and cleanup, then exit immediately after persistence. Recovery subsequently has neither the marker nor a terminal proof. Add this interruption case and retain sufficient recovery evidence.\n- In `ReadModelBatchProtocol.cs:1295`, aborted retained batches receive terminal fences with empty anchors. If a delayed installer persists an envelope after compensation and exits, `ReadModelBatchTerminalFence.RestoreAsync` cannot restore it because it requires a matching anchor. Preserve participant proofs for this race, including after marker reclamation.\n- In `ReadModelLegacyScratchRecovery.cs:66\u201368`, compensation serializes already encoded envelopes into another base64 layer and applies the original one-MiB manifest limit to that larger representation. A lawful legacy batch can therefore become unrecoverable solely because recovery evidence expands beyond the limit. Cover near-limit payloads and provide bounded evidence storage that preserves the supported input capacity.\n- `OperationalStatusProjectionWriter.cs:22` still constructs the two-argument coordinator, which uses `TimeProvider.System`. Configuring `ReadModelBatchOptions.TimeProvider` and the Folders clock therefore leaves copy-on-write pointer expiry using a different clock. Inject the configured coordinator or propagate the same clock, and test expiry through the actual consumer registration.\n- `InMemoryReadModelStore.TryReadEtagAsync` returns physical presence for expired wrappers, while the changed Dapr implementation returns logical absence. This violates the interface\u2019s visibility contract and lets erase/recovery tests exercise different branches from production. Add parity coverage at the inclusive deadline.\n- The new immutable `:retired:` records and retained legacy aborted markers have no documented inventory, retention, or offboarding disposition. They accumulate per retired identity and contain tenant-scoped identifiers. Define their durable lifecycle and operational enumeration strategy without weakening delayed-worker fencing.\n- `CheckInstallerDecisionAsync` adds marker reads before and after every installed operation, including ordinary batches that cannot have private retirement fences. Limit the extra checks to the relevant protocol shapes or demonstrate their cost within the acknowledgement budget; the qualification packet still records an open latency failure.\n- `SharedProjectionEpochCoordinator.PromotedCleanup.cs:26` silently discards every cleanup exception, including timeout. When no subsequent rebuild begins, retained payload cleanup can remain unfinished without an observable signal. Emit bounded diagnostics or metrics identifying unfinished cleanup and its retry disposition.\n- Add staged-retry coverage after a newer value supersedes an unexpired deadline row. `CommitStagedAsync` and `RunStageAsync` reverify exact operation bytes for a completed marker and return `Indeterminate`, whereas `ExecuteAsync` accepts the same completed historical decision. Make the completion contract consistent or explicitly document and test why these supported retry seams differ.",
+    "edge": [
+      {
+        "location": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs:1598-1600",
+        "trigger_condition": "Delayed retained installer persists after Completed receipt reclamation, then exits before its post-write check.",
+        "guard_snippet": "await SealRetirementWithOriginalParticipantDigestsAsync(scope, fingerprint, participants); // before reclaiming Completed evidence",
+        "potential_consequence": "Private scratch becomes an unrecoverable orphan; retry or Abort cannot reconcile its missing marker."
+      },
+      {
+        "location": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs:1598-1600",
+        "trigger_condition": "Stale private scratch operations remain fenced and interrupted writes remain recoverable.",
+        "guard_snippet": "Completed receipts are erased without retirement proof; recovery rejects a subsequently persisted orphan envelope.",
+        "potential_consequence": "An exited delayed installer leaves permanent private state after successful cleanup and Abort.",
+        "kind": "claim",
+        "confidence": "high"
+      }
+    ],
+    "verification": "No verification gaps found."
+  }
+}

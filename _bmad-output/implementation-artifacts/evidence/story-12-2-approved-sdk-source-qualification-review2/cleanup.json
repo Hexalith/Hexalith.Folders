@@ -1,0 +1,24 @@
+[
+  {
+    "command": [
+      "aspire",
+      "ps",
+      "--format",
+      "Json"
+    ],
+    "exit_code": 0,
+    "stdout": "[]\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "docker",
+      "ps",
+      "--format",
+      "{{.Names}}"
+    ],
+    "exit_code": 0,
+    "stdout": "dapr_placement\ndapr_scheduler\ndapr_redis\ndapr_zipkin\n",
+    "stderr": ""
+  }
+]

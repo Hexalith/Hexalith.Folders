@@ -1,0 +1,11 @@
+{
+  "command": [
+    "aspire",
+    "ps",
+    "--format",
+    "Json"
+  ],
+  "exit_code": 0,
+  "applications": [],
+  "note": "Read-only inventory, recursively sanitized. Unrelated apps must be preserved."
+}

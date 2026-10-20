@@ -1,0 +1,34 @@
+{
+  "include_files": [
+    {
+      "path": "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+      "matches_previous_qualified_source": true
+    },
+    {
+      "path": "tests/shared/OperationalStatus/OperationalStatusClock.cs",
+      "matches_previous_qualified_source": true
+    }
+  ],
+  "retained_qualification": "story-12-2-approved-sdk-source-qualification-20261020/qualification.json",
+  "note": "The seven included C# source files are byte-identical. Prior format/analyzer checks remain exact-source evidence; new source build is separately qualified."
+}

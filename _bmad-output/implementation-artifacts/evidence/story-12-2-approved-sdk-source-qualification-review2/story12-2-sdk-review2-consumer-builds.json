@@ -1,0 +1,33 @@
+[
+  {
+    "id": "restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "Hexalith.Folders.slnx",
+      "-p:Configuration=Debug",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false"
+    ],
+    "exit_code": 0,
+    "seconds": 1.9843735694885254,
+    "log": "/tmp/story12-2-sdk-review2-consumer-restore.log"
+  },
+  {
+    "id": "build",
+    "command": [
+      "dotnet",
+      "build",
+      "Hexalith.Folders.slnx",
+      "-c",
+      "Debug",
+      "-p:UseHexalithProjectReferences=true",
+      "-p:UseNuGetDeps=false",
+      "--no-restore",
+      "-m:1"
+    ],
+    "exit_code": 0,
+    "seconds": 66.15346670150757,
+    "log": "/tmp/story12-2-sdk-review2-consumer-build.log"
+  }
+]

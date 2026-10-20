@@ -133,8 +133,19 @@ public sealed class OperationalStatusProjectionHandler(OperationalStatusProjecti
             {
                 if (operation.Kind != ReadModelBatchOperationKind.Write)
                     throw new InvalidOperationException("Unexpected operational rebuild operation.");
-                yield return ReadModelBatchOperation.Write(operation.Key, JsonNode.Parse(operation.CanonicalValue)!.AsObject(),
-                    ReadModelBatchConcurrency.LastWrite, operation.TimeToLive);
+                JsonObject value = JsonNode.Parse(operation.CanonicalValue)!.AsObject();
+                if (operation.ExpiresAtUtc is { } deadline)
+                {
+                    if (operation.TimeToLive is not null)
+                        throw new InvalidOperationException("Operational rebuild retention modes cannot be combined.");
+                    yield return ReadModelBatchOperation.WriteExpiring(operation.Key, value,
+                        ReadModelBatchConcurrency.LastWrite, deadline);
+                }
+                else
+                {
+                    yield return ReadModelBatchOperation.Write(operation.Key, value,
+                        ReadModelBatchConcurrency.LastWrite, operation.TimeToLive);
+                }
             }
         }
     }

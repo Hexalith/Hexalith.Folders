@@ -1,0 +1,125 @@
+[
+  {
+    "EventId": 1100,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Command received: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=protected, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=CommandReceived",
+    "line": 12302
+  },
+  {
+    "EventId": 1100,
+    "Category": "Hexalith.EventStore.Server.Commands.CommandRouter",
+    "Message": "Routing command to actor: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, ActorId=durability-57d87d24e89800f6:folders:fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=CommandRouting",
+    "line": 12306
+  },
+  {
+    "EventId": 2001,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "Stage transition: ActorId=durability-57d87d24e89800f6:folders:fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=Processing, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, DurationMs=6.7606",
+    "line": 12308
+  },
+  {
+    "EventId": 0,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "State rehydrated: DomainServiceCurrentState for ActorId=durability-57d87d24e89800f6:folders:fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7",
+    "line": 12310
+  },
+  {
+    "EventId": 3003,
+    "Category": "Hexalith.EventStore.Server.DomainServices.DaprDomainServiceInvoker",
+    "Message": "Domain service version not specified in command extensions, defaulting to v1: Tenant=durability-57d87d24e89800f6, Domain=folders, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7",
+    "line": 12312
+  },
+  {
+    "EventId": 3002,
+    "Category": "Hexalith.EventStore.Server.DomainServices.DaprDomainServiceInvoker",
+    "Message": "Domain service completed: AppId=folders-57d87d24e89800f6, ResultType=Success, EventCount=1, TenantId=durability-57d87d24e89800f6, Domain=folders, DomainServiceVersion=v1, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, Stage=DomainServiceInvoked",
+    "line": 12322
+  },
+  {
+    "EventId": 0,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "Domain service result: Success for ActorId=durability-57d87d24e89800f6:folders:fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7",
+    "line": 12324
+  },
+  {
+    "EventId": 3003,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "Domain service version not specified in command extensions, defaulting to v1: Tenant=durability-57d87d24e89800f6, Domain=folders, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7",
+    "line": 12326
+  },
+  {
+    "EventId": 2003,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "Infrastructure failure: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, FailureStage=EventsStored, ExceptionType=DaprApiException, ErrorMessage=Protected data diagnostic details were redacted. ReasonCode=protected-data-diagnostic-redacted; Stage=EventsStored., Stage=InfrastructureFailure",
+    "line": 12330
+  },
+  {
+    "EventId": 3200,
+    "Category": "Hexalith.EventStore.Server.Events.DeadLetterPublisher",
+    "Message": "Dead-letter published: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, FailureStage=EventsStored, ExceptionType=DaprApiException, ErrorMessage=Protected data diagnostic details were redacted. ReasonCode=protected-data-diagnostic-redacted; Stage=EventsStored., DeadLetterTopic=deadletter.folders.events, Stage=DeadLetterPublished",
+    "line": 12332
+  },
+  {
+    "EventId": 2002,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "Stage transition (rejection): ActorId=durability-57d87d24e89800f6:folders:fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=Rejected, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, DurationMs=60.5344",
+    "line": 12334
+  },
+  {
+    "EventId": 2004,
+    "Category": "Hexalith.EventStore.Server.Actors.AggregateActor",
+    "Message": "Command completed summary: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=01m5cmxwbseyf4fdhx2he8mk5b, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, Status=Rejected, DurationMs=60.5894, Stage=CommandCompleted",
+    "line": 12336
+  },
+  {
+    "EventId": 1102,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Failed to archive command: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, TenantId=durability-57d87d24e89800f6. Replay may be unavailable. Command processing continues. Stage=ArchiveWriteFailed",
+    "line": 12340,
+    "exception_excerpt": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-57d87d24e89800f6:local1:1JUKLX7Jir0f1Ob1jArm8YFSy1AlJC5R1VNGagK327o/method/ValidateAuthorityAsync\",\"correlationId\":\"01M5CMXWEWB0V0V3J83EMZ1MVM\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(In"
+  },
+  {
+    "EventId": 1110,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Correlation index write failed: MessageId=protected, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, TenantId=durability-57d87d24e89800f6. Message-primary lookup remains authoritative. Stage=CorrelationIndexWriteFailed",
+    "line": 12344,
+    "exception_excerpt": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-57d87d24e89800f6:local1:1JUKLX7Jir0f1Ob1jArm8YFSy1AlJC5R1VNGagK327o/method/ValidateAuthorityAsync\",\"correlationId\":\"01M5CMXWEZ4V0QVX6W5CZXCDV7\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(In"
+  },
+  {
+    "EventId": 1104,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Failed to track command activity: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, TenantId=durability-57d87d24e89800f6. Admin command list may be stale. Stage=ActivityTrackingFailed",
+    "line": 12348,
+    "exception_excerpt": "Dapr.DaprApiException: error invoke actor method: error from actor service: (429) {\"type\":\"https://hexalith.io/problems/rate-limit-exceeded\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\"Rate limit exceeded. Please retry after the specified interval.\",\"instance\":\"/actors/IdempotencyAdmissionActor/durability-57d87d24e89800f6:local1:1JUKLX7Jir0f1Ob1jArm8YFSy1AlJC5R1VNGagK327o/method/ValidateAuthorityAsync\",\"correlationId\":\"01M5CMXWF1MWZD901AS30FFD12\",\"tenantId\":\"unknown\",\"consumerId\":\"anonymous\"}\n   at Dapr.Actors.DaprHttpInteractor.SendAsyncHandleUnsuccessfulResponse(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.SendAsync(Func`1 requestFunc, String relativeUri, CancellationToken cancellationToken)\n   at Dapr.Actors.DaprHttpInteractor.InvokeActorMethodWithRemotingAsync(ActorMessageSerializersManager serializersManager, IActorRequestMessage remotingRequestRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Communication.Client.ActorRemotingClient.InvokeAsync(IActorRequestMessage remotingRequestMessage, CancellationToken cancellationToken)\n   at Dapr.Actors.Client.ActorProxy.InvokeMethodAsync(In"
+  },
+  {
+    "EventId": 1100,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Command received: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=protected, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=CommandReceived",
+    "line": 12520
+  },
+  {
+    "EventId": 0,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Trusted idempotency admission is unavailable. ExceptionType=DaprApiException, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, Stage=IdempotencyAdmissionUnavailable",
+    "line": 12524
+  },
+  {
+    "EventId": 1100,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Command received: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=protected, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=CommandReceived",
+    "line": 12594
+  },
+  {
+    "EventId": 0,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Trusted idempotency admission is unavailable. ExceptionType=DaprApiException, CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, Stage=IdempotencyAdmissionUnavailable",
+    "line": 12598
+  },
+  {
+    "EventId": 1100,
+    "Category": "Hexalith.EventStore.Server.Pipeline.SubmitCommandHandler",
+    "Message": "Command received: CorrelationId=01m5cmxwb9mqzy3zdyaehgtgt7, CausationId=protected, CommandType=Hexalith.Folders.Commands.ReleaseWorkspaceLock, TenantId=durability-57d87d24e89800f6, Domain=folders, AggregateId=fld-e0bab9b0ff31f5bd11ef799ba46e1853b9818091, Stage=CommandReceived",
+    "line": 12670
+  }
+]

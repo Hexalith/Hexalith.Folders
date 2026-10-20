@@ -1,0 +1,71 @@
+{
+  "packets": [
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-review2",
+      "artifacts": 10,
+      "manifest_sha256": "d57f4ace4da50c274fb3cd7e796bbc504bc826122fbee1c9da157a9157d16e7c",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-review3",
+      "artifacts": 17,
+      "manifest_sha256": "e746ce23253fb2556d8685000abb19f55504ffbf249da48f9bce9fc094c7c244",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-review4",
+      "artifacts": 17,
+      "manifest_sha256": "2b73d4619f0ed0644977f8b5385eb500ee7b198f8d159736b8c3dd56c7eb0788",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020",
+      "artifacts": 37,
+      "manifest_sha256": "526e00ce4b54ebcfc03f853d684c5213f976275f0186aca51c099adfe0714ac4",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-review2",
+      "artifacts": 35,
+      "manifest_sha256": "1e35e3e6a7ec7180e41c69582f3019634626ecef36444cd8cf81b0cb81dad37b",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-review3",
+      "artifacts": 48,
+      "manifest_sha256": "fa0ba0ad586feb08f8cb665d5330a598ff0092191a7677fe6f33b15d4e691dfa",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-20261020",
+      "artifacts": 21,
+      "manifest_sha256": "0b6f4b15c02df3d70ded3875318b1cfc02fd1bfe2085cf8b47112f531b7715e8",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review1",
+      "artifacts": 137,
+      "manifest_sha256": "308499130d5ebd37f651760f5a8d0c9a877b885556a96eb3415de5db75847cba",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review2",
+      "artifacts": 171,
+      "manifest_sha256": "840cd82680b5e58ea3edf65a6906d4d78ba1775623f33bb18b79062fa3aa2e98",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review3",
+      "artifacts": 381,
+      "manifest_sha256": "9a6dcfe3aadff56e58668550960832aa7458f6b4f71b235c1c57f5c7a55c3aa9",
+      "mismatches": []
+    },
+    {
+      "packet": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review4",
+      "artifacts": 315,
+      "manifest_sha256": "424ea4d67c400ca5e8f4012034126c33cef6beff43dab9189f3fd9d059be2750",
+      "mismatches": []
+    }
+  ],
+  "all_nine_canonical_stages_unchanged": true
+}

@@ -58,8 +58,18 @@ The spec and sprint story remain in progress. The approval authorizes the two SD
 The EventStore-owned implementation spec is [the SDK expiry and scratch-recovery spec](../../references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-folders-12-2-expiry-and-scratch-recovery.md). The approval is recorded before any SDK edit. All prior diagnostic evidence remains exact-source history.
 
 The approved prerequisites and Folders adoption are now locally source-qualified.
-[The current qualification packet](evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json)
+[The current qualification packet](evidence/story-12-2-approved-sdk-source-qualification-review3/qualification.json)
 records the exact SDK/consumer sources and test binaries, successful pending-scratch OS-process
 replacement, 4,195 consumer passes and the full real-provider live pass. Independent review is pending
 at the packet seal. Package/PD10 qualification, >10,000 identity completion and acknowledgement
 performance remain open. The approval scope and exclusions above are unchanged.
+
+
+Review4 continuation (2026-10-20): approval remains in force. Stage9 qualification is preserved as
+historical evidence while the SDK owner implements verified expiry/late-installer/legacy-capacity and
+maintenance corrections in loop4. Parent will also correct the actual Folders writer/coordinator clock
+registration and requalify consumption. See the round4 individual triage record and owner spec; no
+change to approved intent, exclusions, original baselines, dependency pins or release authorization.
+
+
+Review-four source and consumer clock corrections are locally qualified in [Stage10](evidence/story-12-2-approved-sdk-source-qualification-review4/qualification.json); independent approved-scope review follows. Prior stages remain historical evidence; whole-story identity/package/performance gates remain open.

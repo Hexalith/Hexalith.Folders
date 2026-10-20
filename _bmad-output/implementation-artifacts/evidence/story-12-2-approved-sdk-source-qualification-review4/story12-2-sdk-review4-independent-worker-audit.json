@@ -1,0 +1,1162 @@
+{
+  "workers": [
+    {
+      "xml": "process-workers/review4-exited-518e96abfd20452f8e8e3d15fd63695f.install.xml",
+      "log": "process-workers/review4-exited-518e96abfd20452f8e8e3d15fd63695f.install.log",
+      "pid": 987642,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-518e96abfd20452f8e8e3d15fd63695f.recover.xml",
+      "log": "process-workers/review4-exited-518e96abfd20452f8e8e3d15fd63695f.recover.log",
+      "pid": 987749,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-6f9eaab458804cb8b64411d5d7dd273c.install.xml",
+      "log": "process-workers/review4-exited-6f9eaab458804cb8b64411d5d7dd273c.install.log",
+      "pid": 988742,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-6f9eaab458804cb8b64411d5d7dd273c.recover.xml",
+      "log": "process-workers/review4-exited-6f9eaab458804cb8b64411d5d7dd273c.recover.log",
+      "pid": 988973,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-91c72d000e6f49608c37b14410d605f4.install.xml",
+      "log": "process-workers/review4-exited-91c72d000e6f49608c37b14410d605f4.install.log",
+      "pid": 988378,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-91c72d000e6f49608c37b14410d605f4.recover.xml",
+      "log": "process-workers/review4-exited-91c72d000e6f49608c37b14410d605f4.recover.log",
+      "pid": 988457,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-ea8e9a578783482b8d42392c1e327a1f.install.xml",
+      "log": "process-workers/review4-exited-ea8e9a578783482b8d42392c1e327a1f.install.log",
+      "pid": 987043,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/review4-exited-ea8e9a578783482b8d42392c1e327a1f.recover.xml",
+      "log": "process-workers/review4-exited-ea8e9a578783482b8d42392c1e327a1f.recover.log",
+      "pid": 987323,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd-persist.xml",
+      "log": "process-workers/scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd-persist.log",
+      "pid": 983314,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd-resume.xml",
+      "log": "process-workers/scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd-resume.log",
+      "pid": 983455,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-11c30430a9174a6da67ea89f5d3808b2-persist.xml",
+      "log": "process-workers/scratch-process-11c30430a9174a6da67ea89f5d3808b2-persist.log",
+      "pid": 984289,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-11c30430a9174a6da67ea89f5d3808b2-resume.xml",
+      "log": "process-workers/scratch-process-11c30430a9174a6da67ea89f5d3808b2-resume.log",
+      "pid": 984434,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-1474eda29ace4655b07dac521f4a0b69-persist.xml",
+      "log": "process-workers/scratch-process-1474eda29ace4655b07dac521f4a0b69-persist.log",
+      "pid": 984955,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-1474eda29ace4655b07dac521f4a0b69-resume.xml",
+      "log": "process-workers/scratch-process-1474eda29ace4655b07dac521f4a0b69-resume.log",
+      "pid": 985373,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-bdc6bbf8e30941d48ab4245141d6a659-persist.xml",
+      "log": "process-workers/scratch-process-bdc6bbf8e30941d48ab4245141d6a659-persist.log",
+      "pid": 986451,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-bdc6bbf8e30941d48ab4245141d6a659-resume.xml",
+      "log": "process-workers/scratch-process-bdc6bbf8e30941d48ab4245141d6a659-resume.log",
+      "pid": 986470,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6-persist.xml",
+      "log": "process-workers/scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6-persist.log",
+      "pid": 986135,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6-resume.xml",
+      "log": "process-workers/scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6-resume.log",
+      "pid": 986416,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-fc05b8fb17c244369eec33e081baf185-persist.xml",
+      "log": "process-workers/scratch-process-fc05b8fb17c244369eec33e081baf185-persist.log",
+      "pid": 983890,
+      "passed": 1,
+      "skipped": 0
+    },
+    {
+      "xml": "process-workers/scratch-process-fc05b8fb17c244369eec33e081baf185-resume.xml",
+      "log": "process-workers/scratch-process-fc05b8fb17c244369eec33e081baf185-resume.log",
+      "pid": 983909,
+      "passed": 1,
+      "skipped": 0
+    }
+  ],
+  "pairs": [
+    {
+      "kind": "production-named",
+      "raw": {
+        "observation": "cleaned-after-distinct-recovery-process-exit",
+        "originalPid": 983314,
+        "resumedPid": 983455,
+        "epoch_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MiwiYWN0aXZlR2VuZXJhdGlvbiI6MiwicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoiZnJlc2giLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6InYxOndEZGQ1WkF1MHJzX2NMY05CalZ2WUFaRmU5OTViNFB6cmI3S0ViRk9VcG8iLCJjYXB0dXJlSGlnaFdhdGVybWFya3MiOnsib3duZXItYiI6Mn0sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwicmVnaXN0ZXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwiam91cm5hbCI6W10sInN0YWdlRmluZ2VycHJpbnQiOiJ2MTprNDhOV0U0ZTEyYWZjbGNiMHFqMjdJTzhIbVNDR1Q4V01rLThtLWtXQXZVIiwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoic2NyYXRjaC1wcm9jZXNzLTBmNmIwZmQ4YjA2YzRhZTA5NDE5MThmNWRmMTY5OWRkIn0=",
+        "scratch_redis_exists": false,
+        "manifest_redis_exists": false
+      },
+      "decoded_epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 2,
+        "phase": 0,
+        "operationId": "fresh",
+        "inventoryFingerprint": "v1:wDdd5ZAu0rs_cLcNBjVvYAZFe995b4Pzrb7KEbFOUpo",
+        "captureHighWatermarks": {
+          "owner-b": 2
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": "v1:k48NWE4e12afclcb0qj27IO8HmSCGT8WMk-8m-kWAvU",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd"
+      }
+    },
+    {
+      "kind": "production-named",
+      "raw": {
+        "observation": "cleaned-after-distinct-recovery-process-exit",
+        "originalPid": 983890,
+        "resumedPid": 983909,
+        "epoch_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MywiYWN0aXZlR2VuZXJhdGlvbiI6MywicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoiZnJlc2giLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6InYxOndEZGQ1WkF1MHJzX2NMY05CalZ2WUFaRmU5OTViNFB6cmI3S0ViRk9VcG8iLCJjYXB0dXJlSGlnaFdhdGVybWFya3MiOnsib3duZXItYiI6Mn0sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwicmVnaXN0ZXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwiam91cm5hbCI6W10sInN0YWdlRmluZ2VycHJpbnQiOiJ2MTpaNUV0QmNic3lGUU1GSTNxVWRCaXdjNWxEdnlFY0h5UzN3M3BXcTZ3bExNIiwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoic2NyYXRjaC1wcm9jZXNzLWZjMDViOGZiMTdjMjQ0MzY5ZWVjMzNlMDgxYmFmMTg1In0=",
+        "scratch_redis_exists": false,
+        "manifest_redis_exists": false
+      },
+      "decoded_epoch": {
+        "version": 1,
+        "epoch": 3,
+        "activeGeneration": 3,
+        "phase": 0,
+        "operationId": "fresh",
+        "inventoryFingerprint": "v1:wDdd5ZAu0rs_cLcNBjVvYAZFe995b4Pzrb7KEbFOUpo",
+        "captureHighWatermarks": {
+          "owner-b": 2
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": "v1:Z5EtBcbsyFQMFI3qUdBiwc5lDvyEcHyS3w3pWq6wlLM",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-fc05b8fb17c244369eec33e081baf185"
+      }
+    },
+    {
+      "kind": "production-named",
+      "raw": {
+        "observation": "cleaned-after-distinct-recovery-process-exit",
+        "originalPid": 984289,
+        "resumedPid": 984434,
+        "epoch_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MiwiYWN0aXZlR2VuZXJhdGlvbiI6MiwicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoiZnJlc2giLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6InYxOndEZGQ1WkF1MHJzX2NMY05CalZ2WUFaRmU5OTViNFB6cmI3S0ViRk9VcG8iLCJjYXB0dXJlSGlnaFdhdGVybWFya3MiOnsib3duZXItYiI6Mn0sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwicmVnaXN0ZXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwiam91cm5hbCI6W10sInN0YWdlRmluZ2VycHJpbnQiOiJ2MTp5a3hILUxLcFVUbkRqVTRIVGFpb0NkZFc2alAzQm9pZmw0NjRFU2ZMc2tJIiwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoic2NyYXRjaC1wcm9jZXNzLTExYzMwNDMwYTkxNzRhNmRhNjdlYTg5ZjVkMzgwOGIyIn0=",
+        "scratch_redis_exists": false,
+        "manifest_redis_exists": false
+      },
+      "decoded_epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 2,
+        "phase": 0,
+        "operationId": "fresh",
+        "inventoryFingerprint": "v1:wDdd5ZAu0rs_cLcNBjVvYAZFe995b4Pzrb7KEbFOUpo",
+        "captureHighWatermarks": {
+          "owner-b": 2
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": "v1:ykxH-LKpUTnDjU4HTaioCddW6jP3Boifl464ESfLskI",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-11c30430a9174a6da67ea89f5d3808b2"
+      }
+    },
+    {
+      "kind": "production-named",
+      "raw": {
+        "observation": "cleaned-after-distinct-recovery-process-exit",
+        "originalPid": 984955,
+        "resumedPid": 985373,
+        "epoch_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MywiYWN0aXZlR2VuZXJhdGlvbiI6MywicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoiZnJlc2giLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6InYxOndEZGQ1WkF1MHJzX2NMY05CalZ2WUFaRmU5OTViNFB6cmI3S0ViRk9VcG8iLCJjYXB0dXJlSGlnaFdhdGVybWFya3MiOnsib3duZXItYiI6Mn0sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwicmVnaXN0ZXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwiam91cm5hbCI6W10sInN0YWdlRmluZ2VycHJpbnQiOiJ2MTo1LWtSNjhIV2JOemZTb2ZNdEU1c1BDaGxmZUtZVUpZMTFKM2pRZjRqTk9VIiwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoic2NyYXRjaC1wcm9jZXNzLTE0NzRlZGEyOWFjZTQ2NTViMDdkYWM1MjFmNGEwYjY5In0=",
+        "scratch_redis_exists": false,
+        "manifest_redis_exists": false
+      },
+      "decoded_epoch": {
+        "version": 1,
+        "epoch": 3,
+        "activeGeneration": 3,
+        "phase": 0,
+        "operationId": "fresh",
+        "inventoryFingerprint": "v1:wDdd5ZAu0rs_cLcNBjVvYAZFe995b4Pzrb7KEbFOUpo",
+        "captureHighWatermarks": {
+          "owner-b": 2
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": "v1:5-kR68HWbNzfSofMtE5sPChlfeKYUJY11J3jQf4jNOU",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-1474eda29ace4655b07dac521f4a0b69"
+      }
+    },
+    {
+      "kind": "production-named",
+      "raw": {
+        "observation": "cleaned-after-distinct-recovery-process-exit",
+        "originalPid": 986135,
+        "resumedPid": 986416,
+        "epoch_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MiwiYWN0aXZlR2VuZXJhdGlvbiI6MiwicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoiZnJlc2giLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6InYxOndEZGQ1WkF1MHJzX2NMY05CalZ2WUFaRmU5OTViNFB6cmI3S0ViRk9VcG8iLCJjYXB0dXJlSGlnaFdhdGVybWFya3MiOnsib3duZXItYiI6Mn0sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwicmVnaXN0ZXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwiam91cm5hbCI6W10sInN0YWdlRmluZ2VycHJpbnQiOiJ2MTpKQ1JvSTBmYmpDZ1IzUG9FVklGUUxuak9GZE50TkpuNjQ1aDdJVGNiRHdZIiwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoic2NyYXRjaC1wcm9jZXNzLWY5MWI0YzU2NmQ1NTRjOGViNGVjNmI1OGZmYzMwN2Y2In0=",
+        "scratch_redis_exists": false,
+        "manifest_redis_exists": false
+      },
+      "decoded_epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 2,
+        "phase": 0,
+        "operationId": "fresh",
+        "inventoryFingerprint": "v1:wDdd5ZAu0rs_cLcNBjVvYAZFe995b4Pzrb7KEbFOUpo",
+        "captureHighWatermarks": {
+          "owner-b": 2
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": "v1:JCRoI0fbjCgR3PoEVIFQLnjOFdNtNJn645h7ITcbDwY",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6"
+      }
+    },
+    {
+      "kind": "production-named",
+      "raw": {
+        "observation": "cleaned-after-distinct-recovery-process-exit",
+        "originalPid": 986451,
+        "resumedPid": 986470,
+        "epoch_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MywiYWN0aXZlR2VuZXJhdGlvbiI6MywicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoiZnJlc2giLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6InYxOndEZGQ1WkF1MHJzX2NMY05CalZ2WUFaRmU5OTViNFB6cmI3S0ViRk9VcG8iLCJjYXB0dXJlSGlnaFdhdGVybWFya3MiOnsib3duZXItYiI6Mn0sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwicmVnaXN0ZXJlZFdyaXRlcnMiOlsib3JkaW5hcnktZGlzcGF0Y2giXSwiam91cm5hbCI6W10sInN0YWdlRmluZ2VycHJpbnQiOiJ2MTpZb3lxVjNzSEpMc3pPeGNTQ214azExeU00Wk1WY1lvaENzb194WkFpLTVNIiwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoic2NyYXRjaC1wcm9jZXNzLWJkYzZiYmY4ZTMwOTQxZDQ4YWI0MjQ1MTQxZDZhNjU5In0=",
+        "scratch_redis_exists": false,
+        "manifest_redis_exists": false
+      },
+      "decoded_epoch": {
+        "version": 1,
+        "epoch": 3,
+        "activeGeneration": 3,
+        "phase": 0,
+        "operationId": "fresh",
+        "inventoryFingerprint": "v1:wDdd5ZAu0rs_cLcNBjVvYAZFe995b4Pzrb7KEbFOUpo",
+        "captureHighWatermarks": {
+          "owner-b": 2
+        },
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": "v1:YoyqV3sHJLszOxcSCmxk11yM4ZMVcYohCso_xZAi-5M",
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-bdc6bbf8e30941d48ab4245141d6a659"
+      }
+    },
+    {
+      "kind": "primitive-late-installer",
+      "raw": {
+        "observation": "review4-exited-installer",
+        "abort": false,
+        "ordinal": 0,
+        "installer_pid": 987043,
+        "recovery_pid": 987323,
+        "installer_exited_before_recovery": true,
+        "late_envelope": true,
+        "late_base64": "eyIkaHhybWIiOjEsImNhbmQiOiJleUpqYjNWdWRDSTZNWDA9IiwiZGVsIjpmYWxzZSwiZnAiOiJ2MTpNN0U4bUxHUEN4Z3dPWjJuTWk1aGNZLWpCYkl3eHBiajZkVXd1NGlCbF9RIiwib3JkIjowLCJwcmV2IjpudWxsLCJzY29wZSI6IjR2aXJQTFNyQ3JjZFBneFJmamtNVWVhOHJhSUNtV09kTWpPTkRLVEQzVkEifQ==",
+        "exact_open_preserved": true,
+        "private_absent": true,
+        "fresh_epoch_cycle": true
+      }
+    },
+    {
+      "kind": "primitive-late-installer",
+      "raw": {
+        "observation": "review4-exited-installer",
+        "abort": true,
+        "ordinal": 0,
+        "installer_pid": 987642,
+        "recovery_pid": 987749,
+        "installer_exited_before_recovery": true,
+        "late_envelope": true,
+        "late_base64": "eyIkaHhybWIiOjEsImNhbmQiOiJleUpqYjNWdWRDSTZNWDA9IiwiZGVsIjpmYWxzZSwiZnAiOiJ2MTpFc0pTb2YyTHNydUxJbndUM19BaUxjOWRBWXg4MmVTb0RmQ2w3UUV2RXBFIiwib3JkIjowLCJwcmV2IjpudWxsLCJzY29wZSI6IjRkVk9FYUllMDBEQ1JoLUVETXBKQ2pyVzR2TVRJWUkwdlh0cmJZU001RzAifQ==",
+        "exact_open_preserved": true,
+        "private_absent": true,
+        "fresh_epoch_cycle": true
+      }
+    },
+    {
+      "kind": "primitive-late-installer",
+      "raw": {
+        "observation": "review4-exited-installer",
+        "abort": false,
+        "ordinal": 1,
+        "installer_pid": 988378,
+        "recovery_pid": 988457,
+        "installer_exited_before_recovery": true,
+        "late_envelope": false,
+        "late_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MSwiYWN0aXZlR2VuZXJhdGlvbiI6MCwicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoib3JpZ2luYWwiLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6ImludmVudG9yeSIsImNhcHR1cmVIaWdoV2F0ZXJtYXJrcyI6e30sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsid3JpdGVyIl0sInJlZ2lzdGVyZWRXcml0ZXJzIjpbIndyaXRlciJdLCJqb3VybmFsIjpbXSwic3RhZ2VGaW5nZXJwcmludCI6bnVsbCwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoicmV2aWV3NC1leGl0ZWQtOTFjNzJkMDAwZTZmNDk2MDhjMzdiMTQ0MTBkNjA1ZjQifQ==",
+        "exact_open_preserved": true,
+        "private_absent": true,
+        "fresh_epoch_cycle": true
+      }
+    },
+    {
+      "kind": "primitive-late-installer",
+      "raw": {
+        "observation": "review4-exited-installer",
+        "abort": true,
+        "ordinal": 1,
+        "installer_pid": 988742,
+        "recovery_pid": 988973,
+        "installer_exited_before_recovery": true,
+        "late_envelope": false,
+        "late_base64": "eyJ2ZXJzaW9uIjoxLCJlcG9jaCI6MSwiYWN0aXZlR2VuZXJhdGlvbiI6MCwicGhhc2UiOjAsIm9wZXJhdGlvbklkIjoib3JpZ2luYWwiLCJpbnZlbnRvcnlGaW5nZXJwcmludCI6ImludmVudG9yeSIsImNhcHR1cmVIaWdoV2F0ZXJtYXJrcyI6e30sImNvbnN1bWVyQ2hlY2twb2ludHMiOnt9LCJyZXF1aXJlZFdyaXRlcnMiOlsid3JpdGVyIl0sInJlZ2lzdGVyZWRXcml0ZXJzIjpbIndyaXRlciJdLCJqb3VybmFsIjpbXSwic3RhZ2VGaW5nZXJwcmludCI6bnVsbCwic3RhZ2VLZXlzIjpbXSwic3RhZ2VNdXRhdGlvbnMiOm51bGwsInN0YWdlTWFuaWZlc3REaWdlc3QiOm51bGwsInN0YWdlQ29udHJvbEluZGV4SW50ZW50IjpudWxsLCJyZXRhaW5lZENvbnRyb2xJbmRleE5hbWVzIjpbXSwib2ZmYm9hcmRpbmdBdWRpdElkIjpudWxsLCJzdGFnZUNodW5rcyI6bnVsbCwic3RhZ2VFeGVjdXRpb25TdGFydGVkIjpmYWxzZSwiY2xlYW51cENodW5rcyI6bnVsbCwiY2FwdHVyZUNodW5rcyI6bnVsbCwiY2xlYW51cFByZXBhcmVkQ2h1bmtzIjpudWxsLCJzdGFnZVN0cmVhbWluZyI6ZmFsc2UsInN0YWdlQ29tcGxldGVkUGFnZUNvdW50IjowLCJzdGFnZVNlYWxlZFBhZ2VDb3VudCI6MCwiY2xlYW51cFN0cmVhbU9wZXJhdGlvbklkIjpudWxsLCJjbGVhbnVwU3RyZWFtRXBvY2giOjAsImNsZWFudXBTdHJlYW1QYWdlQ291bnQiOjAsIm93bmVyU2VxdWVuY2VIYW5kb2ZmUGVuZGluZyI6ZmFsc2UsInN0YWdlUmVzZXJ2ZWRQYWdlQ291bnQiOjAsImRlbGl2ZXJ5Q29uZmxpY3RzIjpbXSwiZGVsaXZlcnlDb25mbGljdE92ZXJmbG93IjpudWxsLCJwYXJraW5nRXZpZGVuY2UiOltdLCJwYXJraW5nRXZpZGVuY2VPdmVyZmxvdyI6bnVsbCwiY29weU9uV3JpdGVBbmNob3JHZW5lcmF0aW9uIjpudWxsLCJjbGVhbnVwUHJvbW90ZWRSZXRpcmVtZW50cyI6ZmFsc2UsIm9wZXJhdGlvblRlbmFudElkIjoicmV2aWV3NC1leGl0ZWQtNmY5ZWFhYjQ1ODgwNGNiOGI2NDQxMWQ1ZDdkZDI3M2MifQ==",
+        "exact_open_preserved": true,
+        "private_absent": true,
+        "fresh_epoch_cycle": true
+      }
+    }
+  ],
+  "independent_namespace_recheck": [
+    {
+      "app_id": "eventstore-live-0b0450c6e4484f82a64c91774f21ebed",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-0b0450c6e4484f82a64c91774f21ebed||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-1e3c0478a07f41d1b0f3ac71572e2dfb",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-1e3c0478a07f41d1b0f3ac71572e2dfb||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-4cec1fa34666489c98f7df2f5e4a9e0c",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-4cec1fa34666489c98f7df2f5e4a9e0c||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-59e8c9db850141428138c75ea52c82f9",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-59e8c9db850141428138c75ea52c82f9||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-928a53bec9fd4e6ab6755f96a8a5681f",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-928a53bec9fd4e6ab6755f96a8a5681f||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-aeb86ee17159468083b4379338052f96",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-aeb86ee17159468083b4379338052f96||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-b08dff7f6aa045089ad24c0f53e866ae",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-b08dff7f6aa045089ad24c0f53e866ae||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    },
+    {
+      "app_id": "eventstore-live-fc3e43c25c0344a8a7b4ca9231ef2721",
+      "command": [
+        "docker",
+        "exec",
+        "dapr_redis",
+        "redis-cli",
+        "--raw",
+        "--scan",
+        "--pattern",
+        "eventstore-live-fc3e43c25c0344a8a7b4ca9231ef2721||*"
+      ],
+      "exit_code": 0,
+      "remaining_keys": 0
+    }
+  ],
+  "independently_decoded_before_delivery_named_states": [
+    {
+      "log": "process-workers/scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd-resume.log",
+      "pid": 983455,
+      "epoch": {
+        "version": 1,
+        "epoch": 1,
+        "activeGeneration": 0,
+        "phase": 0,
+        "operationId": "process-interrupted",
+        "inventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "captureHighWatermarks": {},
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": null,
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd"
+      },
+      "session": {
+        "version": 1,
+        "identity": {
+          "tenantId": "scratch-process-0f6b0fd8b06c4ae0941918f5df1699dd",
+          "domain": "widget",
+          "projectionType": "partitioned-widget",
+          "operationId": "process-interrupted",
+          "catalogFingerprint": "07c23ef1642cf69f21094f61d16ee60308fc7b0abdfb60bfc885f4c4624a28be"
+        },
+        "phase": 4,
+        "candidateState": "",
+        "acceptedAggregateCount": 1,
+        "inventoryFingerprint": "v1:Y1u7sqUZKZrme4pHe_85VmdY7ofkb4TfV3ToZSbJqps",
+        "lastAggregateId": "owner-a",
+        "receipts": [],
+        "expectedAggregateCount": null,
+        "expectedInventoryFingerprint": null,
+        "batchFingerprint": null,
+        "completionState": null,
+        "captureInventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "partitioned": true,
+        "scratchIndexesCleaned": true,
+        "scratchCleanedOwnerCount": 1,
+        "pendingScratchChunkCount": -1,
+        "transportOwnerOrdinal": -1,
+        "transportAggregateId": null,
+        "transportNextPart": 0,
+        "transportReservedPartCount": 0,
+        "transportReservedFragmentCount": 0
+      },
+      "scratch_exists": false,
+      "manifest_exists": false,
+      "original_marker_exists": false
+    },
+    {
+      "log": "process-workers/scratch-process-11c30430a9174a6da67ea89f5d3808b2-resume.log",
+      "pid": 984434,
+      "epoch": {
+        "version": 1,
+        "epoch": 1,
+        "activeGeneration": 0,
+        "phase": 0,
+        "operationId": "process-interrupted",
+        "inventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "captureHighWatermarks": {},
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": null,
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-11c30430a9174a6da67ea89f5d3808b2"
+      },
+      "session": {
+        "version": 1,
+        "identity": {
+          "tenantId": "scratch-process-11c30430a9174a6da67ea89f5d3808b2",
+          "domain": "widget",
+          "projectionType": "partitioned-widget",
+          "operationId": "process-interrupted",
+          "catalogFingerprint": "07c23ef1642cf69f21094f61d16ee60308fc7b0abdfb60bfc885f4c4624a28be"
+        },
+        "phase": 4,
+        "candidateState": "",
+        "acceptedAggregateCount": 1,
+        "inventoryFingerprint": "v1:Y1u7sqUZKZrme4pHe_85VmdY7ofkb4TfV3ToZSbJqps",
+        "lastAggregateId": "owner-a",
+        "receipts": [],
+        "expectedAggregateCount": null,
+        "expectedInventoryFingerprint": null,
+        "batchFingerprint": null,
+        "completionState": null,
+        "captureInventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "partitioned": true,
+        "scratchIndexesCleaned": true,
+        "scratchCleanedOwnerCount": 1,
+        "pendingScratchChunkCount": -1,
+        "transportOwnerOrdinal": -1,
+        "transportAggregateId": null,
+        "transportNextPart": 0,
+        "transportReservedPartCount": 0,
+        "transportReservedFragmentCount": 0
+      },
+      "scratch_exists": false,
+      "manifest_exists": false,
+      "original_marker_exists": false
+    },
+    {
+      "log": "process-workers/scratch-process-1474eda29ace4655b07dac521f4a0b69-resume.log",
+      "pid": 985373,
+      "epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 1,
+        "phase": 0,
+        "operationId": "process-interrupted",
+        "inventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "captureHighWatermarks": {},
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": null,
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-1474eda29ace4655b07dac521f4a0b69"
+      },
+      "session": {
+        "version": 1,
+        "identity": {
+          "tenantId": "scratch-process-1474eda29ace4655b07dac521f4a0b69",
+          "domain": "widget",
+          "projectionType": "partitioned-widget",
+          "operationId": "process-interrupted",
+          "catalogFingerprint": "07c23ef1642cf69f21094f61d16ee60308fc7b0abdfb60bfc885f4c4624a28be"
+        },
+        "phase": 4,
+        "candidateState": "",
+        "acceptedAggregateCount": 0,
+        "inventoryFingerprint": "v1:0GcKAntMxSP_tyB3TTG3JDU_JxGzg3ULa34UbcxiKJ4",
+        "lastAggregateId": null,
+        "receipts": [],
+        "expectedAggregateCount": null,
+        "expectedInventoryFingerprint": null,
+        "batchFingerprint": null,
+        "completionState": null,
+        "captureInventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "partitioned": true,
+        "scratchIndexesCleaned": true,
+        "scratchCleanedOwnerCount": 0,
+        "pendingScratchChunkCount": 1,
+        "transportOwnerOrdinal": -1,
+        "transportAggregateId": null,
+        "transportNextPart": 0,
+        "transportReservedPartCount": 0,
+        "transportReservedFragmentCount": 0
+      },
+      "scratch_exists": false,
+      "manifest_exists": false,
+      "original_marker_exists": false
+    },
+    {
+      "log": "process-workers/scratch-process-bdc6bbf8e30941d48ab4245141d6a659-resume.log",
+      "pid": 986470,
+      "epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 1,
+        "phase": 0,
+        "operationId": "process-interrupted",
+        "inventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "captureHighWatermarks": {},
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": null,
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-bdc6bbf8e30941d48ab4245141d6a659"
+      },
+      "session": {
+        "version": 1,
+        "identity": {
+          "tenantId": "scratch-process-bdc6bbf8e30941d48ab4245141d6a659",
+          "domain": "widget",
+          "projectionType": "partitioned-widget",
+          "operationId": "process-interrupted",
+          "catalogFingerprint": "07c23ef1642cf69f21094f61d16ee60308fc7b0abdfb60bfc885f4c4624a28be"
+        },
+        "phase": 4,
+        "candidateState": "",
+        "acceptedAggregateCount": 1,
+        "inventoryFingerprint": "v1:Y1u7sqUZKZrme4pHe_85VmdY7ofkb4TfV3ToZSbJqps",
+        "lastAggregateId": "owner-a",
+        "receipts": [],
+        "expectedAggregateCount": null,
+        "expectedInventoryFingerprint": null,
+        "batchFingerprint": null,
+        "completionState": null,
+        "captureInventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "partitioned": true,
+        "scratchIndexesCleaned": true,
+        "scratchCleanedOwnerCount": 1,
+        "pendingScratchChunkCount": -1,
+        "transportOwnerOrdinal": -1,
+        "transportAggregateId": null,
+        "transportNextPart": 0,
+        "transportReservedPartCount": 0,
+        "transportReservedFragmentCount": 0
+      },
+      "scratch_exists": false,
+      "manifest_exists": false,
+      "original_marker_exists": false
+    },
+    {
+      "log": "process-workers/scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6-resume.log",
+      "pid": 986416,
+      "epoch": {
+        "version": 1,
+        "epoch": 1,
+        "activeGeneration": 0,
+        "phase": 0,
+        "operationId": "process-interrupted",
+        "inventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "captureHighWatermarks": {},
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": null,
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6"
+      },
+      "session": {
+        "version": 1,
+        "identity": {
+          "tenantId": "scratch-process-f91b4c566d554c8eb4ec6b58ffc307f6",
+          "domain": "widget",
+          "projectionType": "partitioned-widget",
+          "operationId": "process-interrupted",
+          "catalogFingerprint": "07c23ef1642cf69f21094f61d16ee60308fc7b0abdfb60bfc885f4c4624a28be"
+        },
+        "phase": 4,
+        "candidateState": "",
+        "acceptedAggregateCount": 0,
+        "inventoryFingerprint": "v1:0GcKAntMxSP_tyB3TTG3JDU_JxGzg3ULa34UbcxiKJ4",
+        "lastAggregateId": null,
+        "receipts": [],
+        "expectedAggregateCount": null,
+        "expectedInventoryFingerprint": null,
+        "batchFingerprint": null,
+        "completionState": null,
+        "captureInventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "partitioned": true,
+        "scratchIndexesCleaned": true,
+        "scratchCleanedOwnerCount": 0,
+        "pendingScratchChunkCount": 1,
+        "transportOwnerOrdinal": -1,
+        "transportAggregateId": null,
+        "transportNextPart": 0,
+        "transportReservedPartCount": 0,
+        "transportReservedFragmentCount": 0
+      },
+      "scratch_exists": false,
+      "manifest_exists": false,
+      "original_marker_exists": false
+    },
+    {
+      "log": "process-workers/scratch-process-fc05b8fb17c244369eec33e081baf185-resume.log",
+      "pid": 983909,
+      "epoch": {
+        "version": 1,
+        "epoch": 2,
+        "activeGeneration": 1,
+        "phase": 0,
+        "operationId": "process-interrupted",
+        "inventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "captureHighWatermarks": {},
+        "consumerCheckpoints": {},
+        "requiredWriters": [
+          "ordinary-dispatch"
+        ],
+        "registeredWriters": [
+          "ordinary-dispatch"
+        ],
+        "journal": [],
+        "stageFingerprint": null,
+        "stageKeys": [],
+        "stageMutations": null,
+        "stageManifestDigest": null,
+        "stageControlIndexIntent": null,
+        "retainedControlIndexNames": [],
+        "offboardingAuditId": null,
+        "stageChunks": null,
+        "stageExecutionStarted": false,
+        "cleanupChunks": null,
+        "captureChunks": null,
+        "cleanupPreparedChunks": null,
+        "stageStreaming": false,
+        "stageCompletedPageCount": 0,
+        "stageSealedPageCount": 0,
+        "cleanupStreamOperationId": null,
+        "cleanupStreamEpoch": 0,
+        "cleanupStreamPageCount": 0,
+        "ownerSequenceHandoffPending": false,
+        "stageReservedPageCount": 0,
+        "deliveryConflicts": [],
+        "deliveryConflictOverflow": null,
+        "parkingEvidence": [],
+        "parkingEvidenceOverflow": null,
+        "copyOnWriteAnchorGeneration": null,
+        "cleanupPromotedRetirements": false,
+        "operationTenantId": "scratch-process-fc05b8fb17c244369eec33e081baf185"
+      },
+      "session": {
+        "version": 1,
+        "identity": {
+          "tenantId": "scratch-process-fc05b8fb17c244369eec33e081baf185",
+          "domain": "widget",
+          "projectionType": "partitioned-widget",
+          "operationId": "process-interrupted",
+          "catalogFingerprint": "07c23ef1642cf69f21094f61d16ee60308fc7b0abdfb60bfc885f4c4624a28be"
+        },
+        "phase": 4,
+        "candidateState": "",
+        "acceptedAggregateCount": 0,
+        "inventoryFingerprint": "v1:0GcKAntMxSP_tyB3TTG3JDU_JxGzg3ULa34UbcxiKJ4",
+        "lastAggregateId": null,
+        "receipts": [],
+        "expectedAggregateCount": null,
+        "expectedInventoryFingerprint": null,
+        "batchFingerprint": null,
+        "completionState": null,
+        "captureInventoryFingerprint": "v1:-zXq4Yk_c5OxrwxWpZF8Yix55r-H7yv7lQHNGddrPBg",
+        "partitioned": true,
+        "scratchIndexesCleaned": true,
+        "scratchCleanedOwnerCount": 0,
+        "pendingScratchChunkCount": 1,
+        "transportOwnerOrdinal": -1,
+        "transportAggregateId": null,
+        "transportNextPart": 0,
+        "transportReservedPartCount": 0,
+        "transportReservedFragmentCount": 0
+      },
+      "scratch_exists": false,
+      "manifest_exists": false,
+      "original_marker_exists": false
+    }
+  ]
+}

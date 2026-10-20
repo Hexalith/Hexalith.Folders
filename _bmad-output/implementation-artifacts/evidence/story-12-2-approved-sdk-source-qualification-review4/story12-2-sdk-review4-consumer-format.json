@@ -1,0 +1,64 @@
+[
+  {
+    "mode": "whitespace",
+    "command": [
+      "dotnet",
+      "format",
+      "whitespace",
+      "Hexalith.Folders.slnx",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+      "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+      "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+      "tests/shared/OperationalStatus/OperationalStatusClock.cs"
+    ],
+    "environment": {
+      "UseHexalithProjectReferences": "true",
+      "UseNuGetDeps": "false"
+    },
+    "seconds": 12.09262228012085,
+    "exit_code": 0,
+    "log": "/tmp/story12-2-sdk-review4-consumer-format-whitespace.log"
+  },
+  {
+    "mode": "analyzers",
+    "command": [
+      "dotnet",
+      "format",
+      "analyzers",
+      "Hexalith.Folders.slnx",
+      "--no-restore",
+      "--verify-no-changes",
+      "--include",
+      "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+      "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+      "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+      "tests/shared/OperationalStatus/OperationalStatusClock.cs"
+    ],
+    "environment": {
+      "UseHexalithProjectReferences": "true",
+      "UseNuGetDeps": "false"
+    },
+    "seconds": 40.78081679344177,
+    "exit_code": 0,
+    "log": "/tmp/story12-2-sdk-review4-consumer-format-analyzers.log"
+  }
+]

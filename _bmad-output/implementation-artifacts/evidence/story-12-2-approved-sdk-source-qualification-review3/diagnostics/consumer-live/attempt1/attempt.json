@@ -1,0 +1,42 @@
+{
+  "command": [
+    "dotnet",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "-class",
+    "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+    "-showLiveOutput",
+    "-result-xml",
+    "/tmp/story12-2-sdk-review3-consumer-live.xml"
+  ],
+  "environment": {
+    "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+  },
+  "exit_code": 1,
+  "result": {
+    "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+    "id": "6c6be6d5-1271-4189-a79d-f5a366e05257",
+    "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+    "run-date": "2026-10-20",
+    "run-time": "12:24:23",
+    "start-rtf": "2026-10-20T12:24:23.8304632+00:00",
+    "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+    "target-framework": ".NETCoreApp,Version=v10.0",
+    "errors": "0",
+    "failed": "1",
+    "finish-rtf": "2026-10-20T12:29:15.7851310+00:00",
+    "not-run": "0",
+    "passed": "0",
+    "skipped": "0",
+    "time": "291.971",
+    "time-rtf": "00:04:51.9710000",
+    "total": "1"
+  },
+  "message": "System.InvalidOperationException : Task-owned resource eventstore command stop failed.",
+  "passed_milestones": "PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source\nProvider readiness: status=ready; category=none; reason=success\nBound-target revocation observation: HTTP 404; pull=False\nPASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately\nPASS persisted retention: ordinary writes; selected view TTL=34559999s; configured=34560000s\nPASS persisted retention: ordinary writes; selected view TTL=34559999s; configured=34560000s\nPASS persisted retention: ordinary writes; selected view TTL=34559999s; configured=34560000s\nPASS persisted retention: complete-source rebuild; selected view TTL=34559997s; configured=34560000s\nPASS persisted retention: complete-source rebuild; selected view TTL=34559996s; configured=34560000s\nPASS persisted retention: complete-source rebuild; selected view TTL=34559996s; configured=34560000s\nPASS all six concerns: altered observation timestamps fail full-row integrity; SDK shared empty-checkpoint rebuild restores exact source-folded lifecycle/lock/workspace/cleanup/task/commit metadata\nPASS SDK interrupted generation: sealed private streamed staging survives changed writer PIDs; the same SDK session resumes promotion and authenticated ordinary replay before completion; source hashes unchanged\nPASS ordinary-write processes: proof-a=2545831; proof-b=2545832\nPASS two concurrent Workers replica processes: overlapping ordered writes from a fresh shared derived-state namespace ACK in both processes and converge exactly without changing retained source\nPASS task-pipeline restart: folders 2604407->2623956\nPASS task-pipeline restart: folders-workers 2606150->2624306\nPASS task-pipeline restart: folders-workers-replica 2606602->2625292\nPASS task-pipeline restart: eventstore 2608120->2627170\nPASS real-provider task pipeline: supported Forgejo TLS, private credential resolution, bound/prepared/locked/clean release, six metadata concerns, restart, equivalent replay, closed-binding denial and scoped task reads\nPASS real-source: sequence=1 retainedSha256=bba239796b596c6239b9d27f8aa87f299863626242d9bc7fc518def07c97f6bc\n",
+  "interpretation": "Full live gate failed at task-owned EventStore Stop resource command during second host restart. Earlier milestones are diagnostic only; not a full live acceptance pass. Root cause of DCP stop refusal remains unclassified.",
+  "hashes": {
+    "story12-2-sdk-review3-consumer-live.log": "66c369b6752455fd8da5b3577e546e9e2b07ed633709ac1bf4326d3f432b2fd0",
+    "story12-2-sdk-review3-consumer-live.xml": "996a00eb40d0956e821f5068352d3cf695acc4361b1f348b046ff59bf46087c8"
+  },
+  "diagnosis": "DCP logs: EventStore Application is shutting down at12:28:51.125Z; Failed to stop run / Executable timed out at12:29:03.125Z; resource stop failed at12:29:08.183Z. Underlying reason for delayed graceful shutdown remains unclassified. First task-pipeline restart had already changed all4 host PIDs. No source, assertion, timeout or admission-limit change before retry."
+}

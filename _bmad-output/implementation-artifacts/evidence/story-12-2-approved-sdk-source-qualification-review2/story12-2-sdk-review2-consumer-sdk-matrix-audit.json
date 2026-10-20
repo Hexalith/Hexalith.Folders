@@ -1,0 +1,2363 @@
+{
+  "packet": "references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review2",
+  "requirements": [
+    {
+      "requirement": "source-deadline",
+      "assertion": "Source deadlines survive delay, inclusive expiry and recovery",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DeadlineIsVersionedImmutableAndRoundTripsWithoutChangingHistoricalConstructors",
+          "result": "Pass",
+          "time": "0.083"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.004"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.StagedBatchCrossingDeadlineRemovesOnlyItsOwnEnvelopeAndCompletesCheckpoint",
+          "result": "Pass",
+          "time": "0.007"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: AfterInstallOperation)",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCommit)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCompaction)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryReceiptWritten)",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryManifestReclaimed)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.CompactionRaceAndLaterRecoveryPreserveConcurrentNewerValue",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DaprCompactionUsesRemainingRetentionAndDeadlineAwareBulkReads",
+          "result": "Pass",
+          "time": "0.003"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DeadlineIsVersionedImmutableAndRoundTripsWithoutChangingHistoricalConstructors",
+          "result": "Pass",
+          "time": "0.044"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.StagedBatchCrossingDeadlineRemovesOnlyItsOwnEnvelopeAndCompletesCheckpoint",
+          "result": "Pass",
+          "time": "0.02"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: AfterInstallOperation)",
+          "result": "Pass",
+          "time": "0.015"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCommit)",
+          "result": "Pass",
+          "time": "0.039"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCompaction)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryReceiptWritten)",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryManifestReclaimed)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.CompactionRaceAndLaterRecoveryPreserveConcurrentNewerValue",
+          "result": "Pass",
+          "time": "0.003"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.003"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DaprCompactionUsesRemainingRetentionAndDeadlineAwareBulkReads",
+          "result": "Pass",
+          "time": "0.09"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ReplacedStoreRecoversOriginalManifestAfterDeadlineWithoutInstallingExpiredRows(phase: BeforeCommit)",
+          "result": "Pass",
+          "time": "0.354"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ReplacedStoreRecoversOriginalManifestAfterDeadlineWithoutInstallingExpiredRows(phase: BeforeCompaction)",
+          "result": "Pass",
+          "time": "0.362"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ReplacedStoreRecoversOriginalManifestAfterDeadlineWithoutInstallingExpiredRows(phase: RecoveryManifestReclaimed)",
+          "result": "Pass",
+          "time": "0.347"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.DelayedInstallationKeepsRemainingPhysicalTtlAndInclusiveDeadline(profile: Resumable)",
+          "result": "Pass",
+          "time": "4.644"
+        }
+      ]
+    },
+    {
+      "requirement": "compatibility",
+      "assertion": "Historical v1 fingerprints and compile-time Write/default API compatibility",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.MixedV2ManifestAndFingerprintMatchFixedCanonicalGolden",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_MatchesIndependentSha256OfManifest",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_ChangesWhenTimeToLiveChanges",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_ChangesWhenOperationOrderChanges",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_IsIndependentOfPropertyOrder",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_SortsObjectKeysOrdinally_PreservesArrayOrder(input: \\\"{\\\\\\\"b\\\\\\\":1,\\\\\\\"a\\\\\\\":2}\\\", expected: \\\"{\\\\\\\"a\\\\\\\":2,\\\\\\\"b\\\\\\\":1}\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_SortsObjectKeysOrdinally_PreservesArrayOrder(input: \\\"{\\\\\\\"b\\\\\\\":1,\\\\\\\"a\\\\\\\":{\\\\\\\"d\\\\\\\":4,\\\\\\\"c\\\\\\\":3},\\\\\\\"arr\\\\\\\":[3,1,2]}\\\", expected: \\\"{\\\\\\\"a\\\\\\\":{\\\\\\\"c\\\\\\\":3,\\\\\\\"d\\\\\\\":4},\\\\\\\"arr\\\\\\\":[3,1,2],\\\\\\\"b\\\\\\\":1}\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Canonicalize_SortsObjectKeysOrdinally_PreservesArrayOrder(input: \\\"{ \\\\\\\"z\\\\\\\" : \\\\\\\"x\\\\\\\" }\\\", expected: \\\"{\\\\\\\"z\\\\\\\":\\\\\\\"x\\\\\\\"}\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.ScopeHash_ChangesWithAnyComponent",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_ChangesWhenValueOrConcurrencyChanges",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.BuildCanonicalManifest_GoldenVector_IsFrozen",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_IsDeterministicAcrossRebuilds",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.Compute_FrozenGoldenFingerprint_DetectsAnySerializationDrift",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.MixedV2ManifestAndFingerprintMatchFixedCanonicalGolden",
+          "result": "Pass",
+          "time": "0"
+        }
+      ]
+    },
+    {
+      "requirement": "shared-generations",
+      "assertion": "Journal replay, promoted/abandoned and inherited selected expiry",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.PersistedPreparedCatchUpRetainsDeadlinesAfterStoreAndCoordinatorReplacementWithoutRefolding",
+          "result": "Pass",
+          "time": "0.143"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.AbandonedSameKeyReplacementOfPromotedPointerKeepsOriginalDeadline",
+          "result": "Pass",
+          "time": "0.029"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.PersistedPreparedCatchUpRetainsDeadlinesAfterStoreAndCoordinatorReplacementWithoutRefolding",
+          "result": "Pass",
+          "time": "0.31"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.AbandonedSameKeyReplacementOfPromotedPointerKeepsOriginalDeadline",
+          "result": "Pass",
+          "time": "0.143"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 0)",
+          "result": "Pass",
+          "time": "3.786"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 1)",
+          "result": "Pass",
+          "time": "3.719"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 2)",
+          "result": "Pass",
+          "time": "3.712"
+        }
+      ]
+    },
+    {
+      "requirement": "scratch-retry-abort",
+      "assertion": "Production named retry/Abort, private cleanup, old selection, ordinary delivery and fresh rebuild",
+      "passing_executed_cases": [
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.308"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.02"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.015"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.021"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: True, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.022"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.018"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: BeforeCommit, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.112"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "1.9"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.105"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: False, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "1.863"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: True, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.164"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: MarkerPrepared, ordinal: -1, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.775"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: MarkerPrepared, ordinal: -1, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.819"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeInstallOperation, ordinal: 0, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.649"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeInstallOperation, ordinal: 0, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.792"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 0, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.638"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 0, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.815"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 1, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.688"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 1, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.799"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCommit, ordinal: -1, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.615"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCommit, ordinal: -1, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.811"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterCommit, ordinal: -1, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.705"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterCommit, ordinal: -1, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.819"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCompaction, ordinal: 0, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.633"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCompaction, ordinal: 0, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.839"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: RecoveryManifestReclaimed, ordinal: 1, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.663"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: RecoveryManifestReclaimed, ordinal: 1, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.775"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedAbortResumesItsOwnInterruptedCleanupWithReplacedProvider(phase: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "0.644"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedAbortResumesItsOwnInterruptedCleanupWithReplacedProvider(phase: BeforeCompaction, ordinal: 0)",
+          "result": "Pass",
+          "time": "0.656"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.308"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: BeforeCommit, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.353"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.015"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.319"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: False, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.033"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: True, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.485"
+        }
+      ]
+    },
+    {
+      "requirement": "fences-races",
+      "assertion": "Exact newer persisted bytes and authoritative invalid-epoch checks",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.088"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.NonRetainedPreExpiryCompactionRetryPreservesExactNewerBytes",
+          "result": "Pass",
+          "time": "0.03"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"active\\\")",
+          "result": "Pass",
+          "time": "0.003"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"phase\\\")",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"writers\\\")",
+          "result": "Pass",
+          "time": "0.005"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"checkpoints\\\")",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"stream-bounds\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"operation\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.DelayedLegacyWorkerCannotCommitTheFreshRetainedFingerprintOrRegressOpenedFence",
+          "result": "Pass",
+          "time": "0.004"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.186"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.NonRetainedPreExpiryCompactionRetryPreservesExactNewerBytes",
+          "result": "Pass",
+          "time": "0.005"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"active\\\")",
+          "result": "Pass",
+          "time": "0.02"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"phase\\\")",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"writers\\\")",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"checkpoints\\\")",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"stream-bounds\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"operation\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.DelayedLegacyWorkerCannotCommitTheFreshRetainedFingerprintOrRegressOpenedFence",
+          "result": "Pass",
+          "time": "0.047"
+        }
+      ]
+    },
+    {
+      "requirement": "real-persistence",
+      "assertion": "Physical Redis expiry and legacy immutable compensation after interruption",
+      "passing_executed_cases": [
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.018"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: BeforeCommit, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.112"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "1.9"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.105"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: False, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "1.863"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: True, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.164"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.LegacyCompensationEvidenceSurvivesRealDeleteInterruptionAndReplacement(afterDelete: False)",
+          "result": "Pass",
+          "time": "0.373"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.LegacyCompensationEvidenceSurvivesRealDeleteInterruptionAndReplacement(afterDelete: True)",
+          "result": "Pass",
+          "time": "0.376"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.308"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: BeforeCommit, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.353"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.015"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.319"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: False, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.033"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: True, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.485"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 0)",
+          "result": "Pass",
+          "time": "3.786"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 1)",
+          "result": "Pass",
+          "time": "3.719"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 2)",
+          "result": "Pass",
+          "time": "3.712"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-E1",
+      "assertion": "Prepared/no-participant reconciliation with original retained manifests",
+      "passing_executed_cases": [
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.308"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.02"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.015"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.021"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: True, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.022"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.018"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: BeforeCommit, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.112"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "1.9"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.105"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: False, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "1.863"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: True, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.164"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: MarkerPrepared, ordinal: -1, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.775"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: MarkerPrepared, ordinal: -1, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.819"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeInstallOperation, ordinal: 0, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.649"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeInstallOperation, ordinal: 0, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.792"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 0, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.638"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 0, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.815"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 1, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.688"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 1, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.799"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCommit, ordinal: -1, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.615"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCommit, ordinal: -1, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.811"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterCommit, ordinal: -1, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.705"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterCommit, ordinal: -1, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.819"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCompaction, ordinal: 0, populated: False, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.633"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCompaction, ordinal: 0, populated: True, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.839"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: RecoveryManifestReclaimed, ordinal: 1, populated: False, retryFirst: True)",
+          "result": "Pass",
+          "time": "0.663"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: RecoveryManifestReclaimed, ordinal: 1, populated: True, retryFirst: False)",
+          "result": "Pass",
+          "time": "0.775"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.308"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: BeforeCommit, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.353"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.015"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False, stop: MarkerPrepared, ordinal: -1)",
+          "result": "Pass",
+          "time": "2.319"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: False, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.033"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: True, stop: BeforeInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "2.485"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B2",
+      "assertion": "Known own cleanup scope resumes safely",
+      "passing_executed_cases": [
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.308"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.02"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.015"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.011"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.021"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.016"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.014"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryReceiptWritten, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: False, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.012"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: True, global: False, populated: False, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.013"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: False, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryAnchorCompacted, failureOrdinal: 1, retryFirst: True, global: False, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: MarkerPrepared, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.018"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.017"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCompaction, failureOrdinal: 0, retryFirst: False, global: False, populated: True, cleanupFailure: True)",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: True, populated: True, cleanupFailure: False)",
+          "result": "Pass",
+          "time": "0.022"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedAbortResumesItsOwnInterruptedCleanupWithReplacedProvider(phase: AfterInstallOperation, ordinal: 0)",
+          "result": "Pass",
+          "time": "0.644"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedAbortResumesItsOwnInterruptedCleanupWithReplacedProvider(phase: BeforeCompaction, ordinal: 0)",
+          "result": "Pass",
+          "time": "0.656"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B3",
+      "assertion": "Expired omitted prefix/interior writes compensate truthfully",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: False, crosses: False)",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: False, crosses: False)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: True, crosses: False)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: True, crosses: False)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: True, crosses: True)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: True, crosses: True)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: False, crosses: False)",
+          "result": "Pass",
+          "time": "0.003"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: False, crosses: False)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: True, crosses: False)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: True, crosses: False)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: False, interior: True, crosses: True)",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.OmittedExpiredWritesDoNotTurnInstalledPrefixCompensationIntoIndeterminate(retained: True, interior: True, crosses: True)",
+          "result": "Pass",
+          "time": "0"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B4",
+      "assertion": "Invalid legacy epoch fails without byte mutation",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"active\\\")",
+          "result": "Pass",
+          "time": "0.003"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"phase\\\")",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"writers\\\")",
+          "result": "Pass",
+          "time": "0.005"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"checkpoints\\\")",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"stream-bounds\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"operation\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"active\\\")",
+          "result": "Pass",
+          "time": "0.02"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"phase\\\")",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"writers\\\")",
+          "result": "Pass",
+          "time": "0.001"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"checkpoints\\\")",
+          "result": "Pass",
+          "time": "0.019"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"stream-bounds\\\")",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.InvalidLegacyEpochCannotCreateProofOrMutateAnyOriginalBytes(invalid: \\\"operation\\\")",
+          "result": "Pass",
+          "time": "0"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B1",
+      "assertion": "Fully validated legacy compensation converges for retry and Abort",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.DelayedLegacyWorkerCannotCommitTheFreshRetainedFingerprintOrRegressOpenedFence",
+          "result": "Pass",
+          "time": "0.004"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ValidatedLegacyCompensationAllowsRepeatedSameActionRetryWithoutChangingOldFingerprint",
+          "result": "Pass",
+          "time": "0.002"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.DelayedLegacyWorkerCannotCommitTheFreshRetainedFingerprintOrRegressOpenedFence",
+          "result": "Pass",
+          "time": "0.047"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ValidatedLegacyCompensationAllowsRepeatedSameActionRetryWithoutChangingOldFingerprint",
+          "result": "Pass",
+          "time": "0.042"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.ProductionLegacyScratchCompensationConvergesForSameActionRetryOrDirectAbort(retry: False)",
+          "result": "Pass",
+          "time": "0.015"
+        },
+        {
+          "run": "domain-focused",
+          "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.ProductionLegacyScratchCompensationConvergesForSameActionRetryOrDirectAbort(retry: True)",
+          "result": "Pass",
+          "time": "0.009"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B5",
+      "assertion": "Fixed mixed-retention v2 golden",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.MixedV2ManifestAndFingerprintMatchFixedCanonicalGolden",
+          "result": "Pass",
+          "time": "0"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.MixedV2ManifestAndFingerprintMatchFixedCanonicalGolden",
+          "result": "Pass",
+          "time": "0"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B6",
+      "assertion": "Prepared journal deadline recovery without refolding",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.PersistedPreparedCatchUpRetainsDeadlinesAfterStoreAndCoordinatorReplacementWithoutRefolding",
+          "result": "Pass",
+          "time": "0.143"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.PersistedPreparedCatchUpRetainsDeadlinesAfterStoreAndCoordinatorReplacementWithoutRefolding",
+          "result": "Pass",
+          "time": "0.31"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B7/V2",
+      "assertion": "Physical COW expiry and promoted-pointer same-key abandonment",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.AbandonedSameKeyReplacementOfPromotedPointerKeepsOriginalDeadline",
+          "result": "Pass",
+          "time": "0.029"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionReviewTwoTests.AbandonedSameKeyReplacementOfPromotedPointerKeepsOriginalDeadline",
+          "result": "Pass",
+          "time": "0.143"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 0)",
+          "result": "Pass",
+          "time": "3.786"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 1)",
+          "result": "Pass",
+          "time": "3.719"
+        },
+        {
+          "run": "live-cow-process-final",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.CowSelectedInheritedAndAbandonedPromotedPointerRemainTruthfulAfterPhysicalRedisExpiry(scenario: 2)",
+          "result": "Pass",
+          "time": "3.712"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B8",
+      "assertion": "Real Dapr legacy compensation evidence interruption",
+      "passing_executed_cases": [
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.LegacyCompensationEvidenceSurvivesRealDeleteInterruptionAndReplacement(afterDelete: False)",
+          "result": "Pass",
+          "time": "0.373"
+        },
+        {
+          "run": "live-expiry-scratch",
+          "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.LegacyCompensationEvidenceSurvivesRealDeleteInterruptionAndReplacement(afterDelete: True)",
+          "result": "Pass",
+          "time": "0.376"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-V1",
+      "assertion": "Non-retained compaction with newer bytes before expiry",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.NonRetainedPreExpiryCompactionRetryPreservesExactNewerBytes",
+          "result": "Pass",
+          "time": "0.03"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.NonRetainedPreExpiryCompactionRetryPreservesExactNewerBytes",
+          "result": "Pass",
+          "time": "0.005"
+        }
+      ]
+    },
+    {
+      "requirement": "R2-B10",
+      "assertion": "CreateOnly predecessor read-to-dispatch race in both component profiles",
+      "passing_executed_cases": [
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.088"
+        },
+        {
+          "run": "client-focused",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.01"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: Resumable)",
+          "result": "Pass",
+          "time": "0.186"
+        },
+        {
+          "run": "client-full",
+          "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelReviewTwoRegressionTests.ExpiredCreateOnlyPredecessorReadToInstallRacePreservesExactNewerBytes(profile: TransactionQualified)",
+          "result": "Pass",
+          "time": "0.013"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "A mapping records executed passing assertions, not independent new test execution. Parent manifest/PDB/source/XML and raw worker decoding audits are separate.",
+    "Initial failed COW live assertions and parallel Domain failure are retained; accepted live case union and same-binary serialized Domain are explicit.",
+    "Redis production profile remains Resumable; TransactionQualified race tests use the supported component fixture and do not qualify provider atomicity.",
+    "No >10000 history, package/PD10, SM4 or whole-story acceptance claim."
+  ]
+}

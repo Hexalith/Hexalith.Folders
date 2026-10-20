@@ -1,0 +1,26 @@
+[
+  {
+    "operation": "command_acknowledgement",
+    "count": 9,
+    "p50_ms": 336.158,
+    "p95_ms": 4654.709,
+    "budget_p95_ms": 1000.0,
+    "over_budget": true
+  },
+  {
+    "operation": "workers_operational_delivery",
+    "count": 27,
+    "p50_ms": 274.214,
+    "p95_ms": 1222.518,
+    "budget_p95_ms": 1000.0,
+    "over_budget": true
+  },
+  {
+    "operation": "status_read",
+    "count": 12,
+    "p50_ms": 183.791,
+    "p95_ms": 639.668,
+    "budget_p95_ms": 500.0,
+    "over_budget": true
+  }
+]

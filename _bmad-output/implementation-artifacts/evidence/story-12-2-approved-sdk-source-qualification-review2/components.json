@@ -1,0 +1,192 @@
+[
+  {
+    "name": "domain",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review2-consumer-final-domain.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 10.986607313156128,
+    "log": "/tmp/story12-2-sdk-review2-consumer-final-domain.log",
+    "xml": "/tmp/story12-2-sdk-review2-consumer-final-domain.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "8eb48b6a-f8b2-4fb5-84dc-a37cb798c179",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "10:45:10",
+        "start-rtf": "2026-10-20T10:45:10.8614464+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-20T10:45:21.5330182+00:00",
+        "not-run": "0",
+        "passed": "2161",
+        "skipped": "2",
+        "time": "10.672",
+        "time-rtf": "00:00:10.6720000",
+        "total": "2163"
+      }
+    ]
+  },
+  {
+    "name": "server",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review2-consumer-final-server.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 27.01452088356018,
+    "log": "/tmp/story12-2-sdk-review2-consumer-final-server.log",
+    "xml": "/tmp/story12-2-sdk-review2-consumer-final-server.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "2440d2a6-1b0f-4eca-9ff4-19d650265060",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "10:45:21",
+        "start-rtf": "2026-10-20T10:45:21.8525400+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-20T10:45:48.5635505+00:00",
+        "not-run": "0",
+        "passed": "1029",
+        "skipped": "0",
+        "time": "26.712",
+        "time-rtf": "00:00:26.7120000",
+        "total": "1029"
+      }
+    ]
+  },
+  {
+    "name": "workers",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review2-consumer-final-workers.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 4.7537713050842285,
+    "log": "/tmp/story12-2-sdk-review2-consumer-final-workers.log",
+    "xml": "/tmp/story12-2-sdk-review2-consumer-final-workers.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "b84df6a1-afb5-4ab8-a694-7ac5f04711bf",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.Workers.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "10:45:48",
+        "start-rtf": "2026-10-20T10:45:48.8153313+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-20T10:45:53.3450336+00:00",
+        "not-run": "0",
+        "passed": "161",
+        "skipped": "0",
+        "time": "4.529",
+        "time-rtf": "00:00:04.5290000",
+        "total": "161"
+      }
+    ]
+  },
+  {
+    "name": "apphost-helpers",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "-class",
+      "Hexalith.Folders.AppHost.Tests.FolderDurabilityHttpTests",
+      "-class",
+      "Hexalith.Folders.AppHost.Tests.FolderDurabilitySharedRebuildTests",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review2-consumer-final-apphost-helpers.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 1.2741222381591797,
+    "log": "/tmp/story12-2-sdk-review2-consumer-final-apphost-helpers.log",
+    "xml": "/tmp/story12-2-sdk-review2-consumer-final-apphost-helpers.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "c27d99f6-3c39-4721-8695-ca0534475cb2",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "10:45:53",
+        "start-rtf": "2026-10-20T10:45:53.5599690+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-20T10:45:54.6349846+00:00",
+        "not-run": "0",
+        "passed": "22",
+        "skipped": "0",
+        "time": "1.075",
+        "time-rtf": "00:00:01.0750000",
+        "total": "22"
+      }
+    ]
+  },
+  {
+    "name": "docs",
+    "command": [
+      "dotnet",
+      "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.Deployment.ProviderErrorDocsConformanceTests",
+      "-class",
+      "Hexalith.Folders.Contracts.Tests.Deployment.RetentionAndTenantDeletionConformanceTests",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review2-consumer-final-docs.xml"
+    ],
+    "exit_code": 0,
+    "seconds": 0.44269323348999023,
+    "log": "/tmp/story12-2-sdk-review2-consumer-final-docs.log",
+    "xml": "/tmp/story12-2-sdk-review2-consumer-final-docs.xml",
+    "assemblies": [
+      {
+        "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+        "id": "d83aba42-d4a1-4503-867e-d0a7edc976d9",
+        "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Contracts.Tests/bin/Debug/net10.0/Hexalith.Folders.Contracts.Tests.dll",
+        "run-date": "2026-10-20",
+        "run-time": "10:45:54",
+        "start-rtf": "2026-10-20T10:45:54.8651963+00:00",
+        "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+        "target-framework": ".NETCoreApp,Version=v10.0",
+        "errors": "0",
+        "failed": "0",
+        "finish-rtf": "2026-10-20T10:45:55.0765396+00:00",
+        "not-run": "0",
+        "passed": "28",
+        "skipped": "0",
+        "time": "0.212",
+        "time-rtf": "00:00:00.2120000",
+        "total": "28"
+      }
+    ]
+  },
+  {
+    "name": "integration",
+    "command": [
+      "dotnet",
+      "test",
+      "--project",
+      "tests/Hexalith.Folders.IntegrationTests",
+      "--no-build"
+    ],
+    "exit_code": 0,
+    "log": "/tmp/story12-2-sdk-review2-consumer-final-integration.log"
+  }
+]
