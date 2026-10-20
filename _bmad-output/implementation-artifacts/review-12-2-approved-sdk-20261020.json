@@ -1,0 +1,141 @@
+{
+  "review": "approved-expiry-scratch-and-consumer",
+  "started_utc": "2026-10-20T08:27:00.756979+00:00",
+  "eventstore_baseline": "d4d05f871991ec2af305267f59dcefeae3f127ed",
+  "folders_consumption_baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+  "whole_story_status": "in-progress",
+  "owner_spec_hash_before_review": "4c18b4a2a355b46b299422c388c885dc12418abdc6fe58ddb76bb5c1511cf289",
+  "owner_spec_status_before_review": "ready-for-review",
+  "owner_spec_status_during_review": "in-review",
+  "layers": [
+    "blind-hunter",
+    "edge-case-hunter",
+    "verification-gap"
+  ],
+  "skipped_layers": [],
+  "original_sdk_qualification_packet_unchanged": true,
+  "diff_file": "/tmp/story12-2-approved-sdk-review-wq9ss2zo/approved-sdk-and-consumer.diff",
+  "diff_sha256": "2c53dceaddf50c3530ab991f0e51068501af9c9a93893836a9082c8f5c0ed100",
+  "diff_bytes": 3492324,
+  "completed_layers": [
+    "blind-hunter",
+    "edge-case-hunter",
+    "verification-gap"
+  ],
+  "triaged_at_utc": "2026-10-20T08:39:14.083439+00:00",
+  "findings": [
+    {
+      "id": "blind-1",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The parent reran the retained CreateOnly replacement harness: a valid original envelope over an expired physical wrapper returns invalid-recovery-evidence. Installation keeps previous bytes while the recovery guard requires null."
+    },
+    {
+      "id": "blind-2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "The moving-clock harness reaches ArgumentOutOfRangeException after commit; compaction, transaction assembly and anchor cleanup separately sample the deadline check and TTL."
+    },
+    {
+      "id": "blind-3",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The anchor/private-replacement harness throws selected-value-missing at expiry. The first-pointer branch reads a decoded object and leaves priorDeadline null."
+    },
+    {
+      "id": "blind-4",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The parent reproduced compensation stopping after restoring its fence; retry returns recovery-manifest-unavailable. This is evidence destroyed by the new compensator itself, rather than initially insufficient legacy evidence."
+    },
+    {
+      "id": "blind-5",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "A valid domain object with a top-level $hxrme receives Completed then JsonException/Nested expiry evidence in the parent rerun; old non-expiring objects are also classified by that newly introduced property."
+    },
+    {
+      "id": "blind-6",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "FromBytes newly calls GetInt32 before kind validation and StartsWith before null validation. The harness reproduces InvalidOperationException where the baseline decoder returned null; a direct type/null validation repair preserves its contract."
+    },
+    {
+      "id": "blind-7",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "The same expired-physical CreateOnly replacement completes under Resumable and returns transaction-dispatch Indeterminate under TransactionQualified in the parent harness. The transaction path retains empty create-only ETag."
+    },
+    {
+      "id": "blind-8",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The parent reproduced a 12,807-byte logical owner model expanding to 17,126 bytes; Execute reports Completed, then owner proof rejects it before decoding against the old 16,384-byte limit."
+    },
+    {
+      "id": "blind-9",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "The new TimeSpan?/DateTimeOffset four-argument overload pair makes a formerly valid fourth default literal ambiguous (CS0121); preserving only the binary method signature did not preserve source calls."
+    },
+    {
+      "id": "blind-10",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "The actual live scratch test manually recovers pending state and authors a delete batch after Abort. It does not execute the changed dispatcher cleanup; the approved proposal explicitly requires real production dispatcher qualification."
+    },
+    {
+      "id": "edge-1",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The same retained CreateOnly evidence mismatch is independently traced and reproduced as blind-1; verdict rendered before grouping."
+    },
+    {
+      "id": "edge-2",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "The transaction CreateOnly physical-CAS mismatch is independently traced and reproduced as blind-7; verdict rendered before grouping."
+    },
+    {
+      "id": "edge-3",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The compensator removes its fence envelope before scratch settlement and then cannot validate a retry; parent reproduction confirms the exact described interruption."
+    },
+    {
+      "id": "edge-4",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "The deadline check and remaining TTL are separate clock reads at the cited persistence paths; the moving-clock reproduction proves nonpositive provider retention is reachable."
+    },
+    {
+      "id": "edge-5",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "evidence": "ReadGenerationAsync chooses an inherited deadline before awaiting its physical read, then throws unconditionally on null without rechecking that chosen deadline. Expiry during that await reaches the claimed unavailable result."
+    },
+    {
+      "id": "verification-gap-1",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Pre-verified gap: existing Abort tests seed non-expiring previous values and live expiry tests commit new candidates. No exercised restoration assertion would catch loss of the previous physical TTL."
+    },
+    {
+      "id": "verification-gap-2",
+      "verdict": "medium",
+      "route": "patch",
+      "evidence": "Pre-verified gap: inherited-expiry and abandoned-replacement tests do not combine same-key replacement with an expiring selected previous pointer. Omitting PreviousExpiresAtUtc survives those separate tests."
+    },
+    {
+      "id": "verification-other-1",
+      "verdict": "high",
+      "route": "bad_spec",
+      "evidence": "The parent reproduced valid retained CreateOnly recovery refusal; installed previous bytes contradict the unchanged create-only previous-null recovery guard."
+    }
+  ],
+  "route": "bad_spec",
+  "review_loop_iteration": 1,
+  "positive_preservation": "/tmp/story12-2-sdk-review1-keep-567hwhe8",
+  "reproduction_log": "/tmp/story12-2-approved-sdk-review-repro.log",
+  "reproduction_sha256": "143f07281e2749d0d52c229b4de15cc09587e3412047030671d80d39e99b6cd1"
+}

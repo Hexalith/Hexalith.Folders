@@ -1,0 +1,17 @@
+[
+  {
+    "group": "client-full-binary-group.json",
+    "files": 26,
+    "hash_mismatches": []
+  },
+  {
+    "group": "domain-full-binary-group.json",
+    "files": 16,
+    "hash_mismatches": []
+  },
+  {
+    "group": "live-process-runtime-group.json",
+    "files": 46,
+    "hash_mismatches": []
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "root_source_drift": [],
+  "root_binary_drift": [],
+  "sdk_source_drift_before_review": [],
+  "live_assembly": [
+    {
+      "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+      "id": "e0ce5f32-9c7c-4208-89ec-04147976712f",
+      "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "run-date": "2026-10-20",
+      "run-time": "09:43:42",
+      "start-rtf": "2026-10-20T09:43:42.4481245+00:00",
+      "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+      "target-framework": ".NETCoreApp,Version=v10.0",
+      "errors": "0",
+      "failed": "0",
+      "finish-rtf": "2026-10-20T09:48:37.7808242+00:00",
+      "not-run": "0",
+      "passed": "1",
+      "skipped": "0",
+      "time": "295.344",
+      "time-rtf": "00:04:55.3440000",
+      "total": "1"
+    }
+  ]
+}

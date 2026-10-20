@@ -1,0 +1,29 @@
+{
+  "changed_files": [
+    "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+    "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+    "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+    "tests/load/bin/Debug/net10.0/Hexalith.Folders.dll"
+  ],
+  "compared": 62
+}

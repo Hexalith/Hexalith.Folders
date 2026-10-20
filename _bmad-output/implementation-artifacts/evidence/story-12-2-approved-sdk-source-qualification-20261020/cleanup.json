@@ -1,0 +1,23 @@
+{
+  "aspire_ps_command": [
+    "aspire",
+    "ps",
+    "--format",
+    "Json"
+  ],
+  "exit_code": 0,
+  "result": [],
+  "docker_ps_command": [
+    "docker",
+    "ps",
+    "--format",
+    "{{.Names}}"
+  ],
+  "remaining_names": [
+    "dapr_placement",
+    "dapr_scheduler",
+    "dapr_redis",
+    "dapr_zipkin"
+  ],
+  "note": "Only the four pre-existing shared Dapr infrastructure containers remain; owned isolated Folders/Forgejo resources are stopped."
+}

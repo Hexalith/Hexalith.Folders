@@ -56,3 +56,10 @@ The spec and sprint story remain in progress. The approval authorizes the two SD
 ## Execution record
 
 The EventStore-owned implementation spec is [the SDK expiry and scratch-recovery spec](../../references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-folders-12-2-expiry-and-scratch-recovery.md). The approval is recorded before any SDK edit. All prior diagnostic evidence remains exact-source history.
+
+The approved prerequisites and Folders adoption are now locally source-qualified.
+[The current qualification packet](evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json)
+records the exact SDK/consumer sources and test binaries, successful pending-scratch OS-process
+replacement, 4,195 consumer passes and the full real-provider live pass. Independent review is pending
+at the packet seal. Package/PD10 qualification, >10,000 identity completion and acknowledgement
+performance remain open. The approval scope and exclusions above are unchanged.

@@ -1,0 +1,92 @@
+{
+  "artifact_count": 137,
+  "artifact_hash_failures": [],
+  "source_count": 1512,
+  "source_drift": [],
+  "xml_results": [
+    {
+      "path": "client-focused.xml",
+      "total": "195",
+      "passed": "195",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "client-full.xml",
+      "total": "1738",
+      "passed": "1736",
+      "failed": "0",
+      "skipped": "2"
+    },
+    {
+      "path": "domain-focused.xml",
+      "total": "10",
+      "passed": "10",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "domain-full.xml",
+      "total": "1005",
+      "passed": "1005",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "live-expiry-scratch.xml",
+      "total": "20",
+      "passed": "20",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "live-process-restart.xml",
+      "total": "2",
+      "passed": "2",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "live-read-model-batch.xml",
+      "total": "6",
+      "passed": "6",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "live-shared-epoch.xml",
+      "total": "8",
+      "passed": "8",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "process-workers/scratch-process-65729105f2124ba681454b884ab48f2b-persist.xml",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "process-workers/scratch-process-65729105f2124ba681454b884ab48f2b-resume.xml",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "process-workers/scratch-process-9771573be23d49169456229bfb240f9e-persist.xml",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0"
+    },
+    {
+      "path": "process-workers/scratch-process-9771573be23d49169456229bfb240f9e-resume.xml",
+      "total": "1",
+      "passed": "1",
+      "failed": "0",
+      "skipped": "0"
+    }
+  ]
+}

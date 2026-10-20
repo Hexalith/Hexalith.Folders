@@ -1,0 +1,47 @@
+{
+  "diff": "/tmp/story12-2-approved-sdk-review2-bunwueyu/approved-sdk-and-consumer.diff",
+  "bytes": 22019736,
+  "sha256": "bc087f0439d6d49a5bab913ef4d773b381d27f1a565e3ffaffd4d4bb46443837",
+  "claims_file": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-folders-12-2-expiry-and-scratch-recovery.md",
+  "root_included_untracked": [
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/.gitattributes",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/SHA256SUMS",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/cleanup.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/components.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/performance.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/sdk-matrix-audit.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-after-live-audit.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-apphost-helpers.xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-components.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-docs.xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-domain.xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-server.xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-source.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-verify.py",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-workers.xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-live.xml",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-pdb-audit.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-pdb-source-inspection.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-pre-serial-binaries.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-serial-binary-comparison.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-independent-audit.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-independent-binaries.json",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-work-in-progress.json",
+    "_bmad-output/implementation-artifacts/review-12-2-approved-sdk-20261020.json",
+    "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs"
+  ],
+  "root_excluded_unrelated_untracked": [
+    "_bmad-output/specs/spec-folders-file-identity-and-project-links/.memlog.md",
+    "_bmad-output/specs/spec-folders-file-identity-and-project-links/SPEC.md",
+    "_bmad-output/specs/spec-folders-file-identity-and-project-links/acceptance-tests.md",
+    "_bmad-output/specs/spec-folders-file-identity-and-project-links/contracts.md",
+    "_bmad-output/specs/spec-folders-file-identity-and-project-links/delivery-plan.md"
+  ],
+  "sdk_untracked_files": 184,
+  "baselines": {
+    "folders": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "eventstore": "d4d05f871991ec2af305267f59dcefeae3f127ed"
+  },
+  "git_mutations": false
+}

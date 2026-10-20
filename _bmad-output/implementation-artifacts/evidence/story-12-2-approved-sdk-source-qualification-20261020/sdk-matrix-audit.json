@@ -1,0 +1,293 @@
+[
+  {
+    "matrix_row": "Source deadline",
+    "ran_and_passed": true,
+    "covering_cases": [
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DeadlineIsVersionedImmutableAndRoundTripsWithoutChangingHistoricalConstructors",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: Resumable)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.ExpiredUnconditionalCandidateNeverDeletesOrReplacesANewerRow(profile: TransactionQualified)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.StagedBatchCrossingDeadlineRemovesOnlyItsOwnEnvelopeAndCompletesCheckpoint",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: AfterInstallOperation)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCommit)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: BeforeCompaction)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryReceiptWritten)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.OriginalPendingManifestAndRecoveryAnchorCannotResurrectExpiredCandidates(failure: RecoveryManifestReclaimed)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.CompactionRaceAndLaterRecoveryPreserveConcurrentNewerValue",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: Resumable)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.FinalValueAndReceiptBecomeAbsentAtInclusiveDeadlineWithoutRefreshingOnRetry(profile: TransactionQualified)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DaprCompactionUsesRemainingRetentionAndDeadlineAwareBulkReads",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.DelayedInstallationKeepsRemainingPhysicalTtlAndInclusiveDeadline(profile: Resumable)",
+        "result": "Pass"
+      }
+    ]
+  },
+  {
+    "matrix_row": "Compatibility",
+    "ran_and_passed": true,
+    "covering_cases": [
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchFingerprintTests.BuildCanonicalManifest_GoldenVector_IsFrozen",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.ReadModelBatchDeadlineTests.DeadlineIsVersionedImmutableAndRoundTripsWithoutChangingHistoricalConstructors",
+        "result": "Pass"
+      }
+    ]
+  },
+  {
+    "matrix_row": "Shared generations",
+    "ran_and_passed": true,
+    "covering_cases": [
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.StreamedSelectedAndInheritedGenerationsKeepOriginalDeadlines(copyOnWrite: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.StreamedSelectedAndInheritedGenerationsKeepOriginalDeadlines(copyOnWrite: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.AbandonedSameKeyReplacementRetainsAnchorDeadlineAndTruthfulAbsence",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.InheritedReadCrossingDeadlineDuringPhysicalAwaitReturnsAbsence",
+        "result": "Pass"
+      }
+    ]
+  },
+  {
+    "matrix_row": "Scratch retry/abort",
+    "ran_and_passed": true,
+    "covering_cases": [
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 1, retryFirst: False, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: False, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterCommit, failureOrdinal: -1, retryFirst: False, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCompaction, failureOrdinal: 0, retryFirst: False, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: RecoveryManifestReclaimed, failureOrdinal: 1, retryFirst: False, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: True, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: AfterInstallOperation, failureOrdinal: 0, retryFirst: False, global: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "domain-focused.xml",
+        "name": "Hexalith.EventStore.DomainService.Tests.DomainPartitionedSharedProjectionRebuildTests.InterruptedAccumulateRetryOrDirectAbortPreservesSelectionAndPermitsFreshRebuild(failure: BeforeCommit, failureOrdinal: -1, retryFirst: True, global: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 0, populated: False, retryFirst: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 0, populated: True, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 1, populated: False, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterInstallOperation, ordinal: 1, populated: True, retryFirst: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCommit, ordinal: -1, populated: False, retryFirst: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCommit, ordinal: -1, populated: True, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterCommit, ordinal: -1, populated: False, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: AfterCommit, ordinal: -1, populated: True, retryFirst: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCompaction, ordinal: 0, populated: False, retryFirst: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: BeforeCompaction, ordinal: 0, populated: True, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: RecoveryManifestReclaimed, ordinal: 1, populated: False, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ProductionNamedDispatcherRetriesOrAbortsInterruptedScratchAndDeliversAfterRecovery(phase: RecoveryManifestReclaimed, ordinal: 1, populated: True, retryFirst: False)",
+        "result": "Pass"
+      }
+    ]
+  },
+  {
+    "matrix_row": "Fences/races",
+    "ran_and_passed": true,
+    "covering_cases": [
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionExpiryAndScratchTests.DelayedScratchCommitCannotRegressAnAbortCompletedByAnotherCoordinator",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionCleanupOverlapTests.BeginPreservesCommittedCleanupEvidenceUntilOriginalWorkerCompletes(freshCoordinator: False)",
+        "result": "Pass"
+      },
+      {
+        "xml": "client-full.xml",
+        "name": "Hexalith.EventStore.Client.Tests.Projections.SharedProjectionCleanupOverlapTests.BeginPreservesCommittedCleanupEvidenceUntilOriginalWorkerCompletes(freshCoordinator: True)",
+        "result": "Pass"
+      }
+    ]
+  },
+  {
+    "matrix_row": "Real persistence",
+    "ran_and_passed": true,
+    "covering_cases": [
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.AbortedReplacementRestoresOnlyOriginalRemainingPhysicalTtlThenExpires",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ReplacedStoreRecoversOriginalManifestAfterDeadlineWithoutInstallingExpiredRows(phase: BeforeCommit)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ReplacedStoreRecoversOriginalManifestAfterDeadlineWithoutInstallingExpiredRows(phase: BeforeCompaction)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-expiry-scratch.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.ReplacedStoreRecoversOriginalManifestAfterDeadlineWithoutInstallingExpiredRows(phase: RecoveryManifestReclaimed)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-process-restart.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: False, retryFirst: True)",
+        "result": "Pass"
+      },
+      {
+        "xml": "live-process-restart.xml",
+        "name": "Hexalith.EventStore.Server.LiveSidecar.Tests.Integration.ProjectionExpiryAndScratchRecoveryLiveTests.PendingNamedOwnerScratchRecoversAfterOwningOsProcessExits(populated: True, retryFirst: False)",
+        "result": "Pass"
+      }
+    ]
+  }
+]

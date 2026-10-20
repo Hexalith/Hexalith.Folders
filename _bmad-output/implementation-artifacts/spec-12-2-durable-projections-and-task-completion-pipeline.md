@@ -131,7 +131,7 @@ context:
   - [x] Two bound profiles stay isolated and `Empty` stays empty.
   - [x] Forgejo bound-target plumbing and `ConfiguredProviderRepositoryTargetResolver` mapping/rejections.
   - [x] `/project` returns the legacy body and writes no operational rows.
-  - [ ] Named rebuild persists rows; an injected retained scratch-batch failure leaves no committed rows and no active session. The diagnostic currently proves the SDK session remains Building after failed same-action retry and Abort; the separate clean pre-dispatch Abort test passes.
+  - [ ] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
   - [x] Workers route persists the binding projection, and its bytes equal the provider `/project` rebuild.
   - [x] A throwing readiness reader yields `provider_binding_authority_unavailable`.
   - [x] Production-host registration and options binding for the configured provider reader/resolver.
@@ -180,7 +180,7 @@ context:
 
 - Round-four implementation uses Workers for live operational persistence and only the SDK named transport for operational rebuild/repair. Partition folding binds to SDK-sealed original positions and validates the contiguous owner prefix without a live-head query. Legacy `/project` keeps the old response and provider projection repair. Independent profile objects, strict profile test-host wiring, typed profile-drift remediation, provider rejection/race handling, stage-specific logs, five-minute local clock tolerance and a shared reader serializer are implemented.
 - Round-four retention planning writes source-deadline TTLs for views, integrity evidence and original position/message receipts, keeps the bounded checkpoint, skips expired rows and acknowledges expired duplicates without writes. A receipt remains until the latest original source time used by that position's dependent views, including a host-ahead closure; this preserves original timestamps. Paired physical row/evidence expiry is safe absence through SDK generation reads; surviving evidence without its row stays unavailable.
-- Full retention qualification remains open: the SDK seals relative TTLs in `ReadModelBatchOperation`/`SharedProjectionMutation`, then reapplies them during delayed staging/compaction (`ReadModelBatchProtocol.cs:621–625,661–665`; `DaprReadModelBatchStateAccessor.cs:99–102`). The focused `OperationalStatusRetentionTests.DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync` stages a correct one-day remaining TTL, crosses the source deadline with a controlled clock, then proves the SDK commits the old one-day TTL. Fresh Folders planning omits those expired rows and reads remain source-age bounded, but physical retention after delayed recovery needs a separately authorized EventStore absolute-expiry capability. The retained manifest protocol, SDK scope and Task 36 disposition are unchanged.
+- Historical stage-six retention blocker (superseded for current source by the approved SDK qualification below): the SDK seals relative TTLs in `ReadModelBatchOperation`/`SharedProjectionMutation`, then reapplies them during delayed staging/compaction (`ReadModelBatchProtocol.cs:621–625,661–665`; `DaprReadModelBatchStateAccessor.cs:99–102`). The focused `OperationalStatusRetentionTests.DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync` stages a correct one-day remaining TTL, crosses the source deadline with a controlled clock, then proves the SDK commits the old one-day TTL. Fresh Folders planning omits those expired rows and reads remain source-age bounded, but physical retention after delayed recovery needs a separately authorized EventStore absolute-expiry capability. The retained manifest protocol, SDK scope and Task 36 disposition are unchanged.
 
 - Interrupted retained scratch-batch acceptance remains open. `OperationalStatusCapacityTests.DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync` injects `BeforeCommit` during SDK `TryWriteScratchAsync` (`SharedProjectionEpochCoordinator.cs:622–634`). Initial Accumulate and same-action retries return `Accumulating/Indeterminate/projection_handler_failure`; Abort also returns that outcome and the durable epoch remains Building without selected rows. `AbortAsync` restores the retained pending scratch batch before `RequireOperation` (`SharedProjectionEpochCoordinator.cs:2261`), which rejects its restored phase; `DomainSharedProjectionRebuildDispatcher.FencedAbortAsync:2842` reaches the same failure. This is diagnostic evidence, not passing interrupted-batch acceptance. `NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync` separately proves a clean pre-dispatch failure can abort and then rebuild; it does not substitute for retained-batch recovery. A generic SDK pending-fence recovery capability is required; the existing protocol is unchanged.
 
@@ -346,3 +346,36 @@ Round four: operational status has one live writer (Workers) and one rebuild pat
 - Run domain, Server and Workers test projects individually; use built xUnit assemblies with `-class` for focused checks.
 - `dotnet test --project tests/Hexalith.Folders.IntegrationTests --no-build` must pass, including the three `ArchiveFolderProcessWiringTests.ConfigureProviderBinding*` tests that failed in round four. Run `pwsh -File tests/tools/run-contract-spine-gates.ps1` and the docs conformance tests after the docs edits; v1 contract bytes stay unchanged.
 - Run opted-in AppHost acceptance with zero failures/skips; assert stored contents, checkpoints, changed PIDs and replica convergence. Record blockers separately from passing evidence.
+
+## Approved SDK prerequisite source qualification — 2026-10-20
+
+The approved immutable source-deadline and pending owner-scratch capabilities are implemented in the
+EventStore owner repository and consumed through `WriteExpiring` in Folders. The named partition
+round trip preserves the absolute deadline; the bounded checkpoint stays non-expiring. Delayed commit
+regressions now require physical absence of expired rows, and named scratch retry/Abort permits a fresh
+rebuild. Historical failed diagnostics and all six earlier evidence stages remain unchanged.
+
+[Current source qualification](evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json)
+binds 1,406 consumer source/config files, 62 assembly/PDB files, 4,195 component passes (two existing
+optional Domain skips) and a full opted-in Aspire/Dapr/provider pass: 1/1, zero skips, 295.344 seconds.
+The SDK packet independently records 1,736 Client passes (two existing optional skips), 1,005
+DomainService passes, 36 live outer cases and four distinct-process child runs, all required live cases
+without skips. Parent audits found zero source/binary/PDB mismatches. Independent review of this
+approved SDK/consumer delta is pending at this qualification seal.
+
+The current acknowledgement p95 is 31,600.244 ms across nine successful requests, including retries,
+against SM4's 1,000 ms target. Workers p95 is 348.094 ms (26 samples); status p95 is 50.824 ms
+(12 samples). The acknowledgement finding remains open, including the prior stage-six observation.
+The Release/package gate fails CS0117 because EventStore 3.125.1 lacks `WriteExpiring`; its
+`-NoRestore` fallback retains the three frozen PD10 inventory/generator failures.
+
+Whole Story 12.2 and Task 36 remain in progress: the separately owned >10,000 captured-identity
+capability, qualified consumption, package/PD10 requalification, acknowledgement performance and
+whole-story independent review retain their existing dispositions. No dependency pin, Git mutation,
+publication, deployment, source event, content cleanup or public v2 change is included.
+
+Independent SDK review two reopened the prerequisite acceptance rows after Stage7: it reproduced
+Prepared/no-envelope Abort, cleanup self-recovery and expired-prefix compensation failures, plus
+legacy validation/retry defects. The Stage7 pass remains exact-source history; owner review loop2
+re-derives the SDK from amended nonfrozen requirements before Folders consumption is restored and
+requalified. Frozen intent, all historical evidence, Task36 and the separate open gates are unchanged.

@@ -1,0 +1,152 @@
+{
+  "schema": "hexalith-folders-approved-sdk-source-qualification/v1",
+  "recorded_at_utc": "2026-10-20T09:50:47.927954+00:00",
+  "status": "Approved SDK prerequisites and Folders source adoption locally qualified; pending independent review. Whole Story 12.2 remains in progress.",
+  "full_acceptance": false,
+  "approval": "User approved proposal-12-2-sdk-expiry-and-scratch-recovery.md with I approve on 2026-10-20; no Git, publication, pin or deployment authorization.",
+  "sdk_packet": "../../../../references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review1/qualification.json",
+  "sdk_results": {
+    "client_passed": 1736,
+    "client_existing_optional_skips": 2,
+    "domain_passed": 1005,
+    "live_outer_passed": 36,
+    "live_child_invocations_passed": 4,
+    "live_skips": 0,
+    "matrix_audit": "sdk-matrix-audit.json",
+    "independent_source_audit": "story12-2-sdk-review1-independent-audit.json",
+    "independent_binary_audit": "story12-2-sdk-review1-independent-binaries.json"
+  },
+  "consumer_results": {
+    "components_passed": 4195,
+    "existing_optional_domain_skips": 2,
+    "failures": 0,
+    "results": "components.json",
+    "live_passed": 1,
+    "live_failed": 0,
+    "live_skipped": 0,
+    "live_seconds": 295.344,
+    "live_xml": "story12-2-sdk-review1-consumer-live.xml",
+    "live_log": "story12-2-sdk-review1-consumer-live.log"
+  },
+  "consumer_source": {
+    "inventory": "story12-2-sdk-review1-consumer-final-source.json",
+    "files": 1406,
+    "assembly_files": 62,
+    "pdb_inspection": "story12-2-sdk-review1-consumer-pdb-source-inspection.json",
+    "pdb_audit": "story12-2-sdk-review1-consumer-pdb-audit.json",
+    "client_documents_per_pdb": 273,
+    "domain_documents_per_pdb": 179,
+    "mismatches": 0,
+    "after_live_audit": "story12-2-sdk-review1-consumer-after-live-audit.json",
+    "note": "Source and all62 captured assembly/PDB hashes stayed unchanged through final component and live runs. Distinct graph PE/PDB outputs are retained, not asserted identical to SDK test groups."
+  },
+  "builds": [
+    {
+      "command": "dotnet restore Hexalith.Folders.slnx -p:Configuration=Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false",
+      "exit_code": 0,
+      "log": "story12-2-sdk-review1-consumer-restore.log"
+    },
+    {
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false --no-restore",
+      "exit_code": 0,
+      "warnings": 2,
+      "errors": 0,
+      "log": "story12-2-sdk-review1-consumer-build.log",
+      "note": "Transient MSB3026 copy retries prompted the serialized build and a fresh final component run."
+    },
+    {
+      "command": "dotnet build Hexalith.Folders.slnx -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false --no-restore -m:1",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0,
+      "log": "story12-2-sdk-review1-consumer-serial-build.log"
+    }
+  ],
+  "checks": {
+    "format_exit_code": 0,
+    "analyzers_exit_code": 0,
+    "analyzer_note": "Workspace loading emitted a warning; no included-file analyzer failures. Exact logs retained.",
+    "include_files": [
+      "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+      "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+      "tests/shared/OperationalStatus/OperationalStatusClock.cs"
+    ],
+    "command_pattern": "UseHexalithProjectReferences=true UseNuGetDeps=false dotnet format {whitespace|analyzers} Hexalith.Folders.slnx --no-restore --verify-no-changes --include <include_files>"
+  },
+  "live_command": {
+    "command": [
+      "dotnet",
+      "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+      "-class",
+      "Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests",
+      "-showLiveOutput",
+      "-result-xml",
+      "/tmp/story12-2-sdk-review1-consumer-live.xml"
+    ],
+    "environment": {
+      "HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION": "true"
+    },
+    "exit_code": 0
+  },
+  "package_gate": {
+    "command": [
+      "pwsh",
+      "-File",
+      "tests/tools/run-contract-spine-gates.ps1"
+    ],
+    "exit_code": 1,
+    "blocker": "CS0117: published EventStore3.125.1 ReadModelBatchOperation lacks WriteExpiring",
+    "log": "story12-2-sdk-review1-consumer-contract-gate.log"
+  },
+  "contract_fallback": {
+    "command": [
+      "pwsh",
+      "-File",
+      "tests/tools/run-contract-spine-gates.ps1",
+      "-NoRestore"
+    ],
+    "exit_code": 1,
+    "contract_total": 146,
+    "contract_passed": 143,
+    "contract_failed": 3,
+    "client_passed": 36,
+    "failures": [
+      "Pd10V2ContractTests.ConformanceSetBindsEveryCandidateArtifactWithoutChangingReleaseAuthority",
+      "Pd10ConformanceSetTests.ManifestBindsEveryListedCandidateArtifactAndOrderedSetDigest",
+      "Pd10ConformanceSetTests.GeneratorReproducesTheCommittedManifestByteForByte"
+    ],
+    "log": "story12-2-sdk-review1-consumer-contract-runtime.log",
+    "note": "Historical frozen candidate inventory/generator evidence is preserved; no release requalification or package update is claimed."
+  },
+  "performance": "performance.json",
+  "cleanup": "cleanup.json",
+  "historical_evidence": {
+    "all_six_stages_preserved": true,
+    "pre_review_diagnostics": "../story-12-2-approved-sdk-work-in-progress.json",
+    "sdk_historical_packet_unchanged": true,
+    "notes": [
+      "Initial rebuilt rows had no TTL; the serialized partition conversion was fixed and its RED/GREEN proof is retained in pre-review diagnostics.",
+      "The second pre-review Folders live run timed out awaiting WorkspaceLockAcquired before release; destroyed command state prevents terminal classification. The later current-source live pass does not erase that failed attempt."
+    ]
+  },
+  "remaining_story_acceptance": [
+    "SDK owner-identity capability beyond10000, qualified consumption and Task36 rerun",
+    "Release/package and frozen PD10 source-inventory requalification",
+    "SM4 acknowledgement p95:31600.244ms versus1000ms on this run; prior31330.090ms observation preserved",
+    "Independent review is pending for this approved SDK/consumer change at this packet seal; whole-story review remains separate"
+  ],
+  "boundaries": [
+    "Redis production profile is Resumable; forced TransactionQualified partial-write/refusal is diagnostic only.",
+    "SDK pending owner-scratch recovery crosses exited OS processes; sidecar replacement during that interruption is not claimed.",
+    "No source events, legal-hold/content-cleanup authority, public v2, dependency versions, recorded gitlink, Git history/index, package release or deployment changed."
+  ],
+  "evidence_retention": {
+    "attributes": ".gitattributes",
+    "rule": "* -text",
+    "manifest": "SHA256SUMS"
+  }
+}

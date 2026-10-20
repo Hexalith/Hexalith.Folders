@@ -1,0 +1,278 @@
+{
+  "review_round": 2,
+  "created_utc": "2026-10-20T10:06:13.677606+00:00",
+  "all_layers_final_before_triage": true,
+  "diff": {
+    "diff": "/tmp/story12-2-approved-sdk-review2-bunwueyu/approved-sdk-and-consumer.diff",
+    "bytes": 22019736,
+    "sha256": "bc087f0439d6d49a5bab913ef4d773b381d27f1a565e3ffaffd4d4bb46443837",
+    "claims_file": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore/_bmad-output/implementation-artifacts/spec-folders-12-2-expiry-and-scratch-recovery.md",
+    "root_included_untracked": [
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/.gitattributes",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/SHA256SUMS",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/cleanup.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/components.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/performance.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/sdk-matrix-audit.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-after-live-audit.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-apphost-helpers.xml",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-components.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-docs.xml",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-domain.xml",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-server.xml",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-source.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-verify.py",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-final-workers.xml",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-live.xml",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-pdb-audit.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-pdb-source-inspection.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-pre-serial-binaries.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-consumer-serial-binary-comparison.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-independent-audit.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-source-qualification-20261020/story12-2-sdk-review1-independent-binaries.json",
+      "_bmad-output/implementation-artifacts/evidence/story-12-2-approved-sdk-work-in-progress.json",
+      "_bmad-output/implementation-artifacts/review-12-2-approved-sdk-20261020.json",
+      "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs"
+    ],
+    "root_excluded_unrelated_untracked": [
+      "_bmad-output/specs/spec-folders-file-identity-and-project-links/.memlog.md",
+      "_bmad-output/specs/spec-folders-file-identity-and-project-links/SPEC.md",
+      "_bmad-output/specs/spec-folders-file-identity-and-project-links/acceptance-tests.md",
+      "_bmad-output/specs/spec-folders-file-identity-and-project-links/contracts.md",
+      "_bmad-output/specs/spec-folders-file-identity-and-project-links/delivery-plan.md"
+    ],
+    "sdk_untracked_files": 184,
+    "baselines": {
+      "folders": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+      "eventstore": "d4d05f871991ec2af305267f59dcefeae3f127ed"
+    },
+    "git_mutations": false
+  },
+  "findings": [
+    {
+      "id": "B1",
+      "verdict": "medium",
+      "location": "SharedProjectionEpochCoordinator.cs:635",
+      "claim": "Legacy same-action retry stays false after compensation",
+      "evidence": "Parent reran the binary-backed probe: four retries return false and scratch stays absent. New recovery-retaining fingerprint conflicts with the own legacy Aborted marker; supported fully validated legacy compensation must not strand the same action.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B2",
+      "verdict": "high",
+      "location": "DomainSharedProjectionRebuildDispatcher.cs:1327",
+      "claim": "Interrupted cleanup rejects its own delete envelope",
+      "evidence": "Parent reran deterministic cleanup twice: the retry returns recovery-manifest-unavailable because the new preflight attempts original-owner recovery on the cleanup batch itself before its known deterministic batch can resume.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B3",
+      "verdict": "medium",
+      "location": "ReadModelBatchProtocol.cs:518",
+      "claim": "Expired skip breaks installed-prefix compensation",
+      "evidence": "Parent reproduced an expired first write followed by occupied CreateOnly: Indeterminate/compensation-race despite no own unresolved writes. CompensateAsync requires an envelope for the skipped ordinal.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B4",
+      "verdict": "medium",
+      "location": "ReadModelLegacyScratchRecovery.cs:54",
+      "claim": "Legacy compensation accepts invalid selected generation",
+      "evidence": "Parent reproduced ActiveGeneration=-1 through public RecoverPendingAsync: it reports resolved and removes private bytes. The partial legacy Building check omits complete epoch validation before destructive compensation.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B5",
+      "verdict": "medium",
+      "location": "ReadModelBatchDeadlineTests.cs",
+      "claim": "Missing fixed v2 durable-identity golden vectors",
+      "evidence": "Current deadline test round-trips production encoder/decoder while only v1 has a fixed byte/fingerprint vector. A coordinated v2 serialization drift can silently change retained identity; a mixed-retention fixed vector is missing.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B6",
+      "verdict": "medium",
+      "location": "SharedProjectionExpiryAndScratchTests.cs",
+      "claim": "Missing delayed persisted-journal deadline recovery",
+      "evidence": "Repository tests cover prepared journal restart and deadline mutation serialization separately. No case persists deadline-bearing prepared catch-up mutations, replaces the coordinator, crosses expiry and verifies physical absence plus coherent completion.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B7",
+      "verdict": "medium",
+      "location": "ProjectionExpiryAndScratchRecoveryLiveTests.cs",
+      "claim": "Missing physical Redis COW expiry coverage",
+      "evidence": "The selected/inherited/abandoned COW deadline cases use a fake retaining physical bytes. Current live classes prove basic physical expiry but not that selected inherited/previous-pointer reads remain available after actual Redis removal.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B8",
+      "verdict": "medium",
+      "location": "ReadModelLegacyScratchInterruptionTests.cs",
+      "claim": "Missing real-Dapr legacy compensation interruption coverage",
+      "evidence": "The new immutable legacy compensation row and transitions are tested only in recording/in-memory stores. Live named dispatcher cases use retained-manifest batches, leaving physical CAS/evidence cleanup after legacy-compensator interruption unqualified.",
+      "disposition": "survives"
+    },
+    {
+      "id": "B9",
+      "verdict": "low",
+      "location": "ProjectionExpiryAndScratchRecoveryLiveTests.OwnerProof.cs:42",
+      "claim": "No near-limit proof through the real owner-proof HTTP endpoint",
+      "evidence": "The near-limit case directly reads the real Dapr SDK proof then carries its actual result through the production gateway via fixed HTTP. Full endpoint routing/binding is unchanged and separately exercised by production HTTP harnesses. Remaining combination adds negligible confidence and requires more than a direct correction; reject under the low-finding rule.",
+      "disposition": "rejected-low"
+    },
+    {
+      "id": "B10",
+      "verdict": "medium",
+      "location": "ReadModelExpiryReviewRegressionTests.cs",
+      "claim": "Missing CreateOnly read-to-install newer-writer race",
+      "evidence": "The expired-wrapper success cases and ordinary compaction races do not exercise a newer write after the physical expired-wrapper read but before installation/transaction dispatch. Both supported profiles need explicit persisted newer-byte preservation evidence for the changed CAS path.",
+      "disposition": "survives"
+    },
+    {
+      "id": "E1",
+      "verdict": "high",
+      "location": "SharedProjectionEpochCoordinator.cs:1581",
+      "claim": "Prepared scratch has no discoverable participant envelope",
+      "evidence": "Parent reran the actual dispatcher regression at BeforeInstallOperation ordinal0: Abort remains Accumulating/Indeterminate. MarkerPrepared is the same no-participant state; its original retained manifest exists, but key recovery and terminal reclamation never consume it.",
+      "disposition": "survives"
+    },
+    {
+      "id": "V1",
+      "verdict": "medium",
+      "location": "ReadModelBatchProtocol.cs:646",
+      "claim": "Missing pre-expiry superseding-row compaction test",
+      "evidence": "Pre-verified gap: the current race advances to the deadline, so IsCompacted accepts the newer row before the new pre-expiry preservation branch. Non-retained unexpired retry lacks its own persisted-newer-row assertion.",
+      "disposition": "survives"
+    },
+    {
+      "id": "V2",
+      "verdict": "medium",
+      "location": "SharedProjectionEpochCoordinator.cs:2968",
+      "claim": "Missing promoted expiring pointer abandoned-replacement test",
+      "evidence": "Pre-verified gap: current abandonment seeds a generation-zero anchor; streamed expiry writes an unrelated key. No test covers copying LatestExpiresAtUtc from an already promoted same-key pointer into PreviousExpiresAtUtc before Abort.",
+      "disposition": "survives"
+    }
+  ],
+  "independent_probe_logs": [
+    "/tmp/story12-2-review2-blind-independent-repro.log",
+    "/tmp/story12-2-review2-edge-independent-repro.log"
+  ],
+  "groups": [
+    {
+      "members": [
+        "B1"
+      ],
+      "root_cause": "Legacy same-action retry stays false after compensation",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "action": "amend nonfrozen implementation requirements"
+    },
+    {
+      "members": [
+        "B2"
+      ],
+      "root_cause": "Interrupted cleanup rejects its own delete envelope",
+      "verdict": "high",
+      "route": "bad_spec",
+      "action": "amend nonfrozen implementation requirements"
+    },
+    {
+      "members": [
+        "B3"
+      ],
+      "root_cause": "Expired skip breaks installed-prefix compensation",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "action": "amend nonfrozen implementation requirements"
+    },
+    {
+      "members": [
+        "B4"
+      ],
+      "root_cause": "Legacy compensation accepts invalid selected generation",
+      "verdict": "medium",
+      "route": "bad_spec",
+      "action": "amend nonfrozen implementation requirements"
+    },
+    {
+      "members": [
+        "B5"
+      ],
+      "root_cause": "Missing fixed v2 durable-identity golden vectors",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    },
+    {
+      "members": [
+        "B6"
+      ],
+      "root_cause": "Missing delayed persisted-journal deadline recovery",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    },
+    {
+      "members": [
+        "B7"
+      ],
+      "root_cause": "Missing physical Redis COW expiry coverage",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    },
+    {
+      "members": [
+        "B8"
+      ],
+      "root_cause": "Missing real-Dapr legacy compensation interruption coverage",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    },
+    {
+      "members": [
+        "B10"
+      ],
+      "root_cause": "Missing CreateOnly read-to-install newer-writer race",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    },
+    {
+      "members": [
+        "E1"
+      ],
+      "root_cause": "Prepared scratch has no discoverable participant envelope",
+      "verdict": "high",
+      "route": "bad_spec",
+      "action": "amend nonfrozen implementation requirements"
+    },
+    {
+      "members": [
+        "V1"
+      ],
+      "root_cause": "Missing pre-expiry superseding-row compaction test",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    },
+    {
+      "members": [
+        "V2"
+      ],
+      "root_cause": "Missing promoted expiring pointer abandoned-replacement test",
+      "verdict": "medium",
+      "route": "patch",
+      "action": "loopback; test-only patches are re-derived with the amended requirements"
+    }
+  ],
+  "route": "bad_spec",
+  "owner_review_loop_iteration_before": 1,
+  "owner_review_loop_iteration_after": 2,
+  "deferrals": [],
+  "retained_reproductions": "evidence/story-12-2-approved-sdk-review2/",
+  "positive_snapshot": "/tmp/story12-2-sdk-review2-keep-qjhea386"
+}
