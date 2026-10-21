@@ -1,0 +1,31 @@
+{
+  "result": "Failed; no complete authenticated live pass.",
+  "receipt": "real-provider-live-attempt-1-result.json",
+  "executed_subchecks": [
+    "PASS provider binding: retained rejection does not strand later configuration; missing retained view fails closed; complete source rebuild preserves exact binding and retained source",
+    "PASS bound-target denial: absent real repository cannot append preparation success; exact target restored privately"
+  ],
+  "failure": [
+    {
+      "type": "System.Threading.Tasks.TaskCanceledException",
+      "message": "System.Threading.Tasks.TaskCanceledException : A task was canceled.",
+      "stack_trace": "   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.WaitForEventAsync[T](String folder) in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 589\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RequireRealTaskClosureAsync() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 305\n   at Hexalith.Folders.AppHost.Tests.OperationalStatusDurabilityAcceptanceTests.RetainedFolderProjectionShouldSurviveRestartRebuildAndSafeFailures() in /home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs:line 44\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "observed_before_failure": {
+    "idempotency_admission_unavailable_log_lines": 6,
+    "anonymous_rate_limit_warning_log_lines": 202,
+    "watcher_enospc_observed": false,
+    "internal_actor_http_429": {
+      "actor": "IdempotencyAdmissionActor",
+      "method": "MarkRecoveryAsync",
+      "partition": "anonymous/unknown",
+      "log_lines": [
+        9472,
+        11375
+      ]
+    }
+  },
+  "causal_limit": "Observed internal actor HTTP 429 at MarkRecoveryAsync, redacted DaprApiException/admission-unavailable retries, a later HTTP 202, and no WorkspacePreparationRequested within the unchanged90-second wait. No causal fix or retained terminal command outcome is inferred.",
+  "changes_to_assertions_deadlines_retries_limiters": false
+}

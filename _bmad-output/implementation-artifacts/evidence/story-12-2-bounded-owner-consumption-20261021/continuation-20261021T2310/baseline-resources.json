@@ -1,0 +1,171 @@
+{
+  "time": "2026-10-21T20:55:34.952683+00:00",
+  "target": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+  "rows": [
+    {
+      "name": "eventstore-dapr-cli-ggxcgvgx",
+      "type": "Executable",
+      "state": "Waiting",
+      "waitingFor": [
+        "security"
+      ]
+    },
+    {
+      "name": "eventstore-workload-client-secret",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "eventstore-znwkzksw",
+      "type": "Project",
+      "state": "Waiting",
+      "waitingFor": [
+        "security"
+      ]
+    },
+    {
+      "name": "folders-app-api-token",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "folders-dapr-cli-aqftzhub",
+      "type": "Executable",
+      "state": "Waiting",
+      "waitingFor": [
+        "eventstore",
+        "tenants",
+        "security"
+      ]
+    },
+    {
+      "name": "folders-human-authority-receipt-key",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "folders-idempotency-digest-key",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "folders-ui-dapr-cli-cfkpmeww",
+      "type": "Executable",
+      "state": "Waiting",
+      "waitingFor": [
+        "folders",
+        "security"
+      ]
+    },
+    {
+      "name": "folders-ui-vgdydpwa",
+      "type": "Project",
+      "state": "Waiting",
+      "waitingFor": [
+        "folders",
+        "security"
+      ]
+    },
+    {
+      "name": "folders-workers-app-api-token",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "folders-workers-dapr-cli-stnwnsmr",
+      "type": "Executable",
+      "state": "Waiting",
+      "waitingFor": [
+        "eventstore",
+        "tenants",
+        "security"
+      ]
+    },
+    {
+      "name": "folders-workers-supudyte",
+      "type": "Project",
+      "state": "Waiting",
+      "waitingFor": [
+        "eventstore",
+        "tenants",
+        "security"
+      ]
+    },
+    {
+      "name": "folders-wrwjuyas",
+      "type": "Project",
+      "state": "Waiting",
+      "waitingFor": [
+        "eventstore",
+        "tenants",
+        "security"
+      ]
+    },
+    {
+      "name": "memories-dapr-cli-utdxhmup",
+      "type": "Executable",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "memories-graphs-axudufsz",
+      "type": "Container",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "memories-vectors-tmpqnctz",
+      "type": "Container",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "memories-wkthuqjn",
+      "type": "Project",
+      "state": "Finished",
+      "waitingFor": null
+    },
+    {
+      "name": "security-eventstore-client-password",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "security-eventstore-client-username",
+      "type": "Parameter",
+      "state": "Running",
+      "waitingFor": null
+    },
+    {
+      "name": "security-mtnnwxwc",
+      "type": "Container",
+      "state": "Starting",
+      "waitingFor": null
+    },
+    {
+      "name": "tenants-byqbsfuj",
+      "type": "Project",
+      "state": "Waiting",
+      "waitingFor": [
+        "eventstore",
+        "security"
+      ]
+    },
+    {
+      "name": "tenants-dapr-cli-thcxvjhc",
+      "type": "Executable",
+      "state": "Waiting",
+      "waitingFor": [
+        "eventstore",
+        "security"
+      ]
+    }
+  ],
+  "observation": "No-build prebuild baseline was started and inspected, then stopped before restore/build. Readiness was not established."
+}

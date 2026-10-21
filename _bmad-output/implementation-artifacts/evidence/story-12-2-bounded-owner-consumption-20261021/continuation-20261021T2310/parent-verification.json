@@ -1,0 +1,106 @@
+{
+  "recorded_at": "2026-10-21T21:36:09.296540+00:00",
+  "independent_parent_verification": true,
+  "full_acceptance": false,
+  "hash_audit": {
+    "files_sha256": {
+      "checked": 12118,
+      "differences": []
+    },
+    "assemblies_sha256": {
+      "checked": 546,
+      "differences": []
+    }
+  },
+  "components": [
+    {
+      "name": "domain",
+      "passed": 2188,
+      "failed": 0,
+      "skipped": 2
+    },
+    {
+      "name": "server",
+      "passed": 1056,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "workers",
+      "passed": 161,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "apphost-helpers",
+      "passed": 22,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "docs",
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "integration",
+      "passed": 794,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "capacity_component_cases": [
+    {
+      "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(count: 10001)",
+      "result": "Pass"
+    },
+    {
+      "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(count: 32769)",
+      "result": "Pass"
+    }
+  ],
+  "live_results": [
+    {
+      "name": "real-provider-live-attempt-1",
+      "exit_code": 1,
+      "seconds": 240.56239199638367,
+      "failed": 1,
+      "skipped": 0
+    },
+    {
+      "name": "capacity-live-attempt-1",
+      "exit_code": 1,
+      "seconds": 1280.421038866043,
+      "failed": 1,
+      "skipped": 0
+    }
+  ],
+  "live_module_reproduction": {
+    "production_modules_matching_live_runtime": 5,
+    "both_evolution_modes_reproduce": true,
+    "canonical_bytes_and_checkpoint_unchanged": true,
+    "journal_before": "AlreadyCaptured",
+    "journal_after": "IdentityConflict",
+    "failed_replay_folders_callback_count": 0
+  },
+  "cleanup": {
+    "remaining_owned_processes": [],
+    "remaining_owned_containers": []
+  },
+  "spec": {
+    "frozen_intent_preserved": true,
+    "original_baseline_preserved": true,
+    "task36_open": true,
+    "status": "in-progress"
+  },
+  "checked_artifact_sha256": {
+    "source-freeze.json": "fb923062171f96e24a95791ae03103e5e19737ec1aca065817682cba46f27ac2",
+    "components.json": "4e8934dbeb254a70587b83cafd20782e79b3d48e5e4d00b50ced19af4fa3f425",
+    "real-provider-live-attempt-1.xml": "d43c2c70f02dc74e831a5e41b5845328f6752cffce71e7b92839374cbadae52c",
+    "capacity-live-attempt-1.xml": "b3fb6847eb546fe9ae722cdd35ddbffaf1b36f32dfd595cfea09ed5c867ddf06",
+    "sdk-inherited-owner-handoff.md": "db30a0460a7d6b2e86c64489e896a7950c01906fd579f164d11ab873c7328e0b",
+    "diagnostic-live-modules/qualified-repro.log": "e559f461f94f5aa1318461f57f5a519f27b5b2c585cfaffc2ff53cbcb423e218",
+    "diagnostic-live-modules/binding-summary.json": "efa771784d631b0f64666483a7b28a106a49b34e745c708758f30d1f31e268ed"
+  }
+}

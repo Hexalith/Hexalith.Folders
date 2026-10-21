@@ -1,0 +1,63 @@
+{
+  "time": "2026-10-21T21:31:58.130209+00:00",
+  "qualified": false,
+  "task36_complete": false,
+  "whole_story_status": "in-progress",
+  "product_source_changes": [],
+  "build": "builds-attempt-1.json",
+  "components": {
+    "passed": 4249,
+    "failed": 0,
+    "skipped": 2
+  },
+  "live": {
+    "real_provider": "real-provider-live-attempt-1-result.json",
+    "capacity10001": "capacity-live-attempt-1-result.json",
+    "complete_case_passes": 0,
+    "capacity32769_folders_http_executed": false
+  },
+  "source_binding": {
+    "source_config_inputs": 12118,
+    "pe_pdb_files": 546,
+    "all_frozen_input_hashes_match": true,
+    "all_frozen_binary_hashes_match": true,
+    "ordinary_source_pdb_documents": 37909,
+    "generated_pdb_documents_qualified": false,
+    "root_head": "067d3a208d48960292cd9d9faa631b8dad61d33a",
+    "sdk_build_head": "1b5ec217a74cdfdd84605e093114071b56c9f700",
+    "sdk_final_observed_head": "1748b16b11fb63b885dfa2fd4a9c7a420ea103a9",
+    "external_head_only_changed_paths": [
+      "_bmad-output/implementation-artifacts/deferred-work.md",
+      "_bmad-output/implementation-artifacts/spec-3-22-bounded-qualification-evidence-production-and-admission.md",
+      "_bmad-output/implementation-artifacts/sprint-status.yaml"
+    ],
+    "audit_command_exit_code": 1,
+    "audit_nonzero_reason": "External SDK planning-only HEAD advancement; zero inventoried source/binary drift."
+  },
+  "runtime_binding": "runtime-binding-audit.json",
+  "cleanup": "cleanup.json",
+  "sdk_blocker_handoff": "sdk-inherited-owner-handoff.md",
+  "sdk_evidence_reuse_boundary": "Historical74-case/process evidence binds its own graph. Current changed batching/source-proof graph is not qualified by those results.",
+  "separate_open_gates": [
+    "SDK inherited-owner duplicate correction and exact consumer requalification",
+    "strict authenticated provider acceptance/internal actor429",
+    "SDK broad regressions",
+    "package/PD10",
+    "SM4",
+    "independent scoped/whole-story review"
+  ],
+  "unauthorized_mutations_performed": false,
+  "spec_preservation": {
+    "prior_tracked_spec_preserved_as_prefix": true,
+    "frozen_intent_sha256": "708c47e8a7cea4aefb2dfe514709b9b31b63dd7f8a263789e94bd37dd4cae1cf",
+    "task36_still_unchecked": true
+  },
+  "sdk_diagnostics": {
+    "domain_test_group": "diagnostic/binding-summary.json",
+    "live_server_domainservice_group": "diagnostic-live-modules/binding-summary.json",
+    "distinct_domainservice_pe_groups_preserved": true,
+    "live_group_production_modules_match_runtime": 5,
+    "test_harness_module_is_not_claimed_as_live": true,
+    "failed_replay_folders_fold_callbacks": 0
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "observations": 311,
+  "mismatches": [],
+  "actual_processes": {
+    "capacity-live-attempt-1.log": {
+      "folders": [
+        {
+          "launcher_pid": 22735,
+          "managed_pid": 22801
+        },
+        {
+          "launcher_pid": 81424,
+          "managed_pid": 82332
+        }
+      ],
+      "folders-workers": [
+        {
+          "launcher_pid": 23853,
+          "managed_pid": 24181
+        },
+        {
+          "launcher_pid": 81433,
+          "managed_pid": 82336
+        }
+      ],
+      "folders-workers-replica": [
+        {
+          "launcher_pid": 25438,
+          "managed_pid": 25698
+        },
+        {
+          "launcher_pid": 68580,
+          "managed_pid": 69066
+        }
+      ],
+      "eventstore": [
+        {
+          "launcher_pid": 27466,
+          "managed_pid": 27606
+        },
+        {
+          "launcher_pid": 81234,
+          "managed_pid": 82207
+        }
+      ]
+    },
+    "real-provider-live-attempt-1.log": {
+      "folders": [
+        {
+          "launcher_pid": 65186,
+          "managed_pid": 65883
+        }
+      ],
+      "folders-workers": [
+        {
+          "launcher_pid": 65201,
+          "managed_pid": 65910
+        }
+      ],
+      "folders-workers-replica": [
+        {
+          "launcher_pid": 54077,
+          "managed_pid": 54996
+        }
+      ],
+      "eventstore": [
+        {
+          "launcher_pid": 65098,
+          "managed_pid": 65836
+        }
+      ]
+    }
+  },
+  "evidence": "Full module paths, PE/PDB hashes and MVIDs are retained in RUNTIME_BINDING lines of the two raw live logs."
+}

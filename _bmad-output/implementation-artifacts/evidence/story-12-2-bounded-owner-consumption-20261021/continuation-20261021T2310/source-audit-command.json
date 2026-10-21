@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/continuation-20261021T2310/provenance.py",
+    "verify"
+  ],
+  "exit_code": 1,
+  "seconds": 0.38970303535461426,
+  "stdout": "{'files_sha256': [], 'assemblies_sha256': [], 'submodule_heads': ['references/Hexalith.EventStore']}\n",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/continuation-20261021T2310/provenance.py\", line 45, in <module>\n    (out/'after-execution-audit.json').write_text(json.dumps(changes,indent=2)+'\\n');print(changes);assert not any(changes.values())\n                                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+}

@@ -1,0 +1,70 @@
+{
+  "binary_group": "Frozen Domain test binary group; DomainService copy differs from live",
+  "modules": [
+    {
+      "name": "Hexalith.Folders.Tests",
+      "path": "/tmp/task36-frozen-diagnostic/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "mvid": "0f9a8a8a-1026-4888-868f-374a2b214726",
+      "sha256": "BF823E41266217374A97C0506F4C5B2D68A5884B69F8038393ED8DEC4F71076A",
+      "frozen_reference_path": "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll",
+      "matches_frozen_reference": true,
+      "matches_live_runtime": null
+    },
+    {
+      "name": "Hexalith.EventStore.Client",
+      "path": "/tmp/task36-frozen-diagnostic/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "mvid": "dad72dcb-761a-450d-9d30-4ca3a9623cc3",
+      "sha256": "A9CBA7C1F289D9704E62B39DBFE3A15492ECD341DC04AEEC1277F9DA8F56339C",
+      "frozen_reference_path": "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+      "matches_frozen_reference": true,
+      "matches_live_runtime": true
+    },
+    {
+      "name": "Hexalith.EventStore.Contracts",
+      "path": "/tmp/task36-frozen-diagnostic/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "mvid": "0aaab763-8c70-45b4-9f5b-87b5cd471227",
+      "sha256": "B664FBD4D52656659877EA3D1959F674E66B7FB5B8210631B07969A54579DA63",
+      "frozen_reference_path": "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Contracts.dll",
+      "matches_frozen_reference": true,
+      "matches_live_runtime": true
+    },
+    {
+      "name": "Hexalith.EventStore.DomainService",
+      "path": "/tmp/task36-frozen-diagnostic/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "mvid": "3b81e1c5-69d9-4132-9301-c2000cfcebec",
+      "sha256": "4B2718AC1FB65D85829858DADA919212D40404279891991A05DDA63832DDB1D7",
+      "frozen_reference_path": "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+      "matches_frozen_reference": true,
+      "matches_live_runtime": false
+    },
+    {
+      "name": "Hexalith.Folders",
+      "path": "/tmp/task36-frozen-diagnostic/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "mvid": "64125f63-3797-4838-be34-bb9cba11a8a2",
+      "sha256": "B2F899B4C46A02D54B95B3FC09BBB46085405E022C37AA430ADB5446DE746949",
+      "frozen_reference_path": "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.dll",
+      "matches_frozen_reference": true,
+      "matches_live_runtime": true
+    },
+    {
+      "name": "Hexalith.Folders.Server",
+      "path": "/tmp/task36-frozen-diagnostic/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "mvid": "a4fb106c-59ee-49e7-95d4-51a6bb7b23a7",
+      "sha256": "6D07376CD00A5DD0912E9AA473BE57CCE64D9FAE1D554C34A84023E56A5D0829",
+      "frozen_reference_path": "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Server.dll",
+      "matches_frozen_reference": true,
+      "matches_live_runtime": true
+    }
+  ],
+  "reproduced_evolution_modes": [
+    "False",
+    "True"
+  ],
+  "canonical_bytes_and_captured_checkpoint_unchanged": true,
+  "direct_sdk_journal_before": "AlreadyCaptured",
+  "direct_sdk_journal_after": "IdentityConflict",
+  "named_after": "Failed/delivery_identity_conflict",
+  "fold_callback_failed_replay_delta": 0,
+  "fold_callback_primer_delta": 1,
+  "scope": "Tiny synthetic component diagnostic, not a new authenticated live pass."
+}

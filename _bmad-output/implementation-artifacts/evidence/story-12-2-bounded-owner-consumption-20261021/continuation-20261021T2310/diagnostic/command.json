@@ -1,0 +1,13 @@
+{
+  "command": [
+    "dotnet",
+    "run",
+    "--project",
+    "/tmp/task36-frozen-diagnostic/Diagnostic.csproj"
+  ],
+  "cwd": "/tmp/task36-frozen-diagnostic",
+  "started_at": "2026-10-21T21:29:41.399086+00:00",
+  "elapsed_seconds": 1.7991390228271484,
+  "exit_code": 0,
+  "result": "Diagnostic confirms the existing SDK inherited-owner duplicate refusal; it does not constitute passing acceptance."
+}

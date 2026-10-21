@@ -1,0 +1,8 @@
+{
+  "archive": "captured-graph.tar.gz",
+  "sha256": "baab5db5ca61508914a170c0b07410617e2653e5a40330c7a82830b5cae23cb0",
+  "bytes": 99071924,
+  "source_files": 12118,
+  "binary_files": 546,
+  "generated_sources": {}
+}

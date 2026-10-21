@@ -645,3 +645,37 @@ original drifted inputs and generated source bytes are preserved. The current ch
 The implementation agent issued no staging, commit, push, branch or dependency-update operations
 and made no SDK production-source edits.
 SDK broad regressions, package/PD10, SM4 and independent scoped/whole-story review remain separate gates.
+
+## Task 36 current integrated-source continuation — 2026-10-21
+
+The [continuation packet](evidence/story-12-2-bounded-owner-consumption-20261021/continuation-20261021T2310/README.md)
+records a current Debug/source solution restore/build with zero warnings/errors and 4,249 consumer
+passes, zero failures and the same two optional Domain skips. Both 10,001/32,769 component cases pass.
+All 12,118 frozen source/config hashes and 546 PE/PDB hashes remain unchanged through execution;
+271 PDBs match 37,909 ordinary source-document copies. Generated PDB documents are outside that audit.
+The SDK externally advanced through a planning-only commit; the exact head difference is retained.
+
+Strict authenticated acceptance failed after 240.562 seconds waiting WorkspacePreparationRequested.
+Logs directly observe internal actor HTTP429 at IdempotencyAdmissionActor/MarkRecoveryAsync,
+admission-unavailable retries and a later HTTP202 without the event within the unchanged90-second wait.
+No causal fix or retained terminal command outcome is inferred. The separate10,001 HTTP case failed
+after1280.421 seconds at its first historical duplicate after an independent-owner generation.
+Large staging, four actual managed-host replacements, same-session Commit/Verify and independent-owner
+promotion passed; growth/repeated rebuild and final conflict assertions were not reached.
+
+The [SDK handoff](evidence/story-12-2-bounded-owner-consumption-20261021/continuation-20261021T2310/sdk-inherited-owner-handoff.md)
+retains tiny reproductions in distinct frozen Domain-test and actual live Server DomainService groups.
+The latter matches all five production modules to live runtime hashes; its sixth module is the test harness.
+Identical canonical bytes and an unchanged
+captured owner checkpoint return AlreadyCaptured before inheritance, then IdentityConflict afterward;
+named dispatch reports Failed/delivery_identity_conflict without entering the Folders fold callback.
+The current capture map omits the inherited owner, causing the SDK journal's next-sequence branch
+to reject its historical duplicate. Evolution-enabled and disabled cases reproduce the same result.
+The live helper did not retain its ReasonCode; the exact layer/reason is independently established
+by this frozen-DLL reproduction. SDK production edits remain outside this consumer session.
+
+Exact fixture-owned cleanup passed; the unrelated Tenants AppHost kept its original PID.
+No Folders or SDK product source, dependency pin, Git index, quota, assertion, deadline or retry limit
+was changed. Task36 remains unchecked and Story12.2 remains in-progress for this SDK-owned correction,
+exact consumer/strict live requalification, and the separately open broad SDK, package/PD10, SM4 and
+independent review gates. No new complete authenticated live pass or32,769 Folders HTTP run is claimed.
