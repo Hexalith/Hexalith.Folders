@@ -1,0 +1,144 @@
+{
+  "schema": "hexalith-folders-story-continuation/v1",
+  "recorded_at_utc": "2026-10-21T07:30:49.226734+00:00",
+  "story": "12-2-durable-projections-and-task-completion-pipeline",
+  "status": "in-progress",
+  "full_acceptance": false,
+  "root_head": "34f25c477d0497ebf5c115e7c7a58afb2f88245a",
+  "original_baseline_commit": "c22b13137202f7bf8c60b80c095a69748435bd6e",
+  "changes": "Continuation evidence only; no product implementation or Git mutation. Existing user changes and concurrent submodule advances preserved.",
+  "focused_verification": {
+    "command": "dotnet tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.Folders.Tests.dll -method '*OperationalStatusCapacityTests.TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues' -noLogo",
+    "exit_code": 0,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 11.147,
+    "log": "story-12-2-continuation-20261021.log",
+    "log_sha256": "8e5af3533868880a3efe0a04f6035b24e555923e2b2f15f945319ad44bc60d68",
+    "interpretation": "Diagnostic pass confirms successful rebuild at10000, ordinary delivery at10001, then expected production named-dispatch failure and capturedEventDigests ArgumentException. It does not qualify rebuild beyond10000.",
+    "binary_binding": "All546 captured assembly/PDB hashes still match Stage11; no rebuild was performed."
+  },
+  "stage11_packet": {
+    "qualification": "story-12-2-approved-sdk-source-qualification-review5/qualification.json",
+    "qualification_sha256": "b1c99cb110e3d1e5c2b6956c369ef201bbffca7db2ff32522ba133fa3885b1b5",
+    "initial_parent_audit": {
+      "source_config_count": 11998,
+      "assembly_pdb_count": 546,
+      "source_differences": [],
+      "binary_differences": [],
+      "submodule_head_differences": [],
+      "packet_hash_differences": []
+    },
+    "final_parent_audit": {
+      "manifest_entries_checked": 57,
+      "packet_hash_differences": [],
+      "source_config_differences": [
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionSourceAudit.cs",
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformAdoptionValidator.cs",
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Manifest/PlatformHostingInventory.cs",
+        "references/Hexalith.Builds/src/libraries/Hexalith.Builds.Tooling/Workspace/GitWorkspaceProcess.cs",
+        "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/PlatformAdoptionValidationTests.cs",
+        "references/Hexalith.Builds/test/Hexalith.Builds.Module.Tests/PlatformManifestCommandTests.cs",
+        "references/Hexalith.EventStore/.gitattributes",
+        "references/Hexalith.McpCli/tests/Hexalith.McpCli.ConformanceHost/Hexalith.McpCli.ConformanceHost.csproj",
+        "references/Hexalith.McpCli/tests/Hexalith.McpCli.ConformanceHost/Program.cs",
+        "references/Hexalith.McpCli/tests/Hexalith.McpCli.Core.Tests/Hexalith.McpCli.Core.Tests.csproj",
+        "references/Hexalith.Platform/eng/ext-secrets-1/README.md",
+        "references/Hexalith.Platform/eng/ext-secrets-1/audit_local_transport.py",
+        "references/Hexalith.Platform/eng/ext-secrets-1/local-transport/README.md",
+        "references/Hexalith.Platform/eng/ext-secrets-1/local-transport/build.py",
+        "references/Hexalith.Platform/eng/ext-secrets-1/local-transport/range_download.py",
+        "references/Hexalith.Platform/eng/ext-secrets-1/local-transport/run.py",
+        "references/Hexalith.Platform/eng/ext-secrets-1/local-transport/seal_build.py",
+        "references/Hexalith.Platform/eng/ext-secrets-1/test_audit_local_transport.py",
+        "references/Hexalith.Platform/eng/test_verify_works_host.py",
+        "references/Hexalith.Platform/eng/test_works_host_snapshot.py",
+        "references/Hexalith.Platform/eng/verify_works_host.py",
+        "references/Hexalith.Platform/eng/works_host_snapshot.py",
+        "references/Hexalith.Platform/tests/Hexalith.Platform.Composition.Tests/DomainEnrollmentKitTests.cs",
+        "references/Hexalith.Platform/tests/Hexalith.Platform.Secrets.Runtime.Tests/CustodyBindingLocalTransport.cs"
+      ],
+      "assembly_pdb_differences": [],
+      "concurrent_submodule_head_changes": {
+        "references/Hexalith.Tenants": {
+          "qualified_head": "8ca1db8d5662d94272811951803974b8ed1c3e0d",
+          "observed_head": "ec10b2575c836d650a68ffcbe14a16ccc9257528"
+        },
+        "references/Hexalith.EventStore": {
+          "qualified_head": "7217b5bf740b80ae92858378785b496e6b564285",
+          "observed_head": "ae917d3e4dbab20b8982c5222a13611c3e3faf35"
+        },
+        "references/Hexalith.FrontComposer": {
+          "qualified_head": "1a1cd1e89f59b05ed2621a31f157f9d940356ef8",
+          "observed_head": "247410b8b35050abf3f06ec72d6bcf3f1552b150"
+        },
+        "references/Hexalith.Memories": {
+          "qualified_head": "35df7e2080c369003cacac12f5b44117d7f3ed35",
+          "observed_head": "7d1e21f91ac58e427e1440ba34d1c8c141d7e98c"
+        },
+        "references/Hexalith.Builds": {
+          "qualified_head": "fff4a212180d8cd1c5c0759655a9bc4fb6963c45",
+          "observed_head": "17d0c6ffec5fb3c8d8058e67cb85644460cb5256"
+        },
+        "references/Hexalith.Projects": {
+          "qualified_head": "8f4de04a64a5eb016fb0493c1f0f1f2284ff91f2",
+          "observed_head": "0683fa162582b8d63adb8bc593ce50d39b8c3cf4"
+        },
+        "references/Hexalith.Platform": {
+          "qualified_head": "642b5bdbdf33ec1588eeef3b9a7e9f1a02aebc40",
+          "observed_head": "7b5548f0d308d27af9d5fda5b68c6b959c053185"
+        },
+        "references/Hexalith.McpCli": {
+          "qualified_head": "9354dc08176744c75c2ddb61d924c0948b373b98",
+          "observed_head": "39f75e8c8e2bec0824e8f0b93f72bd94c9a73789"
+        }
+      },
+      "matrix": [
+        {
+          "scenario": "Delivery/replay",
+          "executed_passing_cases": 12,
+          "missing_cases": []
+        },
+        {
+          "scenario": "Task closure",
+          "executed_passing_cases": 3,
+          "missing_cases": []
+        },
+        {
+          "scenario": "Conflict/crash",
+          "executed_passing_cases": 9,
+          "missing_cases": []
+        },
+        {
+          "scenario": "Denial/storage",
+          "executed_passing_cases": 4,
+          "missing_cases": []
+        },
+        {
+          "scenario": "Retention",
+          "executed_passing_cases": 9,
+          "missing_cases": []
+        }
+      ]
+    },
+    "qualification_limit": "Stage11 remains prior exact-source evidence. Concurrent external changes occurred after the initial audit; no current merged-source rebuild, live run or package qualification is inferred."
+  },
+  "blocking_prerequisite": {
+    "task": 36,
+    "proposal": "../proposal-12-2-sdk-bounded-owner-identity.md",
+    "owner": "Separate EventStore repository story and session, per existing owner approval.",
+    "current_source": "references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs",
+    "guards": [
+      "SeedCapturedOwnerSequenceAsync rejects lastSequenceNumber>10000",
+      "CanPromoteCapturedJournalOwnerAsync rejects lastSequenceNumber>10000"
+    ],
+    "required": "SDK-owned bounded captured-identity retention/checkpoint handoff, separately implemented and qualified; then Folders consumer requalification. No domain history cap, relaxed identity guards or local protocol."
+  },
+  "other_open_gates": [
+    "Release/package and frozen PD10 requalification",
+    "Acknowledgement performance acceptance: Stage11 p95=2072.554ms versus1000ms; no redesign authorized",
+    "Independent approved-scope and whole-story review"
+  ],
+  "workflow_disposition": "Stopped at implementation/task verification with Task36 incomplete. Review/completion not claimed; sprint status and frozen intent unchanged."
+}

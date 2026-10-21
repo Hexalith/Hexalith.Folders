@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "story": "12.2",
-  "status": "SDK review5: loop5 corrections in progress over preserved incoming merged source; Stage10 is historical qualification.",
+  "status": "Current merged approved SDK review-five source consumption locally qualified; whole Story12.2 remains in-progress.",
   "full_acceptance": false,
   "source": {
     "folders_head": "c22b13137202f7bf8c60b80c095a69748435bd6e",
@@ -9590,6 +9590,127 @@
         "92e0bad6617037743b28aeb105c5c9da715eae13ee7df9cfb6a247450d1a8f38",
         "f2c817366c914a01e35bbef0e50e5f338fed2062eb3a1bdf06d884b3f32165fd"
       ]
+    },
+    {
+      "stage": 11,
+      "name": "Approved SDK review-five corrections and current merged Folders source qualification",
+      "date": "2026-10-20",
+      "full_acceptance": false,
+      "qualification": "story-12-2-approved-sdk-source-qualification-review5/qualification.json",
+      "consumer_component_passed": 4248,
+      "consumer_existing_optional_skips": 2,
+      "live": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "seconds": 351.901
+      },
+      "sdk": {
+        "qualified_source_inputs": 3881,
+        "source_mismatches": 0,
+        "results": {
+          "client-build": {
+            "build_exit_code": 0
+          },
+          "client-focused": {
+            "total": 548,
+            "passed": 548,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "client-full": {
+            "total": 1910,
+            "passed": 1908,
+            "failed": 0,
+            "skipped": 2,
+            "errors": 0,
+            "not-run": 0
+          },
+          "domain-build": {
+            "build_exit_code": 0
+          },
+          "domain-full": {
+            "total": 1072,
+            "passed": 1072,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-build": {
+            "build_exit_code": 0
+          },
+          "live-expiry-scratch": {
+            "total": 59,
+            "passed": 59,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-read-model-batch": {
+            "total": 6,
+            "passed": 6,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          },
+          "live-shared-epoch": {
+            "total": 8,
+            "passed": 8,
+            "failed": 0,
+            "skipped": 0,
+            "errors": 0,
+            "not-run": 0
+          }
+        },
+        "unique_live_cases": 73,
+        "worker_invocations": 20,
+        "distinct_worker_pids": 20
+      },
+      "performance": [
+        {
+          "operation": "command_acknowledgement",
+          "count": 9,
+          "p50_ms": 360.451,
+          "p95_ms": 2072.554,
+          "budget_p95_ms": 1000.0,
+          "over_budget": true
+        },
+        {
+          "operation": "workers_operational_delivery",
+          "count": 26,
+          "p50_ms": 135.064,
+          "p95_ms": 817.798,
+          "budget_p95_ms": 1000.0,
+          "over_budget": false
+        },
+        {
+          "operation": "status_read",
+          "count": 12,
+          "p50_ms": 33.645,
+          "p95_ms": 62.052,
+          "budget_p95_ms": 500.0,
+          "over_budget": false
+        }
+      ],
+      "independent_review": "pending for approved SDK/consumer scope; whole-story review separate",
+      "earlier_stages_canonical_sha256": [
+        "93113fe7ba7b07f208ccdfea6aa2da966d5a6e715c529fe226b82cf82456b059",
+        "e808551718fa106d4469e0fdf3f3c4336efb7a5866bfcc15303e8a6022376a2e",
+        "d00d469c2656b9eef5cc6431a1bdeb483912c0782cb1eb72b76e592cf3409c70",
+        "78d22e9a760a5fda7a15a71228a48c8d5b65e419e14737b549c017d420af6ab8",
+        "526fd223fc7e6df98be0fd1624076680755bf8329198cf489f04a24c60134acb",
+        "8d3d4de3bc9ef4863e6f7ad17d519bfb32d9309120f03c3b6dea17652a6b026d",
+        "5b3c1b642b2a3273054c2ef8df0f7019226793b05cde0c280ba96e49424d1fbb",
+        "92e0bad6617037743b28aeb105c5c9da715eae13ee7df9cfb6a247450d1a8f38",
+        "f2c817366c914a01e35bbef0e50e5f338fed2062eb3a1bdf06d884b3f32165fd",
+        "4c1c8202bcd70c30cf6c8653b6f0adad95eeccc1f0defab188441af847bd0d10"
+      ]
     }
   ],
   "open_acceptance": [
@@ -9599,7 +9720,8 @@
     "Coordinated package qualification and frozen PD10 source-inventory/generator requalification",
     "Stage9 latency observation: workers_operational_delivery p95=1222.518ms versus1000.0ms; cause unclassified",
     "Stage9 latency observation: status_read p95=639.668ms versus500.0ms; cause unclassified",
-    "Stage10 latency observation: command_acknowledgement p95=4784.157ms versus1000.0ms; cause unclassified"
+    "Stage10 latency observation: command_acknowledgement p95=4784.157ms versus1000.0ms; cause unclassified",
+    "Stage11 latency observation: command_acknowledgement p95=2072.554ms versus1000.0ms; cause unclassified"
   ],
   "approved_next_scope": {
     "decision": "Jerome selected Approve the bounded prerequisites on 2026-10-18",
@@ -9778,10 +9900,13 @@
     "corrections_source_qualification": "story-12-2-approved-sdk-source-qualification-review4/qualification.json"
   },
   "approved_sdk_review5": {
-    "status": "implementation-loop5",
+    "status": "source-consumption-locally-qualified-pending-independent-review",
     "record": "_bmad-output/implementation-artifacts/review-12-2-approved-sdk-round5-20261020.json",
     "preserved_source": "/tmp/story12-2-sdk-review5-keep-79zyj2r0",
     "historical_stages_preserved": 10,
-    "external_merge_preserved": true
+    "external_merge_preserved": true,
+    "qualification": "story-12-2-approved-sdk-source-qualification-review5/qualification.json",
+    "current_root_head": "7f72ce8710aceed9b7e11b8f9a24b6c0e6913084",
+    "current_sdk_head": "7217b5bf740b80ae92858378785b496e6b564285"
   }
 }

@@ -1,0 +1,9 @@
+{
+  "apphosts_before_after_equal": true,
+  "added_containers": [],
+  "removed_containers": [
+    "\"works-sdk415-e6dac7d88e694adca62700e43dda2830\""
+  ],
+  "fixture_owned_containers_remaining": 0,
+  "note": "Fixture disposal completed successfully; no unrelated AppHost was stopped. A preexisting works-sdk415 container disappeared concurrently; this task issued no Docker operation against that container. Docker before/after observations are retained without causal attribution."
+}

@@ -1,0 +1,38 @@
+{
+  "domain": {
+    "total": 2189,
+    "passed": 2187,
+    "failed": 0,
+    "skipped": 2
+  },
+  "server": {
+    "total": 1056,
+    "passed": 1056,
+    "failed": 0,
+    "skipped": 0
+  },
+  "workers": {
+    "total": 161,
+    "passed": 161,
+    "failed": 0,
+    "skipped": 0
+  },
+  "apphost-helpers": {
+    "total": 22,
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0
+  },
+  "docs": {
+    "total": 28,
+    "passed": 28,
+    "failed": 0,
+    "skipped": 0
+  },
+  "integration": {
+    "total": 794,
+    "failed": 0,
+    "passed": 794,
+    "skipped": 0
+  }
+}

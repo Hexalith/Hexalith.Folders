@@ -1,0 +1,568 @@
+---
+title: 'Story 12.2: Durable projections and task-completion pipeline'
+type: 'feature'
+created: '2026-10-18'
+status: 'in-progress'
+baseline_commit: 'c22b13137202f7bf8c60b80c095a69748435bd6e'
+route: 'dispatch'
+review_loop_iteration: 4
+context:
+  - '_bmad-output/implementation-artifacts/epic-12-context.md'
+  - 'docs/exit-criteria/c3-retention.md'
+  - '_bmad-output/implementation-artifacts/proposal-12-2-acceptance-prerequisites.md'
+  - 'docs/contract/authorization-matrix.md'
+---
+
+<frozen-after-approval reason="human-owned intent — do not modify unless human renegotiates">
+
+## Intent
+
+**Problem:** Production lifecycle/task readers remain in memory, losing status and terminal evidence after restart.
+
+**Approach:** Materialize lifecycle, lock, workspace, cleanup, task and commit-status metadata from ordered events using EventStore projection/batch APIs. Share deterministic folding between live delivery and empty-checkpoint rebuild; persist completion before acknowledging delivery.
+
+## Boundaries & Constraints
+
+**Always:** Authorize before protected observation. Preserve existing routes, lifecycle vocabulary and event CLR identities. Derive task closure from source events: clean explicit release closes as `ready`, confirmed commit as `committed`; preserve failed/inaccessible evidence and approved recovery semantics. Deny subsequent non-replay writes for a closed binding using source-folded authority, never a projection. Keep unknown/reconciliation outcomes nonretryable and never infer provider success from acceptance.
+
+**Approved prerequisite exceptions (2026-10-18):** The owner authorized the bounded provider binding/readiness, additive v1 task folder hint, and minimal SDK projection-mapping qualification/consumption described in [the prerequisite proposal](proposal-12-2-acceptance-prerequisites.md). These exceptions permit the required minimal SDK dependency scope; public v2 remains disabled.
+
+**Approved SDK recovery prerequisites (2026-10-20):** The user approved [source-deadline expiry and pending scratch-fence recovery](proposal-12-2-sdk-expiry-and-scratch-recovery.md) for separate EventStore-owned implementation, qualification, and local source consumption here. These two capabilities extend the minimal SDK exception only as described in that proposal. No package or submodule pin update, publication, deployment, commit, push or public v2 exposure is authorized. The separate bounded owner-identity prerequisite retains its existing disposition.
+
+**Never:** Write Dapr/domain storage directly, invent provider/cleanup success, or replace retained event bytes. Exclude bodies and credentials. Keep transition evidence, diagnostics and search projections with Epics 4/6/10; content, provider commit execution, idempotency admission, confidentiality and destructive cleanup remain with 12.3–12.7/4.22. No deployment or public v2 exposure. Dependency changes are limited to the approved minimal SDK capability.
+
+**Decisions (2026-10-20, Jerome; review round 4):**
+- *Provider profile references:* a v1 `capabilityProfileRef` must name a host-configured profile (`Folders:ProviderBindings:Profiles`) for the authoritative tenant and provider kind. Otherwise configuration is rejected as an invalid policy and nothing is appended; an unknown reference never creates a profile-less binding. Hosts and test hosts that create bindings must configure profiles.
+- *Expired operational status:* derived operational rows expire 400 days after their source event time, never after write time; rows already past that boundary are not written. A read past the boundary, or of a view whose rows expired together, returns the existing safe v1 not-found outcome (non-retryable) with no new contract value. A view missing while its evidence survives remains canonical unavailable. Source-folded closure authority still prevents task resurrection.
+
+## I/O & Edge-Case Matrix
+
+| Scenario | Input / State | Expected Output / Behavior | Error Handling |
+| --- | --- | --- | --- |
+| Delivery/replay | Ordered retained events | Equivalent per-workspace/task views, commit metadata and source checkpoints | Exact duplicates do not advance twice |
+| Task closure | Clean release or confirmed commit | Durable terminal result; later new work denied | Equivalent replay retains original result |
+| Conflict/crash | Gap, different bytes, concurrent writers, interrupted batch | No false completion or checkpoint advance; recover retained batch | Canonical conflict/unavailable result |
+| Denial/storage | Foreign/revoked authority, corrupt/missing state, timeout | Safe distinction between absence, stale and unavailable | No protected disclosure or acknowledgment of failed persistence |
+| Retention | Expired/rebuilt view, terminal source history | C3 status/cleanup metadata: 400 days; views: 400 days or rebuild | No resurrected task or content deletion |
+
+</frozen-after-approval>
+
+## Code Map
+
+- `src/Hexalith.Folders/Aggregates/Folder/InMemoryFolderRepository.cs`: reuse mapping intent; remove fabricated provider references, zero lag and cleanup-success assumptions from production mapping.
+- `src/Hexalith.Folders.Server/FolderEventReplay.cs`: reuse identity/order validation and governed evolution; named SDK projection input is already upcast; the protected legacy `/project` receives original stored bytes.
+- `src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs`: status registrations; workspace status includes commit outcome.
+- EventStore `SharedProjectionEpochCoordinator`, `IAsyncDomainSharedProjectionStreamingRebuildHandler`, partitioned rebuild interfaces and `DomainSharedProjectionRebuildDispatcher`: select logical views, journal live deliveries, stream bounded operations and promote recoverable generations. Keep the SDK-owned manifest/receipt protocol and 100-operation/one-MiB limits; the domain supplies source folds and metadata only.
+- `tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs`: reuse authenticated isolated topology, store inspection, changed-PID restart and replay.
+
+
+- Existing bounded SDK candidates (ordinary source files, not skills): `references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs` exposes generation-selected reads/writes, durable journaling, streaming staging, commit and catch-up; `IAsyncDomainSharedProjectionStreamingRebuildHandler`, `IAsyncDomainSharedProjectionPartitionedRebuildHandler`, and `IAsyncDomainSharedProjectionEpochHandler` under `...DomainService/` expose SDK-owned bounded shared rebuild. `DomainSharedProjectionRebuildDispatcher.cs` consumes StreamFinalizedOperationsAsync via the coordinator. Ordinary single DomainProjectionRebuildPlan still promotes one batch and cannot hold 101 operations. Use the bounded SDK path and proper discovery for large histories; do not merely increase limits or disable retained manifests.
+- Provider configuration already retains a semantic IdempotencyFingerprint: `OrganizationProviderBindingCommandValidator.Fingerprint` binds CommandType/tenant/organization/binding/provider/credential/naming/branch policy; it intentionally ignores actor tracing. Reuse that source semantic evidence for read validation, preserving its v1 meaning and raw event bytes.
+- Known rejection intake must account for pre-creation source positions. `FolderDomainProcessor` emits UnsupportedCommandType/validation rejections before a FolderCreated anchor, and FolderCommandRejected.Create intentionally permits normalized unknown command names.
+- Round-4 command path: EventStore awaits legacy `/project` inside every accepted command with the full 1..head stream (`SubmitCommandHandler.cs:499-505`, `TriggerProjectionUpdateAsync` logs failures and does not fail the command). `FoldersDomainServiceEndpoints.cs:132-150` currently runs a tenant-wide shared rebuild there through `src/Hexalith.Folders.Server/OperationalStatusRebuild.cs` (fresh operation id per call, no Abort). Its only other user is `tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRebuildFixture.cs`. SM4 (`prd.md:210`): command acknowledgement ≤1 s p95, status summaries ≤500 ms p95.
+- SDK rebuild protocol (`references/Hexalith.EventStore/src/Hexalith.EventStore.DomainService/DomainSharedProjectionRebuildAction.cs`) has Verify and Abort; the dispatcher seals `SourceHighWatermarks` at Begin. `OperationalStatusProjectionHandler.cs:58-60` instead reads the live head during partition preparation.
+- Workers: `FoldersWorkersModule.cs:190-216` runs provider, organization, folder-permission and operational stages inside `PermissionProjectionDelivery`'s one-second deadline (`PermissionProjectionDelivery.cs:11`) and runs semantic indexing only after all succeed; stage labels at :193-201,:213 are wrong.
+- Retention: writer `OperationalStatusProjectionWriter.cs:135-138,239-241` (TTL on views only, fresh 400 days on terminal rewrites); reader `EventStoreOperationalStatusReadModel.cs:261-283` (expiry and known-missing throw → retryable 503); safe not-found already maps at `TaskStatusQueryHandler.cs:185`. `OperationalStatusCheckpoint.ObservedAt` is the latest source event time.
+- Clock checks: `OperationalStatusEventReader.cs:73` compares Folders-host `OccurredAt` against EventStore `Timestamp`; reader :261,:280 compare stamps against the local clock with no tolerance.
+- Provider profiles: `ConfigureProviderBindingService.cs:83-91` already enforces the strict decision; keep it. `ProviderBindingProfile.cs:11,13` default to the shared `OrganizationProviderBindingPolicy.Empty`, which configuration binding mutates. Bindings are write-once (`OrganizationAggregate.cs:120-133`). Profile drift throws at `ConfiguredProviderReadinessBindingReader.cs:20-37` and maps to retryable `retry_later` at `ProviderReadinessValidationService.cs:132-138`. `tests/Hexalith.Folders.IntegrationTests/ArchiveFolderProcessWiringTests.cs:844,959` send `profile-a` without configuring it; `FolderDurabilityAcceptanceFixture.cs:575` shows the env-var profile shape. Operator docs: `docs/operations/provider-integration-and-testing.md`, `docs/operations/retention-and-tenant-deletion.md`; doc gates assert raw substrings, so append rather than reword pinned lines.
+
+## Tasks & Acceptance
+
+**Execution:**
+- [x] `src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusFold.cs` and adjacent single-type files: implement deterministic per-workspace/task history, metadata validation, source sequence/digest, schema and event-time freshness. Persist all views/checkpoints through SDK batches with recovery and collision-safe tenant keys.
+- [x] `src/Hexalith.Folders/Queries/Folders/EventStoreOperationalStatusReadModel.cs`: implement existing lifecycle/lock/workspace/cleanup/task interfaces, including commit status; validate stored identity and rebind request evidence after authorization.
+- [x] `src/Hexalith.Folders/Aggregates/Folder/FolderState.cs`, `FolderStateApply.cs`, `FolderAggregate.cs`: derive closure evidence from existing events and enforce it after authorized equivalent-replay handling. Retain historical task results when later workspace state changes.
+- [x] `src/Hexalith.Folders.Workers/FoldersOperationalStatusEventProcessor.cs` and `FoldersWorkersModule.cs`: compose version-aware operational delivery into the existing authenticated subscription before acknowledgment; failed/indeterminate writes remain retryable.
+- [x] `src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs` and `FoldersServerHostComposition.cs`: register SDK named replay/rebuild and production readers; share the fold/batch writer without changing legacy projection responses.
+- [x] `tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusFoldTests.cs`, corresponding Server/Workers tests, and `tests/fixtures/event-evolution/`: cover the matrix, retained event-name/version inventory, every applicable upcaster chain and closed missing-version entry. Explicitly inventory an empty historical set rather than inventing history.
+- [x] `tests/Hexalith.Folders.AppHost.Tests/OperationalStatusDurabilityAcceptanceTests.cs`, its `README.md`, and `_bmad-output/implementation-artifacts/evidence/story-12-2-durability.json`: prove persisted state, restart, rebuild, two concurrent replica processes, crash recovery, denials, storage faults and retention boundaries; record revisions/commands/results.
+
+- [x] Approved provider prerequisite: replace production unconfigured target resolution/process-local readiness-binding source with the durable owner-approved binding/readiness path; qualify a real disposable supported remote and authenticated preparation/lock/clean-release flow without injecting provider success.
+- [x] Approved task prerequisite: add optional v1 `folderId` target hint and its contract/consumer binding; preserve existing task claim checks and establish fresh layered folder read authority before the folder-scoped task lookup. Missing scope fails closed; public v2 remains disabled.
+- [x] Approved SDK prerequisite: add/qualify and consume the minimum SDK-owned selective named projection/rebuild mapper, preserving workload/replay guards and existing process/query/replay-state surfaces. Work from the root-declared EventStore repository, preserve its current HEAD/gitlink, and do not initialize nested submodules. No publication or remote operation.
+
+
+- [x] Review correction: `OperationalStatusCheckpoint.cs`, `OperationalStatusFold.cs`, and adjacent single-type evidence helpers: retain canonical source-derived integrity evidence for checkpoint state and every workspace/task snapshot; reject invalid enums, malformed closures/positions, altered historical workspace rows, and stale/nonterminal task rows paired with a newer checkpoint. Preserve original source timestamps and permissible older rows after pure rejections.
+- [x] Review correction: `OperationalStatusProjectionWriter.cs`: rebuild source-derived terminal metadata completely; compare/correct CurrentState, operation/failure/retry/freshness/evidence fields instead of skipping all rows with a matching terminal token and operation. A successful repair must restore an available truthful result.
+- [x] Review correction: `OperationalStatusFold.cs`: consistently select the original earliest task closure by retained sequence across all workspace bindings, reads, live slices, complete rebuild, and JSON round trips; later binding closure must not replace or conflict with the original task result. Keep domain write guards per workspace/task binding.
+- [x] Review correction: `OperationalStatusEventReader.cs`, `OperationalStatusCheckpoint.cs`, and fold: require each persisted message identity to occupy exactly one sequence; exact same-position duplicates remain idempotent. Reject undefined numeric rejection codes. Test named SDK intake as well as Worker delivery.
+- [x] Review correction: `OperationalStatusProjectionHandler.cs`, protected legacy rebuild composition, and/or writer: establish the authoritative current folder stream head through the existing SDK sequence reader before publishing a complete-prefix rebuild; truncated input with an empty checkpoint cannot return successful completion. Do not introduce a local stream reader or direct Dapr access. Unit planning can use an explicit supplied head; production always resolves actual authority. (Superseded in round 4: completeness binds to the SDK-sealed capture, and the legacy route no longer rebuilds.)
+- [x] Review correction: GitHub readiness tests: use the existing RecordingGitHubApiClient seam to assert preparation capability support and denial from actual mapper output and successful readiness consumption when required permissions are present.
+- [x] Review correction verification: cover damaged terminal repair, old dirty/current unknown task race, malformed checkpoint state/closures, altered historical workspace, repeated TaskId across workspace closures, repeated message at another position, undefined rejection code, and truncated rebuild. Rebuild and re-run the individual verification projects and real provider acceptance on final source; append evidence without overwriting prior stages.
+
+
+- [x] Capacity correction: `Projections/OperationalStatus/` plus Server/Workers/readers: use existing SDK bounded generation/partition/rebuild and reader/writer-selection seams so a complete rebuild with at least 98 historical tasks and a 10,000-position history does not exceed a recoverable batch's 100 operations or one-MiB canonical manifest. Keep those SDK limits and recoverable-manifest guarantees intact; do not impose a new task/history product limit, drop historical required views/evidence, or add a local platform protocol.
+- [x] Bounded evidence correction: keep each persisted operational checkpoint/receipt/view-evidence value bounded independently of event and historical task/workspace count. Retain original source digest/message identity, exact duplicate/conflicting-position handling, every historical view's full integrity evidence, earliest terminal result, safe known-missing distinction and source-owned per-binding closure authority. Reuse SDK logical storage/partition/generation facilities; domain mutation authority remains in the actor's source fold. Qualify read selection, live catch-up and crash/concurrent recovery through the SDK's existing protocol.
+- [x] Prefix correction: permit a valid known rejection-only prefix before FolderCreated to persist source evidence without publishing any fabricated lifecycle/workspace/task view. A later single-event FolderCreated at its real next position must converge with complete replay. Unknown-command rejections are legitimate retained events (FolderCommandRejected.Create deliberately normalizes them); do not strand those sources with a command-name allowlist.
+- [x] Source integrity correction: verify provider Binding fields against the retained source-derived semantic fingerprint (the existing OrganizationProviderBindingCommandValidator fingerprint includes provider/credential/policies), or equivalent canonical source evidence. Altered credential or policy metadata must fail before private credential/provider use. Cover known cross-tenant and cross-provider host-profile mismatches through ConfigureProviderBindingService and assert no configuration append.
+- [x] Protocol correction: task folder denials must use existing v1 CanonicalErrorCategory values and the appropriate safe 401/403/404/503 shape. Preserve the original task claim plus existing metadata grant; add actual endpoint schema assertions for these denial branches without widening v1's error enum.
+- [x] Source fold correction: a WorkspaceLockReleased event must match the retained holder as well as its task/lock identity before clearing a lock or closing a task. Reject an Accepted result masquerading as rejection while preserving legitimate UnsupportedCommandType/unknown-command rejection histories. Cover no checkpoint/view advancement on malformed inputs.
+- [x] Metadata correction: scrub unused command-key/fingerprint fields still nested in checkpoint state (repository binding, archive and BranchRefPolicy) and assert serialized sentinel absence. Preserve original retained source bytes and domain actor idempotency authority.
+- [x] Repair correction: a protected complete-current-source rebuild must conditionally repair a damaged derived operational checkpoint without undocumented manual deletion. Validate complete authoritative source, preserve conflict rejection for contradictory valid source anchors, and publish repaired views/checkpoint through SDK concurrency/generation controls. Do not use damaged checkpoint content as authority. (Round 4: only the SDK-driven named transport performs this rebuild.)
+- [x] Retry correction: concurrent provider-binding rebuild/delivery or an advancing source head must yield canonical retryable conflict/unavailable behavior, rather than HTTP 422 projection_unreadable. Add overlapping persistence/rebuild coverage.
+- [x] Discovery correction: expose the operational named/shared rebuild capabilities through the SDK-owned metadata factory/mapping and real production metadata endpoint; qualify ordinary discovery/enrollment and the selected bounded SDK rebuild transport. Preserve bespoke process/query/replay-state/legacy routes and workload/source/replay guards. Local SDK edits qualify/expose the minimal projection mapping/discovery seams and correct the existing owner captured-prefix comparison required for that same rebuild capability; reuse existing bounded SDK protocols, public APIs, limits and storage schemas.
+- [x] Retention evidence correction: qualify an otherwise valid view immediately before the inclusive 400-day boundary and at the boundary using the existing controlled clock. Live timestamp-corruption alone qualifies integrity failure, not expiration; correct that claim and verify the real persisted retention/rebuild boundary through task-owned state/SDK evidence without altering retained events, production clocks or shared limits.
+- [x] Final correction verification: add executable capacity-boundary, rejection-before-create, provider-corruption/profile-mismatch, holder mismatch, canonical-denial, corrupt-checkpoint repair, discovery and concurrency regressions. Rebuild the Debug/source solution, run the affected projects individually and real provider acceptance on final assemblies, then append evidence preserving all previous exact-source stages. No publication, package pin change, remote operation or public v2 exposure.
+
+- [x] SDK qualification correction: `references/Hexalith.EventStore/src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs` and focused SDK regression tests: preserve existing sequence/position/CAS and complete-vector validation, verify every previously captured event identity against the matching prefix of the newly complete captured vector, and conditionally extend an identical shorter prefix through the existing CAS path. Reject contradictory prefixes, malformed/truncated identity vectors and stale/conflicting requests. Qualify the real-Dapr reproduction: rebuild prefix 1, ordinary catch-up through 8, rebuild full 8, then duplicate replay and further catch-up. This is the minimum internal correctness repair necessary to qualify the already-approved named/shared rebuild capability; no public API/protocol/schema/limit/pin/publication change or local workaround. Rebuild and requalify exact source/binaries after correction.
+
+- [x] Review-three completion/repair: `OperationalStatusProjectionWriter.cs` and persistence/capacity regressions: validate all required preserved current views on fresh rejection and the historical views required by a duplicated original event, using bounded SDK logical evidence and original source identity. Missing/corrupt required views cannot be acknowledged. Repair both selected and inherited missing derived checkpoints from complete-current source through SDK controls, preserving valid source conflicts and earliest terminal/history semantics.
+- [x] Review-three provider evidence: `ProviderBindingProjection.cs`, `EventStoreProviderReadinessBindingReadModel.cs` and service/Worker/rebuild tests: bind the selected latest configured Binding to its original configured-event sequence/digest and canonical full configuration evidence; coherent older Binding cannot be accepted beside newer receipts. Authoritative complete-current source may conditionally repair malformed derived configuration; valid contradictory source anchors still reject. Recheck source head after conditional rebuild persistence and return retryable concurrency on advancement. Reject Accepted/undefined rejection codes before provider receipts advance.
+- [x] Review-three actual target readiness: Forgejo readiness/provider and workspace preparation seams/tests must observe the exact authorized bound repository metadata/required permission before advertising usable WorkspacePreparation and appending WorkspacePrepared. Reuse existing target resolver/HTTP binding/observation seams where applicable. Generic authenticated-user/version flags alone are insufficient. Deleted/inaccessible/wrong target or denied permission cannot append prepared success; keep private context outside source/projection/evidence and preserve unsupported/create/bind discovery behavior. Cover real target denial in the disposable-provider lane.
+- [x] Review-three direct source corrections: reject null/blank identifiers for every workspace-bearing retained event and invalid acquisition/effective/expiry/lease consistency before persistence; do not change lawful retained identities. Confirmed reconciliation to committed clears superseded failure metadata while preserving earliest source-owned closure. Add red/green durable reader/Worker/named-intake regressions for these demonstrated cases.
+- [x] Review-three verification gaps: source→persisted durable reader→public lifecycle query tests pin repository failed/unknown/reconciliation vocabulary; normal authenticated Worker route tests assert operational checkpoint/views before successful acknowledgement and a retry response on injected operational persistence failure. Keep current real opted-in acceptance strict.
+- [ ] Review-three SDK history prerequisite: qualify the true production named/shared dispatcher after ordinary growth beyond10,000 retained positions (at least10,001 followed by complete rebuild, duplicate identity proof and further growth). Existing SDK captured-event vectors hard-stop at10,000 independently of dispatch options. Do not raise/drop limits or identity checks, invent a local owner-partition protocol, or impose a domain history cap. If no existing public bounded SDK seam handles this, leave acceptance open and report the exact missing generic bounded captured-identity/checkpoint-handoff capability with a concrete safe prerequisite proposal; additional SDK protocol/schema/public-surface work is not authorized by the minimal mapper exception. Finish independently authorized corrections and report the blocker without claiming completion.
+
+- [x] Round-four command path (replace, do not patch): remove the operational branch from legacy `/project` in `FoldersDomainServiceEndpoints.cs` and delete `OperationalStatusRebuild.cs` with its fixture. `/project` returns the legacy response regardless of operational state. Workers live delivery is the only live writer; rebuild and repair run only through the SDK-driven named `/project/rebuild/shared/v1` transport, which owns session Begin/Abort/Verify. Move tests that relied on `/project` repair to that transport.
+- [x] Round-four named rebuild: in `OperationalStatusProjectionHandler.cs`, validate each partition history as a contiguous 1..N prefix bound to the SDK-sealed capture. Never compare it with a live head; appends after capture reach the new generation through SDK catch-up.
+- [x] Round-four Workers: in `FoldersWorkersModule.cs`, run the operational stage after the permission/provider chain, outside the one-second deadline. Run semantic indexing even when the operational stage fails, then return 500 so the delivery retries. Indexing stays idempotent on redelivery. Label and log each stage by its own name.
+- [x] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
+- [x] Round-four clock skew: remove the `OccurredAt > Timestamp` rejection in `OperationalStatusEventReader.cs:73`. Allow one fixed five-minute tolerance constant for stamp-versus-local-clock checks in the reader.
+- [x] Round-four provider fixes:
+  - `ProviderBindingProfile.cs`: initialize fresh empty policies so bound profiles never share or mutate `OrganizationProviderBindingPolicy.Empty`.
+  - Profile drift: map to the non-retryable `fix_provider_configuration` remediation and log it, using a dedicated internal exception.
+  - Provider `/project` rebuild: reject Accepted or undefined rejection codes, as Workers does (`FoldersProviderBindingEventProcessor.cs:46-50`).
+  - Provider rebuild race (`EventStoreProviderReadinessBindingReadModel.cs:104-108`): throw `PermissionProjectionConcurrencyException`.
+  - `/project` 503 branch: log the exception type, and classify `ProjectionDispatchValidationException` with the 422 branch.
+  - Missing folder hint (`FoldersDomainServiceEndpoints.cs:5544-5550`): report `retryable:false`.
+- [x] Round-four profile decision wiring: configure a `profile-a` test profile for the tenant and provider in the `ArchiveFolderProcessWiringTests` host so its three ConfigureProviderBinding tests pass unchanged in intent. Document the required `Folders:ProviderBindings:Profiles:<ref>` section, and the rejection of unknown references, in `docs/operations/provider-integration-and-testing.md`. Document the expired-status not-found outcome and the named rebuild for bootstrap and stalled folders in `docs/operations/retention-and-tenant-deletion.md`.
+- [x] Round-four tests:
+  - [x] Accepted profile path: service output consumed through `ConfiguredProviderReadinessBindingReader`.
+  - [x] Two bound profiles stay isolated and `Empty` stays empty.
+  - [x] Forgejo bound-target plumbing and `ConfiguredProviderRepositoryTargetResolver` mapping/rejections.
+  - [x] `/project` returns the legacy body and writes no operational rows.
+  - [x] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
+  - [x] Workers route persists the binding projection, and its bytes equal the provider `/project` rebuild.
+  - [x] A throwing readiness reader yields `provider_binding_authority_unavailable`.
+  - [x] Production-host registration and options binding for the configured provider reader/resolver.
+  - [x] Retention: boundary, all-expired, evidence-only and duplicate-after-retention.
+  - [x] Clock skew within and beyond tolerance.
+  - [x] Indexing still runs after an operational failure.
+- [x] Round-four performance: use one static `JsonSerializerOptions` in `EventStoreOperationalStatusReadModel.cs`. In the opted-in real-Dapr acceptance, record p50/p95 for the command acknowledgement, the Workers operational delivery and the status read against SM4. If over budget, record it as an open finding; do not redesign.
+- [x] Round-four artifacts:
+  - Restore the anchors dropped from `epic-12-context.md` (409/exit 77/`concurrency_conflict`, 24-hour/seven-year replay retention, 422 `confidential_operation_not_durable`, readiness dependency health, Story 4.23 dependency) from `prd.md`, `epics.md` and `architecture.md`.
+  - Correct the stale prose in `proposal-12-2-acceptance-prerequisites.md:49-51` and `tests/Hexalith.Folders.AppHost.Tests/README.md:248-249`: stage five, 3,908 cases, and the local unpushed SDK commit `d4d05f871991ec2af305267f59dcefeae3f127ed` on gitlink `84bb115a0ced2497ca4315644a677b273cb44edf`.
+  - Align the sprint-status line-3 comment date with `last_updated`.
+
+**Acceptance Criteria:**
+- Given authorized source events, when delivery, duplicates, restart and empty-checkpoint rebuild run, then all six status concerns converge with truthful freshness and unchanged retained hashes.
+- Given clean release, when the real authenticated path closes a task, then terminal evidence survives restart and later non-replay mutation is denied. Given retained commit-success evidence, when folded, then status reports `committed`; real provider execution remains Story 12.4.
+- Given conflicting, unsupported, denied or failed input, when processing runs, then neither view completion nor checkpoint falsely advances; reads return canonical metadata-only outcomes.
+- Given C3 boundaries, when views expire/rebuild, then terminal authority survives and legal-hold/cleanup ownership is preserved. Fake-only, skipped or unavailable lanes cannot establish completion.
+- Given concurrent accepted commands on different folders of one tenant, when EventStore calls legacy `/project`, then each call returns the unchanged legacy response, starts no shared rebuild session, and Workers delivery converges operational status.
+- Given a v1 provider configuration whose profile reference is unknown, or names another tenant's or provider's profile, when processed, then it is rejected as an invalid policy with no append. Given a matching configured profile, when processed, then it is accepted and readiness consumes that profile.
+- Given an operational view whose source event time is at least 400 days old, when read or redelivered, then reads return the safe v1 not-found and no row is written past the boundary. Given evidence without its view, when read, then the outcome is canonical unavailable.
+- Given a Folders host clock up to five minutes ahead of EventStore, when its events are delivered, then they are accepted and status stays available.
+
+## Implementation Notes
+
+- Local verification uses Debug/source references: `-p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false`. The isolated Aspire baseline reached healthy Folders/Workers/EventStore/security and was stopped through the exact-target lifecycle. Release/package qualification is separate.
+- Operational live delivery journals original source identity through the SDK tenant/family `operational-status` epoch coordinator, catches up retained work, and verifies selected persisted completion before acknowledgment. Schema-2 checkpoints contain only scrubbed current state, the tail receipt/message and rolling source digest. Position/message receipts and full canonical evidence for each historical workspace/task occupy separate SDK logical records. The actor's complete source fold retains independent per-binding terminal authority.
+- Rebuild uses the SDK's existing copy-on-write generations, partitioned streaming, staging and promotion; the recoverable 100-operation/one-MiB batch limits are unchanged. The 10,000-position/98-historical-task regression passed with a bounded checkpoint, preserved historical reads, duplicate handling and subsequent catch-up. Complete current-source rebuild repairs corrupt derived checkpoints through SDK generation controls while rejecting contradictory valid source anchors. A valid rejection-only prefix publishes no fabricated views and converges when FolderCreated arrives.
+- Production readers use SDK-selected multi-key reads and canonical source-derived row evidence, then rebind current authorized request tracing. Known missing/corrupt rows fail closed and expired rows follow the round-4 retention decision; valid historical rows after pure rejections remain readable. Earliest original task closure is stable across later bindings/rebuild, and malformed holder/message/rejection evidence cannot advance completion. Legacy workspace actor snapshots without closure fields fail closed until complete source replay.
+- The optional v1 `folderId` task hint preserves `read_task_status` and establishes fresh layered folder `read_metadata` authority before lookup. Denials use the active v1 canonical categories and safe 401/403/404/503 shapes. Public v2 stays disabled.
+- Provider configuration/readiness is durable at its exact source head, including rejection positions. Its fields are checked against the original retained semantic fingerprint before private profile enrichment or credential resolution. Host profiles retain private repository/ref/base-URL context outside source/projection bytes; mismatched tenant/provider or changed profile digest fails closed. Rebuild/delivery CAS overlap and advancing source heads remain retryable without replacing newer configuration.
+- Metadata preparation appends WorkspacePrepared only after real provider metadata readiness and final fresh authorization; Requested remains intent. No clone/content/provider-commit/cleanup success is inferred. Source-confirmed commit events qualify committed status folding; provider execution remains Story 12.4.
+- The minimal selective projection and metadata mappers are implemented in the root-declared EventStore working tree. A keyed folders alias resolves the same scoped bespoke processor, enabling genuine SDK discovery and the protected `/project/rebuild/shared/v1` transport. Orphan handlers do not gain capabilities. Existing workload/replay guards and process/query/replay-state/legacy routes are preserved. EventStore HEAD/gitlink stays `84bb115a0ced2497ca4315644a677b273cb44edf`; this task performed no dependency update, Git mutation, remote operation, CI or publication. External commits advanced the root to `efb98b1e5215ad73b4591f2a2a8ff00f8b8c794a`, updated the Builds catalog to EventStore 3.125.1 and formatted three owner-read test files before the qualified builds/tests. They are preserved and audited separately in the current evidence stage. The four uncommitted SDK changes still require separately authorized Release/package qualification and any required release/pin update.
+- Current live acceptance stages a sealed private SDK streamed generation before promotion, changes four real host PIDs, resumes that same session and verifies ordinary authenticated replay. It claims no live mid-install kill. Two additional distinct Workers receive overlapping original retained positions in a fresh shared fixture-owned derived-state prefix; automatic pubsub is denied for those proof resources. Retained events and SDK receipts are preserved. Component tests additionally cover batch installation/commit/compaction/receipt faults.
+- Retention qualification separates a controlled clock's one-tick-before/inclusive 400-day boundary from actual selected Redis TTL observations after ordinary writes and rebuild. Live timestamp mutation checks integrity only. C3 legal-hold/destructive-cleanup ownership is unchanged. The fixture-only Forgejo transport logging filter does not qualify general production confidentiality/redaction (Story 12.7).
+- Historical PD10 v1 generator input, the dated conformance manifest and disabled v2 candidate preserve their exact bytes/hashes. Current v1 additive contract checks pass; the separate current-source inventory explicitly records pending v2 requalification and supplies no approval/exposure authority.
+- Historical stage-four component checks passed 3,877 tests, with two pre-existing optional Domain skips; source/SDK/runtime/test builds passed with zero warnings/errors. Seventeen exact SDK copies are qualified in two matching groups (eight DomainService, nine Client) by 92 mapper and 107 shared-projection cases. Uninstrumented real-provider acceptance passed 1/1 with zero failures/skips in 310.346 seconds. All 30 tasks and five frozen matrix rows have executed passing coverage. Stage four in [the evidence record](evidence/story-12-2-durability.json) records the current source, external commits, assemblies, commands and cleanup; its three historical stages remain unchanged. Review three found the corrections below; current acceptance is open until re-derivation, requalification and review finish.
+- Current task authority maps stale/unavailable folder evidence to canonical v1 503 without changing the original retryability decision or observing a task row. Fixture readiness observations wait for existing source/ACL/operational heads; they do not qualify a platform admission fix. Two concurrent Workers compare all permission semantics exactly while bounding processing-time ProjectedAt separately; operational original timestamps and source hashes remain exact. Failed acceptance attempts are retained as diagnostics only.
+
+- Review-three completion validation now binds every original position/message receipt to its source-folded workspace/task view identifiers and a canonical integrity digest. Missing legacy binding evidence, altered binding evidence, or missing/corrupt preserved and historical required views fail closed. Complete-current source repairs those derived rows, including a checkpoint inherited from another owner generation, while preserving original source/message identities.
+- Review-three provider validation binds each configuration to its original configured-event sequence/digest and canonical full value. Authoritative rebuild conditionally repairs corrupt derived configuration and rechecks the actual source head after saving. Forgejo preparation resolves and observes the exact authorized repository and its required permission before claiming preparation capability. The real disposable-provider test revokes and restores collaboration for the same nonadmin observer credential and private repository; the denied attempt retains ProviderPermissionInsufficient and no preparation events, using the existing safe public v1 tenant_access_denied category.
+- Review-three direct-source validation rejects missing workspace identifiers and malformed acquisition intervals before delivery completion. Confirmed reconciliation clears superseded commit failure metadata; the regression pins the nested provider outcome success category and was shown to fail when that correction alone was temporarily removed. Durable reader/public lifecycle and normal authenticated Worker route tests now assert the demonstrated outcome vocabulary and operational persistence acknowledgement gate.
+- Historical stage-five source qualification passed 3,908 component tests with two pre-existing optional Domain skips; the real provider acceptance passed 1/1, zero failures/skips, in 311.385 seconds. Current fixture helpers and changed-file whitespace/analyzer checks pass. Exact commands, final assembly/source hashes, logs, XML, independent diagnostic attempts and confirmed topology cleanup are retained in stage five of [the evidence record](evidence/story-12-2-durability.json); all four prior stages remain canonically unchanged. The private test runner is retained for review, with no active topology.
+- At stage five, Tasks 1–35 were implemented and qualified within their then-approved scope; the round-four corrections below require current-source qualification. Task 36 and full Story 12.2 acceptance remain open: ordinary growth to 10,001 succeeds, but the actual production shared dispatcher cannot complete that history because the public SDK owner-capture API rejects its exactly sized identity vector. The focused public call pins ArgumentException/capturedEventDigests independently of the generic dispatcher failure. [The proposed generic bounded owner-identity prerequisite](proposal-12-2-sdk-bounded-owner-identity.md) records the missing SDK capability without new approval, API/protocol/schema changes, relaxed limits or a domain history cap. Independent review and separately authorized SDK release/package consumption also remain open.
+
+- Parent verification independently checked all 130 source hashes, seven test assemblies, all 17 SDK copies and runtime copies, current XML/log hashes and summaries, six TTL observations, distinct concurrent Worker PIDs, eight recorded process replacements, privacy sentinels and post-run cleanup. [The independent qualification record](evidence/story-12-2-parent-qualification.json) confirms 3,908 component passes and the 311.385-second live pass while retaining full_acceptance=false for the proposed SDK prerequisite. No additional SDK scope approval is recorded.
+
+- Round-four implementation uses Workers for live operational persistence and only the SDK named transport for operational rebuild/repair. Partition folding binds to SDK-sealed original positions and validates the contiguous owner prefix without a live-head query. Legacy `/project` keeps the old response and provider projection repair. Independent profile objects, strict profile test-host wiring, typed profile-drift remediation, provider rejection/race handling, stage-specific logs, five-minute local clock tolerance and a shared reader serializer are implemented.
+- Round-four retention planning writes source-deadline TTLs for views, integrity evidence and original position/message receipts, keeps the bounded checkpoint, skips expired rows and acknowledges expired duplicates without writes. A receipt remains until the latest original source time used by that position's dependent views, including a host-ahead closure; this preserves original timestamps. Paired physical row/evidence expiry is safe absence through SDK generation reads; surviving evidence without its row stays unavailable.
+- Historical stage-six retention blocker (superseded for current source by the approved SDK qualification below): the SDK seals relative TTLs in `ReadModelBatchOperation`/`SharedProjectionMutation`, then reapplies them during delayed staging/compaction (`ReadModelBatchProtocol.cs:621–625,661–665`; `DaprReadModelBatchStateAccessor.cs:99–102`). The focused `OperationalStatusRetentionTests.DiagnosticStagedSdkManifestRetainsRelativeTtlAcrossSourceDeadlineAsync` stages a correct one-day remaining TTL, crosses the source deadline with a controlled clock, then proves the SDK commits the old one-day TTL. Fresh Folders planning omits those expired rows and reads remain source-age bounded, but physical retention after delayed recovery needs a separately authorized EventStore absolute-expiry capability. The retained manifest protocol, SDK scope and Task 36 disposition are unchanged.
+
+- Interrupted retained scratch-batch acceptance remains open. `OperationalStatusCapacityTests.DiagnosticRetryAndAbortCannotReconcileSdkPendingScratchFenceAsync` injects `BeforeCommit` during SDK `TryWriteScratchAsync` (`SharedProjectionEpochCoordinator.cs:622–634`). Initial Accumulate and same-action retries return `Accumulating/Indeterminate/projection_handler_failure`; Abort also returns that outcome and the durable epoch remains Building without selected rows. `AbortAsync` restores the retained pending scratch batch before `RequireOperation` (`SharedProjectionEpochCoordinator.cs:2261`), which rejects its restored phase; `DomainSharedProjectionRebuildDispatcher.FencedAbortAsync:2842` reaches the same failure. This is diagnostic evidence, not passing interrupted-batch acceptance. `NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync` separately proves a clean pre-dispatch failure can abort and then rebuild; it does not substitute for retained-batch recovery. A generic SDK pending-fence recovery capability is required; the existing protocol is unchanged.
+
+- Round-four live diagnostics preserve the strict HTTP 403 bound-target denial requirement. Two initial runs received HTTP 202 after `idempotency_admission_unavailable`/`DaprApiException` retries and failed; their disposable stores were removed before retained command-status inspection, so no terminal outcome is claimed for those attempts. The diagnostic retry directly observed the leased nonadmin credential receiving HTTP 404 with pull=false after revocation, then received the required 403, retained `ProviderPermissionInsufficient`, and no preparation-success events. SDK `SubmitCommandHandler.cs:130–133` can return a bare admission receipt for Pending without executing the domain; this is a possible explanation for the earlier 202s, not an observed classification of their destroyed state. A bounded read-only diagnostic hook now reports retained command status and event types/codes before the unchanged assertion if it recurs.
+
+- Stage six records the final Debug/source build (zero warnings/errors), 4,193 component passes with the two existing optional Domain skips, and the final opted-in real-provider acceptance pass (1/1, zero failures/skips, 299.439 seconds). All prior five evidence stages remain canonically unchanged. Final command acknowledgement p50/p95 was 251.065/31,330.090 ms (9 successful requests, including request retries), so SM4 acknowledgement latency remains an open finding against 1,000 ms. Workers callback p50/p95 was 119.751/452.781 ms (26 samples, 1,000 ms diagnostic budget); public status read was 30.082/45.861 ms (12 samples, 500 ms budget). The earlier diagnostic live pass was under budget; the final over-budget observation is retained without redesign. Full acceptance remains open for Task 36, source-deadline expiry through delayed SDK recovery, retained scratch-batch retry/Abort recovery, SM4 acknowledgement latency, package consumption and independent review.
+
+## Spec Change Log
+
+- 2026-10-18: Jerome explicitly approved [the bounded acceptance prerequisites](proposal-12-2-acceptance-prerequisites.md): production provider binding/readiness, an additive folder hint for the existing v1 task-status route, and qualification/consumption of the minimal selective SDK projection mapping capability. These three exceptions extend the original boundary; public v2, provider commit execution, content storage, idempotency admission, confidentiality and destructive cleanup remain excluded. No deployment, dependency publication, commit or push was authorized.
+
+
+- 2026-10-18 review loop 1: non-frozen implementation instructions now explicitly require complete checkpoint/view integrity, successful repair of damaged terminal rows, consistent earliest task closure selection, message-position uniqueness, and current-head complete-prefix rebuild. Existing intent/matrix already require truthful corrupt/stale/conflicting behavior; no intent or public surface change was needed. KEEP: preserve the qualified deterministic six-concern fold, original event bytes/name/version inventory, source-owned per-binding closure guards and equivalent-replay precedence, original observation times, opaque keys, SDK batch/CAS retained-manifest recovery with fresh invocation IDs, lifecycle-first/checkpoint-last anchors and all existing receipts, real private-profile/provider preparation path, layered v1 task authority, disabled v2/frozen PD10 provenance, and the existing real-provider/replica/restart/fault harness. Reference snapshot for positive preservation: `/tmp/story12-2-review-keep-psf24zv_/README.md`; implementation may reuse successful code from its `approved-working-tree` after checking it against these corrections. Never restore the snapshot's planning/evidence files over the current spec/triage. Prior acceptance remains evidence for its exact source hashes only.
+
+
+- 2026-10-18 review loop 2: clarified non-frozen bounded checkpoint/rebuild design, source-only pre-creation prefixes, controlled checkpoint repair and normal SDK discovery. Concrete SDK limits exposed valid-history failures at 98 tasks and 10,000 positions; the previous small-history acceptance remains exact-source evidence, not a scale claim. KEEP all prior confirmed invariants, canonical full-row integrity, earliest closure, true source-head checks, workspace commit isolation, named/workload guards, paired-source SDK scope and real-provider harness. Positive preservation reference: `/tmp/story12-2-round2-keep-pjl9t7sg/README.md`. Reuse existing SDK epoch/partition/streamed-generation/read/catch-up seams, with domain-owned metadata only; no new task limit, discarded required history, relaxed SDK limits, disabled recovery manifests, generic local protocol, or extra dependency/platform API scope. If these existing SDK seams cannot supply the required bounded atomic publication/read selection, report the exact missing public capability and safe concrete prerequisite rather than inventing a local substitute. Preserve all three recorded evidence stages and current spec/triage.
+
+- 2026-10-18 SDK qualification: the exact real-provider Commit exception was captured privately at SharedProjectionEpochCoordinator.SeedCapturedOwnerSequenceAsync:454. A real-Dapr public-SDK reproduction with unchanged original DTOs proves that prefix rebuild 1 followed by ordinary growth through 8 leaves OwnerSequenceNumber=8 with one captured identity, then rejects a valid full-8 rebuild. The minimum internal prefix-extension correctness repair is necessary to qualify the existing approved SDK named/shared rebuild capability; it adds no independent platform feature or public protocol. This implementation clarification stays within the existing bounded SDK qualification/consumption authorization; no new human approval is recorded. Preserve all original source identities and contradiction/CAS guards. No SDK publication, package pin or remote operation is authorized.
+
+- 2026-10-19 review loop 3: all14 findings were individually verified/triaged above. Amend non-frozen instructions for preserved/historical completion validation, inherited checkpoint repair, source-bound latest provider configuration and conditional repair/head races, actual bound-target readiness, demonstrated malformed source/reconciliation metadata and default-lane assertions. The production SDK hard10,000-position identity cap is an unresolved prerequisite, not a domain product limit or a reason to disable identity evidence. KEEP all positive invariants in `/tmp/story12-2-round3-keep-hvjso36v/README.md` and all four historical exact-source evidence stages. Safe source snapshot: `/tmp/story12-2-round3-keep-hvjso36v/approved-working-tree`. Preserve external root commits `5e05e9d15f392cd4634a4718568cbc55daf8e8db` and `efb98b1e5215ad73b4591f2a2a8ff00f8b8c794a` and the original baseline; never restore snapshot planning/evidence over current artifacts. Requalification is required after changes; no new owner approval, SDK protocol/schema/public surface or release operation is recorded.
+
+- 2026-10-19 SDK prerequisite approval and review routing: Jerome approved [the bounded owner-identity prerequisite](proposal-12-2-sdk-bounded-owner-identity.md) as separate EventStore-owned work, built in an EventStore repository story and session, not from Folders. Task 36 stays open. It is blocked on that work landing, being qualified for consumption and being requalified here; no Folders-side workaround or history cap is authorized. Jerome chose to run review round 4 on the committed round-three corrections (`0fa612f1f435bb580e28230ade0d86f6df5973a8` on main) without a new implementation pass, since Tasks 1–35 have no outstanding work. The SDK changes reviewed are the unpushed local EventStore commit `d4d05f871991ec2af305267f59dcefeae3f127ed` against gitlink `84bb115a0ced2497ca4315644a677b273cb44edf`. KEEP all prior change-log constraints and evidence stages.
+
+- 2026-10-20 review loop 4 (`review_loop_iteration: 4`):
+  - **Triggers.** Two intent gaps: v1 profile references (verification-other) and the expired-view outcome (blind-3/4, edge-8/9). Both were resolved by Jerome and recorded as frozen decisions: strict profiles, and safe not-found after source-time 400-day expiry. Bad-spec findings: per-command tenant rebuild in `/project` (edge-3), a rebuild session that was never aborted (blind-12, edge-2), comparison against the live head during rebuild (edge-16), indexing gated on operational success (edge-13) and unmeasured cost (blind-22, edge-12).
+  - **Amended.** Code Map, the round-four tasks and acceptance criteria, annotations on the two superseded rebuild tasks, and one implementation note.
+  - **Known-bad state avoided.** Every command rebuilt the whole tenant in the awaited path, leaving 503s, stuck Building epochs and blocked deliveries. Idle entities returned a retryable 503 forever. Unknown references silently created bindings that could never resolve a repository.
+  - **Re-derivation basis (Jerome, 2026-10-20).** Start from the committed HEAD `b49b0b206238056b3aa3c963edc44b1b6fc0f5cc` as the KEEP reference, without a physical revert. Rewrite only the parts built on the superseded design (Folders-driven rebuild in `/project`, `OperationalStatusRebuild.cs`, the live-head check, Workers stage ordering). Apply the round-four patches in place. Edge-30 is resolved by deleting that code.
+  - **KEEP.** Every invariant from earlier change-log entries. The deterministic six-concern fold and original event bytes and identities. Bounded checkpoints and SDK logical evidence. Earliest closure and per-binding source authority. Rejection-only prefixes. Provider semantic fingerprints and source-bound repair. Real bound-target readiness. The task folder hint and canonical denials. The named SDK discovery and mapper. All five evidence stages and the parent qualification record. Task 36 stays open, blocked on the approved EventStore owner-identity work. No SDK protocol, schema, limit, pin, publication or public v2 change.
+
+- 2026-10-20 SDK expiry/recovery approval: the user responded “I approve” to the concrete prerequisite proposal. Record the two bounded capabilities as approved EventStore-owned work and qualify their local source consumption afterward. Historical diagnostics remain unchanged; full story acceptance stays open for the existing remaining gates.
+
+## Review Triage Log
+
+| Round / finding | Verdict | Route | Verified evidence |
+| --- | --- | --- | --- |
+| 1 / blind-1 metadata catalog | false | reject | The mapped SDK endpoint invokes the identity-options DispatchAsync overload (DomainProjectionDispatcher:318), which recomputes the local catalog directly; it does not invoke the registry overload cited by the reviewer. Missing discovery may limit a future operator feature, but does not make current named dispatch unusable. |
+| 1 / blind-2 terminal repair | medium | bad_spec | OperationsAsync skips a ready/committed row based only on terminal state and operation. A row with those two values intact and damaged CurrentState or freshness is preserved by a successful rebuild; the durable reader then rejects it indefinitely. Rebuild must repair full source-derived terminal metadata. |
+| 1 / blind-3 unsuccessful task parity | medium | bad_spec | TaskEvidence accepts every no-closure snapshot except successful terminal tokens, without checking current state/operation/retry metadata. A saved old or altered task row can be accepted with a newer checkpoint; task status may advertise retry during an unknown provider outcome. |
+| 1 / blind-4 checkpoint state validation | medium | bad_spec | Valid checks the event receipt chain but never lifecycle enum validity or closure/position correspondence. Those fields can be changed without changing EventDigests/SourceDigest, then used by folds and reads. Validate the source-folded checkpoint and its derived evidence before use. |
+| 1 / blind-5 historical workspace parity | medium | bad_spec | MatchesCurrentWorkspace returns true as soon as a workspace is historical. The prefix receipt digest is independent of row fields, so a modified historical lock/status/cleanup/provider row passes. Retain source-derived evidence for every materialized workspace, including historical bindings. |
+| 1 / blind-6 closure ordering | medium | bad_spec | Task materialization takes the first FrozenDictionary closure for TaskId while reads order by original closure sequence. Multiple workspace bindings can reuse a task and dictionary enumeration is not chronological authority. Use original earliest closure consistently and preserve each binding's independent source guard. |
+| 1 / blind-7 reused message identity | medium | bad_spec | Folder permission delivery rejects message reuse upstream, but the newly named SDK handler has no equivalent guard and accepts contiguous distinct events sharing MessageId. Persist and check message-position identity for every operational intake. |
+| 1 / blind-8 future upcaster digest | false | reject | The closed executable inventory establishes that all currently retained payloads are v1 and there are no applicable upcasters or historical generations. Stored and effective bytes are identical in every supported lane. The claimed conflict requires a future payload evolution that is absent from this change and must qualify its provenance when introduced. |
+| 1 / blind-9 checkpoint size/cost | maybe-false | defer (moot on loopback) | Dictionary copying and validation are linear per delivery, and the SDK has finite manifest/rebuild bounds. A supported stream size or measured latency/failure threshold was not established. A realistic maximum-size history benchmark against the SDK limits and a defined supported folder capacity would settle the claimed user impact; potential medium severity remains unverified. |
+| 1 / blind-10 checkpoint retention | false | reject | The finding treats retained source-fold authority as a refreshed status result. Checkpoints preserve closure identity needed to prevent resurrection, while public status reads use the original event/closure timestamps and reject the inclusive 400-day boundary. C3 explicitly allows source rebuild of views; it does not expire the authoritative event fold or authorize deleting completion authority. No old result becomes fresh through checkpoint TTL renewal. |
+| 1 / blind-11 incomplete rebuild | medium | bad_spec | PrepareRebuildAsync checks an existing prefix but not the authoritative stream head. Named SDK legacy history validation checks contiguity only; an empty checkpoint plus a truncated current stream can return Completed. Require the actual source head at the production complete-prefix rebuild boundary before publishing. |
+| 1 / edge-1 old dirty task | medium | bad_spec (group with blind-3) | ReadAsync fetches the task row before checkpoint/head and permits a lower watermark. A concurrent update can pair the dirty retryable row with a later unknown-provider checkpoint, and TaskEvidence accepts it. Validate source-derived task metadata against the checkpoint generation. |
+| 1 / edge-2 numeric rejection code | medium | patch (survives loopback) | Enum.TryParse accepts undefined numeric strings such as 999. OperationalStatusEventReader therefore accepts a malformed rejection after a valid folder anchor. Require a defined result code before advancing any checkpoint. |
+| 1 / verification-1 GitHub preparation coverage | medium | patch (survives loopback) | Pre-verified gap: GitHubReadinessMapper adds preparation capability, but GitHub discovery tests never assert that row or its readiness consumer; generic tests fake rows and the live lane uses Forgejo. Use RecordingGitHubApiClient to cover the permission-dependent row and readiness result. |
+
+
+| 2 / blind-1 rebuild operation limit | high | bad_spec | Lifecycle + one workspace + 98 historical tasks + checkpoint is 101 operations. ReadModelBatchProtocol.ValidateLimits hard-rejects retained manifests above DefaultMaxOperations=100, even when options are raised. Valid repeated lock/release tasks can reach this history, leaving rebuild unavailable after view loss. |
+| 2 / blind-2 receipt manifest limit | high | bad_spec | Verified minimal JSON for 10,000 digest/message pairs is 1,097,821 bytes (1,463,764 base64), before state/view/manifest overhead. Recoverable manifests are hard-limited to 1,048,576 bytes. This new concrete capacity evidence settles the earlier unverified growth concern; current checkpoint layout eventually blocks valid delivery. |
+| 2 / blind-3 task denial contract | medium | patch (survives loopback) | The new task branch delegates to FolderAuthorizationDenialMapper, which emits not_found_to_caller/policy_denied/authorization_denied; these are absent from the active v1 CanonicalErrorCategory enum. Map these new branches through the task's existing canonical problem shape without widening the contract. |
+| 2 / blind-4 released holder | medium | patch (survives loopback) | A release with the current lock ID and mutually matching TaskId/HolderTaskId for another task passes the new fold's validation, then clears the original lease and closes the wrong task. The named intake does not run the command authorization guard; validate the retained holder before applying. |
+| 2 / blind-5 rejection classification | medium | patch (survives loopback) | Accepted is defined and currently passes rejection parsing, so malformed rejection evidence can advance. The proposed unknown-command allowlist is rejected: FolderCommandRejected.Create explicitly preserves normalized unknown-command rejections from UnsupportedCommandType. Preserve those lawful positions while rejecting the demonstrated success-as-rejection case. |
+| 2 / blind-6 provider binding integrity | medium | patch (survives loopback) | Current-head/receipt checks do not bind Binding.CredentialReferenceId or policy fields to source semantics; changing only the credential ref passes and reaches credential resolution. The existing retained command fingerprint already binds those fields and can support a direct correction without a new public protocol. |
+| 2 / blind-7 checkpoint command keys | low | patch (survives loopback) | Scrubbing only IdempotencyFingerprints leaves RepositoryBindingIdempotencyKey, ArchiveIdempotencyKey and BranchRefPolicy.IdempotencyKey serialized. These are unused by operational materialization and contradict its deliberate command-key omission; directly remove the copied fields and assert sentinel absence. |
+| 2 / blind-8 corrupt checkpoint repair | medium | bad_spec | PrepareRebuildAsync rejects every malformed stored checkpoint before a valid complete-current source can replace it; reads/live folds reject it too. A controlled rebuild must repair this derived corruption using actual source authority and conditional publication, preserving valid-prefix conflict guards. |
+| 2 / blind-9 provider rebuild concurrency | medium | patch (survives loopback) | PermissionProjectionConcurrencyException derives from InvalidOperationException, so the legacy catch maps ordinary provider rebuild/head races to permanent 422. Treat this demonstrated retryable persistence condition as conflict/unavailable. |
+| 2 / blind-10 retention evidence isolation | low | patch (survives loopback) | The live aged-row mutation also invalidates full-row integrity, so its 503 is not independent expiry proof. Existing valid controlled-clock coverage does fail at 400 days; add the immediate-before boundary and make live evidence precise, supplementing real retention persistence/rebuild evidence. |
+| 2 / edge-1 rejection before creation | high | bad_spec | A valid known rejection at position 1 reaches the fold's !state.IsCreated failure and stores nothing; the later FolderCreated at position 2 then fails the gap guard. Such rejections are emitted by the processor, and the permission projection already accepts them. Persist the source-only prefix without invented views. |
+| 2 / edge-2 rebuild operation limit | high | bad_spec (group with blind-1) | Same verified defect: 98 task rows plus lifecycle/workspace/checkpoint exceed the SDK retained-manifest 100-operation hard limit. |
+| 2 / edge-3 receipt manifest limit | high | bad_spec (group with blind-2) | Same verified defect: all source receipts/messages are embedded and rewritten in one recoverable value, which eventually exceeds the hard one-MiB manifest limit. |
+| 2 / edge-4 pre-anchor attempt residue | low | reject | A crash before the first discovery anchor is installed leaves no reader-visible mutation or checkpoint advancement. A fresh conditional attempt can complete the same source safely; the described retained metadata residue does not strand delivery or invent completion. A new local attempt journal adds protocol complexity for a rare metadata-only residue; SDK metadata lifecycle owns it. |
+| 2 / edge-5 provider credential integrity | medium | patch (group with blind-6) | Same verified defect: changing only the projected credential ref preserves source-head/receipt/profile checks and reaches readiness. Reuse retained semantic evidence before enrichment/resolution. |
+| 2 / edge-6 named discovery | medium | bad_spec | Production metadata uses the query-only SDK factory overload and advertises no named/shared operational capability. The identity-based dispatcher does work directly (so prior blind-1 remains refuted), and live20 used actual named SDK rebuild; normal discovery/enrollment still omits the route, which must be corrected when selecting the bounded SDK protocol. |
+| 2 / verification-1 profile mismatch tests | medium | patch (survives loopback) | Pre-verified gap: service tests omit CapabilityProfileRef, the reader test constructs fingerprints directly and live acceptance tests only missing/valid same-tenant Forgejo profiles. Add service cases for known foreign-tenant and wrong-provider profiles, asserting InvalidPolicy and no append. |
+| 2 / verification-other credential integrity | medium | patch (group with blind-6) | Verified against the reader and semantic validator: CredentialReferenceId is not checked against Binding.IdempotencyFingerprint before private profile enrichment/provider readiness, while that retained semantic fingerprint includes the original ref. |
+
+| 3 / blind-1 SDK owner history limit | high | bad_spec | OperationalStatusRebuild sends the entire owner history to the dispatcher. SeedCapturedOwnerSequenceAsync:404 and CanPromoteCapturedJournalOwnerAsync:538 hard-limit captured identity vectors to10,000. Ordinary delivery accepts10,001; the capacity test stops before the next rebuild. Existing source cannot qualify unlimited required rebuild by raising dispatch options. |
+| 3 / blind-2 inherited checkpoint repair | medium | patch (survives loopback) | PrepareRebuildAsync:187 catches only selected-value loss. ReadGenerationAsync can resolve inherited checkpoint values after another owner promotes the tenant generation, then throws the distinct inherited-value-missing error. Complete-source repair is blocked; include the demonstrated inherited missing-value case while retaining other unavailable/conflict failures. |
+| 3 / blind-3 coherent older provider binding | medium | bad_spec | Validate compares Binding only to its own semantic fingerprint; it never binds the selected configuration to the retained configured-event position/digest. A complete older Binding with its valid fingerprint passes alongside newer Messages/LastSequence and current source head, allowing obsolete credential use. |
+| 3 / blind-4 corrupt provider rebuild | medium | bad_spec | RebuildAsync:98 validates malformed prior derived state unconditionally. A changed credential reference fails reads and every authoritative rebuild. Complete-current source plus conditional save must repair damaged derived state while valid retained source anchors still constrain replacement. |
+| 3 / blind-5 fresh rejection damaged view | medium | bad_spec (completion validation) | PrepareDeliveryAsync:118 folds fresh rejections and writes lifecycle/receipts/checkpoint, but no workspace views and no validation of the preserved workspace row. Damaged current workspace state therefore remains unavailable after an acknowledged fresh rejection. |
+| 3 / blind-6 duplicate historical task loss | medium | bad_spec (completion validation) | Duplicate intake calls RequireCurrentViewsAsync, which reads only checkpoint.State current workspace/task. Replaying an older task release after a later task becomes current can return AlreadyCompleted while the replayed task row is missing. Validate the retained views required by the replayed source before acknowledgement. |
+| 3 / blind-7 repository-specific Forgejo readiness | medium | bad_spec | ForgejoHttpApiClient.GetReadinessAsync observes authenticated user and server version only, then hardcodes metadata/binding flags true. The new Supported WorkspacePreparation row is consumed by WorkspacePreparationService to append WorkspacePrepared. No repository observation intervenes, so deleted/inaccessible bound targets can receive fabricated preparation success. |
+| 3 / blind-8 reconciliation stale failure | medium | patch (survives loopback) | ApplyWorkspaceLifecycleEvent:311 sets success on a transition to Committed without clearing WorkspaceCommitFailureCategory. Failed→reconciliation-required→committed is valid in FolderStateTransitions and produces known_success with provider_failure_known in the new durable metadata; clear superseded failure evidence on confirmed recovery. |
+| 3 / blind-9 null workspace identifier | medium | patch (survives loopback) | ValidateWorkspaceEvent:169 gates its check on workspace is not null; nullable deserialization can produce a WorkspaceLockAcquired with null WorkspaceId, and WithWorkspaceTransition falls back to the prior workspace. Require identifiers for every demonstrated workspace-bearing event before any fold/persistence. |
+| 3 / blind-10 invalid lease interval | medium | patch (survives loopback) | The acquired-event guard checks event/holder/lock identity but no positive duration or ordered lease bounds. A retained acquisition expiring before acquisition/effective time is applied and materialized. Validate existing lease semantics before accepting this proven malformed state. |
+| 3 / edge-1 provider rebuild advancing head | medium | patch (survives loopback) | RebuildAsync checks head once before loading/saving. Source may advance while its delivery is pending, allowing the old-prefix ETag save to succeed and return completion. A post-save authoritative head check must return the already mapped retryable concurrency outcome. |
+| 3 / edge-2 provider rejection code | medium | patch (survives loopback) | FoldersProviderBindingEventProcessor checks rejection CommandType/version but never Code, unlike operational intake. Accepted/undefined rejection codes can therefore advance provider source receipts and be acknowledged. Validate defined non-success rejection codes before ApplyAsync. |
+| 3 / verification-1 lifecycle outcome assertions | medium | patch (survives loopback) | Pre-verified gap: convergence tests compare the same fold and public lifecycle vocabulary tests supply manual snapshots. Add source→persisted reader→public query assertions for repository failure, unknown outcome and reconciliation-required so wrong fold mappings fail. |
+| 3 / verification-2 Worker acknowledgement gate assertions | medium | patch (survives loopback) | Pre-verified default-lane gap: route tests assert permission/indexing only, while direct operational processor tests bypass composition. Current opted-in live acceptance did execute/pass combined persistence checks, but ordinary route regressions should also assert operational persisted state before success and retry on injected operational persistence failure. |
+
+| 4 / blind-1 v2 seam task authority | low | defer (intent excludes public v2 exposure) | Pd10V2CandidateCompatibilitySeam.cs:591-598 omits AuthorizedFolderId/AuthorizationWatermark, so the durable reader fails v2 GetTaskStatus closed (EventStoreOperationalStatusReadModel.cs:167-169). Reachable only with ApiRouting Coexistence/V2Only (default V1Only, FoldersApiRouting.cs:24); the seam is hash-bound in the v2 candidate set, so the fix belongs to v2 requalification. |
+| 4 / blind-2 missing folder hint retryable | low | patch (survives loopback) | The v1 503 for a missing hint is documented (hexalith.folders.v1.yaml:3888-3913), but FoldersDomainServiceEndpoints.cs:5544-5550 reports retryable:true through `?? true` for a fixed client error. Return retryable:false when no FolderAuthorizationDenial is present. |
+| 4 / blind-3 aged view outcome | medium | intent_gap (group: expired-view outcome) | EventStoreOperationalStatusReadModel.cs:281 and :267-269 throw for age ≥400 days or a missing known view; :45-47/:195-197 map that to retryable read_model_unavailable, so an idle entity returns a retryable 503 indefinitely. The matrix does not say which safe outcome an expired view receives. |
+| 4 / blind-4 derived-row retention | low | intent_gap (group with blind-3) | Writer :239-241 sets TTL on views only; receipts, messages, evidence and the checkpoint have null TTL. An expired view therefore leaves evidence that makes reads 503 (:267-269) and the writer throw (:133-134). |
+| 4 / blind-5 legacy snapshot | false | reject | Folders never returns PostCommandStateJson (FoldersDomainServiceRequestHandler.cs:196-197) and maps no /replay-state, so no snapshot can reach FolderEventReplay.cs:259-261. |
+| 4 / blind-6 closure map growth | low | reject | CloseTask re-freezes the closure map (FolderStateApply.cs:420-427) and the fold loops closures per event. The retained closures are required authority, the cost is negligible at supported history sizes, and the fix adds structure beyond a direct correction. |
+| 4 / blind-7 provider digest divergence | false | reject | DomainProjectionDispatcher.UpcastRequest (called at FoldersDomainServiceEndpoints.cs:130) rejects any non-v1 ProviderBindingConfigured before RebuildAsync, and Workers hashes the raw payload, so the digests match. The duplicated recipe has no diverging caller. |
+| 4 / blind-8 silent 503 catch-alls | low | patch (survives loopback) | The /project 503 branch (FoldersDomainServiceEndpoints.cs:176-181) logs nothing, unlike the 422 branch. ProjectionDispatchValidationException (derives from Exception) now becomes a retryable 503. Log the exception type and classify that validation exception with the 422 branch; the other catch-alls follow the existing fail-closed convention. |
+| 4 / blind-9 SDK message matching | low | reject | The literals match SharedProjectionEpochCoordinator.cs:1837,2841,2846, and OperationalStatusPersistenceTests.cs:135,383 exercise them against the real coordinator, so a rewording fails tests. JsonException handling is the approved repair path. |
+| 4 / blind-10 cross-host clock skew | high | patch (survives loopback) | OperationalStatusEventReader.cs:73 rejects OccurredAt (Folders host clock, e.g. WorkspaceLockAcquisitionService.cs:92) later than Timestamp (EventPersister.cs:146 UtcNow) with no tolerance. That permanently poisons a legitimate retained event; Workers then return 500 and skip indexing. Remove the cross-process comparison; allow bounded skew on the ObservedAt-vs-clock checks. |
+| 4 / blind-11 delivery stage labels | low | patch (survives loopback) | ACL stall refuted: earlier stages persist and dedupe on redelivery. Labelling is wrong: FoldersWorkersModule.cs:198-199,213 report provider-binding failures as permission_projection and log every failure as permission_projection_failed. |
+| 4 / blind-12 rebuild session lifecycle | high | bad_spec (group: shared rebuild session) | Each /project call uses a fresh GenerateCanonicalMessageId (FoldersDomainServiceEndpoints.cs:143-144), and OperationalStatusRebuild.cs:35-55 never aborts. Any failure after Begin leaves the tenant epoch Building; later Begins fail "Another shared rebuild is active" (SharedProjectionEpochCoordinator.cs:194-205) and ordinary deliveries are backpressured. :53-55 returns 503 after a promoted generation. |
+| 4 / blind-13 profile drift | medium | patch (survives loopback) | ConfiguredProviderReadinessBindingReader.cs:20-37 throws InvalidOperationException on profile removal or mismatch. ProviderReadinessValidationService.cs:132-138 maps every exception to retryable retry_later with no logger. Map the known mismatch to the existing non-retryable fix_provider_configuration remediation and log it. |
+| 4 / blind-14 task authorization mapping | false | reject | read_task_status gates IsSupported (LayeredFolderAuthorizationService.cs:170). The matrix already requires a folder read grant for GetTaskStatus (authorization-matrix.md:127,323), and its hash still equals the requalification binding. |
+| 4 / blind-15 WorkspacePrepared scope | false | reject | WorkspacePrepared belongs to done Story 4.2. The approved prerequisite requires proving bind/prepare/lock/release, and OperationId=WorkspaceId is the baseline convention (WorkspacePreparationService.cs:182 at baseline). |
+| 4 / blind-16 cleanup placeholders | low | defer (intent assigns cleanup to 12.3–12.7/4.22) | OperationalStatusFold.cs:268-278 emits fail-safe status_only cleanup and unavailable provider-reference values and never claims eligibility. The reduced vocabulary is not recorded as a limitation; the eligibility rules belong to 4.22/FR30. |
+| 4 / blind-17 epic context loss | medium | patch (survives loopback) | The epic-12-context.md rewrite in commit 0fa612f1 dropped concrete anchors that Epic 12 builds load instead of raw planning docs: 409/exit 77/concurrency_conflict, 24-hour/seven-year replay retention, 422 confidential_operation_not_durable, readiness dependency health, and the 4.23 dependency. Regenerate it from the planning artifacts. |
+| 4 / blind-18 stale qualification prose | low | patch (survives loopback) | proposal-12-2-acceptance-prerequisites.md:49-51 still reports stage four, 3,877 cases, "implemented and qualified" and "uncommitted" SDK edits. AppHost README:248-249 says the HEAD is unchanged at 84bb115a, but EventStore HEAD is the local unpushed d4d05f87. Rejected sub-claims: non-retained /tmp logs (low, hashes recorded) and the commit label (needs history rewriting). |
+| 4 / blind-19 SDK revision binding | low | patch (group with blind-18) | Same stale-prose defect: the README and proposal still describe uncommitted SDK edits at an unchanged HEAD. |
+| 4 / blind-20 selective metadata mapper | false | reject | Folders registers no owner-proof or replay-recovery registrations, and its legacy handler declines enrollment, so BindMetadata leaves the response unchanged (DomainProjectionOwnerProof.cs:127-129). No other host uses the selective mapper. |
+| 4 / blind-21 literals/dead signatures | low | reject | All items verified cosmetic; the 16-operation/32 KiB chunks stay within the SDK checks (DomainSharedProjectionRebuildDispatcher.cs:939-947). The fix changes public signatures. |
+| 4 / blind-22 per-operation cost | medium | bad_spec (group: unmeasured cost budgets) | Each read does two ReadManyAsync, one head call and five JsonSerializerOptions allocations (EventStoreOperationalStatusReadModel.cs:234-254). Per position, the writer registers, catches up twice and prepares twice (OperationalStatusProjectionWriter.cs:50-78) before the duplicate short-circuit. No evidence measures this against the 500 ms target (prd.md:210). |
+| 4 / blind-23 generator prior hash | false | reject | Pd10ConformanceSetTests.cs:22-27 pins both the on-disk prior manifest hash and the manifest scalar, so a changed prior file fails. The fixed date is the dated generation input. |
+| 4 / blind-24 sprint-status comment | low | patch (survives loopback) | The line-3 comment says last_updated 2026-10-18 while the field is 2026-10-19; correct it at the next status sync. The `# needs eventstore` comment is still accurate for 12.2 and is preserved. |
+| 4 / verification-1 accepted profile path | medium | patch (survives loopback) | Pre-verified gap: no test runs ConfigureProviderBindingService with a matching profile and consumes its NamingPolicy/BranchPolicy output through ConfiguredProviderReadinessBindingReader. |
+| 4 / verification-2 Forgejo bound-target plumbing | medium | patch (survives loopback) | Pre-verified gap: no normal-lane test covers Bound* to RepositoryTarget, the ForgejoProvider resolver handoff, or ConfiguredProviderRepositoryTargetResolver mapping and rejections. |
+| 4 / verification-3 /project operational repair | medium | patch (survives loopback) | Pre-verified gap: ProductionProcessWireEventTests asserts only HTTP 200 and the legacy body. It never asserts operational rows after success, or a 503 with no committed rows on injected batch failure. |
+| 4 / verification-4 provider delivery vs repair digest | medium | patch (survives loopback) | Pre-verified gap: no Workers route test asserts the persisted binding projection, and no test feeds worker-produced state into the /project rebuild and compares bytes. |
+| 4 / verification-5 readiness reader exception | medium | patch (survives loopback) | Pre-verified gap: no reader double throws, and provider_binding_authority_unavailable has no test hit. |
+| 4 / verification-6 production host provider wiring | medium | patch (survives loopback) | Pre-verified gap: no production-host assertion covers ConfiguredProviderReadinessBindingReader/ConfiguredProviderRepositoryTargetResolver registration or options binding (FoldersServerHostComposition.cs:35-37). |
+| 4 / verification-other v1 provider binding regression | high | intent_gap | `dotnet test --project tests/Hexalith.Folders.IntegrationTests --no-build --filter-method "*.ArchiveFolderProcessWiringTests.ConfigureProviderBinding*"`: 3 total, 3 failed (400 instead of 202). FolderDomainProcessor.cs:556 now forwards the v1-required capabilityProfileRef, and ConfigureProviderBindingService.cs:83-91 rejects refs that are not host-configured. No shipped host config defines profiles, and at baseline the ref was ignored. CI runs this assembly (ci.yml:49). Whether v1 may now require a host-configured profile is not settled by the intent. |
+| 4 / edge-1 shared Empty policy | high | patch (survives loopback) | ProviderBindingProfile.cs:11,13 default to the shared OrganizationProviderBindingPolicy.Empty, and the reflection binder (FoldersServerHostComposition.cs:35) mutates that instance. With two profiles, every policy aliases Empty with merged metadata (reproduced against the built assembly). Profile-less configures (ConfigureProviderBindingService.cs:100,106) then persist another profile's private metadata into retained events. Initialize fresh instances. |
+| 4 / edge-2 Building epoch never aborted | high | bad_spec (group with blind-12) | Begin moves the tenant scope to Building and nothing aborts it; ordinary deliveries get Backpressure (SharedProjectionEpochCoordinator.cs:697-700,793-796). A deterministic trigger: owner history above 10,000 fails commit seeding after Begin. |
+| 4 / edge-3 per-command full rebuild | high | bad_spec | EventStore invokes the domain /project after every accepted command, with the full 1..head stream (SubmitCommandHandler.cs:499-505; ProjectionUpdateOrchestrator.cs:186-263). FoldersDomainServiceEndpoints.cs:132-150 runs a tenant-scoped shared rebuild each time, inside the awaited command path. Concurrent folders in one tenant then get 503, and ordinary deliveries are backpressured. |
+| 4 / edge-4 first-delivery gap | false | reject | Gap recovery is automatic today: the per-command full-history /project rebuild restores the checkpoint, and Workers redelivery then dedupes (OperationalStatusProjectionWriter.cs:60,108-115). Re-derivation of edge-3 must keep an equivalent recovery path. |
+| 4 / edge-5 named gap classification | false | reject | Named dispatch routes epoch-enabled handlers to DispatchFencedSharedAsync, which never calls ProjectAsync (DomainProjectionDispatcher.cs:733-740); only tests call it. |
+| 4 / edge-6 domain clock ahead | high | patch (group with blind-10) | Same defect as blind-10 at OperationalStatusEventReader.cs:73. |
+| 4 / edge-7 reader clock lag | low | patch (group with blind-10) | EventStoreOperationalStatusReadModel.cs:261,280 return a retryable 503 while the reader clock lags EventStore stamps. It clears once the clocks converge. |
+| 4 / edge-8 terminal TTL refresh | medium | intent_gap (group with blind-3) | Writer :135,:138,:246 rewrites terminal rows with a fresh 400-day TTL and the original ObservedAt (OperationalStatusFold.cs:292-293). Reads after 400 days fail with a retryable 503 (:281), while the rows outlive the C3 window. |
+| 4 / edge-9 expired view after idle | medium | intent_gap (group with blind-3) | The read-side 503 for idle entities is real (EventStoreOperationalStatusReadModel.cs:267-269,281). The writer side recovers through the per-command rebuild. |
+| 4 / edge-10 missing evidence dereference | low | reject | Requires derived-state corruption, since row and evidence are written in one batch (writer :243-248). It still fails closed and is repaired; the fix adds a guard. |
+| 4 / edge-11 dead known-view plumbing | low | reject | sourceEvidence is unused, and requireKnownView reads maps that Compact empties. NotFound occurs only after partial derived-state loss with a surviving checkpoint; the fix adds a guard. |
+| 4 / edge-12 one-second delivery deadline | maybe-false | bad_spec (group with blind-22) | The operational chain shares PermissionProjectionDelivery's one-second deadline (PermissionProjectionDelivery.cs:11), but the real-Dapr acceptance passed through the composed route. Settling this needs p50/p99 wall time on a production-like store. |
+| 4 / edge-13 indexing behind operational failure | medium | bad_spec | Any operational-stage exception returns 500 before semantic indexing (FoldersWorkersModule.cs:203-216). After a permanent failure, every later event fails the gap check (OperationalStatusFold.cs:47-50), so indexing for that folder stops until a rebuild or dead-lettering. The spec mandated pre-acknowledgement composition without isolating indexing. |
+| 4 / edge-14 provider stage label | low | patch (group with blind-11) | Same labelling defect at FoldersWorkersModule.cs:198-199. |
+| 4 / edge-15 missing GlobalPosition | false | reject | EventPublisher.cs:205 always copies the positive GlobalPosition assigned by DaprGlobalPositionAllocator (EventPersister.cs:213-241). |
+| 4 / edge-16 live head during rebuild | high | bad_spec | Writer :189 compares against the live head read during Accumulate (OperationalStatusProjectionHandler.cs:58-60). A concurrent append fails the partition after Begin, leaving the session Building (see blind-12). Compare against the SDK-captured watermark instead. |
+| 4 / edge-17 stored vs effective catch-up | false | reject | Same premise refuted in 1/blind-8 at a different location: there are no upcasters and the closed inventory is all v1, so stored and effective bytes are identical. |
+| 4 / edge-18 provider rebuild versions | false | reject | Admission (DomainProjectionEvolutionAdmission.cs:20-31) and the registry (EventPayloadEvolutionRegistry.cs:120-127) reject unregistered versions before line 165 runs. |
+| 4 / edge-19 created-repository fingerprint | false | reject | Production creation-target resolution is unconfigured (ConfiguredProviderRepositoryTargetResolver.cs:11-13), so no created Forgejo folder reaches Bound. |
+| 4 / edge-20 Forgejo invalid target category | false | reject | The production resolver validates with the same predicate as IsForgejoRepositoryTargetValid (ForgejoProvider.cs:1126-1129), and no resolver failure carries RetryAfter. |
+| 4 / edge-21 credential NotFound mapping | low | reject | Every non-PermissionDenied DaprException maps to Unavailable(30s). At baseline, gRPC DaprException escaped unhandled, so this is a net improvement. It affects only occasional misconfiguration, and the fix adds branches. |
+| 4 / edge-22 profile edit before retry | false | reject | Equivalent retries are answered by EventStore admission Replay (SubmitCommandHandler.cs:68-130) or the actor duplicate cache. The domain re-runs only when the first attempt never persisted. |
+| 4 / edge-23 profile drift | medium | patch (group with blind-13) | Same location and outcome as blind-13. |
+| 4 / edge-24 legacy snapshot | false | reject | Same refutation as blind-5. |
+| 4 / edge-25 reconciliation by another task | false | reject | No current producer emits a reconciliation-to-Committed lifecycle event. FolderWorkspaceLifecycleEventRecorded is constructed only by WorkspacePreparationService.cs:154,190. |
+| 4 / edge-26 closure growth | low | reject (group with blind-6) | Same as blind-6. |
+| 4 / edge-27 metadata endpoint double map | false | reject | The only caller maps the endpoint once (FoldersServerHostComposition.cs:137-139), and Folders never calls the full mapper. |
+| 4 / edge-28 selective mapper source guard | false | reject | Same refutation as blind-20. |
+| 4 / edge-29 prefix extension identities | false | reject | PrepareRebuildAsync rejects sources whose rolling digest contradicts the retained checkpoint across delivered positions (OperationalStatusProjectionWriter.cs:204-211), and pending journal entries are still compared (SharedProjectionEpochCoordinator.cs:519-545). |
+| 4 / edge-30 head mismatch 422 | low | patch (survives loopback) | FoldersDomainServiceEndpoints.cs:137-140 throws InvalidOperationException, so an advancing head becomes 422 projection_unreadable, contrary to the Retry correction. Return 503 projection_unavailable. |
+| 4 / edge-31 provider rebuild race 422 | low | patch (survives loopback) | The head is checked at EventStoreProviderReadinessBindingReadModel.cs:95 and the row read at :99. A concurrent ApplyAsync makes :104-108 throw InvalidOperationException, which becomes 422. Throw PermissionProjectionConcurrencyException instead. |
+| 4 / edge-32 provider rebuild rejection code | medium | patch (survives loopback) | FolderEventReplay.cs:199-203 validates rejection shape only, and RebuildAsync never checks Code (EventStoreProviderReadinessBindingReadModel.cs:83-115), while Workers refuses Accepted or undefined codes (FoldersProviderBindingEventProcessor.cs:46-50). Apply the same code check before RebuildAsync. |
+| 4 / edge-33 GitHub preparation | false | reject | Production OctokitGitHubApiClient.GetReadinessAsync throws NotImplementedException (OctokitGitHubApiClient.cs:49-62), so no Supported preparation row exists in production. |
+| 4 / edge-34 head reader | false | reject | DaprOrganizationStreamSequenceReader is unchanged since baseline and was already registered; no SDK sequence reader exists. |
+| 4 / edge-35 metadata identity mismatch | false | reject | EventStore sends AppId=registration.AppId and ServiceVersion "v1" (AdminOperationalIndexHostedService.cs:162-167), matching the Folders defaults. |
+
+## Design Notes
+
+Intent gaps: none. Irreversibles: none; live checks own disposable state. Footprint: fold/guards, SDK readers/writer, host/Workers wiring and tests. Baseline: clean `main`, Folders `c22b13137202f7bf8c60b80c095a69748435bd6e`, EventStore `84bb115a0ced2497ca4315644a677b273cb44edf`. Rebuild current source; 12.1 acceptance used an older pin. Preserve historical manifest evidence; no sprint-status regeneration.
+
+Round four: operational status has one live writer (Workers) and one rebuild path (the SDK-driven named transport). That keeps tenant-wide rebuild sessions out of the command path, which EventStore awaits but does not fail on. Trade-off: a dead-lettered delivery, or history from before enablement, leaves that folder honestly `projection_stale` until an operator runs the named rebuild. The retention docs task records this. The strict profile and source-time expiry rules are frozen decisions. The five-minute skew tolerance and the static serializer options are implementation choices.
+
+## Verification
+
+- `dotnet restore Hexalith.Folders.slnx -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false` established the source graph; final `dotnet build Hexalith.Folders.slnx -c Debug -p:UseHexalithProjectReferences=true -p:UseNuGetDeps=false --no-restore -m:1 -nr:false -v:quiet` is recorded in the appended evidence stage.
+- Run domain, Server and Workers test projects individually; use built xUnit assemblies with `-class` for focused checks.
+- `dotnet test --project tests/Hexalith.Folders.IntegrationTests --no-build` must pass, including the three `ArchiveFolderProcessWiringTests.ConfigureProviderBinding*` tests that failed in round four. Run `pwsh -File tests/tools/run-contract-spine-gates.ps1` and the docs conformance tests after the docs edits; v1 contract bytes stay unchanged.
+- Run opted-in AppHost acceptance with zero failures/skips; assert stored contents, checkpoints, changed PIDs and replica convergence. Record blockers separately from passing evidence.
+
+## Historical Stage7 approved SDK source qualification — 2026-10-20
+
+The approved immutable source-deadline and pending owner-scratch capabilities are implemented in the
+EventStore owner repository and consumed through `WriteExpiring` in Folders. The named partition
+round trip preserves the absolute deadline; the bounded checkpoint stays non-expiring. Delayed commit
+regressions now require physical absence of expired rows, and named scratch retry/Abort permits a fresh
+rebuild. Historical failed diagnostics and all six earlier evidence stages remain unchanged.
+
+[Stage7 source qualification](evidence/story-12-2-approved-sdk-source-qualification-20261020/qualification.json)
+binds 1,406 consumer source/config files, 62 assembly/PDB files, 4,195 component passes (two existing
+optional Domain skips) and a full opted-in Aspire/Dapr/provider pass: 1/1, zero skips, 295.344 seconds.
+The SDK packet independently records 1,736 Client passes (two existing optional skips), 1,005
+DomainService passes, 36 live outer cases and four distinct-process child runs, all required live cases
+without skips. Parent audits found zero source/binary/PDB mismatches. Independent review of this
+approved SDK/consumer delta is pending at this qualification seal.
+
+The Stage7 acknowledgement p95 is 31,600.244 ms across nine successful requests, including retries,
+against SM4's 1,000 ms target. Workers p95 is 348.094 ms (26 samples); status p95 is 50.824 ms
+(12 samples). The acknowledgement finding remains open, including the prior stage-six observation.
+The Release/package gate fails CS0117 because EventStore 3.125.1 lacks `WriteExpiring`; its
+`-NoRestore` fallback retains the three frozen PD10 inventory/generator failures.
+
+Whole Story 12.2 and Task 36 remain in progress: the separately owned >10,000 captured-identity
+capability, qualified consumption, package/PD10 requalification, acknowledgement performance and
+whole-story independent review retain their existing dispositions. No dependency pin, Git mutation,
+publication, deployment, source event, content cleanup or public v2 change is included.
+
+Independent SDK review two reopened the prerequisite acceptance rows after Stage7: it reproduced
+Prepared/no-envelope Abort, cleanup self-recovery and expired-prefix compensation failures, plus
+legacy validation/retry defects. The Stage7 pass remains exact-source history; owner review loop2
+re-derives the SDK from amended nonfrozen requirements before Folders consumption is restored and
+requalified. Frozen intent, all historical evidence, Task36 and the separate open gates are unchanged.
+
+
+## Historical Stage8 approved SDK source qualification — 2026-10-20
+
+Review-two SDK corrections now settle original Prepared/no-envelope scratch, resume deterministic own
+cleanup, preserve expired-prefix compensation and validate legacy epochs/retries. The immutable
+source deadline and Folders named partition conversion remain unchanged.
+
+[Stage8 qualification](evidence/story-12-2-approved-sdk-source-qualification-review2/qualification.json)
+binds 1,661 consumer source/config files and 62 assembly/PDB files. A serialized
+Debug/source build completed with zero warnings/errors; 4,195 components passed with two existing
+optional Domain skips. The full opted-in Aspire/Dapr/provider durability test passed 1/1 with zero skips
+in 306.591 seconds. All ten inspected SDK runtime PDBs match current
+sources; all captured source/assembly hashes stayed unchanged through final execution.
+
+SDK qualification records 1,756 Client passes with two optional skips and 1,057 Domain passes in a
+serialized same-binary full run. Its failed parallel Domain run remains preserved. 51 unique required
+live cases are qualified across exact recorded groups; the expiry/scratch 37-case union retains the
+initial 34/37 attempt and affected final 9/9 rerun, rather than claiming one all 37 pass. Twelve final
+child invocations cover six distinct exited-owner/recovery PID pairs, including Prepared/no-envelope
+cuts. Parent independently verified 171 SDK packet artifacts, 3,751 final source/config hashes and the
+six decoded Open/Aborted/private-cleaned worker end states.
+
+Current acknowledgement p95 is 4359.855 ms against 1,000 ms; Workers p95 is
+368.766 ms and status p95 is 60.804 ms. The acknowledgement finding remains
+open. Package/PD10 failures are retained against the unchanged WriteExpiring API and frozen candidate;
+no package/pin change or requalification was authorized. All seven prior canonical stages and sealed
+historical packets remain unchanged. Independent review of this approved scope is pending at packet
+seal; whole Story 12.2 remains in-progress for the separately owned >10,000 identity capability,
+package/PD10 requalification, SM4 and whole-story review.
+
+
+Independent approved-scope review three reopened the SDK prerequisite rows after Stage8. Parent
+reproduced an old commit-CAS worker undoing Abort, a late installer leaving markerless scratch,
+false-resolved Prepared transaction recovery, orphan external manifests, ordinary save/expiry and
+omitted-key settlement defects. DI clock and bounded-cleanup/bulk-read corrections are included in
+owner loop3. Stage8 remains exact-source passing test history rather than completed acceptance;
+its packet and all earlier canonical stages stay unchanged. Folders source/test/docs were positively
+preserved then restored only until the new SDK handoff. Whole-story open gates remain unchanged.
+
+
+## Historical Stage9 approved SDK source qualification — 2026-10-20
+
+Review-three corrections preserve delayed legacy-worker fences, settle supported transaction conflicts,
+reclaim interrupted external manifests and preserve conditional guards across expiry. Production clock
+registration, bulk final-value reads and bounded promoted maintenance are covered. The SDK owner records
+its internal terminal-marker identity decision; payload-free fencing metadata remains distinct from
+private payload cleanup. Folders continues to use the supported immutable source-deadline API.
+
+[Stage9 qualification](evidence/story-12-2-approved-sdk-source-qualification-review3/qualification.json)
+binds 1,661 consumer source/config files and
+62 assembly/PDB files. Serialized Debug/source build completed with
+zero warnings/errors. 4,195 consumer components passed with two
+existing optional Domain skips. Full opted-in Aspire/Dapr/provider acceptance passed 1/1 with zero skips
+in 337.824 seconds. SDK runtime PDBs match current source and captured
+source/binary inventories remained unchanged through final consumer execution.
+
+The first consumer live attempt failed during its second EventStore restart after DCP timed out
+stopping the process. The second timed out waiting WorkspaceLockReleased: Lock completed, while
+Release's successful domain evaluation was followed by terminal Rejected at EventsStored with a
+redacted DaprApiException amid actor429 authority/archive errors. Both complete failed XML/logs,
+the command timeline and zero-drift source/binary audits remain in the packet. The final pass uses
+the same binaries, assertions and limits. Exact persistence-error and delayed-shutdown causes remain
+unclassified; the rerun does not erase those failures. Other workspaces' applications are preserved,
+with fixture-owned cleanup recorded separately.
+
+The final SDK packet records 1,814 Client passes with 2 optional skips,
+1,059 serialized Domain passes with zero skips, 56 unique required
+live cases and 12 passing child invocations across
+6 distinct exited-owner/recovery process pairs.
+Parent independently checked 381 packet artifacts, final source hashes,
+binary/PDB groups and raw worker end-state. Failed and interrupted earlier attempts remain evidence.
+
+Current acknowledgement p95 is 4654.709 ms against 1,000 ms; Workers p95 is
+1222.518 ms against 1,000 ms and status p95 is 639.668 ms against 500 ms.
+All three observations exceed their budgets. Performance acceptance remains open
+with prior observations retained. Package/PD10 gates retain their earlier failures against the unchanged
+API and frozen candidate. All eight previous canonical stages and sealed packets remain unchanged.
+Independent approved-scope review is pending at packet seal. Whole Story12.2 remains in-progress for
+the separately owned >10,000 identity capability, package/PD10 requalification, SM4 and whole-story review.
+
+
+## Approved SDK review4 follow-up
+
+Stage9 stays historical exact-source local qualification, including Client1814/Domain1059/56 SDK live
+cases and Folders4195/full live337.824s, plus its two preserved failed consumer live attempts. The
+independent scoped review verified expired own-envelope settlement, late Completed/Aborted installers,
+legacy compensation capacity and silent maintenance failure defects. SDK owner loop4 re-derives only
+owned source from its positive76-file snapshot; all nine canonical stages and prior packets remain.
+Parent must restore the nine consumer files after SDK qualification and correct the actual
+OperationalStatusProjectionWriter registration/construction so its coordinator uses the configured
+deadline clock coherently with the store and writer. Preserve existing constructors/callers where
+possible; use the minimum SDK/domain DI seam, no consumer storage protocol. Add real service-registration
+coverage exercising expired selected/inherited COW state, inclusive absence and a normal subsequent
+delivery/rebuild; reflection alone is not acceptance. Requalify affected consumer components and opted-in
+full real-Dapr fixture against final source/PE/PDB hashes, preserving failed attempts and performance
+observations honestly. Parent owns this consumer correction; the SDK implementation child must not edit
+Folders. Scope approval is unchanged. >10000 capture identity, package/PD10, all three latest over-budget
+latencies and whole-story review remain open; no release/Git/pin/dependency work is authorized.
+
+
+## Historical Stage10 approved SDK source and clock qualification — 2026-10-20
+
+[Stage10 qualification](evidence/story-12-2-approved-sdk-source-qualification-review4/qualification.json) binds 1,663
+consumer source/config inputs and 62 assembly/PDB files. Serialized
+Debug/source restore/build passes with zero warnings/errors. All twelve owned C# files pass whitespace
+and analyzer checks. 4,201 consumer cases pass, with two unchanged
+optional Domain skips; the full opted-in Aspire/Dapr/provider acceptance passes 1/1 with zero skips in
+334.315 seconds. Captured source/binary hashes and runtime PDB documents
+match final execution. Six actual root/Server/manual construction x selected/inherited clock regressions
+first failed against the old product at pre-deadline duplicate delivery, then passed after correction.
+The writer now uses the SDK registered coordinator in DI and the supplied IUtcClock for manual construction.
+Tests include inclusive absence, expired-source named rebuild, ordinary delivery and further named growth.
+No public constructor or consumer storage protocol was added.
+
+The SDK packet has 1,828 Client passes plus two unchanged optional skips, 1,061 serialized Domain passes,
+66 unique required live cases and 20 passing distinct-PID child invocations: six production named
+pending-owner/recovery pairs and four primitive late-installer/recovery pairs. The latter prove a fresh
+epoch cycle; separately executed production named tests prove late accepted-owner cleanup after terminal
+cleanup flags, ordinary delivery and a fresh named rebuild. Parent independently verified 315 artifacts,
+3,838 source inputs, XML/binary groups, 31 PDBs and decoded raw worker states. Repeated named Abort is
+the production late-scratch reconciliation trigger. Bounded payload-free fencing metadata follows the
+SDK guide's retention/legal-hold, restore and drained-writer purge rules.
+
+All nine prior canonical stages and sealed packets remain unchanged, including earlier failed consumer
+live attempts and their unclassified causes. Current latency observations are retained without causal
+attribution: command_acknowledgement p95=4784.157ms against1000ms, workers_operational_delivery p95=601.608ms against1000ms, status_read p95=120.761ms against500ms.
+Independent approved-scope review is pending at seal. Whole Story12.2 remains in-progress for the already
+approved separately owned >10,000 identity capability and its consumer qualification, package/PD10,
+performance acceptance and whole-story review. Approval and Git/release/pin boundaries are unchanged.
+
+
+## Approved SDK review5 follow-up
+
+Independent scope review identified retained competing-owner CAS retry nonconvergence, lawful legacy
+retirement size refusal, original scope/proof/pointer validation gaps, missing historical owner inventory
+being treated as cleanup success, dependency cancellation misclassification and a late transport-fragment
+coverage gap. Owner loop5 addresses the eight roots without changing frozen intent or approval. All14
+Folders source/test/docs files, including the passing root/Server/manual clock fix, are positively preserved
+for parent restoration after SDK handoff. All ten canonical stages and prior sealed packets stay exact.
+Another session merged source changes during review; they are preserved, including external SDK authority/
+selection and Folders file-identity/query changes. Current merged source differs from historical Stage10,
+so it needs fresh source/PE/PDB/component/full live qualification. Do not reuse old counts as current results.
+Already-approved separately owned >10000 identity consumption, package/PD10, performance and whole-story
+review remain open. No Git/release/pin/dependency/content/performance redesign is authorized.
+
+
+## Stage11 approved SDK review-five source consumption — 2026-10-20
+
+[Stage11 qualification](evidence/story-12-2-approved-sdk-source-qualification-review5/qualification.json)
+records restoration of all14 positively preserved consumer files, including the existing root/Server/manual
+clock correction, followed by current merged-source qualification. Serialized Debug/source restore/build
+passes with zero warnings/errors; all12 owned C# files pass whitespace and analyzer checks. Current
+consumer components pass4248 cases with the same two optional Domain skips. The full opted-in
+Aspire/Dapr/real-provider durability scenario passes1/1, zero failures/skips, in351.901 seconds.
+The original assertions, deadlines and retry limits are unchanged. Retention and interrupted named
+scratch retry/Abort acceptance rows above are now checked against this qualified source. Task36 stays open.
+
+The packet freezes11998 ordinary source/config inputs across the current root-declared source graph
+and546 runtime/test PE/PDB files. All271 portable PDBs match current source and their PE debug identities.
+Final source/binary/submodule-head drift is zero. Incoming external commits advanced Folders to
+`34f25c477d0497ebf5c115e7c7a58afb2f88245a` and EventStore to
+`7217b5bf740b80ae92858378785b496e6b564285` during the build; all3881 source/config inputs
+from the SDK review-five qualification still match. Two Client and two DomainService PE/PDB identity
+groups are retained explicitly, each with identical complete source-document/hash sets across its groups.
+No byte-identical-copy or new SDK source qualification is inferred from those revision metadata differences.
+
+SDK handoff evidence retains Client1908 passes with two optional skips, Domain1072 passes,
+73 required live cases and20 exited-worker invocations with20 distinct PIDs. Those SDK results are
+linked separately from current consumer execution. The consumer live run proves stored TTLs,
+source-preserving rebuild, changed host PIDs, interrupted generation resume, two concurrent Workers,
+denials and storage faults. Fixture-owned resources are gone; unrelated applications were preserved.
+An unrelated preexisting container disappeared concurrently; no operation against it was issued here.
+The initial wrong-AppHost baseline selection and overbroad orphan-generator PDB inventory are retained
+as nonqualifying diagnostics. There was no failed current-source consumer test attempt.
+
+Current p95 observations are command acknowledgement2072.554ms against1000ms, Workers
+operational delivery817.798ms against1000ms, and status read62.052ms against500ms.
+Acknowledgement remains over budget, without causal attribution or redesign. All ten prior canonical
+stages and all earlier sealed packets remain unchanged, including previous failures and latency findings.
+The incoming Builds catalog now names EventStore3.126.0; historical3.125.1/PD10 failures are preserved
+as historical results, and no current Release/package/PD10 requalification is claimed.
+
+Whole Story12.2 remains in-progress for the separately owned beyond10000 captured-identity capability
+and consumer qualification, Release/package/PD10, performance acceptance and independent approved-scope/
+whole-story review. No Git mutation, dependency/pin change, publication, deployment, retained-event
+replacement, content cleanup or publicv2 change was performed by this task.

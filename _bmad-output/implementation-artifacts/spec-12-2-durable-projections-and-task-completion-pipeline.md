@@ -116,7 +116,7 @@ context:
 - [x] Round-four command path (replace, do not patch): remove the operational branch from legacy `/project` in `FoldersDomainServiceEndpoints.cs` and delete `OperationalStatusRebuild.cs` with its fixture. `/project` returns the legacy response regardless of operational state. Workers live delivery is the only live writer; rebuild and repair run only through the SDK-driven named `/project/rebuild/shared/v1` transport, which owns session Begin/Abort/Verify. Move tests that relied on `/project` repair to that transport.
 - [x] Round-four named rebuild: in `OperationalStatusProjectionHandler.cs`, validate each partition history as a contiguous 1..N prefix bound to the SDK-sealed capture. Never compare it with a live head; appends after capture reach the new generation through SDK catch-up.
 - [x] Round-four Workers: in `FoldersWorkersModule.cs`, run the operational stage after the permission/provider chain, outside the one-second deadline. Run semantic indexing even when the operational stage fails, then return 500 so the delivery retries. Indexing stays idempotent on redelivery. Label and log each stage by its own name.
-- [ ] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
+- [x] Round-four retention (frozen decision): writer TTL = source event time + 400 days − now for each view, its evidence and that position's receipt/message rows. Skip writes already past the boundary; terminal rewrites keep the original expiry. The bounded checkpoint keeps no TTL. Writer: a duplicate older than retention is acknowledged without writes, and a required view whose view and evidence are both absent counts as expired, not missing. Reader: return not-found for age ≥ 400 days or a view whose view and evidence are both absent (lifecycle may use checkpoint `ObservedAt`). Evidence without a view stays unavailable.
 - [x] Round-four clock skew: remove the `OccurredAt > Timestamp` rejection in `OperationalStatusEventReader.cs:73`. Allow one fixed five-minute tolerance constant for stamp-versus-local-clock checks in the reader.
 - [x] Round-four provider fixes:
   - `ProviderBindingProfile.cs`: initialize fresh empty policies so bound profiles never share or mutate `OrganizationProviderBindingPolicy.Empty`.
@@ -126,16 +126,16 @@ context:
   - `/project` 503 branch: log the exception type, and classify `ProjectionDispatchValidationException` with the 422 branch.
   - Missing folder hint (`FoldersDomainServiceEndpoints.cs:5544-5550`): report `retryable:false`.
 - [x] Round-four profile decision wiring: configure a `profile-a` test profile for the tenant and provider in the `ArchiveFolderProcessWiringTests` host so its three ConfigureProviderBinding tests pass unchanged in intent. Document the required `Folders:ProviderBindings:Profiles:<ref>` section, and the rejection of unknown references, in `docs/operations/provider-integration-and-testing.md`. Document the expired-status not-found outcome and the named rebuild for bootstrap and stalled folders in `docs/operations/retention-and-tenant-deletion.md`.
-- [ ] Round-four tests:
+- [x] Round-four tests:
   - [x] Accepted profile path: service output consumed through `ConfiguredProviderReadinessBindingReader`.
   - [x] Two bound profiles stay isolated and `Empty` stays empty.
   - [x] Forgejo bound-target plumbing and `ConfiguredProviderRepositoryTargetResolver` mapping/rejections.
   - [x] `/project` returns the legacy body and writes no operational rows.
-  - [ ] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
+  - [x] Named rebuild persists rows; interrupted retained scratch safely retries or Aborts without an active session, then a fresh named rebuild succeeds. The approved SDK qualification covers real Dapr, fresh/populated selections and exited writer/recovery OS processes; current Folders consumer cases and the full live run pass.
   - [x] Workers route persists the binding projection, and its bytes equal the provider `/project` rebuild.
   - [x] A throwing readiness reader yields `provider_binding_authority_unavailable`.
   - [x] Production-host registration and options binding for the configured provider reader/resolver.
-  - [ ] Retention: boundary, all-expired, evidence-only and duplicate-after-retention.
+  - [x] Retention: boundary, all-expired, evidence-only and duplicate-after-retention.
   - [x] Clock skew within and beyond tolerance.
   - [x] Indexing still runs after an operational failure.
 - [x] Round-four performance: use one static `JsonSerializerOptions` in `EventStoreOperationalStatusReadModel.cs`. In the opted-in real-Dapr acceptance, record p50/p95 for the command acknowledgement, the Workers operational delivery and the status read against SM4. If over budget, record it as an open finding; do not redesign.
@@ -524,3 +524,65 @@ selection and Folders file-identity/query changes. Current merged source differs
 so it needs fresh source/PE/PDB/component/full live qualification. Do not reuse old counts as current results.
 Already-approved separately owned >10000 identity consumption, package/PD10, performance and whole-story
 review remain open. No Git/release/pin/dependency/content/performance redesign is authorized.
+
+
+## Stage11 approved SDK review-five source consumption — 2026-10-20
+
+[Stage11 qualification](evidence/story-12-2-approved-sdk-source-qualification-review5/qualification.json)
+records restoration of all14 positively preserved consumer files, including the existing root/Server/manual
+clock correction, followed by current merged-source qualification. Serialized Debug/source restore/build
+passes with zero warnings/errors; all12 owned C# files pass whitespace and analyzer checks. Current
+consumer components pass4248 cases with the same two optional Domain skips. The full opted-in
+Aspire/Dapr/real-provider durability scenario passes1/1, zero failures/skips, in351.901 seconds.
+The original assertions, deadlines and retry limits are unchanged. Retention and interrupted named
+scratch retry/Abort acceptance rows above are now checked against this qualified source. Task36 stays open.
+
+The packet freezes11998 ordinary source/config inputs across the current root-declared source graph
+and546 runtime/test PE/PDB files. All271 portable PDBs match current source and their PE debug identities.
+Final source/binary/submodule-head drift is zero. Incoming external commits advanced Folders to
+`34f25c477d0497ebf5c115e7c7a58afb2f88245a` and EventStore to
+`7217b5bf740b80ae92858378785b496e6b564285` during the build; all3881 source/config inputs
+from the SDK review-five qualification still match. Two Client and two DomainService PE/PDB identity
+groups are retained explicitly, each with identical complete source-document/hash sets across its groups.
+No byte-identical-copy or new SDK source qualification is inferred from those revision metadata differences.
+
+SDK handoff evidence retains Client1908 passes with two optional skips, Domain1072 passes,
+73 required live cases and20 exited-worker invocations with20 distinct PIDs. Those SDK results are
+linked separately from current consumer execution. The consumer live run proves stored TTLs,
+source-preserving rebuild, changed host PIDs, interrupted generation resume, two concurrent Workers,
+denials and storage faults. Fixture-owned resources are gone; unrelated applications were preserved.
+An unrelated preexisting container disappeared concurrently; no operation against it was issued here.
+The initial wrong-AppHost baseline selection and overbroad orphan-generator PDB inventory are retained
+as nonqualifying diagnostics. There was no failed current-source consumer test attempt.
+
+Current p95 observations are command acknowledgement2072.554ms against1000ms, Workers
+operational delivery817.798ms against1000ms, and status read62.052ms against500ms.
+Acknowledgement remains over budget, without causal attribution or redesign. All ten prior canonical
+stages and all earlier sealed packets remain unchanged, including previous failures and latency findings.
+The incoming Builds catalog now names EventStore3.126.0; historical3.125.1/PD10 failures are preserved
+as historical results, and no current Release/package/PD10 requalification is claimed.
+
+Whole Story12.2 remains in-progress for the separately owned beyond10000 captured-identity capability
+and consumer qualification, Release/package/PD10, performance acceptance and independent approved-scope/
+whole-story review. No Git mutation, dependency/pin change, publication, deployment, retained-event
+replacement, content cleanup or publicv2 change was performed by this task.
+
+
+## Continuation verification — 2026-10-21
+
+[The continuation record](evidence/story-12-2-continuation-20261021.json) retains the exact focused
+capacity command and raw result: one passing diagnostic, zero failures/skips, 11.147 seconds. It
+confirms the existing SDK refusal after ordinary growth to 10,001; it does not close Task36. The
+approved bounded captured-identity capability still requires a separate EventStore story/session,
+followed by qualified Folders consumption. No further consumer implementation gap was identified.
+
+The initial independent audit matched all 11,998 Stage11 source/config hashes, all 546 assembly/PDB
+hashes, submodule HEADs, packet checksums and executed coverage for all five frozen matrix rows.
+Concurrent external activity then advanced submodule checkouts and changed captured source/config
+files; the final audit retains every difference. All captured binary hashes and sealed
+packet checksums still match. No new integrated-source, package or live qualification is claimed.
+
+Existing user changes, Stage11 and all prior evidence remain preserved. Only this continuation
+evidence and note were added. Story12.2 and Task36 remain in-progress/open; package/PD10, SM4
+acknowledgement performance and independent review remain open. No product source, frozen intent,
+sprint status, dependency pin, retained event, public v2 surface or Git state was changed by this run.

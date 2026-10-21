@@ -1,0 +1,141 @@
+{
+  "schema": "hexalith-folders-approved-sdk-source-qualification/v1",
+  "recorded_at_utc": "2026-10-20T19:03:44.857515+00:00",
+  "status": "Approved SDK review-five source consumption locally qualified; independent review and whole-story acceptance remain open.",
+  "full_acceptance": false,
+  "approval": "Existing approved source-deadline expiry and pending scratch recovery scope; no additional release, Git or dependency work.",
+  "sdk_packet": "../../../../references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/story-12-2-sdk-expiry-scratch/qualification-review5/qualification.json",
+  "sdk_packet_sha256": "e9bf19cb81812dfedfdc63b8106fa5e7d185fb31f94183115053f9eea84d598f",
+  "sdk_results": {
+    "client-build": {
+      "build_exit_code": 0
+    },
+    "client-focused": {
+      "total": 548,
+      "passed": 548,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0
+    },
+    "client-full": {
+      "total": 1910,
+      "passed": 1908,
+      "failed": 0,
+      "skipped": 2,
+      "errors": 0,
+      "not-run": 0
+    },
+    "domain-build": {
+      "build_exit_code": 0
+    },
+    "domain-full": {
+      "total": 1072,
+      "passed": 1072,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0
+    },
+    "live-build": {
+      "build_exit_code": 0
+    },
+    "live-expiry-scratch": {
+      "total": 59,
+      "passed": 59,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0
+    },
+    "live-read-model-batch": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0
+    },
+    "live-shared-epoch": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0
+    }
+  },
+  "sdk_live_cases": 73,
+  "sdk_worker_invocations": 20,
+  "sdk_source_audit": "sdk-packet-source-audit.json",
+  "consumer_results": {
+    "components_passed": 4248,
+    "components_failed": 0,
+    "existing_optional_domain_skips": 2,
+    "summary": "component-summary.json",
+    "commands": "components.json",
+    "live": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "live_seconds": 351.901,
+    "live_command": "live-attempt-1-result.json",
+    "live_xml": "live-attempt-1.xml",
+    "live_log": "live-attempt-1.log"
+  },
+  "consumer_source": {
+    "inventory": "source-freeze.json",
+    "source_config_files": 11998,
+    "runtime_test_pe_pdb_files": 546,
+    "pdbs": 271,
+    "pdb_source_mismatches": 0,
+    "pdb_missing_sources": 0,
+    "pdb_audit": "pdb-audit.json",
+    "full_pdb_documents": "pdb-inspection.json.gz",
+    "full_pdb_uncompressed_sha256": "b65081ce3ab7f87593d4b32c58734bfaf452cddd70f5b53339d3c76083a29d60",
+    "pe_pdb_identity": "pe-pdb-identity.json",
+    "sdk_runtime_groups": "sdk-runtime-groups.json",
+    "after_execution_audit": "after-execution-audit.json",
+    "note": "External commits advanced root and module revisions during build. Both Client and DomainService have two retained PE/PDB identity groups with identical complete current source-document sets; every exact output group is retained. SDK packet source/config hashes are unchanged."
+  },
+  "builds": "builds.json",
+  "format_and_analyzers": "format.json",
+  "restoration": "restoration.json",
+  "matrix": "matrix-audit.json",
+  "performance": "performance.json",
+  "cleanup": "cleanup.json",
+  "external_changes": "source-freeze.json",
+  "historical_evidence": "historical-audit.json",
+  "package_pd10": {
+    "status": "not requalified; separately owned",
+    "current_eventstore_catalog_version": "3.126.0",
+    "historical_gate": "../story-12-2-approved-sdk-source-qualification-20261020/qualification.json",
+    "note": "Earlier package CS0117 at3.125.1 and frozen PD10 failures remain exact-source history. Incoming Builds now pins3.126.0; no current Release/package result is inferred and no package/pin change was made by this task."
+  },
+  "remaining_acceptance": [
+    "Task36: production captured-identity histories beyond10000 and qualified separate SDK consumption",
+    "Release/package and frozen PD10 requalification",
+    "SM4 performance acceptance; all previous over-budget observations remain open without causal attribution",
+    "Independent approved-scope and whole-story review"
+  ],
+  "boundaries": [
+    "No retained event replacement, content/cleanup changes, publicv2 exposure, deployment, package publication or dependency mutation by this task.",
+    "No Git staging/commit/push/branch/submodule updates by this task; incoming external revisions preserved.",
+    "Production Redis remains Resumable; SDK forced transaction controls do not establish atomicity."
+  ],
+  "diagnostics": [
+    "diagnostics/overbroad-inventory-pdb-inspection.json.gz",
+    "baseline-summary.json"
+  ],
+  "evidence_retention": {
+    "rule": "* -text",
+    "manifest": "SHA256SUMS"
+  },
+  "consumer_spec_at_seal": {
+    "snapshot": "consumer-spec-at-seal.md",
+    "sha256": "e3be680dc0291c367bcb28c2b14d84ca7f86150d1da9af0f51f5ad6b4e803e5a",
+    "status": "in-progress"
+  }
+}

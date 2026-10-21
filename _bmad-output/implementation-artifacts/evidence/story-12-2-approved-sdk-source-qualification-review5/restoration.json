@@ -1,0 +1,156 @@
+[
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "docs/operations/retention-and-tenant-deletion.md",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "41f31ea827883cbf59d9f119021d7fd6a09b8cb020cbc9316e8328317e0b57da",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/docs/operations/retention-and-tenant-deletion.md",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/docs/operations/retention-and-tenant-deletion.md",
+    "restore_sha256": "5d97844d8d893afc319429dc9fe637f1d07d9cbd4f29af96a69211363fad1124",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "0ececd50ad1f2fa53ada33fb65466eda6390251a120ccad4183b5e5a886e2bea",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/src/Hexalith.Folders.Server/FoldersServerServiceCollectionExtensions.cs",
+    "restore_sha256": "4d5ce19712347a1ef3fc2338633dfc011cf8f00bddf5ed1e0f24214df49d1e05",
+    "external_overlap": true
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "55872a5e04072f36c8047aee8c97247c55521ddcc1edb8ed985be079a89105d3",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/src/Hexalith.Folders.Server/OperationalStatusProjectionHandler.cs",
+    "restore_sha256": "6e5745a347c64d94e45d4419ac63c4fd57dbddeac7f4dcb7cf873250c9672409",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "4ba213a389327ef44a1e37b48c76dab7105af3917bf98931164d81b7ff4f4b06",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/src/Hexalith.Folders/FoldersServiceCollectionExtensions.cs",
+    "restore_sha256": "210c5b2902d8a711e2f66bec5f089b725a937370d012744b96a890b4048d93cb",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "d4ff2c6485e40817740603843ff168ffd57641c643f8a8ec1052e9d8c85ceb77",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusProjectionWriter.cs",
+    "restore_sha256": "f09f06d17fe128efd0ec36d1c71f32faa1073de1cc2033eb1cf211cda021c425",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": false,
+    "sha256": "2f0f69053e2f87a09a7d65c72754c7f3f88cb80c31c838d3c801b6be601c8776",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/src/Hexalith.Folders/Projections/OperationalStatus/OperationalStatusTimeProvider.cs",
+    "restore_path": null,
+    "restore_sha256": null,
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.AppHost.Tests/README.md",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "eb4d240c06d91115805d870631dfc8883234de4c8ccc149406b9de859aac790e",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.AppHost.Tests/README.md",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/tests/Hexalith.Folders.AppHost.Tests/README.md",
+    "restore_sha256": "e0d8f3eeb7f6c40e52c28e97d14a00a055f50816b98571328e26e657592ac91a",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": false,
+    "sha256": "75c992694785fa4c7f988c40f9215efa8ba0a52e0a0c12eb031d4e168006fd58",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.Server.Tests/OperationalStatusPartitionCursor.cs",
+    "restore_path": null,
+    "restore_sha256": null,
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "2b5af2145df80aea351ecfb194b31f0966c308297f596ad092142207155f153b",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/tests/Hexalith.Folders.Server.Tests/OperationalStatusProjectionHandlerTests.cs",
+    "restore_sha256": "97579aff233c9bf7f431415cc24475f6b8618cb0a8da85fcfc86feeaa4c63ebb",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "26dba029d601a3624774276bd4096df8c5b548c62adc593ec6d78be3b75a1beb",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+    "restore_sha256": "f3ac2fa2095ca178c78001a16a3161aabd015c4b83b210ee8cfb36ac48280439",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "6d286b5ffa4117ad11a335ce3a38204ab0a18c285d84d841521ba4e80394db3d",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+    "restore_sha256": "75fee05200c44e1a53fefc27db797e2095d5a7b28e30e8e83ba2b4e5e5e4fd45",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": false,
+    "sha256": "bebc63d3b213ac1e71c5778712237561265a4fa8c2ebaaeb35d882cc63052027",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusClockRegistrationTests.cs",
+    "restore_path": null,
+    "restore_sha256": null,
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "49d9ad473a20cf5b59193838700d7565a46df5466b7349e5db0a25eb169d3a0f",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusRetentionTests.cs",
+    "restore_sha256": "80634b83014269b77a52f5af15b9c4e98b7de6d19a024a5a558b18fc555e4ef7",
+    "external_overlap": false
+  },
+  {
+    "repository": "/home/administrator/projects/hexalith/folders",
+    "path": "tests/shared/OperationalStatus/OperationalStatusClock.cs",
+    "baseline": "ec3523ada1b32362bf9f31c555b95c312b8df4b1",
+    "baseline_exists": true,
+    "sha256": "47acf3bb5ab6425488220158b42eaf9dfc3bb8fc44aa6b163521f83469f631b3",
+    "snapshot": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/approved-working-tree/tests/shared/OperationalStatus/OperationalStatusClock.cs",
+    "restore_path": "/tmp/story12-2-sdk-review5-keep-79zyj2r0/ordinary-restore-tree/tests/shared/OperationalStatus/OperationalStatusClock.cs",
+    "restore_sha256": "e62bc226c6f860cf6aac1b0d199049f756c6e9630d1b28c3d593d3660c09b236",
+    "external_overlap": false
+  }
+]

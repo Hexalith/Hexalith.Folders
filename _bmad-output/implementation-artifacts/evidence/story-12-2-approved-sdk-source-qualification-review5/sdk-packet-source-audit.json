@@ -1,0 +1,7 @@
+{
+  "sdk_packet_source_inputs": 3881,
+  "mismatches": [],
+  "qualified_packet_head": "c9c56cbc041d56b46721d35b933615e00591548e",
+  "current_head": "7217b5bf740b80ae92858378785b496e6b564285",
+  "note": "External commits changed revision metadata; ordinary SDK source/config hashes are identical to the qualified packet."
+}

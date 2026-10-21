@@ -1,0 +1,106 @@
+{
+  "nonqualifying_initial_selection": {
+    "apphost": "references/Hexalith.EventStore/src/Hexalith.EventStore.AppHost/Hexalith.EventStore.AppHost.csproj",
+    "folders_wait_exit_code": 18,
+    "reason": "EventStore sample topology has no Folders resource; stopped exact target before selecting Folders AppHost.",
+    "stop_exit_code": 0
+  },
+  "baseline": {
+    "apphost": "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+    "start_arguments": [
+      "aspire",
+      "start",
+      "--non-interactive",
+      "--isolated",
+      "--no-build",
+      "--apphost",
+      "src/Hexalith.Folders.AppHost/Hexalith.Folders.AppHost.csproj",
+      "--format",
+      "Json"
+    ],
+    "environment": {
+      "EnableKeycloak": "true",
+      "KeycloakPersistent": "false"
+    },
+    "folders_wait_exit_code": 0,
+    "resources": [
+      {
+        "name": "eventstore-dapr-cli",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "eventstore",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "folders-dapr-cli",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "folders",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "folders-ui-dapr-cli",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "folders-ui",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "folders-workers-dapr-cli",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "folders-workers",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "memories-dapr-cli",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "memories-graphs",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "memories",
+        "state": "Finished",
+        "health": null
+      },
+      {
+        "name": "memories-vectors",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "security",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "tenants-dapr-cli",
+        "state": "Running",
+        "health": "Healthy"
+      },
+      {
+        "name": "tenants",
+        "state": "Running",
+        "health": "Healthy"
+      }
+    ],
+    "stop_exit_code": 0
+  },
+  "note": "Raw dashboard URLs/environment maps are omitted from retained evidence."
+}

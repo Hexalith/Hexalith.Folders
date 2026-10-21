@@ -1,0 +1,72 @@
+{
+  "Hexalith.EventStore.Client.dll": {
+    "identity_groups": [
+      {
+        "pe_sha256": "774375d8fa29ac6a6b887c24a12dc1ff4ba75810b9e721c4e77e754751579466",
+        "pdb_sha256": "63fd3db432a4a086e7463b00abd0401a4d5174feb0040bc3709b7d6f2e9219e8",
+        "paths": [
+          "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "src/Hexalith.Folders/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        ],
+        "source_document_count": 281,
+        "source_document_set_digest": "30ebee49cd85e7b6eb4b3be0c215fb33d66ccf8bd3d5aa0ec8b647ed040fcd13"
+      },
+      {
+        "pe_sha256": "910e712c6212d4ca2b888b182feadbcfb9c73392a4d37a072347881816c717e8",
+        "pdb_sha256": "1c3a4f924ee449b245041eaee2619e87846a363c3668f2630d4b6001421f066d",
+        "paths": [
+          "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "src/Hexalith.Folders.Testing/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Cli.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Client.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.LoadTests.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Mcp.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Testing.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.UI.E2E.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.UI.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.Client.dll",
+          "tests/load/bin/Debug/net10.0/Hexalith.EventStore.Client.dll"
+        ],
+        "source_document_count": 281,
+        "source_document_set_digest": "30ebee49cd85e7b6eb4b3be0c215fb33d66ccf8bd3d5aa0ec8b647ed040fcd13"
+      }
+    ],
+    "complete_source_document_sets_equal": true
+  },
+  "Hexalith.EventStore.DomainService.dll": {
+    "identity_groups": [
+      {
+        "pe_sha256": "0ac8c4eedfd02a7cb9af16c50a39f8d276183d8e7318eb48a2d7bd29ec96dbe3",
+        "pdb_sha256": "8a2bb9cf2961c118e52ecc5996d6f19a49eb715e6452385e3df5bbaf65831198",
+        "paths": [
+          "src/Hexalith.Folders.EventStore/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "src/Hexalith.Folders.Server/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "src/Hexalith.Folders.Workers/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        ],
+        "source_document_count": 181,
+        "source_document_set_digest": "ba964ac4e0c599707330e068aebeb93d7b99df9471b9524190faacfa8d413e1e"
+      },
+      {
+        "pe_sha256": "9374ccd6ae1d773c8d722175f177ac810b2a2bd376b4f51b64806deb1dcfb30d",
+        "pdb_sha256": "e77fd2d274b72df5fef318be2ff479b88ce8d9ad5e1b0011429b598b6171258e",
+        "paths": [
+          "tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "tests/Hexalith.Folders.EventStore.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "tests/Hexalith.Folders.IntegrationTests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "tests/Hexalith.Folders.Server.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "tests/Hexalith.Folders.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll",
+          "tests/Hexalith.Folders.Workers.Tests/bin/Debug/net10.0/Hexalith.EventStore.DomainService.dll"
+        ],
+        "source_document_count": 181,
+        "source_document_set_digest": "ba964ac4e0c599707330e068aebeb93d7b99df9471b9524190faacfa8d413e1e"
+      }
+    ],
+    "complete_source_document_sets_equal": true
+  }
+}

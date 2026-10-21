@@ -1,0 +1,1122 @@
+[
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedHandlerPersistsAndPreparesSideEffectFreeRebuildThroughSdk",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedHandlerPersistsAndPreparesSideEffectFreeRebuildThroughSdk",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedPartitionRoundTripKeepsSourceDeadlineAfterPlanningAndCommitAreDelayedAsync",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedPartitionRoundTripKeepsSourceDeadlineAfterPlanningAndCommitAreDelayedAsync",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.UnknownOrUnsupportedSourceDoesNotPersistCompletion",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "UnknownOrUnsupportedSourceDoesNotPersistCompletion",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedRebuildPlansSealedPrefixWithoutReadingALiveHeadAsync",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedRebuildPlansSealedPrefixWithoutReadingALiveHeadAsync",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedIntakeRejectsReusedMessagePositionsAndUndefinedRejectionCodes(reusedMessage: True)",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedIntakeRejectsReusedMessagePositionsAndUndefinedRejectionCodes",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedIntakeRejectsReusedMessagePositionsAndUndefinedRejectionCodes(reusedMessage: False)",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedIntakeRejectsReusedMessagePositionsAndUndefinedRejectionCodes",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedIntakeRejectsMalformedWorkspaceOrLeaseBeforePersistence(malformedLease: False)",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedIntakeRejectsMalformedWorkspaceOrLeaseBeforePersistence",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.NamedIntakeRejectsMalformedWorkspaceOrLeaseBeforePersistence(malformedLease: True)",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "NamedIntakeRejectsMalformedWorkspaceOrLeaseBeforePersistence",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.ProductionHostRegistersDurableStatusAndKeepsLegacyResponseShape",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "ProductionHostRegistersDurableStatusAndKeepsLegacyResponseShape",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests.RetainedNameVersionAndClosedMissingVersionInventoryIsExhaustive",
+    "type": "Hexalith.Folders.Server.Tests.OperationalStatusProjectionHandlerTests",
+    "method": "RetainedNameVersionAndClosedMissingVersionInventoryIsExhaustive",
+    "result": "Pass",
+    "xml": "final-server.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.ForeignIdentityAndCorruptCheckpointFailBeforeCandidates",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "ForeignIdentityAndCorruptCheckpointFailBeforeCandidates",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.UnknownOutcomesRemainNonretryableWithoutTerminalSuccess(reconciliationRequired: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "UnknownOutcomesRemainNonretryableWithoutTerminalSuccess",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.UnknownOutcomesRemainNonretryableWithoutTerminalSuccess(reconciliationRequired: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "UnknownOutcomesRemainNonretryableWithoutTerminalSuccess",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.KeysPreserveTenantAndComponentBoundaries",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "KeysPreserveTenantAndComponentBoundaries",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.CommitTerminalEvidenceSurvivesLaterWorkspaceReleaseWithoutInventingCleanup",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "CommitTerminalEvidenceSurvivesLaterWorkspaceReleaseWithoutInventingCleanup",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.CleanExplicitReleaseClosesTaskAndDeniesNewWorkAfterEquivalentReplay",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "CleanExplicitReleaseClosesTaskAndDeniesNewWorkAfterEquivalentReplay",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.TerminalFailureCannotAdvertiseAnotherMutationAttempt",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "TerminalFailureCannotAdvertiseAnotherMutationAttempt",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, FolderAccessGranted { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, PrincipalKind = User, PrincipalId = target-principal-a, Action = read_metadata, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-access-grant-a, IdempotencyFingerprint = 4b5001789122ba98648dd990bd8b46ab389044222936f6802cb543fb3cf751b7, AccessSequence = 1, OccurredAt = 05/27/2026 10:01:00 +00:00 }, FolderAccessRevoked { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, PrincipalKind = User, PrincipalId = target-principal-a, Action = read_metadata, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-access-revoke-a, IdempotencyFingerprint = b84c30e481d9aa4931e1105b5e369357574e6920d54fd47864725881ef428090, AccessSequence = 2, OccurredAt = 05/27/2026 10:02:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = 9f144b0a200c830dd5b5605208a48acdff77d30a91fab9c8999d87db70bb36be, OccurredAt = 05/27/2026 10:03:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBindingFailed { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, FailureCategory = provider_unavailable, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-failed-a, IdempotencyFingerprint = fingerprint-idempotency-binding-failed-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }, BranchRefPolicyConfigured { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, PolicyRef = branch-ref-policy-a, DefaultRef = ref-default-safe, AllowedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ProtectedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-branch-policy-a, IdempotencyFingerprint = fingerprint-idempotency-branch-policy-a, OccurredAt = 05/27/2026 10:03:00 +00:00 }, WorkspacePreparationRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, WorkspaceId = workspace-a, RepositoryBindingId = repository-binding-a, BranchRefPolicyRef = branch-ref-policy-a, WorkspacePolicyRef = workspace-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-workspace-request-a, IdempotencyFingerprint = fingerprint-idempotency-workspace-request-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }, BranchRefPolicyConfigured { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, PolicyRef = branch-ref-policy-a, DefaultRef = ref-default-safe, AllowedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ProtectedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-branch-policy-a, IdempotencyFingerprint = fingerprint-idempotency-branch-policy-a, OccurredAt = 05/27/2026 10:03:00 +00:00 }, WorkspacePreparationRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, WorkspaceId = workspace-a, RepositoryBindingId = repository-binding-a, BranchRefPolicyRef = branch-ref-policy-a, WorkspacePolicyRef = workspace-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-workspace-request-a, IdempotencyFingerprint = fingerprint-idempotency-workspace-request-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }, BranchRefPolicyConfigured { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, PolicyRef = branch-ref-policy-a, DefaultRef = ref-default-safe, AllowedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ProtectedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-branch-policy-a, IdempotencyFingerprint = fingerprint-idempotency-branch-policy-a, OccurredAt = 05/27/2026 10:03:00 +00:00 }, WorkspacePreparationRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, WorkspaceId = workspace-a, RepositoryBindingId = repository-binding-a, BranchRefPolicyRef = branch-ref-policy-a, WorkspacePolicyRef = workspace-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-workspace-request-a, IdempotencyFingerprint = fingerprint-idempotency-workspace-request-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }, BranchRefPolicyConfigured { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, PolicyRef = branch-ref-policy-a, DefaultRef = ref-default-safe, AllowedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ProtectedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-branch-policy-a, IdempotencyFingerprint = fingerprint-idempotency-branch-policy-a, OccurredAt = 05/27/2026 10:03:00 +00:00 }, WorkspacePreparationRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, WorkspaceId = workspace-a, RepositoryBindingId = repository-binding-a, BranchRefPolicyRef = branch-ref-policy-a, WorkspacePolicyRef = workspace-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-workspace-request-a, IdempotencyFingerprint = fingerprint-idempotency-workspace-request-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }, BranchRefPolicyConfigured { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, PolicyRef = branch-ref-policy-a, DefaultRef = ref-default-safe, AllowedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ProtectedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-branch-policy-a, IdempotencyFingerprint = fingerprint-idempotency-branch-policy-a, OccurredAt = 05/27/2026 10:03:00 +00:00 }, WorkspacePreparationRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, WorkspaceId = workspace-a, RepositoryBindingId = repository-binding-a, BranchRefPolicyRef = branch-ref-policy-a, WorkspacePolicyRef = workspace-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-workspace-request-a, IdempotencyFingerprint = fingerprint-idempotency-workspace-request-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, RepositoryBound { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-repository-bound-a, IdempotencyFingerprint = fingerprint-idempotency-repository-bound-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }, BranchRefPolicyConfigured { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, PolicyRef = branch-ref-policy-a, DefaultRef = ref-default-safe, AllowedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ProtectedRefPatterns = <>z__ReadOnlySingleElementList`1[System.String], ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-branch-policy-a, IdempotencyFingerprint = fingerprint-idempotency-branch-policy-a, OccurredAt = 05/27/2026 10:03:00 +00:00 }, WorkspacePreparationRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, WorkspaceId = workspace-a, RepositoryBindingId = repository-binding-a, BranchRefPolicyRef = branch-ref-policy-a, WorkspacePolicyRef = workspace-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-workspace-request-a, IdempotencyFingerprint = fingerprint-idempotency-workspace-request-a, OccurredAt = 05/27/2026 10:04:00 +00:00 }, \u00b7\u00b7\u00b7])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, RepositoryBindingRequested { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, RepositoryProfileRef = repository-profile-a, BranchRefPolicyRef = branch-ref-policy-a, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-binding-request-a, IdempotencyFingerprint = fingerprint-idempotency-binding-request-a, OccurredAt = 05/27/2026 10:01:00 +00:00 }, ProviderOutcomeUnknown { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, RepositoryBindingId = repository-binding-a, ProviderBindingRef = provider-binding-a, ReconciliationRequired = False, OutcomeCategory = unknown_provider_outcome, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-provider-unknown-a, IdempotencyFingerprint = fingerprint-idempotency-provider-unknown-a, OccurredAt = 05/27/2026 10:02:00 +00:00 }])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.LiveDeliveryAndEmptyCheckpointReplayConverge(history: [FolderCreated { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, DisplayName = Folder A, Description = safe description, PathLabel = folder-a, Tags = System.String[], LifecycleState = Active, RepositoryBindingState = Unbound, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-create-a, IdempotencyFingerprint = 685b95a1cb1ea0aacc24861469f1b43e682d9814685baa860f7434c41821028e, OccurredAt = 05/27/2026 10:00:00 +00:00 }, FolderArchived { ManagedTenantId = tenant-a, OrganizationId = tenant-a, FolderId = folder-a, ArchiveReasonCode = CallerRequested, ActorPrincipalId = principal-a, CorrelationId = correlation-a, TaskId = task-a, IdempotencyKey = idempotency-archive-a, IdempotencyFingerprint = 91c6f81f6c7388956a07309e02b9077f8442acafd83e2565b90227e2a48c866a, OccurredAt = 05/27/2026 10:01:00 +00:00 }])",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "LiveDeliveryAndEmptyCheckpointReplayConverge",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests.ExactDuplicatesCannotAdvanceCheckpointAndDifferentBytesCannotReplaceThem",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusFoldTests",
+    "method": "ExactDuplicatesCannotAdvanceCheckpointAndDifferentBytesCannotReplaceThem",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.RepositoryOutcomesTravelFromSourceThroughDurableReaderToPublicQuery(expected: \\\"failed\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "RepositoryOutcomesTravelFromSourceThroughDurableReaderToPublicQuery",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.RepositoryOutcomesTravelFromSourceThroughDurableReaderToPublicQuery(expected: \\\"unknown_provider_outcome\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "RepositoryOutcomesTravelFromSourceThroughDurableReaderToPublicQuery",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.RepositoryOutcomesTravelFromSourceThroughDurableReaderToPublicQuery(expected: \\\"reconciliation_required\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "RepositoryOutcomesTravelFromSourceThroughDurableReaderToPublicQuery",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.MalformedAcquisitionNeverAdvancesDurableViews(fault: \\\"null-workspace\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "MalformedAcquisitionNeverAdvancesDurableViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.MalformedAcquisitionNeverAdvancesDurableViews(fault: \\\"blank-workspace\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "MalformedAcquisitionNeverAdvancesDurableViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.MalformedAcquisitionNeverAdvancesDurableViews(fault: \\\"negative-lease\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "MalformedAcquisitionNeverAdvancesDurableViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.MalformedAcquisitionNeverAdvancesDurableViews(fault: \\\"expiry-before-acquisition\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "MalformedAcquisitionNeverAdvancesDurableViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.MalformedAcquisitionNeverAdvancesDurableViews(fault: \\\"effective-mismatch\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "MalformedAcquisitionNeverAdvancesDurableViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.MalformedAcquisitionNeverAdvancesDurableViews(fault: \\\"duration-mismatch\\\")",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "MalformedAcquisitionNeverAdvancesDurableViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.ConfirmedReconciliationClearsSupersededFailureInDurableOutcome",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "ConfirmedReconciliationClearsSupersededFailureInDurableOutcome",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.CorruptOrLegacyReceiptBindingRequiresCompleteSourceRepair(missingLegacyBinding: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "CorruptOrLegacyReceiptBindingRequiresCompleteSourceRepair",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.CorruptOrLegacyReceiptBindingRequiresCompleteSourceRepair(missingLegacyBinding: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "CorruptOrLegacyReceiptBindingRequiresCompleteSourceRepair",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.CompleteSourceRepairsMissingCheckpointInheritedFromAnotherOwnersGeneration",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "CompleteSourceRepairsMissingCheckpointInheritedFromAnotherOwnersGeneration",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.DuplicateOriginalSourceCannotAcknowledgeMissingHistoricalTask(originalPosition: 1)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "DuplicateOriginalSourceCannotAcknowledgeMissingHistoricalTask",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.DuplicateOriginalSourceCannotAcknowledgeMissingHistoricalTask(originalPosition: 7)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "DuplicateOriginalSourceCannotAcknowledgeMissingHistoricalTask",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.FreshRejectionCannotAcknowledgeMissingOrCorruptPreservedWorkspace(missing: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "FreshRejectionCannotAcknowledgeMissingOrCorruptPreservedWorkspace",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests.FreshRejectionCannotAcknowledgeMissingOrCorruptPreservedWorkspace(missing: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusReviewThreeTests",
+    "method": "FreshRejectionCannotAcknowledgeMissingOrCorruptPreservedWorkspace",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.MalformedHolderAndSuccessRejectionCannotAdvanceCheckpointOrViews",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "MalformedHolderAndSuccessRejectionCannotAdvanceCheckpointOrViews",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.RejectionOnlyPrefixPublishesNoViewsThenCreationConvergesWithCompleteReplay",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "RejectionOnlyPrefixPublishesNoViewsThenCreationConvergesWithCompleteReplay",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteCurrentSourceConditionallyRepairsCorruptCheckpointAndKeepsCommandKeysOutOfStorage",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "CompleteCurrentSourceConditionallyRepairsCorruptCheckpointAndKeepsCommandKeysOutOfStorage",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync(retry: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync(retry: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "InterruptedNamedScratchBatchRetriesOrAbortsWithoutLeavingAnActiveSessionAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.RebuildCannotReplaceValidEarlierPrefixWhenTailEventIsIdentical",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "RebuildCannotReplaceValidEarlierPrefixWhenTailEventIsIdentical",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+    "method": "NamedRebuildAbortsPreDispatchFailureWithoutPublishingRowsAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.OldCoherentWorkspacePrefixCannotConcealTheCurrentSourceLock",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "OldCoherentWorkspacePrefixCannotConcealTheCurrentSourceLock",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.WorkspaceWrapperMustMatchItsSnapshotWatermarksAndRetainedPrefixDigest(corruptSequence: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "WorkspaceWrapperMustMatchItsSnapshotWatermarksAndRetainedPrefixDigest",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.WorkspaceWrapperMustMatchItsSnapshotWatermarksAndRetainedPrefixDigest(corruptSequence: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "WorkspaceWrapperMustMatchItsSnapshotWatermarksAndRetainedPrefixDigest",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.RejectionMayAdvanceCheckpointWithoutRewritingHistoricalWorkspaceOrTerminalTask",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "RejectionMayAdvanceCheckpointWithoutRewritingHistoricalWorkspaceOrTerminalTask",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.DerivedViewLossRequiresCompleteSourceRebuildWithoutErasingItsCompletedReceipt",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "DerivedViewLossRequiresCompleteSourceRebuildWithoutErasingItsCompletedReceipt",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.DuplicateDeliveryCannotAcknowledgeMissingCurrentWorkspaceOrCorruptTaskWithLifecycleIntact",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "DuplicateDeliveryCannotAcknowledgeMissingCurrentWorkspaceOrCorruptTaskWithLifecycleIntact",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.CleanupReadsRebindAuthorizedRequestTracingWithoutChangingRetainedSourceContext",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "CleanupReadsRebindAuthorizedRequestTracingWithoutChangingRetainedSourceContext",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.TaskLookupRequiresCurrentFolderAuthorityBeforeStoreObservation",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "TaskLookupRequiresCurrentFolderAuthorityBeforeStoreObservation",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.PersistedTaskResultSurvivesNewReaderAndEmptyCheckpointRebuild",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "PersistedTaskResultSurvivesNewReaderAndEmptyCheckpointRebuild",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.OldValidLifecycleCannotBePairedWithAnArchivedCurrentCheckpoint",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "OldValidLifecycleCannotBePairedWithAnArchivedCurrentCheckpoint",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.FreshRebuildRepairsMissingViewsAndRepeatedEmptyCheckpoints",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "FreshRebuildRepairsMissingViewsAndRepeatedEmptyCheckpoints",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.TaskLookupCannotObserveTaskBoundToAnotherFolder",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "TaskLookupCannotObserveTaskBoundToAnotherFolder",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment(interruption: AfterInstallOperation, interruptedOrdinal: 0)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment(interruption: AfterInstallOperation, interruptedOrdinal: 1)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment(interruption: AfterCommit, interruptedOrdinal: -1)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment(interruption: BeforeCompaction, interruptedOrdinal: 1)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment(interruption: BeforeReceipt, interruptedOrdinal: -1)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "InterruptedBatchRecoversItsOriginalManifestBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.InvalidDeliveryCannotAdvancePersistedCheckpoint",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "InvalidDeliveryCannotAdvancePersistedCheckpoint",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.ReadersDistinguishMissingLaggingUnavailableCorruptAndExpiredEvidence",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "ReadersDistinguishMissingLaggingUnavailableCorruptAndExpiredEvidence",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.IndependentWritersForTheSameDeliveryConvergeWithoutDoubleAdvance",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "IndependentWritersForTheSameDeliveryConvergeWithoutDoubleAdvance",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.MissingKnownWorkspaceAndTaskViewsFailClosedUntilRebuilt",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "MissingKnownWorkspaceAndTaskViewsFailClosedUntilRebuilt",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.TerminalTaskMustAgreeWithItsOriginalSourceClosure(corruptState: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "TerminalTaskMustAgreeWithItsOriginalSourceClosure",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests.TerminalTaskMustAgreeWithItsOriginalSourceClosure(corruptState: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusPersistenceTests",
+    "method": "TerminalTaskMustAgreeWithItsOriginalSourceClosure",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.EarliestTaskClosureSurvivesEverySliceJsonRestartAndLaterBindingClosure",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "EarliestTaskClosureSurvivesEverySliceJsonRestartAndLaterBindingClosure",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.EmptyCheckpointRebuildRejectsTruncatedSourceBeforeAnyWrite",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "EmptyCheckpointRebuildRejectsTruncatedSourceBeforeAnyWrite",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.AlteredHistoricalWorkspaceFailsAllConcernReadsAndRebuildRestoresIt",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "AlteredHistoricalWorkspaceFailsAllConcernReadsAndRebuildRestoresIt",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.RebuildRepairsEveryDamagedTerminalFieldAndRestoresAvailableResult",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "RebuildRepairsEveryDamagedTerminalFieldAndRestoresAvailableResult",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.OldDirtyTaskReadCannotAdvertiseRetryWhenCheckpointAdvancesToUnknownOutcome",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "OldDirtyTaskReadCannotAdvertiseRetryWhenCheckpointAdvancesToUnknownOutcome",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.CheckpointRejectsAlteredStateEnumsClosuresAndPositionsAfterJsonRoundTrip",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "CheckpointRejectsAlteredStateEnumsClosuresAndPositionsAfterJsonRoundTrip",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests.NewWorkspaceCannotInheritPreviousWorkspaceProviderSuccess",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCorrectionTests",
+    "method": "NewWorkspaceCannotInheritPreviousWorkspaceProviderSuccess",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ReadModelOutcomesShouldReturnSafeResults(status: \\\"Stale\\\", expectedCode: ProjectionStale, expectedReasonCode: \\\"projection_stale\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ReadModelOutcomesShouldReturnSafeResults",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ReadModelOutcomesShouldReturnSafeResults(status: \\\"Unavailable\\\", expectedCode: ProjectionUnavailable, expectedReasonCode: \\\"projection_unavailable\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ReadModelOutcomesShouldReturnSafeResults",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ReadModelOutcomesShouldReturnSafeResults(status: \\\"Malformed\\\", expectedCode: ReadModelUnavailable, expectedReasonCode: \\\"projection_malformed\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ReadModelOutcomesShouldReturnSafeResults",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ReadModelOutcomesShouldReturnSafeResults(status: \\\"NotFound\\\", expectedCode: NotFoundSafe, expectedReasonCode: null)",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ReadModelOutcomesShouldReturnSafeResults",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MissingFolderScopeShouldFailBeforeProtectedTaskLookup",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MissingFolderScopeShouldFailBeforeProtectedTaskLookup",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ClientTenantMismatchShouldRejectBeforeTenantProjectionLookup",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ClientTenantMismatchShouldRejectBeforeTenantProjectionLookup",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedContractSnapshotsShouldFailClosed(malformedField: \\\"invalid-lifecycle\\\", expectedReason: \\\"lifecycle_state_invalid\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedContractSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedContractSnapshotsShouldFailClosed(malformedField: \\\"invalid-operation\\\", expectedReason: \\\"operation_identifier_invalid\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedContractSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedContractSnapshotsShouldFailClosed(malformedField: \\\"invalid-failure-category\\\", expectedReason: \\\"canonical_category_invalid\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedContractSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedContractSnapshotsShouldFailClosed(malformedField: \\\"invalid-action\\\", expectedReason: \\\"snapshot_scope_mismatch\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedContractSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedContractSnapshotsShouldFailClosed(malformedField: \\\"invalid-retry-after\\\", expectedReason: \\\"projection_malformed\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedContractSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.TenantDenialShouldNotTouchReadModel",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "TenantDenialShouldNotTouchReadModel",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence(currentState: \\\"failed\\\", terminalState: \\\"failed\\\", lastFailureCategory: \\\"failed_operation\\\", retryEligible: True, retryReason: \\\"failed_operation\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence(currentState: \\\"unknown_provider_outcome\\\", terminalState: \\\"unknown_provider_outcome\\\", lastFailureCategory: \\\"unknown_provider_outcome\\\", retryEligible: False, retryReason: \\\"unknown_provider_outcome\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence(currentState: \\\"reconciliation_required\\\", terminalState: \\\"reconciliation_required\\\", lastFailureCategory: \\\"reconciliation_required\\\", retryEligible: False, retryReason: \\\"reconciliation_required\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "SuccessfulSnapshotsShouldReturnMetadataOnlyTaskEvidence",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedIdentifiersShouldNotTouchTenantProjectionOrReadModel(taskId: \\\"bad task\\\", correlationId: \\\"corr-a\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedIdentifiersShouldNotTouchTenantProjectionOrReadModel",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedIdentifiersShouldNotTouchTenantProjectionOrReadModel(taskId: \\\"task-a\\\", correlationId: \\\"bad correlation\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedIdentifiersShouldNotTouchTenantProjectionOrReadModel",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ClaimTransformDenialShouldNotTouchTenantProjectionOrReadModel",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ClaimTransformDenialShouldNotTouchTenantProjectionOrReadModel",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.ReadModelExceptionsShouldFailClosed",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "ReadModelExceptionsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.AuthenticationFailureShouldNotTouchTenantProjectionOrReadModel",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "AuthenticationFailureShouldNotTouchTenantProjectionOrReadModel",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant(identityClaim: \\\"read_task_status\\\", folderGrant: \\\"read_metadata\\\", allowed: True)",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant(identityClaim: \\\"read_metadata\\\", folderGrant: \\\"read_metadata\\\", allowed: False)",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant(identityClaim: \\\"read_task_status\\\", folderGrant: \\\"read_workspace_status\\\", allowed: False)",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "TaskInspectionRequiresItsOwnClaimAndExistingFolderReadGrant",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedAvailableSnapshotsShouldFailClosed(tenantId: \\\"tenant-b\\\", taskId: \\\"task-a\\\", expectedReason: \\\"snapshot_scope_mismatch\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedAvailableSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedAvailableSnapshotsShouldFailClosed(tenantId: \\\"tenant-a\\\", taskId: \\\"task-b\\\", expectedReason: \\\"snapshot_scope_mismatch\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedAvailableSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests.MalformedAvailableSnapshotsShouldFailClosed(tenantId: \\\"tenant-a\\\", taskId: \\\"task-a\\\", expectedReason: \\\"snapshot_stale\\\")",
+    "type": "Hexalith.Folders.Tests.Queries.Folders.TaskStatusQueryHandlerTests",
+    "method": "MalformedAvailableSnapshotsShouldFailClosed",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync(minutes: 5, expected: Available)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync(minutes: 6, expected: Unavailable)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "ReaderAllowsOnlyFiveMinutesOfLocalClockLagAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.BoundaryExpiresViewsEvidenceAndPositionRowsWithoutRefreshingTerminalMetadataAsync",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "BoundaryExpiresViewsEvidenceAndPositionRowsWithoutRefreshingTerminalMetadataAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.StagedSdkManifestCannotInstallRowsAfterTheirOriginalSourceDeadlineAsync",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "StagedSdkManifestCannotInstallRowsAfterTheirOriginalSourceDeadlineAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.HostAheadTerminalExpiryRetainsItsOriginalPositionEvidenceUntilTheSameBoundaryAsync",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "HostAheadTerminalExpiryRetainsItsOriginalPositionEvidenceUntilTheSameBoundaryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.PhysicalExpiryOfBothViewAndEvidenceIsMissingWhileSurvivingEvidenceIsUnavailableAsync",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "PhysicalExpiryOfBothViewAndEvidenceIsMissingWhileSurvivingEvidenceIsUnavailableAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests.DomainHostAheadOfPersistenceClockCanCloseAndRebuildATaskAsync",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusRetentionTests",
+    "method": "DomainHostAheadOfPersistenceClockCanCloseAndRebuildATaskAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests.ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync(registration: 0, inherited: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+    "method": "ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests.ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync(registration: 0, inherited: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+    "method": "ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests.ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync(registration: 1, inherited: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+    "method": "ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests.ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync(registration: 1, inherited: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+    "method": "ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests.ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync(registration: 2, inherited: False)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+    "method": "ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests.ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync(registration: 2, inherited: True)",
+    "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusClockRegistrationTests",
+    "method": "ConfiguredClockPreservesCurrentViewsThroughExpiryRebuildAndFurtherDeliveryAsync",
+    "result": "Pass",
+    "xml": "final-domain.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"tenant:invalid\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"system\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser(tenant: \\\"provider-binding-0123456789abcdef\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "InvalidMaintenanceTenantReturnsBadRequestWithoutCallingEraser",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.OrganizationResetErasesOnlyOrganizationRowAndAuditsMetadata",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "OrganizationResetErasesOnlyOrganizationRowAndAuditsMetadata",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment(operationalUnavailable: False)",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment(operationalUnavailable: True)",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "FolderCallbackRequiresOperationalPersistenceBeforeAcknowledgment",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(writeConflict: False)",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted(writeConflict: True)",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "ConcurrentDeliveryReevaluatesUntilPrecedingWriteIsPersisted",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"row-remaining\\\", expected: Conflict, outcome: \\\"row_remaining\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"etag-conflict\\\", expected: Conflict, outcome: \\\"etag_conflict\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"inspect-failure\\\", expected: ServiceUnavailable, outcome: \\\"unavailable\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"erase-failure\\\", expected: ServiceUnavailable, outcome: \\\"unavailable\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited(scenario: \\\"read-back-failure\\\", expected: ServiceUnavailable, outcome: \\\"unavailable\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MaintenanceConflictsAndStoreFailuresRemainClosedAndAudited",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "ProjectionFailureLogsOnlyFixedStageCategoryAndRuntimeTypeBeforeRetryableResponse",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing(writeConflict: False)",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing(writeConflict: True)",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "UnresolvedConcurrentDeliveryFailsWithinBudgetWithoutAdvancing",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.AuthenticatedBaselineAndGrantShouldReachSharedPermissionState",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "AuthenticatedBaselineAndGrantShouldReachSharedPermissionState",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: False, malformedKind: \\\"missing\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: True, malformedKind: \\\"missing\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: False, malformedKind: \\\"-1\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: True, malformedKind: \\\"-1\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: False, malformedKind: \\\"4\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays(revoke: True, malformedKind: \\\"4\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedRetainedPrincipalKindsLeaveRowsUnchangedAndExplicitV1UserStillReplays",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(scenario: \\\"grant\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(scenario: \\\"revoke\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests.MalformedOrganizationStreamLeavesPersistedProjectionUnchanged(scenario: \\\"repeated-baseline\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.WorkersOrganizationAclRouteTests",
+    "method": "MalformedOrganizationStreamLeavesPersistedProjectionUnchanged",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.IndeterminatePersistenceIsRetryableAndOriginalManifestRecovers",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "IndeterminatePersistenceIsRetryableAndOriginalManifestRecovers",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.UnsupportedStoredVersionCannotAdvanceCheckpoint(version: 0)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.UnsupportedStoredVersionCannotAdvanceCheckpoint(version: 2)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.UnsupportedStoredVersionCannotAdvanceCheckpoint(version: 1025)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "UnsupportedStoredVersionCannotAdvanceCheckpoint",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.InvalidProviderRejectionNeverCreatesSourceReceipts(code: \\\"Accepted\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "InvalidProviderRejectionNeverCreatesSourceReceipts",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.InvalidProviderRejectionNeverCreatesSourceReceipts(code: \\\"999\\\")",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "InvalidProviderRejectionNeverCreatesSourceReceipts",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.DurableCheckpointPrecedesSuccessfulProcessingAndDuplicateAcknowledgment",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "DurableCheckpointPrecedesSuccessfulProcessingAndDuplicateAcknowledgment",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion(malformedLease: False)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion(malformedLease: True)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "MalformedWorkspaceOrLeaseNeverAdvancesWorkerCompletion",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes(reusedMessage: True)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  },
+  {
+    "name": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests.WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes(reusedMessage: False)",
+    "type": "Hexalith.Folders.Workers.Tests.FoldersOperationalStatusEventProcessorTests",
+    "method": "WorkerRejectsReusedMessagePositionsAndUndefinedRejectionCodes",
+    "result": "Pass",
+    "xml": "final-workers.xml"
+  }
+]
