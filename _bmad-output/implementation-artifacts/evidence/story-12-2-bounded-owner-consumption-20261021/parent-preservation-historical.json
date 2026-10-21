@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/parent-tools/audit-preservation.py",
+    "historical"
+  ],
+  "observed_at_utc": "2026-10-21T19:04:18.688854+00:00",
+  "count": 25017,
+  "drift": [],
+  "passed": true
+}

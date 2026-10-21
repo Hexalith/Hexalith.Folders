@@ -1,0 +1,21 @@
+{
+  "observed_at_utc": "2026-10-21T19:09:56.926448+00:00",
+  "command": [
+    "git",
+    "diff",
+    "12ed2391955960efe696078bd0c56e79c88edf9e",
+    "--",
+    "_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/README.md",
+    "tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs",
+    "tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs",
+    "tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs"
+  ],
+  "scope": "Task36 source/documentation changes from actual startingHEAD; staged index untouched. Original whole-story baseline and independent review remain open.",
+  "diff_file": "/tmp/folders-task36-final-source-ylu_cwze.patch",
+  "retained_copy": "parent-task36-source.patch",
+  "sha256": "d8d84b3c52e74545043522e878a64157ff048f58f7b000d29d32dcbf653cb489",
+  "bytes": 73350
+}

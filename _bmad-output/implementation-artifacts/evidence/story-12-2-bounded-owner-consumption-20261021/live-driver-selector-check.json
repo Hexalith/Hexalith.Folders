@@ -1,0 +1,12 @@
+{
+  "command": [
+    "python3",
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/live.py",
+    "selector-negative-check",
+    "capacity",
+    "32769"
+  ],
+  "exit_code": 1,
+  "stderr": "Traceback (most recent call last):\n  File \"/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/live.py\", line 8, in <module>\n    assert lane=='capacity' and sys.argv[3]=='10001', 'Only the configured10001 HTTP case can be selected;32769 coverage is component/SDK evidence.'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: Only the configured10001 HTTP case can be selected;32769 coverage is component/SDK evidence.\n",
+  "no_live_execution_or_log_created": true
+}

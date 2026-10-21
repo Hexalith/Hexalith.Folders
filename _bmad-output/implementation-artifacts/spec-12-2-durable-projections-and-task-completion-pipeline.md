@@ -624,3 +624,24 @@ case at 10,001 is useful consumer integration evidence. A second synthetic HTTP 
 not a separate required gate; if not executed, report it explicitly and retain the component/SDK
 coverage distinction. This clarifies the nonfrozen execution note; it changes no required size,
 identity, source continuity, CAS, generation, batch, live acceptance or whole-story gate.
+
+## Task 36 implementation checkpoint — 2026-10-21 (qualification incomplete)
+
+The [new consumer packet](evidence/story-12-2-bounded-owner-consumption-20261021/README.md)
+retains the bounded-part transport and durable-phase resume implementation, positive production-handler
+component cases at10,001/32,769 positions, and4,249 frozen-graph component passes with the same two
+optional Domain skips. No complete authenticated live case passed. Partial staging/recovery/Abort
+observations are explicitly diagnostic; Task36 remains unchecked and Story12.2 stays in-progress.
+
+Strict live attempts retained internal actor429, a canonical process-stop timeout and Dapr watcher
+ENOSPC failures without weakened assertions/deadlines/retry limits. Shared inotify headroom fell to35;
+no quota or unrelated process was changed. Complete strict and added10,001 HTTP acceptance remain open.
+
+Concurrent external `/pushall` activity advanced root/SDK HEAD/index and dependency gitlinks, with
+substantive source changes after the frozen build. Observed-at heads are root
+`4b8822289b774b351d5c520ec1b6a25e404eb8b0` and SDK
+`c91f520270388080b950feb869c68b43964285f3`. All546 frozen PE/PDB files remain unchanged; exact
+original drifted inputs and generated source bytes are preserved. The current checkout is not qualified.
+The implementation agent issued no staging, commit, push, branch or dependency-update operations
+and made no SDK production-source edits.
+SDK broad regressions, package/PD10, SM4 and independent scoped/whole-story review remain separate gates.

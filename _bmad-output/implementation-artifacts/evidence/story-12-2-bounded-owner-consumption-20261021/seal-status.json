@@ -1,0 +1,12 @@
+{
+  "observed_at_utc": "2026-10-21T19:12:57.558309+00:00",
+  "command": [
+    "python3",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/seal.py",
+    "seal"
+  ],
+  "status": "Byte-sealed incomplete qualification; sealing does not close Task36 or live/review gates.",
+  "task36_source_consumption_qualified": false,
+  "current_checkout_qualified": false,
+  "whole_story_accepted": false
+}

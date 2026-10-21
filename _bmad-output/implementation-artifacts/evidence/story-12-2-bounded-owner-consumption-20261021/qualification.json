@@ -1,0 +1,419 @@
+{
+  "schema": "hexalith-folders-task36-frozen-consumer/v1",
+  "recorded_at_utc": "2026-10-21T19:10:52.716336+00:00",
+  "status": "Implementation and component qualification retained; authenticated live qualification incomplete.",
+  "task36_source_consumption_qualified": false,
+  "current_checkout_qualified": false,
+  "whole_story_accepted": false,
+  "frozen_graph": {
+    "build": 7,
+    "configuration": "Debug; UseHexalithProjectReferences=true; UseNuGetDeps=false",
+    "source_config_inputs": 12025,
+    "pe_pdb_files": 546,
+    "root_head": "12ed2391955960efe696078bd0c56e79c88edf9e",
+    "sdk_head": "ae917d3e4dbab20b8982c5222a13611c3e3faf35",
+    "inventory": "source-freeze.json",
+    "exact_pe_pdb_and_harness_bytes": "final-build7-byte-archive.json"
+  },
+  "components": {
+    "passed": 4249,
+    "failed": 0,
+    "unchanged_optional_domain_skips": 2,
+    "lanes": {
+      "domain": {
+        "total": 2190,
+        "passed": 2188,
+        "failed": 0,
+        "skipped": 2,
+        "xml": "final-domain-build7.xml"
+      },
+      "server": {
+        "total": 1056,
+        "passed": 1056,
+        "failed": 0,
+        "skipped": 0,
+        "xml": "components-final/final-server.xml"
+      },
+      "workers": {
+        "total": 161,
+        "passed": 161,
+        "failed": 0,
+        "skipped": 0,
+        "xml": "components-final/final-workers.xml"
+      },
+      "apphost-helpers": {
+        "total": 22,
+        "passed": 22,
+        "failed": 0,
+        "skipped": 0,
+        "xml": "final-apphost-helpers-build7.xml"
+      },
+      "docs": {
+        "total": 28,
+        "passed": 28,
+        "failed": 0,
+        "skipped": 0,
+        "xml": "components-final/final-docs.xml"
+      },
+      "integration": {
+        "total": 794,
+        "failed": 0,
+        "passed": 794,
+        "skipped": 0,
+        "log": "components-final/integration.log"
+      }
+    },
+    "command_receipts": [
+      "components-final/components.json",
+      "component-build7-results.json"
+    ],
+    "unchanged_other_component_outputs": "component-binary-continuity-build7.json"
+  },
+  "large_history_components": [
+    {
+      "id": "e0f6c204-3599-415c-af34-b7a219527d93",
+      "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(count: 10001)",
+      "result": "Pass",
+      "time": "15.286",
+      "time-rtf": "00:00:15.2860000",
+      "start-rtf": "2026-10-21T18:39:30.8382609+00:00",
+      "finish-rtf": "2026-10-21T18:39:46.1250054+00:00",
+      "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+      "method": "CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues",
+      "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "source-line": "18"
+    },
+    {
+      "id": "65b54897-83f3-4183-a6a3-234d755d1cda",
+      "name": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests.CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(count: 32769)",
+      "result": "Pass",
+      "time": "47.474",
+      "time-rtf": "00:00:47.4739999",
+      "start-rtf": "2026-10-21T18:39:46.1251248+00:00",
+      "finish-rtf": "2026-10-21T18:40:33.5979743+00:00",
+      "type": "Hexalith.Folders.Tests.Projections.OperationalStatus.OperationalStatusCapacityTests",
+      "method": "CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues",
+      "source-file": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs",
+      "source-line": "18"
+    }
+  ],
+  "coverage_map": [
+    {
+      "property": "Complete original owners at10001/32769,98 historical tasks,growth/repeated rebuild,inherited generations,original identity conflicts",
+      "evidence": "final-domain-build7.xml",
+      "boundary": "Actual Folders dispatcher/handler and supported bounded protocol DTOs with in-memory conditional store; no overlapping CAS race claimed from Task.WhenAll alone."
+    },
+    {
+      "property": "Buffered large-owner Dapr,controlled concurrency,true mid-stage and partial multi-owner handoff",
+      "evidence": "sdk-reused-evidence.json",
+      "boundary": "Previously executed SDK coverage, explicitly reused; not fresh Folders execution."
+    },
+    {
+      "property": "Authenticated Folders HTTP large-history staging/process replacement/Abort",
+      "evidence": "capacity-attempt-5-diagnosis.json",
+      "boundary": "Failed complete case:10001 Stage499.334s; changed main managed-host PIDs; wrong phase replay rejected; Abort496.642s Completed. No large HTTP pass or32769 HTTP execution claimed."
+    },
+    {
+      "property": "Corrected phase resumption,real retained source,six-concern rebuild,retention,ordinary-write substeps",
+      "evidence": "real-provider-attempt-2-diagnosis.json",
+      "boundary": "Partial failed strict run; later canonical eventstore stop timed out. Proof-a80102/proof-b80063 are DCP launcher IDs; actual proof managed-host identities were not obtained."
+    }
+  ],
+  "live": {
+    "complete_case_passes": 0,
+    "attempts": [
+      {
+        "lane": "capacity",
+        "attempt": 1,
+        "result": "capacity-live-attempt-1-result.json",
+        "exit_code": 1,
+        "seconds": 143.03456926345825,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "06be0720-b977-406b-8c2d-ba6c6df0e6b7",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "17:32:33",
+            "start-rtf": "2026-10-21T17:32:33.2452524+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T17:34:56.0661257+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "142.828",
+            "time-rtf": "00:02:22.8280000",
+            "total": "1"
+          }
+        ]
+      },
+      {
+        "lane": "capacity",
+        "attempt": 2,
+        "result": "capacity-live-attempt-2-result.json",
+        "exit_code": 58,
+        "seconds": 306.76533484458923,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "0080e59a-8dfc-4ff1-8538-fee8a93e15ba",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "17:36:41",
+            "start-rtf": "2026-10-21T17:36:41.1451100+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T17:41:47.6945434+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "306.567",
+            "time-rtf": "00:05:06.5670000",
+            "total": "1"
+          }
+        ]
+      },
+      {
+        "lane": "capacity",
+        "attempt": 3,
+        "result": "capacity-live-attempt-3-result.json",
+        "exit_code": 1,
+        "seconds": 62.91165518760681,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "85e483cd-5be3-4281-8ed7-3475c9863ab5",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "17:46:19",
+            "start-rtf": "2026-10-21T17:46:19.8437863+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T17:47:22.4831345+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "62.643",
+            "time-rtf": "00:01:02.6430000",
+            "total": "1"
+          }
+        ]
+      },
+      {
+        "lane": "capacity",
+        "attempt": 4,
+        "result": "capacity-live-attempt-4-result.json",
+        "exit_code": 1,
+        "seconds": 936.5073053836823,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "f7eb8521-4e13-4051-b1c4-d75dbf9d63b7",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "17:51:44",
+            "start-rtf": "2026-10-21T17:51:44.7787350+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "2",
+            "finish-rtf": "2026-10-21T18:07:21.0660858+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "936.335",
+            "time-rtf": "00:15:36.3350000",
+            "total": "2"
+          }
+        ]
+      },
+      {
+        "lane": "capacity",
+        "attempt": 5,
+        "result": "capacity-live-attempt-5-result.json",
+        "exit_code": 1,
+        "seconds": 1358.1267685890198,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "6fbdac3f-e151-45f9-a6b7-1813f3f58421",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "18:13:35",
+            "start-rtf": "2026-10-21T18:13:35.9326615+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T18:36:13.8330234+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "1357.960",
+            "time-rtf": "00:22:37.9600000",
+            "total": "1"
+          }
+        ]
+      },
+      {
+        "lane": "real-provider",
+        "attempt": 1,
+        "result": "real-provider-live-attempt-1-result.json",
+        "exit_code": 1,
+        "seconds": 227.06181120872498,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "72701bed-3ca0-45d0-9c2b-a15791a395d2",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "18:41:17",
+            "start-rtf": "2026-10-21T18:41:17.8947198+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T18:45:04.6021876+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "226.718",
+            "time-rtf": "00:03:46.7180000",
+            "total": "1"
+          }
+        ]
+      },
+      {
+        "lane": "real-provider",
+        "attempt": 2,
+        "result": "real-provider-live-attempt-2-result.json",
+        "exit_code": 1,
+        "seconds": 258.7140018939972,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "0104841f-4e25-46a6-8618-f9e2758c3daa",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "18:47:02",
+            "start-rtf": "2026-10-21T18:47:02.5602317+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T18:51:20.8130057+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "258.248",
+            "time-rtf": "00:04:18.2480000",
+            "total": "1"
+          }
+        ]
+      },
+      {
+        "lane": "real-provider",
+        "attempt": 3,
+        "result": "real-provider-live-attempt-3-result.json",
+        "exit_code": 1,
+        "seconds": 156.59027457237244,
+        "assemblies": [
+          {
+            "environment": "64-bit (x64) .NET 10.0.13 [collection-per-class, parallel (collections, 14 threads)]",
+            "id": "7c5a9def-4744-4a5f-b418-98f4703de4ef",
+            "name": "/home/administrator/projects/hexalith/folders/tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll",
+            "run-date": "2026-10-21",
+            "run-time": "18:53:32",
+            "start-rtf": "2026-10-21T18:53:32.0395830+00:00",
+            "test-framework": "xUnit.net v3 4.0.2+0c7aa4991f",
+            "target-framework": ".NETCoreApp,Version=v10.0",
+            "errors": "0",
+            "failed": "1",
+            "finish-rtf": "2026-10-21T18:56:08.2674682+00:00",
+            "not-run": "0",
+            "passed": "0",
+            "skipped": "0",
+            "time": "156.234",
+            "time-rtf": "00:02:36.2340000",
+            "total": "1"
+          }
+        ]
+      }
+    ],
+    "blocked_by": "Dapr component watcher ENOSPC at near-exhausted shared inotify quota.",
+    "observation": "live-continuation-decision.json",
+    "cleanup": "all-attempts-cleanup.json",
+    "remaining": [
+      "One complete strict real-provider pass with unchanged assertions/deadlines/retry limits.",
+      "One complete added10001 synthetic HTTP test on the frozen candidate; no32769 Folders HTTP claim is required."
+    ]
+  },
+  "source_binding": {
+    "initial_parent_audit": "parent-source-binding-build7/summary.json",
+    "portable_pdbs": 271,
+    "ordinary_document_copies": 37784,
+    "generated_document_copies": 3273,
+    "archived_generated_sources": 457,
+    "generated_metadata_disk_copy_differences": 18,
+    "post_external_drift": "after-execution-audit.json",
+    "external_input_paths": 172,
+    "authored_documentation_paths": [
+      "tests/Hexalith.Folders.AppHost.Tests/README.md"
+    ],
+    "current_binary_differences": 0,
+    "recovered_originals": [
+      "parent-preservation-external-recovery-strict3.json",
+      "parent-external-drift-final-additional-recovery.json"
+    ],
+    "runtime_identity_audit": "parent-runtime-binding-audit.json",
+    "note": "Frozen original bytes preserve executed-source binding; current source checksum mismatch is real and current checkout is not qualified."
+  },
+  "external_git_mutation": {
+    "evidence": "parent-external-git-state.json",
+    "latest_head_observation": "head-observation-at-handoff.json",
+    "observed_at_utc": "2026-10-21T19:08:06.986787+00:00",
+    "observed_root_head": "4b8822289b774b351d5c520ec1b6a25e404eb8b0",
+    "observed_sdk_head": "c91f520270388080b950feb869c68b43964285f3",
+    "note": "Concurrent external pushall changed root/SDK HEAD/index and dependency gitlinks; this implementation agent issued no staging, commit, push, branch or dependency-update operations. Do not infer unchanged global Git state."
+  },
+  "sdk_reuse": {
+    "evidence": "sdk-reused-evidence.json",
+    "mandatory_cases": 74,
+    "sdk_broad_gate_qualified": false,
+    "original_prebuild_audit": "sdk-prebuild-audit.json",
+    "pre_external_after_build_audit": "sdk-after-build7-audit.json",
+    "current_sdk_checkout": "Substantively changed externally after build7; not qualified by original-candidate evidence."
+  },
+  "bounds": {
+    "recoverable_batch_operations": 100,
+    "canonical_manifest_bytes": 1048576,
+    "qualification_event_admission": 40000,
+    "transport_page_events": 256,
+    "capacity_phase_budget_minutes": 15,
+    "note": "SDK instrumented run-wide bounds are reused separately. Redis observations are point-in-time hash-value/key counts, not an instrumented observer of all Folders physical writes or canonical batches."
+  },
+  "preservation": {
+    "historical": "parent-preservation-historical.json",
+    "historical_files": 25017,
+    "archived_source_filtering": "parent-preservation-archived-source-filtering.json",
+    "attributes": ".gitattributes",
+    "parent_verification": "parent-task36-verification.json",
+    "final_source_diff": "parent-task36-final-diff.json",
+    "exact_source_patch": "parent-task36-source.patch"
+  },
+  "open_gates": [
+    "Task36 authenticated live qualification",
+    "Current integrated source after external SDK/dependency changes",
+    "SDK broad regression gate",
+    "Release/package/PD10",
+    "SM4 performance acceptance retaining historical observations",
+    "Independent scoped and whole-story review"
+  ]
+}

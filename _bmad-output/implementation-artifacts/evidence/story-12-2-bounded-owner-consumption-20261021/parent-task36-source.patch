@@ -1,0 +1,904 @@
+diff --git a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+index 02542c33..b594a566 100644
+--- a/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
++++ b/_bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md
+@@ -111,7 +111,7 @@ context:
+ - [x] Review-three actual target readiness: Forgejo readiness/provider and workspace preparation seams/tests must observe the exact authorized bound repository metadata/required permission before advertising usable WorkspacePreparation and appending WorkspacePrepared. Reuse existing target resolver/HTTP binding/observation seams where applicable. Generic authenticated-user/version flags alone are insufficient. Deleted/inaccessible/wrong target or denied permission cannot append prepared success; keep private context outside source/projection/evidence and preserve unsupported/create/bind discovery behavior. Cover real target denial in the disposable-provider lane.
+ - [x] Review-three direct source corrections: reject null/blank identifiers for every workspace-bearing retained event and invalid acquisition/effective/expiry/lease consistency before persistence; do not change lawful retained identities. Confirmed reconciliation to committed clears superseded failure metadata while preserving earliest source-owned closure. Add red/green durable reader/Worker/named-intake regressions for these demonstrated cases.
+ - [x] Review-three verification gaps: source→persisted durable reader→public lifecycle query tests pin repository failed/unknown/reconciliation vocabulary; normal authenticated Worker route tests assert operational checkpoint/views before successful acknowledgement and a retry response on injected operational persistence failure. Keep current real opted-in acceptance strict.
+-- [ ] Review-three SDK history prerequisite: qualify the true production named/shared dispatcher after ordinary growth beyond10,000 retained positions (at least10,001 followed by complete rebuild, duplicate identity proof and further growth). Existing SDK captured-event vectors hard-stop at10,000 independently of dispatch options. Do not raise/drop limits or identity checks, invent a local owner-partition protocol, or impose a domain history cap. If no existing public bounded SDK seam handles this, leave acceptance open and report the exact missing generic bounded captured-identity/checkpoint-handoff capability with a concrete safe prerequisite proposal; additional SDK protocol/schema/public-surface work is not authorized by the minimal mapper exception. Finish independently authorized corrections and report the blocker without claiming completion.
++- [ ] Task 36 / approved SDK bounded owner-identity consumption: verify the exact separately implemented EventStore candidate against its source/binary packet before building; replace the obsolete expected-refusal diagnostic with positive qualification through the production named/shared dispatcher and existing Folders handler. Use Debug project references, supported AccumulatePart/AccumulateComplete transport and MaxRebuildEventCount=40000. Prove complete 10,001/32,769-position histories, further growth/repeated rebuild, historical duplicate/conflicting identities, multiple original owners, catch-up, concurrency, inherited generations, interrupted promotion/process replacement. Reuse independently bound SDK coverage explicitly where appropriate. Preserve original histories, identity/continuity/CAS/generation checks and 100-operation/one-MiB limits. Run relevant consumer regressions and authenticated live acceptance; retain exact commands/results, loaded identities, hashes, PIDs and cleanup in a new packet. Keep SDK broad-regression failure, package/PD10, SM4 and independent-review gates distinct; whole story stays in-progress.
+ 
+ - [x] Round-four command path (replace, do not patch): remove the operational branch from legacy `/project` in `FoldersDomainServiceEndpoints.cs` and delete `OperationalStatusRebuild.cs` with its fixture. `/project` returns the legacy response regardless of operational state. Workers live delivery is the only live writer; rebuild and repair run only through the SDK-driven named `/project/rebuild/shared/v1` transport, which owns session Begin/Abort/Verify. Move tests that relied on `/project` repair to that transport.
+ - [x] Round-four named rebuild: in `OperationalStatusProjectionHandler.cs`, validate each partition history as a contiguous 1..N prefix bound to the SDK-sealed capture. Never compare it with a live head; appends after capture reach the new generation through SDK catch-up.
+@@ -586,3 +586,62 @@ Existing user changes, Stage11 and all prior evidence remain preserved. Only thi
+ evidence and note were added. Story12.2 and Task36 remain in-progress/open; package/PD10, SM4
+ acknowledgement performance and independent review remain open. No product source, frozen intent,
+ sprint status, dependency pin, retained event, public v2 surface or Git state was changed by this run.
++
++
++## Active Task 36 resumption — 2026-10-21
++
++The user explicitly resumed only Folders source-consumption qualification after the separate bounded
++owner-identity implementation. Read the SDK spec and final evidence README under
++`references/Hexalith.EventStore/_bmad-output/implementation-artifacts/`. The supported final SDK packet
++is `evidence/folders-12-2-bounded-owner-identity/run-20261021T152119Z` there. Its 74/74 mandatory
++cases and six passing process scenarios are SDK evidence; its broad regression gate remains failed
++(`qualified: false`). Do not report those as newly executed Folders coverage.
++
++Before any build in this resumption, the parent verified all 3,654 source hashes, 86 binary/PDB hashes
++and 108 packet hashes with zero drift. Exact prebuild results and original inventories are preserved in
++[evidence/story-12-2-bounded-owner-consumption-20261021/sdk-prebuild-audit.json](evidence/story-12-2-bounded-owner-consumption-20261021/sdk-prebuild-audit.json).
++New consumer evidence belongs in that new directory; preserve every historical packet and user change.
++The starting Folders HEAD is `12ed2391955960efe696078bd0c56e79c88edf9e`; SDK HEAD is
++`ae917d3e4dbab20b8982c5222a13611c3e3faf35` plus its captured uncommitted prerequisite.
++The supported full Debug/source graph must remain separate from package/release. No SDK source edits,
++dependency pins, staging, commits, push, publication, deployment or public v2 exposure are authorized.
++Do not rewrite retained source events, split owners, add a Folders persistence protocol or impose a
++history cap. Use the existing Folders production handler. Complete Task 36 qualification and its
++evidence now; preserve other already-qualified behavior and report separately open package/PD10,
++SM4 and independent whole-story review gates. Relevant component and authenticated live acceptance
++checks must execute on current binaries. Existing SDK process coverage may establish generic protocol
++properties with explicit provenance; Folders coverage must establish its actual handler/dispatcher
++and supported transport at the two required sizes.
++
++
++Task 36 coverage composition clarification (2026-10-21): the user explicitly permits reuse of
++SDK evidence. Both required sizes must execute through the real Folders handler and production
++dispatcher with supported bounded transport; the current consumer component tests do this using
++the SDK protocol DTOs and enforced batch implementation. The exact SDK buffered-owner Dapr cases
++independently qualify persistence and true interrupted handoff at both sizes. The unchanged strict
++Folders authenticated real-provider acceptance must also pass. An additional synthetic Folders HTTP
++case at 10,001 is useful consumer integration evidence. A second synthetic HTTP case at 32,769 is
++not a separate required gate; if not executed, report it explicitly and retain the component/SDK
++coverage distinction. This clarifies the nonfrozen execution note; it changes no required size,
++identity, source continuity, CAS, generation, batch, live acceptance or whole-story gate.
++
++## Task 36 implementation checkpoint — 2026-10-21 (qualification incomplete)
++
++The [new consumer packet](evidence/story-12-2-bounded-owner-consumption-20261021/README.md)
++retains the bounded-part transport and durable-phase resume implementation, positive production-handler
++component cases at10,001/32,769 positions, and4,249 frozen-graph component passes with the same two
++optional Domain skips. No complete authenticated live case passed. Partial staging/recovery/Abort
++observations are explicitly diagnostic; Task36 remains unchecked and Story12.2 stays in-progress.
++
++Strict live attempts retained internal actor429, a canonical process-stop timeout and Dapr watcher
++ENOSPC failures without weakened assertions/deadlines/retry limits. Shared inotify headroom fell to35;
++no quota or unrelated process was changed. Complete strict and added10,001 HTTP acceptance remain open.
++
++Concurrent external `/pushall` activity advanced root/SDK HEAD/index and dependency gitlinks, with
++substantive source changes after the frozen build. Observed-at heads are root
++`4b8822289b774b351d5c520ec1b6a25e404eb8b0` and SDK
++`c91f520270388080b950feb869c68b43964285f3`. All546 frozen PE/PDB files remain unchanged; exact
++original drifted inputs and generated source bytes are preserved. The current checkout is not qualified.
++The implementation agent issued no staging, commit, push, branch or dependency-update operations
++and made no SDK production-source edits.
++SDK broad regressions, package/PD10, SM4 and independent scoped/whole-story review remain separate gates.
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+index ede9ffdb..1fcec761 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityAcceptanceFixture.cs
+@@ -59,6 +59,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+     private string _adminToken = string.Empty;
+     private string _projectWorkloadToken = string.Empty;
+     private string _metadataWorkloadToken = string.Empty;
++    private string? _namedCatalogFingerprint;
+ 
+     /// <summary>Gets whether the explicit integration opt-in is present.</summary>
+     public bool Enabled { get; } = Environment.GetEnvironmentVariable(AspireFoldersAppHostFixture.OptInEnvironmentVariable)
+@@ -254,53 +255,71 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+ 
+     /// <summary>Discovers and invokes the SDK-owned bounded shared rebuild protocol.</summary>
+     public async Task<HttpResponseMessage> NamedProjectAsync(string aggregateId, ProjectionEventDto[] events,
+-        string dispatchId, bool stopAfterStage = false)
++        string dispatchId, bool stopAfterStage = false,
++        IReadOnlyList<(string AggregateId, ProjectionEventDto[] Events)>? additionalOwners = null, TimeSpan? retryBudget = null,
++        Action<string>? observe = null)
+     {
+         ArgumentNullException.ThrowIfNull(events);
+         if (events.Length == 0)
+             throw new ArgumentException("A complete retained history is required.", nameof(events));
+         using HttpClient client = App.CreateHttpClient("folders", "http");
+-        async Task<HttpResponseMessage> SendAsync(string path, object payload, string workloadToken)
++        if (retryBudget is not null)
+         {
+-            using HttpRequestMessage request = new(HttpMethod.Post, path) { Content = JsonContent.Create(payload) };
+-            request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, workloadToken);
+-            request.Headers.Add("dapr-api-token", await ParameterAsync("folders-app-api-token").ConfigureAwait(false));
+-            return await FolderDurabilityHttp.SendAsync(client, request, true, TestContext.Current.CancellationToken).ConfigureAwait(false);
++            client.Timeout = Timeout.InfiniteTimeSpan;
++            await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
+         }
+-        using HttpResponseMessage discovery = await SendAsync("/admin/operational-index-metadata",
+-            new AdminOperationalIndexMetadata.Request(["folders"]) { AppId = AppId("folders"), ServiceVersion = "v1" },
+-            _metadataWorkloadToken).ConfigureAwait(false);
+-        await RequireStatusAsync(discovery, HttpStatusCode.OK, "SDK named/shared discovery").ConfigureAwait(false);
+-        var metadata = (await discovery.Content.ReadFromJsonAsync<AdminOperationalIndexMetadata.Response>(TestContext.Current.CancellationToken).ConfigureAwait(false))!;
+-        var domain = metadata.Domains.Single(item => item.Domain == "folders");
+-        if (domain.NamedProjectionTypes?.Contains(OperationalStatusKeys.ProjectionType) != true
+-            || domain.SharedEpochProjectionTypes?.Contains(OperationalStatusKeys.ProjectionType) != true)
+-            throw new InvalidOperationException("Production discovery omitted the operational shared route.");
++        List<(string AggregateId, ProjectionEventDto[] Events)> owners = [(aggregateId, events)];
++        if (additionalOwners is not null) owners.AddRange(additionalOwners);
++        string catalog = await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
+         DomainSharedProjectionRebuildIdentity identity = new(TenantId, "folders", OperationalStatusKeys.ProjectionType,
+-            dispatchId, metadata.CatalogFingerprint!);
+-        string capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(DomainSharedProjectionRebuildFingerprint.EmptyInventory,
+-            0, DomainSharedProjectionRebuildFingerprint.ComputeHistory(aggregateId, false, events));
++            dispatchId, catalog);
++        string capture = DomainSharedProjectionRebuildFingerprint.EmptyInventory;
++        for (int ordinal = 0; ordinal < owners.Count; ordinal++)
++            capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(capture, ordinal,
++                DomainSharedProjectionRebuildFingerprint.ComputeHistory(owners[ordinal].AggregateId, false, owners[ordinal].Events));
+         async Task<DomainSharedProjectionRebuildResponse> StepAsync(DomainSharedProjectionRebuildRequest body)
+         {
++            if (retryBudget is not null) await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
+             using HttpRequestMessage request = new(HttpMethod.Post, "/project/rebuild/shared/v1") { Content = JsonContent.Create(body) };
+             request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, _projectWorkloadToken);
+             request.Headers.Add("dapr-api-token", await ParameterAsync("folders-app-api-token").ConfigureAwait(false));
++            long started = Stopwatch.GetTimestamp();
+             var result = await FolderDurabilitySharedRebuild.SendAsync(client, request, body.Action,
+-                TestContext.Current.CancellationToken).ConfigureAwait(false);
++                TestContext.Current.CancellationToken, retryBudget).ConfigureAwait(false);
++            if (retryBudget is not null)
++                observe?.Invoke($"CAPACITY phase={body.Action} ownerOrdinal={body.AggregateOrdinal} part={body.PartOrdinal} events={body.Events?.Length ?? 0} elapsedMs={Stopwatch.GetElapsedTime(started).TotalMilliseconds:F3} status={result.Status} sdkPhase={result.Phase} reason={result.ReasonCode}");
+             if (result.Status is not (ProjectionDispatchStatus.Completed or ProjectionDispatchStatus.AlreadyCompleted))
+                 throw new InvalidOperationException("SDK shared " + body.Action + " did not complete: " + result.ReasonCode);
+             return result;
+         }
+         try
+         {
+-            await StepAsync(new(1, DomainSharedProjectionRebuildAction.Begin, identity, CaptureInventoryFingerprint: capture,
+-                SourceHighWatermarks: new Dictionary<string, long> { [aggregateId] = events[^1].GlobalPosition })).ConfigureAwait(false);
+-            var accumulated = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Accumulate, identity,
+-                AggregateOrdinal: 0, AggregateId: aggregateId, Events: events)).ConfigureAwait(false);
+-            await StepAsync(new(1, DomainSharedProjectionRebuildAction.Finalize, identity,
+-                ExpectedAggregateCount: 1, ExpectedInventoryFingerprint: accumulated.InventoryFingerprint)).ConfigureAwait(false);
+-            var staged = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Stage, identity)).ConfigureAwait(false);
+-            var final = stopAfterStage ? staged : await StepAsync(new(1, DomainSharedProjectionRebuildAction.Commit, identity)).ConfigureAwait(false);
++            var current = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Begin, identity, CaptureInventoryFingerprint: capture,
++                SourceHighWatermarks: owners.ToDictionary(static owner => owner.AggregateId, static owner => owner.Events[^1].GlobalPosition))).ConfigureAwait(false);
++            // Begin validates the unchanged capture even when an existing durable session is resumed.
++            // Sealed sessions cannot accept transport parts again; resume from the SDK's proven phase.
++            if (current.Phase == DomainSharedProjectionRebuildPhase.Accumulating)
++            {
++                DomainSharedProjectionRebuildResponse? accumulated = null;
++                for (int ordinal = 0; ordinal < owners.Count; ordinal++)
++                {
++                    var owner = owners[ordinal];
++                    int part = 0;
++                    foreach (ProjectionEventDto[] page in owner.Events.Chunk(256))
++                        await StepAsync(new(1, DomainSharedProjectionRebuildAction.AccumulatePart, identity,
++                            AggregateOrdinal: ordinal, AggregateId: owner.AggregateId, Events: page, PartOrdinal: part++)).ConfigureAwait(false);
++                    accumulated = await StepAsync(new(1, DomainSharedProjectionRebuildAction.AccumulateComplete, identity,
++                        AggregateOrdinal: ordinal, AggregateId: owner.AggregateId, PartCount: part,
++                        ExpectedHistoryFingerprint: DomainSharedProjectionRebuildFingerprint.ComputeHistory(owner.AggregateId, false, owner.Events))).ConfigureAwait(false);
++                }
++                current = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Finalize, identity,
++                    ExpectedAggregateCount: owners.Count, ExpectedInventoryFingerprint: accumulated!.InventoryFingerprint)).ConfigureAwait(false);
++            }
++            if (current.Phase == DomainSharedProjectionRebuildPhase.Finalized)
++                current = await StepAsync(new(1, DomainSharedProjectionRebuildAction.Stage, identity)).ConfigureAwait(false);
++            if (current.Phase is not (DomainSharedProjectionRebuildPhase.Prepared or DomainSharedProjectionRebuildPhase.Committed))
++                throw new InvalidOperationException("SDK shared rebuild cannot resume from phase " + current.Phase);
++            var final = stopAfterStage ? current : await StepAsync(new(1, DomainSharedProjectionRebuildAction.Commit, identity)).ConfigureAwait(false);
+             if (!stopAfterStage)
+                 await StepAsync(new(1, DomainSharedProjectionRebuildAction.Verify, identity)).ConfigureAwait(false);
+             return new HttpResponseMessage(HttpStatusCode.OK) { Content = JsonContent.Create(final) };
+@@ -313,6 +332,52 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         }
+     }
+ 
++    private async Task<string> DiscoverNamedProjectionAsync(HttpClient client)
++    {
++        using HttpRequestMessage request = new(HttpMethod.Post, "/admin/operational-index-metadata")
++        {
++            Content = JsonContent.Create(new AdminOperationalIndexMetadata.Request(["folders"])
++            { AppId = AppId("folders"), ServiceVersion = "v1" }),
++        };
++        request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, _metadataWorkloadToken);
++        request.Headers.Add("dapr-api-token", await ParameterAsync("folders-app-api-token").ConfigureAwait(false));
++        using HttpResponseMessage discovery = await FolderDurabilityHttp.SendAsync(client, request, true,
++            TestContext.Current.CancellationToken).ConfigureAwait(false);
++        await RequireStatusAsync(discovery, HttpStatusCode.OK, "SDK named/shared discovery").ConfigureAwait(false);
++        var metadata = (await discovery.Content.ReadFromJsonAsync<AdminOperationalIndexMetadata.Response>(TestContext.Current.CancellationToken).ConfigureAwait(false))!;
++        var domain = metadata.Domains.Single(item => item.Domain == "folders");
++        if (domain.NamedProjectionTypes?.Contains(OperationalStatusKeys.ProjectionType) != true
++            || domain.SharedEpochProjectionTypes?.Contains(OperationalStatusKeys.ProjectionType) != true)
++            throw new InvalidOperationException("Production discovery omitted the operational shared route.");
++        return _namedCatalogFingerprint = metadata.CatalogFingerprint!;
++    }
++
++    /// <summary>Delivers an original capacity-test source through the authenticated SDK named dispatcher.</summary>
++    public async Task<ProjectionDispatchOutcome> NamedDeliveryAsync(string aggregateId, ProjectionEventDto source)
++    {
++        await RefreshCapacityWorkloadTokensAsync().ConfigureAwait(false);
++        using HttpClient client = App.CreateHttpClient("folders", "http");
++        string catalog = _namedCatalogFingerprint ?? await DiscoverNamedProjectionAsync(client).ConfigureAwait(false);
++        ProjectionDispatchRequest body = new(new(TenantId, "folders", aggregateId, [source]),
++            [OperationalStatusKeys.ProjectionType], NewId(), catalog);
++        using HttpRequestMessage request = new(HttpMethod.Post, "/project/v2") { Content = JsonContent.Create(body) };
++        request.Headers.Add(EventStoreWorkloadAuthenticationDefaults.AssertionHeaderName, _projectWorkloadToken);
++        request.Headers.Add("dapr-api-token", await ParameterAsync("folders-app-api-token").ConfigureAwait(false));
++        using HttpResponseMessage response = await FolderDurabilityHttp.SendAsync(client, request, true,
++            TestContext.Current.CancellationToken).ConfigureAwait(false);
++        await RequireStatusAsync(response, HttpStatusCode.OK, "SDK named capacity delivery").ConfigureAwait(false);
++        return (await response.Content.ReadFromJsonAsync<ProjectionDispatchResponse>(TestContext.Current.CancellationToken)
++            .ConfigureAwait(false))!.Outcomes.Single();
++    }
++
++    /// <summary>Observes actual mapped host binaries through the caller's retained test output.</summary>
++    public void RecordRuntimeBindings(Action<string> observe)
++    {
++        ArgumentNullException.ThrowIfNull(observe);
++        foreach (string resource in new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" })
++            FolderDurabilityRuntimeBinding.Record(resource, ResourceProcessId(resource), observe);
++    }
++
+     /// <summary>Redelivers an actual retained event to the task-owned authenticated worker callback.</summary>
+     public async Task<HttpResponseMessage> DeliverRetainedFolderEventAsync(string aggregateId, StreamReadEvent source,
+         string workerResource = "folders-workers")
+@@ -345,6 +410,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         foreach (string resource in new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" })
+         {
+             int before = ResourceProcessId(resource);
++            FolderDurabilityRuntimeBinding.Record(resource, before);
+             await ResourceCommandAsync(resource, KnownResourceCommands.StopCommand).ConfigureAwait(false);
+             await ResourceCommandAsync(resource, KnownResourceCommands.StartCommand).ConfigureAwait(false);
+             int after = ResourceProcessId(resource);
+@@ -354,6 +420,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+             }
+ 
+             identities.Add(resource, (before, after));
++            FolderDurabilityRuntimeBinding.Record(resource, after);
+         }
+ 
+         return identities;
+@@ -386,6 +453,7 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         if (command == KnownResourceCommands.StartCommand || command == KnownResourceCommands.RestartCommand)
+         {
+             await App.ResourceNotifications.WaitForResourceHealthyAsync(name, timeout.Token).ConfigureAwait(false);
++            await FolderDurabilityRuntimeBinding.RecordWhenReadyAsync(name, ResourceProcessId(name), timeout.Token).ConfigureAwait(false);
+         }
+         else
+         {
+@@ -407,6 +475,13 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         return long.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+     }
+ 
++    /// <summary>Observes final retained SDK values in the disposable Redis store without reading payloads into evidence.</summary>
++    public async Task<string> RetainedOperationalBoundsAsync()
++    {
++        const string script = "local c='0'; local n=0; local m=0; local i=0; local p=0; repeat local r=redis.call('SCAN',c,'MATCH','shared*','COUNT',1000); c=r[1]; for _,k in ipairs(r[2]) do if redis.call('TYPE',k).ok=='hash' then local b=redis.call('HSTRLEN',k,'data'); n=n+1; m=math.max(m,b); if string.find(k,'shared-identity-v1:',1,true)==1 then i=math.max(i,b) end; if string.find(k,'shared-checkpoint:',1,true)==1 then p=math.max(p,b) end end end until c=='0'; return {n,m,i,p}";
++        return await FolderDurabilityProcess.RunAsync("docker", "exec", _redisName!, "redis-cli", "--raw", "EVAL", script, "0").ConfigureAwait(false);
++    }
++
+     /// <summary>Gets the distinct actual process identities used by the ordinary-write lane.</summary>
+     public (int First, int Second) OrdinaryProofProcessIds()
+         => (ResourceProcessId("folders-workers-proof-a"), ResourceProcessId("folders-workers-proof-b"));
+@@ -589,6 +664,8 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+                 host.WithEnvironment("OTEL_EXPORTER_OTLP_" + signal + "TIMEOUT", "1000");
+             }
+         }
++        _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "folders"))
++            .WithEnvironment("EventStore__ProjectionDispatch__MaxRebuildEventCount", "40000");
+ 
+         _builder.CreateResourceBuilder(_builder.Resources.OfType<ProjectResource>().Single(project => project.Name == "eventstore"))
+             .WithEnvironment("Logging__LogLevel__Hexalith.EventStore.Server.Commands.CommandRouter", "Debug");
+@@ -787,6 +864,8 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         Store = new SelectedOperationalAcceptanceStore(RawStore, TenantId);
+         ProofStore = new SelectedOperationalAcceptanceStore(new DaprReadModelStore(_proofDapr
+             ?? throw new InvalidOperationException("Ordinary proof sidecar discovery did not complete.")), TenantId);
++        foreach (string resource in new[] { "folders", "folders-workers", "folders-workers-replica", "eventstore" })
++            await FolderDurabilityRuntimeBinding.RecordWhenReadyAsync(resource, ResourceProcessId(resource), timeout.Token).ConfigureAwait(false);
+     }
+ 
+     private async Task BootstrapAsync()
+@@ -805,29 +884,38 @@ public sealed class FolderDurabilityAcceptanceFixture : IAsyncLifetime
+         }
+ 
+         await SubmitAsync("system", "tenants", TenantId, "AddUserToTenant", new { tenantId = TenantId, userId = PrincipalId, role = "TenantOwner" }, _adminToken).ConfigureAwait(false);
+-        using HttpClient client = App.CreateHttpClient("security", "http");
+         _projectWorkloadToken = await IssueWorkloadAsync("project", EventStoreWorkloadOperations.DomainServiceProject).ConfigureAwait(false);
+         _metadataWorkloadToken = await IssueWorkloadAsync("metadata", EventStoreWorkloadOperations.DomainServiceMetadata).ConfigureAwait(false);
++    }
+ 
+-        async Task<string> IssueWorkloadAsync(string scopeOperation, string expectedOperation)
+-        {
+-            using HttpResponseMessage workload = await client.PostAsync("/realms/hexalith/protocol/openid-connect/token",
+-                new FormUrlEncodedContent(new Dictionary<string, string>
+-                {
+-                    ["grant_type"] = "client_credentials",
+-                    ["client_id"] = AppId("eventstore"),
+-                    ["client_secret"] = await ParameterAsync("eventstore-workload-client-secret").ConfigureAwait(false),
+-                    ["scope"] = "eventstore-audience." + AppId("folders") + " eventstore-operation.domain-service." + scopeOperation,
+-                }), TestContext.Current.CancellationToken).ConfigureAwait(false);
+-            await RequireStatusAsync(workload, HttpStatusCode.OK, "Real " + scopeOperation + " workload token").ConfigureAwait(false);
+-            string token = (await workload.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false))
+-                .GetProperty("access_token").GetString()!;
+-            string[] operations = new JsonWebToken(token).Claims.Where(claim => claim.Type == EventStoreWorkloadAuthenticationDefaults.OperationClaimType)
+-                .Select(static claim => claim.Value).ToArray();
+-            if (operations.Length != 1 || operations[0] != expectedOperation)
+-                throw new InvalidOperationException("The real identity provider did not issue the requested single workload operation.");
+-            return token;
+-        }
++    private async Task RefreshCapacityWorkloadTokensAsync()
++    {
++        DateTime refreshBefore = DateTime.UtcNow.AddMinutes(1);
++        if (new JsonWebToken(_projectWorkloadToken).ValidTo <= refreshBefore)
++            _projectWorkloadToken = await IssueWorkloadAsync("project", EventStoreWorkloadOperations.DomainServiceProject).ConfigureAwait(false);
++        if (new JsonWebToken(_metadataWorkloadToken).ValidTo <= refreshBefore)
++            _metadataWorkloadToken = await IssueWorkloadAsync("metadata", EventStoreWorkloadOperations.DomainServiceMetadata).ConfigureAwait(false);
++    }
++
++    private async Task<string> IssueWorkloadAsync(string scopeOperation, string expectedOperation)
++    {
++        using HttpClient client = App.CreateHttpClient("security", "http");
++        using HttpResponseMessage workload = await client.PostAsync("/realms/hexalith/protocol/openid-connect/token",
++            new FormUrlEncodedContent(new Dictionary<string, string>
++            {
++                ["grant_type"] = "client_credentials",
++                ["client_id"] = AppId("eventstore"),
++                ["client_secret"] = await ParameterAsync("eventstore-workload-client-secret").ConfigureAwait(false),
++                ["scope"] = "eventstore-audience." + AppId("folders") + " eventstore-operation.domain-service." + scopeOperation,
++            }), TestContext.Current.CancellationToken).ConfigureAwait(false);
++        await RequireStatusAsync(workload, HttpStatusCode.OK, "Real " + scopeOperation + " workload token").ConfigureAwait(false);
++        string token = (await workload.Content.ReadFromJsonAsync<JsonElement>(TestContext.Current.CancellationToken).ConfigureAwait(false))
++            .GetProperty("access_token").GetString()!;
++        string[] operations = new JsonWebToken(token).Claims.Where(claim => claim.Type == EventStoreWorkloadAuthenticationDefaults.OperationClaimType)
++            .Select(static claim => claim.Value).ToArray();
++        if (operations.Length != 1 || operations[0] != expectedOperation)
++            throw new InvalidOperationException("The real identity provider did not issue the requested single workload operation.");
++        return token;
+     }
+ 
+     private async Task ConfigureIdentityAsync()
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs
+new file mode 100644
+index 00000000..840f4c7a
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/FolderDurabilityRuntimeBinding.cs
+@@ -0,0 +1,95 @@
++using System.Globalization;
++using System.Reflection.Metadata;
++using System.Reflection.PortableExecutable;
++using System.Security.Cryptography;
++using System.Text.Json;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Records mapped managed modules from the task-owned Linux processes without observing private configuration.</summary>
++internal static class FolderDurabilityRuntimeBinding
++{
++    /// <summary>Records actual mapped modules from the specified launcher and its owned managed descendants.</summary>
++    /// <param name="resource">The task-owned Aspire resource name.</param>
++    /// <param name="processId">The resource launcher process identity.</param>
++    /// <param name="observe">The retained evidence sink, or console output when omitted.</param>
++    internal static void Record(string resource, int processId, Action<string>? observe = null)
++    {
++        if (!TryRecord(resource, processId, observe))
++            throw new InvalidOperationException("The task-owned launcher has no descendant mapping the expected host assembly.");
++    }
++
++    /// <summary>Waits for actual managed mappings within the caller's existing lifecycle cancellation budget.</summary>
++    /// <param name="resource">The task-owned Aspire resource name.</param>
++    /// <param name="processId">The resource launcher process identity.</param>
++    /// <param name="cancellationToken">The existing bounded resource lifecycle token.</param>
++    /// <returns>A task that completes after the expected host is observed.</returns>
++    internal static async Task RecordWhenReadyAsync(string resource, int processId, CancellationToken cancellationToken)
++    {
++        while (!TryRecord(resource, processId, null))
++            await Task.Delay(100, cancellationToken).ConfigureAwait(false);
++    }
++
++    private static bool TryRecord(string resource, int processId, Action<string>? observe)
++    {
++        if (!OperatingSystem.IsLinux()) return true;
++        string project = resource switch
++        {
++            "folders" => "Hexalith.Folders.Server",
++            "eventstore" => "Hexalith.Folders.EventStore",
++            _ => "Hexalith.Folders.Workers",
++        };
++        string expected = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../../src", project,
++            "bin/Debug/net10.0", project + ".dll"));
++        bool observedHost = false;
++        foreach (int managedProcessId in DescendantsAndSelf(processId))
++        {
++            string[] paths;
++            try
++            {
++                paths = File.ReadLines($"/proc/{managedProcessId}/maps")
++                    .Select(static line => line.IndexOf('/') is int start && start >= 0 ? line[start..] : string.Empty)
++                    .Where(static path => path.EndsWith(".dll", StringComparison.Ordinal) && Path.GetFileName(path).StartsWith("Hexalith.", StringComparison.Ordinal))
++                    .Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
++            }
++            catch (IOException) { continue; }
++            if (!paths.Contains(expected, StringComparer.Ordinal)) continue;
++            observedHost = true;
++            foreach (string path in paths)
++            {
++                using FileStream stream = File.OpenRead(path);
++                using PEReader pe = new(stream);
++                MetadataReader metadata = pe.GetMetadataReader();
++                string pdb = Path.ChangeExtension(path, ".pdb");
++                (observe ?? Console.WriteLine)("RUNTIME_BINDING " + JsonSerializer.Serialize(new
++                {
++                    resource,
++                    launcherProcessId = processId,
++                    processId = managedProcessId,
++                    path,
++                    sha256 = Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))),
++                    mvid = metadata.GetGuid(metadata.GetModuleDefinition().Mvid),
++                    pdbPath = File.Exists(pdb) ? pdb : null,
++                    pdbSha256 = File.Exists(pdb) ? Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(pdb))) : null,
++                }));
++            }
++        }
++        return observedHost;
++    }
++
++    private static IEnumerable<int> DescendantsAndSelf(int root)
++    {
++        Stack<int> pending = new([root]);
++        HashSet<int> seen = [];
++        while (pending.TryPop(out int current))
++        {
++            if (!seen.Add(current)) continue;
++            yield return current;
++            string children;
++            try { children = File.ReadAllText($"/proc/{current}/task/{current}/children"); }
++            catch (IOException) { continue; }
++            foreach (string child in children.Split(' ', StringSplitOptions.RemoveEmptyEntries))
++                pending.Push(int.Parse(child, CultureInfo.InvariantCulture));
++        }
++    }
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs b/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs
+new file mode 100644
+index 00000000..a47f212a
+--- /dev/null
++++ b/tests/Hexalith.Folders.AppHost.Tests/OperationalStatusBoundedHistoryAcceptanceTests.cs
+@@ -0,0 +1,152 @@
++using System.Globalization;
++using System.Net;
++using System.Security.Cryptography;
++using System.Text;
++using System.Text.Json;
++
++using Hexalith.EventStore.Client.Projections;
++using Hexalith.EventStore.Contracts.Projections;
++using Hexalith.Folders.Aggregates.Folder;
++using Hexalith.Folders.Projections.OperationalStatus;
++using Hexalith.Folders.Queries.Folders;
++
++using Shouldly;
++using Xunit;
++
++namespace Hexalith.Folders.AppHost.Tests;
++
++/// <summary>Qualifies synthetic original owner histories through the production authenticated Folders SDK transport.</summary>
++[Collection("Folder durability acceptance")]
++public sealed class OperationalStatusBoundedHistoryAcceptanceTests(FolderDurabilityAcceptanceFixture fixture, ITestOutputHelper output)
++    : IClassFixture<FolderDurabilityAcceptanceFixture>
++{
++    /// <summary>Preserves complete large histories across private staging, process replacement, inheritance and further growth.</summary>
++    [Theory]
++    [InlineData(10_001)]
++    public async Task OriginalOwnersRebuildGrowAndRetainIdentityThroughAuthenticatedTransport(int count)
++    {
++        if (!fixture.Enabled)
++        {
++            Assert.Skip($"Set {AspireFoldersAppHostFixture.OptInEnvironmentVariable}=true to execute bounded-history acceptance.");
++            return;
++        }
++        CancellationToken token = TestContext.Current.CancellationToken;
++        string folder = "capacity-" + count + "-" + FolderDurabilityAcceptanceFixture.NewId();
++        string otherFolder = folder + "-other";
++        DateTimeOffset timestamp = DateTimeOffset.UtcNow;
++        ProjectionEventDto[] original = History(folder, count, timestamp, firstGlobalPosition: 2);
++        ProjectionEventDto[] other = History(otherFolder, 1, timestamp);
++        other[0] = other[0] with { GlobalPosition = count + 2 };
++        string sourceHash = Hash(original);
++        string otherHash = Hash(other);
++        TimeSpan phaseBudget = TimeSpan.FromMinutes(15);
++        string operation = FolderDurabilityAcceptanceFixture.NewId();
++        var scope = OperationalStatusGeneration.Scope(fixture.TenantId);
++        var coordinator = new SharedProjectionEpochCoordinator(fixture.RawStore,
++            fixture.RawStore.ShouldBeAssignableTo<IReadModelBatchStore>());
++        // Establish the production writer/epoch through its authenticated ordinary SDK callback.
++        // Both large capture owners still have empty checkpoints before their private staging.
++        string primer = folder + "-primer";
++        (await fixture.NamedDeliveryAsync(primer, History(primer, 1, timestamp)[0])).Status.ShouldBe(ProjectionDispatchStatus.Completed);
++        fixture.RecordRuntimeBindings(output.WriteLine);
++        string key = OperationalStatusKeys.Checkpoint(fixture.TenantId, folder);
++        output.WriteLine($"CAPACITY input=synthetic-original-owner count={count} owner={folder} sourceSha256={sourceHash} otherSha256={otherHash}");
++        using (HttpResponseMessage staged = await fixture.NamedProjectAsync(folder, original, operation,
++            stopAfterStage: true, additionalOwners: [(otherFolder, other)], retryBudget: phaseBudget, observe: output.WriteLine))
++            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(staged, HttpStatusCode.OK, "Large private staging");
++        (await coordinator.GetStatusAsync(scope, token)).IsBuilding.ShouldBeTrue();
++        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value.ShouldBeNull();
++        foreach (var process in await fixture.RestartHostsAsync())
++        {
++            process.Value.Before.ShouldNotBe(process.Value.After);
++            output.WriteLine($"CAPACITY process-replacement count={count} resource={process.Key} before={process.Value.Before} after={process.Value.After}");
++        }
++        fixture.RecordRuntimeBindings(output.WriteLine);
++        // This is a sealed-stage restart; the SDK packet separately proves true mid-stage/partial-handoff exits.
++        using (HttpResponseMessage resumed = await fixture.NamedProjectAsync(folder, original, operation,
++            additionalOwners: [(otherFolder, other)], retryBudget: phaseBudget, observe: output.WriteLine))
++            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(resumed, HttpStatusCode.OK, "Large staged recovery");
++        var checkpoint = (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value.ShouldNotBeNull();
++        checkpoint.Sequence.ShouldBe(count);
++        JsonSerializer.SerializeToUtf8Bytes(checkpoint).Length.ShouldBeLessThan(16_384);
++        var captured = (await coordinator.GetCheckpointAsync(scope, folder, token)).ShouldNotBeNull();
++        captured.CapturedEventDigests.ShouldBeNull();
++        captured.CapturedIdentityReference!.Count.ShouldBe(count);
++        JsonSerializer.SerializeToUtf8Bytes(captured).Length.ShouldBeLessThan(4096);
++        (await coordinator.ReadAsync<FolderLifecycleStatusReadModelSnapshot>(scope,
++            OperationalStatusKeys.Lifecycle(fixture.TenantId, folder), token)).Value!.LifecycleState.ShouldBe(FolderLifecycleProjectionState.Active);
++        using (HttpResponseMessage inherited = await fixture.NamedProjectAsync(otherFolder, other,
++            FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
++            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(inherited, HttpStatusCode.OK, "Independent owner generation");
++        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value!.SourceDigest.ShouldBe(checkpoint.SourceDigest);
++        foreach (int index in new[] { 0, count / 2, count - 1 })
++            (await fixture.NamedDeliveryAsync(folder, original[index])).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
++        ProjectionEventDto growth = Rejection(count + 1, timestamp) with { GlobalPosition = count + 3 };
++        (await fixture.NamedDeliveryAsync(folder, growth)).Status.ShouldBe(ProjectionDispatchStatus.Completed);
++        ProjectionEventDto[] grown = [.. original, growth];
++        using (HttpResponseMessage rebuilt = await fixture.NamedProjectAsync(folder, grown,
++            FolderDurabilityAcceptanceFixture.NewId(), retryBudget: phaseBudget, observe: output.WriteLine))
++            await FolderDurabilityAcceptanceFixture.RequireStatusAsync(rebuilt, HttpStatusCode.OK, "Complete grown owner rebuild");
++        (await coordinator.GetCheckpointAsync(scope, folder, token))!.CapturedIdentityReference!.Count.ShouldBe(count + 1);
++        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
++            OperationalStatusKeys.Checkpoint(fixture.TenantId, otherFolder), token)).Value!.Sequence.ShouldBe(1);
++        foreach (int index in new[] { 0, count / 2, count })
++            (await fixture.NamedDeliveryAsync(folder, grown[index])).Status.ShouldBe(ProjectionDispatchStatus.AlreadyCompleted);
++        string selected = JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value);
++        foreach (int index in new[] { 0, count / 2, count })
++        {
++            ProjectionEventDto changedMessage = grown[index] with { MessageId = "conflicting-" + index };
++            var messageConflict = await fixture.NamedDeliveryAsync(folder, changedMessage);
++            messageConflict.Status.ShouldBe(ProjectionDispatchStatus.Failed);
++            messageConflict.ReasonCode.ShouldBe(ProjectionDispatchReasonCodes.DeliveryIdentityConflict);
++            ProjectionEventDto changedPayload = grown[index] with
++            {
++                Payload = index == 0
++                ? JsonSerializer.SerializeToUtf8Bytes(Created(folder, timestamp) with { DisplayName = "contradictory" })
++                : Encoding.UTF8.GetBytes("{\"Code\":\"UnsupportedCommandType\",\"CommandType\":\"ChangedUnknownCommand\"}")
++            };
++            var payloadConflict = await fixture.NamedDeliveryAsync(folder, changedPayload);
++            payloadConflict.Status.ShouldBe(ProjectionDispatchStatus.Failed);
++            payloadConflict.ReasonCode.ShouldBe(ProjectionDispatchReasonCodes.DeliveryIdentityConflict);
++        }
++        JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope, key, token)).Value).ShouldBe(selected);
++        Hash(original).ShouldBe(sourceHash);
++        Hash(other).ShouldBe(otherHash);
++        (await coordinator.GetStatusAsync(scope, token)).IsBuilding.ShouldBeFalse();
++        long[] retainedBounds = (await fixture.RetainedOperationalBoundsAsync()).Split('\n', StringSplitOptions.RemoveEmptyEntries)
++            .Select(value => long.Parse(value, CultureInfo.InvariantCulture)).ToArray();
++        retainedBounds.Length.ShouldBe(4);
++        retainedBounds[0].ShouldBeGreaterThan(count);
++        retainedBounds[1].ShouldBeLessThan(1_048_576);
++        retainedBounds[2].ShouldBeGreaterThan(0);
++        retainedBounds[2].ShouldBeLessThan(16_384);
++        retainedBounds[3].ShouldBeLessThan(4096);
++        output.WriteLine($"PASS CAPACITY count={count} grown={count + 1} sourceSha256={sourceHash} otherSha256={otherHash} retainedValues={retainedBounds[0]} finalRetainedSharedValueMaxBytes={retainedBounds[1]} identityMaxBytes={retainedBounds[2]} sdkCheckpointMaxBytes={retainedBounds[3]}; 256-event parts; configured admission=40000; SDK batch limits unchanged");
++    }
++
++    private ProjectionEventDto[] History(string folder, int count, DateTimeOffset timestamp, long firstGlobalPosition = 1)
++    {
++        ProjectionEventDto[] events = new ProjectionEventDto[count];
++        FolderCreated created = Created(folder, timestamp);
++        events[0] = new(typeof(FolderCreated).FullName!, JsonSerializer.SerializeToUtf8Bytes(created), "json", 1,
++            timestamp, "capacity-correlation", "capacity-message-1", GlobalPosition: firstGlobalPosition)
++        { MetadataVersion = 1 };
++        for (int index = 1; index < count; index++)
++            events[index] = Rejection(index + 1, timestamp) with { GlobalPosition = firstGlobalPosition + index };
++        return events;
++    }
++
++    private FolderCreated Created(string folder, DateTimeOffset timestamp)
++        => new(fixture.TenantId, fixture.TenantId, folder, "Capacity metadata", null, null, [], FolderLifecycleState.Active,
++            FolderRepositoryBindingState.Unbound, "capacity-principal", "capacity-correlation", "capacity-task",
++            "capacity-create-key", "capacity-fingerprint", timestamp);
++
++    private static ProjectionEventDto Rejection(long sequence, DateTimeOffset timestamp)
++        => new("Hexalith.Folders.Server.FolderCommandRejected",
++            "{\"Code\":\"UnsupportedCommandType\",\"CommandType\":\"UnknownButLegitimate\"}"u8.ToArray(), "json", sequence,
++            timestamp, "capacity-correlation", "capacity-message-" + sequence, GlobalPosition: sequence)
++        { MetadataVersion = 1 };
++
++    private static string Hash(ProjectionEventDto[] events)
++        => Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(events)));
++}
+diff --git a/tests/Hexalith.Folders.AppHost.Tests/README.md b/tests/Hexalith.Folders.AppHost.Tests/README.md
+index 6ea864dd..46bb059f 100644
+--- a/tests/Hexalith.Folders.AppHost.Tests/README.md
++++ b/tests/Hexalith.Folders.AppHost.Tests/README.md
+@@ -7,11 +7,18 @@ The disposable-provider acceptance temporarily removes its observer's repository
+ denial with no prepared source event, restores the repository in `finally`, and resumes the real
+ prepare/lock/clean-release workflow. Private provider context stays outside retained events and evidence.
+ 
+-The SDK's captured-owner identity handoff still rejects histories over 10,000 positions. The default
+-capacity regression proves ordinary growth to 10,001 and records the production dispatcher failure
+-and the specific public coordinator argument rejection; that expected-blocker test is not acceptance
+-of rebuild beyond the boundary. Story 12.2 remains open pending the
+-[bounded owner-identity prerequisite](../../_bmad-output/implementation-artifacts/proposal-12-2-sdk-bounded-owner-identity.md).
++The frozen SDK bounded owner-identity candidate in
++`references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/folders-12-2-bounded-owner-identity/run-20261021T152119Z`
++has separately retained capability evidence. Against that frozen candidate, the default capacity
++regression passed complete 10,001- and 32,769-position original-owner rebuilds,
++preserves 98 historical tasks, grows and rebuilds again, and checks inherited generations and original
++identity conflicts. The authenticated capacity lane below defines additional HTTP assertions separately
++from the real-provider retained-source scenario. No complete authenticated live pass was obtained in this
++session; Task 36 qualification remains incomplete. Concurrent external SDK source changes are outside
++that frozen candidate, and the current SDK checkout is not qualified by these results. Commands, results and
++source/binary binding belong to the [Task 36 consumer packet](../../_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/).
++Story 12.2 remains in progress; SDK broad regressions, package/PD10, SM4 and independent whole-story
++review are separate gates.
+ 
+ Tier-3 Aspire integration harness. It boots the full Folders `AppHost` topology through
+ `DistributedApplicationTestingBuilder` and proves the cross-process publish/subscribe wiring comes up together:
+@@ -21,6 +28,42 @@ Tier-3 Aspire integration harness. It boots the full Folders `AppHost` topology
+ - `folders-workers` subscribes `folders.events` on `/folders/events` (semantic indexing) and `memories-events`.
+ - `memories` subscribes `memories-events` (the curated search index).
+ 
++Task 36's additional capacity lane runs after the Debug/source build:
++
++```bash
++HEXALITH_FOLDERS_RUN_ASPIRE_INTEGRATION=true dotnet tests/Hexalith.Folders.AppHost.Tests/bin/Debug/net10.0/Hexalith.Folders.AppHost.Tests.dll -class Hexalith.Folders.AppHost.Tests.OperationalStatusBoundedHistoryAcceptanceTests -showLiveOutput
++```
++
++This lane supplies synthetic metadata-only histories under separate original owner IDs; it never
++extends or rewrites the real provider scenario's retained actor streams. Its 10,001-position case
++uses authenticated production discovery and `/project/rebuild/shared/v1`, with at most 256
++events per `AccumulatePart`, followed by `AccumulateComplete`. The host binds
++`EventStore:ProjectionDispatch:MaxRebuildEventCount=40000` for this qualification. This admission
++setting is configurable and does not introduce a Folders history cap; recoverable batches retain the
++SDK's 100-operation/one-MiB limits. Large capacity requests have a separate 15-minute phase budget;
++the strict real-provider lane's assertions, deadlines and retry limits stay unchanged.
++The component lane executes the actual Folders dispatcher/handler with this supported bounded protocol
++at both 10,001 and 32,769 positions; the separate SDK buffered-owner Dapr packet covers both sizes and
++true interrupted staging/handoff. No 32,769-position Folders HTTP pass is claimed.
++Capacity requests reacquire real operation-scoped Keycloak workload credentials near expiry;
++token lifetimes and production validation stay unchanged.
++
++The capacity fixture first sends one authenticated ordinary named delivery for a separate tiny owner
++to establish the production writer/epoch. Both large capture-owner checkpoints remain empty before
++staging. This is an initialized-epoch qualification; it does not claim that shared Begin alone can
++bootstrap a tenant with no prior operational delivery. The retained precondition failure remains in
++the new evidence packet.
++
++The new lane checks sealed staging across changed host PIDs, two original owners, inherited selected
++reads, original early/middle/final duplicate and conflict handling, ordinary catch-up and another full
++rebuild after growth. It records immutable input hashes, phase times and final retained value maxima.
++These are intended complete-case assertions; retained partial runs do not establish a passing HTTP case.
++True interrupted staging and partial multi-owner handoff use the separately hash-bound SDK process
++packet, with provenance in the consumer report. The SDK broad regression gate remains failed;
++its passing capability matrix is not newly executed Folders coverage. All readers/writers must support
++paged identity checkpoints before use; rollback after the first paged write requires compatible readers
++or a coordinated complete-state restore with writers drained, as documented in the SDK authoring guide.
++
+ Story 10.6 replaced the fail-closed content materializer with
+ `MetadataDerivedSemanticIndexingContentMaterializer`. Curated index text is the approved metadata-token
+ vocabulary (type class, fileVersionId, organizationId, folderId, size class).
+diff --git a/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs b/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs
+index c3a2a20e..bdbd14ae 100644
+--- a/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs
++++ b/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/NamedOperationalStatusRebuildFixture.cs
+@@ -12,10 +12,13 @@ using Microsoft.Extensions.Options;
+ 
+ namespace Hexalith.Folders.Tests.Projections.OperationalStatus;
+ 
++/// <summary>Exercises the supported SDK named/shared protocol with the production Folders handler.</summary>
+ internal static class NamedOperationalStatusRebuildFixture
+ {
++    /// <summary>Rebuilds complete original owner histories through bounded transport parts and the SDK generation lifecycle.</summary>
+     public static async Task<ReadModelBatchResult> RebuildAsync(OperationalStatusTestStore store, string tenantId,
+-        string folderId, string operationId, IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken token, Action? afterBegin = null, bool retryPartial = true, IUtcClock? clock = null)
++        string folderId, string operationId, IReadOnlyList<OperationalStatusEvent> events, long sourceHead, CancellationToken token, Action? afterBegin = null, bool retryPartial = true, IUtcClock? clock = null,
++        IReadOnlyList<(string FolderId, IReadOnlyList<OperationalStatusEvent> Events)>? additionalOwners = null)
+     {
+         ServiceCollection services = new();
+         services.AddSingleton<IReadModelStore>(store);
+@@ -27,7 +30,7 @@ internal static class NamedOperationalStatusRebuildFixture
+         services.AddSingleton<IOrganizationStreamSequenceReader>(new OperationalStatusSequenceReader { Head = sourceHead });
+         services.AddSingleton<OperationalStatusProjectionWriter>();
+         services.AddSingleton<IAsyncDomainProjectionHandler, OperationalStatusProjectionHandler>();
+-        services.AddSingleton(Options.Create(new ProjectionDispatchOptions { MaxRebuildEventCount = 20_000 }));
++        services.AddSingleton(Options.Create(new ProjectionDispatchOptions { MaxRebuildEventCount = 40_000 }));
+         services.AddSingleton(Options.Create(new DomainProjectionIdentityOptions { AppId = "folders", ServiceVersion = "test" }));
+         using var provider = services.BuildServiceProvider();
+         var options = provider.GetRequiredService<IOptions<ProjectionDispatchOptions>>().Value;
+@@ -36,9 +39,15 @@ internal static class NamedOperationalStatusRebuildFixture
+             [new("folders", OperationalStatusKeys.ProjectionType)], [new("folders", OperationalStatusKeys.ProjectionType)]);
+         DomainSharedProjectionRebuildIdentity identity = new(tenantId, "folders", OperationalStatusKeys.ProjectionType,
+             operationId, catalog);
+-        var source = events.Select(static item => item.Source!).ToArray();
+-        string capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(DomainSharedProjectionRebuildFingerprint.EmptyInventory,
+-            0, DomainSharedProjectionRebuildFingerprint.ComputeHistory(folderId, false, source));
++        List<(string FolderId, ProjectionEventDto[] Events)> owners = [(folderId, events.Select(static item => item.Source!).ToArray())];
++        if (additionalOwners is not null)
++            owners.AddRange(additionalOwners.Select(static owner => (owner.FolderId, owner.Events.Select(static item => item.Source!).ToArray())));
++        string capture = DomainSharedProjectionRebuildFingerprint.EmptyInventory;
++        for (int ordinal = 0; ordinal < owners.Count; ordinal++)
++            capture = DomainSharedProjectionRebuildFingerprint.AppendInventory(capture, ordinal,
++                DomainSharedProjectionRebuildFingerprint.ComputeHistory(owners[ordinal].FolderId, false, owners[ordinal].Events));
++        Dictionary<string, long> watermarks = owners.ToDictionary(static owner => owner.FolderId, static owner => owner.Events[^1].GlobalPosition);
++        watermarks[folderId] = sourceHead;
+         var coordinator = provider.GetRequiredService<SharedProjectionEpochCoordinator>();
+         await coordinator.RegisterWriterAsync(OperationalStatusGeneration.Scope(tenantId),
+             OperationalStatusGeneration.WriterId, token).ConfigureAwait(false);
+@@ -46,13 +55,24 @@ internal static class NamedOperationalStatusRebuildFixture
+         {
+             await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version, DomainSharedProjectionRebuildAction.Begin,
+                 identity, CaptureInventoryFingerprint: capture,
+-                SourceHighWatermarks: new Dictionary<string, long> { [folderId] = sourceHead })).ConfigureAwait(false);
++                SourceHighWatermarks: watermarks)).ConfigureAwait(false);
+             afterBegin?.Invoke();
+-            var accumulated = await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
+-                DomainSharedProjectionRebuildAction.Accumulate, identity, AggregateOrdinal: 0,
+-                AggregateId: folderId, Events: source)).ConfigureAwait(false);
++            DomainSharedProjectionRebuildResponse? accumulated = null;
++            for (int ordinal = 0; ordinal < owners.Count; ordinal++)
++            {
++                var owner = owners[ordinal];
++                int part = 0;
++                foreach (ProjectionEventDto[] page in owner.Events.Chunk(256))
++                    await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
++                        DomainSharedProjectionRebuildAction.AccumulatePart, identity, AggregateOrdinal: ordinal,
++                        AggregateId: owner.FolderId, Events: page, PartOrdinal: part++)).ConfigureAwait(false);
++                accumulated = await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
++                    DomainSharedProjectionRebuildAction.AccumulateComplete, identity, AggregateOrdinal: ordinal,
++                    AggregateId: owner.FolderId, PartCount: part,
++                    ExpectedHistoryFingerprint: DomainSharedProjectionRebuildFingerprint.ComputeHistory(owner.FolderId, false, owner.Events))).ConfigureAwait(false);
++            }
+             await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version, DomainSharedProjectionRebuildAction.Finalize,
+-                identity, ExpectedAggregateCount: 1, ExpectedInventoryFingerprint: accumulated.InventoryFingerprint)).ConfigureAwait(false);
++                identity, ExpectedAggregateCount: owners.Count, ExpectedInventoryFingerprint: accumulated!.InventoryFingerprint)).ConfigureAwait(false);
+             await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version, DomainSharedProjectionRebuildAction.Stage, identity)).ConfigureAwait(false);
+             var committed = await RequireAsync(new(DomainSharedProjectionRebuildProtocol.Version,
+                 DomainSharedProjectionRebuildAction.Commit, identity)).ConfigureAwait(false);
+diff --git a/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs b/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs
+index 3175f2ce..1b87d74d 100644
+--- a/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs
++++ b/tests/Hexalith.Folders.Tests/Projections/OperationalStatus/OperationalStatusCapacityTests.cs
+@@ -13,9 +13,14 @@ namespace Hexalith.Folders.Tests.Projections.OperationalStatus;
+ 
+ public sealed class OperationalStatusCapacityTests
+ {
+-    [Fact]
+-    public async Task TenThousandPositionsAndNinetyEightHistoricalTasksRebuildAndCatchUpWithBoundedValues()
++    /// <summary>Rebuilds complete original owners and preserves bounded identity proofs and historical task views after growth.</summary>
++    /// <param name="count">The complete original owner history length.</param>
++    [Theory]
++    [InlineData(10_001)]
++    [InlineData(32_769)]
++    public async Task CompleteOriginalOwnersRebuildGrowAndPreserveHistoricalTasksWithBoundedValues(int count)
+     {
++        CancellationToken token = TestContext.Current.CancellationToken;
+         var history = OperationalStatusTestData.CleanReleasedPrefix(OperationalStatusTestData.Now).ToList();
+         var locked = history.OfType<WorkspaceLockAcquired>().Single();
+         var released = history.OfType<WorkspaceLockReleased>().Single();
+@@ -27,45 +32,93 @@ public sealed class OperationalStatusCapacityTests
+             history.Add(released with { TaskId = taskId, HolderTaskId = taskId, LockId = lockId });
+         }
+         List<OperationalStatusEvent> sources = [.. OperationalStatusTestData.Sources(history)];
+-        while (sources.Count < 10_000)
+-            sources.Add(Rejection(sources[0], sources.Count + 1));
++        while (sources.Count < count) sources.Add(Rejection(sources[0], sources.Count + 1));
++        string originalHash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(sources.Select(item => item.Source))));
+         OperationalStatusTestStore store = new();
+         OperationalStatusProjectionWriter writer = new(store, store, store);
+-        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "large-rebuild", sources, 10_000,
+-            TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+-        OperationalStatusCheckpoint checkpoint = store.Snapshot<OperationalStatusCheckpoint>("statestore",
+-            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!;
+-        checkpoint.Sequence.ShouldBe(10_000);
++        var other = OperationalStatusTestData.Sources([OperationalStatusTestData.Created(folder: "folder-b")]);
++        other[0] = OperationalStatusEventReader.ReadStored(other[0].Source! with { GlobalPosition = count + 1 });
++        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "large-rebuild", sources, count,
++            token, additionalOwners: [("folder-b", other)])).IsSuccess.ShouldBeTrue();
++        var coordinator = new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store);
++        var scope = OperationalStatusGeneration.Scope("tenant-a");
++        var sdkCheckpoint = (await coordinator.GetCheckpointAsync(scope, "folder-a", token))!;
++        sdkCheckpoint.OwnerSequenceNumber.ShouldBe(count);
++        sdkCheckpoint.CapturedEventDigests.ShouldBeNull();
++        sdkCheckpoint.CapturedIdentityReference!.Count.ShouldBe(count);
++        JsonSerializer.SerializeToUtf8Bytes(sdkCheckpoint).Length.ShouldBeLessThan(4096);
++        OperationalStatusCheckpoint checkpoint = (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
++            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value!;
++        checkpoint.Sequence.ShouldBe(count);
+         JsonSerializer.SerializeToUtf8Bytes(checkpoint).Length.ShouldBeLessThan(16_384);
+         checkpoint.State.TaskClosures.ShouldBeEmpty();
+         checkpoint.EventDigests.Count.ShouldBe(1);
+-        var reader = new EventStoreOperationalStatusReadModel(new(store, store), new OperationalStatusClock(),
+-            new OperationalStatusSequenceReader { Head = 10_000 });
++        var sequence = new OperationalStatusSequenceReader { Head = count };
++        var reader = new EventStoreOperationalStatusReadModel(coordinator, new OperationalStatusClock(), sequence);
+         foreach (string taskId in new[] { "task-a", "historical-97" })
+         {
+             var result = await reader.GetAsync(new TaskStatusReadModelRequest("tenant-a", taskId, "reader",
+                 "read_task_status", "corr-a", "eventually_consistent")
+-            { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" }, TestContext.Current.CancellationToken);
++            { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" }, token);
+             result.Status.ShouldBe(TaskStatusReadModelStatus.Available);
+             result.Snapshot!.TerminalState.ShouldBe("ready");
+         }
+-        (await new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "duplicate",
+-            [sources[0]], TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+-        (await writer.ApplyAsync("tenant-a", "folder-a", "catch-up", [Rejection(sources[0], 10_001)],
+-            TestContext.Current.CancellationToken)).IsSuccess.ShouldBeTrue();
+-        store.Snapshot<OperationalStatusCheckpoint>("statestore", OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"))!.Sequence.ShouldBe(10_001);
+-        sources.Add(Rejection(sources[0], 10_001));
+-        (await writer.PrepareRebuildAsync("tenant-a", "folder-a", sources, 10_001, TestContext.Current.CancellationToken))
+-            .Count.ShouldBeGreaterThan(10_000);
+-        // Acceptance remains open: the production SDK captured-identity handoff rejects this lawful history.
+-        var blocked = await Should.ThrowAsync<InvalidOperationException>(() => NamedOperationalStatusRebuildFixture.RebuildAsync(
+-            store, "tenant-a", "folder-a", "above-sdk-identity-boundary", sources, 10_001, TestContext.Current.CancellationToken));
+-        blocked.Message.ShouldContain("projection_handler_failure");
+-        var identityBoundary = await Should.ThrowAsync<ArgumentException>(() => new Hexalith.EventStore.Client.Projections.SharedProjectionEpochCoordinator(store, store)
+-            .SeedCapturedOwnerSequenceAsync(OperationalStatusGeneration.Scope("tenant-a"), "above-sdk-identity-boundary", "folder-a", 10_001,
+-                TestContext.Current.CancellationToken, new byte[10_001 * 32]));
+-        identityBoundary.Message.ShouldContain("Captured event identities must cover the complete owner history");
+-        identityBoundary.ParamName.ShouldBe("capturedEventDigests");
++        // A later independent owner generation inherits the complete original owner's proof and views.
++        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-b", "other-owner", other,
++            other[0].Source!.GlobalPosition, token)).IsSuccess.ShouldBeTrue();
++        (await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
++            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value!.SourceDigest.ShouldBe(checkpoint.SourceDigest);
++        foreach (int index in new[] { 0, 7, count / 2, count - 1 })
++            (await writer.ApplyAsync("tenant-a", "folder-a", "duplicate-" + index, [sources[index]], token)).IsSuccess.ShouldBeTrue();
++        var growth = Rejection(sources[0], count + 1);
++        growth = OperationalStatusEventReader.ReadStored(growth.Source! with { GlobalPosition = count + 2 });
++        var concurrent = await Task.WhenAll(
++            new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "catch-up-a", [growth], token),
++            new OperationalStatusProjectionWriter(store, store, store).ApplyAsync("tenant-a", "folder-a", "catch-up-b", [growth], token));
++        concurrent.Any(result => result.IsSuccess).ShouldBeTrue();
++        (await writer.ApplyAsync("tenant-a", "folder-a", "catch-up-settled", [growth], token)).IsSuccess.ShouldBeTrue();
++        sources.Add(growth);
++        sequence.Head++;
++        (await NamedOperationalStatusRebuildFixture.RebuildAsync(store, "tenant-a", "folder-a", "grown-rebuild", sources,
++            growth.Source!.GlobalPosition, token)).IsSuccess.ShouldBeTrue();
++        (await coordinator.GetCheckpointAsync(scope, "folder-a", token))!.CapturedIdentityReference!.Count.ShouldBe(count + 1);
++        foreach (int historical in Enumerable.Range(0, 98))
++        {
++            string taskId = historical == 0 ? "task-a" : "historical-" + historical;
++            var result = await reader.GetAsync(new TaskStatusReadModelRequest("tenant-a", taskId, "reader",
++                "read_task_status", "corr-a", "eventually_consistent")
++            { AuthorizedFolderId = "folder-a", AuthorizationWatermark = "authority" }, token);
++            result.Status.ShouldBe(TaskStatusReadModelStatus.Available);
++            result.Snapshot!.TerminalState.ShouldBe("ready");
++        }
++        foreach (int index in new[] { 0, count / 2, count })
++            (await writer.ApplyAsync("tenant-a", "folder-a", "grown-duplicate-" + index, [sources[index]], token)).IsSuccess.ShouldBeTrue();
++        string before = JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
++            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value);
++        // Every conflict is awaited below; preserve selected checkpoint and all source bytes.
++        foreach (int index in new[] { 0, count / 2, count })
++        {
++            foreach (bool message in new[] { true, false })
++            {
++                var original = sources[index].Source!;
++                var changed = OperationalStatusEventReader.ReadStored(message
++                    ? original with { MessageId = "conflicting-" + index }
++                    : original with
++                    {
++                        Payload = index == 0
++                        ? JsonSerializer.SerializeToUtf8Bytes(OperationalStatusTestData.Created() with { DisplayName = "contradictory" })
++                        : Encoding.UTF8.GetBytes("{\"Code\":\"UnsupportedCommandType\",\"CommandType\":\"ChangedUnknownCommand\"}")
++                    });
++                await Should.ThrowAsync<InvalidOperationException>(() => writer.ApplyAsync("tenant-a", "folder-a", "conflict-" + index, [changed], token));
++            }
++        }
++        JsonSerializer.Serialize((await coordinator.ReadAsync<OperationalStatusCheckpoint>(scope,
++            OperationalStatusKeys.Checkpoint("tenant-a", "folder-a"), token)).Value).ShouldBe(before);
++        Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(sources.Take(count).Select(item => item.Source))))
++            .ShouldBe(originalHash);
++        (await coordinator.GetStatusAsync(scope, token)).IsBuilding.ShouldBeFalse();
++        store.BatchOptions.MaxOperations.ShouldBe(100);
++        store.BatchOptions.MaxCanonicalManifestBytes.ShouldBe(1_048_576);
+     }
+ 
+     [Fact]

@@ -1,0 +1,177 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/parent-tools/audit-runtime-bindings.py"
+  ],
+  "observed_at_utc": "2026-10-21T19:03:52.029676+00:00",
+  "scope": "Mapped module observations from failed/partial executions; identity verification is not an acceptance pass.",
+  "lanes": {
+    "capacity-live-attempt-4.log": {
+      "observations": 122,
+      "managed_process_ids": [
+        59173,
+        68311,
+        68331,
+        68373
+      ],
+      "launcher_process_ids": [
+        58758,
+        67679,
+        67826,
+        67839
+      ],
+      "replacements": {
+        "eventstore": [
+          68331
+        ],
+        "folders": [
+          68373
+        ],
+        "folders-workers": [
+          68311
+        ],
+        "folders-workers-replica": [
+          59173
+        ]
+      },
+      "errors": [],
+      "passed": true
+    },
+    "capacity-live-attempt-5.log": {
+      "observations": 237,
+      "managed_process_ids": [
+        28781,
+        29343,
+        30980,
+        32178,
+        55982,
+        65935,
+        66040,
+        66042
+      ],
+      "launcher_process_ids": [
+        28706,
+        29074,
+        30641,
+        32037,
+        55040,
+        65205,
+        65333,
+        65345
+      ],
+      "replacements": {
+        "eventstore": [
+          32178,
+          65935
+        ],
+        "folders": [
+          28781,
+          66042
+        ],
+        "folders-workers": [
+          29343,
+          66040
+        ],
+        "folders-workers-replica": [
+          30980,
+          55982
+        ]
+      },
+      "errors": [],
+      "passed": true
+    },
+    "real-provider-live-attempt-1.log": {
+      "observations": 35,
+      "managed_process_ids": [
+        7502,
+        22163,
+        22173,
+        22278
+      ],
+      "launcher_process_ids": [
+        6547,
+        21416,
+        21571,
+        21649
+      ],
+      "replacements": {
+        "eventstore": [
+          22163
+        ],
+        "folders": [
+          22278
+        ],
+        "folders-workers": [
+          22173
+        ],
+        "folders-workers-replica": [
+          7502
+        ]
+      },
+      "errors": [],
+      "passed": true
+    },
+    "real-provider-live-attempt-2.log": {
+      "observations": 168,
+      "managed_process_ids": [
+        2561,
+        5635,
+        11396,
+        17808,
+        79722,
+        81062,
+        86411,
+        91241,
+        94613,
+        94640,
+        94670
+      ],
+      "launcher_process_ids": [
+        1506,
+        4887,
+        9520,
+        17141,
+        78649,
+        80081,
+        84672,
+        89859,
+        93833,
+        94001,
+        94017
+      ],
+      "replacements": {
+        "eventstore": [
+          17808,
+          94613
+        ],
+        "folders": [
+          2561,
+          79722,
+          94640
+        ],
+        "folders-workers": [
+          5635,
+          86411,
+          94670
+        ],
+        "folders-workers-replica": [
+          11396,
+          81062,
+          91241
+        ]
+      },
+      "errors": [],
+      "passed": true
+    },
+    "real-provider-live-attempt-3.log": {
+      "observations": 0,
+      "managed_process_ids": [],
+      "launcher_process_ids": [],
+      "replacements": {},
+      "errors": [],
+      "passed": true
+    }
+  },
+  "errors": [],
+  "passed": true
+}

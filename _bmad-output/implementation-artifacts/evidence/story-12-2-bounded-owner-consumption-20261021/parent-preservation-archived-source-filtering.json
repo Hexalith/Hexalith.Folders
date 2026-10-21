@@ -4,7 +4,7 @@
     "/home/administrator/projects/hexalith/folders/_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/parent-tools/audit-preservation.py",
     "archived-source-filtering"
   ],
-  "observed_at_utc": "2026-10-21T18:57:28.199754+00:00",
+  "observed_at_utc": "2026-10-21T19:10:02.731386+00:00",
   "commands": [
     [
       "git",
@@ -24,11 +24,15 @@
       "--stdin"
     ]
   ],
-  "count": 2860,
+  "count": 2920,
   "crlf_count": 1908,
   "differences": [],
   "attribute_errors": [],
   "files": {
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/0126d5150eee3f2789d5ed9256efff9305106af50183e4e985742ce2ba5cd756": {
+      "rawGitObject": "5ddfd968a202c1382b32aefe761a4291fc756019",
+      "filteredGitObject": "5ddfd968a202c1382b32aefe761a4291fc756019"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/03f25fb3d5ef10a251a4597baf7f96a25ab83cb550b9021abac285e9e4219576": {
       "rawGitObject": "7ced57c8d2ed63b120281f655fb379f5071d6cd1",
       "filteredGitObject": "7ced57c8d2ed63b120281f655fb379f5071d6cd1"
@@ -41,9 +45,33 @@
       "rawGitObject": "08a14638b90ee29139cec87e235514ae038fa6e6",
       "filteredGitObject": "08a14638b90ee29139cec87e235514ae038fa6e6"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/061213ec00886d11dd9a47860c9aa2eef5494b7d5577024c62ffd170d4f3764b": {
+      "rawGitObject": "81d682bfebfccf3eceb4d5455f5e180b7efa10eb",
+      "filteredGitObject": "81d682bfebfccf3eceb4d5455f5e180b7efa10eb"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/07cdcdebdf23b026636dd6ce3c68abcfc0e12f5e0d9841e9cc7e04ee798389b4": {
+      "rawGitObject": "e580cee7c9c3334b1623eea2d4018f2dec85f9ee",
+      "filteredGitObject": "e580cee7c9c3334b1623eea2d4018f2dec85f9ee"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/0d44eb588f90cb4f88ec8e8ceab8cfaa951ce6fe2bab4d65ed00904ca5edcbff": {
       "rawGitObject": "7f1f5bd42076d90060ee1579bdc49eea0316bdb7",
       "filteredGitObject": "7f1f5bd42076d90060ee1579bdc49eea0316bdb7"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/0db257c94f8c3317f44c3ad877b3f70f1f3a114fbca3dbccc6535f9cdb8cad91": {
+      "rawGitObject": "3d10de037e241a6ff4483692860674b92ca6adf1",
+      "filteredGitObject": "3d10de037e241a6ff4483692860674b92ca6adf1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/0f2c5935011f25aea7395ee1b2f21ad9fe1c1f0f24b289992912c5bd5b24b18d": {
+      "rawGitObject": "0d1634f6fd8290249119f277047b62f11ccb3e47",
+      "filteredGitObject": "0d1634f6fd8290249119f277047b62f11ccb3e47"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/1171641419751ff04f1b434b5bc827440586bf10f294b5e85259e85066f440b1": {
+      "rawGitObject": "29722706d20c390c825e4a2096099341059a62db",
+      "filteredGitObject": "29722706d20c390c825e4a2096099341059a62db"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/121d1d83cfedee6f75e32b9c34e601178b578feec72d9023033ed5fddf38a858": {
+      "rawGitObject": "1c64ea81083a1943ece7c7ce8a5b9e1a180b2f51",
+      "filteredGitObject": "1c64ea81083a1943ece7c7ce8a5b9e1a180b2f51"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/149cadb523345101f812fbe37face537f63a741def0fc22ab4cc11714a55ec7c": {
       "rawGitObject": "9bc23cb246c970e89513a06c57f260e9b0fc0031",
@@ -68,6 +96,14 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/18fc9d66dc6ed24a0f220678e299d061e361c9c0114ec3b4fdd52bf2c7ce6410": {
       "rawGitObject": "50d1c3539a51f8943ba8df08428ec558187c11a6",
       "filteredGitObject": "50d1c3539a51f8943ba8df08428ec558187c11a6"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/19bc89ecce555498d6c7e8427d1d386212a117ccf188f7e868446c816c1ae34f": {
+      "rawGitObject": "aab349411ffb85380640f7af28aae292145b1d4d",
+      "filteredGitObject": "aab349411ffb85380640f7af28aae292145b1d4d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/1d1f7200e4dda895598d9659a7cdd6ad0512a44d5b1c537b9d6f8ea483359d87": {
+      "rawGitObject": "b14327e9de79c8302437887c62d1aaa5276a7907",
+      "filteredGitObject": "b14327e9de79c8302437887c62d1aaa5276a7907"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/1dd8b69e5e35384dca294570274641efe9c38a62c71530681162d0af5ae93e3e": {
       "rawGitObject": "ba4879eff59f21b12497380cf919455934ce9d84",
@@ -101,6 +137,10 @@
       "rawGitObject": "5524863635a2f6a438316f4b1f839de3a2115b54",
       "filteredGitObject": "5524863635a2f6a438316f4b1f839de3a2115b54"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/2fef997b200c66daea467bb2b542e53203ee9adf5aa8ffa22541f5419d447b45": {
+      "rawGitObject": "0bb2609b659045207e1cc3cc067207ca62f04e40",
+      "filteredGitObject": "0bb2609b659045207e1cc3cc067207ca62f04e40"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/3041ec9f92b7d89345c3932ef49265762a3c4d0a65b88f5696ce2a8287167f9c": {
       "rawGitObject": "3086abb00931549b052628710aa16c7175247173",
       "filteredGitObject": "3086abb00931549b052628710aa16c7175247173"
@@ -109,9 +149,17 @@
       "rawGitObject": "15a35d2326b9e63d8513a4dc80ecd78768e0484a",
       "filteredGitObject": "15a35d2326b9e63d8513a4dc80ecd78768e0484a"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/32c2a1a60a3b5068a5cf8e245a499f927288cb2f0b3a5207332cf3dcbad6d990": {
+      "rawGitObject": "ed76ee9f5a371de98a9e4678cabe0f3c222b03cf",
+      "filteredGitObject": "ed76ee9f5a371de98a9e4678cabe0f3c222b03cf"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/32d61727e0e0695652b8cc8f2b260597a5324c2a2533b09ad5324b1eae7aae28": {
       "rawGitObject": "74340619cff1c7677762df429777e0bf9f865844",
       "filteredGitObject": "74340619cff1c7677762df429777e0bf9f865844"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/340bb6816f4d0d428791a62017f43079f53cccb014922789cbec45c48f19c68b": {
+      "rawGitObject": "f1d9bf0f32bd9b8efd8ae13f2c7e456a632355f7",
+      "filteredGitObject": "f1d9bf0f32bd9b8efd8ae13f2c7e456a632355f7"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/345cb4b2e2a292351e93c7003e7912069a2652c24c8fc11d19fcdea7ec773062": {
       "rawGitObject": "f5f46e55d76d3401d64b319fa0040ba4b4d01c57",
@@ -129,6 +177,10 @@
       "rawGitObject": "0a2453a03b204be576b9547ed0c9f3579804f9b2",
       "filteredGitObject": "0a2453a03b204be576b9547ed0c9f3579804f9b2"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/38796010d06508aac43e0cd272644a36a9f2e216743db4431ed1f1959abb3368": {
+      "rawGitObject": "b86bb1594e4e77266d6f45b7d380c302c46df33f",
+      "filteredGitObject": "b86bb1594e4e77266d6f45b7d380c302c46df33f"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/39cdb7b50bca436cd2082c8d6db30b5e60bd0e702ace711e66e406a25e1d73b1": {
       "rawGitObject": "1e06b264a7af602e59fcae953837573f1de55ad8",
       "filteredGitObject": "1e06b264a7af602e59fcae953837573f1de55ad8"
@@ -136,6 +188,10 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/3a0328464f5ca056d37d0baee44cb8cd74dcbcae739986b1836d46bbbe419be1": {
       "rawGitObject": "7971f6db1df486b72f0e843086a58a5d1281c4b2",
       "filteredGitObject": "7971f6db1df486b72f0e843086a58a5d1281c4b2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/3a1a0a910d47d7be83f8f3e3a60e4af5f2a6a44ec7402ca2feb0c0739f2639ec": {
+      "rawGitObject": "7d74e7c90f07f575ad2b4713207030a373b42091",
+      "filteredGitObject": "7d74e7c90f07f575ad2b4713207030a373b42091"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/3ac3a9cfc36e8b2c5027925ba5d31a6d3d61710e53df9d2c6bd53999db8b1b0c": {
       "rawGitObject": "66f377bedf5f3a4e5fc27d9a2007a3542c8c3639",
@@ -153,6 +209,14 @@
       "rawGitObject": "95d8daf636f9c8bcd50b1c6242d3daf661096f2e",
       "filteredGitObject": "95d8daf636f9c8bcd50b1c6242d3daf661096f2e"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/402acb973cea946f1d988158a93e4366203d43e3874c72ad977958ce112ddeee": {
+      "rawGitObject": "f1a3b6a7235932134df78de1918d74b957e8f786",
+      "filteredGitObject": "f1a3b6a7235932134df78de1918d74b957e8f786"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/42e422b1762ae572b46e59e55cdfc21b5c2b26ba2b94b2dfcb5e874f08a0f92d": {
+      "rawGitObject": "0cbe8db38e6cf8ad8506defba283c65a063d262d",
+      "filteredGitObject": "0cbe8db38e6cf8ad8506defba283c65a063d262d"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/48b753af1b419bbe552312d59da3bece4332af0dede62b797fc0df18d5e524c3": {
       "rawGitObject": "4c15e7409a5c461afab1d35e7317aaf39f06dfa7",
       "filteredGitObject": "4c15e7409a5c461afab1d35e7317aaf39f06dfa7"
@@ -160,6 +224,10 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/48e3c5646df9bb8ecab2a314d8d151efefbb0b902adab2bcee050a7e7d4b1a6c": {
       "rawGitObject": "bf510823427be929c0800288f1961a02206b7886",
       "filteredGitObject": "bf510823427be929c0800288f1961a02206b7886"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/4d9ab30a0001637cec517483f5fdc17ddd5dff33d79c611d9e6774afa062267e": {
+      "rawGitObject": "abe8f584f90c633da48754135fc74fd17a874f90",
+      "filteredGitObject": "abe8f584f90c633da48754135fc74fd17a874f90"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/4dcdc7e780d0e0e7116086b0f7a14096f66b419c86bb969d52881284be61664e": {
       "rawGitObject": "a33aeb7a9a6fe04717bcd984d45d2e9e9b59ea58",
@@ -169,6 +237,10 @@
       "rawGitObject": "860da304bd5512457d2a7e8750659d2f6f6c298e",
       "filteredGitObject": "860da304bd5512457d2a7e8750659d2f6f6c298e"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/50e9e743dc3fad7912d6d3958e297bea7dc90e781b672f0046d3de005ef38048": {
+      "rawGitObject": "368acea38716ee9f55dfd16cce0fdf48809228d3",
+      "filteredGitObject": "368acea38716ee9f55dfd16cce0fdf48809228d3"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/518244f8e4d9cb926683834d7694848c8c72173d9cc9ee1a67817e95bae4cbc5": {
       "rawGitObject": "13163edd13b48549a236bcadd8b0e87fdeeaf4ab",
       "filteredGitObject": "13163edd13b48549a236bcadd8b0e87fdeeaf4ab"
@@ -177,17 +249,45 @@
       "rawGitObject": "018b4d5f753e4bec7b709615ca93e47e8495ec6c",
       "filteredGitObject": "018b4d5f753e4bec7b709615ca93e47e8495ec6c"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/53a9c5f7b3421f7c4fff7308dff9627495fbdb5e57898db354450cd29827821c": {
+      "rawGitObject": "ad340d00a71c59e38dc53ce11ff5a4f52cb45fef",
+      "filteredGitObject": "ad340d00a71c59e38dc53ce11ff5a4f52cb45fef"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5a456c4b916a65b00534aac82c450e332a31098488d01ce04de34496bb5cc4bb": {
+      "rawGitObject": "4830a35fdfa1822bd1ac9930417d64eb456558ee",
+      "filteredGitObject": "4830a35fdfa1822bd1ac9930417d64eb456558ee"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5a87d980d1a3880f45e984237b7187481b6f4f81bfa115fae0a2f0c74a77cf9d": {
+      "rawGitObject": "bd807bbbcf3a75af5180f0c62d799842e9b209c7",
+      "filteredGitObject": "bd807bbbcf3a75af5180f0c62d799842e9b209c7"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5a9b3d11d56815e155270e3673741d63032f292df88e4c5a717ea4903938d260": {
       "rawGitObject": "a3b321da165d55d2dfd471eff581fe0e61fff6e5",
       "filteredGitObject": "a3b321da165d55d2dfd471eff581fe0e61fff6e5"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5bbcec4e00263b430157b4d2b38c6453024a7656d40851bd366b8546fe9436a3": {
+      "rawGitObject": "ee9b44c7b0b92858c2c40eb025e017ba9a8608f0",
+      "filteredGitObject": "ee9b44c7b0b92858c2c40eb025e017ba9a8608f0"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5c80d686feef4a78561188155d52edc90882d8a91c13bf5d0ea2788c01bbbff2": {
       "rawGitObject": "650bf5e92c5caa5896afde2279728c119086ad92",
       "filteredGitObject": "650bf5e92c5caa5896afde2279728c119086ad92"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5eef2c41d56b001e9236f151e325702e8e89af4fcd65ed9f9a5e34f4003d29f7": {
+      "rawGitObject": "e85d924f7907634237f973d0d86457abe5426cc8",
+      "filteredGitObject": "e85d924f7907634237f973d0d86457abe5426cc8"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/5fb46c63939af32115fe4b09901265accbab3afbea68b7ac127bf470f03531f2": {
       "rawGitObject": "2e9d20b9316d2ec8a21941eb47bb11203a041c2e",
       "filteredGitObject": "2e9d20b9316d2ec8a21941eb47bb11203a041c2e"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/600525ee0f61ded0ba088ae754a683c27f0b348d22c2d535b727cdfaf767e9ae": {
+      "rawGitObject": "22b052af8fbd56f7aa19048269fe6132848e354a",
+      "filteredGitObject": "22b052af8fbd56f7aa19048269fe6132848e354a"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/603713e51eb1d20f4deb693e51ab4a20c74470c519bb80ec2c715b264f531224": {
+      "rawGitObject": "21faa2e2361c0cb11db455d778a6024ae9496d91",
+      "filteredGitObject": "21faa2e2361c0cb11db455d778a6024ae9496d91"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/611b23f89f467af6772db8db979cb7f82d5d908abf0a93bd0985eb4a16ed18e4": {
       "rawGitObject": "32dbe99081750b173cbd9362e97b994305292b0d",
@@ -197,9 +297,17 @@
       "rawGitObject": "e55ee1466d5ae115ef13e0386cca84d8a38af365",
       "filteredGitObject": "e55ee1466d5ae115ef13e0386cca84d8a38af365"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/63e6f810b7bf5c1b0966ecb2d5562ca7644d5dd5ef284e6fec719cb1b3c4134f": {
+      "rawGitObject": "5619516c4112ef49c9ff87e6e8f3e100ac0f3e77",
+      "filteredGitObject": "5619516c4112ef49c9ff87e6e8f3e100ac0f3e77"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/64a2c0faa5325b94664f3ce98392544a955a9aab9b022c4e8aa90a62bb01f0c3": {
       "rawGitObject": "5475f2194170597f7a41e4f41cf160fae3536e92",
       "filteredGitObject": "5475f2194170597f7a41e4f41cf160fae3536e92"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/66726cb636b6e6a492e12ccc825a47895110c0904115305dd24e0a6c394692ca": {
+      "rawGitObject": "b715ee524a8911af90cb16cc8aa5e2563ffaabba",
+      "filteredGitObject": "b715ee524a8911af90cb16cc8aa5e2563ffaabba"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/670617fae3f9da936146066b71debe5822c63efcf3a8bbe3499d7b4470c35bb4": {
       "rawGitObject": "ac627a0e13b6dc5d4abae1f7f1804e61cd95e821",
@@ -213,9 +321,17 @@
       "rawGitObject": "123d6def3b7d5c1c79803fb5a315311ead0100e4",
       "filteredGitObject": "123d6def3b7d5c1c79803fb5a315311ead0100e4"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/6cda3548d8b1f9f35b9914f821a4bc8a5752770daebf58b8386d84aa9e68cb96": {
+      "rawGitObject": "5eb5a5d616f163e01524458034e93fa989d0be24",
+      "filteredGitObject": "5eb5a5d616f163e01524458034e93fa989d0be24"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/6f1ff1baabbae657b915064293a73c97d6b11db792afcad3f77a985419c30a03": {
       "rawGitObject": "e5e1c3c0e59a454c9a76c453fd6b06cfe61d6aae",
       "filteredGitObject": "e5e1c3c0e59a454c9a76c453fd6b06cfe61d6aae"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/6fb522f313ae7efd94881a27924a6c651f9d7631c84311002519bb1fdd1ab9d5": {
+      "rawGitObject": "3ec0c2a5a2adc0a0e0450d36d9c3def21b79190a",
+      "filteredGitObject": "3ec0c2a5a2adc0a0e0450d36d9c3def21b79190a"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/7009bae3838ba96af378188e77cc59d00ef6e4f4ade7f76c58472f98cb877db8": {
       "rawGitObject": "36d19280aa08267b32489ef4d3272ca7aa6f8a3c",
@@ -228,6 +344,10 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/735b236c28b0e47a975ff924d2a5677dd1e6451d6376df63de9212309e4acb57": {
       "rawGitObject": "50f28d2817f0431442e362c99e4a384688ceb0c2",
       "filteredGitObject": "50f28d2817f0431442e362c99e4a384688ceb0c2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/74e266bc14d9bc3fecb0cee716e24ade4f2eb9886ba968342c76c6cc466987ca": {
+      "rawGitObject": "f3668be0cdd8a23ac6aa79eb74eca3cfbdc9b7ff",
+      "filteredGitObject": "f3668be0cdd8a23ac6aa79eb74eca3cfbdc9b7ff"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/774b3c0eaa6466256bb77876e146e0ed7ec3126ef86d4d608612a4cc821aa701": {
       "rawGitObject": "68b8fd0a07fa70db21aca8e7aa24400f9807e77a",
@@ -249,6 +369,10 @@
       "rawGitObject": "bdb64cfddc5ee6e6b2dc9ebe8d49a060cef3d62b",
       "filteredGitObject": "bdb64cfddc5ee6e6b2dc9ebe8d49a060cef3d62b"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/8153078bbd0db73769b488f9e2a0ee450652a5bbddff4376f04cd91d8f6972e0": {
+      "rawGitObject": "1a0e7c77c7bb3dd0321b7fbabd2c289311246964",
+      "filteredGitObject": "1a0e7c77c7bb3dd0321b7fbabd2c289311246964"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/82f3ac20620427639b75e5b18de4328418dc3cf4d182bf5afad1d920332d163d": {
       "rawGitObject": "68c108fc8c8737c857491f653233c5c25b7e7ac6",
       "filteredGitObject": "68c108fc8c8737c857491f653233c5c25b7e7ac6"
@@ -256,6 +380,10 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/83d33312fbc53ff2867754ff5e7a83de2a2ed1f01dd9e2bb35440516bd472d38": {
       "rawGitObject": "7f93bffb6b16907893ae271079afcb28365530c1",
       "filteredGitObject": "7f93bffb6b16907893ae271079afcb28365530c1"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/8462f8c7f5df0a0ab2d4c899ce43c911d4cb02747ecc4c45105dc41333421aad": {
+      "rawGitObject": "a41019bc8d1685028a3ac766ac7ecbf5baa25cfe",
+      "filteredGitObject": "a41019bc8d1685028a3ac766ac7ecbf5baa25cfe"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/8562e54acae527797ba71f71aebbce5afafda4463fba629c8e2be2f51df195e9": {
       "rawGitObject": "d073ddd61f377c2fcbf95d303e752418702e6ba6",
@@ -281,13 +409,37 @@
       "rawGitObject": "df0b1426785c7e7dc968871cea5c1112f053e0f7",
       "filteredGitObject": "df0b1426785c7e7dc968871cea5c1112f053e0f7"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/8b60e4dee84d07ecb62a428e9cecb5a8b447fcc7580bc43e558eab8a7a61c7ec": {
+      "rawGitObject": "733e1863dc4118ef93ea4069cbe1530bf577a64b",
+      "filteredGitObject": "733e1863dc4118ef93ea4069cbe1530bf577a64b"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/8f73cbbbc65328d68d26219b1fe6a221906693955531e8083298ee2937976586": {
+      "rawGitObject": "540abb83e97bbc94ea4c8f538ab5d0a2d8709e47",
+      "filteredGitObject": "540abb83e97bbc94ea4c8f538ab5d0a2d8709e47"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/912f93694e31797e1c84a18750c59f5ab1b02269d27f979f83aaf2adaa697053": {
       "rawGitObject": "a5fa61eec77579ec40730bc25bab7c69a18e71bd",
       "filteredGitObject": "a5fa61eec77579ec40730bc25bab7c69a18e71bd"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/92ce64ba68dd1029b3147427d31138e12ccdaee96f500ceed5f250a35ae22472": {
+      "rawGitObject": "ac238d824af914cb7ed805bdffc44a914707b7ba",
+      "filteredGitObject": "ac238d824af914cb7ed805bdffc44a914707b7ba"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/92e0db19cbf031ae53cfbf5c66dbbee3a4197631d89b670571e85b23de09cc5e": {
+      "rawGitObject": "8874051df25586c79c68951f90c5627de7334b85",
+      "filteredGitObject": "8874051df25586c79c68951f90c5627de7334b85"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/931e264573c4f04633a8766c50c51164a11f93c057b291bd3cebe2c3625e5e32": {
+      "rawGitObject": "ed7b17ab65d3fd94126a04516dd9fecac9abcb89",
+      "filteredGitObject": "ed7b17ab65d3fd94126a04516dd9fecac9abcb89"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/9a254bc715d5a0444468f7c672eedd0415c3a099f790024990131e23ff6c1bbb": {
       "rawGitObject": "f30bfcdd753c5f49a709cf220656bc6e6600eb00",
       "filteredGitObject": "f30bfcdd753c5f49a709cf220656bc6e6600eb00"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/9ae84307c2056c742bd2ba9de989aa772f4ff90fdc90a790227d09765ca3df4b": {
+      "rawGitObject": "5a209736620dc80876fc671632e713bf9dc948f7",
+      "filteredGitObject": "5a209736620dc80876fc671632e713bf9dc948f7"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/9b432146735752b802db698b5b3465f49d22bc8f9ef7addcb53670ff80cc1dc9": {
       "rawGitObject": "0dcaae9c09c6761aa6a07a1104cd2e1b92a02f82",
@@ -301,6 +453,10 @@
       "rawGitObject": "24e6216e171211d2bf46398512eb40a308df2d6f",
       "filteredGitObject": "24e6216e171211d2bf46398512eb40a308df2d6f"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/9df984e909dfab0e61b78bd8872c65ee427dffd0af4e2903acb8e033e7187af7": {
+      "rawGitObject": "24ca3d39631ad2d0a8dc2b3537ec0ca852fc19c6",
+      "filteredGitObject": "24ca3d39631ad2d0a8dc2b3537ec0ca852fc19c6"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/9ea63e6950ed3183c0eaa15ce70c963459a3b5a67e9bbd3535716f96416bd386": {
       "rawGitObject": "ed1ba8a259363a34c85fe94082fb8061d89f8ae5",
       "filteredGitObject": "ed1ba8a259363a34c85fe94082fb8061d89f8ae5"
@@ -312,6 +468,10 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/a497e2d58c2a2878f8b8cb6e30774cf22335382f88d56851e75b35bc4cfb0b89": {
       "rawGitObject": "9b2e3046a96e8524765990082894e9837f375086",
       "filteredGitObject": "9b2e3046a96e8524765990082894e9837f375086"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/a4d147f03d7d5ed831b48f4bd262096f902f55bfa461bfb43d8f4ae69c2df11b": {
+      "rawGitObject": "5f9d0a87abd717a86ac667a508022251a33ed708",
+      "filteredGitObject": "5f9d0a87abd717a86ac667a508022251a33ed708"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/a6800c9277b2ac05cdc9bb70ec26a1292c09dfc8968c837f5a8f9ea1aa30f34a": {
       "rawGitObject": "52d239d73322d88be08130d1c616aefcff776d2f",
@@ -333,9 +493,17 @@
       "rawGitObject": "5d1026b38d14f71b355d981f58589338bec88195",
       "filteredGitObject": "5d1026b38d14f71b355d981f58589338bec88195"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/ab428d8548dfa47736073ba89aac9ca3824ead64fdc921a1950f6d24d2e7c73b": {
+      "rawGitObject": "23cb0ac189c0ba26e03df6be9f206734eaab396b",
+      "filteredGitObject": "23cb0ac189c0ba26e03df6be9f206734eaab396b"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/af2e1f035fb2c33608704480cd5b12ccb4826b392d35b77200fdb4f3ca8c3e40": {
       "rawGitObject": "accedcf1389904729e76b237255f58c5da84ca6d",
       "filteredGitObject": "accedcf1389904729e76b237255f58c5da84ca6d"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b1d152545c9d3068f737904c4952942f97b4de94a0e73844570fc0d7bf3d1d1d": {
+      "rawGitObject": "eb884488aafa0516eb1e8f71e12c95005ff89d9c",
+      "filteredGitObject": "eb884488aafa0516eb1e8f71e12c95005ff89d9c"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b1ff28f211a4abe60ee50b79672aa446b975c70fc8a0f1d3b443478ea0f42bed": {
       "rawGitObject": "ef72f13f4f8b1131b46857f10d796923d937e433",
@@ -353,9 +521,29 @@
       "rawGitObject": "c0f7f76d303e00fd74c00adb22fa7171f3c6ee65",
       "filteredGitObject": "c0f7f76d303e00fd74c00adb22fa7171f3c6ee65"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b3b08d983a2d1d9a94bd9a39377f77fffa16206f1a9bf803c5a5878dc9fed856": {
+      "rawGitObject": "86a98c856cec4dceb4a68f10ad533fd0efd9bb4a",
+      "filteredGitObject": "86a98c856cec4dceb4a68f10ad533fd0efd9bb4a"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b3d4d8ba1bad5ca0cd122cbffa9d9981e588cc18bdca2a3fe028f1384b86cab5": {
       "rawGitObject": "9e6652f23834f3c8ceea77ad1e9fef492182b747",
       "filteredGitObject": "9e6652f23834f3c8ceea77ad1e9fef492182b747"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b421228cea212deb0627052eaa070f9aaac895b17251e587cd65b0074a7d58d2": {
+      "rawGitObject": "5918152012135c0418c0055cd11b0ffdc4961ac8",
+      "filteredGitObject": "5918152012135c0418c0055cd11b0ffdc4961ac8"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b5d2a838e6e3d3fe06da856fb44ed035ab0c5324461bc5e6dd6449a26cdd0a9d": {
+      "rawGitObject": "c980a5f644c15a7c3b7f0876dd8dfcb11fe67ff2",
+      "filteredGitObject": "c980a5f644c15a7c3b7f0876dd8dfcb11fe67ff2"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b5e16a0344c57560d294911c5ff5768de7600d028d706d4fb5d435fa769c5a03": {
+      "rawGitObject": "97f473b1f51310521cf25d3317c5433a3fc95031",
+      "filteredGitObject": "97f473b1f51310521cf25d3317c5433a3fc95031"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b83ebea4f64d594defdc6b9a8f06b4b63f228620d9ab7044161f5f037913c01d": {
+      "rawGitObject": "fdcbe54f2b6aeffe5980e67fada9ebd05609e6a1",
+      "filteredGitObject": "fdcbe54f2b6aeffe5980e67fada9ebd05609e6a1"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/b96ef345e24957ad858c8850885e9dd8b7a9644702d39245781c2c4751b18d58": {
       "rawGitObject": "03b5134a83cdb474568c1327b9be96eda8af844d",
@@ -389,9 +577,25 @@
       "rawGitObject": "d77145b7dcfc38d79f5c81d47dd2db5e9fba9cc1",
       "filteredGitObject": "d77145b7dcfc38d79f5c81d47dd2db5e9fba9cc1"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/c6ec937ab1a7838a58c1685bb5c61694e8b488fbd5616acd4e86d2f6d3650300": {
+      "rawGitObject": "68023e11e95fc0013c189c03b8822ec722862cc9",
+      "filteredGitObject": "68023e11e95fc0013c189c03b8822ec722862cc9"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/c72bdd8313d8ed84d5a9c8c05c8ea9b28f0e44e12f2f552fced6a1fc4319d17b": {
+      "rawGitObject": "0f957365d85382083c9f433852b73ebf95fbaee3",
+      "filteredGitObject": "0f957365d85382083c9f433852b73ebf95fbaee3"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/c810e492e294a24d249a73a86957b3bda3db38e45b1b2012fe8784eebe601d46": {
+      "rawGitObject": "20f69196540f6bc41d44646e31bab34110a7c2c9",
+      "filteredGitObject": "20f69196540f6bc41d44646e31bab34110a7c2c9"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/ca5552f324d0cfea16c35f70cb7ff94521c18ea73cb1467a120c84640f44cd6a": {
       "rawGitObject": "960f1aac6acf3e51969c67250610d1caaa30de6f",
       "filteredGitObject": "960f1aac6acf3e51969c67250610d1caaa30de6f"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/caee6849edc8c033eef7af5d5393b8acff99d5c3277e050ee6acacd67ffd6dd2": {
+      "rawGitObject": "f5a0603d71f402a512f34f6940534e95304a713f",
+      "filteredGitObject": "f5a0603d71f402a512f34f6940534e95304a713f"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/cedbdda20cfaa088ba6f009932d72e3cfbea64cc1abdc165b8ac898c5cb6a420": {
       "rawGitObject": "ea6e325c5ae8673fe9bcb939eb520594c9ded67b",
@@ -405,6 +609,10 @@
       "rawGitObject": "d4711c30086f0ff15ab6eb841d8a95ce9262f93b",
       "filteredGitObject": "d4711c30086f0ff15ab6eb841d8a95ce9262f93b"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/d4e4395c45a83456674f4dc37dc41186a63004c6d1556b9d7980e0e1fe85b04a": {
+      "rawGitObject": "2bcbc27f87298ffc6bb1268212a0c4603de1c737",
+      "filteredGitObject": "2bcbc27f87298ffc6bb1268212a0c4603de1c737"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/d4e95e01c4de3f77a4bfa6fd46925218d5b64b2d1c4b3c799c84ec97754a6447": {
       "rawGitObject": "7623a52e7f740440c49ea7977a067ede02987c1d",
       "filteredGitObject": "7623a52e7f740440c49ea7977a067ede02987c1d"
@@ -413,9 +621,29 @@
       "rawGitObject": "4c9580e8984d3550fa0786f057ff7c138d5f61d0",
       "filteredGitObject": "4c9580e8984d3550fa0786f057ff7c138d5f61d0"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/d6b250d064cc63eb6a3582fa0d90b9740fd403ea1f4d4e2ff3291bb831646a4a": {
+      "rawGitObject": "f6ebbc492839a2cc4e74470ecd3672f98b535bb4",
+      "filteredGitObject": "f6ebbc492839a2cc4e74470ecd3672f98b535bb4"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/d7dbcc4a4b874f3784ecb48613fe8afede8e8cbc407ab8b8bff6b333f846ecae": {
+      "rawGitObject": "8fe470c6213160048c811e5e50874341ebe7cf11",
+      "filteredGitObject": "8fe470c6213160048c811e5e50874341ebe7cf11"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/db2c93d77d206e858a30f1c24d1a136d3e53f0b142df964186a1bc621dc27aca": {
       "rawGitObject": "622453e7d580dbcf34632c2a8688b182c1b2b726",
       "filteredGitObject": "622453e7d580dbcf34632c2a8688b182c1b2b726"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/db58de39f9aef3711bb898e742e80598a7aec28535c53ff3ecb1c5d0b2051092": {
+      "rawGitObject": "eb56910b323d23115fc3ddf02ea210aab694ffd0",
+      "filteredGitObject": "eb56910b323d23115fc3ddf02ea210aab694ffd0"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/dca1fc08f119c33017a34a7897856b855ff640c9cd641f1b21f2ce97ab693308": {
+      "rawGitObject": "e9aab1fde0c6c8e26df7c8b30593c97ba638cf63",
+      "filteredGitObject": "e9aab1fde0c6c8e26df7c8b30593c97ba638cf63"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/dff5f76213745bac89ffc77416824ab4a756a8152ffabd0f42b38d527019687c": {
+      "rawGitObject": "19ff6bfc561e72c2fc9ca70530c70dc305aae128",
+      "filteredGitObject": "19ff6bfc561e72c2fc9ca70530c70dc305aae128"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/e0df77f23402de73a118523b42cb1fef5c58fac2477d8a4e050d2acf5b4b6895": {
       "rawGitObject": "c59d6a17a88c37eeaee8132b50e81ab99aa50fc9",
@@ -445,6 +673,10 @@
       "rawGitObject": "3c96bc84503904cfe82a88e85096e30b5521a07b",
       "filteredGitObject": "3c96bc84503904cfe82a88e85096e30b5521a07b"
     },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/e93c6ff32851f048515f30e296a24d947efbacb9f59b04d22ea0d07289caa378": {
+      "rawGitObject": "514f371591374a6b46a07289bf1a257af485b7e7",
+      "filteredGitObject": "514f371591374a6b46a07289bf1a257af485b7e7"
+    },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/eb5244518235483d92e429fbc2407066451d991018a15f427bf60f5dd87ad13c": {
       "rawGitObject": "4d3788a12b621fccaea2342cebb5c4c51ca87b3e",
       "filteredGitObject": "4d3788a12b621fccaea2342cebb5c4c51ca87b3e"
@@ -468,6 +700,14 @@
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/f0878cf9ac6bd1feeb356da732d74523c242c8b3bdb6a1262788a72c50c3524a": {
       "rawGitObject": "d48115770e6f074af11e6f7f62d882739382f420",
       "filteredGitObject": "d48115770e6f074af11e6f7f62d882739382f420"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/f0e2302059d5b6aaab3060f2a72bdf498632b471d1dbafb7d4a79d19891295c4": {
+      "rawGitObject": "4b0cc403b3bb9194a87b7ffb799f74cd82f6b0ad",
+      "filteredGitObject": "4b0cc403b3bb9194a87b7ffb799f74cd82f6b0ad"
+    },
+    "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/f175b034b02aa31de4971e348b373cda9f74fd787c129b4e5a1186f29bbbda37": {
+      "rawGitObject": "d0d2b546bd7e563ef8cc93d5506aa2eb75714765",
+      "filteredGitObject": "d0d2b546bd7e563ef8cc93d5506aa2eb75714765"
     },
     "_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/external-drift-original-inputs/f2bb023145e4f6624292a131a71095d3d33f0aca776f3826f4621fa63da237f4": {
       "rawGitObject": "c68879a6e827aee3c8858277e8d69dee0e58285b",

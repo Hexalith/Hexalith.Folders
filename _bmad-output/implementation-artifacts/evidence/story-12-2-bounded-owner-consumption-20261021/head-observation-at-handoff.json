@@ -1,0 +1,6 @@
+{
+  "observed_at_utc": "2026-10-21T19:08:06.986787+00:00",
+  "root_head": "4b8822289b774b351d5c520ec1b6a25e404eb8b0",
+  "sdk_head": "c91f520270388080b950feb869c68b43964285f3",
+  "scope": "Read-only handoff observation; external commits/index mutations preserved. No current integrated-source qualification."
+}

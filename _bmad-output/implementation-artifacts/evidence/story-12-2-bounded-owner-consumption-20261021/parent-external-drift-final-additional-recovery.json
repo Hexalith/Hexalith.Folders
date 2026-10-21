@@ -1,0 +1,16 @@
+{
+  "observed_at_utc": "2026-10-21T19:05:25.142009+00:00",
+  "command": [
+    "git",
+    "show",
+    "ae917d3e4dbab20b8982c5222a13611c3e3faf35:tests/Hexalith.EventStore.Contracts.Tests/Packaging/DeployedRuntimeParityClosureTests.cs"
+  ],
+  "cwd": "/home/administrator/projects/hexalith/folders/references/Hexalith.EventStore",
+  "path": "references/Hexalith.EventStore/tests/Hexalith.EventStore.Contracts.Tests/Packaging/DeployedRuntimeParityClosureTests.cs",
+  "revision": "ae917d3e4dbab20b8982c5222a13611c3e3faf35",
+  "recoveryMode": "gitBlob",
+  "sha256": "d4e4395c45a83456674f4dc37dc41186a63004c6d1556b9d7980e0e1fe85b04a",
+  "archive": "external-drift-original-inputs/d4e4395c45a83456674f4dc37dc41186a63004c6d1556b9d7980e0e1fe85b04a",
+  "pdbBindings": [],
+  "passed": true
+}
