@@ -51,9 +51,15 @@ elif mode == 'archived-source-filtering':
         files={name: {'rawGitObject': a, 'filteredGitObject': b} for name, a, b in zip(names, raw, filtered)},
         passed=not differences and not attr_errors and len(raw) == len(filtered) == len(names),
     )
-elif mode == 'external-recovery':
+elif mode in ('external-recovery', 'external-recovery-strict3'):
     freeze = json.loads((PACKET / 'source-freeze.json').read_text())
     drift = json.loads((PACKET / 'parent-external-drift-observation.json').read_text())
+    if mode == 'external-recovery-strict3':
+        latest = json.loads((PACKET / 'after-strict3-external-drift-audit.json').read_text())
+        drift['input_drift'] = {
+            path: {'expected': freeze['files_sha256'][path], 'actual': sha(ROOT / path)}
+            for path in latest['files_sha256']
+        }
     documents = json.loads((PACKET / 'parent-source-binding-build7/all-pdb-documents.json').read_text())
     by_path = {}
     for pe in documents:
@@ -67,12 +73,25 @@ elif mode == 'external-recovery':
     for relative, delta in drift['input_drift'].items():
         module = max((m for m in freeze['submodules'] if relative.startswith(m + '/')), key=len)
         revision = freeze['submodules'][module]['head']
-        command = ['git', 'show', revision + ':' + relative[len(module) + 1:]]
-        blob = subprocess.check_output(command, cwd=ROOT / module)
-        lf = blob.replace(b'\r\n', b'\n')
-        variants = {'Git blob': blob, 'LF worktree': lf, 'CRLF worktree': lf.replace(b'\n', b'\r\n')}
-        match = next(((kind, raw) for kind, raw in variants.items()
-                      if hashlib.sha256(raw).hexdigest() == delta['expected']), None)
+        candidates = [revision]
+        if module == 'references/Hexalith.EventStore':
+            # The first external commit recorded the original uncommitted prerequisite.
+            candidates.append('4ba2d839906a3d71e189ac0abbc1439d0b35eadf')
+        candidates.append(run(['git', 'rev-parse', 'HEAD'], cwd=ROOT / module))
+        match = None
+        for candidate in dict.fromkeys(candidates):
+            command = ['git', 'show', candidate + ':' + relative[len(module) + 1:]]
+            completed = subprocess.run(command, cwd=ROOT / module, capture_output=True)
+            if completed.returncode:
+                continue
+            blob = completed.stdout
+            lf = blob.replace(b'\r\n', b'\n')
+            variants = {'Git blob': blob, 'LF worktree': lf, 'CRLF worktree': lf.replace(b'\n', b'\r\n')}
+            match = next(((kind, raw) for kind, raw in variants.items()
+                          if hashlib.sha256(raw).hexdigest() == delta['expected']), None)
+            if match is not None:
+                revision = candidate
+                break
         if match is None:
             errors.append({'path': relative, 'error': 'No exact original frozen SHA-256 match'})
             continue
@@ -91,6 +110,7 @@ elif mode == 'external-recovery':
         if any(not b['matchesSnapshot'] for b in bindings):
             errors.append({'path': relative, 'error': 'Original snapshot differs from PDB checksum'})
         snapshots.append({'path': relative, 'command': command, 'cwd': str(ROOT / module),
+                          'revision': revision,
                           'recoveryMode': kind, 'archive': str(destination.relative_to(PACKET)),
                           'sha256': digest, 'currentSha256': delta['actual'], 'pdbBindings': bindings})
     result.update(count=len(snapshots), compiled_paths=sum(bool(s['pdbBindings']) for s in snapshots),

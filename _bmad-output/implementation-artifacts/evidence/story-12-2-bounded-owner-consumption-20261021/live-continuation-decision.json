@@ -1,0 +1,9 @@
+{
+  "observation_start": "2026-10-21T18:57:33.040865+00:00",
+  "observation_end": "2026-10-21T18:59:47.914553+00:00",
+  "watch_limit": 1048576,
+  "initial_visible_headroom": 548,
+  "final_visible_headroom": 35,
+  "decision": "No further live retry or build in this session. Actual task sidecars failed watcher ENOSPC; quota remains nearly exhausted, and external SDK substantive source changes now diverge from the exact frozen candidate. Preserve the original graph, current source divergence, failed attempts and open live gate.",
+  "constraints": "No quota changes, unrelated process mutations, deadline/retry changes, or rebuild of externally changed SDK."
+}

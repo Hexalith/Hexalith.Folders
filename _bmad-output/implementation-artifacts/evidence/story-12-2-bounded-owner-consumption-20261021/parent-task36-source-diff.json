@@ -1,0 +1,11 @@
+{
+  "observed_at_utc": "2026-10-21T19:01:31.334793+00:00",
+  "scope": "Task36 source/doc changes against its starting HEAD; no index staging. Whole-story baseline remains unchanged and whole-story review remains open.",
+  "source_diff": "/tmp/folders-task36-source-diff-jdmd7zwz.patch",
+  "sha256": "4101dfeb29e45faa4db61510ef5bdc4a056f3ef32f789193a879dfea98b9f899",
+  "bytes": 71286,
+  "frozen_intent_unchanged": true,
+  "baseline_commit_preserved": true,
+  "status_in_progress": true,
+  "task36_unchecked": true
+}

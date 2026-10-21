@@ -1,0 +1,44 @@
+{
+  "observed_at_utc": "2026-10-21T19:02:33.624685+00:00",
+  "scope": "Read-only observation of concurrent external Git mutations; this task issued no staging, commit, push, branch or dependency-update commands. Existing external commits are preserved.",
+  "repositories": {
+    ".": {
+      "starting": {
+        "head": "12ed2391955960efe696078bd0c56e79c88edf9e",
+        "indexTree": "c06851f838d17d6990aff10c2a9b794f6fc36b4c",
+        "status": "## main...origin/main\n M _bmad-output/implementation-artifacts/spec-12-2-durable-projections-and-task-completion-pipeline.md\n m references/Hexalith.EventStore\n?? _bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/\n"
+      },
+      "current_head": "038d6b5ec14a03e82dcefd1e3de5127f57c87209",
+      "current_index_tree": "c12c4aa672b3d700b15fb89e757eac6e446c7e4d",
+      "recent_reflog": [
+        "038d6b5e HEAD@{2026-10-21 20:59:16 +0200}: commit: build: sync local changes via /pushall",
+        "12ed2391 HEAD@{2026-10-21 09:33:23 +0200}: commit: build: sync local changes via /pushall",
+        "34f25c47 HEAD@{2026-10-20 20:56:40 +0200}: commit: build: sync local changes via /pushall",
+        "7f72ce87 HEAD@{2026-10-20 20:48:04 +0200}: commit: fix: story 12.2",
+        "182fbddf HEAD@{2026-10-20 16:50:40 +0200}: commit: build: record the merged EventStore pointer",
+        "df9524b8 HEAD@{2026-10-20 16:49:25 +0200}: merge origin/main: Merge made by the 'ort' strategy.",
+        "7bdf260b HEAD@{2026-10-20 16:39:30 +0200}: commit: fix: story 12.2"
+      ],
+      "index_diff_empty": true
+    },
+    "references/Hexalith.EventStore": {
+      "starting": {
+        "head": "ae917d3e4dbab20b8982c5222a13611c3e3faf35",
+        "indexTree": "be47971e2a99f4b9022e08dc5981eeedb7036de4",
+        "status": "## main...origin/main\n M .gitattributes\n M docs/guides/named-projection-authoring.md\n M src/Hexalith.EventStore.Client/Projections/SharedProjectionCheckpoint.cs\n M src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.cs\n M src/Hexalith.EventStore.DomainService/DomainSharedProjectionRebuildDispatcher.cs\n M src/Hexalith.EventStore.DomainService/DomainSharedProjectionRebuildSessionState.cs\n M src/Hexalith.EventStore.DomainService/DomainSharedProjectionScratchRetirement.cs\n M src/Hexalith.EventStore.DomainService/DomainSharedProjectionStoredPartitionManifest.cs\n M src/Hexalith.EventStore.Server/Projections/SharedProjectionSourceBeginProducer.cs\n M src/Hexalith.EventStore.Server/Projections/SharedProjectionSourceRosterActor.cs\n M tests/Hexalith.EventStore.Client.Tests/Projections/SharedProjectionEpochCoordinatorTests.cs\n M tests/Hexalith.EventStore.Server.Tests/Projections/SharedProjectionSourceBeginProducerTests.cs\n M tests/Hexalith.EventStore.Server.Tests/Projections/SharedProjectionSourceRosterActorTests.cs\n?? _bmad-output/implementation-artifacts/evidence/folders-12-2-bounded-owner-identity/\n?? _bmad-output/implementation-artifacts/spec-folders-12-2-bounded-owner-identity.md\n?? src/Hexalith.EventStore.Client/Projections/SharedProjectionCapturedIdentityInventory.cs\n?? src/Hexalith.EventStore.Client/Projections/SharedProjectionCapturedIdentityPage.cs\n?? src/Hexalith.EventStore.Client/Projections/SharedProjectionCapturedIdentityReference.cs\n?? src/Hexalith.EventStore.Client/Projections/SharedProjectionCapturedIdentityStore.cs\n?? src/Hexalith.EventStore.Client/Projections/SharedProjectionCapturedMessageIdentity.cs\n?? src/Hexalith.EventStore.Client/Projections/SharedProjectionEpochCoordinator.CapturedIdentity.cs\n?? tests/Hexalith.EventStore.Client.Tests/Projections/DelayedCapturedIdentityBatchStore.cs\n?? tests/Hexalith.EventStore.Client.Tests/Projections/SharedProjectionBoundedIdentityTests.cs\n?? tests/Hexalith.EventStore.DomainService.Tests/DomainPartitionedSharedProjectionRebuildTests.BoundedIdentity.cs\n?? tests/Hexalith.EventStore.DomainService.Tests/OutputOnlyPartitionedHandler.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityBufferedLiveHandler.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityLiveAccessor.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityLiveHandler.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityLiveMeasurements.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityLiveStore.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityLiveTests.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityProcessExitInjector.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityProcessWorkerTests.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityRuntimeProof.cs\n?? tests/Hexalith.EventStore.Server.LiveSidecar.Tests/Integration/ProjectionBoundedIdentityRuntimeProofTests.cs\n?? tools/qualify-bounded-owner-identity.py\n"
+      },
+      "current_head": "2fe185c2948f9ca703bd3d9206fa9c04d469fa0a",
+      "current_index_tree": "d7a798304db54c3f7c7cb2a938db8dd56f97f613",
+      "recent_reflog": [
+        "2fe185c29 HEAD@{2026-10-21 20:57:02 +0200}: rebase (finish): returning to refs/heads/main",
+        "2fe185c29 HEAD@{2026-10-21 20:57:02 +0200}: rebase (pick): build: sync local changes via /pushall",
+        "b5244d245 HEAD@{2026-10-21 20:57:02 +0200}: rebase (start): checkout origin/main",
+        "3e16acb9d HEAD@{2026-10-21 20:56:25 +0200}: rebase (finish): returning to refs/heads/main",
+        "3e16acb9d HEAD@{2026-10-21 20:56:24 +0200}: rebase (continue): build: sync local changes via /pushall",
+        "5ce5f1d84 HEAD@{2026-10-21 20:56:02 +0200}: rebase (start): checkout origin/main",
+        "4ba2d8399 HEAD@{2026-10-21 20:53:09 +0200}: checkout: moving from main to main"
+      ],
+      "index_diff_empty": true
+    }
+  }
+}

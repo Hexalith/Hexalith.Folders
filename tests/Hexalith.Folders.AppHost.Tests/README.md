@@ -7,11 +7,15 @@ The disposable-provider acceptance temporarily removes its observer's repository
 denial with no prepared source event, restores the repository in `finally`, and resumes the real
 prepare/lock/clean-release workflow. Private provider context stays outside retained events and evidence.
 
-The separately implemented SDK bounded owner-identity candidate supports the existing Folders handler.
-The default capacity regression now rebuilds complete 10,001- and 32,769-position original owners,
+The frozen SDK bounded owner-identity candidate in
+`references/Hexalith.EventStore/_bmad-output/implementation-artifacts/evidence/folders-12-2-bounded-owner-identity/run-20261021T152119Z`
+has separately retained capability evidence. Against that frozen candidate, the default capacity
+regression passed complete 10,001- and 32,769-position original-owner rebuilds,
 preserves 98 historical tasks, grows and rebuilds again, and checks inherited generations and original
-identity conflicts. The authenticated capacity lane below qualifies the actual Folders handler and HTTP
-transport separately from the real-provider retained-source scenario. Current commands, results and
+identity conflicts. The authenticated capacity lane below defines additional HTTP assertions separately
+from the real-provider retained-source scenario. No complete authenticated live pass was obtained in this
+session; Task 36 qualification remains incomplete. Concurrent external SDK source changes are outside
+that frozen candidate, and the current SDK checkout is not qualified by these results. Commands, results and
 source/binary binding belong to the [Task 36 consumer packet](../../_bmad-output/implementation-artifacts/evidence/story-12-2-bounded-owner-consumption-20261021/).
 Story 12.2 remains in progress; SDK broad regressions, package/PD10, SM4 and independent whole-story
 review are separate gates.
@@ -50,9 +54,10 @@ staging. This is an initialized-epoch qualification; it does not claim that shar
 bootstrap a tenant with no prior operational delivery. The retained precondition failure remains in
 the new evidence packet.
 
-The new lane proves sealed staging across changed host PIDs, two original owners, inherited selected
+The new lane checks sealed staging across changed host PIDs, two original owners, inherited selected
 reads, original early/middle/final duplicate and conflict handling, ordinary catch-up and another full
 rebuild after growth. It records immutable input hashes, phase times and final retained value maxima.
+These are intended complete-case assertions; retained partial runs do not establish a passing HTTP case.
 True interrupted staging and partial multi-owner handoff use the separately hash-bound SDK process
 packet, with provenance in the consumer report. The SDK broad regression gate remains failed;
 its passing capability matrix is not newly executed Folders coverage. All readers/writers must support

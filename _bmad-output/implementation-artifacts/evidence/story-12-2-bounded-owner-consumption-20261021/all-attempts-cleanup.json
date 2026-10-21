@@ -1,0 +1,17 @@
+{
+  "observed_at_utc": "2026-10-21T19:01:44.475178+00:00",
+  "same_uid_environments_checked": 633,
+  "fixture_ids": [
+    "f4ded7a4a1e478cf",
+    "e1492ff7565c9b6c",
+    "dae0a4c2641095f9",
+    "287b93b969e13c56",
+    "714b194346ffc28d",
+    "ee3fdd1923d5c639",
+    "a1ea8a98f03ec514",
+    "baa801708db44212"
+  ],
+  "proven_owned_remaining_processes": [],
+  "matching_containers": [],
+  "note": "Ownership probe emits only exact fixture-ID boolean matches and process identity; no environment values or unrelated process mutations."
+}

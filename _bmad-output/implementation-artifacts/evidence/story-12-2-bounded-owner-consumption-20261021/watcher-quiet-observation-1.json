@@ -1,0 +1,9 @@
+{
+  "observed_at_utc": "2026-10-21T18:59:47.914553+00:00",
+  "visible_same_uid_watches": 1048541,
+  "max_user_watches": 1048576,
+  "visible_headroom": 35,
+  "visible_same_uid_instances": 100,
+  "uptime": "20:59:47 up 13:10,  2 users,  load average: 25.48, 28.86, 23.13",
+  "note": "Read-only quiet-interval follow-up; observed process metadata only. No unrelated processes or global limits changed."
+}

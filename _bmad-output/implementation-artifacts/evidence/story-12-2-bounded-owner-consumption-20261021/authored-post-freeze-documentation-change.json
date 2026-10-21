@@ -1,0 +1,8 @@
+{
+  "observed_at_utc": "2026-10-21T19:02:25.325805+00:00",
+  "path": "tests/Hexalith.Folders.AppHost.Tests/README.md",
+  "frozen_build7_sha256": "08c737a0db5585b8f7db7ce7e4714e0d8eccf9eaa53a2f45e0c5a7b11abae709",
+  "current_sha256": "1a95cb40e7f59412e28918fc2b03b0e6992145d7d16a92d683f7b4c0666d67ec",
+  "original_bytes": "final-build7-byte-archive.json",
+  "classification": "Authored documentation-only post-freeze change; no build/runtime mutation. Corrects intended assertions versus incomplete live execution, and frozen SDK candidate versus externally changed current checkout."
+}
