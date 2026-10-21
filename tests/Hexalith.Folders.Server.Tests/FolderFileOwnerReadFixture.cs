@@ -34,7 +34,10 @@ internal sealed class FolderFileOwnerReadFixture
         JsonSerializer.SerializeToUtf8Bytes(inverse ? (object)new FolderFileReferenceReadQuery("référence-1") : new FolderFileOwnerReadQuery("owner-file"), JsonSerializerOptions.Web),
         "correlation", "actor")
     {
-        OriginalActorId = "actor", AuthenticatedWorkloadId = "projects", IsDelegated = true, EntityId = "folder-a",
+        OriginalActorId = "actor",
+        AuthenticatedWorkloadId = "projects",
+        IsDelegated = true,
+        EntityId = "folder-a",
         CallerAuthority = new("delegated-owner-query", [], ["read_metadata"])
         { OriginatingContext = new("actor", "original-client", false, null, ["projects.read"], ["hexalith-eventstore"]) },
     };
@@ -43,8 +46,14 @@ internal sealed class FolderFileOwnerReadFixture
         query ??= Query();
         var clock = new FixedUtcClock(Now);
         var tenants = new InMemoryFolderTenantAccessProjectionStore();
-        var tenant = new FolderTenantAccessProjection { TenantId = "tenant-a", Enabled = true, Watermark = 7,
-            ProjectionWatermark = "tenant-a:7", LastEventTimestamp = Now };
+        var tenant = new FolderTenantAccessProjection
+        {
+            TenantId = "tenant-a",
+            Enabled = true,
+            Watermark = 7,
+            ProjectionWatermark = "tenant-a:7",
+            LastEventTimestamp = Now
+        };
         tenant.Principals["actor"] = new("actor", "TenantOwner");
         await tenants.SaveAsync(tenant, TestContext.Current.CancellationToken).ConfigureAwait(false);
         var accessor = new HttpContextAccessor { HttpContext = new DefaultHttpContext() };

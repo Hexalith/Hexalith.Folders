@@ -78,11 +78,6 @@ public sealed class LifecycleCapacityDriver
                 new Dictionary<string, string?>(StringComparer.Ordinal)),
             cancellationToken).ConfigureAwait(false);
 
-        if (result.Code == FolderResultCode.Accepted)
-        {
-            AppendWorkspacePreparedOutcome();
-        }
-
         stopwatch.Stop();
         _recorder.RecordStepLatency(LifecycleCapacityScenario.PrepareStepName, stopwatch.Elapsed.TotalMilliseconds);
         return Record(LifecycleCapacityScenario.PrepareStepName, result.Code);
@@ -230,30 +225,6 @@ public sealed class LifecycleCapacityDriver
         _recorder.RecordMeasuredStep(stepName);
         _recorder.RecordResult(code);
         return code;
-    }
-
-    private void AppendWorkspacePreparedOutcome()
-    {
-        FolderStreamName streamName = _repository.CreateStreamName(_iteration.TenantId, _iteration.FolderId);
-        _repository.AppendIfFingerprintAbsent(
-            streamName,
-            _iteration.PreparedOutcomeIdempotencyKey,
-            $"fingerprint-{_iteration.PreparedOutcomeIdempotencyKey}",
-            [
-                new FolderWorkspaceLifecycleEventRecorded(
-                    _iteration.TenantId,
-                    _iteration.OrganizationId,
-                    _iteration.FolderId,
-                    _iteration.WorkspaceId,
-                    FolderWorkspaceLifecycleEvent.WorkspacePrepared,
-                    DirtyResolution: null,
-                    OperationId: _iteration.WorkspaceId,
-                    _iteration.PrepareCorrelationId,
-                    _iteration.TaskId,
-                    _iteration.PreparedOutcomeIdempotencyKey,
-                    $"fingerprint-{_iteration.PreparedOutcomeIdempotencyKey}",
-                    _timeProvider.GetUtcNow()),
-            ]);
     }
 
     private void AppendWorkspaceCommittedStatusSnapshot()

@@ -44,7 +44,8 @@ public static class FolderFileIdentityState
             foreach (var item in current.Values.Where(item => item.Active)) next[item.OwnerFileId] = item with { Active = false };
             if (identified && mutation.FileOperationKind == "add")
                 next.Add(mutation.OwnerFileId!, new(mutation.OwnerFileId!, mutation.ProjectFileReferenceId,
-                    mutation.PathMetadataDigest, false) { NativeMutationId = mutation.IdempotencyKey });
+                    mutation.PathMetadataDigest, false)
+                { NativeMutationId = mutation.IdempotencyKey });
             return next.ToFrozenDictionary(StringComparer.Ordinal);
         }
         if (identified && mutation.FileOperationKind != "add")
@@ -65,15 +66,22 @@ public static class FolderFileIdentityState
             if (mutation.ProjectFileReferenceId is not null && next.Values.Any(item => item.ProjectFileReferenceId == mutation.ProjectFileReferenceId))
                 throw new InvalidOperationException("Projects File reference is already bound.");
             next.Add(mutation.OwnerFileId!, new(mutation.OwnerFileId!, mutation.ProjectFileReferenceId,
-                mutation.PathMetadataDigest, true) { NativeMutationId = mutation.IdempotencyKey,
-                    MutationTargetDigest = mutation.MutationTargetDigest });
+                mutation.PathMetadataDigest, true)
+            {
+                NativeMutationId = mutation.IdempotencyKey,
+                MutationTargetDigest = mutation.MutationTargetDigest
+            });
         }
         if (identified && mutation.FileOperationKind == "change")
         {
             if (mutation.ProjectFileReferenceId is not null && next.Values.Any(item => item.OwnerFileId != mutation.OwnerFileId && item.ProjectFileReferenceId == mutation.ProjectFileReferenceId))
                 throw new InvalidOperationException("Projects File reference is already bound.");
-            next[mutation.OwnerFileId!] = next[mutation.OwnerFileId!] with { ProjectFileReferenceId = mutation.ProjectFileReferenceId,
-                PathMetadataDigest = mutation.PathMetadataDigest, NativeMutationId = mutation.IdempotencyKey };
+            next[mutation.OwnerFileId!] = next[mutation.OwnerFileId!] with
+            {
+                ProjectFileReferenceId = mutation.ProjectFileReferenceId,
+                PathMetadataDigest = mutation.PathMetadataDigest,
+                NativeMutationId = mutation.IdempotencyKey
+            };
         }
         return next.ToFrozenDictionary(StringComparer.Ordinal);
     }

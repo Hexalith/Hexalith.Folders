@@ -193,7 +193,7 @@ public sealed class ScaffoldContractTests
         // Trusted ACL admission reuses the domain validator and principal-kind parser.
         AssertReferences(references, "Hexalith.Folders.EventStore", ["Hexalith.EventStore.DomainService", "Hexalith.EventStore.Gateway", "Hexalith.Folders"]);
         AssertReferences(references, "Hexalith.Folders.EventStore.Tests", ["Hexalith.Folders.EventStore", "Hexalith.Folders.Server"]);
-        AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
+        AssertReferences(references, "Hexalith.Folders.Tests", ["Hexalith.EventStore.Testing", "Hexalith.Folders", "Hexalith.Folders.Client", "Hexalith.Folders.Server", "Hexalith.Folders.Testing", "Hexalith.Folders.UI"]);
         AssertReferences(references, "Hexalith.Folders.Server.Tests", ["Hexalith.Folders.Server", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Client.Tests", ["Hexalith.Folders.Client", "Hexalith.Folders.Client.Generation.Shared", "Hexalith.Folders.Testing"]);
         AssertReferences(references, "Hexalith.Folders.Cli.Tests", ["Hexalith.Folders.Cli", "Hexalith.Folders.Testing"]);

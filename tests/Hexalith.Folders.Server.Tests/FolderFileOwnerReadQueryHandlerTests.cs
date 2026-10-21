@@ -44,8 +44,11 @@ public sealed class FolderFileOwnerReadQueryHandlerTests
         fixture.Permissions.Evidence = _ => FolderFilePermissionEvidenceProvider.Current() with { NativeTenantRevision = null };
         QueryEnvelope original = FolderFileOwnerReadFixture.Query(inverse);
         var known = await fixture.DispatchAsync(original);
-        QueryEnvelope absent = original with { Payload = JsonSerializer.SerializeToUtf8Bytes(inverse
-            ? (object)new FolderFileReferenceReadQuery("absent-reference") : new FolderFileOwnerReadQuery("absent-owner"), JsonSerializerOptions.Web) };
+        QueryEnvelope absent = original with
+        {
+            Payload = JsonSerializer.SerializeToUtf8Bytes(inverse
+            ? (object)new FolderFileReferenceReadQuery("absent-reference") : new FolderFileOwnerReadQuery("absent-owner"), JsonSerializerOptions.Web)
+        };
         var missing = await fixture.DispatchAsync(absent);
         known.Success.ShouldBeTrue(); missing.Success.ShouldBeTrue();
         missing.ProjectionType.ShouldBe(known.ProjectionType); missing.PayloadBytes.ShouldBe(known.PayloadBytes);
@@ -59,8 +62,12 @@ public sealed class FolderFileOwnerReadQueryHandlerTests
     public async Task LaggingIdentityGenerationCannotClassifyPositiveOrNegativeLookup(string shape)
     {
         var fixture = new FolderFileOwnerReadFixture();
-        fixture.Row = fixture.Row with { LastSequence = 4, Files = shape switch
-        { "absent" => [], "deleted" => [new("owner-file", "référence-1", false)], _ => fixture.Row.Files } };
+        fixture.Row = fixture.Row with
+        {
+            LastSequence = 4,
+            Files = shape switch
+            { "absent" => [], "deleted" => [new("owner-file", "référence-1", false)], _ => fixture.Row.Files }
+        };
         await fixture.SeedAsync();
         var result = await fixture.DispatchAsync();
         result.GetPayload().GetProperty("outcome").GetInt32().ShouldBe((int)FolderOwnerReadOutcome.Unavailable);
@@ -126,8 +133,13 @@ public sealed class FolderFileOwnerReadQueryHandlerTests
     {
         var fixture = new FolderFileOwnerReadFixture(); await fixture.SeedAsync();
         QueryEnvelope query = FolderFileOwnerReadFixture.Query();
-        query = change switch { "actor" => query with { UserId = "other" }, "tenant" => query with { TenantId = "tenant-b" },
-            "workload" => query with { AuthenticatedWorkloadId = "other" }, _ => query };
+        query = change switch
+        {
+            "actor" => query with { UserId = "other" },
+            "tenant" => query with { TenantId = "tenant-b" },
+            "workload" => query with { AuthenticatedWorkloadId = "other" },
+            _ => query
+        };
         var result = await fixture.DispatchAsync(query, verified: change != "missing-verification");
         result.ErrorMessage.ShouldBe("safe-denial"); result.PayloadBytes.ShouldBeNull(); fixture.Store.ReadKeys.ShouldBeEmpty();
     }
@@ -139,9 +151,12 @@ public sealed class FolderFileOwnerReadQueryHandlerTests
     public async Task ProtectedFileShapesNeverReturnIdentity(string change)
     {
         var fixture = new FolderFileOwnerReadFixture();
-        fixture.Row = change switch { "missing" => fixture.Row with { Files = [] },
+        fixture.Row = change switch
+        {
+            "missing" => fixture.Row with { Files = [] },
             "deleted" => fixture.Row with { Files = [new("owner-file", "référence-1", false)] },
-            _ => fixture.Row with { FolderId = "other-folder" } };
+            _ => fixture.Row with { FolderId = "other-folder" }
+        };
         await fixture.SeedAsync(); var result = await fixture.DispatchAsync();
         if (change == "wrong-parent") result.GetPayload().GetProperty("outcome").GetInt32().ShouldBe((int)FolderOwnerReadOutcome.Unavailable);
         else { result.ErrorMessage.ShouldBe("safe-denial"); result.PayloadBytes.ShouldBeNull(); }

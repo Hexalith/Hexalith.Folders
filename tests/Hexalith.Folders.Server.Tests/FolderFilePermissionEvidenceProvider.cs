@@ -16,7 +16,9 @@ internal sealed class FolderFilePermissionEvidenceProvider : IFolderPermissionEv
     }
     internal static FolderPermissionEvidenceResult Current() => FolderPermissionEvidenceResult.Allowed("5", organizationId: "tenant-a") with
     {
-        ResourceVersion = "5", PermissionVersion = "[5,1]", NativeTenantRevision = "synthetic-native-tenant-7",
+        ResourceVersion = "5",
+        PermissionVersion = "[5,1]",
+        NativeTenantRevision = "synthetic-native-tenant-7",
         LastVerifiedAt = FolderFileOwnerReadFixture.Now,
     };
 }

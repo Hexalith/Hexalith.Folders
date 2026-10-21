@@ -83,7 +83,8 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         var command = Mutation(operationId: "existing", idempotencyKey: "existing", fileOperationKind: kind,
             transportOperation: kind == "remove" ? "metadataOnlyRemoval" : "PutFileInline",
             contentHashReference: kind == "remove" ? null : "hashref-a", byteLength: kind == "remove" ? null : 12)
-            with { OwnerFileId = "file" };
+            with
+        { OwnerFileId = "file" };
         var result = FolderAggregate.Handle(state, command, Now.AddSeconds(1));
         result.Code.ShouldBe(FolderResultCode.Accepted);
         var updated = state.Apply(result.Events, stream);
@@ -112,7 +113,8 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         state = state.Apply(FolderAggregate.Handle(state, replacement, Now.AddSeconds(1)).Events, stream);
         state.FileIdentities["old-file"].Active.ShouldBeFalse();
         var binding = Mutation(operationId: "binding", idempotencyKey: "binding", fileOperationKind: "change")
-            with { OwnerFileId = "new-file", ProjectFileReferenceId = "référence-1" };
+            with
+        { OwnerFileId = "new-file", ProjectFileReferenceId = "référence-1" };
         FolderAggregate.Handle(state, binding, Now.AddSeconds(2)).Code.ShouldBe(FolderResultCode.StateTransitionInvalid);
     }
 
@@ -126,7 +128,8 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         FolderState state = locked.Apply(added.Events, stream);
         state.FileIdentities["owner-file-a"].ProjectFileReferenceId.ShouldBeNull();
         var bind = Mutation(operationId: "binding", idempotencyKey: "binding", fileOperationKind: "change")
-            with { OwnerFileId = "owner-file-a", ProjectFileReferenceId = "projects-ref" };
+            with
+        { OwnerFileId = "owner-file-a", ProjectFileReferenceId = "projects-ref" };
         var changed = FolderAggregate.Handle(state, bind, Now.AddSeconds(1));
         changed.Code.ShouldBe(FolderResultCode.Accepted);
         state = state.Apply(changed.Events, stream);
@@ -146,14 +149,16 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         var original = Mutation() with { OwnerFileId = "old-file", ProjectFileReferenceId = "projects-ref" };
         FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
         var replacement = Mutation(operationId: "replacement", idempotencyKey: "replacement")
-            with { OwnerFileId = "new-file", ProjectFileReferenceId = "replacement-projects-ref" };
+            with
+        { OwnerFileId = "new-file", ProjectFileReferenceId = "replacement-projects-ref" };
         var added = FolderAggregate.Handle(state, replacement, Now.AddSeconds(1));
         added.Code.ShouldBe(FolderResultCode.Accepted);
         state = state.Apply(added.Events, stream);
         state.FileIdentities["old-file"].Active.ShouldBeFalse();
         state.FileIdentities["new-file"].Active.ShouldBeTrue();
         var reused = Mutation(operationId: "reuse", idempotencyKey: "reuse")
-            with { OwnerFileId = "old-file", ProjectFileReferenceId = "projects-ref" };
+            with
+        { OwnerFileId = "old-file", ProjectFileReferenceId = "projects-ref" };
         FolderAggregate.Handle(state, reused, Now.AddSeconds(2)).Code.ShouldBe(FolderResultCode.StateTransitionInvalid);
     }
 
@@ -169,7 +174,8 @@ public sealed class FolderWorkspaceFileMutationAggregateTests
         var original = Mutation() with { OwnerFileId = "file", ProjectFileReferenceId = "projects-ref" };
         FolderState state = locked.Apply(FolderAggregate.Handle(locked, original, Now).Events, stream);
         var command = Mutation(operationId: "change", idempotencyKey: "change", fileOperationKind: "change")
-            with { OwnerFileId = "file", ProjectFileReferenceId = "projects-ref" };
+            with
+        { OwnerFileId = "file", ProjectFileReferenceId = "projects-ref" };
         command = change switch
         {
             "parent" => command with { FolderId = "other-folder" },
